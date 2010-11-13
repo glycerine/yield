@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ProjectGuid>{5a42594d-49a5-4b18-b77c-b48f230ca6f5}</ProjectGuid>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <RootNamespace>fs</RootNamespace>
+  </PropertyGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IntDir>$(ProjectDir)..\..\..\build\yield\fs\</IntDir>
+    <OutDir>$(ProjectDir)..\..\..\lib\</OutDir>
+    <TargetName>yield_fs</TargetName>
+    <TargetExt></TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IntDir>$(ProjectDir)..\..\..\build\yield\fs\</IntDir>
+    <OutDir>$(ProjectDir)..\..\..\lib\</OutDir>
+    <TargetName>yield_fs</TargetName>
+    <TargetExt></TargetExt>
+  </PropertyGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions></PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ProgramDataBaseFileName>$(TargetDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <AdditionalOptions>/EHsc /GR- /nologo /wd"4100" /wd"4127" /wd"4290" /wd"4355" /wd"4512"</AdditionalOptions>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>yield_i18n.lib;yield_common.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib</AdditionalLibraryDirectories>
+      <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
+      <OutputFile>$(OutDir)yield_fs.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions></PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <ProgramDataBaseFileName>$(TargetDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <AdditionalOptions>/EHsc /GR- /nologo /wd"4100" /wd"4127" /wd"4290" /wd"4355" /wd"4512"</AdditionalOptions>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>yield_i18n.lib;yield_common.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib</AdditionalLibraryDirectories>
+      <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
+      <OutputFile>$(OutDir)yield_fs.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+
+  <ItemGroup Label="ClIncludeItems">
+    <ClInclude Include="..\..\..\include\yield\fs\directory.hpp" />
+    <ClInclude Include="..\..\..\include\yield\fs\extended_attributes.hpp" />
+    <ClInclude Include="..\..\..\include\yield\fs\file.hpp" />
+    <ClInclude Include="..\..\..\include\yield\fs\file_log.hpp" />
+    <ClInclude Include="..\..\..\include\yield\fs\memory_mapped_file.hpp" />
+    <ClInclude Include="..\..\..\include\yield\fs\path.hpp" />
+    <ClInclude Include="..\..\..\include\yield\fs\stat.hpp" />
+    <ClInclude Include="..\..\..\include\yield\fs\volume.hpp" />
+  </ItemGroup>
+
+  <ItemGroup Label="ClCompileItems">
+    <ClCompile Include="..\..\..\src\yield\fs\bsd\directory.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\bsd\directory.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\bsd\directory_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\bsd\volume.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\bsd\volume.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\bsd\volume_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\darwin\extended_attributes.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\darwin\extended_attributes.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\darwin\file.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\darwin\file.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\darwin\file_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\darwin\volume.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\darwin\volume.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\darwin\volume_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\directory_test.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\extended_attributes.cpp">
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\extended_attributes_test.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\file.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\file_log.cpp">
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\file_test.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\freebsd\extended_attributes.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\freebsd\extended_attributes.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\freebsd\file.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\freebsd\file.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\freebsd\file_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\freebsd\volume.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\freebsd\volume.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\freebsd\volume_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\linux\directory.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\linux\directory.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\linux\directory_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\linux\extended_attributes.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\linux\extended_attributes.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\linux\file.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\linux\file.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\linux\file_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\linux\volume.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\linux\volume.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\linux\volume_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\memory_mapped_file.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\memory_mapped_file_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\named_pipe_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\path_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\posix\directory.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\posix\directory.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\posix\directory_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\posix\file.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\posix\file.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\posix\file_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\posix\memory_mapped_file.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\posix\memory_mapped_file.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\posix\path.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\posix\stat.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\posix\stat.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\posix\stat_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\posix\volume.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\posix\volume.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\posix\volume_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\stat.cpp">
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\stat_test.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\volume.cpp">
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\volume_test.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\win32\directory.cpp">
+      <ObjectFileName>$(IntDir)win32\directory.obj</ObjectFileName>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\win32\directory.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\win32\directory_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\win32\file.cpp">
+      <ObjectFileName>$(IntDir)win32\file.obj</ObjectFileName>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\win32\file.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\win32\file_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\win32\memory_mapped_file.cpp">
+      <ObjectFileName>$(IntDir)win32\memory_mapped_file.obj</ObjectFileName>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\win32\memory_mapped_file.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\win32\named_pipe.cpp">
+      <ObjectFileName>$(IntDir)win32\named_pipe.obj</ObjectFileName>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\win32\named_pipe.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\win32\path.cpp">
+      <ObjectFileName>$(IntDir)win32\path.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\win32\stat.cpp">
+      <ObjectFileName>$(IntDir)win32\stat.obj</ObjectFileName>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\win32\stat.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\win32\stat_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\win32\volume.cpp">
+      <ObjectFileName>$(IntDir)win32\volume.obj</ObjectFileName>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\win32\volume.hpp" />
+    <ClCompile Include="..\..\..\src\yield\fs\win32\volume_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\yield_fs_test_main.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+  </ItemGroup>
+
+  <ItemGroup Label="ProjectReferenceItems">
+    <ProjectReference Include="..\i18n\i18n.vcxproj">
+      <Project>{ab31d0e8-9f88-4df2-b07d-c26e959b841e}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

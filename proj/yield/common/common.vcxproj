@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ProjectGuid>{959e1fd1-05b3-4af5-b637-a317ecfcd62f}</ProjectGuid>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <RootNamespace>common</RootNamespace>
+  </PropertyGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IntDir>$(ProjectDir)..\..\..\build\yield\common\</IntDir>
+    <OutDir>$(ProjectDir)..\..\..\lib\</OutDir>
+    <TargetName>yield_common</TargetName>
+    <TargetExt></TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IntDir>$(ProjectDir)..\..\..\build\yield\common\</IntDir>
+    <OutDir>$(ProjectDir)..\..\..\lib\</OutDir>
+    <TargetName>yield_common</TargetName>
+    <TargetExt></TargetExt>
+  </PropertyGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions></PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ProgramDataBaseFileName>$(TargetDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <AdditionalOptions>/EHsc /GR- /nologo /wd"4100" /wd"4127" /wd"4290" /wd"4355" /wd"4512"</AdditionalOptions>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies></AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib</AdditionalLibraryDirectories>
+      <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
+      <OutputFile>$(OutDir)yield_common.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions></PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <ProgramDataBaseFileName>$(TargetDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <AdditionalOptions>/EHsc /GR- /nologo /wd"4100" /wd"4127" /wd"4290" /wd"4355" /wd"4512"</AdditionalOptions>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies></AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib</AdditionalLibraryDirectories>
+      <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
+      <OutputFile>$(OutDir)yield_common.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+
+  <ItemGroup Label="ClIncludeItems">
+    <ClInclude Include="..\..\..\include\yield\assert.hpp" />
+    <ClInclude Include="..\..\..\include\yield\atomic.hpp" />
+    <ClInclude Include="..\..\..\include\yield\auto_object.hpp" />
+    <ClInclude Include="..\..\..\include\yield\buffer.hpp" />
+    <ClInclude Include="..\..\..\include\yield\channel.hpp" />
+    <ClInclude Include="..\..\..\include\yield\channel_pair.hpp" />
+    <ClInclude Include="..\..\..\include\yield\config.hpp" />
+    <ClInclude Include="..\..\..\include\yield\date_time.hpp" />
+    <ClInclude Include="..\..\..\include\yield\event.hpp" />
+    <ClInclude Include="..\..\..\include\yield\event_handler.hpp" />
+    <ClInclude Include="..\..\..\include\yield\event_queue.hpp" />
+    <ClInclude Include="..\..\..\include\yield\exception.hpp" />
+    <ClInclude Include="..\..\..\include\yield\fixed_buffer.hpp" />
+    <ClInclude Include="..\..\..\include\yield\log.hpp" />
+    <ClInclude Include="..\..\..\include\yield\message.hpp" />
+    <ClInclude Include="..\..\..\include\yield\object.hpp" />
+    <ClInclude Include="..\..\..\include\yield\page.hpp" />
+    <ClInclude Include="..\..\..\include\yield\request.hpp" />
+    <ClInclude Include="..\..\..\include\yield\response.hpp" />
+    <ClInclude Include="..\..\..\include\yield\string_buffer.hpp" />
+    <ClInclude Include="..\..\..\include\yield\time.hpp" />
+    <ClInclude Include="..\..\..\include\yield\types.hpp" />
+  </ItemGroup>
+
+  <ItemGroup Label="ClCompileItems">
+    <ClCompile Include="..\..\..\src\yield\atomic_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\auto_object_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\buffer.cpp">
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\buffer_test.hpp" />
+    <ClInclude Include="..\..\..\src\yield\channel_test.hpp" />
+    <ClCompile Include="..\..\..\src\yield\date_time.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\date_time_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\event_queue_test.hpp" />
+    <ClCompile Include="..\..\..\src\yield\event_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\exception.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\exception_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fixed_buffer_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\log.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\log_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\message_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\object_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\page.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\page_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\request.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\request_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\response_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\string_buffer.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\string_buffer_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\test_object.hpp" />
+    <ClCompile Include="..\..\..\src\yield\time.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\time_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\yield_common_test_main.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+  </ItemGroup>
+
+  <ItemGroup Label="ProjectReferenceItems">
+
+  </ItemGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

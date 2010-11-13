@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <ConfigurationType>Application</ConfigurationType>
+    <ProjectGuid>{19004632-859c-43cb-a1c2-b63f531deafd}</ProjectGuid>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <RootNamespace>aio_test</RootNamespace>
+  </PropertyGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IntDir>$(ProjectDir)..\..\..\build\yield\aio_test\</IntDir>
+    <OutDir>$(ProjectDir)..\..\..\bin\</OutDir>
+    <TargetName>yield_aio_test</TargetName>
+    <TargetExt></TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IntDir>$(ProjectDir)..\..\..\build\yield\aio_test\</IntDir>
+    <OutDir>$(ProjectDir)..\..\..\bin\</OutDir>
+    <TargetName>yield_aio_test</TargetName>
+    <TargetExt></TargetExt>
+  </PropertyGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions></PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ProgramDataBaseFileName>$(TargetDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <AdditionalOptions>/EHsc /GR- /nologo /wd"4100" /wd"4127" /wd"4290" /wd"4355" /wd"4512"</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>yield_aio.lib;yield_fs.lib;yield_i18n.lib;yield_poll.lib;yield_net.lib;yield_stage.lib;yield_thread.lib;yield_common.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib</AdditionalLibraryDirectories>
+      <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
+      <OutputFile>$(OutDir)yield_aio_test.exe</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>CONSOLE</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions></PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <ProgramDataBaseFileName>$(TargetDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <AdditionalOptions>/EHsc /GR- /nologo /wd"4100" /wd"4127" /wd"4290" /wd"4355" /wd"4512"</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>yield_aio.lib;yield_fs.lib;yield_i18n.lib;yield_poll.lib;yield_net.lib;yield_stage.lib;yield_thread.lib;yield_common.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib</AdditionalLibraryDirectories>
+      <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
+      <OutputFile>$(OutDir)yield_aio_test.exe</OutputFile>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>CONSOLE</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+
+  <ItemGroup Label="ClIncludeItems">
+
+  </ItemGroup>
+
+  <ItemGroup Label="ClCompileItems">
+    <ClInclude Include="..\..\..\src\yield\aio\fs\aio_queue_test.hpp" />
+    <ClCompile Include="..\..\..\src\yield\aio\fs\bio_queue_test.cpp">
+      <ObjectFileName>$(IntDir)fs\bio_queue_test.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\posix\aio_queue_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\win32\aio_queue_test.cpp">
+      <ObjectFileName>$(IntDir)fs\win32\aio_queue_test.obj</ObjectFileName>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\aio\net\sockets\aio_queue_test.hpp" />
+    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\bio_queue_test.cpp">
+      <ObjectFileName>$(IntDir)net\sockets\bio_queue_test.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\nbio_queue_test.cpp">
+      <ObjectFileName>$(IntDir)net\sockets\nbio_queue_test.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\win32\aio_queue_test.cpp">
+      <ObjectFileName>$(IntDir)net\sockets\win32\aio_queue_test.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\yield_aio_test_main.cpp">
+    </ClCompile>
+  </ItemGroup>
+
+  <ItemGroup Label="ProjectReferenceItems">
+    <ProjectReference Include="aio.vcxproj">
+      <Project>{d8811b28-56dc-4a90-879d-bd611df1142d}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

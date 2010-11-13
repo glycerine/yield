@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{6e3e4bea-5891-4ed4-886f-893d8c1cf8e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\json">
+      <UniqueIdentifier>{d96ea500-a014-4ca7-a179-85a9582dbaf4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\xdr">
+      <UniqueIdentifier>{52ef3946-8ea7-4fa7-8748-ce37cba7da00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\xml">
+      <UniqueIdentifier>{4142f323-5a61-4084-9d18-fc05f3c3f322}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4b888a24-eef2-4a51-b95e-d8763aeeee6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\json">
+      <UniqueIdentifier>{0208a841-9e0c-4bf7-b222-e9003b12ce51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\xdr">
+      <UniqueIdentifier>{4887fa81-013d-49ca-8bd0-4014f6095f5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\xml">
+      <UniqueIdentifier>{95ab3d49-45ec-4cce-b760-bfc6084f887c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\include\yield\marshal\boolean.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\double.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\integer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\json\json_decoder.hpp">
+      <Filter>Header Files\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\json\json_encoder.hpp">
+      <Filter>Header Files\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\json\json_marshaller.hpp">
+      <Filter>Header Files\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\json\json_unmarshaller.hpp">
+      <Filter>Header Files\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\map.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\marshaller.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\null.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\object.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\pretty_printer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\sequence.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\string.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\string_literal.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\unmarshaller.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\xdr\xdr_decoder.hpp">
+      <Filter>Header Files\xdr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\xdr\xdr_encoder.hpp">
+      <Filter>Header Files\xdr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\xdr\xdr_marshaller.hpp">
+      <Filter>Header Files\xdr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\xdr\xdr_unmarshaller.hpp">
+      <Filter>Header Files\xdr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\xml\xml_encoder.hpp">
+      <Filter>Header Files\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\xml\xml_marshaller.hpp">
+      <Filter>Header Files\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\xml\xml_unmarshaller.hpp">
+      <Filter>Header Files\xml</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\yield\marshal\boolean.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\double.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\integer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\json\json_decoder.cpp">
+      <Filter>Source Files\json</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\json\json_encoder.cpp">
+      <Filter>Source Files\json</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\json\json_marshaller.cpp">
+      <Filter>Source Files\json</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\json\json_marshaller_test.cpp">
+      <Filter>Source Files\json</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\json\json_unmarshaller.cpp">
+      <Filter>Source Files\json</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\marshal\json\object_map.hpp">
+      <Filter>Source Files\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\yield\marshal\json\object_vector.hpp">
+      <Filter>Source Files\json</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\marshal\json\yajl.c">
+      <Filter>Source Files\json</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\marshal\json\yajl.h">
+      <Filter>Source Files\json</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\marshal\marshaller.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\marshal\marshaller_test.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\yield\marshal\marshaller_test_types.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\marshal\marshaller_test_types.idl">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\pretty_printer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\pretty_printer_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\string.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\string_literal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\unmarshaller.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\xdr\xdr_decoder.cpp">
+      <Filter>Source Files\xdr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\xdr\xdr_encoder.cpp">
+      <Filter>Source Files\xdr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\xdr\xdr_marshaller.cpp">
+      <Filter>Source Files\xdr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\xdr\xdr_marshaller_test.cpp">
+      <Filter>Source Files\xdr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\xdr\xdr_unmarshaller.cpp">
+      <Filter>Source Files\xdr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\xml\charProps.c">
+      <Filter>Source Files\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\xml\genx.c">
+      <Filter>Source Files\xml</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\marshal\xml\genx.h">
+      <Filter>Source Files\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\yield\marshal\xml\rapidxml.hpp">
+      <Filter>Source Files\xml</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\marshal\xml\xml_encoder.cpp">
+      <Filter>Source Files\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\xml\xml_marshaller.cpp">
+      <Filter>Source Files\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\xml\xml_marshaller_test.cpp">
+      <Filter>Source Files\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\xml\xml_unmarshaller.cpp">
+      <Filter>Source Files\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\yield_marshal_test_main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

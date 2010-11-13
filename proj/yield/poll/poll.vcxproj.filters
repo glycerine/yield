@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{f74868a1-0d63-4a3a-a2af-80792a80bf16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\bsd">
+      <UniqueIdentifier>{edd8b3fc-933d-4a25-a76f-b42a5f20edb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{705c0036-b7d1-493c-895c-3dbdbc19ab72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\linux">
+      <UniqueIdentifier>{2883bf57-3a77-4d97-9ddb-83f53ade4445}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\posix">
+      <UniqueIdentifier>{b3e724aa-25fa-4666-937f-e35791e9940d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\sunos">
+      <UniqueIdentifier>{b7ee3185-0048-4278-bc85-69f372ec00c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\win32">
+      <UniqueIdentifier>{4c9c065c-4465-48e4-a579-ef11c2a032b8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\include\yield\poll\fd_event.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\poll\fd_event_queue.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\poll\socket_event.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\poll\socket_event_queue.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\yield\poll\bsd\kqueue.cpp">
+      <Filter>Source Files\bsd</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\poll\bsd\kqueue.hpp">
+      <Filter>Source Files\bsd</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\poll\bsd\kqueue_test.cpp">
+      <Filter>Source Files\bsd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\poll\fd_event_queue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\poll\fd_event_queue_test.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\poll\linux\epoller.cpp">
+      <Filter>Source Files\linux</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\poll\linux\epoller.hpp">
+      <Filter>Source Files\linux</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\poll\linux\epoller_test.cpp">
+      <Filter>Source Files\linux</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\poll\posix\poller.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\poll\posix\poller.hpp">
+      <Filter>Source Files\posix</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\poll\posix\poller_test.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\poll\socket_event_queue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\poll\socket_event_queue_test.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\poll\sunos\event_port.cpp">
+      <Filter>Source Files\sunos</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\poll\sunos\event_port.hpp">
+      <Filter>Source Files\sunos</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\poll\sunos\event_port_test.cpp">
+      <Filter>Source Files\sunos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\poll\win32\handle_event_queue.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\poll\win32\handle_event_queue.hpp">
+      <Filter>Source Files\win32</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\poll\win32\handle_event_queue_test.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\poll\win32\selector.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\poll\win32\selector.hpp">
+      <Filter>Source Files\win32</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\poll\win32\selector_test.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\poll\win32\wsapoller.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\poll\win32\wsapoller.hpp">
+      <Filter>Source Files\win32</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\poll\win32\wsapoller_test.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\poll\yield_poll_test_main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

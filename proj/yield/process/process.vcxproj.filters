@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{058fa98e-66fc-4b99-b168-10d098c9a5a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\darwin">
+      <UniqueIdentifier>{aff42825-74a6-4d9e-a66a-05f12351eeae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\linux">
+      <UniqueIdentifier>{9174dc30-ec53-4b20-ab9d-a1769fc17c15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{e50715fc-16e7-4830-85fa-b57e653cd04b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\posix">
+      <UniqueIdentifier>{ae17e2f8-73b6-4605-8d74-92afd2f9ccb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\sunos">
+      <UniqueIdentifier>{ff863381-f3aa-4df6-9772-8506101905bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\win32">
+      <UniqueIdentifier>{f7835f22-6366-4fee-bac8-ad3bbaf7509a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\include\yield\process\option_parser.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\process\process.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\process\shared_library.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\yield\process\darwin\process.cpp">
+      <Filter>Source Files\darwin</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\process\darwin\process.hpp">
+      <Filter>Source Files\darwin</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\process\linux\process.cpp">
+      <Filter>Source Files\linux</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\process\linux\process.hpp">
+      <Filter>Source Files\linux</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\process\option_parser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\process\posix\process.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\process\posix\process.hpp">
+      <Filter>Source Files\posix</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\process\posix\shared_library.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\process\process.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\process\process_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\process\shared_library_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\process\sunos\process.cpp">
+      <Filter>Source Files\sunos</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\process\sunos\process.hpp">
+      <Filter>Source Files\sunos</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\process\win32\process.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\process\win32\process.hpp">
+      <Filter>Source Files\win32</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\process\win32\shared_library.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\process\yield_process_test_main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

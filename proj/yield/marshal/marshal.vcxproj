@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ProjectGuid>{2e4beac3-0a8c-4110-981a-294840aed212}</ProjectGuid>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <RootNamespace>marshal</RootNamespace>
+  </PropertyGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IntDir>$(ProjectDir)..\..\..\build\yield\marshal\</IntDir>
+    <OutDir>$(ProjectDir)..\..\..\lib\</OutDir>
+    <TargetName>yield_marshal</TargetName>
+    <TargetExt></TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IntDir>$(ProjectDir)..\..\..\build\yield\marshal\</IntDir>
+    <OutDir>$(ProjectDir)..\..\..\lib\</OutDir>
+    <TargetName>yield_marshal</TargetName>
+    <TargetExt></TargetExt>
+  </PropertyGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions></PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ProgramDataBaseFileName>$(TargetDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <AdditionalOptions>/EHsc /GR- /nologo /wd"4100" /wd"4127" /wd"4290" /wd"4355" /wd"4512"</AdditionalOptions>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>yield_common.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib</AdditionalLibraryDirectories>
+      <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
+      <OutputFile>$(OutDir)yield_marshal.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions></PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <ProgramDataBaseFileName>$(TargetDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <AdditionalOptions>/EHsc /GR- /nologo /wd"4100" /wd"4127" /wd"4290" /wd"4355" /wd"4512"</AdditionalOptions>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>yield_common.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib</AdditionalLibraryDirectories>
+      <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
+      <OutputFile>$(OutDir)yield_marshal.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+
+  <ItemGroup Label="ClIncludeItems">
+    <ClInclude Include="..\..\..\include\yield\marshal\boolean.hpp" />
+    <ClInclude Include="..\..\..\include\yield\marshal\double.hpp" />
+    <ClInclude Include="..\..\..\include\yield\marshal\integer.hpp" />
+    <ClInclude Include="..\..\..\include\yield\marshal\json\json_decoder.hpp" />
+    <ClInclude Include="..\..\..\include\yield\marshal\json\json_encoder.hpp" />
+    <ClInclude Include="..\..\..\include\yield\marshal\json\json_marshaller.hpp" />
+    <ClInclude Include="..\..\..\include\yield\marshal\json\json_unmarshaller.hpp" />
+    <ClInclude Include="..\..\..\include\yield\marshal\map.hpp" />
+    <ClInclude Include="..\..\..\include\yield\marshal\marshaller.hpp" />
+    <ClInclude Include="..\..\..\include\yield\marshal\null.hpp" />
+    <ClInclude Include="..\..\..\include\yield\marshal\object.hpp" />
+    <ClInclude Include="..\..\..\include\yield\marshal\pretty_printer.hpp" />
+    <ClInclude Include="..\..\..\include\yield\marshal\sequence.hpp" />
+    <ClInclude Include="..\..\..\include\yield\marshal\string.hpp" />
+    <ClInclude Include="..\..\..\include\yield\marshal\string_literal.hpp" />
+    <ClInclude Include="..\..\..\include\yield\marshal\unmarshaller.hpp" />
+    <ClInclude Include="..\..\..\include\yield\marshal\xdr\xdr_decoder.hpp" />
+    <ClInclude Include="..\..\..\include\yield\marshal\xdr\xdr_encoder.hpp" />
+    <ClInclude Include="..\..\..\include\yield\marshal\xdr\xdr_marshaller.hpp" />
+    <ClInclude Include="..\..\..\include\yield\marshal\xdr\xdr_unmarshaller.hpp" />
+    <ClInclude Include="..\..\..\include\yield\marshal\xml\xml_encoder.hpp" />
+    <ClInclude Include="..\..\..\include\yield\marshal\xml\xml_marshaller.hpp" />
+    <ClInclude Include="..\..\..\include\yield\marshal\xml\xml_unmarshaller.hpp" />
+  </ItemGroup>
+
+  <ItemGroup Label="ClCompileItems">
+    <ClCompile Include="..\..\..\src\yield\marshal\boolean.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\double.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\integer.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\json\json_decoder.cpp">
+      <ObjectFileName>$(IntDir)json\json_decoder.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\json\json_encoder.cpp">
+      <ObjectFileName>$(IntDir)json\json_encoder.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\json\json_marshaller.cpp">
+      <ObjectFileName>$(IntDir)json\json_marshaller.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\json\json_marshaller_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\json\json_unmarshaller.cpp">
+      <ObjectFileName>$(IntDir)json\json_unmarshaller.obj</ObjectFileName>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\marshal\json\object_map.hpp" />
+    <ClInclude Include="..\..\..\src\yield\marshal\json\object_vector.hpp" />
+    <ClCompile Include="..\..\..\src\yield\marshal\json\yajl.c">
+      <ObjectFileName>$(IntDir)json\yajl.obj</ObjectFileName>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\marshal\json\yajl.h" />
+    <ClCompile Include="..\..\..\src\yield\marshal\marshaller.cpp">
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\marshal\marshaller_test.hpp" />
+    <ClInclude Include="..\..\..\src\yield\marshal\marshaller_test_types.hpp" />
+    <ClCompile Include="..\..\..\src\yield\marshal\marshaller_test_types.idl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\pretty_printer.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\pretty_printer_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\string.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\string_literal.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\unmarshaller.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\xdr\xdr_decoder.cpp">
+      <ObjectFileName>$(IntDir)xdr\xdr_decoder.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\xdr\xdr_encoder.cpp">
+      <ObjectFileName>$(IntDir)xdr\xdr_encoder.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\xdr\xdr_marshaller.cpp">
+      <ObjectFileName>$(IntDir)xdr\xdr_marshaller.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\xdr\xdr_marshaller_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\xdr\xdr_unmarshaller.cpp">
+      <ObjectFileName>$(IntDir)xdr\xdr_unmarshaller.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\xml\charProps.c">
+      <ObjectFileName>$(IntDir)xml\charProps.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\xml\genx.c">
+      <ObjectFileName>$(IntDir)xml\genx.obj</ObjectFileName>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\marshal\xml\genx.h" />
+    <ClInclude Include="..\..\..\src\yield\marshal\xml\rapidxml.hpp" />
+    <ClCompile Include="..\..\..\src\yield\marshal\xml\xml_encoder.cpp">
+      <ObjectFileName>$(IntDir)xml\xml_encoder.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\xml\xml_marshaller.cpp">
+      <ObjectFileName>$(IntDir)xml\xml_marshaller.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\xml\xml_marshaller_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\xml\xml_unmarshaller.cpp">
+      <ObjectFileName>$(IntDir)xml\xml_unmarshaller.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\marshal\yield_marshal_test_main.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+  </ItemGroup>
+
+  <ItemGroup Label="ProjectReferenceItems">
+    <ProjectReference Include="..\common\common.vcxproj">
+      <Project>{959e1fd1-05b3-4af5-b637-a317ecfcd62f}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

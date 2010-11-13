@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{29597f52-0c37-429a-957d-f1a5a1759b2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\fs">
+      <UniqueIdentifier>{7995d56d-20a0-4e71-a138-74eafd394b12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\net\sockets">
+      <UniqueIdentifier>{94cc5fe1-eba8-47b6-8516-4efb2b28d71d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\posix">
+      <UniqueIdentifier>{f3e3e78e-9ad3-4141-a5eb-83c4877b1fb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\win32">
+      <UniqueIdentifier>{34af14c7-5790-4b54-a0d6-4b29123f7576}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\net">
+      <UniqueIdentifier>{5fc57d25-bd31-4adb-9865-0ee3e59766fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{e12dd296-e734-41a5-a351-8fb782150c0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\fs">
+      <UniqueIdentifier>{be98bf3b-5074-45d9-8292-6fd30271c9ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\fs\posix">
+      <UniqueIdentifier>{63fc3daa-bd1a-4f79-b17e-76c9f1882c5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\fs\win32">
+      <UniqueIdentifier>{c071f09b-7387-4e17-9771-4b0b46cd1e9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\net\sockets">
+      <UniqueIdentifier>{7755a49c-fb0f-4f80-a4f0-38ebdbe5d229}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\net\sockets\posix">
+      <UniqueIdentifier>{c001cce1-ef82-4c4d-84e3-1d58d1846ed1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\net\sockets\win32">
+      <UniqueIdentifier>{84738268-bccf-41f7-9261-196f7e071165}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\posix">
+      <UniqueIdentifier>{2a2fab02-b27b-4b09-a03f-3b1dbb4c8fa9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\win32">
+      <UniqueIdentifier>{5cfca26d-7ca7-4e01-90d3-7dd9f6f253d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\net">
+      <UniqueIdentifier>{c4bb283c-5c92-4513-b679-ab6a1c50b31b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\include\yield\aio\aiocb.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\fs\aio_queue.hpp">
+      <Filter>Header Files\fs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\fs\aiocb.hpp">
+      <Filter>Header Files\fs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\fs\fdatasync_aiocb.hpp">
+      <Filter>Header Files\fs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\fs\fsync_aiocb.hpp">
+      <Filter>Header Files\fs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\fs\pread_aiocb.hpp">
+      <Filter>Header Files\fs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\fs\pwrite_aiocb.hpp">
+      <Filter>Header Files\fs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\fs\setlk_aiocb.hpp">
+      <Filter>Header Files\fs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\fs\unlk_aiocb.hpp">
+      <Filter>Header Files\fs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\net\sockets\accept_aiocb.hpp">
+      <Filter>Header Files\net\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\net\sockets\aio_queue.hpp">
+      <Filter>Header Files\net\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\net\sockets\aiocb.hpp">
+      <Filter>Header Files\net\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\net\sockets\connect_aiocb.hpp">
+      <Filter>Header Files\net\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\net\sockets\recv_aiocb.hpp">
+      <Filter>Header Files\net\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\net\sockets\send_aiocb.hpp">
+      <Filter>Header Files\net\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\posix\aiocb.hpp">
+      <Filter>Header Files\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\win32\aiocb.hpp">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\yield\aio\bio_queue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\aio\bio_queue.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\aio_queue.cpp">
+      <Filter>Source Files\fs</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\aio\fs\aio_queue_test.hpp">
+      <Filter>Source Files\fs</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\aiocb.cpp">
+      <Filter>Source Files\fs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\bio_queue.cpp">
+      <Filter>Source Files\fs</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\aio\fs\bio_queue.hpp">
+      <Filter>Source Files\fs</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\bio_queue_test.cpp">
+      <Filter>Source Files\fs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\fdatasync_aiocb.cpp">
+      <Filter>Source Files\fs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\fsync_aiocb.cpp">
+      <Filter>Source Files\fs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\posix\aio_queue.cpp">
+      <Filter>Source Files\fs\posix</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\aio\fs\posix\aio_queue.hpp">
+      <Filter>Source Files\fs\posix</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\posix\aio_queue_test.cpp">
+      <Filter>Source Files\fs\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\posix\fdatasync_aiocb.cpp">
+      <Filter>Source Files\fs\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\posix\fsync_aiocb.cpp">
+      <Filter>Source Files\fs\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\posix\pread_aiocb.cpp">
+      <Filter>Source Files\fs\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\posix\pwrite_aiocb.cpp">
+      <Filter>Source Files\fs\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\pread_aiocb.cpp">
+      <Filter>Source Files\fs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\pwrite_aiocb.cpp">
+      <Filter>Source Files\fs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\setlk_aiocb.cpp">
+      <Filter>Source Files\fs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\unlk_aiocb.cpp">
+      <Filter>Source Files\fs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\win32\aio_queue.cpp">
+      <Filter>Source Files\fs\win32</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\aio\fs\win32\aio_queue.hpp">
+      <Filter>Source Files\fs\win32</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\win32\aio_queue_test.cpp">
+      <Filter>Source Files\fs\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\win32\aiocb.cpp">
+      <Filter>Source Files\fs\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\win32\pread_aiocb.cpp">
+      <Filter>Source Files\fs\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\win32\pwrite_aiocb.cpp">
+      <Filter>Source Files\fs\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\win32\setlk_aiocb.cpp">
+      <Filter>Source Files\fs\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\win32\unlk_aiocb.cpp">
+      <Filter>Source Files\fs\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\accept_aiocb.cpp">
+      <Filter>Source Files\net\sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\aio_queue.cpp">
+      <Filter>Source Files\net\sockets</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\aio\net\sockets\aio_queue_test.hpp">
+      <Filter>Source Files\net\sockets</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\aiocb.cpp">
+      <Filter>Source Files\net\sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\bio_queue.cpp">
+      <Filter>Source Files\net\sockets</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\aio\net\sockets\bio_queue.hpp">
+      <Filter>Source Files\net\sockets</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\bio_queue_test.cpp">
+      <Filter>Source Files\net\sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\connect_aiocb.cpp">
+      <Filter>Source Files\net\sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\nbio_queue.cpp">
+      <Filter>Source Files\net\sockets</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\aio\net\sockets\nbio_queue.hpp">
+      <Filter>Source Files\net\sockets</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\nbio_queue_test.cpp">
+      <Filter>Source Files\net\sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\posix\accept_aiocb.cpp">
+      <Filter>Source Files\net\sockets\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\recv_aiocb.cpp">
+      <Filter>Source Files\net\sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\send_aiocb.cpp">
+      <Filter>Source Files\net\sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\win32\accept_aiocb.cpp">
+      <Filter>Source Files\net\sockets\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\win32\aio_queue.cpp">
+      <Filter>Source Files\net\sockets\win32</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\aio\net\sockets\win32\aio_queue.hpp">
+      <Filter>Source Files\net\sockets\win32</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\win32\aio_queue_test.cpp">
+      <Filter>Source Files\net\sockets\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\win32\aiocb.cpp">
+      <Filter>Source Files\net\sockets\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\win32\connect_aiocb.cpp">
+      <Filter>Source Files\net\sockets\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\win32\recv_aiocb.cpp">
+      <Filter>Source Files\net\sockets\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\win32\send_aiocb.cpp">
+      <Filter>Source Files\net\sockets\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\posix\aiocb.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\win32\aio_queue.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\aio\win32\aio_queue.hpp">
+      <Filter>Source Files\win32</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\aio\win32\aiocb.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\yield_aio_test_main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files\sockets">
+      <UniqueIdentifier>{860b868b-f04a-4dfb-93e3-bec4822a2632}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\sockets\ssl">
+      <UniqueIdentifier>{6883fc78-d4e7-40b3-bf87-91e4f3e30049}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\sockets\win32">
+      <UniqueIdentifier>{4fb862b9-a8c4-4194-9934-f40589b30a90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{c99891b8-8ca4-4ebe-9d89-802618e13b61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\linux">
+      <UniqueIdentifier>{d36e9037-0efd-4d20-96a7-ab1440957caf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\sockets\posix">
+      <UniqueIdentifier>{e27e4a51-79a0-49e4-beb6-20b7e0dbff33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\sockets">
+      <UniqueIdentifier>{f2b247ca-bd3d-4449-83e3-1c8ef9a4d7d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\sockets\ssl">
+      <UniqueIdentifier>{95bbb9dd-df68-4250-916f-43a9e790f920}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\sockets\win32">
+      <UniqueIdentifier>{f1351eb6-3f38-4017-a9f8-c711502c5414}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\sunos">
+      <UniqueIdentifier>{acc940c6-6106-4a5c-ac71-66541c3e6585}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{b2266aad-52d2-4cb1-aaa7-3b91cc258e58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\win32">
+      <UniqueIdentifier>{110cbdbc-4ec0-4ddf-97c9-8da32267b2b1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\include\yield\net\sockets\datagram_socket.hpp">
+      <Filter>Header Files\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\net\sockets\socket.hpp">
+      <Filter>Header Files\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\net\sockets\socket_address.hpp">
+      <Filter>Header Files\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\net\sockets\socket_pair.hpp">
+      <Filter>Header Files\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\net\sockets\ssl\ssl_context.hpp">
+      <Filter>Header Files\sockets\ssl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\net\sockets\ssl\ssl_exception.hpp">
+      <Filter>Header Files\sockets\ssl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\net\sockets\ssl\ssl_socket.hpp">
+      <Filter>Header Files\sockets\ssl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\net\sockets\stream_socket.hpp">
+      <Filter>Header Files\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\net\sockets\tcp_socket.hpp">
+      <Filter>Header Files\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\net\sockets\udp_socket.hpp">
+      <Filter>Header Files\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\net\sockets\win32\winsock.hpp">
+      <Filter>Header Files\sockets\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\net\uri.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\net\uuid.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\yield\net\linux\uuid.cpp">
+      <Filter>Source Files\linux</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\net\linux\uuid.hpp">
+      <Filter>Source Files\linux</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\net\sockets\posix\datagram_socket.cpp">
+      <Filter>Source Files\sockets\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\net\sockets\posix\socket.cpp">
+      <Filter>Source Files\sockets\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\net\sockets\posix\socket_address.cpp">
+      <Filter>Source Files\sockets\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\net\sockets\posix\stream_socket.cpp">
+      <Filter>Source Files\sockets\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\net\sockets\posix\tcp_socket.cpp">
+      <Filter>Source Files\sockets\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\net\sockets\posix\udp_socket.cpp">
+      <Filter>Source Files\sockets\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\net\sockets\socket_address_test.cpp">
+      <Filter>Source Files\sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\net\sockets\socket_pair.cpp">
+      <Filter>Source Files\sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\net\sockets\socket_pair_test.cpp">
+      <Filter>Source Files\sockets</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\net\sockets\socket_pair_test.hpp">
+      <Filter>Source Files\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\yield\net\sockets\socket_test.hpp">
+      <Filter>Source Files\sockets</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\net\sockets\ssl\ssl_context.cpp">
+      <Filter>Source Files\sockets\ssl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\net\sockets\ssl\ssl_context_test.cpp">
+      <Filter>Source Files\sockets\ssl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\net\sockets\ssl\ssl_exception.cpp">
+      <Filter>Source Files\sockets\ssl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\net\sockets\ssl\ssl_socket.cpp">
+      <Filter>Source Files\sockets\ssl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\net\sockets\tcp_socket_test.cpp">
+      <Filter>Source Files\sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\net\sockets\udp_socket_test.cpp">
+      <Filter>Source Files\sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\net\sockets\win32\datagram_socket.cpp">
+      <Filter>Source Files\sockets\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\net\sockets\win32\socket.cpp">
+      <Filter>Source Files\sockets\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\net\sockets\win32\socket_address.cpp">
+      <Filter>Source Files\sockets\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\net\sockets\win32\stream_socket.cpp">
+      <Filter>Source Files\sockets\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\net\sockets\win32\tcp_socket.cpp">
+      <Filter>Source Files\sockets\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\net\sockets\win32\udp_socket.cpp">
+      <Filter>Source Files\sockets\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\net\sunos\uuid.cpp">
+      <Filter>Source Files\sunos</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\net\sunos\uuid.hpp">
+      <Filter>Source Files\sunos</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\net\uri.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\net\uri.rl">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\net\uri_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\net\uuid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\net\uuid_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\net\win32\uuid.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\net\win32\uuid.hpp">
+      <Filter>Source Files\win32</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\net\yield_net_test_main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

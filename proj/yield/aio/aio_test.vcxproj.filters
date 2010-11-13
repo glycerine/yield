@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files\fs">
+      <UniqueIdentifier>{03289765-5de6-4c6f-b2df-a9ef5a9bd88f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\fs\posix">
+      <UniqueIdentifier>{77f40586-e25f-46e8-8363-e7b4e40eca8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\fs\win32">
+      <UniqueIdentifier>{cc389b31-aa1c-41e3-b015-bb653d358b70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\net\sockets">
+      <UniqueIdentifier>{20f38c4d-c21d-4351-8c1f-f807ad882011}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\net\sockets\win32">
+      <UniqueIdentifier>{d5c4f7c3-fb8b-4e72-b581-0c3ec6f96e23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{d8a4a8f9-73bb-480f-a091-8a8d777e71e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\net">
+      <UniqueIdentifier>{78359aeb-d791-408c-a928-97f34745ac94}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\yield\aio\fs\aio_queue_test.hpp">
+      <Filter>Source Files\fs</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\bio_queue_test.cpp">
+      <Filter>Source Files\fs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\posix\aio_queue_test.cpp">
+      <Filter>Source Files\fs\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\fs\win32\aio_queue_test.cpp">
+      <Filter>Source Files\fs\win32</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\aio\net\sockets\aio_queue_test.hpp">
+      <Filter>Source Files\net\sockets</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\bio_queue_test.cpp">
+      <Filter>Source Files\net\sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\nbio_queue_test.cpp">
+      <Filter>Source Files\net\sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\win32\aio_queue_test.cpp">
+      <Filter>Source Files\net\sockets\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\yield_aio_test_main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

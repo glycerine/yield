@@ -1,0 +1,68 @@
+   	5  	 Enhancement  	 Accepted  	 Medium  	 ----  	 Minor.Gordon  	 ›   	 Stage tutorial   	 
+  	6 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Doxygen documentation 	 
+  	8 	Enhancement 	Accepted 	Low 	---- 	Minor.Gordon 	› 	User-level threads on SEDA stages 	 
+  	9 	Defect 	Accepted 	Low 	---- 	Minor.Gordon 	› 	Retire ColorStageGroup, others? 	 
+  	10 	Defect 	Accepted 	Low 	---- 	Minor.Gordon 	› 	Flags to createStage for SEND_STAGE_STARTUP_EVENT, SEND_STAGE_SHUTDOWN_EVENT 	 
+  	11 	Defect 	Accepted 	Low 	---- 	Minor.Gordon 	› 	Reformat *_test.cpp to 80-character lines 	 
+  	14 	Enhancement 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Linux libaio and POSIX aio IOQueues 	 
+  	15 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Socket::set_blocking_mode should check the current state 	 
+  	21 	Enhancement 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Move deflate() to YIELD::platform:: 	 
+  	22 	Enhancement 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Separate private/protected/public methods and data members with different visibility keywords 	 
+  	30 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	aio_* BIO with timeouts 	 
+  	36 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Makefile targets for the sub-projects 	 
+  	38 	Enhancement 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Process::getcurrent or similar 	 
+  	66 	Enhancement 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	doc/conventions.txt 	 
+  	72 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Log + Log::Stream should use the std::ostreams 	 
+  	74 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Add throw() to methods that never throw exceptions 	 
+  	75 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	option_parser_test 	 
+  	76 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Log: have a prefix on all log entries + prefix on Stream (facility?) 	 
+  	77 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Thread* get_current_thread() 	 
+  	80 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	URI: copy from constructor into new'd buffer, then store pointers into it 	 
+  	87 	Enhancement 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Directory change notification 	 
+  	95 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Pass accept()'d peername to AccessLog -> write 	 
+  	98 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Trace logging in TCPSocketServer 	 
+  	102 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Log::write( Buffer& ), Log::write( Buffers& ), Log::write( iovec* ) 	 
+  	104 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	UDPONCRPCServer, UDPONCRPCClient: don't send marker 	 
+  	111 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Fix Process( Pipe*, ... ) 	 
+  	112 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	stream_socket_test 	 
+  	114 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	http_message_parser_test 	 
+  	115 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	http_*_parser_test with multiple buffers 	 
+  	120 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Separate using declarations in .cpp files 	 
+  	121 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Clients: test connection failures, timeouts 	 
+  	123 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	HTTPRequest credentials : digest auth, basic auth 	 
+  	125 	Enhancement 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	SSLServer: attach credentials from client certificate 	 
+  	129 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Standardize on initializer formatting 	 
+  	131 	Enhancement 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	HTTPMessageParser: skip chunked bodies 	 
+  	133 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Add system timers 	 
+  	135 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Pass name to createStage (on SEDA) 	 
+  	137 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	NBIOQueue: issue multiple operations on the same FD 	 
+  	141 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	BIOQueue: re-use threads 	 
+  	143 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	FDChannel: aio* for BIO/NBIO 	 
+  	144 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	BIOCB and NBIOCB cancel() 	 
+  	145 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Allow reading into SocketAddress 	 
+  	146 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	off_t for file sizes and offsets 	 
+  	151 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	WaitForMultipleObjects( Connection ) 	 
+  	152 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Template HTTPRequestParser<HTTPRequestType = HTTPRequest> 	 
+  	153 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Changing using namespace declarations in .cpp's to using X 	 
+  	154 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Reinstate ReaderWriterLock 	 
+  	155 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Pthread ConditionVariable 	 
+  	156 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Win32 CriticalSection 	 
+  	159 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	mkfifo should return a File* 	 
+  	160 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Enable gcc warning on ignored return value 	 
+  	161 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Use wchar_t Paths on Unix 	 
+  	162 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Change Makefiles to use build directory 	 
+  	163 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Allocate FDEvents from the FDEventQueue 	 
+  	165 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Fill out Thread with Win32 thread / pthreads functions 	 
+  	166 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Add Win32 and Win64 OpenSSL and zlib binary .lib's to the repository 	 
+  	168 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Combine PollingStageGroup, SEDAStageGroup, and ColorStageGroup 	 
+  	169 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Per-marshaller tests 	 
+  	170 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Pipe AIO 	 
+  	171 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	listen( backlog ) 	 
+  	172 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	named_pipe_test: use two separate threads 	 
+  	173 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	UDPSocketClient/Server -> DatagramSocketClient/Server 	 
+  	174 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Rename Socket::dup* to something more appropriate 	 
+  	175 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	StatVFS object 	 
+  	176 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	PerformanceCounterSet on Windows 	 
+  	177 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	TimerQueue: use Linux timerfd's 	 
+  	178 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	eventfd + libaio 	 
+  	179 	Defect 	Accepted 	Medium 	---- 	Minor.Gordon 	› 	Unify Buffer 

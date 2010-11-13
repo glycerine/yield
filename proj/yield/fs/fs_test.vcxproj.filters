@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files\bsd">
+      <UniqueIdentifier>{7695e73b-dd18-49a5-8008-3fc16adede56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\darwin">
+      <UniqueIdentifier>{cf81748a-046b-4ebb-8c2a-a11fe2c7c3da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4303a68a-0246-4464-a020-83af6ec24309}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\freebsd">
+      <UniqueIdentifier>{96c221e3-3f3c-4ae7-b1a0-2cfb8f0826dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\linux">
+      <UniqueIdentifier>{6bd55979-9579-4b7e-8b5f-2e3350481c40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\posix">
+      <UniqueIdentifier>{1f7fc0a2-d5f5-422c-a178-eac5f61b25c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\win32">
+      <UniqueIdentifier>{7db48105-c92c-4783-b790-703b7a54e605}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\yield\fs\bsd\directory_test.cpp">
+      <Filter>Source Files\bsd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\bsd\volume_test.cpp">
+      <Filter>Source Files\bsd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\darwin\file_test.cpp">
+      <Filter>Source Files\darwin</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\darwin\volume_test.cpp">
+      <Filter>Source Files\darwin</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\directory_test.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\yield\fs\extended_attributes_test.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\yield\fs\file_test.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\fs\freebsd\file_test.cpp">
+      <Filter>Source Files\freebsd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\freebsd\volume_test.cpp">
+      <Filter>Source Files\freebsd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\linux\directory_test.cpp">
+      <Filter>Source Files\linux</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\linux\file_test.cpp">
+      <Filter>Source Files\linux</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\linux\volume_test.cpp">
+      <Filter>Source Files\linux</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\memory_mapped_file_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\named_pipe_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\path_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\posix\directory_test.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\posix\file_test.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\posix\stat_test.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\posix\volume_test.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\stat_test.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\yield\fs\volume_test.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\fs\win32\directory_test.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\win32\file_test.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\win32\stat_test.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\win32\volume_test.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\yield_fs_test_main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

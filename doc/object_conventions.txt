@@ -1,0 +1,13 @@
+    // Atomic reference-counted objects
+    // Conventions for Objects:
+    // Object* method( ... ) -> Object* is a new reference
+    //   where method is usually a factory method.
+    //   Factory methods that return Object& throw exceptions;
+    //     those that return Object* return NULL instead.
+    //   The exception to this rule are getters that return an Object*
+    //   that is not a new reference
+    // method( const Object& ) -> Object is on stack, not a new reference
+    // method( Object* or Object* ) -> Object is on heap, but not a
+    //   new reference; callee should inc_ref() references for itself
+    //   as necessary
+    // Exceptions to these conventions will be marked.
