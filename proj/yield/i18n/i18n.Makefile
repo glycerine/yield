@@ -52,15 +52,16 @@ endif
 ifeq ($(UNAME), Linux)
 	OBJECT_FILE_PATHS += ../../../build/yield/i18n/posix/code.o ../../../build/yield/i18n/posix/iconv.o ../../../build/yield/i18n/posix/tstring.o
 endif
-ifeq ($(UNAME), MINGW32)
-	OBJECT_FILE_PATHS += ../../../build/yield/i18n/win32/code.o ../../../build/yield/i18n/win32/iconv.o ../../../build/yield/i18n/win32/tstring.o
-endif
 ifeq ($(UNAME), Solaris)
 	OBJECT_FILE_PATHS += ../../../build/yield/i18n/posix/code.o ../../../build/yield/i18n/posix/iconv.o ../../../build/yield/i18n/posix/tstring.o
+endif
+ifeq ($(UNAME), MINGW32)
+	OBJECT_FILE_PATHS += ../../../build/yield/i18n/win32/code.o ../../../build/yield/i18n/win32/iconv.o ../../../build/yield/i18n/win32/tstring.o
 endif
 
 
 ../../../lib/libyield_i18n.a: $(OBJECT_FILE_PATHS)
+	-mkdir -p ../../../lib 2>/dev/null
 	$(AR) -r $@ $(OBJECT_FILE_PATHS)
 
 clean:
@@ -73,21 +74,27 @@ depclean:
 
 
 ../../../build/yield/i18n/posix/code.o: ../../../src/yield/i18n/posix/code.cpp
+	-mkdir -p ../../../build/yield/i18n/posix 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/i18n/posix/code.o -MD $(CXXFLAGS) ../../../src/yield/i18n/posix/code.cpp
 
 ../../../build/yield/i18n/posix/iconv.o: ../../../src/yield/i18n/posix/iconv.cpp
+	-mkdir -p ../../../build/yield/i18n/posix 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/i18n/posix/iconv.o -MD $(CXXFLAGS) ../../../src/yield/i18n/posix/iconv.cpp
 
 ../../../build/yield/i18n/posix/tstring.o: ../../../src/yield/i18n/posix/tstring.cpp
+	-mkdir -p ../../../build/yield/i18n/posix 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/i18n/posix/tstring.o -MD $(CXXFLAGS) ../../../src/yield/i18n/posix/tstring.cpp
 
 ../../../build/yield/i18n/win32/code.o: ../../../src/yield/i18n/win32/code.cpp
+	-mkdir -p ../../../build/yield/i18n/win32 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/i18n/win32/code.o -MD $(CXXFLAGS) ../../../src/yield/i18n/win32/code.cpp
 
 ../../../build/yield/i18n/win32/iconv.o: ../../../src/yield/i18n/win32/iconv.cpp
+	-mkdir -p ../../../build/yield/i18n/win32 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/i18n/win32/iconv.o -MD $(CXXFLAGS) ../../../src/yield/i18n/win32/iconv.cpp
 
 ../../../build/yield/i18n/win32/tstring.o: ../../../src/yield/i18n/win32/tstring.cpp
+	-mkdir -p ../../../build/yield/i18n/win32 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/i18n/win32/tstring.o -MD $(CXXFLAGS) ../../../src/yield/i18n/win32/tstring.cpp
 
 

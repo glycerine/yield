@@ -44,6 +44,7 @@ OBJECT_FILE_PATHS += ../../../build/yield/stage/polling_stage_scheduler.o ../../
 
 
 ../../../lib/libyield_stage.a: $(OBJECT_FILE_PATHS)
+	-mkdir -p ../../../lib 2>/dev/null
 	$(AR) -r $@ $(OBJECT_FILE_PATHS)
 
 clean:
@@ -56,21 +57,27 @@ depclean:
 
 
 ../../../build/yield/stage/polling_stage_scheduler.o: ../../../src/yield/stage/polling_stage_scheduler.cpp
+	-mkdir -p ../../../build/yield/stage 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/stage/polling_stage_scheduler.o -MD $(CXXFLAGS) ../../../src/yield/stage/polling_stage_scheduler.cpp
 
 ../../../build/yield/stage/seda_stage_scheduler.o: ../../../src/yield/stage/seda_stage_scheduler.cpp
+	-mkdir -p ../../../build/yield/stage 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/stage/seda_stage_scheduler.o -MD $(CXXFLAGS) ../../../src/yield/stage/seda_stage_scheduler.cpp
 
 ../../../build/yield/stage/stage.o: ../../../src/yield/stage/stage.cpp
+	-mkdir -p ../../../build/yield/stage 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/stage/stage.o -MD $(CXXFLAGS) ../../../src/yield/stage/stage.cpp
 
 ../../../build/yield/stage/stage_scheduler.o: ../../../src/yield/stage/stage_scheduler.cpp
+	-mkdir -p ../../../build/yield/stage 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/stage/stage_scheduler.o -MD $(CXXFLAGS) ../../../src/yield/stage/stage_scheduler.cpp
 
 ../../../build/yield/stage/synchronized_event_queue.o: ../../../src/yield/stage/synchronized_event_queue.cpp
+	-mkdir -p ../../../build/yield/stage 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/stage/synchronized_event_queue.o -MD $(CXXFLAGS) ../../../src/yield/stage/synchronized_event_queue.cpp
 
 ../../../build/yield/stage/wavefront_stage_scheduler.o: ../../../src/yield/stage/wavefront_stage_scheduler.cpp
+	-mkdir -p ../../../build/yield/stage 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/stage/wavefront_stage_scheduler.o -MD $(CXXFLAGS) ../../../src/yield/stage/wavefront_stage_scheduler.cpp
 
 

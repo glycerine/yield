@@ -47,6 +47,7 @@ OBJECT_FILE_PATHS += ../../../build/yield/http/access_log.o ../../../build/yield
 
 
 ../../../lib/libyield_http.a: $(OBJECT_FILE_PATHS)
+	-mkdir -p ../../../lib 2>/dev/null
 	$(AR) -r $@ $(OBJECT_FILE_PATHS)
 
 clean:
@@ -59,54 +60,71 @@ depclean:
 
 
 ../../../build/yield/http/access_log.o: ../../../src/yield/http/access_log.cpp
+	-mkdir -p ../../../build/yield/http 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/http/access_log.o -MD $(CXXFLAGS) ../../../src/yield/http/access_log.cpp
 
 ../../../build/yield/http/file_access_log.o: ../../../src/yield/http/file_access_log.cpp
+	-mkdir -p ../../../build/yield/http 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/http/file_access_log.o -MD $(CXXFLAGS) ../../../src/yield/http/file_access_log.cpp
 
 ../../../build/yield/http/http_client.o: ../../../src/yield/http/http_client.cpp
+	-mkdir -p ../../../build/yield/http 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/http/http_client.o -MD $(CXXFLAGS) ../../../src/yield/http/http_client.cpp
 
 ../../../build/yield/http/http_message.o: ../../../src/yield/http/http_message.cpp
+	-mkdir -p ../../../build/yield/http 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/http/http_message.o -MD $(CXXFLAGS) ../../../src/yield/http/http_message.cpp
 
 ../../../build/yield/http/http_message_parser.o: ../../../src/yield/http/http_message_parser.cpp
+	-mkdir -p ../../../build/yield/http 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/http/http_message_parser.o -MD $(CXXFLAGS) ../../../src/yield/http/http_message_parser.cpp
 
 ../../../build/yield/http/http_request.o: ../../../src/yield/http/http_request.cpp
+	-mkdir -p ../../../build/yield/http 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/http/http_request.o -MD $(CXXFLAGS) ../../../src/yield/http/http_request.cpp
 
 ../../../build/yield/http/http_request_handler.o: ../../../src/yield/http/http_request_handler.cpp
+	-mkdir -p ../../../build/yield/http 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/http/http_request_handler.o -MD $(CXXFLAGS) ../../../src/yield/http/http_request_handler.cpp
 
 ../../../build/yield/http/http_request_parser.o: ../../../src/yield/http/http_request_parser.cpp
+	-mkdir -p ../../../build/yield/http 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/http/http_request_parser.o -MD $(CXXFLAGS) ../../../src/yield/http/http_request_parser.cpp
 
 ../../../build/yield/http/http_response.o: ../../../src/yield/http/http_response.cpp
+	-mkdir -p ../../../build/yield/http 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/http/http_response.o -MD $(CXXFLAGS) ../../../src/yield/http/http_response.cpp
 
 ../../../build/yield/http/http_response_parser.o: ../../../src/yield/http/http_response_parser.cpp
+	-mkdir -p ../../../build/yield/http 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/http/http_response_parser.o -MD $(CXXFLAGS) ../../../src/yield/http/http_response_parser.cpp
 
 ../../../build/yield/http/http_server.o: ../../../src/yield/http/http_server.cpp
+	-mkdir -p ../../../build/yield/http 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/http/http_server.o -MD $(CXXFLAGS) ../../../src/yield/http/http_server.cpp
 
 ../../../build/yield/http/socket_client.o: ../../../src/yield/http/socket_client.cpp
+	-mkdir -p ../../../build/yield/http 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/http/socket_client.o -MD $(CXXFLAGS) ../../../src/yield/http/socket_client.cpp
 
 ../../../build/yield/http/socket_peer.o: ../../../src/yield/http/socket_peer.cpp
+	-mkdir -p ../../../build/yield/http 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/http/socket_peer.o -MD $(CXXFLAGS) ../../../src/yield/http/socket_peer.cpp
 
 ../../../build/yield/http/socket_server.o: ../../../src/yield/http/socket_server.cpp
+	-mkdir -p ../../../build/yield/http 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/http/socket_server.o -MD $(CXXFLAGS) ../../../src/yield/http/socket_server.cpp
 
 ../../../build/yield/http/stream_socket_client.o: ../../../src/yield/http/stream_socket_client.cpp
+	-mkdir -p ../../../build/yield/http 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/http/stream_socket_client.o -MD $(CXXFLAGS) ../../../src/yield/http/stream_socket_client.cpp
 
 ../../../build/yield/http/stream_socket_peer.o: ../../../src/yield/http/stream_socket_peer.cpp
+	-mkdir -p ../../../build/yield/http 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/http/stream_socket_peer.o -MD $(CXXFLAGS) ../../../src/yield/http/stream_socket_peer.cpp
 
 ../../../build/yield/http/stream_socket_server.o: ../../../src/yield/http/stream_socket_server.cpp
+	-mkdir -p ../../../build/yield/http 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/http/stream_socket_server.o -MD $(CXXFLAGS) ../../../src/yield/http/stream_socket_server.cpp
 
 

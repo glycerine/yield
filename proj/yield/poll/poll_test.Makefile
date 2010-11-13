@@ -53,16 +53,17 @@ ifeq ($(UNAME), Linux)
 	OBJECT_FILE_PATHS += ../../../build/yield/poll_test/linux/epoller_test.o
 	OBJECT_FILE_PATHS += ../../../build/yield/poll_test/posix/poller_test.o
 endif
-ifeq ($(UNAME), MINGW32)
-	OBJECT_FILE_PATHS += ../../../build/yield/poll_test/win32/handle_event_queue_test.o ../../../build/yield/poll_test/win32/selector_test.o ../../../build/yield/poll_test/win32/wsapoller_test.o
-endif
 ifeq ($(UNAME), Solaris)
 	OBJECT_FILE_PATHS += ../../../build/yield/poll_test/posix/poller_test.o
 	OBJECT_FILE_PATHS += ../../../build/yield/poll_test/sunos/event_port_test.o
 endif
+ifeq ($(UNAME), MINGW32)
+	OBJECT_FILE_PATHS += ../../../build/yield/poll_test/win32/handle_event_queue_test.o ../../../build/yield/poll_test/win32/selector_test.o ../../../build/yield/poll_test/win32/wsapoller_test.o
+endif
 
 
 ../../../bin/yield_poll_test: $(OBJECT_FILE_PATHS)
+	-mkdir -p ../../../bin 2>/dev/null
 	$(LINK.cpp) $(OBJECT_FILE_PATHS) -o $@ $(LIBS)
 
 clean:
@@ -75,27 +76,35 @@ depclean:
 
 
 ../../../build/yield/poll_test/bsd/kqueue_test.o: ../../../src/yield/poll/bsd/kqueue_test.cpp
+	-mkdir -p ../../../build/yield/poll_test/bsd 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/poll_test/bsd/kqueue_test.o -MD $(CXXFLAGS) ../../../src/yield/poll/bsd/kqueue_test.cpp
 
 ../../../build/yield/poll_test/linux/epoller_test.o: ../../../src/yield/poll/linux/epoller_test.cpp
+	-mkdir -p ../../../build/yield/poll_test/linux 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/poll_test/linux/epoller_test.o -MD $(CXXFLAGS) ../../../src/yield/poll/linux/epoller_test.cpp
 
 ../../../build/yield/poll_test/posix/poller_test.o: ../../../src/yield/poll/posix/poller_test.cpp
+	-mkdir -p ../../../build/yield/poll_test/posix 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/poll_test/posix/poller_test.o -MD $(CXXFLAGS) ../../../src/yield/poll/posix/poller_test.cpp
 
 ../../../build/yield/poll_test/sunos/event_port_test.o: ../../../src/yield/poll/sunos/event_port_test.cpp
+	-mkdir -p ../../../build/yield/poll_test/sunos 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/poll_test/sunos/event_port_test.o -MD $(CXXFLAGS) ../../../src/yield/poll/sunos/event_port_test.cpp
 
 ../../../build/yield/poll_test/win32/handle_event_queue_test.o: ../../../src/yield/poll/win32/handle_event_queue_test.cpp
+	-mkdir -p ../../../build/yield/poll_test/win32 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/poll_test/win32/handle_event_queue_test.o -MD $(CXXFLAGS) ../../../src/yield/poll/win32/handle_event_queue_test.cpp
 
 ../../../build/yield/poll_test/win32/selector_test.o: ../../../src/yield/poll/win32/selector_test.cpp
+	-mkdir -p ../../../build/yield/poll_test/win32 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/poll_test/win32/selector_test.o -MD $(CXXFLAGS) ../../../src/yield/poll/win32/selector_test.cpp
 
 ../../../build/yield/poll_test/win32/wsapoller_test.o: ../../../src/yield/poll/win32/wsapoller_test.cpp
+	-mkdir -p ../../../build/yield/poll_test/win32 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/poll_test/win32/wsapoller_test.o -MD $(CXXFLAGS) ../../../src/yield/poll/win32/wsapoller_test.cpp
 
 ../../../build/yield/poll_test/yield_poll_test_main.o: ../../../src/yield/poll/yield_poll_test_main.cpp
+	-mkdir -p ../../../build/yield/poll_test 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/poll_test/yield_poll_test_main.o -MD $(CXXFLAGS) ../../../src/yield/poll/yield_poll_test_main.cpp
 
 

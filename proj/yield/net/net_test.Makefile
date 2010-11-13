@@ -37,10 +37,11 @@ LIBS += -lyield_net -lyield_common
 DEP_FILE_PATHS := $(shell find ../../../build/yield/net_test -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../build/yield/net_test/uri_test.o ../../../build/yield/net_test/uuid_test.o ../../../build/yield/net_test/yield_net_test_main.o ../../../build/yield/net_test/sockets/socket_address_test.o ../../../build/yield/net_test/sockets/socket_pair_test.o ../../../build/yield/net_test/sockets/tcp_socket_test.o ../../../build/yield/net_test/sockets/udp_socket_test.o ../../../build/yield/net_test/sockets/ssl/ssl_context_test.o
+OBJECT_FILE_PATHS += ../../../build/yield/net_test/sockets/socket_address_test.o ../../../build/yield/net_test/sockets/socket_pair_test.o ../../../build/yield/net_test/sockets/ssl/ssl_context_test.o ../../../build/yield/net_test/sockets/tcp_socket_test.o ../../../build/yield/net_test/sockets/udp_socket_test.o ../../../build/yield/net_test/uri_test.o ../../../build/yield/net_test/uuid_test.o ../../../build/yield/net_test/yield_net_test_main.o
 
 
 ../../../bin/yield_net_test: $(OBJECT_FILE_PATHS)
+	-mkdir -p ../../../bin 2>/dev/null
 	$(LINK.cpp) $(OBJECT_FILE_PATHS) -o $@ $(LIBS)
 
 clean:
@@ -53,27 +54,35 @@ depclean:
 
 
 ../../../build/yield/net_test/sockets/socket_address_test.o: ../../../src/yield/net/sockets/socket_address_test.cpp
+	-mkdir -p ../../../build/yield/net_test/sockets 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/net_test/sockets/socket_address_test.o -MD $(CXXFLAGS) ../../../src/yield/net/sockets/socket_address_test.cpp
 
 ../../../build/yield/net_test/sockets/socket_pair_test.o: ../../../src/yield/net/sockets/socket_pair_test.cpp
+	-mkdir -p ../../../build/yield/net_test/sockets 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/net_test/sockets/socket_pair_test.o -MD $(CXXFLAGS) ../../../src/yield/net/sockets/socket_pair_test.cpp
 
 ../../../build/yield/net_test/sockets/ssl/ssl_context_test.o: ../../../src/yield/net/sockets/ssl/ssl_context_test.cpp
+	-mkdir -p ../../../build/yield/net_test/sockets/ssl 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/net_test/sockets/ssl/ssl_context_test.o -MD $(CXXFLAGS) ../../../src/yield/net/sockets/ssl/ssl_context_test.cpp
 
 ../../../build/yield/net_test/sockets/tcp_socket_test.o: ../../../src/yield/net/sockets/tcp_socket_test.cpp
+	-mkdir -p ../../../build/yield/net_test/sockets 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/net_test/sockets/tcp_socket_test.o -MD $(CXXFLAGS) ../../../src/yield/net/sockets/tcp_socket_test.cpp
 
 ../../../build/yield/net_test/sockets/udp_socket_test.o: ../../../src/yield/net/sockets/udp_socket_test.cpp
+	-mkdir -p ../../../build/yield/net_test/sockets 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/net_test/sockets/udp_socket_test.o -MD $(CXXFLAGS) ../../../src/yield/net/sockets/udp_socket_test.cpp
 
 ../../../build/yield/net_test/uri_test.o: ../../../src/yield/net/uri_test.cpp
+	-mkdir -p ../../../build/yield/net_test 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/net_test/uri_test.o -MD $(CXXFLAGS) ../../../src/yield/net/uri_test.cpp
 
 ../../../build/yield/net_test/uuid_test.o: ../../../src/yield/net/uuid_test.cpp
+	-mkdir -p ../../../build/yield/net_test 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/net_test/uuid_test.o -MD $(CXXFLAGS) ../../../src/yield/net/uuid_test.cpp
 
 ../../../build/yield/net_test/yield_net_test_main.o: ../../../src/yield/net/yield_net_test_main.cpp
+	-mkdir -p ../../../build/yield/net_test 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/net_test/yield_net_test_main.o -MD $(CXXFLAGS) ../../../src/yield/net/yield_net_test_main.cpp
 
 

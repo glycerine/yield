@@ -134,7 +134,7 @@
 
   <ItemGroup Label="ProjectReferenceItems">
     <ProjectReference Include="..\fs\fs.vcxproj">
-      <Project>{5a42594d-49a5-4b18-b77c-b48f230ca6f5}</Project>
+      <Project>{17ea98c7-b603-4037-8ced-2654a7c993b4}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>

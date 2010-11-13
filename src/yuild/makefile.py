@@ -27,7 +27,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from os.path import join, split, splitext
+from os.path import dirname, join, split, splitext
 
 from yutil import deduplist, indent, posixpath, posixpaths, pad, relpath, rpad
 
@@ -53,6 +53,7 @@ UNAME_CHECKS = \
 
 SOURCE_FILE_RULE = """\
 %(object_file_path)s: %(source_file_path)s
+    -mkdir -p %(object_dir_path)s 2>/dev/null
     $(CXX) -c -o %(object_file_path)s -MD $(CXXFLAGS) %(source_file_path)s
 """
 
@@ -148,12 +149,14 @@ class Makefile(Project):
                                 relpath( source_file_path, self.get_root_source_dir_path() )
                             )[0] + ".o"
                         )
+                    object_dir_path = posixpath( dirname( object_file_path ) )
                     object_file_path = posixpath( object_file_path )
                     object_file_paths.append( object_file_path )
 
                     source_file_path = posixpath( source_file_path )
                     source_file_rules.append( SOURCE_FILE_RULE % locals() )
           
+                object_file_paths.sort()
                 platform_object_file_paths.setdefault( platform, [] ).append(
                     "OBJECT_FILE_PATHS += " +\
                     ' '.join( object_file_paths )
@@ -169,7 +172,6 @@ class Makefile(Project):
                     '\n'.join( platform_object_file_paths[platform] )
                 )
             )
-        object_file_paths.sort()
         object_file_paths = '\n'.join( object_file_paths )
 
         source_file_rules = deduplist( source_file_rules )
@@ -186,19 +188,21 @@ class Makefile(Project):
         # output_file_path
         assert len( self.get_output_file_path() ) == 1 and\
                self.get_output_file_path().keys()[0] == '*'
-        output_file_path = my_dir_path + posixpath( self.get_output_file_path()['*'] )
+        output_file_path = self.get_output_file_path()['*']
+        output_dir_path, output_file_name = split( output_file_path )
         if self.get_type() == "exe":
             output_file_path_action = "$(LINK.cpp) $(OBJECT_FILE_PATHS) -o $@ $(LIBS)"
         elif self.get_type() == "lib":
-            output_dir_path, output_file_name = split( output_file_path )
             if not output_file_name.startswith( "lib" ):
                 output_file_name = "lib" + output_file_name
             if not output_file_name.endswith( ".a" ):
                 output_file_name += ".a"
-            output_file_path = posixpath( join( output_dir_path, output_file_name ) )
+            output_file_path = join( output_dir_path, output_file_name )
             output_file_path_action = "$(AR) -r $@ $(OBJECT_FILE_PATHS)"
         else:
             raise NotImplementedError, self.get_type()
+        output_dir_path = my_dir_path + posixpath( output_dir_path )
+        output_file_path = my_dir_path + posixpath( output_file_path )
 
         return ( """\
 # SHELL = /bin/bash
@@ -211,6 +215,7 @@ DEP_FILE_PATHS := $(shell find %(my_dir_path)s%(build_dir_path)s -name "*.d")
 
 
 %(project_references)s%(output_file_path)s: $(OBJECT_FILE_PATHS)
+    -mkdir -p %(output_dir_path)s 2>/dev/null
     %(output_file_path_action)s
 
 clean:

@@ -37,10 +37,11 @@ LIBS += -lyield_marshal -lyield_common
 DEP_FILE_PATHS := $(shell find ../../../build/yield/marshal_test -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../build/yield/marshal_test/pretty_printer_test.o ../../../build/yield/marshal_test/yield_marshal_test_main.o ../../../build/yield/marshal_test/json/json_marshaller_test.o ../../../build/yield/marshal_test/xdr/xdr_marshaller_test.o ../../../build/yield/marshal_test/xml/xml_marshaller_test.o
+OBJECT_FILE_PATHS += ../../../build/yield/marshal_test/json/json_marshaller_test.o ../../../build/yield/marshal_test/pretty_printer_test.o ../../../build/yield/marshal_test/xdr/xdr_marshaller_test.o ../../../build/yield/marshal_test/xml/xml_marshaller_test.o ../../../build/yield/marshal_test/yield_marshal_test_main.o
 
 
 ../../../bin/yield_marshal_test: $(OBJECT_FILE_PATHS)
+	-mkdir -p ../../../bin 2>/dev/null
 	$(LINK.cpp) $(OBJECT_FILE_PATHS) -o $@ $(LIBS)
 
 clean:
@@ -53,18 +54,23 @@ depclean:
 
 
 ../../../build/yield/marshal_test/json/json_marshaller_test.o: ../../../src/yield/marshal/json/json_marshaller_test.cpp
+	-mkdir -p ../../../build/yield/marshal_test/json 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/marshal_test/json/json_marshaller_test.o -MD $(CXXFLAGS) ../../../src/yield/marshal/json/json_marshaller_test.cpp
 
 ../../../build/yield/marshal_test/pretty_printer_test.o: ../../../src/yield/marshal/pretty_printer_test.cpp
+	-mkdir -p ../../../build/yield/marshal_test 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/marshal_test/pretty_printer_test.o -MD $(CXXFLAGS) ../../../src/yield/marshal/pretty_printer_test.cpp
 
 ../../../build/yield/marshal_test/xdr/xdr_marshaller_test.o: ../../../src/yield/marshal/xdr/xdr_marshaller_test.cpp
+	-mkdir -p ../../../build/yield/marshal_test/xdr 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/marshal_test/xdr/xdr_marshaller_test.o -MD $(CXXFLAGS) ../../../src/yield/marshal/xdr/xdr_marshaller_test.cpp
 
 ../../../build/yield/marshal_test/xml/xml_marshaller_test.o: ../../../src/yield/marshal/xml/xml_marshaller_test.cpp
+	-mkdir -p ../../../build/yield/marshal_test/xml 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/marshal_test/xml/xml_marshaller_test.o -MD $(CXXFLAGS) ../../../src/yield/marshal/xml/xml_marshaller_test.cpp
 
 ../../../build/yield/marshal_test/yield_marshal_test_main.o: ../../../src/yield/marshal/yield_marshal_test_main.cpp
+	-mkdir -p ../../../build/yield/marshal_test 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/marshal_test/yield_marshal_test_main.o -MD $(CXXFLAGS) ../../../src/yield/marshal/yield_marshal_test_main.cpp
 
 

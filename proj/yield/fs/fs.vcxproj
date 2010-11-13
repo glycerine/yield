@@ -309,7 +309,7 @@
 
   <ItemGroup Label="ProjectReferenceItems">
     <ProjectReference Include="..\i18n\i18n.vcxproj">
-      <Project>{ab31d0e8-9f88-4df2-b07d-c26e959b841e}</Project>
+      <Project>{0e7627ea-9d96-4113-b6f3-6cadd2217857}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>

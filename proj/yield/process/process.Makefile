@@ -55,16 +55,17 @@ ifeq ($(UNAME), Linux)
 	OBJECT_FILE_PATHS += ../../../build/yield/process/linux/process.o
 	OBJECT_FILE_PATHS += ../../../build/yield/process/posix/process.o ../../../build/yield/process/posix/shared_library.o
 endif
-ifeq ($(UNAME), MINGW32)
-	OBJECT_FILE_PATHS += ../../../build/yield/process/win32/process.o ../../../build/yield/process/win32/shared_library.o
-endif
 ifeq ($(UNAME), Solaris)
 	OBJECT_FILE_PATHS += ../../../build/yield/process/posix/process.o ../../../build/yield/process/posix/shared_library.o
 	OBJECT_FILE_PATHS += ../../../build/yield/process/sunos/process.o
 endif
+ifeq ($(UNAME), MINGW32)
+	OBJECT_FILE_PATHS += ../../../build/yield/process/win32/process.o ../../../build/yield/process/win32/shared_library.o
+endif
 
 
 ../../../lib/libyield_process.a: $(OBJECT_FILE_PATHS)
+	-mkdir -p ../../../lib 2>/dev/null
 	$(AR) -r $@ $(OBJECT_FILE_PATHS)
 
 clean:
@@ -77,30 +78,39 @@ depclean:
 
 
 ../../../build/yield/process/darwin/process.o: ../../../src/yield/process/darwin/process.cpp
+	-mkdir -p ../../../build/yield/process/darwin 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/process/darwin/process.o -MD $(CXXFLAGS) ../../../src/yield/process/darwin/process.cpp
 
 ../../../build/yield/process/linux/process.o: ../../../src/yield/process/linux/process.cpp
+	-mkdir -p ../../../build/yield/process/linux 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/process/linux/process.o -MD $(CXXFLAGS) ../../../src/yield/process/linux/process.cpp
 
 ../../../build/yield/process/option_parser.o: ../../../src/yield/process/option_parser.cpp
+	-mkdir -p ../../../build/yield/process 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/process/option_parser.o -MD $(CXXFLAGS) ../../../src/yield/process/option_parser.cpp
 
 ../../../build/yield/process/posix/process.o: ../../../src/yield/process/posix/process.cpp
+	-mkdir -p ../../../build/yield/process/posix 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/process/posix/process.o -MD $(CXXFLAGS) ../../../src/yield/process/posix/process.cpp
 
 ../../../build/yield/process/posix/shared_library.o: ../../../src/yield/process/posix/shared_library.cpp
+	-mkdir -p ../../../build/yield/process/posix 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/process/posix/shared_library.o -MD $(CXXFLAGS) ../../../src/yield/process/posix/shared_library.cpp
 
 ../../../build/yield/process/process.o: ../../../src/yield/process/process.cpp
+	-mkdir -p ../../../build/yield/process 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/process/process.o -MD $(CXXFLAGS) ../../../src/yield/process/process.cpp
 
 ../../../build/yield/process/sunos/process.o: ../../../src/yield/process/sunos/process.cpp
+	-mkdir -p ../../../build/yield/process/sunos 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/process/sunos/process.o -MD $(CXXFLAGS) ../../../src/yield/process/sunos/process.cpp
 
 ../../../build/yield/process/win32/process.o: ../../../src/yield/process/win32/process.cpp
+	-mkdir -p ../../../build/yield/process/win32 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/process/win32/process.o -MD $(CXXFLAGS) ../../../src/yield/process/win32/process.cpp
 
 ../../../build/yield/process/win32/shared_library.o: ../../../src/yield/process/win32/shared_library.cpp
+	-mkdir -p ../../../build/yield/process/win32 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/process/win32/shared_library.o -MD $(CXXFLAGS) ../../../src/yield/process/win32/shared_library.cpp
 
 

@@ -47,6 +47,7 @@ OBJECT_FILE_PATHS += ../../../build/yield/http_test/http_client_test.o ../../../
 
 
 ../../../bin/yield_http_test: $(OBJECT_FILE_PATHS)
+	-mkdir -p ../../../bin 2>/dev/null
 	$(LINK.cpp) $(OBJECT_FILE_PATHS) -o $@ $(LIBS)
 
 clean:
@@ -59,18 +60,23 @@ depclean:
 
 
 ../../../build/yield/http_test/http_client_test.o: ../../../src/yield/http/http_client_test.cpp
+	-mkdir -p ../../../build/yield/http_test 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/http_test/http_client_test.o -MD $(CXXFLAGS) ../../../src/yield/http/http_client_test.cpp
 
 ../../../build/yield/http_test/http_request_parser_test.o: ../../../src/yield/http/http_request_parser_test.cpp
+	-mkdir -p ../../../build/yield/http_test 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/http_test/http_request_parser_test.o -MD $(CXXFLAGS) ../../../src/yield/http/http_request_parser_test.cpp
 
 ../../../build/yield/http_test/http_response_parser_test.o: ../../../src/yield/http/http_response_parser_test.cpp
+	-mkdir -p ../../../build/yield/http_test 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/http_test/http_response_parser_test.o -MD $(CXXFLAGS) ../../../src/yield/http/http_response_parser_test.cpp
 
 ../../../build/yield/http_test/http_server_test.o: ../../../src/yield/http/http_server_test.cpp
+	-mkdir -p ../../../build/yield/http_test 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/http_test/http_server_test.o -MD $(CXXFLAGS) ../../../src/yield/http/http_server_test.cpp
 
 ../../../build/yield/http_test/yield_http_test_main.o: ../../../src/yield/http/yield_http_test_main.cpp
+	-mkdir -p ../../../build/yield/http_test 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/http_test/yield_http_test_main.o -MD $(CXXFLAGS) ../../../src/yield/http/yield_http_test_main.cpp
 
 

@@ -40,6 +40,7 @@ OBJECT_FILE_PATHS += ../../../build/yield/common/buffer.o ../../../build/yield/c
 
 
 ../../../lib/libyield_common.a: $(OBJECT_FILE_PATHS)
+	-mkdir -p ../../../lib 2>/dev/null
 	$(AR) -r $@ $(OBJECT_FILE_PATHS)
 
 clean:
@@ -52,27 +53,35 @@ depclean:
 
 
 ../../../build/yield/common/buffer.o: ../../../src/yield/buffer.cpp
+	-mkdir -p ../../../build/yield/common 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/common/buffer.o -MD $(CXXFLAGS) ../../../src/yield/buffer.cpp
 
 ../../../build/yield/common/date_time.o: ../../../src/yield/date_time.cpp
+	-mkdir -p ../../../build/yield/common 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/common/date_time.o -MD $(CXXFLAGS) ../../../src/yield/date_time.cpp
 
 ../../../build/yield/common/exception.o: ../../../src/yield/exception.cpp
+	-mkdir -p ../../../build/yield/common 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/common/exception.o -MD $(CXXFLAGS) ../../../src/yield/exception.cpp
 
 ../../../build/yield/common/log.o: ../../../src/yield/log.cpp
+	-mkdir -p ../../../build/yield/common 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/common/log.o -MD $(CXXFLAGS) ../../../src/yield/log.cpp
 
 ../../../build/yield/common/page.o: ../../../src/yield/page.cpp
+	-mkdir -p ../../../build/yield/common 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/common/page.o -MD $(CXXFLAGS) ../../../src/yield/page.cpp
 
 ../../../build/yield/common/request.o: ../../../src/yield/request.cpp
+	-mkdir -p ../../../build/yield/common 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/common/request.o -MD $(CXXFLAGS) ../../../src/yield/request.cpp
 
 ../../../build/yield/common/string_buffer.o: ../../../src/yield/string_buffer.cpp
+	-mkdir -p ../../../build/yield/common 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/common/string_buffer.o -MD $(CXXFLAGS) ../../../src/yield/string_buffer.cpp
 
 ../../../build/yield/common/time.o: ../../../src/yield/time.cpp
+	-mkdir -p ../../../build/yield/common 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/common/time.o -MD $(CXXFLAGS) ../../../src/yield/time.cpp
 
 
