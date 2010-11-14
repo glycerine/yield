@@ -126,7 +126,7 @@
 
   <ItemGroup Label="ProjectReferenceItems">
     <ProjectReference Include="..\common\common.vcxproj">
-      <Project>{7d01d6ed-6597-42c9-b96c-3abd763eb0fa}</Project>
+      <Project>{959e1fd1-05b3-4af5-b637-a317ecfcd62f}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>

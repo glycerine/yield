@@ -129,7 +129,7 @@
 
   <ItemGroup Label="ProjectReferenceItems">
     <ProjectReference Include="..\thread\thread.vcxproj">
-      <Project>{87ffb459-1038-4519-a38f-dfd9fb3f002a}</Project>
+      <Project>{6922dc00-f3dd-4736-84a2-76235cf41f68}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>

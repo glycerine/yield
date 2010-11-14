@@ -158,11 +158,11 @@
 
   <ItemGroup Label="ProjectReferenceItems">
     <ProjectReference Include="..\net\net.vcxproj">
-      <Project>{76c58cf4-d57d-4d02-9f8e-fff915aa75e6}</Project>
+      <Project>{c77510b5-193e-4735-a0dd-67cebb305118}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\thread\thread.vcxproj">
-      <Project>{f919254a-db56-452b-9ec8-e49d74fd092d}</Project>
+      <Project>{6922dc00-f3dd-4736-84a2-76235cf41f68}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>

@@ -203,11 +203,11 @@
 
   <ItemGroup Label="ProjectReferenceItems">
     <ProjectReference Include="..\aio\aio.vcxproj">
-      <Project>{babb7635-fde3-4682-bde0-0eb13e6d2f33}</Project>
+      <Project>{d8811b28-56dc-4a90-879d-bd611df1142d}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\stage\stage.vcxproj">
-      <Project>{b1b4c68e-ce4f-4667-84bb-e768d3cfc418}</Project>
+      <Project>{daef679c-4597-41ba-a066-d721108c830f}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>

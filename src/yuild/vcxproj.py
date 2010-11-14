@@ -206,10 +206,13 @@ class VCXProj(VCProj):
         AdditionalLibraryDirectories = self.get_AdditionalLibraryDirectories()
         ConfigurationType = CONFIGURATION_TYPE[self.get_type()]
         PreprocessorDefinitions = self.get_PreprocessorDefinitions()
-        ProjectGuid =\
-            read_vcxproj_guid(
-                join( self.get_project_dir_path(), self.get_name() + ".vcxproj" )
-            )
+        try:
+            ProjectGuid =\
+                read_vcxproj_guid(
+                    join( self.get_project_dir_path(), self.get_name() + ".vcxproj" )
+                )
+        except:
+            print __name__ + ": generating GUID for project", self.get_name()
         RootNamespace = self.get_RootNamespace()
 
         project_configuration_items = []
@@ -299,12 +302,14 @@ class VCXProj(VCProj):
 
         project_reference_items = []
         for project_reference in self.get_project_references().get( "win32", default=[], combine_platforms=True ):
-            Include = ntpath( project_reference + ".vcxproj" )
-            if exists( join( self.get_project_dir_path(), Include ) ):
-                Project = read_vcxproj_guid( join( self.get_project_dir_path(), Include ) )
+            project_reference_vcxproj_file_path = join( self.get_project_dir_path(), project_reference + ".vcxproj" )
+            if exists( project_reference_vcxproj_file_path ):
+                Include = ntpath( project_reference + ".vcxproj" )
+                Project = read_vcxproj_guid( project_reference_vcxproj_file_path )
+                project_reference_items.append( PROJECT_REFERENCE_ITEM % locals() )
             else:
-                Project = read_vcxproj_guid( Include )
-            project_reference_items.append( PROJECT_REFERENCE_ITEM % locals() )
+                print __name__ + ": could not find referenced .vcxproj", project_reference_vcxproj_file_path
+                continue
         project_reference_items =\
             indent(
                 INDENT_SPACES * 2,
@@ -562,9 +567,11 @@ class VCXSln:
             vcxproj_dir_path = relpath( abspath( vcxproj_dir_path ), sln_dir_path )
             vcxproj_file_path = join( vcxproj_dir_path, project_name + ".vcxproj" )
             assert exists( vcxproj_file_path ), vcxproj_file_path
-            vcxproj_guid = read_vcxproj_guid( vcxproj_file_path ).upper()
-            self.__projects.append( ( project_name, ntpath( vcxproj_file_path ), vcxproj_guid ) )
-
+            try:
+                vcxproj_guid = read_vcxproj_guid( vcxproj_file_path ).upper()
+                self.__projects.append( ( project_name, ntpath( vcxproj_file_path ), vcxproj_guid ) )
+            except:
+                print __name__ + ": could not read project GUID from", vcxproj_file_path
 
     def __repr__( self ):
         guid = self.__guid
@@ -614,25 +621,18 @@ EndGlobal
 
 
 def read_vcxproj_guid( vcxproj_file_path ):
-    try:
-        vcxproj_file = open( vcxproj_file_path )
-        vcxproj_file_lines = vcxproj_file.readlines()
-        vcxproj_file.close()
-        for vcxproj_file_line in vcxproj_file_lines:
-            vcxproj_file_line = vcxproj_file_line.strip()
-            if vcxproj_file_line.startswith( "<ProjectGuid>" ):
-                guid = vcxproj_file_line[14:-15]
-                try: guid = str( UUID( guid ) )
-                except ValueError: return str( uuid4() )
-                # print vcxproj_file_path, guid
-                return guid
-    except IOError:
-        pass
-    except:
-        traceback.print_exc()
-
-    return str( uuid4() )
-
+    vcxproj_file = open( vcxproj_file_path )
+    vcxproj_file_lines = vcxproj_file.readlines()
+    vcxproj_file.close()
+    for vcxproj_file_line in vcxproj_file_lines:
+        vcxproj_file_line = vcxproj_file_line.strip()
+        if vcxproj_file_line.startswith( "<ProjectGuid>" ):
+            guid = vcxproj_file_line[14:-15]
+            try: guid = str( UUID( guid ) )
+            except ValueError: return str( uuid4() )
+            # print vcxproj_file_path, guid
+            return guid
+    raise ValueError, "could not find GUID in " + vcxproj_file_path
 
 def visit_source_file_tree(
     source_file_tree,
