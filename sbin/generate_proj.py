@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # generate_proj.py
 
 # Copyright (c) 2010 Minor Gordon

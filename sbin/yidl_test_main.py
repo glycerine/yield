@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # yidl_test_main.py
 
 # Copyright (c) 2010 Minor Gordon

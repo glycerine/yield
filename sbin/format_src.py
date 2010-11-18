@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # format_src.py
 
 # Copyright (c) 2010 Minor Gordon

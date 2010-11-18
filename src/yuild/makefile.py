@@ -1,4 +1,4 @@
-# yuild/sconscript.py
+# yuild/makefile.py
 
 # Copyright (c) 2010 Minor Gordon
 # All rights reserved
@@ -26,6 +26,7 @@
 # ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 
 from os.path import dirname, join, split, splitext
 
@@ -61,7 +62,7 @@ SOURCE_FILE_RULE = """\
 # Helper functions
 def expand_platform( platform ):
     if platform == "bsd":
-        platforms = ( "darwin", "freebsd", )    
+        platforms = ( "darwin", "freebsd", )
     elif platform == "posix" or platform == "unix":
         platforms = ( "darwin", "freebsd", "linux", "sunos" )
     else:
@@ -83,7 +84,7 @@ endif""" % locals() )
         return '\n'.join( list( set( conditional_statements ) ) )
 
 
-class Makefile(Project):    
+class Makefile(Project):
     def __repr__( self ):
         my_dir_path = "" # "$(dir $(lastword $(MAKEFILE_LIST)))"
 
@@ -155,7 +156,7 @@ class Makefile(Project):
 
                     source_file_path = posixpath( source_file_path )
                     source_file_rules.append( SOURCE_FILE_RULE % locals() )
-          
+
                 object_file_paths.sort()
                 platform_object_file_paths.setdefault( platform, [] ).append(
                     "OBJECT_FILE_PATHS += " +\
@@ -230,4 +231,3 @@ depclean:
 %(source_file_rules)s
 
 """ % locals() ).replace( "    ", '\t' )
-        

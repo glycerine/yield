@@ -152,6 +152,11 @@ class SourceFile:
         comment_prefix = rpad( self.__get_comment_prefix(), ' ' )
         comment_suffix = lpad( ' ', self.__get_comment_suffix() )
 
+        interpreter_line = None
+        if len( lines ) > 0 and lines[0].startswith( "#!" ):
+            interpreter_line = lines[0]
+            lines = lines[1:]
+
         # Cut out empty lines at the top and bottom
         lines = tstrip( lines )
         lines = bstrip( lines )
@@ -193,9 +198,11 @@ class SourceFile:
 
            lines.append( "#endif" )
 
-        # Add the boilerplate back
+        # Add the interpreter line and boilerplate back
         old_lines = lines
         lines = []
+        if interpreter_line is not None:
+            lines.extend( ( interpreter_line, '' ) )
         lines.extend( [
             pad(
                 comment_prefix,

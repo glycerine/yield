@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # check_src.py
 
 # Copyright (c) 2010 Minor Gordon

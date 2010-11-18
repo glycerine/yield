@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # yutil_test_main.py
 
 # Copyright (c) 2010 Minor Gordon
