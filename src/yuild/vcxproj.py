@@ -39,6 +39,7 @@ from yutil import abspath, deduplist, fnmatch, indent, ntpath, ntpaths, relpath,
 
 from yuild.constant import C_CXX_INCLUDE_FILE_EXTENSIONS,\
                            C_CXX_SOURCE_FILE_EXTENSIONS
+from yuild.platform_dict import PlatformDict
 from yuild.vcproj import VCProj
 
 
@@ -208,9 +209,10 @@ class VCXProj(VCProj):
         PreprocessorDefinitions = self.get_PreprocessorDefinitions()
         try:
             ProjectGuid =\
-                read_vcxproj_guid(
+                VCXProjReference(
+                    self.get_project_dir_path(),
                     join( self.get_project_dir_path(), self.get_name() + ".vcxproj" )
-                )
+                ).get_Guid()
         except:
             print __name__ + ": generating GUID for project", self.get_name()
         RootNamespace = self.get_RootNamespace()
@@ -301,15 +303,14 @@ class VCXProj(VCProj):
         source_items = indent( INDENT_SPACES * 2, "".join( source_items ) )
 
         project_reference_items = []
-        for project_reference in self.get_project_references().get( "win32", default=[], combine_platforms=True ):
-            project_reference_vcxproj_file_path = join( self.get_project_dir_path(), project_reference + ".vcxproj" )
-            if exists( project_reference_vcxproj_file_path ):
-                Include = ntpath( project_reference + ".vcxproj" )
-                Project = read_vcxproj_guid( project_reference_vcxproj_file_path )
-                project_reference_items.append( PROJECT_REFERENCE_ITEM % locals() )
-            else:
-                print __name__ + ": could not find referenced .vcxproj", project_reference_vcxproj_file_path
-                continue
+        for vcxproj_reference in \
+            VCXProjReferences(
+                self.get_project_dir_path(),
+                self.get_project_references()
+            ):
+            Include = vcxproj_reference.get_Include()
+            Project = vcxproj_reference.get_Guid()
+            project_reference_items.append( PROJECT_REFERENCE_ITEM % locals() )
         project_reference_items =\
             indent(
                 INDENT_SPACES * 2,
@@ -357,7 +358,7 @@ class VCXProj(VCProj):
 """ % locals()
 
 
-class VCXProjFilters:
+class VCXProjFilters(object):
     def __init__( self, *args, **kwds ):
         self.__vcxproj = VCXProj( *args, **kwds )
 
@@ -521,7 +522,7 @@ class VCXProjFilters:
 """ % locals()
 
 
-class VCXProjUser:
+class VCXProjUser(object):
     def __init__( self, *args, **kwds ):
         pass
 
@@ -533,14 +534,56 @@ class VCXProjUser:
 """
 
 
-class VCXSln:
+class VCXProjReference(object):
+    def __init__( self, referer_dir_path, vcxproj_file_path ):
+        # assert exists( referer_dir_path ), referer_dir_path
+        self.__referer_dir_path = referer_dir_path
+        assert exists( vcxproj_file_path ), vcxproj_file_path
+        self.__vcxproj_file_path = vcxproj_file_path
+                           
+    def get_Guid( self ):
+        try:
+            return self.__Guid
+        except AttributeError:
+            vcxproj_file = open( self.__vcxproj_file_path )
+            vcxproj_file_lines = vcxproj_file.readlines()
+            vcxproj_file.close()
+            for vcxproj_file_line in vcxproj_file_lines:
+                vcxproj_file_line = vcxproj_file_line.strip()
+                if vcxproj_file_line.startswith( "<ProjectGuid>" ):
+                    Guid = vcxproj_file_line[14:-15]
+                    try: Guid = str( UUID( Guid ) )
+                    except ValueError: return str( uuid4() )
+                    self.__Guid = Guid
+                    return Guid
+                    
+            raise ValueError, "could not find GUID in " + self.__vcxproj_file_path
+
+    def get_Include( self ):
+        return ntpath( relpath( self.__vcxproj_file_path, self.__referer_dir_path ) )
+
+    def get_project_name( self ):
+        return splitext( split( self.__vcxproj_file_path )[1] )[0]
+        
+
+class VCXProjReferences(list):
+    def __init__( self, referer_dir_path, project_references ):
+        if isinstance( project_references, PlatformDict ):
+            project_references = project_references.get( "win32", default=[], combine_platforms=True )
+            
+        for project_reference in project_references:
+            vcxproj_file_path = join( referer_dir_path, project_reference + ".vcxproj" )
+            if exists( vcxproj_file_path ):
+                list.append( self, VCXProjReference( referer_dir_path, vcxproj_file_path ) )
+
+         
+
+class VCXSln(object):
     def __init__(
         self,
         project_references,
         sln_file_path=None
     ):
-        project_references = strlist( project_references )
-
         if sln_file_path is not None:
             assert isinstance( sln_file_path, basestring ), type( sln_file_path )
             sln_file = open( sln_file_path )
@@ -552,47 +595,35 @@ class VCXSln:
             assert sln_lines[2].startswith( '#' ), sln_lines[2]
             assert sln_lines[3].startswith( 'Project("{' ), sln_lines[3]
             assert sln_lines[4].rstrip() == "EndProject"
-            self.__guid = sln_lines[3][10:46]
+            self.__Guid = sln_lines[3][10:46]
         else:
             sln_dir_path = getcwd()
-            self.__guid = str( uuid4() )
+            self.__Guid = str( uuid4() )
 
-        self.__projects = []
-        for project_reference in project_references:
-            vcxproj_dir_path, project_name = split( project_reference )
-            project_name = splitext( project_name )[0]
-            if not exists( vcxproj_dir_path ):
-                vcxproj_dir_path = join( sln_dir_path, vcxproj_dir_path )
-                assert exists( vcxproj_dir_path ), vcxproj_dir_path
-            vcxproj_dir_path = relpath( abspath( vcxproj_dir_path ), sln_dir_path )
-            vcxproj_file_path = join( vcxproj_dir_path, project_name + ".vcxproj" )
-            assert exists( vcxproj_file_path ), vcxproj_file_path
-            try:
-                vcxproj_guid = read_vcxproj_guid( vcxproj_file_path ).upper()
-                self.__projects.append( ( project_name, ntpath( vcxproj_file_path ), vcxproj_guid ) )
-            except:
-                print __name__ + ": could not read project GUID from", vcxproj_file_path
+        self.__vcxproj_references = VCXProjReferences( sln_dir_path, project_references )
 
     def __repr__( self ):
-        guid = self.__guid
-
         Projects = []
         ProjectConfigurationPlatforms = []
-        for project_name, vcxproj_file_path, vcxproj_guid in self.__projects:
-            Project = """\
-Project("{%(guid)s}") = "%(project_name)s", "%(vcxproj_file_path)s", "{%(vcxproj_guid)s}"
-EndProject""" % locals()
-            Project = Project.replace( '\n', "\r\n" )
-            Projects.append( Project )
+        for vcxproj_reference in self.__vcxproj_references:
+            Projects.append( ( """\
+Project("{%s}") = "%s", "%s", "{%s}"
+EndProject""" % (
+                  self.__Guid,
+                  vcxproj_reference.get_project_name(),
+                  vcxproj_reference.get_Include(),
+                  vcxproj_reference.get_Guid().upper()
+                 )
+            ).replace( '\n', "\r\n" ) )
 
-            ProjectConfigurationPlatform = """\
-\t\t{%(vcxproj_guid)s}.Debug|Win32.ActiveCfg = Debug|Win32
-\t\t{%(vcxproj_guid)s}.Debug|Win32.Build.0 = Debug|Win32
-\t\t{%(vcxproj_guid)s}.Release|Win32.ActiveCfg = Release|Win32
-\t\t{%(vcxproj_guid)s}.Release|Win32.Build.0 = Release|Win32""" % locals()
-            ProjectConfigurationPlatform = ProjectConfigurationPlatform.replace( '\n', "\r\n" )
-            ProjectConfigurationPlatforms.append( ProjectConfigurationPlatform )
-
+            ProjectConfigurationPlatforms.append( ( """\
+\t\t{%s}.Debug|Win32.ActiveCfg = Debug|Win32
+\t\t{%s}.Debug|Win32.Build.0 = Debug|Win32
+\t\t{%s}.Release|Win32.ActiveCfg = Release|Win32
+\t\t{%s}.Release|Win32.Build.0 = Release|Win32""" %\
+                    tuple( [vcxproj_reference.get_Guid().upper()] * 4 ) )
+                .replace( '\n', "\r\n" )
+            )
         Projects = "\r\n".join( Projects )
         ProjectConfigurationPlatforms = "\r\n".join( ProjectConfigurationPlatforms )
 
@@ -619,20 +650,6 @@ ProjectConfigurationPlatforms +\
 EndGlobal
 """.replace( '\n', "\r\n" )
 
-
-def read_vcxproj_guid( vcxproj_file_path ):
-    vcxproj_file = open( vcxproj_file_path )
-    vcxproj_file_lines = vcxproj_file.readlines()
-    vcxproj_file.close()
-    for vcxproj_file_line in vcxproj_file_lines:
-        vcxproj_file_line = vcxproj_file_line.strip()
-        if vcxproj_file_line.startswith( "<ProjectGuid>" ):
-            guid = vcxproj_file_line[14:-15]
-            try: guid = str( UUID( guid ) )
-            except ValueError: return str( uuid4() )
-            # print vcxproj_file_path, guid
-            return guid
-    raise ValueError, "could not find GUID in " + vcxproj_file_path
 
 def visit_source_file_tree(
     source_file_tree,
