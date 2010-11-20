@@ -39,16 +39,9 @@ from os.path import abspath, exists, join, split
 from optparse import OptionParser
 
 from config import *
-from yuild import Makefile, SConscript, VCXProj, VCXProjFilters, VCXProjUser, VCXSln
-from yutil import deduplist, mirror_subdirectories, write_file
-
-
-# Constants
-YIELD_PUBLIC_DIR_PATH = join( YIELD_DIR_PATH, "..", "yield_public" )
-if exists( YIELD_PUBLIC_DIR_PATH ):
-    YIELD_PUBLIC_DIR_PATH = abspath( YIELD_PUBLIC_DIR_PATH )
-else:
-    YIELD_PUBLIC_DIR_PATH = None
+from yuild import Makefile, TopLevelMakefile,\
+                  VCXProj, VCXProjFilters, VCXProjUser, VCXSln
+from yutil import mirror_subdirectories, write_file
 
 
 # Parse options
@@ -88,29 +81,6 @@ for project_name in PROJECT_NAMES:
        "type": "lib",
     }
 
-    project_public = None
-    if YIELD_PUBLIC_DIR_PATH is not None:
-        hpp_file_path =\
-            join( YIELD_PUBLIC_DIR_PATH, "include", "yield", project_name + ".hpp" )
-
-        cpp_file_path =\
-            join( YIELD_PUBLIC_DIR_PATH, "src", "yield", project_name + ".cpp" )
-
-        if exists( hpp_file_path ) and exists( cpp_file_path ):
-            project_public = project.copy()
-            project_public["build_dir_path"] =\
-                join( YIELD_PUBLIC_DIR_PATH, "build", "yield", project_name )
-            project_public["cxxpath"] = [join( YIELD_PUBLIC_DIR_PATH, "include" )]
-            project_public["include_file_paths"] = [hpp_file_path]
-            project_public["libpath"] = join( YIELD_PUBLIC_DIR_PATH, "lib" )
-            project_public["libs"] = LIBS.get( project_name, {} )
-            project_public["output_file_path"] =\
-                join( YIELD_PUBLIC_DIR_PATH, "lib", "yield_" + project_name )
-            del project_public["project_references"]
-            project_public["project_dir_path"] =\
-                join( YIELD_PUBLIC_DIR_PATH, "proj", "yield", project_name )
-            project_public["source_file_paths"] = [cpp_file_path]
-
     project_test = project.copy()
     project_test["build_dir_path"] =\
         join( YIELD_DIR_PATH, "build", "yield", project_name + "_test" )
@@ -128,7 +98,7 @@ for project_name in PROJECT_NAMES:
          SOURCE_FILE_PATHS[project_name + "_test"]
     project_test["type"] = "exe"
 
-    for project_dict in ( project, project_public, project_test ):
+    for project_dict in ( project, project_test ):
         if project_dict is not None:
             for key in ( "build_dir_path", "project_dir_path" ):
                 if not exists( project_dict[key] ):
@@ -151,7 +121,6 @@ for project_name in PROJECT_NAMES:
             for project_class, file_ext in \
                 (
                     ( Makefile, ".Makefile" ),
-                    # ( SConscript, ".SConscript" ),
                     ( VCXProj, ".vcxproj" ),
                     ( VCXProjFilters, ".vcxproj.filters" ),
                     ( VCXProjUser, ".vcxproj.user" ),
@@ -167,73 +136,24 @@ for project_name in PROJECT_NAMES:
                 )
 
 
-# Generate Visual Studio solution files
-project_references = []
-for project_name in PROJECT_NAMES:
-    project_references.append( join( "proj", "yield", project_name, project_name ) )
-    project_references.append( join( "proj", "yield", project_name, project_name + "_test" ) )
+# Generate Visual Studio solution files    
 write_file(
     "yield.sln",
-    repr( VCXSln( project_references, "yield.sln" ) ),
+    repr(
+        VCXSln(
+            [join( "proj", "yield", project_name, project_name )
+             for project_name in PROJECT_NAMES]+\
+            [join( "proj", "yield", project_name, project_name + "_test" )
+             for project_name in PROJECT_NAMES],
+            "yield.sln"
+        )
+    ),
     newline="\r\n"
 )
-if YIELD_PUBLIC_DIR_PATH is not None:
-    project_references = []
-    for project_name in PROJECT_NAMES:
-        project_reference = join( YIELD_PUBLIC_DIR_PATH, "proj", "yield", project_name, project_name )
-        if exists( project_reference + ".vcxproj" ):
-            project_references.append( project_reference )
 
-    write_file(
-        join( YIELD_PUBLIC_DIR_PATH, "yield.sln" ),
-        repr(
-            VCXSln(
-                project_references,
-                #join( YIELD_PUBLIC_DIR_PATH, "yield.sln" )
-            )
-        )
-    )
-
-
-# Generate Makefile
-clean_actions = []
-project_targets = []
-project_target_names = []
-
-for project_name in PROJECT_NAMES:
-    clean_actions.append( "$(MAKE) -C proj/yield/%(project_name)s -f %(project_name)s.Makefile clean" % locals() )
-    clean_actions.append( "$(MAKE) -C proj/yield/%(project_name)s -f %(project_name)s_test.Makefile clean" % locals() )
-
-    project_references = ' '.join(
-                             [split( project_reference )[1]
-                              for project_reference in PROJECT_REFERENCES[project_name]]
-                         )
-    project_targets.append( """\
-%(project_name)s: %(project_references)s
-    $(MAKE) -C proj/yield/%(project_name)s -f %(project_name)s.Makefile
-
-%(project_name)s_test: %(project_name)s
-    $(MAKE) -C proj/yield/%(project_name)s -f %(project_name)s_test.Makefile
-""" % locals() )
-    project_target_names.extend( ( project_name, project_name + "_test" ) )
-
-clean_actions.sort()
-clean_actions = '\n\t'.join( clean_actions )
-
-project_targets.sort()
-project_targets = '\n'.join( project_targets )
-
-project_target_names.sort()
-project_target_names = ' '.join( project_target_names )
-
-Makefile = """\
-all: %(project_target_names)s
-	
-clean:
-    %(clean_actions)s
-
-%(project_targets)s
-""" % locals()
-Makefile = Makefile.replace( "    ", '\t' )
-
-write_file( "Makefile", Makefile, force=options.force )
+# Generate top-level Makefile
+write_file(
+    "Makefile",
+    repr( TopLevelMakefile( PROJECT_REFERENCES ) ),
+    force=options.force
+)

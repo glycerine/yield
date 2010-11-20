@@ -32,12 +32,12 @@ from os.path import dirname, join, split, splitext
 
 from yutil import deduplist, indent, posixpath, posixpaths, pad, relpath, rpad
 
-from yuild.constant import C_CXX_SOURCE_FILE_FNMATCH_PATTERNS,\
+from yuild.constant import C_CXX_SOURCE_FILE_FNMATCH_PATTERNS, \
                            INDENT_SPACES
 from yuild.project import Project
 
 
-__all__ = ["Makefile"]
+__all__ = ["Makefile", "TopLevelMakefile"]
 
 
 # Constants
@@ -84,7 +84,7 @@ endif""" % locals() )
         return '\n'.join( list( set( conditional_statements ) ) )
 
 
-class Makefile(Project):
+class Makefile( Project ):
     def __repr__( self ):
         my_dir_path = "" # "$(dir $(lastword $(MAKEFILE_LIST)))"
 
@@ -142,11 +142,11 @@ class Makefile(Project):
                 for source_file in source_files:
                     source_file_path = my_dir_path + source_file
 
-                    object_file_path =\
-                        my_dir_path +\
-                        join(
+                    object_file_path = \
+                        my_dir_path + \
+                        join( 
                             self.get_build_dir_path()[platform],
-                            splitext(
+                            splitext( 
                                 relpath( source_file_path, self.get_root_source_dir_path() )
                             )[0] + ".o"
                         )
@@ -158,8 +158,8 @@ class Makefile(Project):
                     source_file_rules.append( SOURCE_FILE_RULE % locals() )
 
                 object_file_paths.sort()
-                platform_object_file_paths.setdefault( platform, [] ).append(
-                    "OBJECT_FILE_PATHS += " +\
+                platform_object_file_paths.setdefault( platform, [] ).append( 
+                    "OBJECT_FILE_PATHS += " + \
                     ' '.join( object_file_paths )
                 )
 
@@ -167,8 +167,8 @@ class Makefile(Project):
         platforms = list( platform_object_file_paths.keys() ); platforms.sort()
         for platform in platforms:
             platform_object_file_paths[platform].sort()
-            object_file_paths.append(
-                uname_check(
+            object_file_paths.append( 
+                uname_check( 
                     platform,
                     '\n'.join( platform_object_file_paths[platform] )
                 )
@@ -230,4 +230,53 @@ depclean:
 
 %(source_file_rules)s
 
-""" % locals() ).replace( "    ", '\t' )
+""" % locals() ).replace( ' ' * 4, '\t' )
+
+
+class TopLevelMakefile(object):
+    def __init__( self, project_references ):
+        self.__project_references = project_references
+
+    def __repr__( self ):
+        clean_actions = []
+        project_targets = []
+        project_target_names = []
+
+        project_names = list( self.__project_references.keys() )
+        project_names.sort()
+        for project_name in project_names:            
+            clean_actions.append( "$(MAKE) -C proj/yield/%(project_name)s -f %(project_name)s.Makefile clean" % locals() )
+            clean_actions.append( "$(MAKE) -C proj/yield/%(project_name)s -f %(project_name)s_test.Makefile clean" % locals() )
+        
+            project_references = \
+                ' '.join( 
+                    [split( project_reference )[1]
+                    for project_reference in self.__project_references[project_name]]
+                )
+                
+            project_targets.append( """\
+%(project_name)s: %(project_references)s
+    $(MAKE) -C proj/yield/%(project_name)s -f %(project_name)s.Makefile
+
+%(project_name)s_test: %(project_name)s
+    $(MAKE) -C proj/yield/%(project_name)s -f %(project_name)s_test.Makefile
+""" % locals() )
+            project_target_names.extend( ( project_name, project_name + "_test" ) )
+        
+        clean_actions.sort()
+        clean_actions = '\n\t'.join( clean_actions )
+
+        project_targets.sort()
+        project_targets = '\n'.join( project_targets )
+        
+        project_target_names.sort()
+        project_target_names = ' '.join( project_target_names )
+        
+        return ( """\
+all: %(project_target_names)s
+    
+clean:
+    %(clean_actions)s
+
+%(project_targets)s
+""" % locals() ).replace( ' ' * 4, '\t' )
