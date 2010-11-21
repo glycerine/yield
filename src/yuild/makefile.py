@@ -104,6 +104,16 @@ class Makefile( Project ):
         for platform in platforms:
             CXXFLAGS.append( uname_check( platform, "CXXFLAGS += " + ' '.join( platform_cxxflags[platform] ) ) )
         CXXFLAGS.sort()
+        CXXFLAGS.append( """\
+ifneq ($COVERAGE,)
+    CXXFLAGS += -fprofile-arcs -ftest-coverage
+    LDFLAGS += -fprofile-arcs -ftest-coverage -lgcov
+endif
+ifneq ($(RELEASE),)
+    CXXFLAGS += -O2
+else
+    CXXFLAGS += -g -D_DEBUG
+endif""" )
         CXXFLAGS = pad( "\n\n", '\n'.join( CXXFLAGS ), "\n" )
 
         # LDFLAGS

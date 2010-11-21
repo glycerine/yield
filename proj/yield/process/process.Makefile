@@ -17,6 +17,15 @@ endif
 ifeq ($(UNAME), MINGW32)
 	CXXFLAGS += /EHsc /GR- /nologo /wd"4100" /wd"4127" /wd"4290" /wd"4355" /wd"4512"
 endif
+ifneq ($COVERAGE,)
+	CXXFLAGS += -fprofile-arcs -ftest-coverage
+	LDFLAGS += -fprofile-arcs -ftest-coverage -lgcov
+endif
+ifneq ($(RELEASE),)
+	CXXFLAGS += -O2
+else
+	CXXFLAGS += -g -D_DEBUG
+endif
 
 
 LDFLAGS += -L../../../lib
