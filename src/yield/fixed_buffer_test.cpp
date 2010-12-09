@@ -111,15 +111,6 @@ namespace yield
     BufferPutStringTest< FixedBuffer<512> >::run();
   }
 
-  TEST( FixedBuffer, reserve )
-  {
-  }
-
-  TEST_EX( FixedBuffer, resize, BufferResizeTest< FixedBuffer<512> > )
-  {
-    BufferResizeTest< FixedBuffer<512> >::run();
-  }
-
   TEST_EX( FixedBuffer, set_next_buffer, BufferSetNextBufferTest< FixedBuffer<512> > )
   {
     BufferSetNextBufferTest< FixedBuffer<512> >::run();

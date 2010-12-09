@@ -183,16 +183,6 @@ namespace yield
     BufferResizeTest<Page>::run();
   }
 
-  TEST( Page, rtti )
-  {
-    throw_assert_eq( Page( Page::getpagesize() ).get_type_id(), Page::TYPE_ID );
-    throw_assert_eq
-    (
-      strcmp( Page( Page::getpagesize() ).get_type_name(), "yield::Page" ),
-      0
-    );
-  }
-
   TEST_EX( Page, set_next_buffer, BufferSetNextBufferTest<Page> )
   {
     BufferSetNextBufferTest<Page>::run();
