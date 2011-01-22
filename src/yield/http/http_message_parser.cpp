@@ -31,7 +31,7 @@
 /* #line 1 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
 // yield/http/http_message_parser.rl
 
-// Copyright (c) 2010 Minor Gordon
+// Copyright (c) 2011 Minor Gordon
 // All rights reserved
 
 // This source file is part of the Yield project.

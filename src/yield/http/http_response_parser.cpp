@@ -31,7 +31,7 @@
 /* #line 1 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
 // yield/http/http_response_parser.rl
 
-// Copyright (c) 2010 Minor Gordon
+// Copyright (c) 2011 Minor Gordon
 // All rights reserved
 
 // This source file is part of the Yield project.
@@ -110,7 +110,7 @@ Object& HTTPResponseParser::parse() {
         return *object;
     }
 
-    if (p == eof) {   // EOF parsing
+    if (p == eof) { // EOF parsing
       Buffer* next_buffer
       = new Page(eof - ps + Page::getpagesize(), ps, eof - ps);
       p = ps;

@@ -31,7 +31,7 @@
 /* #line 1 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
 // yield/net/uri.rl
 
-// Copyright (c) 2010 Minor Gordon
+// Copyright (c) 2011 Minor Gordon
 // All rights reserved
 
 // This source file is part of the Yield project.
@@ -67,16 +67,13 @@
 #include <sstream> // or std::ostringstream
 #include <stdlib.h> // For atoi
 
-
 #ifdef _WIN32
 #pragma warning( push )
 #pragma warning( disable: 4702 )
 #endif
 
 
-
-/* #line 139 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
-
+/* #line 137 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
 
 
 namespace yield {
@@ -161,11 +158,6 @@ void URI::init(const char* uri, size_t uri_len) {
   memset(&query, 0, sizeof(query));
   memset(&scheme, 0, sizeof(scheme));
   memset(&userinfo, 0, sizeof(userinfo));
-
-  int cs;
-  const char* eof = static_cast<char*>(*buffer) + buffer->size();
-  char* p = static_cast<char*>(*buffer);
-  const char* pe = eof;
 
 
   /* #line 2 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.cpp" */
@@ -1796,73 +1788,73 @@ _match:
     while (_nacts-- > 0) {
       switch (*_acts++) {
       case 0:
-        /* #line 84 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
+        /* #line 82 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
       {
         scheme.iov_base = p;
       }
       break;
       case 1:
-        /* #line 85 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
+        /* #line 83 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
       {
         scheme.iov_len =  p - static_cast<char*>(scheme.iov_base);
       }
       break;
       case 2:
-        /* #line 89 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
+        /* #line 87 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
       {
         userinfo.iov_base = p;
       }
       break;
       case 3:
-        /* #line 90 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
+        /* #line 88 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
       {
         userinfo.iov_len = p - static_cast<char*>(userinfo.iov_base);
       }
       break;
       case 4:
-        /* #line 94 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
+        /* #line 92 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
       {
         host.iov_base = p;
       }
       break;
       case 5:
-        /* #line 95 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
+        /* #line 93 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
       {
         host.iov_len = p - static_cast<char*>(host.iov_base);
       }
       break;
       case 6:
-        /* #line 98 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
+        /* #line 96 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
       {
         port = static_cast<uint16_t>(atoi(p));
       }
       break;
       case 7:
-        /* #line 103 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
+        /* #line 101 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
       {
         path.iov_base = p;
       }
       break;
       case 8:
-        /* #line 104 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
+        /* #line 102 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
       {
         path.iov_len = p - static_cast<char*>(path.iov_base);
       }
       break;
       case 9:
-        /* #line 122 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
+        /* #line 120 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
       {
         query.iov_base = p;
       }
       break;
       case 10:
-        /* #line 123 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
+        /* #line 121 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
       {
         query.iov_len = p - static_cast<char*>(query.iov_base);
       }
       break;
       case 11:
-        /* #line 125 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
+        /* #line 123 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
       {
         fragment.iov_base = p;
       }
@@ -1884,55 +1876,55 @@ _test_eof:
       while (__nacts-- > 0) {
         switch (*__acts++) {
         case 4:
-          /* #line 94 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
+          /* #line 92 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
         {
           host.iov_base = p;
         }
         break;
         case 5:
-          /* #line 95 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
+          /* #line 93 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
         {
           host.iov_len = p - static_cast<char*>(host.iov_base);
         }
         break;
         case 6:
-          /* #line 98 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
+          /* #line 96 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
         {
           port = static_cast<uint16_t>(atoi(p));
         }
         break;
         case 7:
-          /* #line 103 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
+          /* #line 101 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
         {
           path.iov_base = p;
         }
         break;
         case 8:
-          /* #line 104 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
+          /* #line 102 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
         {
           path.iov_len = p - static_cast<char*>(path.iov_base);
         }
         break;
         case 9:
-          /* #line 122 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
+          /* #line 120 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
         {
           query.iov_base = p;
         }
         break;
         case 10:
-          /* #line 123 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
+          /* #line 121 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
         {
           query.iov_len = p - static_cast<char*>(query.iov_base);
         }
         break;
         case 11:
-          /* #line 125 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
+          /* #line 123 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
         {
           fragment.iov_base = p;
         }
         break;
         case 12:
-          /* #line 126 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
+          /* #line 124 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
         {
           fragment.iov_len = p - static_cast<char*>(fragment.iov_base);
         }
@@ -1946,7 +1938,7 @@ _out:
     {}
   }
 
-  /* #line 250 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
+  /* #line 233 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
 
 
   if (cs == init_error)

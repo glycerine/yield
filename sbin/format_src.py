@@ -30,8 +30,9 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-from os.path import abspath, dirname, isdir, isfile, join, split
+from os.path import abspath, dirname, exists, isdir, isfile, join, split, splitext
 from optparse import OptionParser
+from subprocess import call
 
 from config import *
 
@@ -84,3 +85,12 @@ for project, source_paths in SOURCE_PATHS.iteritems():
         force=options.force,
         project=project,
     )
+
+    AStyle = join(YIELD_DIR_PATH, "sbin", "AStyle.exe")
+    if exists(AStyle):
+        astylerc_path = join(YIELD_DIR_PATH, "etc", "astylerc")
+        assert exists(astylerc_path)
+        for source_file in source_files:
+            source_file_ext = splitext(source_file.get_path())[1]
+            if source_file_ext in (".cpp", ".hpp"):
+                call([AStyle, "--options=" + astylerc_path, source_file.get_path()])

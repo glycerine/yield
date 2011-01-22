@@ -31,7 +31,7 @@
 /* #line 1 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
 // yield/http/http_request_parser.rl
 
-// Copyright (c) 2010 Minor Gordon
+// Copyright (c) 2011 Minor Gordon
 // All rights reserved
 
 // This source file is part of the Yield project.
@@ -3162,67 +3162,67 @@ _match:
         }
         break;
         case 1:
-          /* #line 84 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
+          /* #line 82 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
         {
           scheme.iov_base = p;
         }
         break;
         case 2:
-          /* #line 85 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
+          /* #line 83 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
         {
           scheme.iov_len =  p - static_cast<char*>(scheme.iov_base);
         }
         break;
         case 3:
-          /* #line 89 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
+          /* #line 87 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
         {
           userinfo.iov_base = p;
         }
         break;
         case 4:
-          /* #line 90 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
+          /* #line 88 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
         {
           userinfo.iov_len = p - static_cast<char*>(userinfo.iov_base);
         }
         break;
         case 5:
-          /* #line 94 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
+          /* #line 92 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
         {
           host.iov_base = p;
         }
         break;
         case 6:
-          /* #line 95 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
+          /* #line 93 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
         {
           host.iov_len = p - static_cast<char*>(host.iov_base);
         }
         break;
         case 7:
-          /* #line 98 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
+          /* #line 96 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
         {
           port = static_cast<uint16_t>(atoi(p));
         }
         break;
         case 8:
-          /* #line 103 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
+          /* #line 101 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
         {
           path.iov_base = p;
         }
         break;
         case 9:
-          /* #line 104 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
+          /* #line 102 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
         {
           path.iov_len = p - static_cast<char*>(path.iov_base);
         }
         break;
         case 10:
-          /* #line 122 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
+          /* #line 120 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
         {
           query.iov_base = p;
         }
         break;
         case 11:
-          /* #line 123 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
+          /* #line 121 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
         {
           query.iov_len = p - static_cast<char*>(query.iov_base);
         }
@@ -3402,7 +3402,7 @@ _out:
         return *object;
     }
 
-    if (p == eof) {   // EOF parsing
+    if (p == eof) { // EOF parsing
       Buffer* next_buffer
       = new Page(eof - ps + Page::getpagesize(), ps, eof - ps);
       p = ps;

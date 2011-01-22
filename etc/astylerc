@@ -5,5 +5,5 @@ lineend=linux
 pad-header
 pad-oper
 preserve-date
-recursive
+# recursive
 unpad-paren
