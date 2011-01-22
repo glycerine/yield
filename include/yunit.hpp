@@ -39,17 +39,17 @@
 #include <utility> // For pair and make_pair
 
 #ifdef _WIN32
-  #include <WinError.h>
-  #ifdef ENOTSUP
-    #undef ENOTSUP
-  #endif
-  #define ENOTSUP ERROR_NOT_SUPPORTED
-  #ifdef EOPNOTSUPP
-    #undef EOPNOTSUPP
-  #endif
-  #define EOPNOTSUPP ERROR_NOT_SUPPORTED
+#include <WinError.h>
+#ifdef ENOTSUP
+#undef ENOTSUP
+#endif
+#define ENOTSUP ERROR_NOT_SUPPORTED
+#ifdef EOPNOTSUPP
+#undef EOPNOTSUPP
+#endif
+#define EOPNOTSUPP ERROR_NOT_SUPPORTED
 #else
-  #include <errno.h>
+#include <errno.h>
 #endif
 
 
@@ -97,74 +97,65 @@ TestSuiteName##TestSuiteDest TestSuiteName##TestSuiteDest_;
 
 
 
-namespace yunit
-{
-  class TestSuite;
+namespace yunit {
+class TestSuite;
 
 
-  class Test
-  {
-  public:
-    virtual ~Test() { }
+class Test {
+public:
+  virtual ~Test() { }
 
-    virtual void setup() { }
-    virtual void run() = 0;
-    virtual void teardown() { }
-  };
+  virtual void setup() { }
+  virtual void run() = 0;
+  virtual void teardown() { }
+};
 
 
-  class TestSuite : private std::vector< std::pair<std::string, Test*> >
-  {
-  public:
-    virtual ~TestSuite()
-    {
-      for ( iterator test_i = begin(); test_i != end(); test_i++ )
-        delete test_i->second;
-    }
+class TestSuite : private std::vector< std::pair<std::string, Test*> > {
+public:
+  virtual ~TestSuite() {
+    for ( iterator test_i = begin(); test_i != end(); test_i++ )
+      delete test_i->second;
+  }
 
-    void add( const std::string& name, Test* test )
-    {
-      push_back( std::make_pair( name, test ) );
-    }
+  void add( const std::string& name, Test* test ) {
+    push_back( std::make_pair( name, test ) );
+  }
 
-    bool empty() const
-    {
-      return std::vector< std::pair< std::string, Test*> >::empty();
-    }
+  bool empty() const {
+    return std::vector< std::pair< std::string, Test*> >::empty();
+  }
 
-    virtual int run()
-    {
-      int failed_test_count = 0;
+  virtual int run() {
+    int failed_test_count = 0;
 
-      for ( iterator test_i = begin(); test_i != end(); ++test_i )
-      {
-        bool called_run = false, called_teardown = false;
+    for ( iterator test_i = begin(); test_i != end(); ++test_i ) {
+      bool called_run = false, called_teardown = false;
 
-        try
-        {
-          std::cout << test_i->first;
-          test_i->second->setup();
-          called_run = true;
-          test_i->second->run();
-          called_teardown = true;
-          test_i->second->teardown();
-          std::cout << ": passed";
-        }
-        catch ( std::exception& exc )
-        {
-          std::cout << " failed: " << exc.what();
-          failed_test_count++;
-        }
-
-        std::cout << std::endl;
-
-        if ( called_run && !called_teardown )
-          try { test_i->second->teardown(); } catch ( ... ) { }
+      try {
+        std::cout << test_i->first;
+        test_i->second->setup();
+        called_run = true;
+        test_i->second->run();
+        called_teardown = true;
+        test_i->second->teardown();
+        std::cout << ": passed";
+      } catch ( std::exception& exc ) {
+        std::cout << " failed: " << exc.what();
+        failed_test_count++;
       }
 
-      return failed_test_count;
+      std::cout << std::endl;
+
+      if ( called_run && !called_teardown )
+        try {
+          test_i->second->teardown();
+        } catch ( ... ) { }
     }
-  };
+
+    return failed_test_count;
+  }
+};
 }
 
 

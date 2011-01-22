@@ -35,47 +35,44 @@
 #include "yield/net/sockets/socket.hpp"
 
 
-namespace yield
-{
-  namespace net
-  {
-    namespace sockets
-    {
-      class DatagramSocket : public Socket
-      {
-      public:
-        static int TYPE; // SOCK_DGRAM
+namespace yield {
+namespace net {
+namespace sockets {
+class DatagramSocket : public Socket {
+public:
+  static int TYPE; // SOCK_DGRAM
 
-      public:
-        DatagramSocket( int domain, int protocol = PROTOCOL_DEFAULT )
-          : Socket( domain, TYPE, protocol )
-        { }
+public:
+  DatagramSocket( int domain, int protocol = PROTOCOL_DEFAULT )
+    : Socket( domain, TYPE, protocol )
+  { }
 
-        DatagramSocket( int domain, int protocol, socket_t socket_ )
-          : Socket( domain, TYPE, protocol, socket_ )
-        { }
+  DatagramSocket( int domain, int protocol, socket_t socket_ )
+    : Socket( domain, TYPE, protocol, socket_ )
+  { }
 
-        virtual ~DatagramSocket() { }
+  virtual ~DatagramSocket() { }
 
-        static YO_NEW_REF DatagramSocket*
-        create
-        (
-          int domain,
-          int protocol = PROTOCOL_DEFAULT
-        )
-        {
-          socket_t socket_ = Socket::create( domain, TYPE, protocol );
-          if ( socket_ != static_cast<socket_t>( -1 ) )
-            return new DatagramSocket( domain, protocol, socket_ );
-          else
-            return NULL;
-        }
-
-        // Object
-        DatagramSocket& inc_ref() { return Object::inc_ref( *this ); }
-      };
-    }
+  static YO_NEW_REF DatagramSocket*
+  create
+  (
+    int domain,
+    int protocol = PROTOCOL_DEFAULT
+  ) {
+    socket_t socket_ = Socket::create( domain, TYPE, protocol );
+    if ( socket_ != static_cast<socket_t>( -1 ) )
+      return new DatagramSocket( domain, protocol, socket_ );
+    else
+      return NULL;
   }
+
+  // Object
+  DatagramSocket& inc_ref() {
+    return Object::inc_ref( *this );
+  }
+};
+}
+}
 }
 
 

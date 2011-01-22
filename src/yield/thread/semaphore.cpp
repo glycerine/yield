@@ -29,53 +29,45 @@
 
 
 #if defined(__MACH__)
-  #include "darwin/semaphore.hpp"
+#include "darwin/semaphore.hpp"
 #elif defined(_WIN32)
-  #include "win32/semaphore.hpp"
+#include "win32/semaphore.hpp"
 #else
-  #include "posix/semaphore.hpp"
+#include "posix/semaphore.hpp"
 #endif
 #include "yield/thread/semaphore.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    Semaphore::Semaphore()
-    {
-      #if defined(__MACH__)
-        pimpl = new darwin::Semaphore;
-      #elif defined(_WIN32)
-        pimpl = new win32::Semaphore;
-      #else
-        pimpl = new posix::Semaphore;
-      #endif
-    }
+namespace yield {
+namespace thread {
+Semaphore::Semaphore() {
+#if defined(__MACH__)
+  pimpl = new darwin::Semaphore;
+#elif defined(_WIN32)
+  pimpl = new win32::Semaphore;
+#else
+  pimpl = new posix::Semaphore;
+#endif
+}
 
-    Semaphore::~Semaphore()
-    {
-      delete pimpl;
-    }
+Semaphore::~Semaphore() {
+  delete pimpl;
+}
 
-    void Semaphore::post()
-    {
-      pimpl->post();
-    }
+void Semaphore::post() {
+  pimpl->post();
+}
 
-    bool Semaphore::timedwait( const Time& timeout )
-    {
-      return pimpl->timedwait( timeout );
-    }
+bool Semaphore::timedwait( const Time& timeout ) {
+  return pimpl->timedwait( timeout );
+}
 
-    bool Semaphore::trywait()
-    {
-      return pimpl->trywait();
-    }
+bool Semaphore::trywait() {
+  return pimpl->trywait();
+}
 
-    bool Semaphore::wait()
-    {
-      return pimpl->wait();
-    }
-  }
+bool Semaphore::wait() {
+  return pimpl->wait();
+}
+}
 }

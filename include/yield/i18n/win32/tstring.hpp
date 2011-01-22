@@ -36,34 +36,30 @@
 #include "yield/i18n/code.hpp"
 
 
-namespace yield
-{
-  namespace i18n
-  {
-    namespace win32
-    {
-      class tstring : public wstring
-      {
-      public:
-        tstring() { }
+namespace yield {
+namespace i18n {
+namespace win32 {
+class tstring : public wstring {
+public:
+  tstring() { }
 
-        tstring( char s, Code code = Code::CHAR );
-        tstring( const char* s, Code code = Code::CHAR );
-        tstring( const string& s, Code code = Code::CHAR );
-        tstring( const char* s, size_t len, Code code = Code::CHAR );
+  tstring( char s, Code code = Code::CHAR );
+  tstring( const char* s, Code code = Code::CHAR );
+  tstring( const string& s, Code code = Code::CHAR );
+  tstring( const char* s, size_t len, Code code = Code::CHAR );
 
-        tstring( wchar_t s );
-        tstring( const wchar_t* s );
-        tstring( const wchar_t* s, size_t len );
-        tstring( const wstring& s );
+  tstring( wchar_t s );
+  tstring( const wchar_t* s );
+  tstring( const wchar_t* s, size_t len );
+  tstring( const wstring& s );
 
-        string encode( Code tocode ) const;
+  string encode( Code tocode ) const;
 
-      private:
-        void init( const char*, size_t, Code );
-      };
-    }
-  }
+private:
+  void init( const char*, size_t, Code );
+};
+}
+}
 }
 
 

@@ -36,27 +36,24 @@
 #include "yield/http/http_response.hpp"
 
 
-namespace yield
-{
-  namespace http
-  {
-    class HTTPResponseParser : public HTTPMessageParser
-    {
-    public:
-      HTTPResponseParser( Buffer& buffer )
-        : HTTPMessageParser( buffer )
-      { }
+namespace yield {
+namespace http {
+class HTTPResponseParser : public HTTPMessageParser {
+public:
+  HTTPResponseParser( Buffer& buffer )
+    : HTTPMessageParser( buffer )
+  { }
 
-      HTTPResponseParser( const string& buffer )
-        : HTTPMessageParser( buffer )
-      { }
+  HTTPResponseParser( const string& buffer )
+    : HTTPMessageParser( buffer )
+  { }
 
-      Object& parse();
+  Object& parse();
 
-    private:
-      bool parse_status_line( float& http_version, uint16_t& status_code );
-    };
-  };
+private:
+  bool parse_status_line( float& http_version, uint16_t& status_code );
+};
+};
 };
 
 

@@ -41,26 +41,22 @@ using std::string;
 #pragma comment( lib, "Rpcrt4.lib" )
 
 
-namespace yield
-{
-  namespace net
-  {
-    namespace win32
-    {
-      class UUID
-      {
-      public:
-        UUID();
-        UUID( const string& uuid );
+namespace yield {
+namespace net {
+namespace win32 {
+class UUID {
+public:
+  UUID();
+  UUID( const string& uuid );
 
-        bool operator==( const UUID& ) const;
-        operator string() const;
+  bool operator==( const UUID& ) const;
+  operator string() const;
 
-      private:
-        ::UUID uuid;
-      };
-    };
-  };
+private:
+  ::UUID uuid;
+};
+};
+};
 };
 
 

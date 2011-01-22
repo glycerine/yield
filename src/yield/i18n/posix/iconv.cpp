@@ -31,7 +31,7 @@
 #include "yield/config.hpp"
 #include <iconv.h>
 #ifdef __sun
-  #undef iconv
+#undef iconv
 #endif
 
 #include "yield/assert.hpp"
@@ -41,126 +41,110 @@
 #include <errno.h>
 
 
-namespace yield
-{
-  namespace i18n
-  {
-    namespace posix
-    {
-      iconv::iconv( Code tocode, Code fromcode )
-      {
-        cd = ::iconv_open( tocode, fromcode );
-        if ( cd == reinterpret_cast<iconv_t>( -1 ) )
-          throw Exception();
-      }
+namespace yield {
+namespace i18n {
+namespace posix {
+iconv::iconv( Code tocode, Code fromcode ) {
+  cd = ::iconv_open( tocode, fromcode );
+  if ( cd == reinterpret_cast<iconv_t>( -1 ) )
+    throw Exception();
+}
 
-      iconv::~iconv()
-      {
-        iconv_close( cd );
-      }
+iconv::~iconv() {
+  iconv_close( cd );
+}
 
-      size_t
-      iconv::iconv_to_char
+size_t
+iconv::iconv_to_char
+(
+  const char** inbuf,
+  size_t* inbytesleft,
+  char** outbuf,
+  size_t* outbytesleft
+) {
+#ifdef __sun
+  return ::libiconv
+#else
+  return ::iconv
+#endif
+         (
+           cd,
+#if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__sun)
+           inbuf,
+#else
+           const_cast<char**>( inbuf ),
+#endif
+           inbytesleft,
+           outbuf,
+           outbytesleft
+         );
+}
+
+template <class outbufStringType>
+bool
+iconv::iconv_to_string
+(
+  const char* inbuf,
+  size_t inbytesleft,
+  outbufStringType& outbuf
+) {
+  size_t outbuf_c_len = inbytesleft;
+
+  for ( ;; ) {
+    typename outbufStringType::value_type* outbuf_c
+    = new typename outbufStringType::value_type[outbuf_c_len];
+    void* outbuf_c_dummy = outbuf_c;
+    size_t outbytesleft = outbuf_c_len;
+
+    size_t iconv_ret
+    = iconv_to_char
       (
-        const char** inbuf,
-        size_t* inbytesleft,
-        char** outbuf,
-        size_t* outbytesleft
-      )
-      {
-        #ifdef __sun
-          return ::libiconv
-        #else
-          return ::iconv
-        #endif
-                  (
-                    cd,
-                    #if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__sun)
-                      inbuf,
-                    #else
-                      const_cast<char**>( inbuf ),
-                    #endif
-                    inbytesleft,
-                    outbuf,
-                    outbytesleft
-                  );
-      }
+        &inbuf,
+        &inbytesleft,
+        reinterpret_cast<char**>( &outbuf_c_dummy ),
+        &outbytesleft
+      );
 
-      template <class outbufStringType>
-      bool
-      iconv::iconv_to_string
-      (
-        const char* inbuf,
-        size_t inbytesleft,
-        outbufStringType& outbuf
-      )
-      {
-        size_t outbuf_c_len = inbytesleft;
-
-        for ( ;; )
-        {
-          typename outbufStringType::value_type* outbuf_c
-            = new typename outbufStringType::value_type[outbuf_c_len];
-          void* outbuf_c_dummy = outbuf_c;
-          size_t outbytesleft = outbuf_c_len;
-
-          size_t iconv_ret
-            = iconv_to_char
-              (
-                &inbuf,
-                &inbytesleft,
-                reinterpret_cast<char**>( &outbuf_c_dummy ),
-                &outbytesleft
-              );
-
-          if ( iconv_ret != static_cast<size_t>( -1 ) )
-          {
-            outbuf.append( outbuf_c, outbuf_c_len - outbytesleft );
-            delete [] outbuf_c;
-            return true;
-          }
-          else if ( errno == E2BIG )
-          {
-            outbuf.append( outbuf_c, outbuf_c_len - outbytesleft );
-            delete [] outbuf_c;
-            outbuf_c_len *= 2;
-            continue;
-          }
-          else
-          {
-            delete [] outbuf_c;
-            return false;
-          }
-        }
-      }
-
-      size_t
-      iconv::operator()
-      (
-        const char** inbuf,
-        size_t* inbytesleft,
-        char** outbuf,
-        size_t* outbytesleft
-      )
-      {
-        if ( reset() )
-          return iconv_to_char( inbuf, inbytesleft, outbuf, outbytesleft );
-        else
-          return static_cast<size_t>( -1 );
-      }
-
-      bool iconv::operator()( const string& inbuf, string& outbuf )
-      {
-        if ( reset() )
-          return iconv_to_string( inbuf.data(), inbuf.size(), outbuf );
-        else
-          return false;
-      }
-
-      bool iconv::reset()
-      {
-        return iconv_to_char( NULL, 0, NULL, 0 ) != static_cast<size_t>( -1 );
-      }
+    if ( iconv_ret != static_cast<size_t>( -1 ) ) {
+      outbuf.append( outbuf_c, outbuf_c_len - outbytesleft );
+      delete [] outbuf_c;
+      return true;
+    } else if ( errno == E2BIG ) {
+      outbuf.append( outbuf_c, outbuf_c_len - outbytesleft );
+      delete [] outbuf_c;
+      outbuf_c_len *= 2;
+      continue;
+    } else {
+      delete [] outbuf_c;
+      return false;
     }
   }
+}
+
+size_t
+iconv::operator()
+(
+  const char** inbuf,
+  size_t* inbytesleft,
+  char** outbuf,
+  size_t* outbytesleft
+) {
+  if ( reset() )
+    return iconv_to_char( inbuf, inbytesleft, outbuf, outbytesleft );
+  else
+    return static_cast<size_t>( -1 );
+}
+
+bool iconv::operator()( const string& inbuf, string& outbuf ) {
+  if ( reset() )
+    return iconv_to_string( inbuf.data(), inbuf.size(), outbuf );
+  else
+    return false;
+}
+
+bool iconv::reset() {
+  return iconv_to_char( NULL, 0, NULL, 0 ) != static_cast<size_t>( -1 );
+}
+}
+}
 }

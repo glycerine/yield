@@ -37,31 +37,27 @@
 #include <libcpc.h>
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace sunos
-    {
-      class CPCPerformanceCounterSet
-      {
-      public:
-        CPCPerformanceCounterSet();
-        ~CPCPerformanceCounterSet();
+namespace yield {
+namespace thread {
+namespace sunos {
+class CPCPerformanceCounterSet {
+public:
+  CPCPerformanceCounterSet();
+  ~CPCPerformanceCounterSet();
 
-        bool add( Event event );
-        bool add( const char* event );
-        void start_counting();
-        void stop_counting( uint64_t* counts );
+  bool add( Event event );
+  bool add( const char* event );
+  void start_counting();
+  void stop_counting( uint64_t* counts );
 
-      private:
-        cpc_t* cpc;
-        cpc_set_t* cpc_set;
-        vector<int> event_indices;
-        cpc_buf_t* start_cpc_buf;
-      };
-    }
-  }
+private:
+  cpc_t* cpc;
+  cpc_set_t* cpc_set;
+  vector<int> event_indices;
+  cpc_buf_t* start_cpc_buf;
+};
+}
+}
 }
 
 

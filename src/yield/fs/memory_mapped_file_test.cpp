@@ -37,148 +37,144 @@
 
 #include <fcntl.h> // For O_*
 #ifndef _WIN32
-  #include <sys/mman.h> // For MAP_* and PROT_*
+#include <sys/mman.h> // For MAP_* and PROT_*
 #endif
 
 
 TEST_SUITE( MemoryMappedFile );
 
-namespace yield
-{
-  namespace fs
-  {
-    class MemoryMappedFileTest : public yunit::Test
-    {
-    public:
-      virtual ~MemoryMappedFileTest()
-      {
-        Volume::dec_ref( volume );
-      }
+namespace yield {
+namespace fs {
+class MemoryMappedFileTest : public yunit::Test {
+public:
+  virtual ~MemoryMappedFileTest() {
+    Volume::dec_ref( volume );
+  }
 
-    protected:
-      MemoryMappedFileTest()
-      : test_file_name( "mmf_test.bin" ),
-        test_string( "test string" )
-      {
-        volume = NULL;
-      }
+protected:
+  MemoryMappedFileTest()
+    : test_file_name( "mmf_test.bin" ),
+      test_string( "test string" ) {
+    volume = NULL;
+  }
 
-      File& get_test_file() const { return *test_file; }
-      const Path& get_test_file_name() const { return test_file_name; }
-      const string& get_test_string() const { return test_string; }
+  File& get_test_file() const {
+    return *test_file;
+  }
+  const Path& get_test_file_name() const {
+    return test_file_name;
+  }
+  const string& get_test_string() const {
+    return test_string;
+  }
 
-      // yunit::Test
-      void setup()
-      {
-        volume = Volume::create();
-        if ( volume != NULL )
-        {
-          volume->unlink( get_test_file_name() );
+  // yunit::Test
+  void setup() {
+    volume = Volume::create();
+    if ( volume != NULL ) {
+      volume->unlink( get_test_file_name() );
 
-          test_file
-            = volume->open
-              (
-                get_test_file_name(),
-                O_CREAT|O_TRUNC|O_RDWR|O_SYNC
-              );
-
-          if ( test_file != NULL )
-            return;
-          else
-            Volume::dec_ref( *volume );
-        }
-
-        throw Exception();
-      }
-
-      void teardown()
-      {
-        if ( volume != NULL )
-        {
-          test_file->close();
-          File::dec_ref( *test_file );
-          volume->unlink( get_test_file_name() );
-        }
-      }
-
-    protected:
-      Volume& get_volume() const { return *volume; }
-
-    private:
-      File* test_file;
-      Path test_file_name;
-      string test_string;
-      Volume* volume;
-    };
-
-
-    TEST_EX( MemoryMappedFile, mmap, MemoryMappedFileTest )
-    {
-      auto_Object<MemoryMappedFile> mmf
-        = get_volume().mmap( get_test_file().inc_ref() );
-    }
-
-    TEST_EX( MemoryMappedFile, read, MemoryMappedFileTest )
-    {
-      {
-        auto_Object<MemoryMappedFile> mmf
-          = get_volume().mmap( get_test_file().inc_ref() );
-
-        mmf->reserve( get_test_string().size() );
-
-        memcpy_s
+      test_file
+      = volume->open
         (
-          *mmf,
-          get_test_string().size(),
-          get_test_string().c_str(),
-          get_test_string().size()
+          get_test_file_name(),
+          O_CREAT|O_TRUNC|O_RDWR|O_SYNC
         );
 
-        if ( mmf->sync() )
-          mmf->close();
-        else
-          throw Exception();
-      }
-
-      {
-        auto_Object<File> test_file = get_volume().open( get_test_file_name() );
-
-        auto_Object<MemoryMappedFile> mmf
-          = get_volume().mmap
-            (
-              test_file->inc_ref(),
-              NULL,
-              Volume::MMAP_LENGTH_WHOLE_FILE,
-              PROT_READ,
-              MAP_PRIVATE
-            );
-
-        throw_assert_eq( mmf->capacity(), get_test_string().size() );
-        throw_assert_eq
-        (
-          strncmp( *mmf, get_test_string().data(), get_test_string().size() ),
-          0
-        );
-      }
+      if ( test_file != NULL )
+        return;
+      else
+        Volume::dec_ref( *volume );
     }
 
-    TEST_EX( MemoryMappedFile, write, MemoryMappedFileTest )
-    {
-      auto_Object<MemoryMappedFile> mmf
-        = get_volume().mmap( get_test_file().inc_ref() );
+    throw Exception();
+  }
 
-      mmf->reserve( get_test_string().size() );
-
-      memcpy_s
-      (
-        *mmf,
-        get_test_string().size(),
-        get_test_string().data(),
-        get_test_string().size()
-      );
-
-      if ( !mmf->sync( static_cast<size_t>( 0 ), get_test_string().size() ) )
-        throw Exception();
+  void teardown() {
+    if ( volume != NULL ) {
+      test_file->close();
+      File::dec_ref( *test_file );
+      volume->unlink( get_test_file_name() );
     }
   }
+
+protected:
+  Volume& get_volume() const {
+    return *volume;
+  }
+
+private:
+  File* test_file;
+  Path test_file_name;
+  string test_string;
+  Volume* volume;
+};
+
+
+TEST_EX( MemoryMappedFile, mmap, MemoryMappedFileTest ) {
+  auto_Object<MemoryMappedFile> mmf
+  = get_volume().mmap( get_test_file().inc_ref() );
+}
+
+TEST_EX( MemoryMappedFile, read, MemoryMappedFileTest ) {
+  {
+    auto_Object<MemoryMappedFile> mmf
+    = get_volume().mmap( get_test_file().inc_ref() );
+
+    mmf->reserve( get_test_string().size() );
+
+    memcpy_s
+    (
+      *mmf,
+      get_test_string().size(),
+      get_test_string().c_str(),
+      get_test_string().size()
+    );
+
+    if ( mmf->sync() )
+      mmf->close();
+    else
+      throw Exception();
+  }
+
+  {
+    auto_Object<File> test_file = get_volume().open( get_test_file_name() );
+
+    auto_Object<MemoryMappedFile> mmf
+    = get_volume().mmap
+      (
+        test_file->inc_ref(),
+        NULL,
+        Volume::MMAP_LENGTH_WHOLE_FILE,
+        PROT_READ,
+        MAP_PRIVATE
+      );
+
+    throw_assert_eq( mmf->capacity(), get_test_string().size() );
+    throw_assert_eq
+    (
+      strncmp( *mmf, get_test_string().data(), get_test_string().size() ),
+      0
+    );
+  }
+}
+
+TEST_EX( MemoryMappedFile, write, MemoryMappedFileTest ) {
+  auto_Object<MemoryMappedFile> mmf
+  = get_volume().mmap( get_test_file().inc_ref() );
+
+  mmf->reserve( get_test_string().size() );
+
+  memcpy_s
+  (
+    *mmf,
+    get_test_string().size(),
+    get_test_string().data(),
+    get_test_string().size()
+  );
+
+  if ( !mmf->sync( static_cast<size_t>( 0 ), get_test_string().size() ) )
+    throw Exception();
+}
+}
 }

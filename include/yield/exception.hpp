@@ -37,48 +37,56 @@
 #include <exception>
 
 
-namespace yield
-{
-  class Exception : public Response, public std::exception
-  {
-  public:
-    const static uint32_t INVALID_ERROR_CODE = 0;
-    const static uint32_t LAST_ERROR_CODE = static_cast<uint32_t>( -1 );
+namespace yield {
+class Exception : public Response, public std::exception {
+public:
+  const static uint32_t INVALID_ERROR_CODE = 0;
+  const static uint32_t LAST_ERROR_CODE = static_cast<uint32_t>( -1 );
 
-  public:
-    // error_message is always copied
-    Exception( uint32_t error_code = LAST_ERROR_CODE );
-    Exception( const char* error_message );
-    Exception( const string& error_message );
-    Exception( uint32_t error_code, const char* error_message );
-    Exception( uint32_t error_code, const string& error_message );
-    Exception( const Exception& other );
-    virtual ~Exception() throw();
+public:
+  // error_message is always copied
+  Exception( uint32_t error_code = LAST_ERROR_CODE );
+  Exception( const char* error_message );
+  Exception( const string& error_message );
+  Exception( uint32_t error_code, const char* error_message );
+  Exception( uint32_t error_code, const string& error_message );
+  Exception( const Exception& other );
+  virtual ~Exception() throw();
 
-    virtual Exception& clone() const { return *new Exception( *this ); }
+  virtual Exception& clone() const {
+    return *new Exception( *this );
+  }
 
-    virtual uint32_t get_error_code() const { return error_code; }
-    virtual const char* get_error_message() const throw();
-    static uint32_t get_last_error_code();
-    operator const char*() const throw() { return get_error_message(); }
+  virtual uint32_t get_error_code() const {
+    return error_code;
+  }
+  virtual const char* get_error_message() const throw();
+  static uint32_t get_last_error_code();
+  operator const char*() const throw() {
+    return get_error_message();
+  }
 
-    virtual void rethrow() const { throw Exception( *this ); }
+  virtual void rethrow() const {
+    throw Exception( *this );
+  }
 
-    void set_error_code( uint32_t error_code );
-    void set_error_message( const char* error_message );
-    void set_error_message( const string& error_message );
-    static void set_last_error_code( uint32_t error_code );
+  void set_error_code( uint32_t error_code );
+  void set_error_message( const char* error_message );
+  void set_error_message( const string& error_message );
+  static void set_last_error_code( uint32_t error_code );
 
-    // Response
-    bool is_exception() const { return true; }
+  // Response
+  bool is_exception() const {
+    return true;
+  }
 
-    // std::exception
-    const char* what() const throw();
+  // std::exception
+  const char* what() const throw();
 
-  private:
-    uint32_t error_code;
-    char* error_message;
-  };
+private:
+  uint32_t error_code;
+  char* error_message;
+};
 }
 
 

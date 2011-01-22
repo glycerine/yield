@@ -35,75 +35,71 @@
 #include "yield/fs/volume.hpp"
 
 
-namespace yield
-{
-  namespace fs
-  {
-    namespace posix
-    {
-      class Volume : public yield::fs::Volume
-      {
-      public:
-        static void*
-        mmap
-        (
-          void* start,
-          size_t length,
-          int prot,
-          int flags,
-          fd_t fd,
-          uint64_t offset
-        );
+namespace yield {
+namespace fs {
+namespace posix {
+class Volume : public yield::fs::Volume {
+public:
+  static void*
+  mmap
+  (
+    void* start,
+    size_t length,
+    int prot,
+    int flags,
+    fd_t fd,
+    uint64_t offset
+  );
 
-        // Volume
-        bool access( const Path&, int amode );
-        yield::fs::Stat* getattr( const Path& );
-        bool link( const Path& old_path, const Path& new_path );
-        bool mkdir( const Path&, mode_t mode );
+  // Volume
+  bool access( const Path&, int amode );
+  yield::fs::Stat* getattr( const Path& );
+  bool link( const Path& old_path, const Path& new_path );
+  bool mkdir( const Path&, mode_t mode );
 
-        YO_NEW_REF yield::fs::File*
-        mkfifo
-        (
-          const Path&,
-          uint32_t flags,
-          mode_t mode
-        );
+  YO_NEW_REF yield::fs::File*
+  mkfifo
+  (
+    const Path&,
+    uint32_t flags,
+    mode_t mode
+  );
 
-        YO_NEW_REF yield::fs::MemoryMappedFile*
-        mmap
-        (
-          yield::fs::File& file,
-          void *start,
-          size_t length,
-          int prot,
-          int flags,
-          uint64_t offset
-        );
+  YO_NEW_REF yield::fs::MemoryMappedFile*
+  mmap
+  (
+    yield::fs::File& file,
+    void *start,
+    size_t length,
+    int prot,
+    int flags,
+    uint64_t offset
+  );
 
-        virtual YO_NEW_REF yield::fs::File*
-        open
-        (
-          const Path&,
-          uint32_t flags,
-          mode_t mode,
-          uint32_t attributes
-        );
+  virtual YO_NEW_REF yield::fs::File*
+  open
+  (
+    const Path&,
+    uint32_t flags,
+    mode_t mode,
+    uint32_t attributes
+  );
 
-        virtual YO_NEW_REF yield::fs::Directory* opendir( const Path& );
-        virtual YO_NEW_REF ExtendedAttributes* openxattrs( const Path& );
-        bool readlink( const Path&, OUT Path& );
-        bool realpath( const Path&, OUT Path& );
-        bool rename( const Path& from_path, const Path& to_path );
-        bool rmdir( const Path& );
-        bool setattr( const Path&, const yield::fs::Stat& );
-        bool statvfs( const Path&, struct statvfs& );
-        bool symlink( const Path& old_path, const Path& new_path );
-        bool truncate( const Path&, uint64_t new_size );
-        bool unlink( const Path& );
-        bool volname( const Path&, OUT Path& );
-      };
-    }
-  }
+  virtual YO_NEW_REF yield::fs::Directory* opendir( const Path& );
+  virtual YO_NEW_REF ExtendedAttributes* openxattrs( const Path& );
+  bool readlink( const Path&, OUT Path& );
+  bool realpath( const Path&, OUT Path& );
+  bool rename( const Path& from_path, const Path& to_path );
+  bool rmdir( const Path& );
+  bool setattr( const Path&, const yield::fs::Stat& );
+  bool statvfs( const Path&, struct statvfs& );
+  bool symlink( const Path& old_path, const Path& new_path );
+  bool truncate( const Path&, uint64_t new_size );
+  bool unlink( const Path& );
+  bool volname( const Path&, OUT Path& );
+};
+}
+}
 }
 
 

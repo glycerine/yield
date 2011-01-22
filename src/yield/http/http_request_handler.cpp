@@ -33,30 +33,24 @@
 #include <iostream>
 
 
-namespace yield
-{
-  namespace http
-  {
-    void HTTPRequestHandler::handle( YO_NEW_REF Event& event )
-    {
-      switch ( event.get_type_id() )
-      {
-        case HTTPRequest::TYPE_ID:
-        {
-          handle( static_cast<HTTPRequest&>( event ) );
-        }
-        break;
-
-        default:
-        {
-          std::cerr << "yield::http::HTTPRequestHandler: " <<
-                       "dropping unrecognized Event type " <<
-                       event.get_type_name() <<
-                       std::endl;
-          Event::dec_ref( event );
-        }
-        break;
-      }
-    }
+namespace yield {
+namespace http {
+void HTTPRequestHandler::handle( YO_NEW_REF Event& event ) {
+  switch ( event.get_type_id() ) {
+  case HTTPRequest::TYPE_ID: {
+    handle( static_cast<HTTPRequest&>( event ) );
   }
+  break;
+
+  default: {
+    std::cerr << "yield::http::HTTPRequestHandler: " <<
+              "dropping unrecognized Event type " <<
+              event.get_type_name() <<
+              std::endl;
+    Event::dec_ref( event );
+  }
+  break;
+  }
+}
+}
 }

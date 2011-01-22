@@ -38,42 +38,41 @@
 #include <map>
 
 
-namespace yield
-{
-  namespace marshal
-  {
-    namespace json
-    {
-      class ObjectMap : public Map, public std::map<Object*, Object*>
-      {
-      public:
-        const static uint32_t TYPE_ID = 3329982232UL;
+namespace yield {
+namespace marshal {
+namespace json {
+class ObjectMap : public Map, public std::map<Object*, Object*> {
+public:
+  const static uint32_t TYPE_ID = 3329982232UL;
 
-      public:
-        ~ObjectMap()
-        {
-          for ( iterator object_i = begin(); object_i != end(); ++object_i )
-          {
-            Object::dec_ref( *object_i->first );
-            Object::dec_ref( *object_i->second );
-          }
-        }
-
-        // Object
-        uint32_t get_type_id() const { return TYPE_ID; }
-        const char* get_type_name() const { return "yield::marshal::ObjectMap"; }
-
-        void marshal( Marshaller& marshaller ) const
-        {
-          for ( const_iterator object_i = begin(); object_i != end(); ++object_i )
-            marshaller.write( *object_i->first, *object_i->second );
-        }
-
-        // Map
-        size_t get_size() const { return size(); }
-      };
+public:
+  ~ObjectMap() {
+    for ( iterator object_i = begin(); object_i != end(); ++object_i ) {
+      Object::dec_ref( *object_i->first );
+      Object::dec_ref( *object_i->second );
     }
   }
+
+  // Object
+  uint32_t get_type_id() const {
+    return TYPE_ID;
+  }
+  const char* get_type_name() const {
+    return "yield::marshal::ObjectMap";
+  }
+
+  void marshal( Marshaller& marshaller ) const {
+    for ( const_iterator object_i = begin(); object_i != end(); ++object_i )
+      marshaller.write( *object_i->first, *object_i->second );
+  }
+
+  // Map
+  size_t get_size() const {
+    return size();
+  }
+};
+}
+}
 }
 
 

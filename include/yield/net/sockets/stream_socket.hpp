@@ -36,68 +36,62 @@
 #include "yield/net/sockets/socket_address.hpp"
 
 
-namespace yield
-{
-  namespace net
-  {
-    namespace sockets
-    {
-      class StreamSocket : public Socket
-      {
-      public:
-        static int TYPE; // SOCK_STREAM
+namespace yield {
+namespace net {
+namespace sockets {
+class StreamSocket : public Socket {
+public:
+  static int TYPE; // SOCK_STREAM
 
-      public:
-        StreamSocket( int domain, int protocol = PROTOCOL_DEFAULT )
-          : Socket( domain, TYPE, protocol )
-        { }
+public:
+  StreamSocket( int domain, int protocol = PROTOCOL_DEFAULT )
+    : Socket( domain, TYPE, protocol )
+  { }
 
-        StreamSocket( int domain, int protocol, socket_t socket_ )
-          : Socket( domain, TYPE, protocol, socket_ )
-        { }
+  StreamSocket( int domain, int protocol, socket_t socket_ )
+    : Socket( domain, TYPE, protocol, socket_ )
+  { }
 
-        YO_NEW_REF StreamSocket* accept()
-        {
-          SocketAddress peername;
-          return accept( peername );
-        }
-
-        virtual YO_NEW_REF StreamSocket* accept( SocketAddress& peername );
-
-        static YO_NEW_REF StreamSocket*
-        create
-        (
-          int domain,
-          int protocol = PROTOCOL_DEFAULT
-        )
-        {
-          socket_t socket_ = Socket::create( domain, TYPE, protocol );
-          if ( socket_ != static_cast<socket_t>( -1 ) )
-            return new StreamSocket( domain, protocol, socket_ );
-          else
-            return NULL;
-        }
-
-        virtual YO_NEW_REF StreamSocket* dup()
-        {
-          return create( get_domain(), get_protocol() );
-        }
-
-        virtual bool listen();
-        virtual bool want_accept() const;
-        virtual bool want_connect() const;
-
-        // Object
-        StreamSocket& inc_ref() { return Object::inc_ref( *this ); }
-
-      protected:
-        virtual YO_NEW_REF StreamSocket* dup2( socket_t socket_ )
-        {
-          return new StreamSocket( get_domain(), get_protocol(), socket_ );
-        }
-      };
-    }
+  YO_NEW_REF StreamSocket* accept() {
+    SocketAddress peername;
+    return accept( peername );
   }
+
+  virtual YO_NEW_REF StreamSocket* accept( SocketAddress& peername );
+
+  static YO_NEW_REF StreamSocket*
+  create
+  (
+    int domain,
+    int protocol = PROTOCOL_DEFAULT
+  ) {
+    socket_t socket_ = Socket::create( domain, TYPE, protocol );
+    if ( socket_ != static_cast<socket_t>( -1 ) )
+      return new StreamSocket( domain, protocol, socket_ );
+    else
+      return NULL;
+  }
+
+  virtual YO_NEW_REF StreamSocket* dup() {
+    return create( get_domain(), get_protocol() );
+  }
+
+  virtual bool listen();
+  virtual bool want_accept() const;
+  virtual bool want_connect() const;
+
+  // Object
+  StreamSocket& inc_ref() {
+    return Object::inc_ref( *this );
+  }
+
+protected:
+  virtual YO_NEW_REF StreamSocket* dup2( socket_t socket_ ) {
+    return new StreamSocket( get_domain(), get_protocol(), socket_ );
+  }
+};
+}
+}
 }
 
 

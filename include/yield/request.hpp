@@ -35,41 +35,51 @@
 #include "yield/message.hpp"
 
 
-namespace yield
-{
-  class EventHandler;
-  class Response;
+namespace yield {
+class EventHandler;
+class Response;
 
 
-  class Request : public Message
-  {
-  public:
-    const static uint32_t TYPE_ID = 3900912157UL;
+class Request : public Message {
+public:
+  const static uint32_t TYPE_ID = 3900912157UL;
 
-  public:
-    Request();
-    virtual ~Request();
+public:
+  Request();
+  virtual ~Request();
 
-    virtual YO_NEW_REF Response* createDefaultResponse() { return NULL; }
-    // MarshallableObject* get_credentials() const { return credentials; }
-    EventHandler* get_response_handler() const { return response_handler; }
-    virtual void respond( Response& response );
-    // void set_credentials( YO_NEW_REF MarshallableObject* credentials );
-    void set_response_handler( YO_NEW_REF EventHandler* response_handler );
-    void set_response_handler( EventHandler& response_handler );
+  virtual YO_NEW_REF Response* createDefaultResponse() {
+    return NULL;
+  }
+  // MarshallableObject* get_credentials() const { return credentials; }
+  EventHandler* get_response_handler() const {
+    return response_handler;
+  }
+  virtual void respond( Response& response );
+  // void set_credentials( YO_NEW_REF MarshallableObject* credentials );
+  void set_response_handler( YO_NEW_REF EventHandler* response_handler );
+  void set_response_handler( EventHandler& response_handler );
 
-    // Object
-    virtual uint32_t get_type_id() const { return TYPE_ID; }
-    virtual const char* get_type_name() const { return "yield::Request"; }
-    Request& inc_ref() { return Object::inc_ref( *this ); }
+  // Object
+  virtual uint32_t get_type_id() const {
+    return TYPE_ID;
+  }
+  virtual const char* get_type_name() const {
+    return "yield::Request";
+  }
+  Request& inc_ref() {
+    return Object::inc_ref( *this );
+  }
 
-    // Message
-    bool is_request() const { return true; }
+  // Message
+  bool is_request() const {
+    return true;
+  }
 
-  private:
-    // MarshallableObject* credentials;
-    EventHandler* response_handler;
-  };
+private:
+  // MarshallableObject* credentials;
+  EventHandler* response_handler;
+};
 };
 
 

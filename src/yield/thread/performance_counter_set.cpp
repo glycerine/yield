@@ -29,51 +29,43 @@
 
 
 #if defined(__sun)
-  #include "sunos/cpc_performance_counter_set.hpp"
+#include "sunos/cpc_performance_counter_set.hpp"
 #elif defined(YIELD_HAVE_UNIX_PAPI)
-  #include "unix/papi_performance_counter_set.hpp"
+#include "unix/papi_performance_counter_set.hpp"
 #endif
 #include "yield/thread/performance_counter_set.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    #if defined(__sun) || defined(YIELD_HAVE_UNIX_PAPI)
-      PerformanceCounterSet::PerformanceCounterSet()
-      {
-        #if defined(__sun)
-          pimpl = new sunos::CPCPerformanceCounterSet;
-        #elif defined(YIELD_HAVE_UNIX_PAPI)
-          pimpl = new unix::PAPIPerformanceCounterSet;
-        #endif
-      }
+namespace yield {
+namespace thread {
+#if defined(__sun) || defined(YIELD_HAVE_UNIX_PAPI)
+PerformanceCounterSet::PerformanceCounterSet() {
+#if defined(__sun)
+  pimpl = new sunos::CPCPerformanceCounterSet;
+#elif defined(YIELD_HAVE_UNIX_PAPI)
+  pimpl = new unix::PAPIPerformanceCounterSet;
+#endif
+}
 
-      PerformanceCounterSet::~PerformanceCounterSet()
-      {
-        delete pimpl;
-      }
+PerformanceCounterSet::~PerformanceCounterSet() {
+  delete pimpl;
+}
 
-      bool PerformanceCounterSet::add( Event event )
-      {
-        return pimpl->add( event );
-      }
+bool PerformanceCounterSet::add( Event event ) {
+  return pimpl->add( event );
+}
 
-      bool PerformanceCounterSet::add( const char* event )
-      {
-        return pimpl->add( event );
-      }
+bool PerformanceCounterSet::add( const char* event ) {
+  return pimpl->add( event );
+}
 
-      void PerformanceCounterSet::start_counting()
-      {
-        pimpl->start_counting();
-      }
+void PerformanceCounterSet::start_counting() {
+  pimpl->start_counting();
+}
 
-      void PerformanceCounterSet::stop_counting( uint64_t* counts )
-      {
-        pimpl->stop_counting();
-      }
-    #endif
-  }
+void PerformanceCounterSet::stop_counting( uint64_t* counts ) {
+  pimpl->stop_counting();
+}
+#endif
+}
 }

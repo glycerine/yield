@@ -29,54 +29,46 @@
 
 
 #ifdef _WIN32
-  #include "win32/selector.hpp"
-  #include "win32/wsapoller.hpp"
+#include "win32/selector.hpp"
+#include "win32/wsapoller.hpp"
 #else
-  #include "yield/poll/fd_event_queue.hpp"
+#include "yield/poll/fd_event_queue.hpp"
 #endif
 #include "yield/poll/socket_event_queue.hpp"
 
 
-namespace yield
-{
-  namespace poll
-  {
-    SocketEventQueue::SocketEventQueue()
-    {
-      #ifdef _WIN32
-        #if _WIN32_WINNT >= 0x0600
-          pimpl = new win32::WSAPoller;
-        #else
-          pimpl = new win32::Selector;
-        #endif
-      #else
-        pimpl = new yield::poll::FDEventQueue;
-      #endif
-    }
+namespace yield {
+namespace poll {
+SocketEventQueue::SocketEventQueue() {
+#ifdef _WIN32
+#if _WIN32_WINNT >= 0x0600
+  pimpl = new win32::WSAPoller;
+#else
+  pimpl = new win32::Selector;
+#endif
+#else
+  pimpl = new yield::poll::FDEventQueue;
+#endif
+}
 
-    SocketEventQueue::~SocketEventQueue()
-    {
-      delete pimpl;
-    }
+SocketEventQueue::~SocketEventQueue() {
+  delete pimpl;
+}
 
-    bool SocketEventQueue::associate( socket_t socket_, int16_t events )
-    {
-      return pimpl->associate( socket_, events );
-    }
+bool SocketEventQueue::associate( socket_t socket_, int16_t events ) {
+  return pimpl->associate( socket_, events );
+}
 
-    bool SocketEventQueue::dissociate( socket_t socket_ )
-    {
-      return pimpl->dissociate( socket_ );
-    }
+bool SocketEventQueue::dissociate( socket_t socket_ ) {
+  return pimpl->dissociate( socket_ );
+}
 
-    Event* SocketEventQueue::dequeue( const Time& timeout )
-    {
-      return pimpl->dequeue( timeout );
-    }
+Event* SocketEventQueue::dequeue( const Time& timeout ) {
+  return pimpl->dequeue( timeout );
+}
 
-    bool SocketEventQueue::enqueue( Event& event )
-    {
-      return pimpl->enqueue( event );
-    }
-  }
+bool SocketEventQueue::enqueue( Event& event ) {
+  return pimpl->enqueue( event );
+}
+}
 }

@@ -35,20 +35,21 @@
 #include "yield/marshal/object.hpp"
 
 
-namespace yield
-{
-  namespace marshal
-  {
-    class Null : public Object
-    {
-    public:
-      const static uint32_t TYPE_ID = 1269358023UL;
+namespace yield {
+namespace marshal {
+class Null : public Object {
+public:
+  const static uint32_t TYPE_ID = 1269358023UL;
 
-      // Object
-      uint32_t get_type_id() const { return TYPE_ID; }
-      const char* get_type_name() const { return "yield::marshal::Null"; }
-    };
+  // Object
+  uint32_t get_type_id() const {
+    return TYPE_ID;
   }
+  const char* get_type_name() const {
+    return "yield::marshal::Null";
+  }
+};
+}
 }
 
 

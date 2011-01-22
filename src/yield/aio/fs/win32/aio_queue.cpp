@@ -38,30 +38,24 @@
 #include <Windows.h>
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace fs
-    {
-      namespace win32
-      {
-        bool AIOQueue::enqueue( Event& event )
-        {
-          switch ( event.get_type_id() )
-          {
-            case fsyncAIOCB::TYPE_ID:
-            case preadAIOCB::TYPE_ID:
-            case pwriteAIOCB::TYPE_ID:
-            case setlkAIOCB::TYPE_ID:
-            case unlkAIOCB::TYPE_ID:
-              return yield::aio::win32::AIOQueue::enqueue( static_cast<AIOCB&>( event ) );
+namespace yield {
+namespace aio {
+namespace fs {
+namespace win32 {
+bool AIOQueue::enqueue( Event& event ) {
+  switch ( event.get_type_id() ) {
+  case fsyncAIOCB::TYPE_ID:
+  case preadAIOCB::TYPE_ID:
+  case pwriteAIOCB::TYPE_ID:
+  case setlkAIOCB::TYPE_ID:
+  case unlkAIOCB::TYPE_ID:
+    return yield::aio::win32::AIOQueue::enqueue( static_cast<AIOCB&>( event ) );
 
-            default:
-              return yield::aio::win32::AIOQueue::enqueue( event );
-          }
-        }
-      }
-    }
+  default:
+    return yield::aio::win32::AIOQueue::enqueue( event );
   }
+}
+}
+}
+}
 }

@@ -33,22 +33,20 @@
 
 
 #ifdef _WIN32
-  #include "yield/i18n/win32/iconv.hpp"
+#include "yield/i18n/win32/iconv.hpp"
 #else
-  #include "yield/i18n/posix/iconv.hpp"
+#include "yield/i18n/posix/iconv.hpp"
 #endif
 
 
-namespace yield
-{
-  namespace i18n
-  {
-    #ifdef _WIN32
-      typedef win32::iconv iconv;
-    #else
-      typedef posix::iconv iconv;
-    #endif
-  }
+namespace yield {
+namespace i18n {
+#ifdef _WIN32
+typedef win32::iconv iconv;
+#else
+typedef posix::iconv iconv;
+#endif
+}
 }
 
 

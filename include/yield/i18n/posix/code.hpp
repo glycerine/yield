@@ -32,31 +32,29 @@
 #define _YIELD_I18N_POSIX_CODE_HPP_
 
 
-namespace yield
-{
-  namespace i18n
-  {
-    namespace posix
-    {
-      class Code
-      {
-      public:
-        const static Code CHAR;
-        const static Code ISO88591;
-        const static Code UTF8;
+namespace yield {
+namespace i18n {
+namespace posix {
+class Code {
+public:
+  const static Code CHAR;
+  const static Code ISO88591;
+  const static Code UTF8;
 
-      public:
-        Code( const char* iconv_code )
-          : iconv_code( iconv_code )
-        { }
+public:
+  Code( const char* iconv_code )
+    : iconv_code( iconv_code )
+  { }
 
-        operator const char*() const { return iconv_code; }
-
-      private:
-        const char* iconv_code;
-      };
-    }
+  operator const char*() const {
+    return iconv_code;
   }
+
+private:
+  const char* iconv_code;
+};
+}
+}
 }
 
 

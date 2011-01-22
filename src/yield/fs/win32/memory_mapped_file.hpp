@@ -36,49 +36,49 @@
 #include "yield/fs/memory_mapped_file.hpp"
 
 
-namespace yield
-{
-  namespace fs
-  {
-    namespace win32
-    {
-      class Volume;
+namespace yield {
+namespace fs {
+namespace win32 {
+class Volume;
 
 
-      class MemoryMappedFile : public yield::fs::MemoryMappedFile
-      {
-      public:
-        ~MemoryMappedFile();
+class MemoryMappedFile : public yield::fs::MemoryMappedFile {
+public:
+  ~MemoryMappedFile();
 
-        // yield::Buffer
-        void* data() { return data_; }
-        const void* data() const { return data_; }
-        void reserve( size_t capacity );
-
-        // yield::fs::MemoryMappedFile
-        bool sync( void* ptr, size_t length );
-        bool unmap();
-
-      private:
-        friend class Volume;
-
-        MemoryMappedFile
-        (
-          size_t capacity,
-          void* data,
-          YO_NEW_REF File& file,
-          int flags,
-          fd_t hFileMapping,
-          uint64_t offset,
-          int prot
-        );
-
-      private:
-        void* data_;
-        fd_t hFileMapping;
-      };
-    }
+  // yield::Buffer
+  void* data() {
+    return data_;
   }
+  const void* data() const {
+    return data_;
+  }
+  void reserve( size_t capacity );
+
+  // yield::fs::MemoryMappedFile
+  bool sync( void* ptr, size_t length );
+  bool unmap();
+
+private:
+  friend class Volume;
+
+  MemoryMappedFile
+  (
+    size_t capacity,
+    void* data,
+    YO_NEW_REF File& file,
+    int flags,
+    fd_t hFileMapping,
+    uint64_t offset,
+    int prot
+  );
+
+private:
+  void* data_;
+  fd_t hFileMapping;
+};
+}
+}
 }
 
 

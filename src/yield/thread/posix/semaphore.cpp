@@ -33,43 +33,34 @@
 #include "yield/time.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace posix
-    {
-      Semaphore::Semaphore()
-      {
-        if ( sem_init( &sem, 0, 0 ) == -1 )
-          throw Exception();
-      }
+namespace yield {
+namespace thread {
+namespace posix {
+Semaphore::Semaphore() {
+  if ( sem_init( &sem, 0, 0 ) == -1 )
+    throw Exception();
+}
 
-      Semaphore::~Semaphore()
-      {
-        sem_destroy( &sem );
-      }
+Semaphore::~Semaphore() {
+  sem_destroy( &sem );
+}
 
-      void Semaphore::post()
-      {
-        sem_post( &sem );
-      }
+void Semaphore::post() {
+  sem_post( &sem );
+}
 
-      bool Semaphore::timedwait( const Time& timeout )
-      {
-        timespec timeout_ts = Time::now() + timeout;
-        return sem_timedwait( &sem, &timeout_ts ) == 0;
-      }
+bool Semaphore::timedwait( const Time& timeout ) {
+  timespec timeout_ts = Time::now() + timeout;
+  return sem_timedwait( &sem, &timeout_ts ) == 0;
+}
 
-      bool Semaphore::trywait()
-      {
-        return sem_trywait( &sem ) == 0;
-      }
+bool Semaphore::trywait() {
+  return sem_trywait( &sem ) == 0;
+}
 
-      bool Semaphore::wait()
-      {
-        return sem_wait( &sem ) == 0;
-      }
-    }
-  }
+bool Semaphore::wait() {
+  return sem_wait( &sem ) == 0;
+}
+}
+}
 }

@@ -37,35 +37,31 @@
 #include <pthread.h>
 
 
-namespace yield
-{
-  class Time;
+namespace yield {
+class Time;
 
 
-  namespace thread
-  {
-    namespace posix
-    {
-      class ConditionVariable
-      {
-      public:
-        ConditionVariable();
-        ~ConditionVariable();
+namespace thread {
+namespace posix {
+class ConditionVariable {
+public:
+  ConditionVariable();
+  ~ConditionVariable();
 
-        void broadcast();
-        bool lock_mutex();
-        void signal();
-        bool timedwait( const Time& timeout );
-        bool trylock_mutex();
-        void unlock_mutex();
-        bool wait();
+  void broadcast();
+  bool lock_mutex();
+  void signal();
+  bool timedwait( const Time& timeout );
+  bool trylock_mutex();
+  void unlock_mutex();
+  bool wait();
 
-      private:
-        pthread_cond_t cond;
-        pthread_mutex_t mutex;
-      };
-    }
-  }
+private:
+  pthread_cond_t cond;
+  pthread_mutex_t mutex;
+};
+}
+}
 }
 
 

@@ -33,25 +33,21 @@
 #include <Windows.h>
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace fs
-    {
-      bool unlkAIOCB::issue( yield::aio::win32::AIOQueue& )
-      {
-        return UnlockFileEx
-                (
-                  get_file(),
-                  0,
-                  static_cast<DWORD>( flock_.get_len() ),
-                  static_cast<DWORD>( flock_.get_len() >> 32 ),
-                  *this
-                ) == TRUE
-                ||
-                GetLastError() == ERROR_IO_PENDING;
-      }
-    }
-  }
+namespace yield {
+namespace aio {
+namespace fs {
+bool unlkAIOCB::issue( yield::aio::win32::AIOQueue& ) {
+  return UnlockFileEx
+         (
+           get_file(),
+           0,
+           static_cast<DWORD>( flock_.get_len() ),
+           static_cast<DWORD>( flock_.get_len() >> 32 ),
+           *this
+         ) == TRUE
+         ||
+         GetLastError() == ERROR_IO_PENDING;
+}
+}
+}
 }

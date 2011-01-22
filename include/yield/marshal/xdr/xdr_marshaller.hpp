@@ -38,39 +38,37 @@
 #include <stack>
 
 
-namespace yield
-{
-  namespace marshal
-  {
-    namespace xdr
-    {
-      class XDRMarshaller : public Marshaller, private XDREncoder
-      {
-      public:
-        Buffer& get_buffer() { return XDREncoder::get_buffer(); }
+namespace yield {
+namespace marshal {
+namespace xdr {
+class XDRMarshaller : public Marshaller, private XDREncoder {
+public:
+  Buffer& get_buffer() {
+    return XDREncoder::get_buffer();
+  }
 
-        // Marshaller
-        void write( const Object& key, bool value );
-        void write( const Object& key, double value );
-        void write( const Object& key, float value );
-        void write( const Object& key, int32_t value );
-        void write( const Object& key, int64_t value );
-        void write( const Object& key, const Map& value );
-        void write( const Object& key, const Null& value );
-        void write( const Object& key, const Object& value );
-        void write( const Object& key, const Sequence& value );
-        void write( const Object& key, const char* value, size_t value_len );
-        void write( const Object& key, uint32_t value );
-        void write( const Object& key, uint64_t value );
+  // Marshaller
+  void write( const Object& key, bool value );
+  void write( const Object& key, double value );
+  void write( const Object& key, float value );
+  void write( const Object& key, int32_t value );
+  void write( const Object& key, int64_t value );
+  void write( const Object& key, const Map& value );
+  void write( const Object& key, const Null& value );
+  void write( const Object& key, const Object& value );
+  void write( const Object& key, const Sequence& value );
+  void write( const Object& key, const char* value, size_t value_len );
+  void write( const Object& key, uint32_t value );
+  void write( const Object& key, uint64_t value );
 
-      private:
-        void write_key( const Object& key );
+private:
+  void write_key( const Object& key );
 
-      private:
-        std::stack<bool> in_map_stack;
-      };
-    };
-  };
+private:
+  std::stack<bool> in_map_stack;
+};
+};
+};
 };
 
 

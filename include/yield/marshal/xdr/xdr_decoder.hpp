@@ -32,38 +32,34 @@
 #define _YIELD_MARSHAL_XDR_XDR_DECODER_HPP_
 
 
-namespace yield
-{
-  class Buffer;
+namespace yield {
+class Buffer;
 
 
-  namespace marshal
-  {
-    namespace xdr
-    {
-      class XDRDecoder
-      {
-      public:
-        XDRDecoder( const Buffer& );
-        XDRDecoder( const uint8_t* xdr, size_t xdr_len );
+namespace marshal {
+namespace xdr {
+class XDRDecoder {
+public:
+  XDRDecoder( const Buffer& );
+  XDRDecoder( const uint8_t* xdr, size_t xdr_len );
 
-        bool read_bool();
-        double read_double();
-        float read_float();
-        int32_t read_int32();
-        int64_t read_int64();
-        void read_string( string& value );
-        uint32_t read_uint32();
-        uint64_t read_uint64();
+  bool read_bool();
+  double read_double();
+  float read_float();
+  int32_t read_int32();
+  int64_t read_int64();
+  void read_string( string& value );
+  uint32_t read_uint32();
+  uint64_t read_uint64();
 
-      private:
-        void read( void*, size_t );
+private:
+  void read( void*, size_t );
 
-      private:
-        const uint8_t *xdr_p, *xdr_pe;
-      };
-    }
-  }
+private:
+  const uint8_t *xdr_p, *xdr_pe;
+};
+}
+}
 }
 
 

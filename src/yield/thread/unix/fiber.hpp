@@ -35,47 +35,45 @@
 #include "yield/thread/fiber.hpp"
 
 #ifdef YIELD_HAVE_UNIX_PTH
-  #include <pth.h>
+#include <pth.h>
 #endif
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace unix
-    {
-      class Fiber : public yield::thread::Thread
-      {
-      public:
-        static Fiber* create( Runnable& );
-        #ifdef YIELD_HAVE_UNIX_PTH
-          operator pth_t() const { return handle; }
-        #endif
-        static auto_Object<yield::thread::Fiber> self();
-
-        // yiled::process::Thread
-        void* getspecific( uintptr_t key );
-        uintptr_t key_create();
-        bool key_delete( uintptr_t key );
-        bool setspecific( uintptr_t key, void* value );
-        void yield();
-        void yield( Fiber& to_fiber );
-
-      private:
-        Fiber( Runnable& runnable );
-        #ifdef YIELD_HAVE_UNIX_PTH
-          Fiber( pth_t pth );
-        #endif
-        static void* run( void* );
-
-      private:
-        #ifdef YIELD_HAVE_UNIX_PTH
-          pth_t pth;
-        #endif
-      };
-    }
+namespace yield {
+namespace thread {
+namespace unix {
+class Fiber : public yield::thread::Thread {
+public:
+  static Fiber* create( Runnable& );
+#ifdef YIELD_HAVE_UNIX_PTH
+  operator pth_t() const {
+    return handle;
   }
+#endif
+  static auto_Object<yield::thread::Fiber> self();
+
+  // yiled::process::Thread
+  void* getspecific( uintptr_t key );
+  uintptr_t key_create();
+  bool key_delete( uintptr_t key );
+  bool setspecific( uintptr_t key, void* value );
+  void yield();
+  void yield( Fiber& to_fiber );
+
+private:
+  Fiber( Runnable& runnable );
+#ifdef YIELD_HAVE_UNIX_PTH
+  Fiber( pth_t pth );
+#endif
+  static void* run( void* );
+
+private:
+#ifdef YIELD_HAVE_UNIX_PTH
+  pth_t pth;
+#endif
+};
+}
+}
 }
 
 

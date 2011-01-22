@@ -33,22 +33,20 @@
 
 
 #ifdef _WIN32
-  #include "yield/i18n/win32/code.hpp"
+#include "yield/i18n/win32/code.hpp"
 #else
-  #include "yield/i18n/posix/code.hpp"
+#include "yield/i18n/posix/code.hpp"
 #endif
 
 
-namespace yield
-{
-  namespace i18n
-  {
-    #ifdef _WIN32
-      typedef win32::Code Code;
-    #else
-      typedef posix::Code Code;
-    #endif
-  }
+namespace yield {
+namespace i18n {
+#ifdef _WIN32
+typedef win32::Code Code;
+#else
+typedef posix::Code Code;
+#endif
+}
 }
 
 

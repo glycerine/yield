@@ -36,55 +36,60 @@
 
 
 #ifdef _WIN32
-  #define MAP_FIXED   1
-  #define MAP_SHARED  2
-  #define MAP_PRIVATE 4
-  #define PROT_EXEC  0x10 // PAGE_EXECUTE
-  #define PROT_READ  0x02 // PAGE_READONLY
-  #define PROT_WRITE 0x04 // PAGE_READWRITE
-  #define PROT_NONE  0x01 // PAGE_NOACCESS
+#define MAP_FIXED   1
+#define MAP_SHARED  2
+#define MAP_PRIVATE 4
+#define PROT_EXEC  0x10 // PAGE_EXECUTE
+#define PROT_READ  0x02 // PAGE_READONLY
+#define PROT_WRITE 0x04 // PAGE_READWRITE
+#define PROT_NONE  0x01 // PAGE_NOACCESS
 #endif
 
 
-namespace yield
-{
-  namespace fs
-  {
-    class File;
+namespace yield {
+namespace fs {
+class File;
 
 
-    class MemoryMappedFile : public Buffer
-    {
-    public:
-      virtual ~MemoryMappedFile();
+class MemoryMappedFile : public Buffer {
+public:
+  virtual ~MemoryMappedFile();
 
-      bool close();
-      File& get_file() const { return file; }
-      int get_flags() const { return flags; }
-      uint64_t get_offset() const { return offset; }
-      int get_prot() const { return prot; }
-      bool sync();
-      bool sync( size_t offset, size_t length );
-      virtual bool sync( void* ptr, size_t length ) = 0;
-      virtual bool unmap() = 0;
-
-    protected:
-      MemoryMappedFile
-      (
-        size_t capacity,
-        YO_NEW_REF File& file,
-        int flags,
-        uint64_t offset,
-        int prot
-      );
-
-    private:
-      File& file;
-      int flags;
-      uint64_t offset;
-      int prot;
-    };
+  bool close();
+  File& get_file() const {
+    return file;
   }
+  int get_flags() const {
+    return flags;
+  }
+  uint64_t get_offset() const {
+    return offset;
+  }
+  int get_prot() const {
+    return prot;
+  }
+  bool sync();
+  bool sync( size_t offset, size_t length );
+  virtual bool sync( void* ptr, size_t length ) = 0;
+  virtual bool unmap() = 0;
+
+protected:
+  MemoryMappedFile
+  (
+    size_t capacity,
+    YO_NEW_REF File& file,
+    int flags,
+    uint64_t offset,
+    int prot
+  );
+
+private:
+  File& file;
+  int flags;
+  uint64_t offset;
+  int prot;
+};
+}
 }
 
 

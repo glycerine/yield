@@ -37,27 +37,26 @@
 #include "yield/http/http_response.hpp"
 
 
-namespace yield
-{
-  namespace net { class URI; }
+namespace yield {
+namespace net {
+class URI;
+}
 
 
-  namespace http
-  {
-    class HTTPRequestParser : public HTTPMessageParser
-    {
-    public:
-      HTTPRequestParser( Buffer& buffer )
-        : HTTPMessageParser( buffer )
-      { }
+namespace http {
+class HTTPRequestParser : public HTTPMessageParser {
+public:
+  HTTPRequestParser( Buffer& buffer )
+    : HTTPMessageParser( buffer )
+  { }
 
-      HTTPRequestParser( const string& buffer ) // For testing
-        : HTTPMessageParser( buffer )
-      { }
+  HTTPRequestParser( const string& buffer ) // For testing
+    : HTTPMessageParser( buffer )
+  { }
 
-      YO_NEW_REF Object& parse();
-   };
-  }
+  YO_NEW_REF Object& parse();
+};
+}
 }
 
 

@@ -38,33 +38,29 @@
 #include <sys/epoll.h>
 
 
-namespace yield
-{
-  namespace poll
-  {
-    namespace linux
-    {
-      class EPoller
-        : public EventQueue,
-          private yield::thread::NonBlockingConcurrentQueue<Event, 32>
-      {
-      public:
-        EPoller();
-        ~EPoller();
+namespace yield {
+namespace poll {
+namespace linux {
+class EPoller
+  : public EventQueue,
+    private yield::thread::NonBlockingConcurrentQueue<Event, 32> {
+public:
+  EPoller();
+  ~EPoller();
 
-        bool associate( fd_t fd, uint16_t events );
-        bool dissociate( fd_t fd );
+  bool associate( fd_t fd, uint16_t events );
+  bool dissociate( fd_t fd );
 
-        // EventQueue
-        YO_NEW_REF Event* dequeue( const Time& timeout );
-        bool enqueue( YO_NEW_REF Event& event );
+  // EventQueue
+  YO_NEW_REF Event* dequeue( const Time& timeout );
+  bool enqueue( YO_NEW_REF Event& event );
 
-      private:
-        int epfd;
-        int wake_fd;
-      };
-    }
-  }
+private:
+  int epfd;
+  int wake_fd;
+};
+}
+}
 }
 
 

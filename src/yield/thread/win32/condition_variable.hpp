@@ -38,36 +38,38 @@
 #include "yield/types.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace win32
-    {
-      class ConditionVariable
-      {
-      public:
-        ConditionVariable();
-        ~ConditionVariable();
+namespace yield {
+namespace thread {
+namespace win32 {
+class ConditionVariable {
+public:
+  ConditionVariable();
+  ~ConditionVariable();
 
-        void broadcast();
-        bool lock_mutex() { return mutex.lock(); }
-        void signal();
-        bool timedwait( const Time& timeout );
-        bool trylock_mutex() { return mutex.trylock(); }
-        void unlock_mutex() { mutex.unlock(); }
-        bool wait();
-
-      private:
-        bool last_signal_was_broadcast;
-        Mutex mutex;
-        uint32_t waiters_count;
-        LightweightMutex waiters_count_lock;
-        Semaphore wait_barrier;
-        void* wait_barrier_clear_signal;
-      };
-    }
+  void broadcast();
+  bool lock_mutex() {
+    return mutex.lock();
   }
+  void signal();
+  bool timedwait( const Time& timeout );
+  bool trylock_mutex() {
+    return mutex.trylock();
+  }
+  void unlock_mutex() {
+    mutex.unlock();
+  }
+  bool wait();
+
+private:
+  bool last_signal_was_broadcast;
+  Mutex mutex;
+  uint32_t waiters_count;
+  LightweightMutex waiters_count_lock;
+  Semaphore wait_barrier;
+  void* wait_barrier_clear_signal;
+};
+}
+}
 }
 
 

@@ -37,27 +37,23 @@
 #include <Windows.h>
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace win32
-    {
-      class LightweightMutex
-      {
-      public:
-        LightweightMutex();
-        ~LightweightMutex();
+namespace yield {
+namespace thread {
+namespace win32 {
+class LightweightMutex {
+public:
+  LightweightMutex();
+  ~LightweightMutex();
 
-        bool lock();
-        bool trylock();
-        void unlock();
+  bool lock();
+  bool trylock();
+  void unlock();
 
-      private:
-        CRITICAL_SECTION critical_section;
-      };
-    }
-  }
+private:
+  CRITICAL_SECTION critical_section;
+};
+}
+}
 }
 
 

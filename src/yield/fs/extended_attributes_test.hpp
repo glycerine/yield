@@ -38,129 +38,112 @@
 #include "yunit.hpp"
 
 
-namespace yield
-{
-  namespace fs
-  {
-    class ExtendedAttributesTest
-    {
-    protected:
-      ExtendedAttributesTest()
-        : test_xattr_value( "test_xattr_value" )
-      { }
+namespace yield {
+namespace fs {
+class ExtendedAttributesTest {
+protected:
+  ExtendedAttributesTest()
+    : test_xattr_value( "test_xattr_value" )
+  { }
 
-      const char* get_test_xattr_name() const { return "user.test_xattr"; }
-      const string& get_test_xattr_value() const { return test_xattr_value; }
-
-      YO_NEW_REF ExtendedAttributes*
-      set_test_xattr
-      (
-        YO_NEW_REF ExtendedAttributes* xattrs
-      )
-      {
-        if ( xattrs != NULL )
-        {
-          if ( xattrs->set( get_test_xattr_name(), get_test_xattr_value() ) )
-            return xattrs;
-        }
-
-        if
-        (
-          Exception::get_last_error_code() == ENOTSUP
-          ||
-          Exception::get_last_error_code() == EOPNOTSUPP
-        )
-        {
-          ExtendedAttributes::dec_ref( xattrs );
-          return NULL;
-        }
-        else
-        {
-          Exception exc( Exception::get_last_error_code() );
-          ExtendedAttributes::dec_ref( xattrs );
-          throw exc;
-        }
-      }
-
-    private:
-      string test_xattr_value;
-    };
-
-
-    class ExtendedAttributesGetTest : public ExtendedAttributesTest
-    {
-    protected:
-      void run( ExtendedAttributes* xattrs )
-      {
-        if ( ( xattrs = set_test_xattr( xattrs ) ) != NULL )
-        {
-          string xattr_value;
-          xattrs->get( get_test_xattr_name(), xattr_value );
-          ExtendedAttributes::dec_ref( *xattrs );
-          throw_assert_eq( xattr_value, get_test_xattr_value() );
-        }
-      }
-    };
-
-
-    class ExtendedAttributesListTest : public ExtendedAttributesTest
-    {
-    protected:
-      void run( ExtendedAttributes* xattrs )
-      {
-        if ( ( xattrs = set_test_xattr( xattrs ) ) != NULL )
-        {
-          vector<string> names;
-          xattrs->list( names );
-          ExtendedAttributes::dec_ref( *xattrs );
-
-          throw_assert_ge( names.size(), 1 );
-
-          for
-          (
-            vector<string>::const_iterator name_i = names.begin();
-            name_i != names.end();
-            name_i++
-          )
-          {
-            if ( *name_i == get_test_xattr_name() )
-              return;
-          }
-
-          throw_assert( false );
-        }
-      }
-    };
-
-
-    class ExtendedAttributesRemoveTest : public ExtendedAttributesTest
-    {
-    protected:
-      void run( ExtendedAttributes* xattrs )
-      {
-        if ( ( xattrs = set_test_xattr( xattrs ) ) != NULL )
-        {
-          if ( xattrs->remove( get_test_xattr_name() ) )
-            ExtendedAttributes::dec_ref( *xattrs );
-          else
-          {
-            ExtendedAttributes::dec_ref( *xattrs );
-            throw Exception();
-          }
-        }
-      }
-    };
-
-
-    class ExtendedAttributesSetTest : public ExtendedAttributesTest
-    {
-    protected:
-      void run( ExtendedAttributes* xattrs )
-      {
-        ExtendedAttributes::dec_ref( set_test_xattr( xattrs ) );
-      }
-    };
+  const char* get_test_xattr_name() const {
+    return "user.test_xattr";
   }
+  const string& get_test_xattr_value() const {
+    return test_xattr_value;
+  }
+
+  YO_NEW_REF ExtendedAttributes*
+  set_test_xattr
+  (
+    YO_NEW_REF ExtendedAttributes* xattrs
+  ) {
+    if ( xattrs != NULL ) {
+      if ( xattrs->set( get_test_xattr_name(), get_test_xattr_value() ) )
+        return xattrs;
+    }
+
+    if
+    (
+      Exception::get_last_error_code() == ENOTSUP
+      ||
+      Exception::get_last_error_code() == EOPNOTSUPP
+    ) {
+      ExtendedAttributes::dec_ref( xattrs );
+      return NULL;
+    } else {
+      Exception exc( Exception::get_last_error_code() );
+      ExtendedAttributes::dec_ref( xattrs );
+      throw exc;
+    }
+  }
+
+private:
+  string test_xattr_value;
+};
+
+
+class ExtendedAttributesGetTest : public ExtendedAttributesTest {
+protected:
+  void run( ExtendedAttributes* xattrs ) {
+    if ( ( xattrs = set_test_xattr( xattrs ) ) != NULL ) {
+      string xattr_value;
+      xattrs->get( get_test_xattr_name(), xattr_value );
+      ExtendedAttributes::dec_ref( *xattrs );
+      throw_assert_eq( xattr_value, get_test_xattr_value() );
+    }
+  }
+};
+
+
+class ExtendedAttributesListTest : public ExtendedAttributesTest {
+protected:
+  void run( ExtendedAttributes* xattrs ) {
+    if ( ( xattrs = set_test_xattr( xattrs ) ) != NULL ) {
+      vector<string> names;
+      xattrs->list( names );
+      ExtendedAttributes::dec_ref( *xattrs );
+
+      throw_assert_ge( names.size(), 1 );
+
+      for
+      (
+        vector<string>::const_iterator name_i = names.begin();
+        name_i != names.end();
+        name_i++
+      ) {
+        if ( *name_i == get_test_xattr_name() )
+          return;
+      }
+
+      throw_assert( false );
+    }
+  }
+};
+
+
+class ExtendedAttributesRemoveTest : public ExtendedAttributesTest {
+protected:
+  void run( ExtendedAttributes* xattrs ) {
+    if ( ( xattrs = set_test_xattr( xattrs ) ) != NULL ) {
+      if ( xattrs->remove( get_test_xattr_name() ) )
+        ExtendedAttributes::dec_ref( *xattrs );
+      else {
+        ExtendedAttributes::dec_ref( *xattrs );
+        throw Exception();
+      }
+    }
+  }
+};
+
+
+class ExtendedAttributesSetTest : public ExtendedAttributesTest {
+protected:
+  void run( ExtendedAttributes* xattrs ) {
+    ExtendedAttributes::dec_ref( set_test_xattr( xattrs ) );
+  }
+};
+}
 }
 
 

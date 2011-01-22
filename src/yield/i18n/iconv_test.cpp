@@ -39,76 +39,70 @@
 #define TEST_STRING_UTF8\
   "\303\204rger mit b\303\266sen B\303\274bchen ohne Augenma\303\237"
 #ifdef _WIN32
-  #define TEST_STRING_WIDE L"test string"
+#define TEST_STRING_WIDE L"test string"
 #endif
 
 
 TEST_SUITE( iconv );
 
-namespace yield
-{
-  namespace i18n
-  {
-    TEST( iconv, c_strings )
-    {
-      const char* inbuf = TEST_STRING_ISO88591;
-      size_t inbytesleft = strlen( TEST_STRING_ISO88591 );
-      char outbuf[256] = { 0 }; size_t outbytesleft = 256;
-      char* outbuf_p = outbuf;
+namespace yield {
+namespace i18n {
+TEST( iconv, c_strings ) {
+  const char* inbuf = TEST_STRING_ISO88591;
+  size_t inbytesleft = strlen( TEST_STRING_ISO88591 );
+  char outbuf[256] = { 0 };
+  size_t outbytesleft = 256;
+  char* outbuf_p = outbuf;
 
-      size_t iconv_ret
-        = iconv( Code::UTF8, Code::ISO88591 )
-          (
-            &inbuf,
-            &inbytesleft,
-            &outbuf_p,
-            &outbytesleft
-          );
+  size_t iconv_ret
+  = iconv( Code::UTF8, Code::ISO88591 )
+    (
+      &inbuf,
+      &inbytesleft,
+      &outbuf_p,
+      &outbytesleft
+    );
 
-      if ( iconv_ret == static_cast<size_t>( -1 ) )
-        throw Exception();
+  if ( iconv_ret == static_cast<size_t>( -1 ) )
+    throw Exception();
 
-      // throw_assert_ne( inbuf, TEST_STRING_ISO88591 );
-      throw_assert_eq( inbytesleft, 0 );
-      throw_assert_ne( outbuf_p, outbuf );
-      throw_assert_gt( strlen( outbuf ), 0 );
-      throw_assert_lt( outbytesleft, 256 );
-    }
+  // throw_assert_ne( inbuf, TEST_STRING_ISO88591 );
+  throw_assert_eq( inbytesleft, 0 );
+  throw_assert_ne( outbuf_p, outbuf );
+  throw_assert_gt( strlen( outbuf ), 0 );
+  throw_assert_lt( outbytesleft, 256 );
+}
 
-    TEST( iconv, iso88591_to_utf8 )
-    {
-      string outbuf;
-      if ( !iconv( Code::UTF8, Code::ISO88591 )( TEST_STRING_ISO88591, outbuf ) )
-        throw Exception();
-      throw_assert_false( outbuf.empty() );
-      throw_assert_eq( outbuf, TEST_STRING_UTF8 );
-    }
+TEST( iconv, iso88591_to_utf8 ) {
+  string outbuf;
+  if ( !iconv( Code::UTF8, Code::ISO88591 )( TEST_STRING_ISO88591, outbuf ) )
+    throw Exception();
+  throw_assert_false( outbuf.empty() );
+  throw_assert_eq( outbuf, TEST_STRING_UTF8 );
+}
 
-    TEST( iconv, utf8_to_iso88591 )
-    {
-      string outbuf;
-      if ( !iconv( Code::ISO88591, Code::UTF8 )( TEST_STRING_UTF8, outbuf ) )
-        throw Exception();
-      throw_assert_false( outbuf.empty() );
-      throw_assert_eq( outbuf, TEST_STRING_ISO88591 );
-    }
+TEST( iconv, utf8_to_iso88591 ) {
+  string outbuf;
+  if ( !iconv( Code::ISO88591, Code::UTF8 )( TEST_STRING_UTF8, outbuf ) )
+    throw Exception();
+  throw_assert_false( outbuf.empty() );
+  throw_assert_eq( outbuf, TEST_STRING_ISO88591 );
+}
 
-    #ifdef _WIN32
-      TEST( iconv, utf8_to_wide )
-      {
-        wstring outbuf;
-        if ( !iconv( Code::WCHAR_T, Code::UTF8 )( TEST_STRING_UTF8, outbuf ) )
-          throw Exception();
-        throw_assert_false( outbuf.empty() );
-      }
+#ifdef _WIN32
+TEST( iconv, utf8_to_wide ) {
+  wstring outbuf;
+  if ( !iconv( Code::WCHAR_T, Code::UTF8 )( TEST_STRING_UTF8, outbuf ) )
+    throw Exception();
+  throw_assert_false( outbuf.empty() );
+}
 
-      TEST( iconv, wide_to_utf8 )
-      {
-        string outbuf;
-        if ( !iconv( Code::UTF8, Code::WCHAR_T )( TEST_STRING_WIDE, outbuf ) )
-          throw Exception();
-        throw_assert_eq( outbuf.size(), wcslen( TEST_STRING_WIDE ) );
-      }
-    #endif
-  }
+TEST( iconv, wide_to_utf8 ) {
+  string outbuf;
+  if ( !iconv( Code::UTF8, Code::WCHAR_T )( TEST_STRING_WIDE, outbuf ) )
+    throw Exception();
+  throw_assert_eq( outbuf.size(), wcslen( TEST_STRING_WIDE ) );
+}
+#endif
+}
 }

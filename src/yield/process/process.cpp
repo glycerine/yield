@@ -29,156 +29,146 @@
 
 
 #if defined(__MACH__)
-  #include "darwin/process.hpp"
+#include "darwin/process.hpp"
 #elif defined(__linux__)
-  #include "linux/process.hpp"
+#include "linux/process.hpp"
 #elif defined(_WIN32)
-  #include "win32/process.hpp"
+#include "win32/process.hpp"
 #else
-  #include "posix/process.hpp"
+#include "posix/process.hpp"
 #endif
 #include "yield/channel.hpp"
 #include "yield/exception.hpp"
 
 
-namespace yield
-{
-  namespace process
-  {
-    using yield::fs::Path;
-    using yield::i18n::tstring;
+namespace yield {
+namespace process {
+using yield::fs::Path;
+using yield::i18n::tstring;
 
 
-    Process::Process( Channel* stderr_, Channel* stdin_, Channel* stdout_ )
-      : stderr_( stderr_ ), stdin_( stdin_ ), stdout_( stdout_ )
-    { }
+Process::Process( Channel* stderr_, Channel* stdin_, Channel* stdout_ )
+  : stderr_( stderr_ ), stdin_( stdin_ ), stdout_( stdout_ )
+{ }
 
-    Process::~Process()
-    {
-      Channel::dec_ref( stderr_ );
-      Channel::dec_ref( stdin_ );
-      Channel::dec_ref( stdout_ );
-    }
+Process::~Process() {
+  Channel::dec_ref( stderr_ );
+  Channel::dec_ref( stdin_ );
+  Channel::dec_ref( stdout_ );
+}
 
-    Process*
-    Process::create
-    (
-      const Path& command_line,
-      Channel* stderr_,
-      Channel* stdin_,
-      Channel* stdout_
-    )
-    {
-    #ifdef _WIN32
-      return win32::
-    #else
-      return posix::
-    #endif
-             Process::create
-             (
-               command_line,
-               stderr_,
-               stdin_,
-               stdout_
-             );
-    }
+Process*
+Process::create
+(
+  const Path& command_line,
+  Channel* stderr_,
+  Channel* stdin_,
+  Channel* stdout_
+) {
+#ifdef _WIN32
+  return win32::
+#else
+  return posix::
+#endif
+         Process::create
+         (
+           command_line,
+           stderr_,
+           stdin_,
+           stdout_
+         );
+}
 
-    Process*
-    Process::create
-    (
-      int argc,
-      tstring::value_type** argv,
-      Channel* stderr_,
-      Channel* stdin_,
-      Channel* stdout_
-    )
-    {
-      vector<tstring::value_type*> argv_copy;
-      for ( int arg_i = 1; arg_i < argc; arg_i++ )
-        argv_copy.push_back( argv[arg_i] );
-      argv_copy.push_back( NULL );
-      return create
-             (
-               Path( argv[0] ),
-               const_cast<const tstring::value_type**>( &argv_copy[0] ),
-               stderr_,
-               stdin_,
-               stdout_
-             );
-    }
+Process*
+Process::create
+(
+  int argc,
+  tstring::value_type** argv,
+  Channel* stderr_,
+  Channel* stdin_,
+  Channel* stdout_
+) {
+  vector<tstring::value_type*> argv_copy;
+  for ( int arg_i = 1; arg_i < argc; arg_i++ )
+    argv_copy.push_back( argv[arg_i] );
+  argv_copy.push_back( NULL );
+  return create
+         (
+           Path( argv[0] ),
+           const_cast<const tstring::value_type**>( &argv_copy[0] ),
+           stderr_,
+           stdin_,
+           stdout_
+         );
+}
 
-    Process*
-    Process::create
-    (
-      const vector<tstring::value_type*>& argv,
-      Channel* stderr_,
-      Channel* stdin_,
-      Channel* stdout_
-    )
-    {
-      vector<tstring::value_type*> argv_copy( argv );
-      argv_copy.push_back( NULL );
-      return create
-             (
-               Path( argv[0] ),
-               const_cast<const tstring::value_type**>( &argv_copy[0] ),
-               stderr_,
-               stdin_,
-               stdout_
-             );
-    }
+Process*
+Process::create
+(
+  const vector<tstring::value_type*>& argv,
+  Channel* stderr_,
+  Channel* stdin_,
+  Channel* stdout_
+) {
+  vector<tstring::value_type*> argv_copy( argv );
+  argv_copy.push_back( NULL );
+  return create
+         (
+           Path( argv[0] ),
+           const_cast<const tstring::value_type**>( &argv_copy[0] ),
+           stderr_,
+           stdin_,
+           stdout_
+         );
+}
 
-    Process*
-    Process::create
-    (
-      const Path& executable_file_path,
-      const tstring::value_type** null_terminated_argv,
-      Channel* stderr_,
-      Channel* stdin_,
-      Channel* stdout_
-    )
-    {
-    #ifdef _WIN32
-      return win32::
-    #else
-      return posix::
-    #endif
-             Process::create
-             (
-               executable_file_path,
-               null_terminated_argv
-             );
-    }
+Process*
+Process::create
+(
+  const Path& executable_file_path,
+  const tstring::value_type** null_terminated_argv,
+  Channel* stderr_,
+  Channel* stdin_,
+  Channel* stdout_
+) {
+#ifdef _WIN32
+  return win32::
+#else
+  return posix::
+#endif
+         Process::create
+         (
+           executable_file_path,
+           null_terminated_argv
+         );
+}
 
-    Path Process::get_current_executable_file_path()
-    {
-      #if defined(__MACH__)
-        return darwin::Process::get_current_executable_file_path();
-      #elif defined(__linux__)
-        return linux::Process::get_current_executable_file_path();
-      #elif defined(_WIN32)
-        return win32::Process::get_current_executable_file_path();
-      #else
-        return tstring();
-      #endif
-    }
+Path Process::get_current_executable_file_path() {
+#if defined(__MACH__)
+  return darwin::Process::get_current_executable_file_path();
+#elif defined(__linux__)
+  return linux::Process::get_current_executable_file_path();
+#elif defined(_WIN32)
+  return win32::Process::get_current_executable_file_path();
+#else
+  return tstring();
+#endif
+}
 
-    Process* Process::open( pid_t pid )
-    {
-      #ifdef _WIN32
-        return win32::Process::open( pid );
-      #else
-        return posix::Process::open( pid );
-      #endif
-    }
+Process* Process::open( pid_t pid ) {
+#ifdef _WIN32
+  return win32::Process::open( pid );
+#else
+  return posix::Process::open( pid );
+#endif
+}
 
-    pid_t Process::self()
-    {
-      #ifdef _WIN32
-        return win32::Process::self();
-      #else
-        return posix::Process::self();
-      #endif
-    }
-  }
+pid_t Process::self() {
+#ifdef _WIN32
+  return win32::Process::self();
+#else
+  return posix::Process::self();
+#endif
+}
+}
 }

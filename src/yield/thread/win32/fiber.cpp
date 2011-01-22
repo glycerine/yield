@@ -35,80 +35,66 @@
 #include <Windows.h>
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace win32
-    {
-      HANDLE Fiber::first_fiber_handle = NULL;
+namespace yield {
+namespace thread {
+namespace win32 {
+HANDLE Fiber::first_fiber_handle = NULL;
 
 
-      Fiber::Fiber( Runnable& runnable )
-        : runnable( &runnable )
-      {
-        if ( first_fiber_handle == NULL )
-        {
-          first_fiber_handle = ConvertThreadToFiber( NULL );
-          if ( first_fiber_handle == NULL )
-            throw Exception();
-        }
-
-        handle = CreateFiber( 0, run, this );
-        if ( handle == NULL )
-          throw Exception();
-      }
-
-      Fiber::Fiber( HANDLE handle )
-        : handle( handle ), runnable( NULL )
-      { }
-
-      Fiber::~Fiber()
-      {
-        DeleteFiber( handle );
-      }
-
-      void* Fiber::getspecific( uintptr_t key )
-      {
-        return FlsGetValue( key );
-      }
-
-      uintptr_t Fiber::key_create()
-      {
-        return FlsAlloc( NULL );
-      }
-
-      bool Fiber::key_delete( uintptr_t key )
-      {
-        return FlsFree( key ) == 0;
-      }
-
-      Fiber* Fiber::self()
-      {
-        return new Fiber( GetCurrentFiber() );
-      }
-
-      void __stdcall Fiber::run( void* this_ )
-      {
-        static_cast<Fiber*>( this_ )->state = STATE_RUNNING;
-        static_cast<Fiber*>( this_ )->runnable->run();
-        static_cast<Fiber*>( this_ )->state = STATE_SUSPENDED;
-      }
-
-      bool Fiber::setspecific( uintptr_t key, void* value )
-      {
-        return FlsSetValue( key, value ) == TRUE;
-      }
-
-      void Fiber::yield()
-      {
-        SwitchToFiber( first_fiber_handle );
-      }
-
-      void Fiber::yield( Fiber& to_fiber )
-      {
-        SwitchToFiber( to_fiber );
-      }
-    }
+Fiber::Fiber( Runnable& runnable )
+  : runnable( &runnable ) {
+  if ( first_fiber_handle == NULL ) {
+    first_fiber_handle = ConvertThreadToFiber( NULL );
+    if ( first_fiber_handle == NULL )
+      throw Exception();
   }
+
+  handle = CreateFiber( 0, run, this );
+  if ( handle == NULL )
+    throw Exception();
+}
+
+Fiber::Fiber( HANDLE handle )
+  : handle( handle ), runnable( NULL )
+{ }
+
+Fiber::~Fiber() {
+  DeleteFiber( handle );
+}
+
+void* Fiber::getspecific( uintptr_t key ) {
+  return FlsGetValue( key );
+}
+
+uintptr_t Fiber::key_create() {
+  return FlsAlloc( NULL );
+}
+
+bool Fiber::key_delete( uintptr_t key ) {
+  return FlsFree( key ) == 0;
+}
+
+Fiber* Fiber::self() {
+  return new Fiber( GetCurrentFiber() );
+}
+
+void __stdcall Fiber::run( void* this_ ) {
+  static_cast<Fiber*>( this_ )->state = STATE_RUNNING;
+  static_cast<Fiber*>( this_ )->runnable->run();
+  static_cast<Fiber*>( this_ )->state = STATE_SUSPENDED;
+}
+
+bool Fiber::setspecific( uintptr_t key, void* value ) {
+  return FlsSetValue( key, value ) == TRUE;
+}
+
+void Fiber::yield() {
+  SwitchToFiber( first_fiber_handle );
+}
+
+void Fiber::yield( Fiber& to_fiber ) {
+  SwitchToFiber( to_fiber );
+}
+}
+}
 }

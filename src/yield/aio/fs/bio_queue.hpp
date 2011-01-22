@@ -35,22 +35,20 @@
 #include "../bio_queue.hpp"
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace fs
-    {
-      class BIOQueue : public yield::aio::BIOQueue
-      {
-      public:
-        bool associate( fd_t ) { return true; }
-
-        // yield::EventQueue
-        bool enqueue( YO_NEW_REF Event& event );
-      };
-    }
+namespace yield {
+namespace aio {
+namespace fs {
+class BIOQueue : public yield::aio::BIOQueue {
+public:
+  bool associate( fd_t ) {
+    return true;
   }
+
+  // yield::EventQueue
+  bool enqueue( YO_NEW_REF Event& event );
+};
+}
+}
 }
 
 

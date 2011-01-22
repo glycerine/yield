@@ -31,34 +31,27 @@
 #include "uuid.hpp"
 
 
-namespace yield
-{
-  namespace net
-  {
-    namespace sunos
-    {
-      UUID::UUID()
-      {
-        uuid_generate( uuid );
-      }
+namespace yield {
+namespace net {
+namespace sunos {
+UUID::UUID() {
+  uuid_generate( uuid );
+}
 
-      UUID::UUID( const string& uuid )
-      {
-        if ( uuid_parse( const_cast<char*>( uuid.c_str() ), this->uuid ) != 0 )
-          throw Exception();
-      }
+UUID::UUID( const string& uuid ) {
+  if ( uuid_parse( const_cast<char*>( uuid.c_str() ), this->uuid ) != 0 )
+    throw Exception();
+}
 
-      bool UUID::operator==( const UUID& other ) const
-      {
-        return uuid_compare( uuid, other.uuid ) == 0;
-      }
+bool UUID::operator==( const UUID& other ) const {
+  return uuid_compare( uuid, other.uuid ) == 0;
+}
 
-      UUID::operator string() const
-      {
-        char uuid_string[UUID_PRINTABLE_STRING_LENGTH];
-        uuid_unparse( uuid, uuid_string );
-        return uuid_string;
-      }
-    }
-  }
+UUID::operator string() const {
+  char uuid_string[UUID_PRINTABLE_STRING_LENGTH];
+  uuid_unparse( uuid, uuid_string );
+  return uuid_string;
+}
+}
+}
 }

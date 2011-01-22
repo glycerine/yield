@@ -34,144 +34,121 @@
 
 TEST_SUITE( StringBuffer );
 
-namespace yield
-{
-  TEST_EX( StringBuffer, capacity, BufferCapacityTest<StringBuffer> )
+namespace yield {
+TEST_EX( StringBuffer, capacity, BufferCapacityTest<StringBuffer> ) {
+  BufferCapacityTest<StringBuffer>::run();
+}
+
+TEST_EX( StringBuffer, copy, BufferCopyTest<StringBuffer> ) {
+  BufferCopyTest<StringBuffer>::run();
+}
+
+TEST_EX( StringBuffer, data, BufferDataTest<StringBuffer> ) {
+  BufferDataTest<StringBuffer>::run();
+}
+
+TEST_EX( StringBuffer, empty, BufferEmptyTest<StringBuffer> ) {
+  BufferEmptyTest<StringBuffer>::run();
+}
+
+TEST_EX( StringBuffer, get_next_buffer, BufferGetNextBufferTest<StringBuffer> ) {
+  BufferGetNextBufferTest<StringBuffer>::run();
+}
+
+TEST( StringBuffer, init_capacity ) {
   {
-    BufferCapacityTest<StringBuffer>::run();
+    auto_Object<StringBuffer> buffer = new StringBuffer( 1 );
+    throw_assert_eq( buffer->capacity(), 1 );
   }
 
-  TEST_EX( StringBuffer, copy, BufferCopyTest<StringBuffer> )
   {
-    BufferCopyTest<StringBuffer>::run();
-  }
-
-  TEST_EX( StringBuffer, data, BufferDataTest<StringBuffer> )
-  {
-    BufferDataTest<StringBuffer>::run();
-  }
-
-  TEST_EX( StringBuffer, empty, BufferEmptyTest<StringBuffer> )
-  {
-    BufferEmptyTest<StringBuffer>::run();
-  }
-
-  TEST_EX( StringBuffer, get_next_buffer, BufferGetNextBufferTest<StringBuffer> )
-  {
-    BufferGetNextBufferTest<StringBuffer>::run();
-  }
-
-  TEST( StringBuffer, init_capacity )
-  {
-    {
-      auto_Object<StringBuffer> buffer = new StringBuffer( 1 );
-      throw_assert_eq( buffer->capacity(), 1 );
-    }
-
-    {
-      auto_Object<StringBuffer> buffer = new StringBuffer( 4096 );
-      throw_assert_eq( buffer->capacity(), 4096 );
-    }
-
-    {
-      auto_Object<StringBuffer> buffer = new StringBuffer( 0 );
-      throw_assert_eq( buffer->capacity(), 0 );
-    }
-  }
-
-  TEST( StringBuffer, init_capacity_data_size )
-  {
-    auto_Object<StringBuffer> buffer = new StringBuffer( 4096, "test", 4 );
+    auto_Object<StringBuffer> buffer = new StringBuffer( 4096 );
     throw_assert_eq( buffer->capacity(), 4096 );
-    throw_assert_eq( strncmp( *buffer, "test", 4 ), 0 );
-    throw_assert_eq( buffer->size(), 4 );
   }
 
-  TEST_EX( StringBuffer, init_c_string, BufferInitCStringTest<StringBuffer> )
   {
-    BufferInitCStringTest<StringBuffer>::run();
+    auto_Object<StringBuffer> buffer = new StringBuffer( 0 );
+    throw_assert_eq( buffer->capacity(), 0 );
   }
+}
 
-  TEST_EX( StringBuffer, init_string, BufferInitStringTest<StringBuffer> )
-  {
-    BufferInitStringTest<StringBuffer>::run();
-  }
+TEST( StringBuffer, init_capacity_data_size ) {
+  auto_Object<StringBuffer> buffer = new StringBuffer( 4096, "test", 4 );
+  throw_assert_eq( buffer->capacity(), 4096 );
+  throw_assert_eq( strncmp( *buffer, "test", 4 ), 0 );
+  throw_assert_eq( buffer->size(), 4 );
+}
 
-  TEST_EX( StringBuffer, operator_array, BufferOperatorArrayTest<StringBuffer> )
-  {
-    BufferOperatorArrayTest<StringBuffer>::run();
-  }
+TEST_EX( StringBuffer, init_c_string, BufferInitCStringTest<StringBuffer> ) {
+  BufferInitCStringTest<StringBuffer>::run();
+}
 
-  TEST_EX( StringBuffer, operator_cast, BufferOperatorCastTest<StringBuffer> )
-  {
-    BufferOperatorCastTest<StringBuffer>::run();
-  }
+TEST_EX( StringBuffer, init_string, BufferInitStringTest<StringBuffer> ) {
+  BufferInitStringTest<StringBuffer>::run();
+}
 
-  TEST_EX( StringBuffer, operator_equals, BufferOperatorEqualsTest<StringBuffer> )
-  {
-    BufferOperatorEqualsTest<StringBuffer>::run();
-  }
+TEST_EX( StringBuffer, operator_array, BufferOperatorArrayTest<StringBuffer> ) {
+  BufferOperatorArrayTest<StringBuffer>::run();
+}
 
-  TEST_EX( StringBuffer, put_buffer, BufferPutBufferTest<StringBuffer> )
-  {
-    BufferPutBufferTest<StringBuffer>::run();
-  }
+TEST_EX( StringBuffer, operator_cast, BufferOperatorCastTest<StringBuffer> ) {
+  BufferOperatorCastTest<StringBuffer>::run();
+}
 
-  TEST_EX( StringBuffer, put_char, BufferPutCharTest<StringBuffer> )
-  {
-    BufferPutCharTest<StringBuffer>::run();
-  }
+TEST_EX( StringBuffer, operator_equals, BufferOperatorEqualsTest<StringBuffer> ) {
+  BufferOperatorEqualsTest<StringBuffer>::run();
+}
 
-  TEST_EX( StringBuffer, put_c_string, BufferPutCStringTest<StringBuffer> )
-  {
-    BufferPutCStringTest<StringBuffer>::run();
-  }
+TEST_EX( StringBuffer, put_buffer, BufferPutBufferTest<StringBuffer> ) {
+  BufferPutBufferTest<StringBuffer>::run();
+}
 
-  TEST_EX( StringBuffer, put_c_string_size, BufferPutCStringSizeTest<StringBuffer> )
-  {
-    BufferPutCStringSizeTest<StringBuffer>::run();
-  }
+TEST_EX( StringBuffer, put_char, BufferPutCharTest<StringBuffer> ) {
+  BufferPutCharTest<StringBuffer>::run();
+}
 
-  TEST_EX( StringBuffer, put_iovec, BufferPutIOVecTest<StringBuffer> )
-  {
-    BufferPutIOVecTest<StringBuffer>::run();
-  }
+TEST_EX( StringBuffer, put_c_string, BufferPutCStringTest<StringBuffer> ) {
+  BufferPutCStringTest<StringBuffer>::run();
+}
 
-  TEST_EX( StringBuffer, put_string, BufferPutStringTest<StringBuffer> )
-  {
-    BufferPutStringTest<StringBuffer>::run();
-  }
+TEST_EX( StringBuffer, put_c_string_size, BufferPutCStringSizeTest<StringBuffer> ) {
+  BufferPutCStringSizeTest<StringBuffer>::run();
+}
 
-  TEST( StringBuffer, reserve )
-  {
-    //auto_Object<StringBuffer> buffer = new StringBuffer( 0 );
-    //throw_assert_eq( buffer->capacity(), 0 );
+TEST_EX( StringBuffer, put_iovec, BufferPutIOVecTest<StringBuffer> ) {
+  BufferPutIOVecTest<StringBuffer>::run();
+}
 
-    //buffer->reserve( 0 );
-    //throw_assert_eq( buffer->capacity(), 0 );
+TEST_EX( StringBuffer, put_string, BufferPutStringTest<StringBuffer> ) {
+  BufferPutStringTest<StringBuffer>::run();
+}
 
-    //buffer->reserve( 1 );
-    //throw_assert_eq( buffer->capacity(), StringBuffer::getbuffersize() );
+TEST( StringBuffer, reserve ) {
+  //auto_Object<StringBuffer> buffer = new StringBuffer( 0 );
+  //throw_assert_eq( buffer->capacity(), 0 );
 
-    //buffer->reserve( buffer->capacity() + 1 );
-    //throw_assert_eq( buffer->capacity(), StringBuffer::getbuffersize()*2 );
+  //buffer->reserve( 0 );
+  //throw_assert_eq( buffer->capacity(), 0 );
 
-    //buffer->reserve( StringBuffer::getbuffersize() );
-    //throw_assert_eq( buffer->capacity(), StringBuffer::getbuffersize()*2 );
-  }
+  //buffer->reserve( 1 );
+  //throw_assert_eq( buffer->capacity(), StringBuffer::getbuffersize() );
 
-  TEST_EX( StringBuffer, resize, BufferResizeTest<StringBuffer> )
-  {
-    BufferResizeTest<StringBuffer>::run();
-  }
+  //buffer->reserve( buffer->capacity() + 1 );
+  //throw_assert_eq( buffer->capacity(), StringBuffer::getbuffersize()*2 );
 
-  TEST_EX( StringBuffer, set_next_buffer, BufferSetNextBufferTest<StringBuffer> )
-  {
-    BufferSetNextBufferTest<StringBuffer>::run();
-  }
+  //buffer->reserve( StringBuffer::getbuffersize() );
+  //throw_assert_eq( buffer->capacity(), StringBuffer::getbuffersize()*2 );
+}
 
-  TEST_EX( StringBuffer, size, BufferSizeTest<StringBuffer> )
-  {
-    BufferSizeTest<StringBuffer>::run();
-  }
+TEST_EX( StringBuffer, resize, BufferResizeTest<StringBuffer> ) {
+  BufferResizeTest<StringBuffer>::run();
+}
+
+TEST_EX( StringBuffer, set_next_buffer, BufferSetNextBufferTest<StringBuffer> ) {
+  BufferSetNextBufferTest<StringBuffer>::run();
+}
+
+TEST_EX( StringBuffer, size, BufferSizeTest<StringBuffer> ) {
+  BufferSizeTest<StringBuffer>::run();
+}
 }

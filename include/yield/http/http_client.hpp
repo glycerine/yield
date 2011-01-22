@@ -35,64 +35,65 @@
 #include "yield/http/stream_socket_client.hpp"
 
 
-namespace yield
-{
-  class Log;
-  namespace stage { class Stage; }
+namespace yield {
+class Log;
+namespace stage {
+class Stage;
+}
 
 
-  namespace http
-  {
-    class HTTPRequest;
-    class HTTPResponse;
+namespace http {
+class HTTPRequest;
+class HTTPResponse;
 
 
-    class HTTPClient : public StreamSocketClient
-    {
-    public:
-      HTTPClient
-      (
-        const yield::net::URI& uri,
-        Log* error_log = NULL,
-        Log* trace_log = NULL
-      );
+class HTTPClient : public StreamSocketClient {
+public:
+  HTTPClient
+  (
+    const yield::net::URI& uri,
+    Log* error_log = NULL,
+    Log* trace_log = NULL
+  );
 
-      HTTPClient
-      (
-        const Configuration& configuration,
-        const yield::net::URI& uri,
-        Log* reror_log = NULL,
-        Log* trace_log = NULL
-      );
+  HTTPClient
+  (
+    const Configuration& configuration,
+    const yield::net::URI& uri,
+    Log* reror_log = NULL,
+    Log* trace_log = NULL
+  );
 
-      ~HTTPClient();
+  ~HTTPClient();
 
-      static YO_NEW_REF HTTPResponse& GET( const yield::net::URI& uri );
+  static YO_NEW_REF HTTPResponse& GET( const yield::net::URI& uri );
 
-      //static
-      //YO_NEW_REF HTTPResponse&
-      //PUT
-      //(
-      //  const yield::net::URI& uri,
-      //  YO_NEW_REF Buffer& body
-      //);
+  //static
+  //YO_NEW_REF HTTPResponse&
+  //PUT
+  //(
+  //  const yield::net::URI& uri,
+  //  YO_NEW_REF Buffer& body
+  //);
 
-      // Object
-      HTTPClient& inc_ref() { return Object::inc_ref( *this ); }
-
-    private:
-      class Connection;
-
-    private:
-      void init();
-
-      // Stage
-      void service( YO_NEW_REF Event& event );
-
-    private:
-      vector<Connection*> connections;
-    };
+  // Object
+  HTTPClient& inc_ref() {
+    return Object::inc_ref( *this );
   }
+
+private:
+  class Connection;
+
+private:
+  void init();
+
+  // Stage
+  void service( YO_NEW_REF Event& event );
+
+private:
+  vector<Connection*> connections;
+};
+}
 }
 
 

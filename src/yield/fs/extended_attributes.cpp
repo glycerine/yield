@@ -35,167 +35,160 @@
 #include "yield/fs/path.hpp"
 
 
-namespace yield
-{
-  namespace fs
-  {
-    bool ExtendedAttributes::get( const char* name, string& out_value )
-    {
-      ssize_t estimated_value_len = get( name, NULL, 0 );
-      if ( estimated_value_len != -1 )
-      {
-        char* value = new char[estimated_value_len];
-        ssize_t value_len = get( name, value, estimated_value_len );
-        debug_assert_eq( value_len, estimated_value_len );
-        out_value.assign( value, value_len );
-        delete [] value;
-        return true;
-      }
-      else
-        return false;
-    }
+namespace yield {
+namespace fs {
+bool ExtendedAttributes::get( const char* name, string& out_value ) {
+  ssize_t estimated_value_len = get( name, NULL, 0 );
+  if ( estimated_value_len != -1 ) {
+    char* value = new char[estimated_value_len];
+    ssize_t value_len = get( name, value, estimated_value_len );
+    debug_assert_eq( value_len, estimated_value_len );
+    out_value.assign( value, value_len );
+    delete [] value;
+    return true;
+  } else
+    return false;
+}
 
-    bool ExtendedAttributes::set( const char* name, const char* value, int flags )
-    {
-      return set( name, value, strlen( value ), flags );
-    }
+bool ExtendedAttributes::set( const char* name, const char* value, int flags ) {
+  return set( name, value, strlen( value ), flags );
+}
 
-    bool
-    ExtendedAttributes::set
-    (
-      const char* name,
-      const string& value,
-      int flags
-    )
-    {
-      return set( name, value.c_str(), value.size(), flags );
-    }
+bool
+ExtendedAttributes::set
+(
+  const char* name,
+  const string& value,
+  int flags
+) {
+  return set( name, value.c_str(), value.size(), flags );
+}
 
-    //ssize_t
-    //ExtendedAttributes::trace_get
-    //(
-    //  Log& log,
-    //  const Path& path,
-    //  const char* name,
-    //  void* value,
-    //  size_t size,
-    //  ssize_t ret
-    //)
-    //{
-    //  uint32_t last_error_code = Exception::get_last_error_code();
+//ssize_t
+//ExtendedAttributes::trace_get
+//(
+//  Log& log,
+//  const Path& path,
+//  const char* name,
+//  void* value,
+//  size_t size,
+//  ssize_t ret
+//)
+//{
+//  uint32_t last_error_code = Exception::get_last_error_code();
 
-    //  if ( ret != -1 )
-    //  {
-    //    if ( value == NULL )
-    //    {
-    //      Log::Stream log_stream = log.get_stream( Log::INFO );
-    //      log_stream <<
-    //        "ExtendedAttributes::get( " << path << ", " << name << " ) -> " <<
-    //        static_cast<size_t>( ret ) << ".";
-    //    }
-    //    else
-    //    {
-    //      log.get_stream( Log::INFO ) <<
-    //        "ExtendedAttributes::get( " << path << ", " << name << " ) -> ";
-    //      log.write( value, size, Log::INFO );
-    //    }
-    //  }
-    //  else
-    //  {
-    //    log.get_stream( Log::INFO ) <<
-    //      "ExtendedAttributes::get( " << path << ", " << name << " ) -> failed: ";
-    //       Exception( last_error_code );
-    //  }
+//  if ( ret != -1 )
+//  {
+//    if ( value == NULL )
+//    {
+//      Log::Stream log_stream = log.get_stream( Log::INFO );
+//      log_stream <<
+//        "ExtendedAttributes::get( " << path << ", " << name << " ) -> " <<
+//        static_cast<size_t>( ret ) << ".";
+//    }
+//    else
+//    {
+//      log.get_stream( Log::INFO ) <<
+//        "ExtendedAttributes::get( " << path << ", " << name << " ) -> ";
+//      log.write( value, size, Log::INFO );
+//    }
+//  }
+//  else
+//  {
+//    log.get_stream( Log::INFO ) <<
+//      "ExtendedAttributes::get( " << path << ", " << name << " ) -> failed: ";
+//       Exception( last_error_code );
+//  }
 
-    //  Exception::set_last_error_code( last_error_code );
+//  Exception::set_last_error_code( last_error_code );
 
-    //  return ret;
-    //}
+//  return ret;
+//}
 
-    //bool
-    //ExtendedAttributes::trace_list
-    //(
-    //  Log& log,
-    //  const Path& path,
-    //  vector<string>& out_names,
-    //  bool ret
-    //)
-    //{
-    //  uint32_t last_error_code = Exception::get_last_error_code();
+//bool
+//ExtendedAttributes::trace_list
+//(
+//  Log& log,
+//  const Path& path,
+//  vector<string>& out_names,
+//  bool ret
+//)
+//{
+//  uint32_t last_error_code = Exception::get_last_error_code();
 
-    //  {
-    //    Log::Stream log_stream = log.get_stream( Log::INFO );
-    //    log_stream << "ExtendedAttributes::list( " << path << " ) -> ";
-    //    if ( ret )
-    //    {
-    //      log_stream << "[ ";
-    //      for
-    //      (
-    //        vector<string>::const_iterator name_i = out_names.begin();
-    //        name_i != out_names.end();
-    //        ++name_i
-    //      )
-    //        log_stream << *name_i << ' ';
-    //      log_stream << "].";
-    //    }
-    //    else
-    //      log_stream << "failed: " << Exception( last_error_code ) << ".";
-    //  }
+//  {
+//    Log::Stream log_stream = log.get_stream( Log::INFO );
+//    log_stream << "ExtendedAttributes::list( " << path << " ) -> ";
+//    if ( ret )
+//    {
+//      log_stream << "[ ";
+//      for
+//      (
+//        vector<string>::const_iterator name_i = out_names.begin();
+//        name_i != out_names.end();
+//        ++name_i
+//      )
+//        log_stream << *name_i << ' ';
+//      log_stream << "].";
+//    }
+//    else
+//      log_stream << "failed: " << Exception( last_error_code ) << ".";
+//  }
 
-    //  Exception::set_last_error_code( last_error_code );
+//  Exception::set_last_error_code( last_error_code );
 
-    //  return ret;
-    //}
+//  return ret;
+//}
 
-    //bool
-    //ExtendedAttributes::trace_remove
-    //(
-    //  Log& log,
-    //  const Path& path,
-    //  const char* name,
-    //  bool ret
-    //)
-    //{
-    //  uint32_t last_error_code = Exception::get_last_error_code();
+//bool
+//ExtendedAttributes::trace_remove
+//(
+//  Log& log,
+//  const Path& path,
+//  const char* name,
+//  bool ret
+//)
+//{
+//  uint32_t last_error_code = Exception::get_last_error_code();
 
-    //  {
-    //    Log::Stream log_stream = log.get_stream( Log::INFO );
-    //    log_stream << "ExtendedAttributes::remove( " <<
-    //      path << ", " << name << " ) -> ";
-    //    if ( ret ) log_stream << "succeeded.";
-    //    else log_stream << "failed: " << Exception( last_error_code ) << ".";
-    //  }
+//  {
+//    Log::Stream log_stream = log.get_stream( Log::INFO );
+//    log_stream << "ExtendedAttributes::remove( " <<
+//      path << ", " << name << " ) -> ";
+//    if ( ret ) log_stream << "succeeded.";
+//    else log_stream << "failed: " << Exception( last_error_code ) << ".";
+//  }
 
-    //  Exception::set_last_error_code( last_error_code );
+//  Exception::set_last_error_code( last_error_code );
 
-    //  return ret;
-    //}
+//  return ret;
+//}
 
-    //bool
-    //ExtendedAttributes::trace_set
-    //(
-    //  Log& log,
-    //  const Path& path,
-    //  const char* name,
-    //  const void* value,
-    //  size_t size,
-    //  int flags,
-    //  bool ret
-    //)
-    //{
-    //  uint32_t last_error_code = Exception::get_last_error_code();
+//bool
+//ExtendedAttributes::trace_set
+//(
+//  Log& log,
+//  const Path& path,
+//  const char* name,
+//  const void* value,
+//  size_t size,
+//  int flags,
+//  bool ret
+//)
+//{
+//  uint32_t last_error_code = Exception::get_last_error_code();
 
-    //  {
-    //    Log::Stream log_stream = log.get_stream( Log::INFO );
-    //    log_stream << "ExtendedAttributes::set( " << path << ", " << name
-    //      << ", value, " << ", " << size << ", " << flags << " ) -> ";
-    //    if ( ret ) log_stream << "succeeded.";
-    //    else log_stream << "failed: " << Exception( last_error_code ) << ".";
-    //  }
+//  {
+//    Log::Stream log_stream = log.get_stream( Log::INFO );
+//    log_stream << "ExtendedAttributes::set( " << path << ", " << name
+//      << ", value, " << ", " << size << ", " << flags << " ) -> ";
+//    if ( ret ) log_stream << "succeeded.";
+//    else log_stream << "failed: " << Exception( last_error_code ) << ".";
+//  }
 
-    //  Exception::set_last_error_code( last_error_code );
+//  Exception::set_last_error_code( last_error_code );
 
-    //  return ret;
-    //}
-  }
+//  return ret;
+//}
+}
 }

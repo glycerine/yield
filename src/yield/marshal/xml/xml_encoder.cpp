@@ -34,263 +34,231 @@
 
 extern "C"
 {
-  #include "genx.h"
+#include "genx.h"
 };
 
 #include <sstream> // For std::ostringstream
 
 
-namespace yield
-{
-  namespace marshal
-  {
-    namespace xml
-    {
-      static genxStatus genx_send( void* userData, constUtf8 s )
-      {
-        static_cast<Buffer*>( userData )->put
-        (
-          reinterpret_cast<const char*>( s )
-        );
+namespace yield {
+namespace marshal {
+namespace xml {
+static genxStatus genx_send( void* userData, constUtf8 s ) {
+  static_cast<Buffer*>( userData )->put
+  (
+    reinterpret_cast<const char*>( s )
+  );
 
-        return GENX_SUCCESS;
-      }
+  return GENX_SUCCESS;
+}
 
-      static
-      genxStatus
-      genx_sendBounded
-      (
-        void* userData,
-        constUtf8 start,
-        constUtf8 end
-      )
-      {
-        static_cast<Buffer*>( userData )->put( start, end - start );
-        return GENX_SUCCESS;
-      }
+static
+genxStatus
+genx_sendBounded
+(
+  void* userData,
+  constUtf8 start,
+  constUtf8 end
+) {
+  static_cast<Buffer*>( userData )->put( start, end - start );
+  return GENX_SUCCESS;
+}
 
-      static genxStatus genx_flush( void* )
-      {
-        return GENX_SUCCESS;
-      }
+static genxStatus genx_flush( void* ) {
+  return GENX_SUCCESS;
+}
 
-      static genxSender genx_sender;
+static genxSender genx_sender;
 
 
-      XMLEncoder::XMLEncoder()
-        : buffer( *new StringBuffer )
-      {
-        init();
-      }
+XMLEncoder::XMLEncoder()
+  : buffer( *new StringBuffer ) {
+  init();
+}
 
-      XMLEncoder::XMLEncoder( Buffer& buffer )
-        : buffer( buffer.inc_ref() )
-      {
-        init();
-      }
+XMLEncoder::XMLEncoder( Buffer& buffer )
+  : buffer( buffer.inc_ref() ) {
+  init();
+}
 
-      XMLEncoder::~XMLEncoder()
-      {
-        genxDispose( writer );
-        Buffer::dec_ref( buffer );
-      }
+XMLEncoder::~XMLEncoder() {
+  genxDispose( writer );
+  Buffer::dec_ref( buffer );
+}
 
-      void
-      XMLEncoder::add_attribute
-      (
-        const char* xmlns,
-        const char* name,
-        bool value
-      )
-      {
-        if ( value )
-          add_attribute( xmlns, name, "true" );
-        else
-          add_attribute( xmlns, name, "false" );
-      }
+void
+XMLEncoder::add_attribute
+(
+  const char* xmlns,
+  const char* name,
+  bool value
+) {
+  if ( value )
+    add_attribute( xmlns, name, "true" );
+  else
+    add_attribute( xmlns, name, "false" );
+}
 
-      void
-      XMLEncoder::add_attribute
-      (
-        const char* xmlns,
-        const char* name,
-        double value
-      )
-      {
-        if ( value == 0.0 )
-          add_attribute( xmlns, name, "0.0" );
-        else
-        {
-          std::ostringstream value_oss;
-          value_oss << value;
-          add_attribute( xmlns, name, value_oss.str() );
-        }
-      }
-
-      void
-      XMLEncoder::add_attribute
-      (
-        const char* xmlns,
-        const char* name,
-        int64_t value
-      )
-      {
-        if ( value == 0 )
-          add_attribute( xmlns, name, "0" );
-        else
-        {
-          std::ostringstream value_oss;
-          value_oss << value;
-          add_attribute( xmlns, name, value_oss.str() );
-        }
-      }
-
-      void
-      XMLEncoder::add_attribute
-      (
-        const char* xmlns,
-        const char* name,
-        const char* value
-      )
-      {
-        genxStatus status
-          = genxAddAttributeLiteral
-            (
-              writer,
-              reinterpret_cast<constUtf8>( xmlns ),
-              reinterpret_cast<constUtf8>( name ),
-              reinterpret_cast<constUtf8>( value )
-            );
-
-        debug_assert_eq( status, GENX_SUCCESS );
-      }
-
-      void
-      XMLEncoder::add_attribute
-      (
-        const char* xmlns,
-        const char* name,
-        uint64_t value
-      )
-      {
-        if ( value == 0 )
-          add_attribute( xmlns, name, "0" );
-        else
-        {
-          std::ostringstream value_oss;
-          value_oss << value;
-          add_attribute( xmlns, name, value_oss.str() );
-        }
-      }
-
-      void XMLEncoder::add_text( bool text )
-      {
-        if ( text )
-          add_text( "true", 4 );
-        else
-          add_text( "false", 5 );
-      }
-
-      void XMLEncoder::add_text( double text )
-      {
-        if ( text == 0.0 )
-          add_text( "0.0", 3 );
-        else
-        {
-          std::ostringstream value_oss;
-          value_oss << text;
-          add_text( value_oss.str() );
-        }
-      }
-
-      void XMLEncoder::add_text( int64_t text )
-      {
-        if ( text == 0 )
-          add_text( "0", 1 );
-        else
-        {
-          std::ostringstream value_oss;
-          value_oss << text;
-          add_text( value_oss.str() );
-        }
-      }
-
-      void XMLEncoder::add_text( const char* text )
-      {
-        add_text( text, strlen( text ) );
-      }
-
-      void XMLEncoder::add_text( const string& text )
-      {
-        add_text( text.data(), text.size() );
-      }
-
-      void XMLEncoder::add_text( const char* text, size_t value_len )
-      {
-        genxStatus status
-          = genxAddCountedText
-            (
-              writer,
-              reinterpret_cast<constUtf8>( text ),
-              value_len
-            );
-
-        debug_assert_eq( status, GENX_SUCCESS );
-      }
-
-      void XMLEncoder::add_text( uint64_t text )
-      {
-        if ( text == 0 )
-          add_text( "0", 1 );
-        else
-        {
-          std::ostringstream value_oss;
-          value_oss << text;
-          add_text( value_oss.str() );
-        }
-      }
-
-      void XMLEncoder::end_element()
-      {
-        genxStatus status = genxEndElement( writer );
-        debug_assert_eq( status, GENX_SUCCESS );
-      }
-
-      void XMLEncoder::finalize()
-      {
-        genxStatus status = genxEndDocument( writer );
-        debug_assert_eq( status, GENX_SUCCESS );
-      }
-
-      Buffer& XMLEncoder::get_buffer()
-      {
-        finalize();
-        return buffer;
-      }
-
-      void XMLEncoder::init()
-      {
-        writer = genxNew( NULL, NULL, &buffer );
-
-        genx_sender.flush = genx_flush;
-        genx_sender.send = genx_send;
-        genx_sender.sendBounded = genx_sendBounded;
-
-        genxStatus status = genxStartDocSender( writer, &genx_sender );
-        debug_assert_eq( status, GENX_SUCCESS );
-      }
-
-      void XMLEncoder::start_element( const char* xmlns, const char* type )
-      {
-        genxStatus status
-          = genxStartElementLiteral
-            (
-              writer,
-              reinterpret_cast<constUtf8>( xmlns ),
-              reinterpret_cast<constUtf8>( type )
-            );
-        debug_assert_eq( status, GENX_SUCCESS );
-      }
-    }
+void
+XMLEncoder::add_attribute
+(
+  const char* xmlns,
+  const char* name,
+  double value
+) {
+  if ( value == 0.0 )
+    add_attribute( xmlns, name, "0.0" );
+  else {
+    std::ostringstream value_oss;
+    value_oss << value;
+    add_attribute( xmlns, name, value_oss.str() );
   }
+}
+
+void
+XMLEncoder::add_attribute
+(
+  const char* xmlns,
+  const char* name,
+  int64_t value
+) {
+  if ( value == 0 )
+    add_attribute( xmlns, name, "0" );
+  else {
+    std::ostringstream value_oss;
+    value_oss << value;
+    add_attribute( xmlns, name, value_oss.str() );
+  }
+}
+
+void
+XMLEncoder::add_attribute
+(
+  const char* xmlns,
+  const char* name,
+  const char* value
+) {
+  genxStatus status
+  = genxAddAttributeLiteral
+    (
+      writer,
+      reinterpret_cast<constUtf8>( xmlns ),
+      reinterpret_cast<constUtf8>( name ),
+      reinterpret_cast<constUtf8>( value )
+    );
+
+  debug_assert_eq( status, GENX_SUCCESS );
+}
+
+void
+XMLEncoder::add_attribute
+(
+  const char* xmlns,
+  const char* name,
+  uint64_t value
+) {
+  if ( value == 0 )
+    add_attribute( xmlns, name, "0" );
+  else {
+    std::ostringstream value_oss;
+    value_oss << value;
+    add_attribute( xmlns, name, value_oss.str() );
+  }
+}
+
+void XMLEncoder::add_text( bool text ) {
+  if ( text )
+    add_text( "true", 4 );
+  else
+    add_text( "false", 5 );
+}
+
+void XMLEncoder::add_text( double text ) {
+  if ( text == 0.0 )
+    add_text( "0.0", 3 );
+  else {
+    std::ostringstream value_oss;
+    value_oss << text;
+    add_text( value_oss.str() );
+  }
+}
+
+void XMLEncoder::add_text( int64_t text ) {
+  if ( text == 0 )
+    add_text( "0", 1 );
+  else {
+    std::ostringstream value_oss;
+    value_oss << text;
+    add_text( value_oss.str() );
+  }
+}
+
+void XMLEncoder::add_text( const char* text ) {
+  add_text( text, strlen( text ) );
+}
+
+void XMLEncoder::add_text( const string& text ) {
+  add_text( text.data(), text.size() );
+}
+
+void XMLEncoder::add_text( const char* text, size_t value_len ) {
+  genxStatus status
+  = genxAddCountedText
+    (
+      writer,
+      reinterpret_cast<constUtf8>( text ),
+      value_len
+    );
+
+  debug_assert_eq( status, GENX_SUCCESS );
+}
+
+void XMLEncoder::add_text( uint64_t text ) {
+  if ( text == 0 )
+    add_text( "0", 1 );
+  else {
+    std::ostringstream value_oss;
+    value_oss << text;
+    add_text( value_oss.str() );
+  }
+}
+
+void XMLEncoder::end_element() {
+  genxStatus status = genxEndElement( writer );
+  debug_assert_eq( status, GENX_SUCCESS );
+}
+
+void XMLEncoder::finalize() {
+  genxStatus status = genxEndDocument( writer );
+  debug_assert_eq( status, GENX_SUCCESS );
+}
+
+Buffer& XMLEncoder::get_buffer() {
+  finalize();
+  return buffer;
+}
+
+void XMLEncoder::init() {
+  writer = genxNew( NULL, NULL, &buffer );
+
+  genx_sender.flush = genx_flush;
+  genx_sender.send = genx_send;
+  genx_sender.sendBounded = genx_sendBounded;
+
+  genxStatus status = genxStartDocSender( writer, &genx_sender );
+  debug_assert_eq( status, GENX_SUCCESS );
+}
+
+void XMLEncoder::start_element( const char* xmlns, const char* type ) {
+  genxStatus status
+  = genxStartElementLiteral
+    (
+      writer,
+      reinterpret_cast<constUtf8>( xmlns ),
+      reinterpret_cast<constUtf8>( type )
+    );
+  debug_assert_eq( status, GENX_SUCCESS );
+}
+}
+}
 }

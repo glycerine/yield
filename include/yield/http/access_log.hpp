@@ -38,65 +38,63 @@
 #include <ostream>
 
 
-namespace yield
-{
-  namespace fs { class File; }
+namespace yield {
+namespace fs {
+class File;
+}
 
 
-  namespace http
-  {
-    class HTTPRequest;
-    class HTTPResponse;
+namespace http {
+class HTTPRequest;
+class HTTPResponse;
 
 
-    class AccessLog : public Object
-    {
-    public:
-      class Format
-      {
-      public:
-        virtual string
-        operator()
-        (
-          const HTTPRequest&,
-          const HTTPResponse&
-        ) const = 0;
-      };
+class AccessLog : public Object {
+public:
+  class Format {
+  public:
+    virtual string
+    operator()
+    (
+      const HTTPRequest&,
+      const HTTPResponse&
+    ) const = 0;
+  };
 
-      class CommonFormat : public Format
-      {
-      public:
-        virtual string
-        operator()
-        (
-          const HTTPRequest&,
-          const HTTPResponse&
-        ) const;
-      };
+  class CommonFormat : public Format {
+  public:
+    virtual string
+    operator()
+    (
+      const HTTPRequest&,
+      const HTTPResponse&
+    ) const;
+  };
 
-      class CombinedFormat : public CommonFormat
-      {
-      public:
-        string operator()( const HTTPRequest&, const HTTPResponse& ) const;
-      };
+  class CombinedFormat : public CommonFormat {
+  public:
+    string operator()( const HTTPRequest&, const HTTPResponse& ) const;
+  };
 
-    public:
-      virtual ~AccessLog();
+public:
+  virtual ~AccessLog();
 
-      static AccessLog& open( const yield::fs::Path& file_path, Format* = NULL );
-      static AccessLog& open( std::ostream&, Format* = NULL );
+  static AccessLog& open( const yield::fs::Path& file_path, Format* = NULL );
+  static AccessLog& open( std::ostream&, Format* = NULL );
 
-      virtual void write( const HTTPRequest&, const HTTPResponse& ) = 0;
+  virtual void write( const HTTPRequest&, const HTTPResponse& ) = 0;
 
-    protected:
-      AccessLog( Format& format );
+protected:
+  AccessLog( Format& format );
 
-      Format& get_format() { return format; }
-
-    private:
-      Format& format;
-    };
+  Format& get_format() {
+    return format;
   }
+
+private:
+  Format& format;
+};
+}
 }
 
 

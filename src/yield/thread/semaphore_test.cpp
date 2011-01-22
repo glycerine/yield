@@ -38,74 +38,63 @@
 
 TEST_SUITE( Semaphore );
 
-namespace yield
-{
-  namespace thread
-  {
-    class SemaphoreTest : public yunit::Test
-    {
-    public:
-      // Test
-      void setup()
-      {
-        semaphore = new Semaphore();
-      }
-
-      void teardown()
-      {
-        delete semaphore;
-        semaphore = NULL;
-      }
-
-    protected:
-      SemaphoreTest()
-      {
-        exit_count = 0;
-      }
-
-      static void thread_run( void* this_ )
-      {
-        static_cast<SemaphoreTest*>( this_ )->semaphore->wait();
-        static_cast<SemaphoreTest*>( this_ )->exit_count++;
-      }
-
-    protected:
-      Semaphore* semaphore;
-      uint8_t exit_count;
-    };
-
-
-    TEST_EX( Semaphore, threaded, SemaphoreTest )
-    {
-      semaphore->post();
-      auto_Object<Thread> thread = new Thread( thread_run, this );
-      while ( exit_count < 1 )
-        Thread::self()->yield();
-    }
-
-    TEST_EX( Semaphore, timedwait, SemaphoreTest )
-    {
-      semaphore->post();
-      throw_assert( semaphore->wait( 0.1 ) );
-      Time start_time( Time::now() );
-      semaphore->wait( 0.1 );
-      Time elapsed_time( Time::now() - start_time );
-      throw_assert_ge( elapsed_time, Time( 0.1 ) );
-    }
-
-    TEST_EX( Semaphore, trywait, SemaphoreTest )
-    {
-      semaphore->post();
-      throw_assert( semaphore->trywait() );
-      throw_assert_false( semaphore->trywait() );
-      semaphore->post();
-      throw_assert( semaphore->trywait() );
-    }
-
-    TEST_EX( Semaphore, wait, SemaphoreTest )
-    {
-      semaphore->post();
-      throw_assert( semaphore->wait() );
-    }
+namespace yield {
+namespace thread {
+class SemaphoreTest : public yunit::Test {
+public:
+  // Test
+  void setup() {
+    semaphore = new Semaphore();
   }
+
+  void teardown() {
+    delete semaphore;
+    semaphore = NULL;
+  }
+
+protected:
+  SemaphoreTest() {
+    exit_count = 0;
+  }
+
+  static void thread_run( void* this_ ) {
+    static_cast<SemaphoreTest*>( this_ )->semaphore->wait();
+    static_cast<SemaphoreTest*>( this_ )->exit_count++;
+  }
+
+protected:
+  Semaphore* semaphore;
+  uint8_t exit_count;
+};
+
+
+TEST_EX( Semaphore, threaded, SemaphoreTest ) {
+  semaphore->post();
+  auto_Object<Thread> thread = new Thread( thread_run, this );
+  while ( exit_count < 1 )
+    Thread::self()->yield();
+}
+
+TEST_EX( Semaphore, timedwait, SemaphoreTest ) {
+  semaphore->post();
+  throw_assert( semaphore->wait( 0.1 ) );
+  Time start_time( Time::now() );
+  semaphore->wait( 0.1 );
+  Time elapsed_time( Time::now() - start_time );
+  throw_assert_ge( elapsed_time, Time( 0.1 ) );
+}
+
+TEST_EX( Semaphore, trywait, SemaphoreTest ) {
+  semaphore->post();
+  throw_assert( semaphore->trywait() );
+  throw_assert_false( semaphore->trywait() );
+  semaphore->post();
+  throw_assert( semaphore->trywait() );
+}
+
+TEST_EX( Semaphore, wait, SemaphoreTest ) {
+  semaphore->post();
+  throw_assert( semaphore->wait() );
+}
+}
 }

@@ -35,28 +35,24 @@
 #include "yield/thread/runnable.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    class StaticRunnable : public Runnable
-    {
-    public:
-      StaticRunnable( void ( *run )( void* ), void* context = NULL )
-        : context( context ), _run( run )
-      { }
+namespace yield {
+namespace thread {
+class StaticRunnable : public Runnable {
+public:
+  StaticRunnable( void ( *run )( void* ), void* context = NULL )
+    : context( context ), _run( run )
+  { }
 
-      // Runnable
-      void run()
-      {
-        _run( context );
-      }
-
-    private:
-      void* context;
-      void ( *_run )( void* );
-    };
+  // Runnable
+  void run() {
+    _run( context );
   }
+
+private:
+  void* context;
+  void ( *_run )( void* );
+};
+}
 }
 
 

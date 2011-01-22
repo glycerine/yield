@@ -36,43 +36,45 @@
 #include "yield/fs/file.hpp"
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace fs
-    {
-      class setlkAIOCB : public AIOCB
-      {
-      public:
-        const static uint32_t TYPE_ID = 2934085911UL;
+namespace yield {
+namespace aio {
+namespace fs {
+class setlkAIOCB : public AIOCB {
+public:
+  const static uint32_t TYPE_ID = 2934085911UL;
 
-      public:
-        setlkAIOCB
-        (
-          yield::fs::File& file,
-          const yield::fs::File::Lock& flock_
-        )
-          : AIOCB( file, 0, flock_.get_start() ), flock_( flock_ )
-        { }
+public:
+  setlkAIOCB
+  (
+    yield::fs::File& file,
+    const yield::fs::File::Lock& flock_
+  )
+    : AIOCB( file, 0, flock_.get_start() ), flock_( flock_ )
+  { }
 
-        const yield::fs::File::Lock& get_flock() const { return flock_; }
-
-        // yield::Object
-        uint32_t get_type_id() const { return TYPE_ID; }
-        const char* get_type_name() const { return "yield::aio::fs::setlkAIOCB"; }
-
-        // yield::aio::AIOCB
-        #ifdef _WIN32
-          bool issue( yield::aio::win32::AIOQueue& );
-        #endif
-        RetryStatus retry();
-
-      private:
-        yield::fs::File::Lock flock_;
-      };
-    }
+  const yield::fs::File::Lock& get_flock() const {
+    return flock_;
   }
+
+  // yield::Object
+  uint32_t get_type_id() const {
+    return TYPE_ID;
+  }
+  const char* get_type_name() const {
+    return "yield::aio::fs::setlkAIOCB";
+  }
+
+  // yield::aio::AIOCB
+#ifdef _WIN32
+  bool issue( yield::aio::win32::AIOQueue& );
+#endif
+  RetryStatus retry();
+
+private:
+  yield::fs::File::Lock flock_;
+};
+}
+}
 }
 
 

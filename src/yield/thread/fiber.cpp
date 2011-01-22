@@ -29,70 +29,59 @@
 
 
 #if defined(_WIN32)
-  #include "win32/fiber.hpp"
+#include "win32/fiber.hpp"
 #elif defined(YIELD_HAVE_UNIX_PTH)
-  #include "unix/fiber.hpp"
+#include "unix/fiber.hpp"
 #endif
 #include "yield/thread/fiber.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    #if defined(_WIN32) || defined(YIELD_HAVE_UNIX_PTH)
-      Fiber::Fiber( Runnable& runnable )
-      {
-        #if defined(_WIN32)
-          pimpl = new win32::Fiber( runnable );
-        #elif defined(YIELD_HAVE_UNIX_PTH)
-          pimpl = new unix::Fiber( runnable );
-        #endif
-      }
+namespace yield {
+namespace thread {
+#if defined(_WIN32) || defined(YIELD_HAVE_UNIX_PTH)
+Fiber::Fiber( Runnable& runnable ) {
+#if defined(_WIN32)
+  pimpl = new win32::Fiber( runnable );
+#elif defined(YIELD_HAVE_UNIX_PTH)
+  pimpl = new unix::Fiber( runnable );
+#endif
+}
 
-      Fiber::~Fiber()
-      {
-        delete pimpl;
-      }
+Fiber::~Fiber() {
+  delete pimpl;
+}
 
-      void* Fiber::getspecific( uintptr_t key )
-      {
-        return pimpl->getspecific( key );
-      }
+void* Fiber::getspecific( uintptr_t key ) {
+  return pimpl->getspecific( key );
+}
 
-      uintptr_t Fiber::key_create()
-      {
-        return pimpl->key_create();
-      }
+uintptr_t Fiber::key_create() {
+  return pimpl->key_create();
+}
 
-      bool Fiber::key_delete( uintptr_t key )
-      {
-        return pimpl->key_delete( key );
-      }
+bool Fiber::key_delete( uintptr_t key ) {
+  return pimpl->key_delete( key );
+}
 
-      auto_Object<Fiber> Fiber::self()
-      {
-        #if defined(_WIN32)
-          return new Fiber( win32::Fiber::self() );
-        #elif defined(YIELD_HAVE_UNIX_PTH)
-          return new Fiber( unix::Fiber::self() );
-        #endif
-      }
+auto_Object<Fiber> Fiber::self() {
+#if defined(_WIN32)
+  return new Fiber( win32::Fiber::self() );
+#elif defined(YIELD_HAVE_UNIX_PTH)
+  return new Fiber( unix::Fiber::self() );
+#endif
+}
 
-      bool Fiber::setspecific( uintptr_t key, void* value )
-      {
-        return pimpl->setspecific( key, value );
-      }
+bool Fiber::setspecific( uintptr_t key, void* value ) {
+  return pimpl->setspecific( key, value );
+}
 
-      void Fiber::yield()
-      {
-        return pimpl->yield();
-      }
+void Fiber::yield() {
+  return pimpl->yield();
+}
 
-      void Fiber::yield( Fiber& to_fiber )
-      {
-        return pimpl->yield( *to_fiber.pimpl );
-      }
-    #endif
-  }
+void Fiber::yield( Fiber& to_fiber ) {
+  return pimpl->yield( *to_fiber.pimpl );
+}
+#endif
+}
 }

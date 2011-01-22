@@ -33,16 +33,12 @@
 #include <stdlib.h>
 
 
-namespace yield
-{
-  namespace process
-  {
-    namespace sunos
-    {
-      tstring Process::get_current_executable_file_path()
-      {
-        return getexecname();
-      }
-    }
-  }
+namespace yield {
+namespace process {
+namespace sunos {
+tstring Process::get_current_executable_file_path() {
+  return getexecname();
+}
+}
+}
 }

@@ -38,35 +38,36 @@
 #include <map>
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace net
-    {
-      namespace sockets
-      {
-        class AIOCB;
+namespace yield {
+namespace aio {
+namespace net {
+namespace sockets {
+class AIOCB;
 
 
-        class NBIOQueue : public EventQueue
-        {
-        public:
-          bool associate( socket_t ) { return true; }
-
-          // yield::EventQueue
-          YO_NEW_REF Event& dequeue() { return EventQueue::dequeue(); }
-          YO_NEW_REF Event* dequeue( const Time& timeout );
-          bool enqueue( YO_NEW_REF Event& );
-          YO_NEW_REF Event* trydequeue() { return EventQueue::trydequeue(); }
-
-        private:
-          std::map<socket_t, AIOCB*> issued_aiocbs;
-          yield::poll::SocketEventQueue socket_event_queue;
-        };
-      }
-    }
+class NBIOQueue : public EventQueue {
+public:
+  bool associate( socket_t ) {
+    return true;
   }
+
+  // yield::EventQueue
+  YO_NEW_REF Event& dequeue() {
+    return EventQueue::dequeue();
+  }
+  YO_NEW_REF Event* dequeue( const Time& timeout );
+  bool enqueue( YO_NEW_REF Event& );
+  YO_NEW_REF Event* trydequeue() {
+    return EventQueue::trydequeue();
+  }
+
+private:
+  std::map<socket_t, AIOCB*> issued_aiocbs;
+  yield::poll::SocketEventQueue socket_event_queue;
+};
+}
+}
+}
 }
 
 

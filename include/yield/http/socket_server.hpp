@@ -36,23 +36,20 @@
 #include "yield/http/socket_peer.hpp"
 
 
-namespace yield
-{
-  namespace http
-  {
-    class SocketServer : public SocketPeer
-    {
-    public:
-      void serve_forever();
+namespace yield {
+namespace http {
+class SocketServer : public SocketPeer {
+public:
+  void serve_forever();
 
-    protected:
-      SocketServer( Log* error_log, Log* trace_log )
-        : SocketPeer( error_log, trace_log )
-      { }
+protected:
+  SocketServer( Log* error_log, Log* trace_log )
+    : SocketPeer( error_log, trace_log )
+  { }
 
-      virtual ~SocketServer() { }
-    };
-  }
+  virtual ~SocketServer() { }
+};
+}
 }
 
 

@@ -35,98 +35,102 @@
 #include "yield/object.hpp"
 
 
-namespace yield
-{
-  namespace process
-  {
-    // Modelled after Python's optparse.OptionParser class
-    class OptionParser : public Object
-    {
-    public:
-      class Option
-      {
-      public:
-        Option
-        (
-          const string& option,
-          const string& help,
-          bool require_argument = true
-        );
+namespace yield {
+namespace process {
+// Modelled after Python's optparse.OptionParser class
+class OptionParser : public Object {
+public:
+  class Option {
+  public:
+    Option
+    (
+      const string& option,
+      const string& help,
+      bool require_argument = true
+    );
 
-        Option( const string& option, bool require_argument = true );
+    Option( const string& option, bool require_argument = true );
 
-        const string& get_help() const { return help; }
-        bool get_require_argument() const { return require_argument; }
+    const string& get_help() const {
+      return help;
+    }
+    bool get_require_argument() const {
+      return require_argument;
+    }
 
-        operator const char*() const { return option.c_str(); }
-        operator const string&() const { return option; }
-        bool operator==( const string& option ) const;
-        bool operator==( const char* option ) const;
-        bool operator==( const Option& other ) const;
-        bool operator<( const Option& other ) const; // For sorting
+    operator const char*() const {
+      return option.c_str();
+    }
+    operator const string&() const {
+      return option;
+    }
+    bool operator==( const string& option ) const;
+    bool operator==( const char* option ) const;
+    bool operator==( const Option& other ) const;
+    bool operator<( const Option& other ) const; // For sorting
 
-      private:
-        string help, option;
-        bool require_argument;
-      };
+  private:
+    string help, option;
+    bool require_argument;
+  };
 
-      class Options : public vector<Option>
-      {
-      public:
-        void add
-        (
-          const string& option,
-          const string& help,
-          bool require_argument = true
-        );
+  class Options : public vector<Option> {
+  public:
+    void add
+    (
+      const string& option,
+      const string& help,
+      bool require_argument = true
+    );
 
-        void add( const string& option, bool require_argument = true );
-        void add( const Option& option );
-        void add( const Options& options );
-      };
+    void add( const string& option, bool require_argument = true );
+    void add( const Option& option );
+    void add( const Options& options );
+  };
 
-      class ParsedOption : public Option
-      {
-      public:
-        ParsedOption( Option& option );
-        ParsedOption( Option& option, const string& argument );
+  class ParsedOption : public Option {
+  public:
+    ParsedOption( Option& option );
+    ParsedOption( Option& option, const string& argument );
 
-        const string& get_argument() const { return argument; }
+    const string& get_argument() const {
+      return argument;
+    }
 
-      private:
-        string argument;
-      };
+  private:
+    string argument;
+  };
 
-      typedef vector<ParsedOption> ParsedOptions;
+  typedef vector<ParsedOption> ParsedOptions;
 
-    public:
-      void
-      add_option
-      (
-        const string& option,
-        const string& help,
-        bool require_argument = true
-      );
+public:
+  void
+  add_option
+  (
+    const string& option,
+    const string& help,
+    bool require_argument = true
+  );
 
-      void add_option( const string& option, bool require_argument = true );
-      void add_option( const Option& option );
-      void add_options( const Options& options );
+  void add_option( const string& option, bool require_argument = true );
+  void add_option( const Option& option );
+  void add_options( const Options& options );
 
-      void
-      parse_args
-      (
-        int argc,
-        char** argv,
-        ParsedOptions& out_parsed_options,
-        vector<string>& out_positional_arguments
-      );
+  void
+  parse_args
+  (
+    int argc,
+    char** argv,
+    ParsedOptions& out_parsed_options,
+    vector<string>& out_positional_arguments
+  );
 
-      string usage();
+  string usage();
 
-    private:
-      Options options;
-    };
-  }
+private:
+  Options options;
+};
+}
 }
 
 

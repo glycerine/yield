@@ -35,31 +35,25 @@
 #include "yield/aio/net/sockets/send_aiocb.hpp"
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace net
-    {
-      namespace sockets
-      {
-        bool BIOQueue::enqueue( YO_NEW_REF Event& event )
-        {
-          switch ( event.get_type_id() )
-          {
-            case acceptAIOCB::TYPE_ID:
-            case connectAIOCB::TYPE_ID:
-            case recvAIOCB::TYPE_ID:
-            case sendAIOCB::TYPE_ID:
-            {
-              AIOCB& aiocb = static_cast<AIOCB&>( event );
-              return yield::aio::BIOQueue::enqueue( aiocb );
-            }
-
-            default: return yield::aio::BIOQueue::enqueue( event );
-          }
-        }
-      }
-    }
+namespace yield {
+namespace aio {
+namespace net {
+namespace sockets {
+bool BIOQueue::enqueue( YO_NEW_REF Event& event ) {
+  switch ( event.get_type_id() ) {
+  case acceptAIOCB::TYPE_ID:
+  case connectAIOCB::TYPE_ID:
+  case recvAIOCB::TYPE_ID:
+  case sendAIOCB::TYPE_ID: {
+    AIOCB& aiocb = static_cast<AIOCB&>( event );
+    return yield::aio::BIOQueue::enqueue( aiocb );
   }
+
+  default:
+    return yield::aio::BIOQueue::enqueue( event );
+  }
+}
+}
+}
+}
 }

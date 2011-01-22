@@ -39,119 +39,110 @@ struct genxWriter_rec;
 typedef struct genxWriter_rec* genxWriter;
 
 
-namespace yield
-{
-  namespace marshal
-  {
-    namespace xml
-    {
-      class XMLEncoder
-      {
-      public:
-        XMLEncoder();
-        XMLEncoder( Buffer& buffer );
-        ~XMLEncoder();
+namespace yield {
+namespace marshal {
+namespace xml {
+class XMLEncoder {
+public:
+  XMLEncoder();
+  XMLEncoder( Buffer& buffer );
+  ~XMLEncoder();
 
-        void add_attribute( const char* name, bool value )
-        {
-          add_attribute( NULL, name, value );
-        }
-
-        void add_attribute( const char* xmlns, const char* name, bool value );
-
-        void add_attribute( const char* name, double value )
-        {
-          add_attribute( NULL, name, value );
-        }
-
-        void
-        add_attribute
-        (
-          const char* xmlns,
-          const char* name,
-          double value
-        );
-
-        void add_attribute( const char* name, int64_t value )
-        {
-          add_attribute( NULL, name, value );
-        }
-
-        void
-        add_attribute
-        (
-          const char* xmlns,
-          const char* name,
-          int64_t value
-        );
-
-        void add_attribute( const char* name, const char* value )
-        {
-          add_attribute( NULL, name, value );
-        }
-
-        void
-        add_attribute
-        (
-          const char* xmlns,
-          const char* name,
-          const char* value
-        );
-
-        void add_attribute( const char* name, const string& value )
-        {
-          add_attribute( NULL, name, value );
-        }
-
-        void
-        add_attribute
-        (
-          const char* xmlns,
-          const char* name,
-          const string& value
-        )
-        {
-          add_attribute( xmlns, name, value.c_str() );
-        }
-
-        void add_attribute( const char* name, uint64_t value )
-        {
-          add_attribute( NULL, name, value );
-        }
-
-        void
-        add_attribute
-        (
-          const char* xmlns,
-          const char* name,
-          uint64_t value
-        );
-
-        void add_text( bool text );
-        void add_text( double text );
-        void add_text( int64_t text );
-        void add_text( const char* text );
-        void add_text( const string& text );
-        void add_text( const char* text, size_t text_len );
-        void add_text( uint64_t text );
-
-        void end_element();
-
-        Buffer& get_buffer();
-
-        void start_element( const char* type ) { start_element( NULL, type ); }
-        void start_element( const char* xmlns, const char* type );
-
-      private:
-        void finalize();
-        void init();
-
-      private:
-        Buffer& buffer;
-        genxWriter writer;
-      };
-    }
+  void add_attribute( const char* name, bool value ) {
+    add_attribute( NULL, name, value );
   }
+
+  void add_attribute( const char* xmlns, const char* name, bool value );
+
+  void add_attribute( const char* name, double value ) {
+    add_attribute( NULL, name, value );
+  }
+
+  void
+  add_attribute
+  (
+    const char* xmlns,
+    const char* name,
+    double value
+  );
+
+  void add_attribute( const char* name, int64_t value ) {
+    add_attribute( NULL, name, value );
+  }
+
+  void
+  add_attribute
+  (
+    const char* xmlns,
+    const char* name,
+    int64_t value
+  );
+
+  void add_attribute( const char* name, const char* value ) {
+    add_attribute( NULL, name, value );
+  }
+
+  void
+  add_attribute
+  (
+    const char* xmlns,
+    const char* name,
+    const char* value
+  );
+
+  void add_attribute( const char* name, const string& value ) {
+    add_attribute( NULL, name, value );
+  }
+
+  void
+  add_attribute
+  (
+    const char* xmlns,
+    const char* name,
+    const string& value
+  ) {
+    add_attribute( xmlns, name, value.c_str() );
+  }
+
+  void add_attribute( const char* name, uint64_t value ) {
+    add_attribute( NULL, name, value );
+  }
+
+  void
+  add_attribute
+  (
+    const char* xmlns,
+    const char* name,
+    uint64_t value
+  );
+
+  void add_text( bool text );
+  void add_text( double text );
+  void add_text( int64_t text );
+  void add_text( const char* text );
+  void add_text( const string& text );
+  void add_text( const char* text, size_t text_len );
+  void add_text( uint64_t text );
+
+  void end_element();
+
+  Buffer& get_buffer();
+
+  void start_element( const char* type ) {
+    start_element( NULL, type );
+  }
+  void start_element( const char* xmlns, const char* type );
+
+private:
+  void finalize();
+  void init();
+
+private:
+  Buffer& buffer;
+  genxWriter writer;
+};
+}
+}
 }
 
 

@@ -32,75 +32,68 @@
 #include "yield/exception.hpp"
 
 #ifdef YIELD_HAVE_UNIX_PAPI
-  #include <papi.h>
+#include <papi.h>
 #endif
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace unix
-    {
-      #ifdef YIELD_HAVE_UNIX_PAPI
-        PAPIPerformanceCounterSet::PAPIPerformanceCounterSet()
-        {
-          if ( PAPI_library_init( PAPI_VER_CURRENT ) == PAPI_VER_CURRENT )
-          {
-            if ( PAPI_thread_init( pthread_self ) == PAPI_OK )
-            {
-              int eventset = PAPI_NULL;
-              if ( PAPI_create_eventset( &eventset ) == PAPI_OK )
-                return;
-            }
-          }
-
-          throw Exception();
-        }
-
-        PAPIPerformanceCounterSet::~PAPIPerformanceCounterSet()
-        {
-          PAPI_cleanup_eventset( eventset );
-          PAPI_destroy_eventset( &eventset );
-        }
-
-        bool PAPIPerformanceCounterSet::add( Event event )
-        {
-          switch ( event )
-          {
-            case EVENT_L1_DCM: return add( "PAPI_l1_dcm" );
-            case EVENT_L2_DCM: return add( "PAPI_l2_dcm" );
-            case EVENT_L2_ICM: return add( "PAPI_l2_icm" );
-            default: DebugBreak(); return false;
-          }
-        }
-
-        bool PAPIPerformanceCounterSet::add( const char* event )
-        {
-          int event_code;
-          if
-          (
-            PAPI_event_name_to_code
-            (
-              const_cast<char*>( event ),
-              &event_code
-            ) == PAPI_OK
-          )
-            return PAPI_add_event( eventset, event_code ) == PAPI_OK;
-          else
-            return false;
-        }
-
-        void PAPIPerformanceCounterSet::start_counting()
-        {
-          PAPI_start( eventset );
-        }
-
-        void PAPIPerformanceCounterSet::stop_counting( uint64_t* counts )
-        {
-          PAPI_stop( eventset, reinterpret_cast<long long int*>( counts ) );
-        }
-      #endif
+namespace yield {
+namespace thread {
+namespace unix {
+#ifdef YIELD_HAVE_UNIX_PAPI
+PAPIPerformanceCounterSet::PAPIPerformanceCounterSet() {
+  if ( PAPI_library_init( PAPI_VER_CURRENT ) == PAPI_VER_CURRENT ) {
+    if ( PAPI_thread_init( pthread_self ) == PAPI_OK ) {
+      int eventset = PAPI_NULL;
+      if ( PAPI_create_eventset( &eventset ) == PAPI_OK )
+        return;
     }
   }
+
+  throw Exception();
+}
+
+PAPIPerformanceCounterSet::~PAPIPerformanceCounterSet() {
+  PAPI_cleanup_eventset( eventset );
+  PAPI_destroy_eventset( &eventset );
+}
+
+bool PAPIPerformanceCounterSet::add( Event event ) {
+  switch ( event ) {
+  case EVENT_L1_DCM:
+    return add( "PAPI_l1_dcm" );
+  case EVENT_L2_DCM:
+    return add( "PAPI_l2_dcm" );
+  case EVENT_L2_ICM:
+    return add( "PAPI_l2_icm" );
+  default:
+    DebugBreak();
+    return false;
+  }
+}
+
+bool PAPIPerformanceCounterSet::add( const char* event ) {
+  int event_code;
+  if
+  (
+    PAPI_event_name_to_code
+    (
+      const_cast<char*>( event ),
+      &event_code
+    ) == PAPI_OK
+  )
+    return PAPI_add_event( eventset, event_code ) == PAPI_OK;
+  else
+    return false;
+}
+
+void PAPIPerformanceCounterSet::start_counting() {
+  PAPI_start( eventset );
+}
+
+void PAPIPerformanceCounterSet::stop_counting( uint64_t* counts ) {
+  PAPI_stop( eventset, reinterpret_cast<long long int*>( counts ) );
+}
+#endif
+}
+}
 }

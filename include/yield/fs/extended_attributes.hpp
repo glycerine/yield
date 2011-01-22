@@ -35,42 +35,41 @@
 #include "yield/object.hpp"
 
 
-namespace yield
-{
-  class Log;
+namespace yield {
+class Log;
 
 
-  namespace fs
-  {
-    class Path;
+namespace fs {
+class Path;
 
 
-    class ExtendedAttributes : public Object
-    {
-    public:
-      virtual ~ExtendedAttributes() { }
+class ExtendedAttributes : public Object {
+public:
+  virtual ~ExtendedAttributes() { }
 
-      virtual bool get( const char* name, string& value );
-      virtual ssize_t get( const char* name, void* value, size_t size ) = 0;
-      virtual bool list( vector<string>& out_names ) = 0;
-      virtual bool remove( const char* name ) = 0;
+  virtual bool get( const char* name, string& value );
+  virtual ssize_t get( const char* name, void* value, size_t size ) = 0;
+  virtual bool list( vector<string>& out_names ) = 0;
+  virtual bool remove( const char* name ) = 0;
 
-      virtual bool set( const char* name, const char* value, int flags = 0 );
-      virtual bool set( const char* name, const string& value, int flags = 0 );
+  virtual bool set( const char* name, const char* value, int flags = 0 );
+  virtual bool set( const char* name, const string& value, int flags = 0 );
 
-      virtual bool
-      set
-      (
-        const char* name,
-        const void* value,
-        size_t size,
-        int flags = 0
-      ) = 0;
+  virtual bool
+  set
+  (
+    const char* name,
+    const void* value,
+    size_t size,
+    int flags = 0
+  ) = 0;
 
-      // Object
-      ExtendedAttributes& inc_ref() { return Object::inc_ref( *this ); }
-    };
+  // Object
+  ExtendedAttributes& inc_ref() {
+    return Object::inc_ref( *this );
   }
+};
+}
 }
 
 

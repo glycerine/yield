@@ -36,50 +36,51 @@
 #include "yield/object.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    #if defined(_WIN32)
-      namespace win32 { class Fiber; }
-    #elif defined(YIELD_HAVE_UNIX_PTH)
-      namespace unix { class Fiber; }
-    #endif
+namespace yield {
+namespace thread {
+#if defined(_WIN32)
+namespace win32 {
+class Fiber;
+}
+#elif defined(YIELD_HAVE_UNIX_PTH)
+namespace unix {
+class Fiber;
+}
+#endif
 
 
-    #if defined(_WIN32) || defined(YIELD_HAVE_UNIX_PTH)
-      class Fiber : public Object
-      {
-      public:
-        Fiber( Runnable& runnable );
-        ~Fiber();
+#if defined(_WIN32) || defined(YIELD_HAVE_UNIX_PTH)
+class Fiber : public Object {
+public:
+  Fiber( Runnable& runnable );
+  ~Fiber();
 
-        void* getspecific( uintptr_t key );
-        uintptr_t key_create();
-        bool key_delete( uintptr_t key );
-        static auto_Object<Fiber> self();
-        bool setspecific( uintptr_t key, void* value );
-        void yield();
-        void yield( Fiber& to_fiber );
+  void* getspecific( uintptr_t key );
+  uintptr_t key_create();
+  bool key_delete( uintptr_t key );
+  static auto_Object<Fiber> self();
+  bool setspecific( uintptr_t key, void* value );
+  void yield();
+  void yield( Fiber& to_fiber );
 
-      private:
-        #if defined(_WIN32)
-          Fiber( win32::Fiber* pimpl )
-        #elif defined(YIELD_HAVE_UNIX_PTH)
-          Fiber( unix::Fiber* pimpl )
-        #endif
-            : pimpl( pimpl )
-          { }
+private:
+#if defined(_WIN32)
+  Fiber( win32::Fiber* pimpl )
+#elif defined(YIELD_HAVE_UNIX_PTH)
+  Fiber( unix::Fiber* pimpl )
+#endif
+    : pimpl( pimpl )
+  { }
 
-      private:
-        #if defined(_WIN32)
-          win32::Fiber* pimpl;
-        #elif defined(YIELD_HAVE_UNIX_PTH)
-          unix::Fiber* pimpl;
-        #endif
-      };
-    #endif
-  }
+private:
+#if defined(_WIN32)
+  win32::Fiber* pimpl;
+#elif defined(YIELD_HAVE_UNIX_PTH)
+  unix::Fiber* pimpl;
+#endif
+};
+#endif
+}
 }
 
 

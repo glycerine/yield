@@ -36,22 +36,19 @@
 #include "yield/thread/synchronized_queue.hpp"
 
 
-namespace yield
-{
-  namespace stage
-  {
-    class SynchronizedEventQueue
-      : public EventQueue,
-        private yield::thread::SynchronizedQueue<Event>
-    {
-    public:
-      // EventQueue
-      YO_NEW_REF Event& dequeue();
-      YO_NEW_REF Event* dequeue( const Time& timeout );
-      bool enqueue( YO_NEW_REF Event& event );
-      YO_NEW_REF Event* trydequeue();
-    };
-  };
+namespace yield {
+namespace stage {
+class SynchronizedEventQueue
+  : public EventQueue,
+    private yield::thread::SynchronizedQueue<Event> {
+public:
+  // EventQueue
+  YO_NEW_REF Event& dequeue();
+  YO_NEW_REF Event* dequeue( const Time& timeout );
+  bool enqueue( YO_NEW_REF Event& event );
+  YO_NEW_REF Event* trydequeue();
+};
+};
 };
 
 

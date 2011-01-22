@@ -35,39 +35,43 @@
 #include "yield/buffer.hpp"
 
 
-namespace yield
-{
-  class Page : public Buffer
-  {
-  public:
-    Page();
-    Page( size_t capacity );
-    Page( const string& data );
-    Page( const void* data, size_t size );
-    Page( size_t capacity, const void* data, size_t size );
-    Page( const Buffer& );
-    Page( const Page& );
-    virtual ~Page();
+namespace yield {
+class Page : public Buffer {
+public:
+  Page();
+  Page( size_t capacity );
+  Page( const string& data );
+  Page( const void* data, size_t size );
+  Page( size_t capacity, const void* data, size_t size );
+  Page( const Buffer& );
+  Page( const Page& );
+  virtual ~Page();
 
-    Page* get_next_page() const;
-    static size_t getpagesize();
-    static bool is_page_aligned( const void* ptr );
-    static bool is_page_aligned( const iovec& iov );
-    void set_next_page( YO_NEW_REF Page* page );
-    void set_next_page( YO_NEW_REF Page& page );
+  Page* get_next_page() const;
+  static size_t getpagesize();
+  static bool is_page_aligned( const void* ptr );
+  static bool is_page_aligned( const iovec& iov );
+  void set_next_page( YO_NEW_REF Page* page );
+  void set_next_page( YO_NEW_REF Page& page );
 
-    // Object
-    Page& inc_ref() { return Object::inc_ref( *this ); }
+  // Object
+  Page& inc_ref() {
+    return Object::inc_ref( *this );
+  }
 
-    // Buffer
-    void* data() { return data_; }
-    const void* data() const { return data_; }
-    void reserve( size_t new_capacity );
+  // Buffer
+  void* data() {
+    return data_;
+  }
+  const void* data() const {
+    return data_;
+  }
+  void reserve( size_t new_capacity );
 
-  private:
-    void* data_;
-    static size_t pagesize;
-  };
+private:
+  void* data_;
+  static size_t pagesize;
+};
 }
 
 

@@ -35,20 +35,17 @@
 #include "yield/stage/polling_stage_scheduler.hpp"
 
 
-namespace yield
-{
-  namespace stage
-  {
-    class WavefrontStageScheduler : public PollingStageScheduler
-    {
-    private:
-      class StagePoller;
+namespace yield {
+namespace stage {
+class WavefrontStageScheduler : public PollingStageScheduler {
+private:
+  class StagePoller;
 
-    private:
-      // PollingStageScheduler
-      PollingStageScheduler::StagePoller& createStagePoller( Stage& );
-    };
-  }
+private:
+  // PollingStageScheduler
+  PollingStageScheduler::StagePoller& createStagePoller( Stage& );
+};
+}
 }
 
 

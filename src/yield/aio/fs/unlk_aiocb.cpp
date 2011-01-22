@@ -32,25 +32,18 @@
 #include "yield/aio/fs/unlk_aiocb.hpp"
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace fs
-    {
-      unlkAIOCB::RetryStatus unlkAIOCB::retry()
-      {
-        if ( get_file().unlk( get_flock() ) )
-        {
-          set_return( 0 );
-          return RETRY_STATUS_COMPLETE;
-        }
-        else
-        {
-          set_error( Exception::get_last_error_code() );
-          return RETRY_STATUS_ERROR;
-        }
-      }
-    }
+namespace yield {
+namespace aio {
+namespace fs {
+unlkAIOCB::RetryStatus unlkAIOCB::retry() {
+  if ( get_file().unlk( get_flock() ) ) {
+    set_return( 0 );
+    return RETRY_STATUS_COMPLETE;
+  } else {
+    set_error( Exception::get_last_error_code() );
+    return RETRY_STATUS_ERROR;
   }
+}
+}
+}
 }

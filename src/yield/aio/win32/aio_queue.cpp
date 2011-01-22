@@ -35,86 +35,75 @@
 #include <Windows.h>
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace win32
-    {
-      AIOQueue::AIOQueue()
-      {
-        hIoCompletionPort
-          = CreateIoCompletionPort( INVALID_HANDLE_VALUE, NULL, 0, 0 );
+namespace yield {
+namespace aio {
+namespace win32 {
+AIOQueue::AIOQueue() {
+  hIoCompletionPort
+  = CreateIoCompletionPort( INVALID_HANDLE_VALUE, NULL, 0, 0 );
 
-        if ( hIoCompletionPort == INVALID_HANDLE_VALUE )
-          throw Exception();
-      }
+  if ( hIoCompletionPort == INVALID_HANDLE_VALUE )
+    throw Exception();
+}
 
-      AIOQueue::~AIOQueue()
-      {
-        CloseHandle( hIoCompletionPort );
-      }
+AIOQueue::~AIOQueue() {
+  CloseHandle( hIoCompletionPort );
+}
 
-      bool AIOQueue::associate( fd_t fd )
-      {
-        return CreateIoCompletionPort
-                (
-                  fd,
-                  hIoCompletionPort,
-                  0,
-                  0
-                ) != INVALID_HANDLE_VALUE;
-      }
+bool AIOQueue::associate( fd_t fd ) {
+  return CreateIoCompletionPort
+         (
+           fd,
+           hIoCompletionPort,
+           0,
+           0
+         ) != INVALID_HANDLE_VALUE;
+}
 
-      YO_NEW_REF Event* AIOQueue::dequeue( const Time& timeout )
-      {
-        DWORD dwBytesTransferred = 0;
-        ULONG_PTR ulCompletionKey = 0;
-        LPOVERLAPPED lpOverlapped = NULL;
+YO_NEW_REF Event* AIOQueue::dequeue( const Time& timeout ) {
+  DWORD dwBytesTransferred = 0;
+  ULONG_PTR ulCompletionKey = 0;
+  LPOVERLAPPED lpOverlapped = NULL;
 
-        BOOL bRet
-          = GetQueuedCompletionStatus
-            (
-              hIoCompletionPort,
-              &dwBytesTransferred,
-              &ulCompletionKey,
-              &lpOverlapped,
-              static_cast<DWORD>( timeout.ms() )
-            );
+  BOOL bRet
+  = GetQueuedCompletionStatus
+    (
+      hIoCompletionPort,
+      &dwBytesTransferred,
+      &ulCompletionKey,
+      &lpOverlapped,
+      static_cast<DWORD>( timeout.ms() )
+    );
 
-        if ( lpOverlapped != NULL )
-        {
-          AIOCB& aiocb = AIOCB::cast( *lpOverlapped );
+  if ( lpOverlapped != NULL ) {
+    AIOCB& aiocb = AIOCB::cast( *lpOverlapped );
 
-          if ( bRet )
-            aiocb.set_return( dwBytesTransferred );
-          else
-            aiocb.set_error( GetLastError() );
+    if ( bRet )
+      aiocb.set_return( dwBytesTransferred );
+    else
+      aiocb.set_error( GetLastError() );
 
-          return &aiocb;
-        }
-        else if ( ulCompletionKey != 0 )
-          return reinterpret_cast<Event*>( ulCompletionKey );
-        else
-          return NULL;
-      }
+    return &aiocb;
+  } else if ( ulCompletionKey != 0 )
+    return reinterpret_cast<Event*>( ulCompletionKey );
+  else
+    return NULL;
+}
 
-      bool AIOQueue::enqueue( YO_NEW_REF AIOCB& aiocb )
-      {
-        return aiocb.issue( *this );
-      }
+bool AIOQueue::enqueue( YO_NEW_REF AIOCB& aiocb ) {
+  return aiocb.issue( *this );
+}
 
-      bool AIOQueue::enqueue( YO_NEW_REF Event& event )
-      {
-        return PostQueuedCompletionStatus
-                (
-                  hIoCompletionPort,
-                  0,
-                  reinterpret_cast<ULONG_PTR>( &event ),
-                  NULL
-                )
-                == TRUE;
-      }
-    }
-  }
+bool AIOQueue::enqueue( YO_NEW_REF Event& event ) {
+  return PostQueuedCompletionStatus
+         (
+           hIoCompletionPort,
+           0,
+           reinterpret_cast<ULONG_PTR>( &event ),
+           NULL
+         )
+         == TRUE;
+}
+}
+}
 }

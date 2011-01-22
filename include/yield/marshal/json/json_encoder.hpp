@@ -39,43 +39,42 @@ struct yajl_gen_t;
 typedef struct yajl_gen_t* yajl_gen;
 
 
-namespace yield
-{
-  namespace marshal
-  {
-    namespace json
-    {
-      class JSONEncoder
-      {
-      public:
-        JSONEncoder();
-        JSONEncoder( Buffer& buffer );
-        ~JSONEncoder();
+namespace yield {
+namespace marshal {
+namespace json {
+class JSONEncoder {
+public:
+  JSONEncoder();
+  JSONEncoder( Buffer& buffer );
+  ~JSONEncoder();
 
-        void close_array();
-        void close_object();
+  void close_array();
+  void close_object();
 
-        Buffer& get_buffer() const { return buffer; }
-
-        void open_array();
-        void open_object();
-
-        void write( bool value );        void write( double value );
-        void write( int64_t value );
-        void write( const char* value );
-        void write( const string& value );
-        void write( const char* value, size_t value_len );
-        void write( uint64_t value );
-
-      private:
-        void flush();
-
-      private:
-        Buffer& buffer;
-        yajl_gen writer;
-      };
-    }
+  Buffer& get_buffer() const {
+    return buffer;
   }
+
+  void open_array();
+  void open_object();
+
+  void write( bool value );
+  void write( double value );
+  void write( int64_t value );
+  void write( const char* value );
+  void write( const string& value );
+  void write( const char* value, size_t value_len );
+  void write( uint64_t value );
+
+private:
+  void flush();
+
+private:
+  Buffer& buffer;
+  yajl_gen writer;
+};
+}
+}
 }
 
 

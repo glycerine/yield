@@ -35,23 +35,29 @@
 #include "yield/object.hpp"
 
 
-namespace yield
-{
-  class Event : public Object
-  {
-  public:
-    const static uint32_t TYPE_ID = 2770913819UL;
+namespace yield {
+class Event : public Object {
+public:
+  const static uint32_t TYPE_ID = 2770913819UL;
 
-  public:
-    virtual ~Event() { }
+public:
+  virtual ~Event() { }
 
-    virtual bool is_message() const { return false; }
+  virtual bool is_message() const {
+    return false;
+  }
 
-    // Object
-    virtual uint32_t get_type_id() const { return TYPE_ID; }
-    virtual const char* get_type_name() const { return "yield::Event"; }
-    Event& inc_ref() { return Object::inc_ref( *this ); }
-  };
+  // Object
+  virtual uint32_t get_type_id() const {
+    return TYPE_ID;
+  }
+  virtual const char* get_type_name() const {
+    return "yield::Event";
+  }
+  Event& inc_ref() {
+    return Object::inc_ref( *this );
+  }
+};
 };
 
 

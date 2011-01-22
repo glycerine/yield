@@ -33,65 +33,53 @@
 #include <sys/pset.h>
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace sunos
-    {
-      ProcessorSet::ProcessorSet()
-      {
-        psetid = PS_NONE; // Don't pset_create until we actually use the set,
-                          // to avoid leaving state in the system
-      }
+namespace yield {
+namespace thread {
+namespace sunos {
+ProcessorSet::ProcessorSet() {
+  psetid = PS_NONE; // Don't pset_create until we actually use the set,
+  // to avoid leaving state in the system
+}
 
-      ProcessorSet::~ProcessorSet()
-      {
-        if ( psetid != PS_NONE )
-          pset_destroy( psetid );
-      }
+ProcessorSet::~ProcessorSet() {
+  if ( psetid != PS_NONE )
+    pset_destroy( psetid );
+}
 
-      void ProcessorSet::clear()
-      {
-        if ( psetid != PS_NONE )
-        {
-          pset_destroy( psetid );
-          psetid = PS_NONE;
-        }
-      }
-
-      void ProcessorSet::clear( uint16_t processor_i )
-      {
-        if ( psetid != PS_NONE )
-          pset_assign( PS_NONE, processor_i, NULL );
-      }
-
-      bool ProcessorSet::isset( uint16_t processor_i ) const
-      {
-        if ( psetid != PS_NONE )
-        {
-          psetid_t check_psetid;
-          return pset_assign
-                  (
-                    PS_QUERY,
-                    processor_i,
-                    &check_psetid
-                  ) == 0
-                  &&
-                  check_psetid == psetid;
-        }
-      }
-
-      bool ProcessorSet::set( uint16_t processor_i )
-      {
-        if ( psetid == PS_NONE )
-        {
-          if ( pset_create( &psetid ) != 0 )
-            return false;
-        }
-
-        return pset_assign( psetid, processor_i, NULL ) == 0;
-      }
-      }
+void ProcessorSet::clear() {
+  if ( psetid != PS_NONE ) {
+    pset_destroy( psetid );
+    psetid = PS_NONE;
   }
+}
+
+void ProcessorSet::clear( uint16_t processor_i ) {
+  if ( psetid != PS_NONE )
+    pset_assign( PS_NONE, processor_i, NULL );
+}
+
+bool ProcessorSet::isset( uint16_t processor_i ) const {
+  if ( psetid != PS_NONE ) {
+    psetid_t check_psetid;
+    return pset_assign
+           (
+             PS_QUERY,
+             processor_i,
+             &check_psetid
+           ) == 0
+           &&
+           check_psetid == psetid;
+  }
+}
+
+bool ProcessorSet::set( uint16_t processor_i ) {
+  if ( psetid == PS_NONE ) {
+    if ( pset_create( &psetid ) != 0 )
+      return false;
+  }
+
+  return pset_assign( psetid, processor_i, NULL ) == 0;
+}
+}
+}
 }

@@ -31,97 +31,80 @@
 #include "directory.hpp"
 
 
-namespace yield
-{
-  namespace fs
-  {
-    namespace posix
-    {
-      Directory::Directory( DIR* dirp, const Path& path )
-        : dirp( dirp ), path( path )
-      { }
+namespace yield {
+namespace fs {
+namespace posix {
+Directory::Directory( DIR* dirp, const Path& path )
+  : dirp( dirp ), path( path )
+{ }
 
-      Directory::~Directory()
-      {
-        close();
-      }
+Directory::~Directory() {
+  close();
+}
 
-      bool Directory::close()
-      {
-        if ( dirp != NULL )
-        {
-          closedir( dirp );
-          dirp = NULL;
-          return true;
-        }
-        else
-          return false;
-      }
+bool Directory::close() {
+  if ( dirp != NULL ) {
+    closedir( dirp );
+    dirp = NULL;
+    return true;
+  } else
+    return false;
+}
 
-      yield::fs::Directory::Entry* Directory::read( Entry::Type types )
-      {
-        Entry* entry = new Entry;
-        if ( read( *entry, types ) )
-          return entry;
-        else
-        {
-          delete entry;
-          return NULL;
-        }
-      }
+yield::fs::Directory::Entry* Directory::read( Entry::Type types ) {
+  Entry* entry = new Entry;
+  if ( read( *entry, types ) )
+    return entry;
+  else {
+    delete entry;
+    return NULL;
+  }
+}
 
-      bool Directory::read
-      (
-        OUT yield::fs::Directory::Entry& entry,
-        Entry::Type types
-      )
-      {
-        dirent* dirent_;
-        while ( ( dirent_ = readdir( dirp ) ) != NULL )
-        {
-          static_cast<Entry&>( entry ) = *dirent_; // To set entry.name
+bool Directory::read
+(
+  OUT yield::fs::Directory::Entry& entry,
+  Entry::Type types
+) {
+  dirent* dirent_;
+  while ( ( dirent_ = readdir( dirp ) ) != NULL ) {
+    static_cast<Entry&>( entry ) = *dirent_; // To set entry.name
 
-          struct stat stbuf;
-          if ( stat( ( path / entry.get_name() ).c_str(), &stbuf ) != -1 )
-          {
-            static_cast<Entry&>( entry ) = stbuf;
-            if ( ( entry.get_type() & types ) == entry.get_type() )
-              return true;
-          }
-        }
-
-        return false;
-      }
-
-      void Directory::rewind()
-      {
-        rewinddir( dirp );
-      }
-
-
-      bool Directory::Entry::is_hidden() const
-      {
-        return !get_name().empty() && get_name()[0] == '.';
-      }
-
-      bool Directory::Entry::is_special() const
-      {
-        return get_name() == Path::CURRENT_DIRECTORY
-               ||
-               get_name() == Path::PARENT_DIRECTORY;
-      }
-
-      Directory::Entry& Directory::Entry::operator=( const dirent& dirent_ )
-      {
-        this->name = Path( dirent_.d_name );
-        return *this;
-      }
-
-      Directory::Entry& Directory::Entry::operator=( const struct stat& stbuf )
-      {
-        this->stbuf = stbuf;
-        return *this;
-      }
+    struct stat stbuf;
+    if ( stat( ( path / entry.get_name() ).c_str(), &stbuf ) != -1 ) {
+      static_cast<Entry&>( entry ) = stbuf;
+      if ( ( entry.get_type() & types ) == entry.get_type() )
+        return true;
     }
   }
+
+  return false;
+}
+
+void Directory::rewind() {
+  rewinddir( dirp );
+}
+
+
+bool Directory::Entry::is_hidden() const {
+  return !get_name().empty() && get_name()[0] == '.';
+}
+
+bool Directory::Entry::is_special() const {
+  return get_name() == Path::CURRENT_DIRECTORY
+         ||
+         get_name() == Path::PARENT_DIRECTORY;
+}
+
+Directory::Entry& Directory::Entry::operator=( const dirent& dirent_ ) {
+  this->name = Path( dirent_.d_name );
+  return *this;
+}
+
+Directory::Entry& Directory::Entry::operator=( const struct stat& stbuf ) {
+  this->stbuf = stbuf;
+  return *this;
+}
+}
+}
 }

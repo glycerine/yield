@@ -35,60 +35,55 @@
 #include "yield/net/sockets/stream_socket.hpp"
 
 
-namespace yield
-{
-  namespace net
-  {
-    namespace sockets
-    {
-      class TCPSocket : public StreamSocket
-      {
-      public:
-        static int DOMAIN_DEFAULT; // AF_INET
-        const static Option OPTION_TCP_NODELAY = 4;
-        static int PROTOCOL; // IPPROTO_TCP
+namespace yield {
+namespace net {
+namespace sockets {
+class TCPSocket : public StreamSocket {
+public:
+  static int DOMAIN_DEFAULT; // AF_INET
+  const static Option OPTION_TCP_NODELAY = 4;
+  static int PROTOCOL; // IPPROTO_TCP
 
-      public:
-        TCPSocket( int domain = DOMAIN_DEFAULT )
-          : StreamSocket( domain, PROTOCOL )
-        { }
+public:
+  TCPSocket( int domain = DOMAIN_DEFAULT )
+    : StreamSocket( domain, PROTOCOL )
+  { }
 
-        TCPSocket( int domain, socket_t socket_ )
-          : StreamSocket( domain, PROTOCOL, socket_ )
-        { }
+  TCPSocket( int domain, socket_t socket_ )
+    : StreamSocket( domain, PROTOCOL, socket_ )
+  { }
 
-        virtual ~TCPSocket() { }
+  virtual ~TCPSocket() { }
 
-        static YO_NEW_REF TCPSocket* create( int domain = DOMAIN_DEFAULT )
-        {
-          socket_t socket_ = Socket::create( domain, TYPE, PROTOCOL );
-          if ( socket_ != static_cast<socket_t>( -1 ) )
-            return new TCPSocket( domain, socket_ );
-          else
-            return NULL;
-        }
-
-        // Object
-        TCPSocket& inc_ref() { return Object::inc_ref( *this ); }
-
-        // Socket
-        virtual bool setsockopt( Option option, bool onoff );
-
-        // StreamSocket
-        virtual YO_NEW_REF StreamSocket* dup()
-        {
-          return create( get_domain() );
-        }
-
-      protected:
-        // StreamSocket
-        virtual StreamSocket* dup2( socket_t socket_ )
-        {
-          return new TCPSocket( get_domain(), socket_ );
-        }
-      };
-    }
+  static YO_NEW_REF TCPSocket* create( int domain = DOMAIN_DEFAULT ) {
+    socket_t socket_ = Socket::create( domain, TYPE, PROTOCOL );
+    if ( socket_ != static_cast<socket_t>( -1 ) )
+      return new TCPSocket( domain, socket_ );
+    else
+      return NULL;
   }
+
+  // Object
+  TCPSocket& inc_ref() {
+    return Object::inc_ref( *this );
+  }
+
+  // Socket
+  virtual bool setsockopt( Option option, bool onoff );
+
+  // StreamSocket
+  virtual YO_NEW_REF StreamSocket* dup() {
+    return create( get_domain() );
+  }
+
+protected:
+  // StreamSocket
+  virtual StreamSocket* dup2( socket_t socket_ ) {
+    return new TCPSocket( get_domain(), socket_ );
+  }
+};
+}
+}
 }
 
 

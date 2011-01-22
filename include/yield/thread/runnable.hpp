@@ -35,19 +35,18 @@
 #include "yield/object.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    class Runnable : public Object
-    {
-    public:
-      virtual void run() = 0;
+namespace yield {
+namespace thread {
+class Runnable : public Object {
+public:
+  virtual void run() = 0;
 
-      // Object
-      Runnable& inc_ref() { return Object::inc_ref( *this ); }
-    };
+  // Object
+  Runnable& inc_ref() {
+    return Object::inc_ref( *this );
   }
+};
+}
 }
 
 

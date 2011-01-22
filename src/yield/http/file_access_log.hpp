@@ -36,24 +36,21 @@
 #include "yield/http/access_log.hpp"
 
 
-namespace yield
-{
-  namespace http
-  {
-    class FileAccessLog : public AccessLog
-    {
-    public:
-      FileAccessLog( const yield::fs::Path& file_path, Format& format );
-      ~FileAccessLog();
+namespace yield {
+namespace http {
+class FileAccessLog : public AccessLog {
+public:
+  FileAccessLog( const yield::fs::Path& file_path, Format& format );
+  ~FileAccessLog();
 
-      // AccessLog
-      void write( const HTTPRequest&, const HTTPResponse& );
+  // AccessLog
+  void write( const HTTPRequest&, const HTTPResponse& );
 
-    private:
-      yield::fs::File* file;
-      yield::fs::Path file_path;
-    };
-  }
+private:
+  yield::fs::File* file;
+  yield::fs::Path file_path;
+};
+}
 }
 
 

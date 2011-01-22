@@ -33,37 +33,37 @@
 
 
 #if defined(__FreeBSD__)
-  #ifdef _FILE_OFFSET_BITS
-    #error
-  #endif
-  #define _FILE_OFFSET_BITS 64
+#ifdef _FILE_OFFSET_BITS
+#error
+#endif
+#define _FILE_OFFSET_BITS 64
 #elif defined(__linux__)
-  #ifdef _FILE_OFFSET_BITS
-    #error
-  #endif
-  #define _FILE_OFFSET_BITS 64
-  #undef linux
+#ifdef _FILE_OFFSET_BITS
+#error
+#endif
+#define _FILE_OFFSET_BITS 64
+#undef linux
 #elif defined(__MACH__)
-  #ifdef _FILE_OFFSET_BITS
-    #error
-  #endif
-  #define _FILE_OFFSET_BITS 64
+#ifdef _FILE_OFFSET_BITS
+#error
+#endif
+#define _FILE_OFFSET_BITS 64
 #elif defined(__sun)
-  #define upgrade_the_compiler_to_use_STL 1
-  #define _REENTRANT
+#define upgrade_the_compiler_to_use_STL 1
+#define _REENTRANT
 #elif defined(_WIN32)
-  #define _CRT_DISABLE_PERFCRIT_LOCKS 1
-  #ifndef UNICODE
-    #define UNICODE 1
-  #endif
-  #ifndef WIN32_LEAN_AND_MEAN
-    #define WIN32_LEAN_AND_MEAN 1
-  #endif
+#define _CRT_DISABLE_PERFCRIT_LOCKS 1
+#ifndef UNICODE
+#define UNICODE 1
+#endif
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN 1
+#endif
 #endif
 
 
 #ifdef unix
-  #undef unix
+#undef unix
 #endif
 
 

@@ -34,65 +34,56 @@
 #include "yield/aio/posix/aiocb.hpp"
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace posix
-    {
-      static void aio_notify_function( sigval_t sigval )
-      {
-        AIOCB& aiocb = *static_cast<AIOCB*>( sigval.sival_ptr );
-        aiocb.set_error( aio_error( aiocb ) );
-        aiocb.set_return( aio_return( aiocb ) );
-        debug_assert_ne( aiocb.get_completion_handler(), NULL );
-        aiocb.get_completion_handler()->handle( aiocb );
-      }
+namespace yield {
+namespace aio {
+namespace posix {
+static void aio_notify_function( sigval_t sigval ) {
+  AIOCB& aiocb = *static_cast<AIOCB*>( sigval.sival_ptr );
+  aiocb.set_error( aio_error( aiocb ) );
+  aiocb.set_return( aio_return( aiocb ) );
+  debug_assert_ne( aiocb.get_completion_handler(), NULL );
+  aiocb.get_completion_handler()->handle( aiocb );
+}
 
 
-      AIOCB::AIOCB( Channel& channel, void* buf, size_t nbytes, uint64_t offset )
-        : channel( channel.inc_ref() )
-      {
-        debug_assert_ne( static_cast<fd_t>( channel ), INVALID_FD );
+AIOCB::AIOCB( Channel& channel, void* buf, size_t nbytes, uint64_t offset )
+  : channel( channel.inc_ref() ) {
+  debug_assert_ne( static_cast<fd_t>( channel ), INVALID_FD );
 
-        memset( &aiocb_, 0, sizeof( aiocb_ ) );
-        aiocb_.aio_buf = buf;
-        aiocb_.aio_fildes = channel;
-        aiocb_.aio_nbytes = nbytes;
-        aiocb_.aio_offset = offset;
-        aiocb_.aio_sigevent.sigev_notify = SIGEV_THREAD;
-        aiocb_.aio_sigevent.sigev_notify_attributes = NULL;
-        aiocb_.aio_sigevent.sigev_notify_function = aio_notify_function;
-        aiocb_.aio_sigevent.sigev_value.sival_ptr = this;
+  memset( &aiocb_, 0, sizeof( aiocb_ ) );
+  aiocb_.aio_buf = buf;
+  aiocb_.aio_fildes = channel;
+  aiocb_.aio_nbytes = nbytes;
+  aiocb_.aio_offset = offset;
+  aiocb_.aio_sigevent.sigev_notify = SIGEV_THREAD;
+  aiocb_.aio_sigevent.sigev_notify_attributes = NULL;
+  aiocb_.aio_sigevent.sigev_notify_function = aio_notify_function;
+  aiocb_.aio_sigevent.sigev_value.sival_ptr = this;
 
-        completion_handler = NULL;
-        error = 0;
-        return_ = -1;
-      }
+  completion_handler = NULL;
+  error = 0;
+  return_ = -1;
+}
 
-      AIOCB::~AIOCB()
-      {
-        Channel::dec_ref( channel );
-        EventHandler::dec_ref( completion_handler );
-      }
+AIOCB::~AIOCB() {
+  Channel::dec_ref( channel );
+  EventHandler::dec_ref( completion_handler );
+}
 
-      bool AIOCB::cancel()
-      {
-        return aio_cancel( aiocb_.aio_fildes, *this ) == AIO_CANCELED;
-      }
+bool AIOCB::cancel() {
+  return aio_cancel( aiocb_.aio_fildes, *this ) == AIO_CANCELED;
+}
 
-      bool AIOCB::issue( EventHandler& completion_handler )
-      {
-        retry();
-        completion_handler.handle( *this );
-        return true;
-      }
+bool AIOCB::issue( EventHandler& completion_handler ) {
+  retry();
+  completion_handler.handle( *this );
+  return true;
+}
 
-      void AIOCB::set_completion_handler( EventHandler& completion_handler )
-      {
-        EventHandler::dec_ref( this->completion_handler );
-        this->completion_handler = &completion_handler.inc_ref();
-      }
-    }
-  }
+void AIOCB::set_completion_handler( EventHandler& completion_handler ) {
+  EventHandler::dec_ref( this->completion_handler );
+  this->completion_handler = &completion_handler.inc_ref();
+}
+}
+}
 }

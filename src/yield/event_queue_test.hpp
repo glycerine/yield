@@ -39,97 +39,87 @@
 #include "yunit.hpp"
 
 
-namespace yield
-{
-  template <class EventQueueType>
-  class EventQueueDequeueTest : public yunit::Test
-  {
-  public:
-    // yunit::Test
-    void run()
-    {
-      auto_Object<Event> event = new Event;
-      auto_Object<EventQueue> event_queue = new EventQueueType;
+namespace yield {
+template <class EventQueueType>
+class EventQueueDequeueTest : public yunit::Test {
+public:
+  // yunit::Test
+  void run() {
+    auto_Object<Event> event = new Event;
+    auto_Object<EventQueue> event_queue = new EventQueueType;
 
+    event_queue->enqueue( event->inc_ref() );
+    auto_Object<Event> dequeued_event = event_queue->dequeue();
+    throw_assert_eq( event, dequeued_event );
+
+    Event* null_event = event_queue->trydequeue();
+    throw_assert_eq( null_event, NULL );
+  }
+};
+
+
+template <class EventQueueType>
+class EventQueueTimedDequeueTest : public yunit::Test {
+public:
+  // yunit::Test
+  void run() {
+    auto_Object<Event> event = new Event;
+    auto_Object<EventQueue> event_queue = new EventQueueType;
+
+    event_queue->enqueue( event->inc_ref() );
+    auto_Object<Event> dequeued_event = event_queue->dequeue( 1.0 );
+    throw_assert_eq( event, dequeued_event );
+
+    Event* null_event = event_queue->dequeue( 1.0 );
+    throw_assert_eq( null_event, NULL );
+  }
+};
+
+
+template <class EventQueueType>
+class EventQueueTryDequeueTest : public yunit::Test {
+public:
+  // yunit::Test
+  void run() {
+    auto_Object<Event> event = new Event;
+    auto_Object<EventQueue> event_queue = new EventQueueType;
+
+    {
       event_queue->enqueue( event->inc_ref() );
-      auto_Object<Event> dequeued_event = event_queue->dequeue();
+      auto_Object<Event> dequeued_event = event_queue->trydequeue();
       throw_assert_eq( event, dequeued_event );
 
       Event* null_event = event_queue->trydequeue();
       throw_assert_eq( null_event, NULL );
     }
-  };
+  }
+};
 
 
-  template <class EventQueueType>
-  class EventQueueTimedDequeueTest : public yunit::Test
-  {
-  public:
-    // yunit::Test
-    void run()
-    {
-      auto_Object<Event> event = new Event;
-      auto_Object<EventQueue> event_queue = new EventQueueType;
+template <class EventQueueType>
+class EventQueueTestSuite : public yunit::TestSuite {
+public:
+  // yunit::TestSuite
+  virtual int run() {
+    if ( this->empty() ) {
+      add( "EventQueue::dequeue", new EventQueueDequeueTest<EventQueueType> );
 
-      event_queue->enqueue( event->inc_ref() );
-      auto_Object<Event> dequeued_event = event_queue->dequeue( 1.0 );
-      throw_assert_eq( event, dequeued_event );
+      add
+      (
+        "EventQueue::timeddequeue",
+        new EventQueueTimedDequeueTest<EventQueueType>
+      );
 
-      Event* null_event = event_queue->dequeue( 1.0 );
-      throw_assert_eq( null_event, NULL );
+      add
+      (
+        "EventQueue::trydequeue",
+        new EventQueueTryDequeueTest<EventQueueType>
+      );
     }
-  };
 
-
-  template <class EventQueueType>
-  class EventQueueTryDequeueTest : public yunit::Test
-  {
-  public:
-    // yunit::Test
-    void run()
-    {
-      auto_Object<Event> event = new Event;
-      auto_Object<EventQueue> event_queue = new EventQueueType;
-
-      {
-        event_queue->enqueue( event->inc_ref() );
-        auto_Object<Event> dequeued_event = event_queue->trydequeue();
-        throw_assert_eq( event, dequeued_event );
-
-        Event* null_event = event_queue->trydequeue();
-        throw_assert_eq( null_event, NULL );
-      }
-    }
-  };
-
-
-  template <class EventQueueType>
-  class EventQueueTestSuite : public yunit::TestSuite
-  {
-  public:
-    // yunit::TestSuite
-    virtual int run()
-    {
-      if ( this->empty() )
-      {
-        add( "EventQueue::dequeue", new EventQueueDequeueTest<EventQueueType> );
-
-        add
-        (
-          "EventQueue::timeddequeue",
-          new EventQueueTimedDequeueTest<EventQueueType>
-        );
-
-        add
-        (
-          "EventQueue::trydequeue",
-          new EventQueueTryDequeueTest<EventQueueType>
-        );
-      }
-
-      return yunit::TestSuite::run();
-    }
-  };
+    return yunit::TestSuite::run();
+  }
+};
 }
 
 

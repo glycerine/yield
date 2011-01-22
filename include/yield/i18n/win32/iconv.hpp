@@ -36,36 +36,32 @@
 #include "yield/i18n/code.hpp"
 
 
-namespace yield
-{
-  namespace i18n
-  {
-    namespace win32
-    {
-      class iconv
-      {
-      public:
-        iconv( Code tocode, Code fromcode );
+namespace yield {
+namespace i18n {
+namespace win32 {
+class iconv {
+public:
+  iconv( Code tocode, Code fromcode );
 
-        // iconv.3
-        size_t
-        operator()
-        (
-          const char** inbuf,
-          size_t* inbytesleft,
-          char** outbuf,
-          size_t* outbytesleft
-        );
+  // iconv.3
+  size_t
+  operator()
+  (
+    const char** inbuf,
+    size_t* inbytesleft,
+    char** outbuf,
+    size_t* outbytesleft
+  );
 
-        bool operator()( const string& inbuf, string& outbuf );
-        bool operator()( const string& inbuf, wstring& outbuf );
-        bool operator()( const wstring& inbuf, string& outbuf );
+  bool operator()( const string& inbuf, string& outbuf );
+  bool operator()( const string& inbuf, wstring& outbuf );
+  bool operator()( const wstring& inbuf, string& outbuf );
 
-      private:
-        Code fromcode, tocode;
-      };
-    }
-  }
+private:
+  Code fromcode, tocode;
+};
+}
+}
 }
 
 

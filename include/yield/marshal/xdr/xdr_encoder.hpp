@@ -35,38 +35,36 @@
 #include "yield/buffer.hpp"
 
 
-namespace yield
-{
-  namespace marshal
-  {
-    namespace xdr
-    {
-      class XDREncoder
-      {
-      public:
-        XDREncoder();
-        XDREncoder( Buffer& buffer );
-        ~XDREncoder();
+namespace yield {
+namespace marshal {
+namespace xdr {
+class XDREncoder {
+public:
+  XDREncoder();
+  XDREncoder( Buffer& buffer );
+  ~XDREncoder();
 
-        Buffer& get_buffer() { return buffer; }
-
-        void write( bool value );
-        void write( double value );
-        void write( float value );
-        void write( int32_t value );
-        void write( int64_t value );
-        void write( const char* value, size_t value_len );
-        void write( uint32_t value );
-        void write( uint64_t value );
-
-      private:
-        void write( const void* value, size_t value_len );
-
-      private:
-        Buffer& buffer;
-      };
-    }
+  Buffer& get_buffer() {
+    return buffer;
   }
+
+  void write( bool value );
+  void write( double value );
+  void write( float value );
+  void write( int32_t value );
+  void write( int64_t value );
+  void write( const char* value, size_t value_len );
+  void write( uint32_t value );
+  void write( uint64_t value );
+
+private:
+  void write( const void* value, size_t value_len );
+
+private:
+  Buffer& buffer;
+};
+}
+}
 }
 
 

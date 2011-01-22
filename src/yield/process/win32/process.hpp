@@ -35,60 +35,56 @@
 #include "yield/process/process.hpp"
 
 
-namespace yield
-{
-  namespace process
-  {
-    namespace win32
-    {
-      class Process : public yield::process::Process
-      {
-      public:
-        ~Process();
+namespace yield {
+namespace process {
+namespace win32 {
+class Process : public yield::process::Process {
+public:
+  ~Process();
 
-        // Process
-        static YO_NEW_REF Process*
-        create
-        (
-          const yield::fs::Path& command_line,
-          YO_NEW_REF Channel* stderr_ = NULL,
-          YO_NEW_REF Channel* stdin_ = NULL,
-          YO_NEW_REF Channel* stdout_ = NULL
-        );
+  // Process
+  static YO_NEW_REF Process*
+  create
+  (
+    const yield::fs::Path& command_line,
+    YO_NEW_REF Channel* stderr_ = NULL,
+    YO_NEW_REF Channel* stdin_ = NULL,
+    YO_NEW_REF Channel* stdout_ = NULL
+  );
 
-        static YO_NEW_REF Process*
-        create
-        (
-          const yield::fs::Path& executable_file_path,
-          const yield::i18n::tstring::value_type** null_terminated_argv,
-          YO_NEW_REF Channel* stderr_ = NULL,
-          YO_NEW_REF Channel* stdin_ = NULL,
-          YO_NEW_REF Channel* stdout_ = NULL
-        );
+  static YO_NEW_REF Process*
+  create
+  (
+    const yield::fs::Path& executable_file_path,
+    const yield::i18n::tstring::value_type** null_terminated_argv,
+    YO_NEW_REF Channel* stderr_ = NULL,
+    YO_NEW_REF Channel* stdin_ = NULL,
+    YO_NEW_REF Channel* stdout_ = NULL
+  );
 
-        static yield::fs::Path get_current_executable_file_path();
-        static YO_NEW_REF Process* open( pid_t pid );
-        bool kill();
-        bool poll( int* out_return_code );
-        static pid_t self();
-        bool terminate();
-        int wait();
+  static yield::fs::Path get_current_executable_file_path();
+  static YO_NEW_REF Process* open( pid_t pid );
+  bool kill();
+  bool poll( int* out_return_code );
+  static pid_t self();
+  bool terminate();
+  int wait();
 
-      private:
-        Process
-        (
-          void* hProcess,
-          void* hThread,
-          YO_NEW_REF Channel* stderr_ = NULL,
-          YO_NEW_REF Channel* stdin_ = NULL,
-          YO_NEW_REF Channel* stdout_ = NULL
-        );
+private:
+  Process
+  (
+    void* hProcess,
+    void* hThread,
+    YO_NEW_REF Channel* stderr_ = NULL,
+    YO_NEW_REF Channel* stdin_ = NULL,
+    YO_NEW_REF Channel* stdout_ = NULL
+  );
 
-      private:
-        void *hProcess, *hThread;
-      };
-    }
-  }
+private:
+  void *hProcess, *hThread;
+};
+}
+}
 }
 
 

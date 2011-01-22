@@ -29,44 +29,37 @@
 
 
 #ifdef _WIN32
-  #include "win32/mutex.hpp"
+#include "win32/mutex.hpp"
 #else
-  #include "posix/mutex.hpp"
+#include "posix/mutex.hpp"
 #endif
 #include "yield/thread/mutex.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    Mutex::Mutex()
-    {
-      #ifdef _WIN32
-        pimpl = new win32::Mutex;
-      #else
-        pimpl = new posix::Mutex;
-      #endif
-    }
+namespace yield {
+namespace thread {
+Mutex::Mutex() {
+#ifdef _WIN32
+  pimpl = new win32::Mutex;
+#else
+  pimpl = new posix::Mutex;
+#endif
+}
 
-    Mutex::~Mutex()
-    {
-      delete pimpl;
-    }
+Mutex::~Mutex() {
+  delete pimpl;
+}
 
-    bool Mutex::lock()
-    {
-      return pimpl->lock();
-    }
+bool Mutex::lock() {
+  return pimpl->lock();
+}
 
-    bool Mutex::trylock()
-    {
-      return pimpl->trylock();
-    }
+bool Mutex::trylock() {
+  return pimpl->trylock();
+}
 
-    void Mutex::unlock()
-    {
-      pimpl->unlock();
-    }
-  }
+void Mutex::unlock() {
+  pimpl->unlock();
+}
+}
 }

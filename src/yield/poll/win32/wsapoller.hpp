@@ -38,39 +38,39 @@
 #include "yield/thread/non_blocking_concurrent_queue.hpp"
 
 
-namespace yield
-{
-  namespace poll
-  {
-    class SocketPair;
+namespace yield {
+namespace poll {
+class SocketPair;
 
 
-    namespace win32
-    {
-      #if _WIN32_WINNT >= 0x0600
-        class WSAPoller
-          : public EventQueue,
-            private yield::thread::NonBlockingConcurrentQueue<Event, 32>
-        {
-        public:
-          WSAPoller();
+namespace win32 {
+#if _WIN32_WINNT >= 0x0600
+class WSAPoller
+  : public EventQueue,
+    private yield::thread::NonBlockingConcurrentQueue<Event, 32> {
+public:
+  WSAPoller();
 
-          bool associate( socket_t socket_, int16_t events );
-          bool dissociate( socket_t socket_ );
+  bool associate( socket_t socket_, int16_t events );
+  bool dissociate( socket_t socket_ );
 
-          // EventQueue
-          YO_NEW_REF Event& dequeue() { return EventQueue::dequeue(); }
-          YO_NEW_REF Event* dequeue( const Time& timeout );
-          bool enqueue( YO_NEW_REF Event& event );
-          YO_NEW_REF Event* trydequeue() { return EventQueue::trydequeue(); }
-
-        private:
-          vector<pollfd> pollfds;
-          yield::net::sockets::SocketPair wake_socket_pair;
-        };
-      #endif
-    }
+  // EventQueue
+  YO_NEW_REF Event& dequeue() {
+    return EventQueue::dequeue();
   }
+  YO_NEW_REF Event* dequeue( const Time& timeout );
+  bool enqueue( YO_NEW_REF Event& event );
+  YO_NEW_REF Event* trydequeue() {
+    return EventQueue::trydequeue();
+  }
+
+private:
+  vector<pollfd> pollfds;
+  yield::net::sockets::SocketPair wake_socket_pair;
+};
+#endif
+}
+}
 }
 
 

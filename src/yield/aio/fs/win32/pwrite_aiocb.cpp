@@ -35,72 +35,61 @@
 #include <Windows.h>
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace fs
-    {
-      bool pwriteAIOCB::issue( EventHandler& completion_handler )
-      {
-        if ( page.get_next_page() == NULL )
-        {
-          set_completion_handler( completion_handler );
+namespace yield {
+namespace aio {
+namespace fs {
+bool pwriteAIOCB::issue( EventHandler& completion_handler ) {
+  if ( page.get_next_page() == NULL ) {
+    set_completion_handler( completion_handler );
 
-          return WriteFileEx
-                  (
-                    get_file(),
-                    page,
-                    get_nbytes(),
-                    *this,
-                    CompletionRoutine
-                  ) == TRUE
-                  ||
-                  GetLastError() == ERROR_IO_PENDING;
-        }
-        else
-          return AIOCB::issue( completion_handler );
-      }
+    return WriteFileEx
+           (
+             get_file(),
+             page,
+             get_nbytes(),
+             *this,
+             CompletionRoutine
+           ) == TRUE
+           ||
+           GetLastError() == ERROR_IO_PENDING;
+  } else
+    return AIOCB::issue( completion_handler );
+}
 
-      bool pwriteAIOCB::issue( yield::aio::win32::AIOQueue& )
-      {
-        if ( page.get_next_page() != NULL )
-        {
-          vector<FILE_SEGMENT_ELEMENT> aSegmentArray;
-          Page* next_page = &page;
-          do
-          {
-            FILE_SEGMENT_ELEMENT file_segment_element;
-            file_segment_element.Buffer = *next_page;
-            aSegmentArray.push_back( file_segment_element );
-            next_page = next_page->get_next_page();
-          } while ( next_page != NULL );
+bool pwriteAIOCB::issue( yield::aio::win32::AIOQueue& ) {
+  if ( page.get_next_page() != NULL ) {
+    vector<FILE_SEGMENT_ELEMENT> aSegmentArray;
+    Page* next_page = &page;
+    do {
+      FILE_SEGMENT_ELEMENT file_segment_element;
+      file_segment_element.Buffer = *next_page;
+      aSegmentArray.push_back( file_segment_element );
+      next_page = next_page->get_next_page();
+    } while ( next_page != NULL );
 
-          return WriteFileGather
-                  (
-                    get_file(),
-                    &aSegmentArray[0],
-                    get_nbytes(),
-                    NULL,
-                    *this
-                  ) == TRUE
-                  ||
-                  GetLastError() == ERROR_IO_PENDING;
-        }
-        else
-        {
-          return WriteFile
-                  (
-                    get_file(),
-                    page,
-                    get_nbytes(),
-                    NULL,
-                    *this
-                  ) == TRUE
-                  ||
-                  GetLastError() == ERROR_IO_PENDING;
-        }
-      }
-    }
+    return WriteFileGather
+           (
+             get_file(),
+             &aSegmentArray[0],
+             get_nbytes(),
+             NULL,
+             *this
+           ) == TRUE
+           ||
+           GetLastError() == ERROR_IO_PENDING;
+  } else {
+    return WriteFile
+           (
+             get_file(),
+             page,
+             get_nbytes(),
+             NULL,
+             *this
+           ) == TRUE
+           ||
+           GetLastError() == ERROR_IO_PENDING;
   }
+}
+}
+}
 }

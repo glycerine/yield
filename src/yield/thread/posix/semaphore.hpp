@@ -37,31 +37,27 @@
 #include <semaphore.h>
 
 
-namespace yield
-{
-  class Time;
+namespace yield {
+class Time;
 
 
-  namespace thread
-  {
-    namespace posix
-    {
-      class Semaphore
-      {
-      public:
-        Semaphore();
-        ~Semaphore();
+namespace thread {
+namespace posix {
+class Semaphore {
+public:
+  Semaphore();
+  ~Semaphore();
 
-        void post();
-        bool timedwait( const Time& timeout );
-        bool trywait();
-        bool wait();
+  void post();
+  bool timedwait( const Time& timeout );
+  bool trywait();
+  bool wait();
 
-      private:
-        sem_t sem;
-      };
-    }
-  }
+private:
+  sem_t sem;
+};
+}
+}
 }
 
 

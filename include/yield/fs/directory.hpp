@@ -36,36 +36,34 @@
 #include "yield/fs/stat.hpp"
 
 
-namespace yield
-{
-  namespace fs
-  {
-    class Path;
+namespace yield {
+namespace fs {
+class Path;
 
 
-    class Directory : public Object
-    {
-    public:
-      class Entry : public Stat
-      {
-      public:
-        virtual const Path& get_name() const = 0;
-        virtual bool is_hidden() const = 0;
-        virtual bool is_special() const = 0;
-      };
+class Directory : public Object {
+public:
+  class Entry : public Stat {
+  public:
+    virtual const Path& get_name() const = 0;
+    virtual bool is_hidden() const = 0;
+    virtual bool is_special() const = 0;
+  };
 
-    public:
-      virtual ~Directory() { }
+public:
+  virtual ~Directory() { }
 
-      virtual bool close() = 0;
-      virtual YO_NEW_REF Entry* read( Entry::Type = Entry::TYPE_ALL ) = 0;
-      virtual bool read( Entry&, Entry::Type = Entry::TYPE_ALL ) = 0;
-      virtual void rewind() = 0;
+  virtual bool close() = 0;
+  virtual YO_NEW_REF Entry* read( Entry::Type = Entry::TYPE_ALL ) = 0;
+  virtual bool read( Entry&, Entry::Type = Entry::TYPE_ALL ) = 0;
+  virtual void rewind() = 0;
 
-      // Object
-      Directory& inc_ref() { return Object::inc_ref( *this ); }
-    };
+  // Object
+  Directory& inc_ref() {
+    return Object::inc_ref( *this );
   }
+};
+}
 }
 
 

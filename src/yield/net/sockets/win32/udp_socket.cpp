@@ -32,14 +32,11 @@
 #include "yield/net/sockets/win32/winsock.hpp"
 
 
-namespace yield
-{
-  namespace net
-  {
-    namespace sockets
-    {
-      int UDPSocket::DOMAIN_DEFAULT = AF_INET;
-      int UDPSocket::PROTOCOL = IPPROTO_UDP;
-    }
-  }
+namespace yield {
+namespace net {
+namespace sockets {
+int UDPSocket::DOMAIN_DEFAULT = AF_INET;
+int UDPSocket::PROTOCOL = IPPROTO_UDP;
+}
+}
 }

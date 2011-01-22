@@ -32,23 +32,19 @@
 #define _YIELD_THREAD_SYSTEM_CONFIGURATION_HPP_
 
 
-namespace yield
-{
-  namespace thread
-  {
-    class SystemConfiguration
-    {
-    public:
-      enum Variable
-      {
-        ONLINE_LOGICAL_PROCESSOR_COUNT,
-        ONLINE_PHYSICAL_PROCESSOR_COUNT
-      };
+namespace yield {
+namespace thread {
+class SystemConfiguration {
+public:
+  enum Variable {
+    ONLINE_LOGICAL_PROCESSOR_COUNT,
+    ONLINE_PHYSICAL_PROCESSOR_COUNT
+  };
 
-    public:
-      long operator()( Variable );
-    };
-  }
+public:
+  long operator()( Variable );
+};
+}
 }
 
 

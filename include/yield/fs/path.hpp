@@ -40,97 +40,86 @@
 
 
 
-namespace yield
-{
-  namespace fs
-  {
-    class Path : public yield::i18n::tstring
-    {
-    public:
-      const static Path CURRENT_DIRECTORY;
-      const static Path PARENT_DIRECTORY;
-      const static tstring::value_type SEPARATOR;
+namespace yield {
+namespace fs {
+class Path : public yield::i18n::tstring {
+public:
+  const static Path CURRENT_DIRECTORY;
+  const static Path PARENT_DIRECTORY;
+  const static tstring::value_type SEPARATOR;
 
-    public:
-      Path() { }
-      Path( char path ) : tstring( path ) { }
-      Path( const char* path ) : tstring( path ) { }
-      Path( const char* path, size_t path_len ) : tstring( path, path_len ) { }
-      Path( const string& path ) : tstring( path ) { }
-      Path( const tstring& path ) : tstring( path ) { }
-      Path( wchar_t path ) : tstring( path ) { }
-      Path( const wchar_t* path ) : tstring( path ) { }
-      Path( const wchar_t* path, size_t path_len ) : tstring( path, path_len ) { }
-      Path( const wstring& path ) : tstring( path ) { }
+public:
+  Path() { }
+  Path( char path ) : tstring( path ) { }
+  Path( const char* path ) : tstring( path ) { }
+  Path( const char* path, size_t path_len ) : tstring( path, path_len ) { }
+  Path( const string& path ) : tstring( path ) { }
+  Path( const tstring& path ) : tstring( path ) { }
+  Path( wchar_t path ) : tstring( path ) { }
+  Path( const wchar_t* path ) : tstring( path ) { }
+  Path( const wchar_t* path, size_t path_len ) : tstring( path, path_len ) { }
+  Path( const wstring& path ) : tstring( path ) { }
 
-      Path parent_path() const
-      {
-        if ( size() > 1 || operator[]( 0 ) != SEPARATOR )
-        {
-          vector<Path> parts;
-          split( parts );
-          if ( parts.size() > 1 )
-            return parts[parts.size()-2];
-          else
-            return Path( SEPARATOR );
-        }
-        else
-          return Path( SEPARATOR );
-      }
-
-      std::pair<Path, Path> split() const
-      {
-        size_type sep = find_last_of( SEPARATOR );
-        if ( sep != npos )
-          return make_pair( substr( 0, sep ), substr( sep + 1 ) );
-        else
-          return make_pair( Path(), *this );
-      }
-
-      template <class ContainerType>
-      void split( OUT ContainerType& parts ) const
-      {
-        size_t last_sep = find_first_not_of( SEPARATOR, 0 );
-        size_t next_sep = find_first_of( SEPARATOR, last_sep );
-
-        while ( next_sep != tstring::npos || last_sep != tstring::npos )
-        {
-          parts.push_back( Path( substr( last_sep, next_sep - last_sep ) ) );
-          last_sep = find_first_not_of( SEPARATOR, next_sep );
-          next_sep = find_first_of( SEPARATOR, last_sep );
-        }
-      }
-
-      std::pair<Path, Path> splitext() const;
-    };
-
-
-    inline Path operator/( const Path& left, const Path& right )
-    {
-      if ( left.empty() )
-        return right;
-      else if ( right.empty() )
-        return left;
+  Path parent_path() const {
+    if ( size() > 1 || operator[]( 0 ) != SEPARATOR ) {
+      vector<Path> parts;
+      split( parts );
+      if ( parts.size() > 1 )
+        return parts[parts.size()-2];
       else
-      {
-        yield::i18n::tstring combined( left);
-
-        if
-        (
-          left[left.size()-1] != Path::SEPARATOR
-          &&
-          right[0] != Path::SEPARATOR
-        )
-          combined += Path::SEPARATOR;
-
-        combined.append( right );
-
-        return Path( combined );
-      }
-    }
-
-    std::ostream& operator<<( std::ostream&, const Path& );
+        return Path( SEPARATOR );
+    } else
+      return Path( SEPARATOR );
   }
+
+  std::pair<Path, Path> split() const {
+    size_type sep = find_last_of( SEPARATOR );
+    if ( sep != npos )
+      return make_pair( substr( 0, sep ), substr( sep + 1 ) );
+    else
+      return make_pair( Path(), *this );
+  }
+
+  template <class ContainerType>
+  void split( OUT ContainerType& parts ) const {
+    size_t last_sep = find_first_not_of( SEPARATOR, 0 );
+    size_t next_sep = find_first_of( SEPARATOR, last_sep );
+
+    while ( next_sep != tstring::npos || last_sep != tstring::npos ) {
+      parts.push_back( Path( substr( last_sep, next_sep - last_sep ) ) );
+      last_sep = find_first_not_of( SEPARATOR, next_sep );
+      next_sep = find_first_of( SEPARATOR, last_sep );
+    }
+  }
+
+  std::pair<Path, Path> splitext() const;
+};
+
+
+inline Path operator/( const Path& left, const Path& right ) {
+  if ( left.empty() )
+    return right;
+  else if ( right.empty() )
+    return left;
+  else {
+    yield::i18n::tstring combined( left);
+
+    if
+    (
+      left[left.size()-1] != Path::SEPARATOR
+      &&
+      right[0] != Path::SEPARATOR
+    )
+      combined += Path::SEPARATOR;
+
+    combined.append( right );
+
+    return Path( combined );
+  }
+}
+
+std::ostream& operator<<( std::ostream&, const Path& );
+}
 }
 
 

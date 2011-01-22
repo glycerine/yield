@@ -29,73 +29,63 @@
 
 
 #if defined(__linux__)
-  #include "linux/processor_set.hpp"
+#include "linux/processor_set.hpp"
 #elif defined(__sun)
-  #include "sunos/processor_set.hpp"
+#include "sunos/processor_set.hpp"
 #elif defined(_WIN32)
-  #include "win32/processor_set.hpp"
+#include "win32/processor_set.hpp"
 #endif
 #include "yield/thread/processor_set.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    ProcessorSet::ProcessorSet()
-    {
-      #if defined(__linux__)
-        pimpl = new linux::ProcessorSet;
-      #elif defined(__sun)
-        pimpl = new sunos::ProcessorSet;
-      #elif defined(_WIN32)
-        pimpl = new win32::ProcessorSet;
-      #else
-        DebugBreak();
-      #endif
-    }
+namespace yield {
+namespace thread {
+ProcessorSet::ProcessorSet() {
+#if defined(__linux__)
+  pimpl = new linux::ProcessorSet;
+#elif defined(__sun)
+  pimpl = new sunos::ProcessorSet;
+#elif defined(_WIN32)
+  pimpl = new win32::ProcessorSet;
+#else
+  DebugBreak();
+#endif
+}
 
-    ProcessorSet::~ProcessorSet()
-    {
-      delete pimpl;
-    }
+ProcessorSet::~ProcessorSet() {
+  delete pimpl;
+}
 
-    void ProcessorSet::clear()
-    {
-      return pimpl->clear();
-    }
+void ProcessorSet::clear() {
+  return pimpl->clear();
+}
 
-    void ProcessorSet::clear( uint16_t processor_i )
-    {
-      return pimpl->clear( processor_i );
-    }
+void ProcessorSet::clear( uint16_t processor_i ) {
+  return pimpl->clear( processor_i );
+}
 
-    uint16_t ProcessorSet::count() const
-    {
-      uint16_t count = 0;
+uint16_t ProcessorSet::count() const {
+  uint16_t count = 0;
 
-      for
-      (
-        uint16_t processor_i = 0;
-        processor_i < static_cast<uint16_t>( -1 );
-        processor_i++
-      )
-      {
-        if ( isset( processor_i ) )
-          count++;
-      }
-
-      return count;
-    }
-
-    bool ProcessorSet::isset( uint16_t processor_i ) const
-    {
-      return pimpl->isset( processor_i );
-    }
-
-    bool ProcessorSet::set( uint16_t processor_i )
-    {
-      return pimpl->set( processor_i );
-    }
+  for
+  (
+    uint16_t processor_i = 0;
+    processor_i < static_cast<uint16_t>( -1 );
+    processor_i++
+  ) {
+    if ( isset( processor_i ) )
+      count++;
   }
+
+  return count;
+}
+
+bool ProcessorSet::isset( uint16_t processor_i ) const {
+  return pimpl->isset( processor_i );
+}
+
+bool ProcessorSet::set( uint16_t processor_i ) {
+  return pimpl->set( processor_i );
+}
+}
 }

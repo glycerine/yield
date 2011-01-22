@@ -32,44 +32,47 @@
 #define _YIELD_THREAD_CONDITION_VARIABLE_HPP_
 
 
-namespace yield
-{
-  class Time;
+namespace yield {
+class Time;
 
 
-  namespace thread
-  {
-    #ifdef _WIN32
-      namespace win32 { class ConditionVariable; }
-    #else
-      namespace posix { class ConditionVariable; }
-    #endif
+namespace thread {
+#ifdef _WIN32
+namespace win32 {
+class ConditionVariable;
+}
+#else
+namespace posix {
+class ConditionVariable;
+}
+#endif
 
 
-    class ConditionVariable
-    {
-    public:
-      ConditionVariable();
-      ~ConditionVariable();
+class ConditionVariable {
+public:
+  ConditionVariable();
+  ~ConditionVariable();
 
-      void broadcast();
-      bool lock_mutex();
-      void signal();
-      bool timedwait( const Time& timeout );
-      bool trylock_mutex();
-      void unlock_mutex();
-      bool wait();
-      bool wait( const Time& timeout ) { return timedwait( timeout ); }
-
-    private:
-      #ifdef _WIN32
-        win32::ConditionVariable* pimpl;
-      #else
-        posix::ConditionVariable* pimpl;
-      #endif
-    };
-
+  void broadcast();
+  bool lock_mutex();
+  void signal();
+  bool timedwait( const Time& timeout );
+  bool trylock_mutex();
+  void unlock_mutex();
+  bool wait();
+  bool wait( const Time& timeout ) {
+    return timedwait( timeout );
   }
+
+private:
+#ifdef _WIN32
+  win32::ConditionVariable* pimpl;
+#else
+  posix::ConditionVariable* pimpl;
+#endif
+};
+
+}
 }
 
 

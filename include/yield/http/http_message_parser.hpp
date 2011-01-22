@@ -35,34 +35,33 @@
 #include "yield/http/http_message.hpp"
 
 
-namespace yield
-{
-  namespace http
-  {
-    class HTTPBodyChunk;
+namespace yield {
+namespace http {
+class HTTPBodyChunk;
 
 
-    class HTTPMessageParser
-    {
-    protected:
-      HTTPMessageParser( Buffer& buffer );
-      HTTPMessageParser( const string& buffer );
-      ~HTTPMessageParser();
+class HTTPMessageParser {
+protected:
+  HTTPMessageParser( Buffer& buffer );
+  HTTPMessageParser( const string& buffer );
+  ~HTTPMessageParser();
 
-      Buffer& get_buffer() { return buffer; }
-
-      bool parse_body( size_t content_length, OUT void*& body );
-      Object* parse_body_chunk();
-      bool parse_fields( OUT uint16_t& fields_offset, OUT size_t& content_length );
-
-    protected:
-      const char* eof;
-      char *p, *ps;
-
-    private:
-      Buffer& buffer;
-    };
+  Buffer& get_buffer() {
+    return buffer;
   }
+
+  bool parse_body( size_t content_length, OUT void*& body );
+  Object* parse_body_chunk();
+  bool parse_fields( OUT uint16_t& fields_offset, OUT size_t& content_length );
+
+protected:
+  const char* eof;
+  char *p, *ps;
+
+private:
+  Buffer& buffer;
+};
+}
 }
 
 

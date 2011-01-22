@@ -42,8 +42,7 @@ extern yunit::TestSuite& UDPSocketTestSuite();
 extern yunit::TestSuite& SSLContextTestSuite();
 
 
-int main( int, char** )
-{
+int main( int, char** ) {
   int failed_test_case_count = 0;
 
   // URI

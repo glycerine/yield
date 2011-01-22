@@ -37,157 +37,130 @@
 #include <Windows.h>
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace win32
-    {
-      Thread::Thread( Runnable& runnable )
-        : runnable( &runnable )
-      {
-        state = STATE_READY;
+namespace yield {
+namespace thread {
+namespace win32 {
+Thread::Thread( Runnable& runnable )
+  : runnable( &runnable ) {
+  state = STATE_READY;
 
-        handle = CreateThread( NULL, 0, run, this, NULL, &id );
+  handle = CreateThread( NULL, 0, run, this, NULL, &id );
 
-        if ( handle != NULL )
-        {
-          while ( state == STATE_READY )
-            yield();
-        }
-        else
-          throw Exception();
-      }
+  if ( handle != NULL ) {
+    while ( state == STATE_READY )
+      yield();
+  } else
+    throw Exception();
+}
 
-      Thread::Thread( HANDLE handle, DWORD id )
-        : handle( handle ), id( id ), runnable( NULL )
-      {
-        state = STATE_RUNNING;
-      }
+Thread::Thread( HANDLE handle, DWORD id )
+  : handle( handle ), id( id ), runnable( NULL ) {
+  state = STATE_RUNNING;
+}
 
-      Thread::~Thread()
-      {
-        if ( get_runnable() != NULL )
-        {
-          if ( is_running() )
-          {
-            cancel();
-            join();
-          }
-
-          CloseHandle( handle );
-        }
-      }
-
-      bool Thread::cancel()
-      {
-        return TerminateThread( handle, 0 ) == TRUE;
-      }
-
-      void* Thread::getspecific( uintptr_t key )
-      {
-        return TlsGetValue( key );
-      }
-
-      bool Thread::join()
-      {
-        return WaitForSingleObject( handle, INFINITE ) == WAIT_OBJECT_0;
-      }
-
-      uintptr_t Thread::key_create()
-      {
-        return TlsAlloc();
-      }
-
-      bool Thread::key_delete( uintptr_t key )
-      {
-        return TlsFree( key ) == TRUE;
-      }
-
-      void Thread::nanosleep( const Time& timeout )
-      {
-        Sleep( static_cast<DWORD>( timeout.ms() ) );
-      }
-
-      unsigned long __stdcall Thread::run( void* this_ )
-      {
-        static_cast<Thread*>( this_ )->state = STATE_RUNNING;
-        static_cast<Thread*>( this_ )->runnable->run();
-        static_cast<Thread*>( this_ )->state = STATE_SUSPENDED;
-        return 0;
-      }
-
-      Thread* Thread::self()
-      {
-        return new Thread( GetCurrentThread(), GetCurrentThreadId() );
-      }
-
-      //
-      // Usage: SetThreadName (-1, "MainThread");
-      // from http://msdn.microsoft.com/library/default.asp?url=/library/en-us/vsdebug/html/vxtsksettingthreadname.asp
-      //
-      typedef struct tagTHREADNAME_INFO
-      {
-        DWORD dwType; // must be 0x1000
-        LPCSTR szName; // pointer to name (in user addr space)
-        DWORD dwThreadID; // thread ID (-1=caller thread)
-        DWORD dwFlags; // reserved for future use, must be zero
-      }
-      THREADNAME_INFO;
-
-      void Thread::set_name( const char* thread_name )
-      {
-        THREADNAME_INFO info;
-        info.dwType = 0x1000;
-        info.szName = thread_name;
-        info.dwThreadID = id;
-        info.dwFlags = 0;
-
-        __try
-        {
-            RaiseException
-            (
-              0x406D1388,
-              0,
-              sizeof( info ) / sizeof( DWORD ),
-              reinterpret_cast<const ULONG_PTR*>( &info )
-            );
-        }
-        __except( EXCEPTION_CONTINUE_EXECUTION )
-        { }
-      }
-
-      bool Thread::setaffinity( uint16_t logical_processor_i )
-      {
-        if ( id != 0 )
-          return SetThreadAffinityMask( handle, ( 1L << logical_processor_i ) ) != 0;
-        else
-          return false;
-      }
-
-      bool Thread::setaffinity( const ProcessorSet& logical_processor_set )
-      {
-        if ( id != 0 )
-        {
-          return SetThreadAffinityMask
-                 (
-                   handle,
-                   logical_processor_set
-                 ) != 0;
-        }
-        else
-          return false;
-      }
-
-      bool Thread::setspecific( uintptr_t key, void* value )
-      {
-        return TlsSetValue( key, value ) == TRUE;
-      }
-
-      void Thread::yield()
-      {
-        SwitchToThread();
-      }
+Thread::~Thread() {
+  if ( get_runnable() != NULL ) {
+    if ( is_running() ) {
+      cancel();
+      join();
     }
+
+    CloseHandle( handle );
   }
+}
+
+bool Thread::cancel() {
+  return TerminateThread( handle, 0 ) == TRUE;
+}
+
+void* Thread::getspecific( uintptr_t key ) {
+  return TlsGetValue( key );
+}
+
+bool Thread::join() {
+  return WaitForSingleObject( handle, INFINITE ) == WAIT_OBJECT_0;
+}
+
+uintptr_t Thread::key_create() {
+  return TlsAlloc();
+}
+
+bool Thread::key_delete( uintptr_t key ) {
+  return TlsFree( key ) == TRUE;
+}
+
+void Thread::nanosleep( const Time& timeout ) {
+  Sleep( static_cast<DWORD>( timeout.ms() ) );
+}
+
+unsigned long __stdcall Thread::run( void* this_ ) {
+  static_cast<Thread*>( this_ )->state = STATE_RUNNING;
+  static_cast<Thread*>( this_ )->runnable->run();
+  static_cast<Thread*>( this_ )->state = STATE_SUSPENDED;
+  return 0;
+}
+
+Thread* Thread::self() {
+  return new Thread( GetCurrentThread(), GetCurrentThreadId() );
+}
+
+//
+// Usage: SetThreadName (-1, "MainThread");
+// from http://msdn.microsoft.com/library/default.asp?url=/library/en-us/vsdebug/html/vxtsksettingthreadname.asp
+//
+typedef struct tagTHREADNAME_INFO {
+  DWORD dwType; // must be 0x1000
+  LPCSTR szName; // pointer to name (in user addr space)
+  DWORD dwThreadID; // thread ID (-1=caller thread)
+  DWORD dwFlags; // reserved for future use, must be zero
+}
+THREADNAME_INFO;
+
+void Thread::set_name( const char* thread_name ) {
+  THREADNAME_INFO info;
+  info.dwType = 0x1000;
+  info.szName = thread_name;
+  info.dwThreadID = id;
+  info.dwFlags = 0;
+
+  __try {
+    RaiseException
+    (
+      0x406D1388,
+      0,
+      sizeof( info ) / sizeof( DWORD ),
+      reinterpret_cast<const ULONG_PTR*>( &info )
+    );
+  }
+  __except( EXCEPTION_CONTINUE_EXECUTION )
+  { }
+}
+
+bool Thread::setaffinity( uint16_t logical_processor_i ) {
+  if ( id != 0 )
+    return SetThreadAffinityMask( handle, ( 1L << logical_processor_i ) ) != 0;
+  else
+    return false;
+}
+
+bool Thread::setaffinity( const ProcessorSet& logical_processor_set ) {
+  if ( id != 0 ) {
+    return SetThreadAffinityMask
+           (
+             handle,
+             logical_processor_set
+           ) != 0;
+  } else
+    return false;
+}
+
+bool Thread::setspecific( uintptr_t key, void* value ) {
+  return TlsSetValue( key, value ) == TRUE;
+}
+
+void Thread::yield() {
+  SwitchToThread();
+}
+}
+}
 }

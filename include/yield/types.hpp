@@ -38,30 +38,30 @@
 #include <stdint.h>
 
 #ifndef _WIN32
-  #include <sys/types.h>
-  #include <sys/uio.h> // For struct iovec
-  #ifdef __sun
-    // Solaris's unistd.h defines a function yield that conflicts with the
-    // namespace yield. This ugliness is necessary to get around that.
-    #ifdef __XOPEN_OR_POSIX
-      #error
-    #endif
-    #define __XOPEN_OR_POSIX 1
-    #ifdef __EXTENSIONS__
-      #undef __EXTENSIONS__
-      #include <unistd.h> // For ssize_t
-      #define __EXTENSIONS__ 1
-    #else
-      #include <unistd.h> // For ssize_t
-    #endif
-    #undef __XOPEN_OR_POSIX
-  #endif
+#include <sys/types.h>
+#include <sys/uio.h> // For struct iovec
+#ifdef __sun
+// Solaris's unistd.h defines a function yield that conflicts with the
+// namespace yield. This ugliness is necessary to get around that.
+#ifdef __XOPEN_OR_POSIX
+#error
+#endif
+#define __XOPEN_OR_POSIX 1
+#ifdef __EXTENSIONS__
+#undef __EXTENSIONS__
+#include <unistd.h> // For ssize_t
+#define __EXTENSIONS__ 1
+#else
+#include <unistd.h> // For ssize_t
+#endif
+#undef __XOPEN_OR_POSIX
+#endif
 #endif
 
 
 #ifndef _WIN32
-  #include <cstring>
-  using std::memcpy;
+#include <cstring>
+using std::memcpy;
 #endif
 #include <string>
 using std::string;
@@ -71,112 +71,111 @@ using std::vector;
 
 
 #ifndef DLLEXPORT
-  #ifdef _WIN32
-    #define DLLEXPORT extern "C" __declspec(dllexport)
-  #else
-    #if defined( __GNUC__ ) && __GNUC__ >= 4
-      #define DLLEXPORT extern "C" __attribute__ ( visibility( "default" ) )
-    #else
-      #define DLLEXPORT extern "C"
-    #endif
-  #endif
+#ifdef _WIN32
+#define DLLEXPORT extern "C" __declspec(dllexport)
+#else
+#if defined( __GNUC__ ) && __GNUC__ >= 4
+#define DLLEXPORT extern "C" __attribute__ ( visibility( "default" ) )
+#else
+#define DLLEXPORT extern "C"
+#endif
+#endif
 #endif
 
 #ifndef IN
-  #define IN
+#define IN
 #endif
 #ifndef INOUT
-  #define INOUT
+#define INOUT
 #endif
 #ifndef OUT
-  #define OUT
+#define OUT
 #endif
 
 
-namespace yield
-{
-  #if defined(_WIN64)
-    typedef __int64 atomic_t;
-  #elif defined(_WIN32)
-    typedef long atomic_t;
-  #else
-    typedef intptr_t atomic_t;
-  #endif
+namespace yield {
+#if defined(_WIN64)
+typedef __int64 atomic_t;
+#elif defined(_WIN32)
+typedef long atomic_t;
+#else
+typedef intptr_t atomic_t;
+#endif
 
-  #ifdef _WIN32
-    typedef void* fd_t;
-    const static fd_t INVALID_FD = reinterpret_cast<fd_t>( -1 );
-  #else
-    typedef int fd_t;
-    const static fd_t INVALID_FD = -1;
-  #endif
+#ifdef _WIN32
+typedef void* fd_t;
+const static fd_t INVALID_FD = reinterpret_cast<fd_t>( -1 );
+#else
+typedef int fd_t;
+const static fd_t INVALID_FD = -1;
+#endif
 
-  #ifdef _WIN32
-    typedef int16_t gid_t; // The st_gid in struct stat is a short.
-  #endif
+#ifdef _WIN32
+typedef int16_t gid_t; // The st_gid in struct stat is a short.
+#endif
 
-  #ifdef _WIN32
-    struct iovec { size_t iov_len; void* iov_base; };
-  #endif
+#ifdef _WIN32
+struct iovec {
+  size_t iov_len;
+  void* iov_base;
+};
+#endif
 
-  #ifdef _WIN32
-    typedef uint16_t mode_t;
-  #endif
+#ifdef _WIN32
+typedef uint16_t mode_t;
+#endif
 
-  #ifdef _WIN32
-    typedef int32_t pid_t;
-  #endif
+#ifdef _WIN32
+typedef int32_t pid_t;
+#endif
 
-  #if defined(_WIN64)
-    typedef uint64_t socket_t;
-    typedef int socklen_t;
-  #elif defined(_WIN32)
-    typedef uint32_t socket_t;
-    typedef int socklen_t;
-  #else
-    typedef int socket_t;
-  #endif
+#if defined(_WIN64)
+typedef uint64_t socket_t;
+typedef int socklen_t;
+#elif defined(_WIN32)
+typedef uint32_t socket_t;
+typedef int socklen_t;
+#else
+typedef int socket_t;
+#endif
 
-  #ifdef _WIN32
-    typedef intptr_t ssize_t;
-  #endif
+#ifdef _WIN32
+typedef intptr_t ssize_t;
+#endif
 
-  #ifdef _WIN32
-    typedef int16_t uid_t; // The st_uid in struct stat is a short.
-  #endif
+#ifdef _WIN32
+typedef int16_t uid_t; // The st_uid in struct stat is a short.
+#endif
 
 
-  inline socket_t fd_to_socket( fd_t fd )
-  {
-    #ifdef _WIN32
-      return reinterpret_cast<socket_t>( fd );
-    #else
-      return fd;
-    #endif
-  }
+inline socket_t fd_to_socket( fd_t fd ) {
+#ifdef _WIN32
+  return reinterpret_cast<socket_t>( fd );
+#else
+  return fd;
+#endif
+}
 
-  inline fd_t socket_to_fd( socket_t socket_ )
-  {
-    #ifdef _WIN32
-      return reinterpret_cast<fd_t>( socket_ );
-    #else
-      return socket_;
-    #endif
-  }
+inline fd_t socket_to_fd( socket_t socket_ ) {
+#ifdef _WIN32
+  return reinterpret_cast<fd_t>( socket_ );
+#else
+  return socket_;
+#endif
+}
 
-  #ifndef _WIN32
-    inline void
-    memcpy_s
-    (
-      void* dest,
-      size_t dest_len,
-      const void* src,
-      size_t src_len
-    )
-    {
-      memcpy( dest, src, src_len );
-    }
-  #endif
+#ifndef _WIN32
+inline void
+memcpy_s
+(
+  void* dest,
+  size_t dest_len,
+  const void* src,
+  size_t src_len
+) {
+  memcpy( dest, src, src_len );
+}
+#endif
 }
 
 

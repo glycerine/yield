@@ -36,30 +36,27 @@
 #include "yield/fs/path.hpp"
 
 
-namespace yield
-{
-  namespace process
-  {
-    class SharedLibrary : public Object
-    {
-    public:
-      const static yield::fs::Path SHLIBSUFFIX;
+namespace yield {
+namespace process {
+class SharedLibrary : public Object {
+public:
+  const static yield::fs::Path SHLIBSUFFIX;
 
-    public:
-      ~SharedLibrary();
+public:
+  ~SharedLibrary();
 
-      static YO_NEW_REF SharedLibrary* open( const yield::fs::Path& filename );
-      void* sym( const char* symbol );
+  static YO_NEW_REF SharedLibrary* open( const yield::fs::Path& filename );
+  void* sym( const char* symbol );
 
-    protected:
-      SharedLibrary( void* handle )
-        : handle( handle )
-      { }
+protected:
+  SharedLibrary( void* handle )
+    : handle( handle )
+  { }
 
-    private:
-      void* handle;
-    };
-  }
+private:
+  void* handle;
+};
+}
 }
 
 

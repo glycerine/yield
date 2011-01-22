@@ -36,82 +36,77 @@
 #include "yield/types.hpp"
 
 
-namespace yield
-{
-  class Object
-  {
-  public:
-    Object() : refcnt( 1 )
-    { }
+namespace yield {
+class Object {
+public:
+  Object() : refcnt( 1 )
+  { }
 
-    static inline void dec_ref( Object& object )
-    {
-      if ( atomic_dec( &object.refcnt ) == 0 )
-        delete &object;
-    }
+  static inline void dec_ref( Object& object ) {
+    if ( atomic_dec( &object.refcnt ) == 0 )
+      delete &object;
+  }
 
-    static inline void dec_ref( Object* object )
-    {
-      if ( object != 0 )
-        Object::dec_ref( *object );
-    }
+  static inline void dec_ref( Object* object ) {
+    if ( object != 0 )
+      Object::dec_ref( *object );
+  }
 
-    virtual uint32_t get_type_id() const { return 0; }
-    virtual const char* get_type_name() const { return ""; }
-
-    template <class ObjectType>
-    static inline ObjectType& inc_ref( ObjectType& object )
-    {
-      atomic_inc( &object.refcnt );
-      return object;
-    }
-
-    template <class ObjectType>
-    static inline ObjectType* inc_ref( ObjectType* object )
-    {
-      if ( object != 0 )
-        inc_ref( *object );
-
-      return object;
-    }
-
-    inline Object& inc_ref()
-    {
-      inc_ref( *this );
-      return *this;
-    }
-
-  protected:
-    virtual ~Object()
-    { }
-
-  private:
-    volatile atomic_t refcnt;
-  };
-
-
-  template <class ObjectType>
-  ObjectType* object_cast( Object* object )
-  {
-    if ( object != NULL && object->get_type_id() == ObjectType::TYPE_ID )
-      return static_cast<ObjectType*>( object );
-    else
-      return NULL;
+  virtual uint32_t get_type_id() const {
+    return 0;
+  }
+  virtual const char* get_type_name() const {
+    return "";
   }
 
   template <class ObjectType>
-  ObjectType* object_cast( Object& object )
-  {
-    if ( object.get_type_id() == ObjectType::TYPE_ID )
-      return static_cast<ObjectType*>( &object );
-    else
-      return NULL;
+  static inline ObjectType& inc_ref( ObjectType& object ) {
+    atomic_inc( &object.refcnt );
+    return object;
   }
 
+  template <class ObjectType>
+  static inline ObjectType* inc_ref( ObjectType* object ) {
+    if ( object != 0 )
+      inc_ref( *object );
 
-  // Macro indicating a new Object reference should be passed to a
-  // function/method or is returned by a function/method
-  #define YO_NEW_REF
+    return object;
+  }
+
+  inline Object& inc_ref() {
+    inc_ref( *this );
+    return *this;
+  }
+
+protected:
+  virtual ~Object()
+  { }
+
+private:
+  volatile atomic_t refcnt;
+};
+
+
+template <class ObjectType>
+ObjectType* object_cast( Object* object ) {
+  if ( object != NULL && object->get_type_id() == ObjectType::TYPE_ID )
+    return static_cast<ObjectType*>( object );
+  else
+    return NULL;
+}
+
+template <class ObjectType>
+ObjectType* object_cast( Object& object ) {
+  if ( object.get_type_id() == ObjectType::TYPE_ID )
+    return static_cast<ObjectType*>( &object );
+  else
+    return NULL;
+}
+
+
+// Macro indicating a new Object reference should be passed to a
+// function/method or is returned by a function/method
+#define YO_NEW_REF
 }
 
 

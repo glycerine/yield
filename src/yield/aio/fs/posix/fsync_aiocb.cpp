@@ -31,17 +31,13 @@
 #include "yield/aio/fs/fsync_aiocb.hpp"
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace fs
-    {
-      bool fsyncAIOCB::issue( EventHandler& completion_handler )
-      {
-        set_completion_handler( completion_handler );
-        return aio_fsync( O_SYNC, *this ) == 0;
-      }
-    }
-  }
+namespace yield {
+namespace aio {
+namespace fs {
+bool fsyncAIOCB::issue( EventHandler& completion_handler ) {
+  set_completion_handler( completion_handler );
+  return aio_fsync( O_SYNC, *this ) == 0;
+}
+}
+}
 }

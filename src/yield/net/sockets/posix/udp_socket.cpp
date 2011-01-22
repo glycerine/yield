@@ -34,14 +34,11 @@
 #include <sys/socket.h>
 
 
-namespace yield
-{
-  namespace net
-  {
-    namespace sockets
-    {
-      int UDPSocket::DOMAIN_DEFAULT = AF_INET;
-      int UDPSocket::PROTOCOL = IPPROTO_UDP;
-    }
-  }
+namespace yield {
+namespace net {
+namespace sockets {
+int UDPSocket::DOMAIN_DEFAULT = AF_INET;
+int UDPSocket::PROTOCOL = IPPROTO_UDP;
+}
+}
 }

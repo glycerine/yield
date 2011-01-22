@@ -35,55 +35,55 @@
 #include "yield/types.hpp"
 
 
-namespace yield
-{
-  class Time;
+namespace yield {
+class Time;
 
 
-  namespace thread
-  {
-    class Runnable;
+namespace thread {
+class Runnable;
 
 
-    namespace win32
-    {
-      class ProcessorSet;
+namespace win32 {
+class ProcessorSet;
 
 
-      class Thread
-      {
-      public:
-        Thread( Runnable& );
-        ~Thread();
+class Thread {
+public:
+  Thread( Runnable& );
+  ~Thread();
 
-        bool cancel();
-        Runnable* get_runnable() const { return runnable; }
-        void* getspecific( uintptr_t key );
-        bool join();
-        bool is_running() { return state == STATE_RUNNING; }
-        uintptr_t key_create();
-        bool key_delete( uintptr_t key );
-        void nanosleep( const Time& );
-        static Thread* self();
-        void set_name( const char* name );
-        bool setaffinity( uint16_t logical_processor_i );
-        bool setaffinity( const ProcessorSet& logical_processor_set );
-        bool setspecific( uintptr_t key, void* value );
-        void yield();
-
-      private:
-        Thread( void* handle, unsigned long id );
-
-        static unsigned long __stdcall run( void* );
-
-      private:
-        void* handle;
-        unsigned long id;
-        Runnable* runnable;
-        enum { STATE_READY, STATE_RUNNING, STATE_SUSPENDED } state;
-      };
-    }
+  bool cancel();
+  Runnable* get_runnable() const {
+    return runnable;
   }
+  void* getspecific( uintptr_t key );
+  bool join();
+  bool is_running() {
+    return state == STATE_RUNNING;
+  }
+  uintptr_t key_create();
+  bool key_delete( uintptr_t key );
+  void nanosleep( const Time& );
+  static Thread* self();
+  void set_name( const char* name );
+  bool setaffinity( uint16_t logical_processor_i );
+  bool setaffinity( const ProcessorSet& logical_processor_set );
+  bool setspecific( uintptr_t key, void* value );
+  void yield();
+
+private:
+  Thread( void* handle, unsigned long id );
+
+  static unsigned long __stdcall run( void* );
+
+private:
+  void* handle;
+  unsigned long id;
+  Runnable* runnable;
+  enum { STATE_READY, STATE_RUNNING, STATE_SUSPENDED } state;
+};
+}
+}
 }
 
 

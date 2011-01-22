@@ -35,40 +35,38 @@
 #include "yield/aio/aiocb.hpp"
 
 
-namespace yield
-{
-  class Page;
-  namespace fs { class File; }
+namespace yield {
+class Page;
+namespace fs {
+class File;
+}
 
 
-  namespace aio
-  {
-    namespace fs
-    {
-      class AIOCB : public yield::aio::AIOCB
-      {
-      public:
-        virtual ~AIOCB() { }
+namespace aio {
+namespace fs {
+class AIOCB : public yield::aio::AIOCB {
+public:
+  virtual ~AIOCB() { }
 
-        yield::fs::File& get_file();
+  yield::fs::File& get_file();
 
-      protected:
-        AIOCB( yield::fs::File& file );
-        AIOCB( yield::fs::File& file, size_t nbytes, uint64_t offset );
-        AIOCB( yield::fs::File& file, Page& page, size_t nbytes, uint64_t offset );
+protected:
+  AIOCB( yield::fs::File& file );
+  AIOCB( yield::fs::File& file, size_t nbytes, uint64_t offset );
+  AIOCB( yield::fs::File& file, Page& page, size_t nbytes, uint64_t offset );
 
-        #ifdef _WIN32
-          static void __stdcall
-          CompletionRoutine
-          (
-            unsigned long dwErrorCode,
-            unsigned long dwNumberOfBytesTransferred,
-            ::OVERLAPPED* lpOverlapped
-          );
-        #endif
-      };
-    }
-  }
+#ifdef _WIN32
+  static void __stdcall
+  CompletionRoutine
+  (
+    unsigned long dwErrorCode,
+    unsigned long dwNumberOfBytesTransferred,
+    ::OVERLAPPED* lpOverlapped
+  );
+#endif
+};
+}
+}
 }
 
 

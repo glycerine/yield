@@ -35,30 +35,26 @@
 #include "../posix/volume.hpp"
 
 
-namespace yield
-{
-  namespace fs
-  {
-    namespace linux
-    {
-      class Volume : public yield::fs::posix::Volume
-      {
-      public:
-        // yield::fs::Volume
-        yield::fs::File*
-        open
-        (
-          const Path&,
-          uint32_t flags,
-          mode_t mode,
-          uint32_t attributes
-        );
+namespace yield {
+namespace fs {
+namespace linux {
+class Volume : public yield::fs::posix::Volume {
+public:
+  // yield::fs::Volume
+  yield::fs::File*
+  open
+  (
+    const Path&,
+    uint32_t flags,
+    mode_t mode,
+    uint32_t attributes
+  );
 
-        YO_NEW_REF yield::fs::Directory* opendir( const Path& );
-        yield::fs::ExtendedAttributes* openxattrs( const Path& );
-      };
-    }
-  }
+  YO_NEW_REF yield::fs::Directory* opendir( const Path& );
+  yield::fs::ExtendedAttributes* openxattrs( const Path& );
+};
+}
+}
 }
 
 

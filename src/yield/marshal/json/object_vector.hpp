@@ -37,63 +37,59 @@
 #include "yield/marshal/sequence.hpp"
 
 
-namespace yield
-{
-  namespace marshal
-  {
-    namespace json
-    {
-      class ObjectVector : public Sequence, public vector<Object*>
-      {
-      public:
-        const static uint32_t TYPE_ID = 1404038540UL;
+namespace yield {
+namespace marshal {
+namespace json {
+class ObjectVector : public Sequence, public vector<Object*> {
+public:
+  const static uint32_t TYPE_ID = 1404038540UL;
 
-      public:
-        ~ObjectVector()
-        {
-          for ( iterator object_i = begin(); object_i != end(); ++object_i )
-            Object::dec_ref( **object_i );
-        }
-
-        // Object
-        uint32_t get_type_id() const { return TYPE_ID; }
-        const char* get_type_name() const { return "yield::marshal::ObjectVector"; }
-
-        void marshal( Marshaller& marshaller ) const
-        {
-          for ( const_iterator object_i = begin(); object_i != end(); ++object_i )
-            marshaller.write( Null(), **object_i );
-        }
-
-        bool operator==( const Object& other ) const
-        {
-          if ( other.get_type_id() == TYPE_ID )
-          {
-            if ( static_cast<const ObjectVector&>( other ).size() == size() )
-            {
-              for ( size_t object_i = 0; object_i < size(); object_i++ )
-              {
-                if
-                (
-                  !(
-                    *( *this )[object_i]
-                    ==
-                    *static_cast<const ObjectVector&>( other )[object_i]
-                  )
-                )
-                  return false;
-              }
-            }
-          }
-
-          return false;
-        }
-
-        // Sequence
-        size_t get_size() const { return size(); }
-      };
-    }
+public:
+  ~ObjectVector() {
+    for ( iterator object_i = begin(); object_i != end(); ++object_i )
+      Object::dec_ref( **object_i );
   }
+
+  // Object
+  uint32_t get_type_id() const {
+    return TYPE_ID;
+  }
+  const char* get_type_name() const {
+    return "yield::marshal::ObjectVector";
+  }
+
+  void marshal( Marshaller& marshaller ) const {
+    for ( const_iterator object_i = begin(); object_i != end(); ++object_i )
+      marshaller.write( Null(), **object_i );
+  }
+
+  bool operator==( const Object& other ) const {
+    if ( other.get_type_id() == TYPE_ID ) {
+      if ( static_cast<const ObjectVector&>( other ).size() == size() ) {
+        for ( size_t object_i = 0; object_i < size(); object_i++ ) {
+          if
+          (
+            !(
+              *( *this )[object_i]
+              ==
+              *static_cast<const ObjectVector&>( other )[object_i]
+            )
+          )
+            return false;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  // Sequence
+  size_t get_size() const {
+    return size();
+  }
+};
+}
+}
 }
 
 

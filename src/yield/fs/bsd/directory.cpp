@@ -32,54 +32,63 @@
 #include "yield/assert.hpp"
 
 
-namespace yield
-{
-  namespace fs
-  {
-    namespace bsd
-    {
-      Directory::Directory( DIR* dirp, const Path& path )
-        : yield::fs::posix::Directory( dirp, path )
-      { }
+namespace yield {
+namespace fs {
+namespace bsd {
+Directory::Directory( DIR* dirp, const Path& path )
+  : yield::fs::posix::Directory( dirp, path )
+{ }
 
-      bool Directory::read
-      (
-        OUT yield::fs::Directory::Entry& entry,
-        Entry::Type types
-      )
-      {
-        dirent* dirent_;
-        while ( ( dirent_ = readdir( *this ) ) != NULL )
-        {
-          Entry::Type entry_type;
-          switch ( dirent_->d_type )
-          {
-            case DT_FIFO: entry_type = Entry::TYPE_FIFO; break;
-            case DT_CHR: entry_type = Entry::TYPE_CHR; break;
-            case DT_DIR: entry_type = Entry::TYPE_DIR; break;
-            case DT_BLK: entry_type = Entry::TYPE_BLK; break;
-            case DT_REG: entry_type = Entry::TYPE_REG; break;
-            case DT_LNK: entry_type = Entry::TYPE_LNK; break;
-            case DT_SOCK: entry_type = Entry::TYPE_SOCK; break;
-            default: DebugBreak(); entry_type = Entry::INVALID_TYPE; break;
-          }
+bool Directory::read
+(
+  OUT yield::fs::Directory::Entry& entry,
+  Entry::Type types
+) {
+  dirent* dirent_;
+  while ( ( dirent_ = readdir( *this ) ) != NULL ) {
+    Entry::Type entry_type;
+    switch ( dirent_->d_type ) {
+    case DT_FIFO:
+      entry_type = Entry::TYPE_FIFO;
+      break;
+    case DT_CHR:
+      entry_type = Entry::TYPE_CHR;
+      break;
+    case DT_DIR:
+      entry_type = Entry::TYPE_DIR;
+      break;
+    case DT_BLK:
+      entry_type = Entry::TYPE_BLK;
+      break;
+    case DT_REG:
+      entry_type = Entry::TYPE_REG;
+      break;
+    case DT_LNK:
+      entry_type = Entry::TYPE_LNK;
+      break;
+    case DT_SOCK:
+      entry_type = Entry::TYPE_SOCK;
+      break;
+    default:
+      DebugBreak();
+      entry_type = Entry::INVALID_TYPE;
+      break;
+    }
 
-          if ( ( entry_type & types ) == entry_type )
-          {
-            static_cast<Entry&>( entry ) = *dirent_; // To set entry.name
-            Path entry_path( get_path() / entry.get_name() );
+    if ( ( entry_type & types ) == entry_type ) {
+      static_cast<Entry&>( entry ) = *dirent_; // To set entry.name
+      Path entry_path( get_path() / entry.get_name() );
 
-            struct stat stbuf;
-            if ( stat( entry_path.c_str(), &stbuf ) != -1 )
-            {
-              static_cast<Entry&>( entry ) = stbuf;
-              return true;
-            }
-          }
-        }
-
-        return false;
+      struct stat stbuf;
+      if ( stat( entry_path.c_str(), &stbuf ) != -1 ) {
+        static_cast<Entry&>( entry ) = stbuf;
+        return true;
       }
     }
   }
+
+  return false;
+}
+}
+}
 }

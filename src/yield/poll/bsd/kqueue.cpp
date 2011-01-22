@@ -31,139 +31,113 @@
 #include "kqueue.hpp"
 
 
-namespace yield
-{
-  namespace poll
-  {
-    namespace bsd
-    {
-      Kqueue::Kqueue( int kq, int* wake_pipe )
-        : kq( kq )
-      {
-        memcpy( this->wake_pipe, wake_pipe, sizeof( this->wake_pipe ) );
-      }
+namespace yield {
+namespace poll {
+namespace bsd {
+Kqueue::Kqueue( int kq, int* wake_pipe )
+  : kq( kq ) {
+  memcpy( this->wake_pipe, wake_pipe, sizeof( this->wake_pipe ) );
+}
 
-      Kqueue::~Kqueue()
-      {
-        close( kq );
-        close( wake_pipe[0] );
-        close( wake_pipe[1] );
-      }
+Kqueue::~Kqueue() {
+  close( kq );
+  close( wake_pipe[0] );
+  close( wake_pipe[1] );
+}
 
-      bool Kqueue::associate( fd_t fd, uint16_t events )
-      {
-        if ( events > 0 )
-        {
-          kevent kevent_;
+bool Kqueue::associate( fd_t fd, uint16_t events ) {
+  if ( events > 0 ) {
+    kevent kevent_;
 
-          if ( events & POLLIN )
-          {
-            EV_SET( &kevent_, fd, EVFILT_READ, EV_ADD, 0, 0, context );
-            if ( kevent( kq, &kevent_, 1, 0, 0, NULL ) == -1 )
-              return false;
-          }
-          else
-          {
-            EV_SET( &kevent_, fd, EVFILT_WRITE, EV_DELETE, 0, 0, context );
-            kevent( kq, &kevent_, 1, 0, 0, NULL ); // Ignore the result
-          }
+    if ( events & POLLIN ) {
+      EV_SET( &kevent_, fd, EVFILT_READ, EV_ADD, 0, 0, context );
+      if ( kevent( kq, &kevent_, 1, 0, 0, NULL ) == -1 )
+        return false;
+    } else {
+      EV_SET( &kevent_, fd, EVFILT_WRITE, EV_DELETE, 0, 0, context );
+      kevent( kq, &kevent_, 1, 0, 0, NULL ); // Ignore the result
+    }
 
-          if ( events & POLLOUT )
-          {
-            EV_SET( &kevent_, fd, EVFILT_WRITE, EV_ADD, 0, 0, context );
-            if ( kevent( kq, &kevent_, 1, 0, 0, NULL ) == -1 )
-              return false;
-          }
-          else
-          {
-            EV_SET( &kevent_, fd, EVFILT_WRITE, EV_DELETE, 0, 0, context );
-            kevent( kq, &kevent_, 1, 0, 0, NULL ); // Ignore the result
-          }
-        }
+    if ( events & POLLOUT ) {
+      EV_SET( &kevent_, fd, EVFILT_WRITE, EV_ADD, 0, 0, context );
+      if ( kevent( kq, &kevent_, 1, 0, 0, NULL ) == -1 )
+        return false;
+    } else {
+      EV_SET( &kevent_, fd, EVFILT_WRITE, EV_DELETE, 0, 0, context );
+      kevent( kq, &kevent_, 1, 0, 0, NULL ); // Ignore the result
+    }
+  } else
+    dissociate( fd );
+
+  return true;
+}
+
+Kqueue* Kqueue::create() {
+  int kq = kqueue();
+  if ( kq != -1 ) {
+    int wake_pipe[2];
+    if ( pipe( wake_pipe ) != -1 ) {
+      kevent kevent_;
+      EV_SET( &kevent_, wake_pipe[0], EVFILT_READ, EV_ADD, 0, 0, 0 );
+      if ( kevent( kq, &kevent_, 1, 0, 0, NULL ) != -1 )
+        return new Kqueue( kq, wake_pipe );
+
+      close( wake_pipe[0] );
+      close( wake_pipe[1] );
+    }
+
+    close( kq );
+  }
+
+  return NULL;
+}
+
+bool Kqueue::dissociate( fd_t fd ) {
+  kevent kfd_events[2];
+  EV_SET( &kfd_events[0], fd, EVFILT_READ, EV_DELETE, 0, 0, NULL );
+  EV_SET( &kfd_events[1], fd, EVFILT_WRITE, EV_DELETE, 0, 0, NULL );
+  return kevent( kq, kevents, 2, 0, 0, NULL ) != -1;
+}
+
+int16_t
+Kqueue::poll
+(
+  FDEvent* fd_events,
+  int16_t fd_events_len,
+  const Time& timeout
+) {
+  if ( fd_events_len > kevents.size() )
+    kevents.resize( fd_events_len );
+
+  timespec timeout_ts = timeout;
+
+  int ret = kevent( epfd, 0, 0, &kfd_events[0], fd_events_len, &timeout_ts );
+
+  if ( ret > 0 ) {
+    int16_t event_i = 0;
+
+    for ( int16_t kevent_i = 0; kevent_i < ret; kevent_i++ ) {
+      if ( kfd_events[kevent_i].ident == wake_pipe[0] ) {
+        uint8_t data;
+        read( wake_pipe[0], data, sizeof( data ) );
+      } else {
+        if ( kfd_events[kevent_i].filter == EVFILT_WRITE )
+          fd_events[event_i].set_events( POLLOUT );
         else
-          dissociate( fd );
-
-        return true;
-      }
-
-      Kqueue* Kqueue::create()
-      {
-        int kq = kqueue();
-        if ( kq != -1 )
-        {
-          int wake_pipe[2];
-          if ( pipe( wake_pipe ) != -1 )
-          {
-            kevent kevent_;
-            EV_SET( &kevent_, wake_pipe[0], EVFILT_READ, EV_ADD, 0, 0, 0 );
-            if ( kevent( kq, &kevent_, 1, 0, 0, NULL ) != -1 )
-              return new Kqueue( kq, wake_pipe );
-
-            close( wake_pipe[0] );
-            close( wake_pipe[1] );
-          }
-
-          close( kq );
-        }
-
-        return NULL;
-      }
-
-      bool Kqueue::dissociate( fd_t fd )
-      {
-        kevent kfd_events[2];
-        EV_SET( &kfd_events[0], fd, EVFILT_READ, EV_DELETE, 0, 0, NULL );
-        EV_SET( &kfd_events[1], fd, EVFILT_WRITE, EV_DELETE, 0, 0, NULL );
-        return kevent( kq, kevents, 2, 0, 0, NULL ) != -1;
-      }
-
-      int16_t
-      Kqueue::poll
-      (
-        FDEvent* fd_events,
-        int16_t fd_events_len,
-        const Time& timeout
-      )
-      {
-        if ( fd_events_len > kevents.size() )
-          kevents.resize( fd_events_len );
-
-        timespec timeout_ts = timeout;
-
-        int ret = kevent( epfd, 0, 0, &kfd_events[0], fd_events_len, &timeout_ts );
-
-        if ( ret > 0 )
-        {
-          int16_t event_i = 0;
-
-          for ( int16_t kevent_i = 0; kevent_i < ret; kevent_i++ )
-          {
-            if ( kfd_events[kevent_i].ident == wake_pipe[0] )
-            {
-              uint8_t data;
-              read( wake_pipe[0], data, sizeof( data ) );
-            }
-            else
-            {
-              if ( kfd_events[kevent_i].filter == EVFILT_WRITE )
-                fd_events[event_i].set_events( POLLOUT );
-              else
-                fd_events[event_i].set_events( POLLIN );
-              fd_events[event_i].set_fd( kfd_events[kevent_i].ident );
-              if ( ++event_i == fd_events_len ) break;
-            }
-          }
-
-          return event_i;
-        }
-        else
-          return static_cast<int16_t>( ret );
-      }
-
-      void Kqueue::wake()
-      {
-        write( wake_pipe[1], "m", 1 );
+          fd_events[event_i].set_events( POLLIN );
+        fd_events[event_i].set_fd( kfd_events[kevent_i].ident );
+        if ( ++event_i == fd_events_len ) break;
       }
     }
-  }
+
+    return event_i;
+  } else
+    return static_cast<int16_t>( ret );
+}
+
+void Kqueue::wake() {
+  write( wake_pipe[1], "m", 1 );
+}
+}
+}
 }

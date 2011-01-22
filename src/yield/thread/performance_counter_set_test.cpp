@@ -33,42 +33,37 @@
 
 
 #if defined(__sun)
-  #define TEST_EVENT "IC_fetch"
+#define TEST_EVENT "IC_fetch"
 #elif defined(YIELD_HAVE_UNIX_PAPI)
-  #define TEST_EVENT "PAPI_TOT_INS"
+#define TEST_EVENT "PAPI_TOT_INS"
 #endif
 
 
 TEST_SUITE( PerformanceCounterSet );
 
-namespace yield
-{
-  namespace thread
-  {
-    #if defined(__sun) || defined(YIELD_HAVE_UNIX_PAPI)
-      TEST( PerformanceCounterSet, add )
-      {
-        auto_Object<PerformanceCounterSet> perfctrs( PerformanceCounterSet::create() );
-        throw_assert( perfctrs->add( TEST_EVENT ) );
-      }
+namespace yield {
+namespace thread {
+#if defined(__sun) || defined(YIELD_HAVE_UNIX_PAPI)
+TEST( PerformanceCounterSet, add ) {
+  auto_Object<PerformanceCounterSet> perfctrs( PerformanceCounterSet::create() );
+  throw_assert( perfctrs->add( TEST_EVENT ) );
+}
 
-      TEST( PerformanceCounterSet, start_counting )
-      {
-        auto_Object<PerformanceCounterSet> perfctrs( PerformanceCounterSet::create() );
-        perfctrs->add( TEST_EVENT );
-        perfctrs->start_counting();
-      }
+TEST( PerformanceCounterSet, start_counting ) {
+  auto_Object<PerformanceCounterSet> perfctrs( PerformanceCounterSet::create() );
+  perfctrs->add( TEST_EVENT );
+  perfctrs->start_counting();
+}
 
-      TEST( PerformanceCounterSet, stop_counting )
-      {
-        auto_Object<PerformanceCounterSet> perfctrs( PerformanceCounterSet::create() );
-        perfctrs->add( TEST_EVENT );
-        perfctrs->start_counting();
-        for ( int i = 0; i < 100; i++ ) continue;
-        uint64_t counts[1];
-        perfctrs->stop_counting( counts );
-        throw_assert_gt( counts[0], 0 );
-      }
-    #endif
-  }
+TEST( PerformanceCounterSet, stop_counting ) {
+  auto_Object<PerformanceCounterSet> perfctrs( PerformanceCounterSet::create() );
+  perfctrs->add( TEST_EVENT );
+  perfctrs->start_counting();
+  for ( int i = 0; i < 100; i++ ) continue;
+  uint64_t counts[1];
+  perfctrs->stop_counting( counts );
+  throw_assert_gt( counts[0], 0 );
+}
+#endif
+}
 }

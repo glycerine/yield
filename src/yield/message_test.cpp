@@ -35,10 +35,8 @@
 
 TEST_SUITE( Message );
 
-namespace yield
-{
-  TEST( Message, is_message )
-  {
-    throw_assert( Request().is_message() );
-  }
+namespace yield {
+TEST( Message, is_message ) {
+  throw_assert( Request().is_message() );
+}
 }

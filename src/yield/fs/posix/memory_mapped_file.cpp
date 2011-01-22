@@ -37,102 +37,84 @@
 #include <sys/mman.h>
 
 
-namespace yield
-{
-  namespace fs
-  {
-    namespace posix
-    {
-      MemoryMappedFile::MemoryMappedFile
-      (
-        size_t capacity,
-        void* data,
-        YO_NEW_REF File& file,
-        int flags,
-        uint64_t offset,
-        int prot
-      )
-      : yield::fs::MemoryMappedFile( capacity, file, flags, offset, prot ),
-        data_( data )
-      { }
+namespace yield {
+namespace fs {
+namespace posix {
+MemoryMappedFile::MemoryMappedFile
+(
+  size_t capacity,
+  void* data,
+  YO_NEW_REF File& file,
+  int flags,
+  uint64_t offset,
+  int prot
+)
+  : yield::fs::MemoryMappedFile( capacity, file, flags, offset, prot ),
+    data_( data )
+{ }
 
-      MemoryMappedFile::~MemoryMappedFile()
-      {
-        close();
-      }
+MemoryMappedFile::~MemoryMappedFile() {
+  close();
+}
 
-      void MemoryMappedFile::reserve( size_t capacity )
-      {
-        if ( data_ != MAP_FAILED )
-        {
-          if ( !yield::fs::MemoryMappedFile::sync() )
-            throw Exception();
- 
-          if ( !unmap() )
-            throw Exception();
-        }
+void MemoryMappedFile::reserve( size_t capacity ) {
+  if ( data_ != MAP_FAILED ) {
+    if ( !yield::fs::MemoryMappedFile::sync() )
+      throw Exception();
 
-        debug_assert_eq( capacity_, 0 );
-        debug_assert_eq( data_, MAP_FAILED );
-
-        if ( get_file().truncate( capacity ) )
-        {
-          data_
-            = Volume::mmap
-              (
-                NULL,
-                capacity,
-                get_prot(),
-                get_flags(),
-                static_cast<File&>( get_file() ),
-                get_offset()
-              );
-
-          if ( data_ != MAP_FAILED )
-            capacity_ = capacity;
-          else
-            throw Exception();
-        }
-        else
-          throw Exception();
-      }
-
-      bool MemoryMappedFile::sync( void* ptr, size_t length )
-      {
-        if ( data_ != MAP_FAILED )
-        {
-          #ifdef __sun
-            return msync( static_cast<char*>( ptr ), length, MS_SYNC ) == 0;
-          #else
-            return msync( ptr, length, MS_SYNC ) == 0;
-          #endif
-        }
-        else
-        {
-          errno = EBADF;
-          return false;
-        }
-      }
-
-      bool MemoryMappedFile::unmap()
-      {
-        if ( data_ != MAP_FAILED )
-        {
-          if ( munmap( data_, capacity() ) == 0 )
-          {
-            capacity_ = 0;
-            data_ = MAP_FAILED;
-            return true;
-          }
-          else
-            return false;
-        }
-        else
-        {
-          errno = EBADF;
-          return false;
-        }
-      }
-    }
+    if ( !unmap() )
+      throw Exception();
   }
+
+  debug_assert_eq( capacity_, 0 );
+  debug_assert_eq( data_, MAP_FAILED );
+
+  if ( get_file().truncate( capacity ) ) {
+    data_
+    = Volume::mmap
+      (
+        NULL,
+        capacity,
+        get_prot(),
+        get_flags(),
+        static_cast<File&>( get_file() ),
+        get_offset()
+      );
+
+    if ( data_ != MAP_FAILED )
+      capacity_ = capacity;
+    else
+      throw Exception();
+  } else
+    throw Exception();
+}
+
+bool MemoryMappedFile::sync( void* ptr, size_t length ) {
+  if ( data_ != MAP_FAILED ) {
+#ifdef __sun
+    return msync( static_cast<char*>( ptr ), length, MS_SYNC ) == 0;
+#else
+    return msync( ptr, length, MS_SYNC ) == 0;
+#endif
+  } else {
+    errno = EBADF;
+    return false;
+  }
+}
+
+bool MemoryMappedFile::unmap() {
+  if ( data_ != MAP_FAILED ) {
+    if ( munmap( data_, capacity() ) == 0 ) {
+      capacity_ = 0;
+      data_ = MAP_FAILED;
+      return true;
+    } else
+      return false;
+  } else {
+    errno = EBADF;
+    return false;
+  }
+}
+}
+}
 }

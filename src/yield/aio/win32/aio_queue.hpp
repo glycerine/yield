@@ -36,33 +36,31 @@
 #include "yield/event_queue.hpp"
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace win32
-    {
-      class AIOQueue : public EventQueue
-      {
-      public:
-        bool associate( fd_t fd );
-        virtual bool enqueue( YO_NEW_REF AIOCB& aiocb );
+namespace yield {
+namespace aio {
+namespace win32 {
+class AIOQueue : public EventQueue {
+public:
+  bool associate( fd_t fd );
+  virtual bool enqueue( YO_NEW_REF AIOCB& aiocb );
 
-        // yield::EventQueue
-        YO_NEW_REF Event& dequeue() { return EventQueue::dequeue(); }
-        virtual YO_NEW_REF Event* dequeue( const Time& timeout );
-        virtual bool enqueue( YO_NEW_REF Event& event );
-
-      protected:
-        AIOQueue();
-        ~AIOQueue();
-
-      private:
-        fd_t hIoCompletionPort;
-      };
-
-    }
+  // yield::EventQueue
+  YO_NEW_REF Event& dequeue() {
+    return EventQueue::dequeue();
   }
+  virtual YO_NEW_REF Event* dequeue( const Time& timeout );
+  virtual bool enqueue( YO_NEW_REF Event& event );
+
+protected:
+  AIOQueue();
+  ~AIOQueue();
+
+private:
+  fd_t hIoCompletionPort;
+};
+
+}
+}
 }
 
 

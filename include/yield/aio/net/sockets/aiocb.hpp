@@ -35,47 +35,48 @@
 #include "yield/aio/aiocb.hpp"
 
 
-namespace yield
-{
-  namespace net { namespace sockets { class Socket; } }
+namespace yield {
+namespace net {
+namespace sockets {
+class Socket;
+}
+}
 
 
-  namespace aio
-  {
-    namespace net
-    {
-      namespace sockets
-      {
-        class AIOCB : public yield::aio::AIOCB
-        {
-        public:
-          virtual ~AIOCB();
+namespace aio {
+namespace net {
+namespace sockets {
+class AIOCB : public yield::aio::AIOCB {
+public:
+  virtual ~AIOCB();
 
-          AIOCB* get_next_aiocb() { return next_aiocb; }
-          yield::net::sockets::Socket& get_socket();
-
-          void set_next_aiocb( AIOCB* next_aiocb );
-
-        protected:
-          AIOCB( yield::net::sockets::Socket&, void* buf, size_t nbytes );
-
-          #ifdef _WIN32
-            static void __stdcall
-            CompletionRoutine
-            (
-              unsigned long dwErrorCode,
-              unsigned long dwNumberOfBytesTransferred,
-              ::OVERLAPPED* lpOverlapped,
-              unsigned long dwFlags
-            );
-          #endif
-
-        private:
-          AIOCB* next_aiocb;
-        };
-      }
-    }
+  AIOCB* get_next_aiocb() {
+    return next_aiocb;
   }
+  yield::net::sockets::Socket& get_socket();
+
+  void set_next_aiocb( AIOCB* next_aiocb );
+
+protected:
+  AIOCB( yield::net::sockets::Socket&, void* buf, size_t nbytes );
+
+#ifdef _WIN32
+  static void __stdcall
+  CompletionRoutine
+  (
+    unsigned long dwErrorCode,
+    unsigned long dwNumberOfBytesTransferred,
+    ::OVERLAPPED* lpOverlapped,
+    unsigned long dwFlags
+  );
+#endif
+
+private:
+  AIOCB* next_aiocb;
+};
+}
+}
+}
 }
 
 

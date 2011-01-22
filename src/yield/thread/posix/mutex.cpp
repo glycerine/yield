@@ -32,37 +32,29 @@
 #include "yield/exception.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace posix
-    {
-      Mutex::Mutex()
-      {
-        if ( pthread_mutex_init( &mutex, NULL ) != 0 )
-          throw Exception();
-      }
+namespace yield {
+namespace thread {
+namespace posix {
+Mutex::Mutex() {
+  if ( pthread_mutex_init( &mutex, NULL ) != 0 )
+    throw Exception();
+}
 
-      Mutex::~Mutex()
-      {
-        pthread_mutex_destroy( &mutex );
-      }
+Mutex::~Mutex() {
+  pthread_mutex_destroy( &mutex );
+}
 
-      bool Mutex::lock()
-      {
-        return pthread_mutex_lock( &mutex ) == 0;
-      }
+bool Mutex::lock() {
+  return pthread_mutex_lock( &mutex ) == 0;
+}
 
-      bool Mutex::trylock()
-      {
-        return pthread_mutex_trylock( &mutex ) == 0;
-      }
+bool Mutex::trylock() {
+  return pthread_mutex_trylock( &mutex ) == 0;
+}
 
-      void Mutex::unlock()
-      {
-        pthread_mutex_unlock( &mutex );
-      }
-    }
-  }
+void Mutex::unlock() {
+  pthread_mutex_unlock( &mutex );
+}
+}
+}
 }

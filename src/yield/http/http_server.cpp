@@ -39,156 +39,141 @@
 #include "yield/net/sockets/tcp_socket.hpp"
 
 
-namespace yield
-{
-  namespace http
-  {
-    using yield::aio::net::sockets::acceptAIOCB;
-    using yield::net::sockets::SocketAddress;
-    using yield::net::sockets::StreamSocket;
-    using yield::net::sockets::TCPSocket;
+namespace yield {
+namespace http {
+using yield::aio::net::sockets::acceptAIOCB;
+using yield::net::sockets::SocketAddress;
+using yield::net::sockets::StreamSocket;
+using yield::net::sockets::TCPSocket;
 
 
-    class HTTPServer::Connection : public StreamSocketServer::Connection
-    {
-    public:
-      Connection
-      (
-        HTTPServer& http_server,
-        SocketAddress& peername,
-        YO_NEW_REF StreamSocket& socket_
-      )
-      : StreamSocketServer::Connection( http_server, peername, socket_ ),
-        http_request_handler( http_server.http_request_handler.inc_ref() )
-      { }
+class HTTPServer::Connection : public StreamSocketServer::Connection {
+public:
+  Connection
+  (
+    HTTPServer& http_server,
+    SocketAddress& peername,
+    YO_NEW_REF StreamSocket& socket_
+  )
+    : StreamSocketServer::Connection( http_server, peername, socket_ ),
+      http_request_handler( http_server.http_request_handler.inc_ref() )
+  { }
 
-      // Object
-      const char* get_type_name() const
-      {
-        return "yield::http::HTTPServer::Connection";
-      }
+  // Object
+  const char* get_type_name() const {
+    return "yield::http::HTTPServer::Connection";
+  }
 
-      // EventHandler
-      void handle( YO_NEW_REF Event& event )
-      {
-        debug_assert_eq( event.get_type_id(), HTTPResponse::TYPE_ID );
+  // EventHandler
+  void handle( YO_NEW_REF Event& event ) {
+    debug_assert_eq( event.get_type_id(), HTTPResponse::TYPE_ID );
 
-        handle( static_cast<HTTPResponse&>( event ) );
-      }
+    handle( static_cast<HTTPResponse&>( event ) );
+  }
 
-      // StreamSocketPeer::Connection
-      void handle( YO_NEW_REF recvAIOCB& recv_aiocb )
-      {
-        if ( recv_aiocb.get_return() > 0 )
-          parse( recv_aiocb.get_buffer() );
+  // StreamSocketPeer::Connection
+  void handle( YO_NEW_REF recvAIOCB& recv_aiocb ) {
+    if ( recv_aiocb.get_return() > 0 )
+      parse( recv_aiocb.get_buffer() );
 
-        recvAIOCB::dec_ref( recv_aiocb );
-      }
+    recvAIOCB::dec_ref( recv_aiocb );
+  }
 
-      void handle( YO_NEW_REF sendAIOCB& send_aiocb )
-      {
-        sendAIOCB::dec_ref( send_aiocb );
-      }
+  void handle( YO_NEW_REF sendAIOCB& send_aiocb ) {
+    sendAIOCB::dec_ref( send_aiocb );
+  }
 
-      // StreamSocketServer::Connection
-      void handle( YO_NEW_REF acceptAIOCB& accept_aiocb )
-      {
-        if
-        (
-          accept_aiocb.get_recv_buffer() != NULL
-          &&
-          accept_aiocb.get_return() > 0
-        )
-          parse( *accept_aiocb.get_recv_buffer() );
-
-        acceptAIOCB::dec_ref( accept_aiocb );
-      }
-
-    private:
-      void handle( YO_NEW_REF HTTPResponse& http_response )
-      {
-        sendAIOCB* send_aiocb
-          = new sendAIOCB
-                (
-                  *this,
-                  static_cast<Buffer&>( http_response ).inc_ref()
-                );
-
-        enqueue( *send_aiocb );
-
-        HTTPResponse::dec_ref( http_response );
-      }
-
-      void parse( Buffer& recv_buffer )
-      {
-        debug_assert_false( recv_buffer.empty() );
-
-        HTTPRequestParser http_request_parser( recv_buffer );
-
-        for ( ;; )
-        {
-          Object& object = http_request_parser.parse();
-
-          switch ( object.get_type_id() )
-          {
-            case Buffer::TYPE_ID:
-            {
-              Buffer& next_recv_buffer = static_cast<Buffer&>( object );
-              enqueue( *new recvAIOCB( *this, next_recv_buffer ) );
-              return;
-            }
-            break;
-
-            case HTTPRequest::TYPE_ID:
-            {
-              HTTPRequest& http_request = static_cast<HTTPRequest&>( object );
-              http_request.set_response_handler( *this );
-              http_request_handler.handle( http_request );
-            }
-            break;
-
-            case HTTPResponse::TYPE_ID:
-            {
-              handle( static_cast<HTTPResponse&>( object ) );
-            }
-            break;
-
-            default: DebugBreak(); break;
-          }
-        }
-      }
-
-    private:
-      EventHandler& http_request_handler;
-    };
-
-
-    HTTPServer::HTTPServer
+  // StreamSocketServer::Connection
+  void handle( YO_NEW_REF acceptAIOCB& accept_aiocb ) {
+    if
     (
-      YO_NEW_REF EventHandler& http_request_handler,
-      const SocketAddress& sockname,
-      Log* error_log,
-      Log* trace_log
+      accept_aiocb.get_recv_buffer() != NULL
+      &&
+      accept_aiocb.get_return() > 0
     )
-    : StreamSocketServer
-      (
-        error_log,
-        *new TCPSocket( sockname.get_family() ),
-        sockname,
-        trace_log
-      ),
-      http_request_handler( http_request_handler )
-    { }
+      parse( *accept_aiocb.get_recv_buffer() );
 
-    HTTPServer::~HTTPServer()
-    {
-      EventHandler::dec_ref( http_request_handler );
-    }
+    acceptAIOCB::dec_ref( accept_aiocb );
+  }
 
-    StreamSocketServer::Connection&
-    HTTPServer::create_connection( SocketAddress& peername, StreamSocket& socket_ )
-    {
-      return *new Connection( *this, peername, socket_ );
+private:
+  void handle( YO_NEW_REF HTTPResponse& http_response ) {
+    sendAIOCB* send_aiocb
+    = new sendAIOCB
+    (
+      *this,
+      static_cast<Buffer&>( http_response ).inc_ref()
+    );
+
+    enqueue( *send_aiocb );
+
+    HTTPResponse::dec_ref( http_response );
+  }
+
+  void parse( Buffer& recv_buffer ) {
+    debug_assert_false( recv_buffer.empty() );
+
+    HTTPRequestParser http_request_parser( recv_buffer );
+
+    for ( ;; ) {
+      Object& object = http_request_parser.parse();
+
+      switch ( object.get_type_id() ) {
+      case Buffer::TYPE_ID: {
+        Buffer& next_recv_buffer = static_cast<Buffer&>( object );
+        enqueue( *new recvAIOCB( *this, next_recv_buffer ) );
+        return;
+      }
+      break;
+
+      case HTTPRequest::TYPE_ID: {
+        HTTPRequest& http_request = static_cast<HTTPRequest&>( object );
+        http_request.set_response_handler( *this );
+        http_request_handler.handle( http_request );
+      }
+      break;
+
+      case HTTPResponse::TYPE_ID: {
+        handle( static_cast<HTTPResponse&>( object ) );
+      }
+      break;
+
+      default:
+        DebugBreak();
+        break;
+      }
     }
   }
+
+private:
+  EventHandler& http_request_handler;
+};
+
+
+HTTPServer::HTTPServer
+(
+  YO_NEW_REF EventHandler& http_request_handler,
+  const SocketAddress& sockname,
+  Log* error_log,
+  Log* trace_log
+)
+  : StreamSocketServer
+  (
+    error_log,
+    *new TCPSocket( sockname.get_family() ),
+    sockname,
+    trace_log
+  ),
+  http_request_handler( http_request_handler )
+{ }
+
+HTTPServer::~HTTPServer() {
+  EventHandler::dec_ref( http_request_handler );
+}
+
+StreamSocketServer::Connection&
+HTTPServer::create_connection( SocketAddress& peername, StreamSocket& socket_ ) {
+  return *new Connection( *this, peername, socket_ );
+}
+}
 }

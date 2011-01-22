@@ -35,29 +35,25 @@
 #include "../bsd/volume.hpp"
 
 
-namespace yield
-{
-  namespace fs
-  {
-    namespace darwin
-    {
-      class Volume : public yield::fs::bsd::Volume
-      {
-      public:
-        // yield::fs::Volume
-        yield::fs::File*
-        open
-        (
-          const Path&,
-          uint32_t flags,
-          mode_t mode,
-          uint32_t attributes
-        );
+namespace yield {
+namespace fs {
+namespace darwin {
+class Volume : public yield::fs::bsd::Volume {
+public:
+  // yield::fs::Volume
+  yield::fs::File*
+  open
+  (
+    const Path&,
+    uint32_t flags,
+    mode_t mode,
+    uint32_t attributes
+  );
 
-        yield::fs::ExtendedAttributes* openxattrs( const Path& );
-      };
-    }
-  }
+  yield::fs::ExtendedAttributes* openxattrs( const Path& );
+};
+}
+}
 }
 
 

@@ -33,31 +33,27 @@
 #include "yield/fs/file.hpp"
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace fs
-    {
-      using yield::fs::File;
+namespace yield {
+namespace aio {
+namespace fs {
+using yield::fs::File;
 
 
-      AIOCB::AIOCB( File& file )
-        : yield::aio::AIOCB( file, NULL, 0, 0 )
-      { }
+AIOCB::AIOCB( File& file )
+  : yield::aio::AIOCB( file, NULL, 0, 0 )
+{ }
 
-      AIOCB::AIOCB( File& file, size_t nbytes, uint64_t offset )
-        : yield::aio::AIOCB( file, NULL, nbytes, offset )
-      { }
+AIOCB::AIOCB( File& file, size_t nbytes, uint64_t offset )
+  : yield::aio::AIOCB( file, NULL, nbytes, offset )
+{ }
 
-      AIOCB::AIOCB( File& file, Page& page, size_t nbytes, uint64_t offset )
-        : yield::aio::AIOCB( file, page, nbytes, offset )
-      { }
+AIOCB::AIOCB( File& file, Page& page, size_t nbytes, uint64_t offset )
+  : yield::aio::AIOCB( file, page, nbytes, offset )
+{ }
 
-      File& AIOCB::get_file()
-      {
-        return static_cast<File&>( get_channel() );
-      }
-    }
-  }
+File& AIOCB::get_file() {
+  return static_cast<File&>( get_channel() );
+}
+}
+}
 }

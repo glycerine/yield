@@ -37,84 +37,91 @@
 #include "yield/thread/runnable.hpp"
 
 
-namespace yield
-{
-  class Time;
+namespace yield {
+class Time;
 
 
-  namespace thread
-  {
-    class ProcessorSet;
-    class Runnable;
+namespace thread {
+class ProcessorSet;
+class Runnable;
 
-    #if defined(__linux__)
-      namespace linux { class Thread; }
-    #elif defined(__MACH__)
-      namespace darwin { class Thread; }
-    #elif defined(__sun)
-      namespace sunos { class Thread; }
-    #elif defined(_WIN32)
-      namespace win32 { class Thread; }
-    #else
-      namespace posix { class Thread; }
-    #endif
+#if defined(__linux__)
+namespace linux {
+class Thread;
+}
+#elif defined(__MACH__)
+namespace darwin {
+class Thread;
+}
+#elif defined(__sun)
+namespace sunos {
+class Thread;
+}
+#elif defined(_WIN32)
+namespace win32 {
+class Thread;
+}
+#else
+namespace posix {
+class Thread;
+}
+#endif
 
 
-    class Thread : public Object
-    {
-    public:
-      Thread( void ( *run )( void* ), void* context = NULL );
-      Thread( Runnable& );
-      ~Thread();
+class Thread : public Object {
+public:
+  Thread( void ( *run )( void* ), void* context = NULL );
+  Thread( Runnable& );
+  ~Thread();
 
-      bool cancel();
-      Runnable* get_runnable() const;
-      void* getspecific( uintptr_t key );
-      bool is_running() const;
-      bool join();
-      uintptr_t key_create();
-      bool key_delete( uintptr_t key );
-      void nanosleep( const Time& );
-      static auto_Object<Thread> self();
-      void set_name( const char* name );
-      bool setaffinity( uint16_t logical_processor_i );
-      bool setaffinity( const ProcessorSet& logical_processor_set );
-      bool setspecific( uintptr_t key, intptr_t value );
-      bool setspecific( uintptr_t key, uintptr_t value );
-      bool setspecific( uintptr_t key, void* value );
-      void yield();
+  bool cancel();
+  Runnable* get_runnable() const;
+  void* getspecific( uintptr_t key );
+  bool is_running() const;
+  bool join();
+  uintptr_t key_create();
+  bool key_delete( uintptr_t key );
+  void nanosleep( const Time& );
+  static auto_Object<Thread> self();
+  void set_name( const char* name );
+  bool setaffinity( uint16_t logical_processor_i );
+  bool setaffinity( const ProcessorSet& logical_processor_set );
+  bool setspecific( uintptr_t key, intptr_t value );
+  bool setspecific( uintptr_t key, uintptr_t value );
+  bool setspecific( uintptr_t key, void* value );
+  void yield();
 
-    private:
-      #if defined(__linux__)
-        Thread( linux::Thread* pimpl )
-      #elif defined(__MACH__)
-        Thread( darwin::Thread* pimpl )
-      #elif defined(__sun)
-        Thread( sunos::Thread* pimpl )
-      #elif defined(_WIN32)
-        Thread( win32::Thread* pimpl )
-      #else
-        Thread( posix::Thread* pimpl )
-      #endif
-          : pimpl( pimpl )
-        { }
+private:
+#if defined(__linux__)
+  Thread( linux::Thread* pimpl )
+#elif defined(__MACH__)
+  Thread( darwin::Thread* pimpl )
+#elif defined(__sun)
+  Thread( sunos::Thread* pimpl )
+#elif defined(_WIN32)
+  Thread( win32::Thread* pimpl )
+#else
+  Thread( posix::Thread* pimpl )
+#endif
+    : pimpl( pimpl )
+  { }
 
-      void init( Runnable& );
+  void init( Runnable& );
 
-    private:
-      #if defined(__linux__)
-        linux::Thread* pimpl;
-      #elif defined(__MACH__)
-        darwin::Thread* pimpl;
-      #elif defined(__sun)
-        sunos::Thread* pimpl;
-      #elif defined(_WIN32)
-        win32::Thread* pimpl;
-      #else
-        posix::Thread* pimpl;
-      #endif
-    };
-  }
+private:
+#if defined(__linux__)
+  linux::Thread* pimpl;
+#elif defined(__MACH__)
+  darwin::Thread* pimpl;
+#elif defined(__sun)
+  sunos::Thread* pimpl;
+#elif defined(_WIN32)
+  win32::Thread* pimpl;
+#else
+  posix::Thread* pimpl;
+#endif
+};
+}
 }
 
 

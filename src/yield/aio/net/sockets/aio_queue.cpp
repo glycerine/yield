@@ -31,48 +31,39 @@
 #include "nbio_queue.hpp"
 #include "yield/time.hpp"
 #ifdef _WIN32
-  #include "win32/aio_queue.hpp"
+#include "win32/aio_queue.hpp"
 #endif
 #include "yield/aio/net/sockets/aio_queue.hpp"
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace net
-    {
-      namespace sockets
-      {
-        AIOQueue::AIOQueue()
-        {
-          #ifdef _WIN32
-            pimpl = new win32::AIOQueue;
-          #else
-            pimpl = new NBIOQueue;
-          #endif
-        }
+namespace yield {
+namespace aio {
+namespace net {
+namespace sockets {
+AIOQueue::AIOQueue() {
+#ifdef _WIN32
+  pimpl = new win32::AIOQueue;
+#else
+  pimpl = new NBIOQueue;
+#endif
+}
 
-        AIOQueue::~AIOQueue()
-        {
-          delete pimpl;
-        }
+AIOQueue::~AIOQueue() {
+  delete pimpl;
+}
 
-        bool AIOQueue::associate( socket_t socket_ )
-        {
-          return pimpl->associate( socket_ );
-        }
+bool AIOQueue::associate( socket_t socket_ ) {
+  return pimpl->associate( socket_ );
+}
 
-        YO_NEW_REF Event* AIOQueue::dequeue( const Time& timeout )
-        {
-          return pimpl->dequeue( timeout );
-        }
+YO_NEW_REF Event* AIOQueue::dequeue( const Time& timeout ) {
+  return pimpl->dequeue( timeout );
+}
 
-        bool AIOQueue::enqueue( YO_NEW_REF Event& event )
-        {
-          return pimpl->enqueue( event );
-        }
-      }
-    }
-  }
+bool AIOQueue::enqueue( YO_NEW_REF Event& event ) {
+  return pimpl->enqueue( event );
+}
+}
+}
+}
 }

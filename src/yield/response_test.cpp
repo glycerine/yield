@@ -35,21 +35,17 @@
 
 TEST_SUITE( Response );
 
-namespace yield
-{
-  TEST( Response, is_exception )
-  {
-    throw_assert_false( Response().is_exception() );
-  }
+namespace yield {
+TEST( Response, is_exception ) {
+  throw_assert_false( Response().is_exception() );
+}
 
-  TEST( Response, is_request )
-  {
-    throw_assert_false( Response().is_request() );
-  }
+TEST( Response, is_request ) {
+  throw_assert_false( Response().is_request() );
+}
 
-  TEST( Response, rtti )
-  {
-    throw_assert_eq( Response().get_type_id(), Response::TYPE_ID );
-    throw_assert_eq( strcmp( Response().get_type_name(), "yield::Response" ), 0 );
-  }
+TEST( Response, rtti ) {
+  throw_assert_eq( Response().get_type_id(), Response::TYPE_ID );
+  throw_assert_eq( strcmp( Response().get_type_name(), "yield::Response" ), 0 );
+}
 }

@@ -37,36 +37,32 @@
 #include <thread.h>
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace sunos
-    {
-      class ProcessorSet;
+namespace yield {
+namespace thread {
+namespace sunos {
+class ProcessorSet;
 
 
-      class Thread : public yield::thread::posix::Thread
-      {
-      public:
-        Thread( Runnable& );
+class Thread : public yield::thread::posix::Thread {
+public:
+  Thread( Runnable& );
 
-        static Thread* self();
-        bool setaffinity( uint16_t logical_processor_i );
-        bool setaffinity( const ProcessorSet& logical_processor_set );
-        void yield();
+  static Thread* self();
+  bool setaffinity( uint16_t logical_processor_i );
+  bool setaffinity( const ProcessorSet& logical_processor_set );
+  void yield();
 
-      private:
-        Thread( pthread_t );
+private:
+  Thread( pthread_t );
 
-        // posix::Thread
-        void* run();
+  // posix::Thread
+  void* run();
 
-      private:
-        thread_t thread;
-      };
-    }
-  }
+private:
+  thread_t thread;
+};
+}
+}
 }
 
 

@@ -32,39 +32,31 @@
 #include "yield/net/sockets/socket.hpp"
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace net
-    {
-      namespace sockets
-      {
-        using yield::net::sockets::Socket;
+namespace yield {
+namespace aio {
+namespace net {
+namespace sockets {
+using yield::net::sockets::Socket;
 
 
-        AIOCB::AIOCB( Socket& socket_, void* buf, size_t nbytes )
-        : yield::aio::AIOCB( socket_, buf, nbytes, 0 )
-        {
-          next_aiocb = NULL;
-        }
+AIOCB::AIOCB( Socket& socket_, void* buf, size_t nbytes )
+  : yield::aio::AIOCB( socket_, buf, nbytes, 0 ) {
+  next_aiocb = NULL;
+}
 
-        AIOCB::~AIOCB()
-        {
-          AIOCB::dec_ref( next_aiocb );
-        }
+AIOCB::~AIOCB() {
+  AIOCB::dec_ref( next_aiocb );
+}
 
-        Socket& AIOCB::get_socket()
-        {
-          return static_cast<Socket&>( get_channel() );
-        }
+Socket& AIOCB::get_socket() {
+  return static_cast<Socket&>( get_channel() );
+}
 
-        void AIOCB::set_next_aiocb( AIOCB* next_aiocb )
-        {
-          AIOCB::dec_ref( this->next_aiocb );
-          this->next_aiocb = next_aiocb;
-        }
-      }
-    }
-  }
+void AIOCB::set_next_aiocb( AIOCB* next_aiocb ) {
+  AIOCB::dec_ref( this->next_aiocb );
+  this->next_aiocb = next_aiocb;
+}
+}
+}
+}
 }

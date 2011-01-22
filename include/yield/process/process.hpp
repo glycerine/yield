@@ -36,80 +36,85 @@
 #include "yield/fs/path.hpp"
 
 
-namespace yield
-{
-  class Channel;
+namespace yield {
+class Channel;
 
 
-  namespace process
-  {
-    class Process : public Object
-    {
-    public:
-      virtual ~Process();
+namespace process {
+class Process : public Object {
+public:
+  virtual ~Process();
 
-      static YO_NEW_REF Process*
-      create
-      (
-        const yield::fs::Path& command_line,
-        YO_NEW_REF Channel* stderr_ = NULL,
-        YO_NEW_REF Channel* stdin_ = NULL,
-        YO_NEW_REF Channel* stdout_ = NULL
-      );
+  static YO_NEW_REF Process*
+  create
+  (
+    const yield::fs::Path& command_line,
+    YO_NEW_REF Channel* stderr_ = NULL,
+    YO_NEW_REF Channel* stdin_ = NULL,
+    YO_NEW_REF Channel* stdout_ = NULL
+  );
 
-      static YO_NEW_REF Process*
-      create
-      (
-        int argc,
-        yield::i18n::tstring::value_type** argv,
-        YO_NEW_REF Channel* stderr_ = NULL,
-        YO_NEW_REF Channel* stdin_ = NULL,
-        YO_NEW_REF Channel* stdout_ = NULL
-      );
+  static YO_NEW_REF Process*
+  create
+  (
+    int argc,
+    yield::i18n::tstring::value_type** argv,
+    YO_NEW_REF Channel* stderr_ = NULL,
+    YO_NEW_REF Channel* stdin_ = NULL,
+    YO_NEW_REF Channel* stdout_ = NULL
+  );
 
-      static YO_NEW_REF Process*
-      create
-      (
-        const vector<yield::i18n::tstring::value_type*>& argv,
-        YO_NEW_REF Channel* stderr_ = NULL,
-        YO_NEW_REF Channel* stdin_ = NULL,
-        YO_NEW_REF Channel* stdout_ = NULL
-      );
+  static YO_NEW_REF Process*
+  create
+  (
+    const vector<yield::i18n::tstring::value_type*>& argv,
+    YO_NEW_REF Channel* stderr_ = NULL,
+    YO_NEW_REF Channel* stdin_ = NULL,
+    YO_NEW_REF Channel* stdout_ = NULL
+  );
 
-      static YO_NEW_REF Process*
-      create
-      (
-        const yield::fs::Path& executable_file_path,
-        const yield::i18n::tstring::value_type** null_terminated_argv,
-        YO_NEW_REF Channel* stderr_ = NULL,
-        YO_NEW_REF Channel* stdin_ = NULL,
-        YO_NEW_REF Channel* stdout_ = NULL
-      );
+  static YO_NEW_REF Process*
+  create
+  (
+    const yield::fs::Path& executable_file_path,
+    const yield::i18n::tstring::value_type** null_terminated_argv,
+    YO_NEW_REF Channel* stderr_ = NULL,
+    YO_NEW_REF Channel* stdin_ = NULL,
+    YO_NEW_REF Channel* stdout_ = NULL
+  );
 
-      static yield::fs::Path get_current_executable_file_path();
-      static pid_t getpid() { return self(); }
-      Channel* get_stderr() const { return stderr_; }
-      Channel* get_stdin() const { return stdin_; }
-      Channel* get_stdout() const { return stdout_; }
-      virtual bool kill() = 0; // SIGKILL
-      static YO_NEW_REF Process* open( pid_t pid );
-      virtual bool poll( int* out_return_code = 0 ) = 0; // waitpid() with WNOHANG
-      static pid_t self();
-      virtual bool terminate() = 0; // SIGTERM
-      virtual int wait() = 0; // waitpid(), blocking
-
-    protected:
-      Process
-      (
-        YO_NEW_REF Channel* stderr_,
-        YO_NEW_REF Channel* stdin_,
-        YO_NEW_REF Channel* stdout_
-      );
-
-    private:
-      Channel *stderr_, *stdin_, *stdout_;
-    };
+  static yield::fs::Path get_current_executable_file_path();
+  static pid_t getpid() {
+    return self();
   }
+  Channel* get_stderr() const {
+    return stderr_;
+  }
+  Channel* get_stdin() const {
+    return stdin_;
+  }
+  Channel* get_stdout() const {
+    return stdout_;
+  }
+  virtual bool kill() = 0; // SIGKILL
+  static YO_NEW_REF Process* open( pid_t pid );
+  virtual bool poll( int* out_return_code = 0 ) = 0; // waitpid() with WNOHANG
+  static pid_t self();
+  virtual bool terminate() = 0; // SIGTERM
+  virtual int wait() = 0; // waitpid(), blocking
+
+protected:
+  Process
+  (
+    YO_NEW_REF Channel* stderr_,
+    YO_NEW_REF Channel* stdin_,
+    YO_NEW_REF Channel* stdout_
+  );
+
+private:
+  Channel *stderr_, *stdin_, *stdout_;
+};
+}
 }
 
 

@@ -33,40 +33,32 @@
 #include "yield/fs/volume.hpp"
 
 
-namespace yield
-{
-  namespace fs
-  {
-    FileLog::FileLog( const Path& file_path, const Level& level )
-      : Log( level ), file( NULL ), file_path( file_path )
-    { }
+namespace yield {
+namespace fs {
+FileLog::FileLog( const Path& file_path, const Level& level )
+  : Log( level ), file( NULL ), file_path( file_path )
+{ }
 
-    FileLog::~FileLog()
-    {
-      File::dec_ref( file );
-    }
+FileLog::~FileLog() {
+  File::dec_ref( file );
+}
 
-    void FileLog::write( const char* str, size_t str_len )
-    {
-      if ( file == NULL )
-      {
-        Volume* volume = Volume::create();
-        if ( volume != NULL )
-        {
-          file = volume->open( file_path, O_CREAT|O_WRONLY|O_APPEND );
-          if ( file != NULL )
-            Volume::dec_ref( *volume );
-          else
-          {
-            Volume::dec_ref( *volume );
-            return;
-          }
-        }
-        else
-          return;
+void FileLog::write( const char* str, size_t str_len ) {
+  if ( file == NULL ) {
+    Volume* volume = Volume::create();
+    if ( volume != NULL ) {
+      file = volume->open( file_path, O_CREAT|O_WRONLY|O_APPEND );
+      if ( file != NULL )
+        Volume::dec_ref( *volume );
+      else {
+        Volume::dec_ref( *volume );
+        return;
       }
-
-      file->write( str, str_len );
-    }
+    } else
+      return;
   }
+
+  file->write( str, str_len );
+}
+}
 }

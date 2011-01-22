@@ -72,81 +72,79 @@
 #endif
 
 //! Error values
-typedef enum _ESOError
-{
-    //! No error
-    SO_SUCCESS          =  0,
+typedef enum _ESOError {
+  //! No error
+  SO_SUCCESS          =  0,
 
-    /*! It looks like an option (it starts with a switch character), but
-        it isn't registered in the option table. */
-    SO_OPT_INVALID      = -1,
+  /*! It looks like an option (it starts with a switch character), but
+      it isn't registered in the option table. */
+  SO_OPT_INVALID      = -1,
 
-    /*! Multiple options matched the supplied option text.
-        Only returned when NOT using SO_O_EXACT. */
-    SO_OPT_MULTIPLE     = -2,
+  /*! Multiple options matched the supplied option text.
+      Only returned when NOT using SO_O_EXACT. */
+  SO_OPT_MULTIPLE     = -2,
 
-    /*! Option doesn't take an argument, but a combined argument was
-        supplied. */
-    SO_ARG_INVALID      = -3,
+  /*! Option doesn't take an argument, but a combined argument was
+      supplied. */
+  SO_ARG_INVALID      = -3,
 
-    /*! SO_REQ_CMB style-argument was supplied to a SO_REQ_SEP option
-        Only returned when using SO_O_PEDANTIC. */
-    SO_ARG_INVALID_TYPE = -4,
+  /*! SO_REQ_CMB style-argument was supplied to a SO_REQ_SEP option
+      Only returned when using SO_O_PEDANTIC. */
+  SO_ARG_INVALID_TYPE = -4,
 
-    //! Required argument was not supplied
-    SO_ARG_MISSING      = -5,
+  //! Required argument was not supplied
+  SO_ARG_MISSING      = -5,
 
-    /*! Option argument looks like another option.
-        Only returned when NOT using SO_O_NOERR. */
-    SO_ARG_INVALID_DATA = -6
+  /*! Option argument looks like another option.
+      Only returned when NOT using SO_O_NOERR. */
+  SO_ARG_INVALID_DATA = -6
 } ESOError;
 
 //! Option flags
-enum _ESOFlags
-{
-    /*! Disallow partial matching of option names */
-    SO_O_EXACT       = 0x0001,
+enum _ESOFlags {
+  /*! Disallow partial matching of option names */
+  SO_O_EXACT       = 0x0001,
 
-    /*! Disallow use of slash as an option marker on Windows.
-        Un*x only ever recognizes a hyphen. */
-    SO_O_NOSLASH     = 0x0002,
+  /*! Disallow use of slash as an option marker on Windows.
+      Un*x only ever recognizes a hyphen. */
+  SO_O_NOSLASH     = 0x0002,
 
-    /*! Permit arguments on single letter options with no equals sign.
-        e.g. -oARG or -o[ARG] */
-    SO_O_SHORTARG    = 0x0004,
+  /*! Permit arguments on single letter options with no equals sign.
+      e.g. -oARG or -o[ARG] */
+  SO_O_SHORTARG    = 0x0004,
 
-    /*! Permit single character options to be clumped into a single
-        option string. e.g. "-a -b -c" <==> "-abc" */
-    SO_O_CLUMP       = 0x0008,
+  /*! Permit single character options to be clumped into a single
+      option string. e.g. "-a -b -c" <==> "-abc" */
+  SO_O_CLUMP       = 0x0008,
 
-    /*! Process the entire argv array for options, including the
-        argv[0] entry. */
-    SO_O_USEALL      = 0x0010,
+  /*! Process the entire argv array for options, including the
+      argv[0] entry. */
+  SO_O_USEALL      = 0x0010,
 
-    /*! Do not generate an error for invalid options. errors for missing
-        arguments will still be generated. invalid options will be
-        treated as files. invalid options in clumps will be silently
-        ignored. */
-    SO_O_NOERR       = 0x0020,
+  /*! Do not generate an error for invalid options. errors for missing
+      arguments will still be generated. invalid options will be
+      treated as files. invalid options in clumps will be silently
+      ignored. */
+  SO_O_NOERR       = 0x0020,
 
-    /*! Validate argument type pedantically. Return an error when a
-        separated argument "-opt arg" is supplied by the user as a
-        combined argument "-opt=arg". By default this is not considered
-        an error. */
-    SO_O_PEDANTIC    = 0x0040,
+  /*! Validate argument type pedantically. Return an error when a
+      separated argument "-opt arg" is supplied by the user as a
+      combined argument "-opt=arg". By default this is not considered
+      an error. */
+  SO_O_PEDANTIC    = 0x0040,
 
-    /*! Case-insensitive comparisons for short arguments */
-    SO_O_ICASE_SHORT = 0x0100,
+  /*! Case-insensitive comparisons for short arguments */
+  SO_O_ICASE_SHORT = 0x0100,
 
-    /*! Case-insensitive comparisons for long arguments */
-    SO_O_ICASE_LONG  = 0x0200,
+  /*! Case-insensitive comparisons for long arguments */
+  SO_O_ICASE_LONG  = 0x0200,
 
-    /*! Case-insensitive comparisons for word arguments
-        i.e. arguments without any hyphens at the start. */
-    SO_O_ICASE_WORD  = 0x0400,
+  /*! Case-insensitive comparisons for word arguments
+      i.e. arguments without any hyphens at the start. */
+  SO_O_ICASE_WORD  = 0x0400,
 
-    /*! Case-insensitive comparisons for all arg types */
-    SO_O_ICASE       = 0x0700
+  /*! Case-insensitive comparisons for all arg types */
+  SO_O_ICASE       = 0x0700
 };
 
 /*! Types of arguments that options may have. Note that some of the _ESOFlags
@@ -155,26 +153,26 @@ enum _ESOFlags
     that relevant options use only SO_NONE.
  */
 typedef enum _ESOArgType {
-    /*! No argument. Just the option flags.
-        e.g. -o         --opt */
-    SO_NONE,
+  /*! No argument. Just the option flags.
+      e.g. -o         --opt */
+  SO_NONE,
 
-    /*! Required separate argument.
-        e.g. -o ARG     --opt ARG */
-    SO_REQ_SEP,
+  /*! Required separate argument.
+      e.g. -o ARG     --opt ARG */
+  SO_REQ_SEP,
 
-    /*! Required combined argument.
-        e.g. -oARG      -o=ARG      --opt=ARG  */
-    SO_REQ_CMB,
+  /*! Required combined argument.
+      e.g. -oARG      -o=ARG      --opt=ARG  */
+  SO_REQ_CMB,
 
-    /*! Optional combined argument.
-        e.g. -o[ARG]    -o[=ARG]    --opt[=ARG] */
-    SO_OPT,
+  /*! Optional combined argument.
+      e.g. -o[ARG]    -o[=ARG]    --opt[=ARG] */
+  SO_OPT,
 
-    /*! Multiple separate arguments. The actual number of arguments is
-        determined programatically at the time the argument is processed.
-        e.g. -o N ARG1 ARG2 ... ARGN    --opt N ARG1 ARG2 ... ARGN */
-    SO_MULTI
+  /*! Multiple separate arguments. The actual number of arguments is
+      determined programatically at the time the argument is processed.
+      e.g. -o N ARG1 ARG2 ... ARGN    --opt N ARG1 ARG2 ... ARGN */
+  SO_MULTI
 } ESOArgType;
 
 //! this option definition must be the last entry in the table
@@ -198,223 +196,236 @@ typedef enum _ESOArgType {
 
 /*! @brief Implementation of the SimpleOpt class */
 template<class SOCHAR>
-class CSimpleOptTempl
-{
+class CSimpleOptTempl {
 public:
-    /*! @brief Structure used to define all known options. */
-    struct SOption {
-        /*! ID to return for this flag. Optional but must be >= 0 */
-        int nId;
+  /*! @brief Structure used to define all known options. */
+  struct SOption {
+    /*! ID to return for this flag. Optional but must be >= 0 */
+    int nId;
 
-        /*! arg string to search for, e.g.  "open", "-", "-f", "--file"
-            Note that on Windows the slash option marker will be converted
-            to a hyphen so that "-f" will also match "/f". */
-        const SOCHAR * pszArg;
+    /*! arg string to search for, e.g.  "open", "-", "-f", "--file"
+        Note that on Windows the slash option marker will be converted
+        to a hyphen so that "-f" will also match "/f". */
+    const SOCHAR * pszArg;
 
-        /*! type of argument accepted by this option */
-        ESOArgType nArgType;
-    };
+    /*! type of argument accepted by this option */
+    ESOArgType nArgType;
+  };
 
-    /*! @brief Initialize the class. Init() must be called later. */
-    CSimpleOptTempl()
-        : m_rgShuffleBuf(NULL)
-    {
-        Init(0, NULL, NULL, 0);
-    }
+  /*! @brief Initialize the class. Init() must be called later. */
+  CSimpleOptTempl()
+    : m_rgShuffleBuf(NULL) {
+    Init(0, NULL, NULL, 0);
+  }
 
-    /*! @brief Initialize the class in preparation for use. */
-    CSimpleOptTempl(
-        int             argc,
-        SOCHAR *        argv[],
-        const SOption * a_rgOptions,
-        int             a_nFlags = 0
-        )
-        : m_rgShuffleBuf(NULL)
-    {
-        Init(argc, argv, a_rgOptions, a_nFlags);
-    }
+  /*! @brief Initialize the class in preparation for use. */
+  CSimpleOptTempl(
+    int             argc,
+    SOCHAR *        argv[],
+    const SOption * a_rgOptions,
+    int             a_nFlags = 0
+  )
+    : m_rgShuffleBuf(NULL) {
+    Init(argc, argv, a_rgOptions, a_nFlags);
+  }
 
 #ifndef SO_MAX_ARGS
-    /*! @brief Deallocate any allocated memory. */
-    ~CSimpleOptTempl() { if (m_rgShuffleBuf) free(m_rgShuffleBuf); }
+  /*! @brief Deallocate any allocated memory. */
+  ~CSimpleOptTempl() {
+    if (m_rgShuffleBuf) free(m_rgShuffleBuf);
+  }
 #endif
 
-    /*! @brief Initialize the class in preparation for calling Next.
+  /*! @brief Initialize the class in preparation for calling Next.
 
-        The table of options pointed to by a_rgOptions does not need to be
-        valid at the time that Init() is called. However on every call to
-        Next() the table pointed to must be a valid options table with the
-        last valid entry set to SO_END_OF_OPTIONS.
+      The table of options pointed to by a_rgOptions does not need to be
+      valid at the time that Init() is called. However on every call to
+      Next() the table pointed to must be a valid options table with the
+      last valid entry set to SO_END_OF_OPTIONS.
 
-        NOTE: the array pointed to by a_argv will be modified by this
-        class and must not be used or modified outside of member calls to
-        this class.
+      NOTE: the array pointed to by a_argv will be modified by this
+      class and must not be used or modified outside of member calls to
+      this class.
 
-        @param a_argc       Argument array size
-        @param a_argv       Argument array
-        @param a_rgOptions  Valid option array
-        @param a_nFlags     Optional flags to modify the processing of
-                            the arguments
+      @param a_argc       Argument array size
+      @param a_argv       Argument array
+      @param a_rgOptions  Valid option array
+      @param a_nFlags     Optional flags to modify the processing of
+                          the arguments
 
-        @return true        Successful
-        @return false       if SO_MAX_ARGC > 0:  Too many arguments
-                            if SO_MAX_ARGC == 0: Memory allocation failure
-    */
-    bool Init(
-        int             a_argc,
-        SOCHAR *        a_argv[],
-        const SOption * a_rgOptions,
-        int             a_nFlags = 0
-        );
+      @return true        Successful
+      @return false       if SO_MAX_ARGC > 0:  Too many arguments
+                          if SO_MAX_ARGC == 0: Memory allocation failure
+  */
+  bool Init(
+    int             a_argc,
+    SOCHAR *        a_argv[],
+    const SOption * a_rgOptions,
+    int             a_nFlags = 0
+  );
 
-    /*! @brief Change the current options table during option parsing.
+  /*! @brief Change the current options table during option parsing.
 
-        @param a_rgOptions  Valid option array
-     */
-    inline void SetOptions(const SOption * a_rgOptions) {
-        m_rgOptions = a_rgOptions;
-    }
+      @param a_rgOptions  Valid option array
+   */
+  inline void SetOptions(const SOption * a_rgOptions) {
+    m_rgOptions = a_rgOptions;
+  }
 
-    /*! @brief Change the current flags during option parsing.
+  /*! @brief Change the current flags during option parsing.
 
-        Note that changing the SO_O_USEALL flag here will have no affect.
-        It must be set using Init() or the constructor.
+      Note that changing the SO_O_USEALL flag here will have no affect.
+      It must be set using Init() or the constructor.
 
-        @param a_nFlags     Flags to modify the processing of the arguments
-     */
-    inline void SetFlags(int a_nFlags) { m_nFlags = a_nFlags; }
+      @param a_nFlags     Flags to modify the processing of the arguments
+   */
+  inline void SetFlags(int a_nFlags) {
+    m_nFlags = a_nFlags;
+  }
 
-    /*! @brief Query if a particular flag is set */
-    inline bool HasFlag(int a_nFlag) const {
-        return (m_nFlags & a_nFlag) == a_nFlag;
-    }
+  /*! @brief Query if a particular flag is set */
+  inline bool HasFlag(int a_nFlag) const {
+    return (m_nFlags & a_nFlag) == a_nFlag;
+  }
 
-    /*! @brief Advance to the next option if available.
+  /*! @brief Advance to the next option if available.
 
-        When all options have been processed it will return false. When true
-        has been returned, you must check for an invalid or unrecognized
-        option using the LastError() method. This will be return an error
-        value other than SO_SUCCESS on an error. All standard data
-        (e.g. OptionText(), OptionArg(), OptionId(), etc) will be available
-        depending on the error.
+      When all options have been processed it will return false. When true
+      has been returned, you must check for an invalid or unrecognized
+      option using the LastError() method. This will be return an error
+      value other than SO_SUCCESS on an error. All standard data
+      (e.g. OptionText(), OptionArg(), OptionId(), etc) will be available
+      depending on the error.
 
-        After all options have been processed, the remaining files from the
-        command line can be processed in same order as they were passed to
-        the program.
+      After all options have been processed, the remaining files from the
+      command line can be processed in same order as they were passed to
+      the program.
 
-        @return true    option or error available for processing
-        @return false   all options have been processed
-    */
-    bool Next();
+      @return true    option or error available for processing
+      @return false   all options have been processed
+  */
+  bool Next();
 
-    /*! Stops processing of the command line and returns all remaining
-        arguments as files. The next call to Next() will return false.
-     */
-    void Stop();
+  /*! Stops processing of the command line and returns all remaining
+      arguments as files. The next call to Next() will return false.
+   */
+  void Stop();
 
-    /*! @brief Return the last error that occurred.
+  /*! @brief Return the last error that occurred.
 
-        This function must always be called before processing the current
-        option. This function is available only when Next() has returned true.
-     */
-    inline ESOError LastError() const  { return m_nLastError; }
+      This function must always be called before processing the current
+      option. This function is available only when Next() has returned true.
+   */
+  inline ESOError LastError() const  {
+    return m_nLastError;
+  }
 
-    /*! @brief Return the nId value from the options array for the current
-        option.
+  /*! @brief Return the nId value from the options array for the current
+      option.
 
-        This function is available only when Next() has returned true.
-     */
-    inline int OptionId() const { return m_nOptionId; }
+      This function is available only when Next() has returned true.
+   */
+  inline int OptionId() const {
+    return m_nOptionId;
+  }
 
-    /*! @brief Return the pszArg from the options array for the current
-        option.
+  /*! @brief Return the pszArg from the options array for the current
+      option.
 
-        This function is available only when Next() has returned true.
-     */
-    inline const SOCHAR * OptionText() const { return m_pszOptionText; }
+      This function is available only when Next() has returned true.
+   */
+  inline const SOCHAR * OptionText() const {
+    return m_pszOptionText;
+  }
 
-    /*! @brief Return the argument for the current option where one exists.
+  /*! @brief Return the argument for the current option where one exists.
 
-        If there is no argument for the option, this will return NULL.
-        This function is available only when Next() has returned true.
-     */
-    inline SOCHAR * OptionArg() const { return m_pszOptionArg; }
+      If there is no argument for the option, this will return NULL.
+      This function is available only when Next() has returned true.
+   */
+  inline SOCHAR * OptionArg() const {
+    return m_pszOptionArg;
+  }
 
-    /*! @brief Validate and return the desired number of arguments.
+  /*! @brief Validate and return the desired number of arguments.
 
-        This is only valid when OptionId() has return the ID of an option
-        that is registered as SO_MULTI. It may be called multiple times
-        each time returning the desired number of arguments. Previously
-        returned argument pointers are remain valid.
+      This is only valid when OptionId() has return the ID of an option
+      that is registered as SO_MULTI. It may be called multiple times
+      each time returning the desired number of arguments. Previously
+      returned argument pointers are remain valid.
 
-        If an error occurs during processing, NULL will be returned and
-        the error will be available via LastError().
+      If an error occurs during processing, NULL will be returned and
+      the error will be available via LastError().
 
-        @param n    Number of arguments to return.
-     */
-    SOCHAR ** MultiArg(int n);
+      @param n    Number of arguments to return.
+   */
+  SOCHAR ** MultiArg(int n);
 
-    /*! @brief Returned the number of entries in the Files() array.
+  /*! @brief Returned the number of entries in the Files() array.
 
-        After Next() has returned false, this will be the list of files (or
-        otherwise unprocessed arguments).
-     */
-    inline int FileCount() const { return m_argc - m_nLastArg; }
+      After Next() has returned false, this will be the list of files (or
+      otherwise unprocessed arguments).
+   */
+  inline int FileCount() const {
+    return m_argc - m_nLastArg;
+  }
 
-    /*! @brief Return the specified file argument.
+  /*! @brief Return the specified file argument.
 
-        @param n    Index of the file to return. This must be between 0
-                    and FileCount() - 1;
-     */
-    inline SOCHAR * File(int n) const {
-        SO_ASSERT(n >= 0 && n < FileCount());
-        return m_argv[m_nLastArg + n];
-    }
+      @param n    Index of the file to return. This must be between 0
+                  and FileCount() - 1;
+   */
+  inline SOCHAR * File(int n) const {
+    SO_ASSERT(n >= 0 && n < FileCount());
+    return m_argv[m_nLastArg + n];
+  }
 
-    /*! @brief Return the array of files. */
-    inline SOCHAR ** Files() const { return &m_argv[m_nLastArg]; }
+  /*! @brief Return the array of files. */
+  inline SOCHAR ** Files() const {
+    return &m_argv[m_nLastArg];
+  }
 
 private:
-    CSimpleOptTempl(const CSimpleOptTempl &); // disabled
-    CSimpleOptTempl & operator=(const CSimpleOptTempl &); // disabled
+  CSimpleOptTempl(const CSimpleOptTempl &); // disabled
+  CSimpleOptTempl & operator=(const CSimpleOptTempl &); // disabled
 
-    SOCHAR PrepareArg(SOCHAR * a_pszString) const;
-    bool NextClumped();
-    void ShuffleArg(int a_nStartIdx, int a_nCount);
-    int LookupOption(const SOCHAR * a_pszOption) const;
-    int CalcMatch(const SOCHAR *a_pszSource, const SOCHAR *a_pszTest) const;
+  SOCHAR PrepareArg(SOCHAR * a_pszString) const;
+  bool NextClumped();
+  void ShuffleArg(int a_nStartIdx, int a_nCount);
+  int LookupOption(const SOCHAR * a_pszOption) const;
+  int CalcMatch(const SOCHAR *a_pszSource, const SOCHAR *a_pszTest) const;
 
-    // Find the '=' character within a string.
-    inline SOCHAR * FindEquals(SOCHAR *s) const {
-        while (*s && *s != (SOCHAR)'=') ++s;
-        return *s ? s : NULL;
-    }
-    bool IsEqual(SOCHAR a_cLeft, SOCHAR a_cRight, int a_nArgType) const;
+  // Find the '=' character within a string.
+  inline SOCHAR * FindEquals(SOCHAR *s) const {
+    while (*s && *s != (SOCHAR)'=') ++s;
+    return *s ? s : NULL;
+  }
+  bool IsEqual(SOCHAR a_cLeft, SOCHAR a_cRight, int a_nArgType) const;
 
-    inline void Copy(SOCHAR ** ppDst, SOCHAR ** ppSrc, int nCount) const {
+  inline void Copy(SOCHAR ** ppDst, SOCHAR ** ppSrc, int nCount) const {
 #ifdef SO_MAX_ARGS
-        // keep our promise of no CLIB usage
-        while (nCount-- > 0) *ppDst++ = *ppSrc++;
+    // keep our promise of no CLIB usage
+    while (nCount-- > 0) *ppDst++ = *ppSrc++;
 #else
-        memcpy(ppDst, ppSrc, nCount * sizeof(SOCHAR*));
+    memcpy(ppDst, ppSrc, nCount * sizeof(SOCHAR*));
 #endif
-    }
+  }
 
 private:
-    const SOption * m_rgOptions;     //!< pointer to options table
-    int             m_nFlags;        //!< flags
-    int             m_nOptionIdx;    //!< current argv option index
-    int             m_nOptionId;     //!< id of current option (-1 = invalid)
-    int             m_nNextOption;   //!< index of next option
-    int             m_nLastArg;      //!< last argument, after this are files
-    int             m_argc;          //!< argc to process
-    SOCHAR **       m_argv;          //!< argv
-    const SOCHAR *  m_pszOptionText; //!< curr option text, e.g. "-f"
-    SOCHAR *        m_pszOptionArg;  //!< curr option arg, e.g. "c:\file.txt"
-    SOCHAR *        m_pszClump;      //!< clumped single character options
-    SOCHAR          m_szShort[3];    //!< temp for clump and combined args
-    ESOError        m_nLastError;    //!< error status from the last call
-    SOCHAR **       m_rgShuffleBuf;  //!< shuffle buffer for large argc
+  const SOption * m_rgOptions;     //!< pointer to options table
+  int             m_nFlags;        //!< flags
+  int             m_nOptionIdx;    //!< current argv option index
+  int             m_nOptionId;     //!< id of current option (-1 = invalid)
+  int             m_nNextOption;   //!< index of next option
+  int             m_nLastArg;      //!< last argument, after this are files
+  int             m_argc;          //!< argc to process
+  SOCHAR **       m_argv;          //!< argv
+  const SOCHAR *  m_pszOptionText; //!< curr option text, e.g. "-f"
+  SOCHAR *        m_pszOptionArg;  //!< curr option arg, e.g. "c:\file.txt"
+  SOCHAR *        m_pszClump;      //!< clumped single character options
+  SOCHAR          m_szShort[3];    //!< temp for clump and combined args
+  ESOError        m_nLastError;    //!< error status from the last call
+  SOCHAR **       m_rgShuffleBuf;  //!< shuffle buffer for large argc
 };
 
 // ---------------------------------------------------------------------------
@@ -424,301 +435,291 @@ private:
 template<class SOCHAR>
 bool
 CSimpleOptTempl<SOCHAR>::Init(
-    int             a_argc,
-    SOCHAR *        a_argv[],
-    const SOption * a_rgOptions,
-    int             a_nFlags
-    )
-{
-    m_argc           = a_argc;
-    m_nLastArg       = a_argc;
-    m_argv           = a_argv;
-    m_rgOptions      = a_rgOptions;
-    m_nLastError     = SO_SUCCESS;
-    m_nOptionIdx     = 0;
-    m_nOptionId      = -1;
-    m_pszOptionText  = NULL;
-    m_pszOptionArg   = NULL;
-    m_nNextOption    = (a_nFlags & SO_O_USEALL) ? 0 : 1;
-    m_szShort[0]     = (SOCHAR)'-';
-    m_szShort[2]     = (SOCHAR)'\0';
-    m_nFlags         = a_nFlags;
-    m_pszClump       = NULL;
+  int             a_argc,
+  SOCHAR *        a_argv[],
+  const SOption * a_rgOptions,
+  int             a_nFlags
+) {
+  m_argc           = a_argc;
+  m_nLastArg       = a_argc;
+  m_argv           = a_argv;
+  m_rgOptions      = a_rgOptions;
+  m_nLastError     = SO_SUCCESS;
+  m_nOptionIdx     = 0;
+  m_nOptionId      = -1;
+  m_pszOptionText  = NULL;
+  m_pszOptionArg   = NULL;
+  m_nNextOption    = (a_nFlags & SO_O_USEALL) ? 0 : 1;
+  m_szShort[0]     = (SOCHAR)'-';
+  m_szShort[2]     = (SOCHAR)'\0';
+  m_nFlags         = a_nFlags;
+  m_pszClump       = NULL;
 
 #ifdef SO_MAX_ARGS
   if (m_argc > SO_MAX_ARGS) {
-        m_nLastError = SO_ARG_INVALID_DATA;
-        m_nLastArg = 0;
+    m_nLastError = SO_ARG_INVALID_DATA;
+    m_nLastArg = 0;
     return false;
   }
 #else
-    if (m_rgShuffleBuf) {
-        free(m_rgShuffleBuf);
+  if (m_rgShuffleBuf) {
+    free(m_rgShuffleBuf);
+  }
+  if (m_argc > SO_STATICBUF) {
+    m_rgShuffleBuf = (SOCHAR**) malloc(sizeof(SOCHAR*) * m_argc);
+    if (!m_rgShuffleBuf) {
+      return false;
     }
-    if (m_argc > SO_STATICBUF) {
-        m_rgShuffleBuf = (SOCHAR**) malloc(sizeof(SOCHAR*) * m_argc);
-        if (!m_rgShuffleBuf) {
-            return false;
-        }
-    }
+  }
 #endif
 
-    return true;
+  return true;
 }
 
 template<class SOCHAR>
 bool
-CSimpleOptTempl<SOCHAR>::Next()
-{
+CSimpleOptTempl<SOCHAR>::Next() {
 #ifdef SO_MAX_ARGS
-    if (m_argc > SO_MAX_ARGS) {
-        SO_ASSERT(!"Too many args! Check the return value of Init()!");
-        return false;
-    }
+  if (m_argc > SO_MAX_ARGS) {
+    SO_ASSERT(!"Too many args! Check the return value of Init()!");
+    return false;
+  }
 #endif
 
-    // process a clumped option string if appropriate
-    if (m_pszClump && *m_pszClump) {
-        // silently discard invalid clumped option
-        bool bIsValid = NextClumped();
-        while (*m_pszClump && !bIsValid && HasFlag(SO_O_NOERR)) {
-            bIsValid = NextClumped();
-        }
-
-        // return this option if valid or we are returning errors
-        if (bIsValid || !HasFlag(SO_O_NOERR)) {
-            return true;
-        }
+  // process a clumped option string if appropriate
+  if (m_pszClump && *m_pszClump) {
+    // silently discard invalid clumped option
+    bool bIsValid = NextClumped();
+    while (*m_pszClump && !bIsValid && HasFlag(SO_O_NOERR)) {
+      bIsValid = NextClumped();
     }
-    SO_ASSERT(!m_pszClump || !*m_pszClump);
-    m_pszClump = NULL;
 
-    // init for the next option
-    m_nOptionIdx    = m_nNextOption;
-    m_nOptionId     = -1;
-    m_pszOptionText = NULL;
+    // return this option if valid or we are returning errors
+    if (bIsValid || !HasFlag(SO_O_NOERR)) {
+      return true;
+    }
+  }
+  SO_ASSERT(!m_pszClump || !*m_pszClump);
+  m_pszClump = NULL;
+
+  // init for the next option
+  m_nOptionIdx    = m_nNextOption;
+  m_nOptionId     = -1;
+  m_pszOptionText = NULL;
+  m_pszOptionArg  = NULL;
+  m_nLastError    = SO_SUCCESS;
+
+  // find the next option
+  SOCHAR cFirst;
+  int nTableIdx = -1;
+  int nOptIdx = m_nOptionIdx;
+  while (nTableIdx < 0 && nOptIdx < m_nLastArg) {
+    SOCHAR * pszArg = m_argv[nOptIdx];
     m_pszOptionArg  = NULL;
-    m_nLastError    = SO_SUCCESS;
 
-    // find the next option
-    SOCHAR cFirst;
-    int nTableIdx = -1;
-    int nOptIdx = m_nOptionIdx;
-    while (nTableIdx < 0 && nOptIdx < m_nLastArg) {
-        SOCHAR * pszArg = m_argv[nOptIdx];
-        m_pszOptionArg  = NULL;
-
-        // find this option in the options table
-        cFirst = PrepareArg(pszArg);
-        if (pszArg[0] == (SOCHAR)'-') {
-            // find any combined argument string and remove equals sign
-            m_pszOptionArg = FindEquals(pszArg);
-            if (m_pszOptionArg) {
-                *m_pszOptionArg++ = (SOCHAR)'\0';
-            }
-        }
-        nTableIdx = LookupOption(pszArg);
-
-        // if we didn't find this option but if it is a short form
-        // option then we try the alternative forms
-        if (nTableIdx < 0
-            && !m_pszOptionArg
-            && pszArg[0] == (SOCHAR)'-'
-            && pszArg[1]
-            && pszArg[1] != (SOCHAR)'-'
-            && pszArg[2])
-        {
-            // test for a short-form with argument if appropriate
-            if (HasFlag(SO_O_SHORTARG)) {
-                m_szShort[1] = pszArg[1];
-                int nIdx = LookupOption(m_szShort);
-                if (nIdx >= 0
-                    && (m_rgOptions[nIdx].nArgType == SO_REQ_CMB
-                        || m_rgOptions[nIdx].nArgType == SO_OPT))
-                {
-                    m_pszOptionArg = &pszArg[2];
-                    pszArg         = m_szShort;
-                    nTableIdx      = nIdx;
-                }
-            }
-
-            // test for a clumped short-form option string and we didn't
-            // match on the short-form argument above
-            if (nTableIdx < 0 && HasFlag(SO_O_CLUMP))  {
-                m_pszClump = &pszArg[1];
-                ++m_nNextOption;
-                if (nOptIdx > m_nOptionIdx) {
-                    ShuffleArg(m_nOptionIdx, nOptIdx - m_nOptionIdx);
-                }
-                return Next();
-            }
-        }
-
-        // The option wasn't found. If it starts with a switch character
-        // and we are not suppressing errors for invalid options then it
-        // is reported as an error, otherwise it is data.
-        if (nTableIdx < 0) {
-            if (!HasFlag(SO_O_NOERR) && pszArg[0] == (SOCHAR)'-') {
-                m_pszOptionText = pszArg;
-                break;
-            }
-
-            pszArg[0] = cFirst;
-            ++nOptIdx;
-            if (m_pszOptionArg) {
-                *(--m_pszOptionArg) = (SOCHAR)'=';
-            }
-        }
+    // find this option in the options table
+    cFirst = PrepareArg(pszArg);
+    if (pszArg[0] == (SOCHAR)'-') {
+      // find any combined argument string and remove equals sign
+      m_pszOptionArg = FindEquals(pszArg);
+      if (m_pszOptionArg) {
+        *m_pszOptionArg++ = (SOCHAR)'\0';
+      }
     }
+    nTableIdx = LookupOption(pszArg);
 
-    // end of options
-    if (nOptIdx >= m_nLastArg) {
-        if (nOptIdx > m_nOptionIdx) {
-            ShuffleArg(m_nOptionIdx, nOptIdx - m_nOptionIdx);
-        }
-        return false;
-    }
-    ++m_nNextOption;
-
-    // get the option id
-    ESOArgType nArgType = SO_NONE;
-    if (nTableIdx < 0) {
-        m_nLastError    = (ESOError) nTableIdx; // error code
-    }
-    else {
-        m_nOptionId     = m_rgOptions[nTableIdx].nId;
-        m_pszOptionText = m_rgOptions[nTableIdx].pszArg;
-
-        // ensure that the arg type is valid
-        nArgType = m_rgOptions[nTableIdx].nArgType;
-        switch (nArgType) {
-        case SO_NONE:
-            if (m_pszOptionArg) {
-                m_nLastError = SO_ARG_INVALID;
-            }
-            break;
-
-        case SO_REQ_SEP:
-            if (m_pszOptionArg) {
-                // they wanted separate args, but we got a combined one,
-                // unless we are pedantic, just accept it.
-                if (HasFlag(SO_O_PEDANTIC)) {
-                    m_nLastError = SO_ARG_INVALID_TYPE;
-                }
-            }
-            // more processing after we shuffle
-            break;
-
-        case SO_REQ_CMB:
-            if (!m_pszOptionArg) {
-                m_nLastError = SO_ARG_MISSING;
-            }
-            break;
-
-        case SO_OPT:
-            // nothing to do
-            break;
-
-        case SO_MULTI:
-            // nothing to do. Caller must now check for valid arguments
-            // using GetMultiArg()
-            break;
-        }
-    }
-
-    // shuffle the files out of the way
-    if (nOptIdx > m_nOptionIdx) {
-        ShuffleArg(m_nOptionIdx, nOptIdx - m_nOptionIdx);
-    }
-
-    // we need to return the separate arg if required, just re-use the
-    // multi-arg code because it all does the same thing
-    if (   nArgType == SO_REQ_SEP
+    // if we didn't find this option but if it is a short form
+    // option then we try the alternative forms
+    if (nTableIdx < 0
         && !m_pszOptionArg
-        && m_nLastError == SO_SUCCESS)
-    {
-        SOCHAR ** ppArgs = MultiArg(1);
-        if (ppArgs) {
-            m_pszOptionArg = *ppArgs;
+        && pszArg[0] == (SOCHAR)'-'
+        && pszArg[1]
+        && pszArg[1] != (SOCHAR)'-'
+        && pszArg[2]) {
+      // test for a short-form with argument if appropriate
+      if (HasFlag(SO_O_SHORTARG)) {
+        m_szShort[1] = pszArg[1];
+        int nIdx = LookupOption(m_szShort);
+        if (nIdx >= 0
+            && (m_rgOptions[nIdx].nArgType == SO_REQ_CMB
+                || m_rgOptions[nIdx].nArgType == SO_OPT)) {
+          m_pszOptionArg = &pszArg[2];
+          pszArg         = m_szShort;
+          nTableIdx      = nIdx;
         }
+      }
+
+      // test for a clumped short-form option string and we didn't
+      // match on the short-form argument above
+      if (nTableIdx < 0 && HasFlag(SO_O_CLUMP))  {
+        m_pszClump = &pszArg[1];
+        ++m_nNextOption;
+        if (nOptIdx > m_nOptionIdx) {
+          ShuffleArg(m_nOptionIdx, nOptIdx - m_nOptionIdx);
+        }
+        return Next();
+      }
     }
 
-    return true;
+    // The option wasn't found. If it starts with a switch character
+    // and we are not suppressing errors for invalid options then it
+    // is reported as an error, otherwise it is data.
+    if (nTableIdx < 0) {
+      if (!HasFlag(SO_O_NOERR) && pszArg[0] == (SOCHAR)'-') {
+        m_pszOptionText = pszArg;
+        break;
+      }
+
+      pszArg[0] = cFirst;
+      ++nOptIdx;
+      if (m_pszOptionArg) {
+        *(--m_pszOptionArg) = (SOCHAR)'=';
+      }
+    }
+  }
+
+  // end of options
+  if (nOptIdx >= m_nLastArg) {
+    if (nOptIdx > m_nOptionIdx) {
+      ShuffleArg(m_nOptionIdx, nOptIdx - m_nOptionIdx);
+    }
+    return false;
+  }
+  ++m_nNextOption;
+
+  // get the option id
+  ESOArgType nArgType = SO_NONE;
+  if (nTableIdx < 0) {
+    m_nLastError    = (ESOError) nTableIdx; // error code
+  } else {
+    m_nOptionId     = m_rgOptions[nTableIdx].nId;
+    m_pszOptionText = m_rgOptions[nTableIdx].pszArg;
+
+    // ensure that the arg type is valid
+    nArgType = m_rgOptions[nTableIdx].nArgType;
+    switch (nArgType) {
+    case SO_NONE:
+      if (m_pszOptionArg) {
+        m_nLastError = SO_ARG_INVALID;
+      }
+      break;
+
+    case SO_REQ_SEP:
+      if (m_pszOptionArg) {
+        // they wanted separate args, but we got a combined one,
+        // unless we are pedantic, just accept it.
+        if (HasFlag(SO_O_PEDANTIC)) {
+          m_nLastError = SO_ARG_INVALID_TYPE;
+        }
+      }
+      // more processing after we shuffle
+      break;
+
+    case SO_REQ_CMB:
+      if (!m_pszOptionArg) {
+        m_nLastError = SO_ARG_MISSING;
+      }
+      break;
+
+    case SO_OPT:
+      // nothing to do
+      break;
+
+    case SO_MULTI:
+      // nothing to do. Caller must now check for valid arguments
+      // using GetMultiArg()
+      break;
+    }
+  }
+
+  // shuffle the files out of the way
+  if (nOptIdx > m_nOptionIdx) {
+    ShuffleArg(m_nOptionIdx, nOptIdx - m_nOptionIdx);
+  }
+
+  // we need to return the separate arg if required, just re-use the
+  // multi-arg code because it all does the same thing
+  if (   nArgType == SO_REQ_SEP
+         && !m_pszOptionArg
+         && m_nLastError == SO_SUCCESS) {
+    SOCHAR ** ppArgs = MultiArg(1);
+    if (ppArgs) {
+      m_pszOptionArg = *ppArgs;
+    }
+  }
+
+  return true;
 }
 
 template<class SOCHAR>
 void
-CSimpleOptTempl<SOCHAR>::Stop()
-{
-    if (m_nNextOption < m_nLastArg) {
-        ShuffleArg(m_nNextOption, m_nLastArg - m_nNextOption);
-    }
+CSimpleOptTempl<SOCHAR>::Stop() {
+  if (m_nNextOption < m_nLastArg) {
+    ShuffleArg(m_nNextOption, m_nLastArg - m_nNextOption);
+  }
 }
 
 template<class SOCHAR>
 SOCHAR
 CSimpleOptTempl<SOCHAR>::PrepareArg(
-    SOCHAR * a_pszString
-    ) const
-{
+  SOCHAR * a_pszString
+) const {
 #ifdef _WIN32
-    // On Windows we can accept the forward slash as a single character
-    // option delimiter, but it cannot replace the '-' option used to
-    // denote stdin. On Un*x paths may start with slash so it may not
-    // be used to start an option.
-    if (!HasFlag(SO_O_NOSLASH)
-        && a_pszString[0] == (SOCHAR)'/'
-        && a_pszString[1]
-        && a_pszString[1] != (SOCHAR)'-')
-    {
-        a_pszString[0] = (SOCHAR)'-';
-        return (SOCHAR)'/';
-    }
+  // On Windows we can accept the forward slash as a single character
+  // option delimiter, but it cannot replace the '-' option used to
+  // denote stdin. On Un*x paths may start with slash so it may not
+  // be used to start an option.
+  if (!HasFlag(SO_O_NOSLASH)
+      && a_pszString[0] == (SOCHAR)'/'
+      && a_pszString[1]
+      && a_pszString[1] != (SOCHAR)'-') {
+    a_pszString[0] = (SOCHAR)'-';
+    return (SOCHAR)'/';
+  }
 #endif
-    return a_pszString[0];
+  return a_pszString[0];
 }
 
 template<class SOCHAR>
 bool
-CSimpleOptTempl<SOCHAR>::NextClumped()
-{
-    // prepare for the next clumped option
-    m_szShort[1]    = *m_pszClump++;
-    m_nOptionId     = -1;
-    m_pszOptionText = NULL;
-    m_pszOptionArg  = NULL;
-    m_nLastError    = SO_SUCCESS;
+CSimpleOptTempl<SOCHAR>::NextClumped() {
+  // prepare for the next clumped option
+  m_szShort[1]    = *m_pszClump++;
+  m_nOptionId     = -1;
+  m_pszOptionText = NULL;
+  m_pszOptionArg  = NULL;
+  m_nLastError    = SO_SUCCESS;
 
-    // lookup this option, ensure that we are using exact matching
-    int nSavedFlags = m_nFlags;
-    m_nFlags = SO_O_EXACT;
-    int nTableIdx = LookupOption(m_szShort);
-    m_nFlags = nSavedFlags;
+  // lookup this option, ensure that we are using exact matching
+  int nSavedFlags = m_nFlags;
+  m_nFlags = SO_O_EXACT;
+  int nTableIdx = LookupOption(m_szShort);
+  m_nFlags = nSavedFlags;
 
-    // unknown option
-    if (nTableIdx < 0) {
-        m_nLastError = (ESOError) nTableIdx; // error code
-        return false;
-    }
+  // unknown option
+  if (nTableIdx < 0) {
+    m_nLastError = (ESOError) nTableIdx; // error code
+    return false;
+  }
 
-    // valid option
-    m_pszOptionText = m_rgOptions[nTableIdx].pszArg;
-    ESOArgType nArgType = m_rgOptions[nTableIdx].nArgType;
-    if (nArgType == SO_NONE) {
-        m_nOptionId = m_rgOptions[nTableIdx].nId;
-        return true;
-    }
-
-    if (nArgType == SO_REQ_CMB && *m_pszClump) {
-        m_nOptionId = m_rgOptions[nTableIdx].nId;
-        m_pszOptionArg = m_pszClump;
-        while (*m_pszClump) ++m_pszClump; // must point to an empty string
-        return true;
-    }
-
-    // invalid option as it requires an argument
-    m_nLastError = SO_ARG_MISSING;
+  // valid option
+  m_pszOptionText = m_rgOptions[nTableIdx].pszArg;
+  ESOArgType nArgType = m_rgOptions[nTableIdx].nArgType;
+  if (nArgType == SO_NONE) {
+    m_nOptionId = m_rgOptions[nTableIdx].nId;
     return true;
+  }
+
+  if (nArgType == SO_REQ_CMB && *m_pszClump) {
+    m_nOptionId = m_rgOptions[nTableIdx].nId;
+    m_pszOptionArg = m_pszClump;
+    while (*m_pszClump) ++m_pszClump; // must point to an empty string
+    return true;
+  }
+
+  // invalid option as it requires an argument
+  m_nLastError = SO_ARG_MISSING;
+  return true;
 }
 
 // Shuffle arguments to the end of the argv array.
@@ -732,25 +733,24 @@ CSimpleOptTempl<SOCHAR>::NextClumped()
 template<class SOCHAR>
 void
 CSimpleOptTempl<SOCHAR>::ShuffleArg(
-    int a_nStartIdx,
-    int a_nCount
-    )
-{
-    SOCHAR * staticBuf[SO_STATICBUF];
-    SOCHAR ** buf = m_rgShuffleBuf ? m_rgShuffleBuf : staticBuf;
-    int nTail = m_argc - a_nStartIdx - a_nCount;
+  int a_nStartIdx,
+  int a_nCount
+) {
+  SOCHAR * staticBuf[SO_STATICBUF];
+  SOCHAR ** buf = m_rgShuffleBuf ? m_rgShuffleBuf : staticBuf;
+  int nTail = m_argc - a_nStartIdx - a_nCount;
 
-    // make a copy of the elements to be moved
-    Copy(buf, m_argv + a_nStartIdx, a_nCount);
+  // make a copy of the elements to be moved
+  Copy(buf, m_argv + a_nStartIdx, a_nCount);
 
-    // move the tail down
-    Copy(m_argv + a_nStartIdx, m_argv + a_nStartIdx + a_nCount, nTail);
+  // move the tail down
+  Copy(m_argv + a_nStartIdx, m_argv + a_nStartIdx + a_nCount, nTail);
 
-    // append the moved elements to the tail
-    Copy(m_argv + a_nStartIdx + nTail, buf, a_nCount);
+  // append the moved elements to the tail
+  Copy(m_argv + a_nStartIdx + nTail, buf, a_nCount);
 
-    // update the index of the last unshuffled arg
-    m_nLastArg -= a_nCount;
+  // update the index of the last unshuffled arg
+  m_nLastArg -= a_nCount;
 }
 
 // match on the long format strings. partial matches will be
@@ -758,35 +758,34 @@ CSimpleOptTempl<SOCHAR>::ShuffleArg(
 template<class SOCHAR>
 int
 CSimpleOptTempl<SOCHAR>::LookupOption(
-    const SOCHAR * a_pszOption
-    ) const
-{
-    int nBestMatch = -1;    // index of best match so far
-    int nBestMatchLen = 0;  // matching characters of best match
-    int nLastMatchLen = 0;  // matching characters of last best match
+  const SOCHAR * a_pszOption
+) const {
+  int nBestMatch = -1;    // index of best match so far
+  int nBestMatchLen = 0;  // matching characters of best match
+  int nLastMatchLen = 0;  // matching characters of last best match
 
-    for (int n = 0; m_rgOptions[n].nId >= 0; ++n) {
-        // the option table must use hyphens as the option character,
-        // the slash character is converted to a hyphen for testing.
-        SO_ASSERT(m_rgOptions[n].pszArg[0] != (SOCHAR)'/');
+  for (int n = 0; m_rgOptions[n].nId >= 0; ++n) {
+    // the option table must use hyphens as the option character,
+    // the slash character is converted to a hyphen for testing.
+    SO_ASSERT(m_rgOptions[n].pszArg[0] != (SOCHAR)'/');
 
-        int nMatchLen = CalcMatch(m_rgOptions[n].pszArg, a_pszOption);
-        if (nMatchLen == -1) {
-            return n;
-        }
-        if (nMatchLen > 0 && nMatchLen >= nBestMatchLen) {
-            nLastMatchLen = nBestMatchLen;
-            nBestMatchLen = nMatchLen;
-            nBestMatch = n;
-        }
+    int nMatchLen = CalcMatch(m_rgOptions[n].pszArg, a_pszOption);
+    if (nMatchLen == -1) {
+      return n;
     }
-
-    // only partial matches or no match gets to here, ensure that we
-    // don't return a partial match unless it is a clear winner
-    if (HasFlag(SO_O_EXACT) || nBestMatch == -1) {
-        return SO_OPT_INVALID;
+    if (nMatchLen > 0 && nMatchLen >= nBestMatchLen) {
+      nLastMatchLen = nBestMatchLen;
+      nBestMatchLen = nMatchLen;
+      nBestMatch = n;
     }
-    return (nBestMatchLen > nLastMatchLen) ? nBestMatch : SO_OPT_MULTIPLE;
+  }
+
+  // only partial matches or no match gets to here, ensure that we
+  // don't return a partial match unless it is a clear winner
+  if (HasFlag(SO_O_EXACT) || nBestMatch == -1) {
+    return SO_OPT_INVALID;
+  }
+  return (nBestMatchLen > nLastMatchLen) ? nBestMatch : SO_OPT_MULTIPLE;
 }
 
 // calculate the number of characters that match (case-sensitive)
@@ -794,76 +793,73 @@ CSimpleOptTempl<SOCHAR>::LookupOption(
 template<class SOCHAR>
 int
 CSimpleOptTempl<SOCHAR>::CalcMatch(
-    const SOCHAR *  a_pszSource,
-    const SOCHAR *  a_pszTest
-    ) const
-{
-    if (!a_pszSource || !a_pszTest) {
-        return 0;
+  const SOCHAR *  a_pszSource,
+  const SOCHAR *  a_pszTest
+) const {
+  if (!a_pszSource || !a_pszTest) {
+    return 0;
+  }
+
+  // determine the argument type
+  int nArgType = SO_O_ICASE_LONG;
+  if (a_pszSource[0] != '-') {
+    nArgType = SO_O_ICASE_WORD;
+  } else if (a_pszSource[1] != '-' && !a_pszSource[2]) {
+    nArgType = SO_O_ICASE_SHORT;
+  }
+
+  // match and skip leading hyphens
+  while (*a_pszSource == (SOCHAR)'-' && *a_pszSource == *a_pszTest) {
+    ++a_pszSource;
+    ++a_pszTest;
+  }
+  if (*a_pszSource == (SOCHAR)'-' || *a_pszTest == (SOCHAR)'-') {
+    return 0;
+  }
+
+  // find matching number of characters in the strings
+  int nLen = 0;
+  while (*a_pszSource && IsEqual(*a_pszSource, *a_pszTest, nArgType)) {
+    ++a_pszSource;
+    ++a_pszTest;
+    ++nLen;
+  }
+
+  // if we have exhausted the source...
+  if (!*a_pszSource) {
+    // and the test strings, then it's a perfect match
+    if (!*a_pszTest) {
+      return -1;
     }
 
-    // determine the argument type
-    int nArgType = SO_O_ICASE_LONG;
-    if (a_pszSource[0] != '-') {
-        nArgType = SO_O_ICASE_WORD;
-    }
-    else if (a_pszSource[1] != '-' && !a_pszSource[2]) {
-        nArgType = SO_O_ICASE_SHORT;
-    }
+    // otherwise the match failed as the test is longer than
+    // the source. i.e. "--mant" will not match the option "--man".
+    return 0;
+  }
 
-    // match and skip leading hyphens
-    while (*a_pszSource == (SOCHAR)'-' && *a_pszSource == *a_pszTest) {
-        ++a_pszSource;
-        ++a_pszTest;
-    }
-    if (*a_pszSource == (SOCHAR)'-' || *a_pszTest == (SOCHAR)'-') {
-        return 0;
-    }
+  // if we haven't exhausted the test string then it is not a match
+  // i.e. "--mantle" will not best-fit match to "--mandate" at all.
+  if (*a_pszTest) {
+    return 0;
+  }
 
-    // find matching number of characters in the strings
-    int nLen = 0;
-    while (*a_pszSource && IsEqual(*a_pszSource, *a_pszTest, nArgType)) {
-        ++a_pszSource;
-        ++a_pszTest;
-        ++nLen;
-    }
-
-    // if we have exhausted the source...
-    if (!*a_pszSource) {
-        // and the test strings, then it's a perfect match
-        if (!*a_pszTest) {
-            return -1;
-        }
-
-        // otherwise the match failed as the test is longer than
-        // the source. i.e. "--mant" will not match the option "--man".
-        return 0;
-    }
-
-    // if we haven't exhausted the test string then it is not a match
-    // i.e. "--mantle" will not best-fit match to "--mandate" at all.
-    if (*a_pszTest) {
-        return 0;
-    }
-
-    // partial match to the current length of the test string
-    return nLen;
+  // partial match to the current length of the test string
+  return nLen;
 }
 
 template<class SOCHAR>
 bool
 CSimpleOptTempl<SOCHAR>::IsEqual(
-    SOCHAR  a_cLeft,
-    SOCHAR  a_cRight,
-    int     a_nArgType
-    ) const
-{
-    // if this matches then we are doing case-insensitive matching
-    if (m_nFlags & a_nArgType) {
-        if (a_cLeft  >= 'A' && a_cLeft  <= 'Z') a_cLeft  += 'a' - 'A';
-        if (a_cRight >= 'A' && a_cRight <= 'Z') a_cRight += 'a' - 'A';
-    }
-    return a_cLeft == a_cRight;
+  SOCHAR  a_cLeft,
+  SOCHAR  a_cRight,
+  int     a_nArgType
+) const {
+  // if this matches then we are doing case-insensitive matching
+  if (m_nFlags & a_nArgType) {
+    if (a_cLeft  >= 'A' && a_cLeft  <= 'Z') a_cLeft  += 'a' - 'A';
+    if (a_cRight >= 'A' && a_cRight <= 'Z') a_cRight += 'a' - 'A';
+  }
+  return a_cLeft == a_cRight;
 }
 
 // calculate the number of characters that match (case-sensitive)
@@ -871,35 +867,34 @@ CSimpleOptTempl<SOCHAR>::IsEqual(
 template<class SOCHAR>
 SOCHAR **
 CSimpleOptTempl<SOCHAR>::MultiArg(
-    int a_nCount
-    )
-{
-    // ensure we have enough arguments
-    if (m_nNextOption + a_nCount > m_nLastArg) {
-        m_nLastError = SO_ARG_MISSING;
+  int a_nCount
+) {
+  // ensure we have enough arguments
+  if (m_nNextOption + a_nCount > m_nLastArg) {
+    m_nLastError = SO_ARG_MISSING;
+    return NULL;
+  }
+
+  // our argument array
+  SOCHAR ** rgpszArg = &m_argv[m_nNextOption];
+
+  // Ensure that each of the following don't start with an switch character.
+  // Only make this check if we are returning errors for unknown arguments.
+  if (!HasFlag(SO_O_NOERR)) {
+    for (int n = 0; n < a_nCount; ++n) {
+      SOCHAR ch = PrepareArg(rgpszArg[n]);
+      if (rgpszArg[n][0] == (SOCHAR)'-') {
+        rgpszArg[n][0] = ch;
+        m_nLastError = SO_ARG_INVALID_DATA;
         return NULL;
+      }
+      rgpszArg[n][0] = ch;
     }
+  }
 
-    // our argument array
-    SOCHAR ** rgpszArg = &m_argv[m_nNextOption];
-
-    // Ensure that each of the following don't start with an switch character.
-    // Only make this check if we are returning errors for unknown arguments.
-    if (!HasFlag(SO_O_NOERR)) {
-        for (int n = 0; n < a_nCount; ++n) {
-            SOCHAR ch = PrepareArg(rgpszArg[n]);
-            if (rgpszArg[n][0] == (SOCHAR)'-') {
-                rgpszArg[n][0] = ch;
-                m_nLastError = SO_ARG_INVALID_DATA;
-                return NULL;
-            }
-            rgpszArg[n][0] = ch;
-        }
-    }
-
-    // all good
-    m_nNextOption += a_nCount;
-    return rgpszArg;
+  // all good
+  m_nNextOption += a_nCount;
+  return rgpszArg;
 }
 
 
@@ -924,275 +919,244 @@ typedef CSimpleOptTempl<wchar_t> CSimpleOptW;
 /* end SimpleOpt.h */
 
 
-namespace yield
-{
-  namespace process
-  {
-    using std::endl;
-    using std::sort;
-    using std::ostringstream;
+namespace yield {
+namespace process {
+using std::endl;
+using std::sort;
+using std::ostringstream;
 
 
-    void
-    OptionParser::add_option
-    (
-      const string& option,
-      const string& help,
-      bool require_argument
-    )
-    {
-      options.add( option, help, require_argument );
-    }
+void
+OptionParser::add_option
+(
+  const string& option,
+  const string& help,
+  bool require_argument
+) {
+  options.add( option, help, require_argument );
+}
 
-    void OptionParser::add_option( const string& option, bool require_argument )
-    {
-      options.add( option, string(), require_argument );
-    }
+void OptionParser::add_option( const string& option, bool require_argument ) {
+  options.add( option, string(), require_argument );
+}
 
-    void OptionParser::add_option( const Option& option )
-    {
-      options.add( option );
-    }
+void OptionParser::add_option( const Option& option ) {
+  options.add( option );
+}
 
-    void OptionParser::add_options( const Options& options )
-    {
-      this->options.add( options );
-    }
+void OptionParser::add_options( const Options& options ) {
+  this->options.add( options );
+}
 
-    void
-    OptionParser::parse_args
-    (
-      int argc,
-      char** argv,
-      vector<ParsedOption>& out_parsed_options,
-      vector<string>& out_positional_arguments
-    )
-    {
-      vector<CSimpleOpt::SOption> simpleopt_options;
+void
+OptionParser::parse_args
+(
+  int argc,
+  char** argv,
+  vector<ParsedOption>& out_parsed_options,
+  vector<string>& out_positional_arguments
+) {
+  vector<CSimpleOpt::SOption> simpleopt_options;
 
+  for
+  (
+    vector<Option>::size_type option_i = 0;
+    option_i < options.size();
+    option_i++
+  ) {
+    CSimpleOpt::SOption simpleopt_option
+    = {
+      option_i,
+      options[option_i],
+      options[option_i].get_require_argument() ? SO_REQ_SEP : SO_NONE
+    };
+
+    simpleopt_options.push_back( simpleopt_option );
+  }
+
+  CSimpleOpt::SOption sentinel_simpleopt_option = SO_END_OF_OPTIONS;
+  simpleopt_options.push_back( sentinel_simpleopt_option );
+
+  // Make copies of the strings in argv so that
+  // SimpleOpt can punch holes in them
+  vector<char*> argvv( argc );
+  for ( int arg_i = 0; arg_i < argc; arg_i++ ) {
+    size_t arg_len = strnlen( argv[arg_i], SIZE_MAX ) + 1;
+    argvv[arg_i] = new char[arg_len];
+    memcpy_s( argvv[arg_i], arg_len, argv[arg_i], arg_len );
+  }
+
+  CSimpleOpt args( argc, &argvv[0], &simpleopt_options[0] );
+
+  while ( args.Next() ) {
+    switch ( args.LastError() ) {
+    case SO_SUCCESS: {
       for
       (
-        vector<Option>::size_type option_i = 0;
-        option_i < options.size();
-        option_i++
-      )
-      {
-        CSimpleOpt::SOption simpleopt_option
-          =
-          {
-            option_i,
-            options[option_i],
-            options[option_i].get_require_argument() ? SO_REQ_SEP : SO_NONE
-          };
+        vector<Option>::iterator option_i = options.begin();
+        option_i != options.end();
+        ++option_i
+      ) {
+        Option& option = *option_i;
 
-        simpleopt_options.push_back( simpleopt_option );
-      }
-
-      CSimpleOpt::SOption sentinel_simpleopt_option = SO_END_OF_OPTIONS;
-      simpleopt_options.push_back( sentinel_simpleopt_option );
-
-      // Make copies of the strings in argv so that
-      // SimpleOpt can punch holes in them
-      vector<char*> argvv( argc );
-      for ( int arg_i = 0; arg_i < argc; arg_i++ )
-      {
-        size_t arg_len = strnlen( argv[arg_i], SIZE_MAX ) + 1;
-        argvv[arg_i] = new char[arg_len];
-        memcpy_s( argvv[arg_i], arg_len, argv[arg_i], arg_len );
-      }
-
-      CSimpleOpt args( argc, &argvv[0], &simpleopt_options[0] );
-
-      while ( args.Next() )
-      {
-        switch ( args.LastError() )
-        {
-          case SO_SUCCESS:
-          {
-            for
+        if ( option == args.OptionText() ) {
+          if ( option.get_require_argument() ) {
+            out_parsed_options.push_back
             (
-              vector<Option>::iterator option_i = options.begin();
-              option_i != options.end();
-              ++option_i
-            )
-            {
-              Option& option = *option_i;
-
-              if ( option == args.OptionText() )
-              {
-                if ( option.get_require_argument() )
-                {
-                  out_parsed_options.push_back
-                  (
-                    ParsedOption( option, args.OptionArg() )
-                  );
-                }
-                else
-                  out_parsed_options.push_back( ParsedOption( option ) );
-              }
-            }
-          }
-          break;
-
-          case SO_OPT_INVALID:
-          {
-            string error_message( "unregistered option: " );
-            error_message.append( args.OptionText() );
-            throw Exception( error_message );
-          }
-          break;
-
-          case SO_OPT_MULTIPLE:
-          {
-            string error_message( "duplicate option: " );
-            error_message.append( args.OptionText() );
-            throw Exception( error_message );
-          }
-          break;
-
-          case SO_ARG_INVALID:
-          {
-            string error_message( "unexpected value to option " );
-            error_message.append( args.OptionText() );
-            throw Exception( error_message );
-          }
-          break;
-
-          case SO_ARG_MISSING:
-          {
-            string error_message( "missing value to option " );
-            error_message.append( args.OptionText() );
-            throw Exception( error_message );
-          }
-          break;
-
-          case SO_ARG_INVALID_DATA: // Argument looks like another option
-          {
-            ostringstream error_message;
-            error_message << args.OptionText() <<
-              "requires a value, but you appear to have passed another option.";
-            throw Exception( error_message.str() );
-          }
-          break;
-
-          default: DebugBreak(); break;
+              ParsedOption( option, args.OptionArg() )
+            );
+          } else
+            out_parsed_options.push_back( ParsedOption( option ) );
         }
       }
-
-      for ( int arg_i = argc - args.FileCount(); arg_i < argc; arg_i++ )
-        out_positional_arguments.push_back( argv[arg_i] );
-
-      for
-      (
-        vector<char*>::iterator arg_i = argvv.begin();
-        arg_i != argvv.end();
-        arg_i++
-      )
-        delete [] *arg_i;
-      argvv.clear();
     }
+    break;
 
-    string OptionParser::usage()
-    {
-      ostringstream usage;
-
-      usage << "Options:" << endl;
-
-      sort( options.begin(), options.end() );
-      for
-      (
-        vector<Option>::const_iterator option_i = options.begin();
-        option_i != options.end();
-        option_i++
-      )
-      {
-        const Option& option = *option_i;
-        usage << "  " << option;
-        if ( !option.get_help().empty() )
-          usage << "\t" << option.get_help();
-        usage << endl;
-      }
-
-      usage << endl;
-
-      return usage.str();
+    case SO_OPT_INVALID: {
+      string error_message( "unregistered option: " );
+      error_message.append( args.OptionText() );
+      throw Exception( error_message );
     }
+    break;
 
-
-    OptionParser::Option::Option( const string& option, bool require_argument )
-      : option( option ), require_argument( require_argument )
-    { }
-
-    OptionParser::Option::Option
-    (
-      const string& option,
-      const string& help,
-      bool require_argument
-    )
-      : help( help ), option( option ), require_argument( require_argument )
-    { }
-
-    bool OptionParser::Option::operator==( const string& option ) const
-    {
-      return this->option == option;
+    case SO_OPT_MULTIPLE: {
+      string error_message( "duplicate option: " );
+      error_message.append( args.OptionText() );
+      throw Exception( error_message );
     }
+    break;
 
-    bool OptionParser::Option::operator==( const char* option ) const
-    {
-      return this->option == option;
+    case SO_ARG_INVALID: {
+      string error_message( "unexpected value to option " );
+      error_message.append( args.OptionText() );
+      throw Exception( error_message );
     }
+    break;
 
-    bool OptionParser::Option::operator==( const Option& other ) const
-    {
-      return this->option == other.option;
+    case SO_ARG_MISSING: {
+      string error_message( "missing value to option " );
+      error_message.append( args.OptionText() );
+      throw Exception( error_message );
     }
+    break;
 
-    bool OptionParser::Option::operator<( const Option& other ) const
-    {
-      return option.compare( other.option ) < 0;
+    case SO_ARG_INVALID_DATA: { // Argument looks like another option
+      ostringstream error_message;
+      error_message << args.OptionText() <<
+                    "requires a value, but you appear to have passed another option.";
+      throw Exception( error_message.str() );
     }
+    break;
 
-
-    void
-    OptionParser::Options::add
-    (
-      const string& option,
-      const string& help,
-      bool require_argument
-    )
-    {
-      add( Option( option, help, require_argument ) );
+    default:
+      DebugBreak();
+      break;
     }
-
-    void OptionParser::Options::add( const string& option, bool require_argument )
-    {
-      add( Option( option, string(), require_argument ) );
-    }
-
-    void OptionParser::Options::add( const Option& option )
-    {
-      for ( const_iterator i = begin(); i != end(); ++i )
-      {
-        if ( *i == option )
-          return;
-      }
-
-      push_back( option );
-    }
-
-    void OptionParser::Options::add( const Options& options )
-    {
-      for ( const_iterator i = options.begin(); i != options.end(); ++i )
-        add( *i );
-    }
-
-
-    OptionParser::ParsedOption::ParsedOption( Option& option )
-      : Option( option )
-    { }
-
-    OptionParser::ParsedOption::ParsedOption( Option& option, const string& arg )
-      : Option( option ), argument( arg )
-    { }
   }
+
+  for ( int arg_i = argc - args.FileCount(); arg_i < argc; arg_i++ )
+    out_positional_arguments.push_back( argv[arg_i] );
+
+  for
+  (
+    vector<char*>::iterator arg_i = argvv.begin();
+    arg_i != argvv.end();
+    arg_i++
+  )
+    delete [] *arg_i;
+  argvv.clear();
+}
+
+string OptionParser::usage() {
+  ostringstream usage;
+
+  usage << "Options:" << endl;
+
+  sort( options.begin(), options.end() );
+  for
+  (
+    vector<Option>::const_iterator option_i = options.begin();
+    option_i != options.end();
+    option_i++
+  ) {
+    const Option& option = *option_i;
+    usage << "  " << option;
+    if ( !option.get_help().empty() )
+      usage << "\t" << option.get_help();
+    usage << endl;
+  }
+
+  usage << endl;
+
+  return usage.str();
+}
+
+
+OptionParser::Option::Option( const string& option, bool require_argument )
+  : option( option ), require_argument( require_argument )
+{ }
+
+OptionParser::Option::Option
+(
+  const string& option,
+  const string& help,
+  bool require_argument
+)
+  : help( help ), option( option ), require_argument( require_argument )
+{ }
+
+bool OptionParser::Option::operator==( const string& option ) const {
+  return this->option == option;
+}
+
+bool OptionParser::Option::operator==( const char* option ) const {
+  return this->option == option;
+}
+
+bool OptionParser::Option::operator==( const Option& other ) const {
+  return this->option == other.option;
+}
+
+bool OptionParser::Option::operator<( const Option& other ) const {
+  return option.compare( other.option ) < 0;
+}
+
+
+void
+OptionParser::Options::add
+(
+  const string& option,
+  const string& help,
+  bool require_argument
+) {
+  add( Option( option, help, require_argument ) );
+}
+
+void OptionParser::Options::add( const string& option, bool require_argument ) {
+  add( Option( option, string(), require_argument ) );
+}
+
+void OptionParser::Options::add( const Option& option ) {
+  for ( const_iterator i = begin(); i != end(); ++i ) {
+    if ( *i == option )
+      return;
+  }
+
+  push_back( option );
+}
+
+void OptionParser::Options::add( const Options& options ) {
+  for ( const_iterator i = options.begin(); i != options.end(); ++i )
+    add( *i );
+}
+
+
+OptionParser::ParsedOption::ParsedOption( Option& option )
+  : Option( option )
+{ }
+
+OptionParser::ParsedOption::ParsedOption( Option& option, const string& arg )
+  : Option( option ), argument( arg )
+{ }
+}
 }

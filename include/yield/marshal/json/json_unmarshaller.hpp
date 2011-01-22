@@ -35,40 +35,36 @@
 #include "yield/marshal/unmarshaller.hpp"
 
 
-namespace yield
-{
-  namespace marshal
-  {
-    namespace json
-    {
-      class JSONUnmarshaller : public Unmarshaller
-      {
-      public:
-        JSONUnmarshaller( const Buffer& json );
-        JSONUnmarshaller( const char* json, size_t json_len );
-        JSONUnmarshaller( Object& root_object );
-        ~JSONUnmarshaller();
+namespace yield {
+namespace marshal {
+namespace json {
+class JSONUnmarshaller : public Unmarshaller {
+public:
+  JSONUnmarshaller( const Buffer& json );
+  JSONUnmarshaller( const char* json, size_t json_len );
+  JSONUnmarshaller( Object& root_object );
+  ~JSONUnmarshaller();
 
-        // Unmarshaller
-        bool read_bool( const Object& key );
-        double read_double( const Object& key );
-        int64_t read_int64( const Object& key );
-        void read_key( Object& key );
-        void read_map( const Object& key, Map& value );
-        void read_object( const Object& key, Object& value );
-        void read_sequence( const Object& key, Sequence& value );
-        void read_string( const Object& key, string& value );
-        uint64_t read_uint64( const Object& key );
+  // Unmarshaller
+  bool read_bool( const Object& key );
+  double read_double( const Object& key );
+  int64_t read_int64( const Object& key );
+  void read_key( Object& key );
+  void read_map( const Object& key, Map& value );
+  void read_object( const Object& key, Object& value );
+  void read_sequence( const Object& key, Sequence& value );
+  void read_string( const Object& key, string& value );
+  uint64_t read_uint64( const Object& key );
 
-      private:
-        Object* read( const Object& key );
+private:
+  Object* read( const Object& key );
 
-      private:
-        Object* root_object;
-        size_t next_object_i;
-      };
-    }
-  }
+private:
+  Object* root_object;
+  size_t next_object_i;
+};
+}
+}
 }
 
 

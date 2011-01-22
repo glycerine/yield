@@ -40,42 +40,36 @@
 #include "yunit.hpp"
 
 
-namespace yield
-{
-  namespace stage
-  {
-    template <class StageSchedulerType>
-    class StageSchedulerScheduleTest : public yunit::Test
-    {
-    public:
-      // yunit::Test
-      void run()
-      {
-        auto_Object<TestEventHandler> event_handler = new TestEventHandler;
-        auto_Object<Stage> stage = new Stage( event_handler->inc_ref() );
-        auto_Object<StageScheduler> stage_scheduler = new StageSchedulerType;
-        stage_scheduler->schedule( *stage );
-        stage->handle( *new Event );
-        while ( event_handler->get_seen_events_count() < 1 )
-          yield::thread::Thread::self()->nanosleep( 0.1 );
-      }
-    };
-
-
-    template <class StageSchedulerType>
-    class StageSchedulerTestSuite : public yunit::TestSuite
-    {
-    public:
-      StageSchedulerTestSuite()
-      {
-        add
-        (
-          "StageScheduler::schedule",
-          new StageSchedulerScheduleTest<StageSchedulerType>
-        );
-      }
-    };
+namespace yield {
+namespace stage {
+template <class StageSchedulerType>
+class StageSchedulerScheduleTest : public yunit::Test {
+public:
+  // yunit::Test
+  void run() {
+    auto_Object<TestEventHandler> event_handler = new TestEventHandler;
+    auto_Object<Stage> stage = new Stage( event_handler->inc_ref() );
+    auto_Object<StageScheduler> stage_scheduler = new StageSchedulerType;
+    stage_scheduler->schedule( *stage );
+    stage->handle( *new Event );
+    while ( event_handler->get_seen_events_count() < 1 )
+      yield::thread::Thread::self()->nanosleep( 0.1 );
   }
+};
+
+
+template <class StageSchedulerType>
+class StageSchedulerTestSuite : public yunit::TestSuite {
+public:
+  StageSchedulerTestSuite() {
+    add
+    (
+      "StageScheduler::schedule",
+      new StageSchedulerScheduleTest<StageSchedulerType>
+    );
+  }
+};
+}
 }
 
 

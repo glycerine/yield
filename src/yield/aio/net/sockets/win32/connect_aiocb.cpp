@@ -35,80 +35,69 @@
 #include "yield/net/sockets/win32/winsock.hpp"
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace net
-    {
-      namespace sockets
-      {
-        using yield::net::sockets::SocketAddress;
+namespace yield {
+namespace aio {
+namespace net {
+namespace sockets {
+using yield::net::sockets::SocketAddress;
 
 
-        LPFN_CONNECTEX lpfnConnectEx = NULL;
+LPFN_CONNECTEX lpfnConnectEx = NULL;
 
 
-        bool connectAIOCB::issue( yield::aio::win32::AIOQueue& )
-        {
-          if ( lpfnConnectEx == NULL )
-          {
-            GUID GuidConnectEx = WSAID_CONNECTEX;
-            DWORD dwBytes;
-            WSAIoctl
-            (
-              get_socket(),
-              SIO_GET_EXTENSION_FUNCTION_POINTER,
-              &GuidConnectEx,
-              sizeof( GuidConnectEx ),
-              &lpfnConnectEx,
-              sizeof( lpfnConnectEx ),
-              &dwBytes,
-              NULL,
-              NULL
-            );
+bool connectAIOCB::issue( yield::aio::win32::AIOQueue& ) {
+  if ( lpfnConnectEx == NULL ) {
+    GUID GuidConnectEx = WSAID_CONNECTEX;
+    DWORD dwBytes;
+    WSAIoctl
+    (
+      get_socket(),
+      SIO_GET_EXTENSION_FUNCTION_POINTER,
+      &GuidConnectEx,
+      sizeof( GuidConnectEx ),
+      &lpfnConnectEx,
+      sizeof( lpfnConnectEx ),
+      &dwBytes,
+      NULL,
+      NULL
+    );
 
-            if ( lpfnConnectEx == NULL )
-              return false;
-          }
-
-          const SocketAddress* peername
-            = get_peername().filter( get_socket().get_domain() );
-
-          if ( peername != NULL )
-          {
-            PVOID lpSendBuffer;
-            DWORD dwSendDataLength;
-            if ( get_send_buffer() != NULL )
-            {
-              lpSendBuffer = *get_send_buffer();
-              dwSendDataLength = get_send_buffer()->size();
-            }
-            else
-            {
-              lpSendBuffer = NULL;
-              dwSendDataLength = 0;
-            }
-
-            DWORD dwBytesSent;
-
-            return lpfnConnectEx
-                    (
-                      get_socket(),
-                      *peername,
-                      peername->len(),
-                      lpSendBuffer,
-                      dwSendDataLength,
-                      &dwBytesSent,
-                      *this
-                    )
-                    ||
-                    WSAGetLastError() == WSA_IO_PENDING;
-          }
-          else
-            return false;
-        }
-      }
-    }
+    if ( lpfnConnectEx == NULL )
+      return false;
   }
+
+  const SocketAddress* peername
+  = get_peername().filter( get_socket().get_domain() );
+
+  if ( peername != NULL ) {
+    PVOID lpSendBuffer;
+    DWORD dwSendDataLength;
+    if ( get_send_buffer() != NULL ) {
+      lpSendBuffer = *get_send_buffer();
+      dwSendDataLength = get_send_buffer()->size();
+    } else {
+      lpSendBuffer = NULL;
+      dwSendDataLength = 0;
+    }
+
+    DWORD dwBytesSent;
+
+    return lpfnConnectEx
+           (
+             get_socket(),
+             *peername,
+             peername->len(),
+             lpSendBuffer,
+             dwSendDataLength,
+             &dwBytesSent,
+             *this
+           )
+           ||
+           WSAGetLastError() == WSA_IO_PENDING;
+  } else
+    return false;
+}
+}
+}
+}
 }

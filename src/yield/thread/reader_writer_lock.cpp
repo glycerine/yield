@@ -29,59 +29,49 @@
 
 
 #ifdef _WIN32
-  #include "win32/reader_writer_lock.hpp"
+#include "win32/reader_writer_lock.hpp"
 #else
-  #include "posix/reader_writer_lock.hpp"
+#include "posix/reader_writer_lock.hpp"
 #endif
 #include "yield/thread/reader_writer_lock.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    ReaderWriterLock::ReaderWriterLock()
-    {
-      #ifdef _WIN32
-        pimpl = new win32::ReaderWriterLock;
-      #else
-        pimpl = new posix::ReaderWriterLock;
-      #endif
-    }
+namespace yield {
+namespace thread {
+ReaderWriterLock::ReaderWriterLock() {
+#ifdef _WIN32
+  pimpl = new win32::ReaderWriterLock;
+#else
+  pimpl = new posix::ReaderWriterLock;
+#endif
+}
 
-    ReaderWriterLock::~ReaderWriterLock()
-    {
-      delete pimpl;
-    }
+ReaderWriterLock::~ReaderWriterLock() {
+  delete pimpl;
+}
 
-    bool ReaderWriterLock::rdlock()
-    {
-      return pimpl->rdlock();
-    }
+bool ReaderWriterLock::rdlock() {
+  return pimpl->rdlock();
+}
 
-    void ReaderWriterLock::rdunlock()
-    {
-      pimpl->rdunlock();
-    }
+void ReaderWriterLock::rdunlock() {
+  pimpl->rdunlock();
+}
 
-    bool ReaderWriterLock::tryrdlock()
-    {
-      return pimpl->tryrdlock();
-    }
+bool ReaderWriterLock::tryrdlock() {
+  return pimpl->tryrdlock();
+}
 
-    bool ReaderWriterLock::trywrlock()
-    {
-      return pimpl->trywrlock();
-    }
+bool ReaderWriterLock::trywrlock() {
+  return pimpl->trywrlock();
+}
 
-    bool ReaderWriterLock::wrlock()
-    {
-      return pimpl->wrlock();
-    }
+bool ReaderWriterLock::wrlock() {
+  return pimpl->wrlock();
+}
 
-    void ReaderWriterLock::wrunlock()
-    {
-      pimpl->wrunlock();
-    }
-  }
+void ReaderWriterLock::wrunlock() {
+  pimpl->wrunlock();
+}
+}
 }

@@ -35,40 +35,38 @@
 #include "yield/stage/stage.hpp"
 
 
-namespace yield
-{
-  class Log;
+namespace yield {
+class Log;
 
 
-  namespace aio
-  {
-    namespace net
-    {
-      namespace sockets
-      {
-        class AIOQueue;
-      }
-    }
+namespace aio {
+namespace net {
+namespace sockets {
+class AIOQueue;
+}
+}
+}
+
+
+namespace http {
+class SocketPeer : public yield::stage::Stage {
+protected:
+  SocketPeer( Log* error_log = NULL, Log* trace_log = NULL );
+  virtual ~SocketPeer();
+
+  yield::aio::net::sockets::AIOQueue& get_aio_queue();
+  Log* get_error_log() const {
+    return error_log;
+  }
+  Log* get_trace_log() const {
+    return trace_log;
   }
 
-
-  namespace http
-  {
-    class SocketPeer : public yield::stage::Stage
-    {
-    protected:
-      SocketPeer( Log* error_log = NULL, Log* trace_log = NULL );
-      virtual ~SocketPeer();
-
-      yield::aio::net::sockets::AIOQueue& get_aio_queue();
-      Log* get_error_log() const { return error_log; }
-      Log* get_trace_log() const { return trace_log; }
-
-    private:
-      Log* error_log;
-      Log* trace_log;
-    };
-  }
+private:
+  Log* error_log;
+  Log* trace_log;
+};
+}
 }
 
 

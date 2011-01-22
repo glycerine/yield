@@ -36,60 +36,52 @@
 
 TEST_SUITE( ProcessorSet )
 
-namespace yield
-{
-  namespace thread
-  {
-    TEST( ProcessorSet, clear_all )
-    {
-      auto_Object<ProcessorSet> processor_set = new ProcessorSet;
-      processor_set->set( 0 );
-      processor_set->clear();
-      throw_assert_eq( processor_set->count(), 0 );
-    }
+namespace yield {
+namespace thread {
+TEST( ProcessorSet, clear_all ) {
+  auto_Object<ProcessorSet> processor_set = new ProcessorSet;
+  processor_set->set( 0 );
+  processor_set->clear();
+  throw_assert_eq( processor_set->count(), 0 );
+}
 
-    TEST( ProcessorSet, clear_one )
-    {
-      auto_Object<ProcessorSet> processor_set = new ProcessorSet;
-      processor_set->set( 0 );
-      processor_set->set( 1 );
-      processor_set->clear( 0 );
-      throw_assert_eq( processor_set->count(), 1 );
-    }
+TEST( ProcessorSet, clear_one ) {
+  auto_Object<ProcessorSet> processor_set = new ProcessorSet;
+  processor_set->set( 0 );
+  processor_set->set( 1 );
+  processor_set->clear( 0 );
+  throw_assert_eq( processor_set->count(), 1 );
+}
 
-    TEST( ProcessorSet, count )
-    {
-      auto_Object<ProcessorSet> processor_set = new ProcessorSet;
-      processor_set->set( 0 );
-      throw_assert_eq( processor_set->count(), 1 );
-      processor_set->set( 1 );
-      throw_assert_eq( processor_set->count(), 2 );
-      processor_set->clear();
-      throw_assert_eq( processor_set->count(), 0 );
-    }
+TEST( ProcessorSet, count ) {
+  auto_Object<ProcessorSet> processor_set = new ProcessorSet;
+  processor_set->set( 0 );
+  throw_assert_eq( processor_set->count(), 1 );
+  processor_set->set( 1 );
+  throw_assert_eq( processor_set->count(), 2 );
+  processor_set->clear();
+  throw_assert_eq( processor_set->count(), 0 );
+}
 
-    TEST( ProcessorSet, empty )
-    {
-      auto_Object<ProcessorSet> processor_set = new ProcessorSet;
-      throw_assert( processor_set->empty() );
-      processor_set->set( 0 );
-      throw_assert_false( processor_set->empty() );
-    }
+TEST( ProcessorSet, empty ) {
+  auto_Object<ProcessorSet> processor_set = new ProcessorSet;
+  throw_assert( processor_set->empty() );
+  processor_set->set( 0 );
+  throw_assert_false( processor_set->empty() );
+}
 
-    TEST( ProcessorSet, isset )
-    {
-      auto_Object<ProcessorSet> processor_set = new ProcessorSet;
-      processor_set->set( 0 );
-      throw_assert( processor_set->isset( 0 ) );
-      throw_assert_false( processor_set->isset( 1 ) );
-    }
+TEST( ProcessorSet, isset ) {
+  auto_Object<ProcessorSet> processor_set = new ProcessorSet;
+  processor_set->set( 0 );
+  throw_assert( processor_set->isset( 0 ) );
+  throw_assert_false( processor_set->isset( 1 ) );
+}
 
-    TEST( ProcessorSet, set )
-    {
-      auto_Object<ProcessorSet> processor_set = new ProcessorSet;
-      processor_set->set( 0 );
-      throw_assert( processor_set->isset( 0 ) );
-      throw_assert_false( processor_set->isset( 1 ) );
-    }
-  }
+TEST( ProcessorSet, set ) {
+  auto_Object<ProcessorSet> processor_set = new ProcessorSet;
+  processor_set->set( 0 );
+  throw_assert( processor_set->isset( 0 ) );
+  throw_assert_false( processor_set->isset( 1 ) );
+}
+}
 }

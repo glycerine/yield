@@ -35,46 +35,48 @@
 #include "yield/aio/fs/aiocb.hpp"
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace fs
-    {
-      class pwriteAIOCB : public AIOCB
-      {
-      public:
-        const static uint32_t TYPE_ID = 1080008554UL;
+namespace yield {
+namespace aio {
+namespace fs {
+class pwriteAIOCB : public AIOCB {
+public:
+  const static uint32_t TYPE_ID = 1080008554UL;
 
-      public:
-        pwriteAIOCB
-        (
-          yield::fs::File& file,
-          YO_NEW_REF Page& page,
-          size_t nbytes,
-          uint64_t offset
-        );
+public:
+  pwriteAIOCB
+  (
+    yield::fs::File& file,
+    YO_NEW_REF Page& page,
+    size_t nbytes,
+    uint64_t offset
+  );
 
-        ~pwriteAIOCB();
+  ~pwriteAIOCB();
 
-        Page& get_page() const { return page; }
-
-        // yield::Object
-        uint32_t get_type_id() const { return TYPE_ID; }
-        const char* get_type_name() const { return "yield::aio::fs::pwriteAIOCB"; }
-
-        // yield::aio::AIOCB
-        bool issue( EventHandler& completion_handler );
-        #ifdef _WIN32
-          bool issue( yield::aio::win32::AIOQueue& );
-        #endif
-        RetryStatus retry();
-
-      private:
-        Page& page;
-      };
-    }
+  Page& get_page() const {
+    return page;
   }
+
+  // yield::Object
+  uint32_t get_type_id() const {
+    return TYPE_ID;
+  }
+  const char* get_type_name() const {
+    return "yield::aio::fs::pwriteAIOCB";
+  }
+
+  // yield::aio::AIOCB
+  bool issue( EventHandler& completion_handler );
+#ifdef _WIN32
+  bool issue( yield::aio::win32::AIOQueue& );
+#endif
+  RetryStatus retry();
+
+private:
+  Page& page;
+};
+}
+}
 }
 
 

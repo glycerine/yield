@@ -35,21 +35,21 @@
 #include "yield/object.hpp"
 
 
-namespace yield
-{
-  class Event;
+namespace yield {
+class Event;
 
 
-  class EventHandler : public Object
-  {
-  public:
-    virtual ~EventHandler() { }
+class EventHandler : public Object {
+public:
+  virtual ~EventHandler() { }
 
-    virtual void handle( Event& event ) = 0;
+  virtual void handle( Event& event ) = 0;
 
-    // Object
-    EventHandler& inc_ref() { return Object::inc_ref( *this ); }
-  };
+  // Object
+  EventHandler& inc_ref() {
+    return Object::inc_ref( *this );
+  }
+};
 };
 
 

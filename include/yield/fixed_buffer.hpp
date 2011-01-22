@@ -36,54 +36,51 @@
 #include "yield/buffer.hpp"
 
 
-namespace yield
-{
-  template <size_t Capacity>
-  class FixedBuffer : public Buffer
-  {
-  public:
-    FixedBuffer()
-      : Buffer( Capacity )
-    { }
+namespace yield {
+template <size_t Capacity>
+class FixedBuffer : public Buffer {
+public:
+  FixedBuffer()
+    : Buffer( Capacity )
+  { }
 
-    FixedBuffer( const string& data )
-      : Buffer( Capacity )
-    {
-      put( data );
-    }
+  FixedBuffer( const string& data )
+    : Buffer( Capacity ) {
+    put( data );
+  }
 
-    FixedBuffer( const void* data, size_t size )
-      : Buffer( Capacity )
-    {
-      put( data, size );
-    }
+  FixedBuffer( const void* data, size_t size )
+    : Buffer( Capacity ) {
+    put( data, size );
+  }
 
-    FixedBuffer( const Buffer& buffer )
-      : Buffer( Capacity )
-    {
-      put( buffer );
-    }
+  FixedBuffer( const Buffer& buffer )
+    : Buffer( Capacity ) {
+    put( buffer );
+  }
 
-    FixedBuffer( const FixedBuffer<Capacity>& buffer )
-      : Buffer( Capacity )
-    {
-      put( buffer );
-    }
+  FixedBuffer( const FixedBuffer<Capacity>& buffer )
+    : Buffer( Capacity ) {
+    put( buffer );
+  }
 
-    virtual ~FixedBuffer() { }
+  virtual ~FixedBuffer() { }
 
-    // Buffer
-    void* data() { return &data_[0]; }
-    const void* data() const { return &data_[0]; }
+  // Buffer
+  void* data() {
+    return &data_[0];
+  }
+  const void* data() const {
+    return &data_[0];
+  }
 
-    void reserve( size_t new_capacity )
-    {
-      debug_assert_le( new_capacity, Capacity );
-    }
+  void reserve( size_t new_capacity ) {
+    debug_assert_le( new_capacity, Capacity );
+  }
 
-  private:
-    uint8_t data_[Capacity];
-  };
+private:
+  uint8_t data_[Capacity];
+};
 }
 
 

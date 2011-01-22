@@ -31,37 +31,29 @@
 #include "lightweight_mutex.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace win32
-    {
-      LightweightMutex::LightweightMutex()
-      {
-        InitializeCriticalSection( &critical_section );
-      }
+namespace yield {
+namespace thread {
+namespace win32 {
+LightweightMutex::LightweightMutex() {
+  InitializeCriticalSection( &critical_section );
+}
 
-      LightweightMutex::~LightweightMutex()
-      {
-        DeleteCriticalSection( &critical_section );
-      }
+LightweightMutex::~LightweightMutex() {
+  DeleteCriticalSection( &critical_section );
+}
 
-      bool LightweightMutex::lock()
-      {
-        EnterCriticalSection( &critical_section );
-        return true;
-      }
+bool LightweightMutex::lock() {
+  EnterCriticalSection( &critical_section );
+  return true;
+}
 
-      bool LightweightMutex::trylock()
-      {
-        return TryEnterCriticalSection( &critical_section ) == TRUE;
-      }
+bool LightweightMutex::trylock() {
+  return TryEnterCriticalSection( &critical_section ) == TRUE;
+}
 
-      void LightweightMutex::unlock()
-      {
-        LeaveCriticalSection( &critical_section );
-      }
-    }
-  }
+void LightweightMutex::unlock() {
+  LeaveCriticalSection( &critical_section );
+}
+}
+}
 }

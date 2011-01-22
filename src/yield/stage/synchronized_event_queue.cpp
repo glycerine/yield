@@ -31,31 +31,25 @@
 #include "yield/stage/synchronized_event_queue.hpp"
 
 
-namespace yield
-{
-  namespace stage
-  {
-    using yield::thread::SynchronizedQueue;
+namespace yield {
+namespace stage {
+using yield::thread::SynchronizedQueue;
 
 
-    Event& SynchronizedEventQueue::dequeue()
-    {
-      return SynchronizedQueue<Event>::dequeue();
-    }
+Event& SynchronizedEventQueue::dequeue() {
+  return SynchronizedQueue<Event>::dequeue();
+}
 
-    Event* SynchronizedEventQueue::dequeue( const Time& timeout )
-    {
-      return SynchronizedQueue<Event>::dequeue( timeout );
-    }
+Event* SynchronizedEventQueue::dequeue( const Time& timeout ) {
+  return SynchronizedQueue<Event>::dequeue( timeout );
+}
 
-    bool SynchronizedEventQueue::enqueue( Event& event )
-    {
-      return SynchronizedQueue<Event>::enqueue( event );
-    }
+bool SynchronizedEventQueue::enqueue( Event& event ) {
+  return SynchronizedQueue<Event>::enqueue( event );
+}
 
-    Event* SynchronizedEventQueue::trydequeue()
-    {
-      return SynchronizedQueue<Event>::trydequeue();
-    }
-  }
+Event* SynchronizedEventQueue::trydequeue() {
+  return SynchronizedQueue<Event>::trydequeue();
+}
+}
 }

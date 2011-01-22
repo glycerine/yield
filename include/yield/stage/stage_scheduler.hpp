@@ -35,41 +35,38 @@
 #include "yield/object.hpp"
 
 
-namespace yield
-{
-  namespace stage
-  {
-    class Stage;
+namespace yield {
+namespace stage {
+class Stage;
 
 
-    class StageScheduler : public Object
-    {
-    public:
-      class ConcurrencyLevel
-      {
-      public:
-        const static ConcurrencyLevel DEFAULT;
-        const static ConcurrencyLevel PER_PROCESSOR;
+class StageScheduler : public Object {
+public:
+  class ConcurrencyLevel {
+  public:
+    const static ConcurrencyLevel DEFAULT;
+    const static ConcurrencyLevel PER_PROCESSOR;
 
-        ConcurrencyLevel( uint16_t concurrency_level )
-          : concurrency_level( concurrency_level )
-        { }
+    ConcurrencyLevel( uint16_t concurrency_level )
+      : concurrency_level( concurrency_level )
+    { }
 
-        operator uint16_t() const { return concurrency_level; }
+    operator uint16_t() const {
+      return concurrency_level;
+    }
 
-      private:
-        uint16_t concurrency_level;
-      };
+  private:
+    uint16_t concurrency_level;
+  };
 
-    public:
-      virtual void schedule( Stage& stage )
-      {
-        return schedule( stage, ConcurrencyLevel::DEFAULT );
-      }
-
-      virtual void schedule( Stage&, ConcurrencyLevel ) = 0;
-    };
+public:
+  virtual void schedule( Stage& stage ) {
+    return schedule( stage, ConcurrencyLevel::DEFAULT );
   }
+
+  virtual void schedule( Stage&, ConcurrencyLevel ) = 0;
+};
+}
 }
 
 

@@ -37,33 +37,29 @@
 #include <port.h>
 
 
-namespace yield
-{
-  namespace poll
-  {
-    namespace sunos
-    {
-      class EventPort : public FDEventQueue
-      {
-      public:
-        ~EventPort();
-        static EventPort* create();
+namespace yield {
+namespace poll {
+namespace sunos {
+class EventPort : public FDEventQueue {
+public:
+  ~EventPort();
+  static EventPort* create();
 
-        // FDEventQueue
-        bool associate( fd_t fd, uint16_t events );
-        int16_t dequeue( FDEvent* fd_events, int16_t fd_events_len, const Time& timeout );
-        bool dissociate( fd_t fd );
-        void wake();
+  // FDEventQueue
+  bool associate( fd_t fd, uint16_t events );
+  int16_t dequeue( FDEvent* fd_events, int16_t fd_events_len, const Time& timeout );
+  bool dissociate( fd_t fd );
+  void wake();
 
-      private:
-        EventPort( int port );
+private:
+  EventPort( int port );
 
-      private:
-        int port;
-        vector<port_event_t> port_events;
-      };
-    }
-  }
+private:
+  int port;
+  vector<port_event_t> port_events;
+};
+}
+}
 }
 
 

@@ -33,25 +33,18 @@
 #include "yield/fs/file.hpp"
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace fs
-    {
-      fsyncAIOCB::RetryStatus fsyncAIOCB::retry()
-      {
-        if ( get_file().sync() )
-        {
-          set_return( 0 );
-          return RETRY_STATUS_COMPLETE;
-        }
-        else
-        {
-          set_error( Exception::get_last_error_code() );
-          return RETRY_STATUS_ERROR;
-        }
-      }
-    }
+namespace yield {
+namespace aio {
+namespace fs {
+fsyncAIOCB::RetryStatus fsyncAIOCB::retry() {
+  if ( get_file().sync() ) {
+    set_return( 0 );
+    return RETRY_STATUS_COMPLETE;
+  } else {
+    set_error( Exception::get_last_error_code() );
+    return RETRY_STATUS_ERROR;
   }
+}
+}
+}
 }

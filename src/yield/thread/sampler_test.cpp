@@ -35,77 +35,69 @@
 
 TEST_SUITE( Sampler )
 
-namespace yield
-{
-  namespace thread
-  {
-    TEST( Sampler, all_zeros )
-    {
-      Sampler<uint32_t, 10> sampler;
-      for ( unsigned char i = 0; i < 10; i++ )
-        sampler.set_next_sample( 0 );
-      throw_assert_eq( sampler.get_samples_count(), 10 );
-      throw_assert_eq( sampler.get_min(), 0 );
-      throw_assert_eq( sampler.get_max(), 0 );
-      throw_assert_eq( sampler.get_mean(), 0 );
-      throw_assert_eq( sampler.get_median(), 0 );
-      throw_assert_eq( sampler.get_percentile( 0.9 ), 0 );
-    }
+namespace yield {
+namespace thread {
+TEST( Sampler, all_zeros ) {
+  Sampler<uint32_t, 10> sampler;
+  for ( unsigned char i = 0; i < 10; i++ )
+    sampler.set_next_sample( 0 );
+  throw_assert_eq( sampler.get_samples_count(), 10 );
+  throw_assert_eq( sampler.get_min(), 0 );
+  throw_assert_eq( sampler.get_max(), 0 );
+  throw_assert_eq( sampler.get_mean(), 0 );
+  throw_assert_eq( sampler.get_median(), 0 );
+  throw_assert_eq( sampler.get_percentile( 0.9 ), 0 );
+}
 
-    TEST( Sampler, averaged_median )
-    {
-      Sampler<uint32_t, 10> sampler;
-      for ( unsigned char i = 0; i < 10; i++ )
-        sampler.set_next_sample( i );
-      throw_assert_eq( sampler.get_samples_count(), 10 );
-      throw_assert_eq( sampler.get_min(), 0 );
-      throw_assert_eq( sampler.get_max(), 9 );
-      throw_assert_eq( sampler.get_mean(), 4 );
-      throw_assert_eq( sampler.get_median(), 4 );
-      throw_assert_eq( sampler.get_percentile( 0.9 ), 9 );
-    }
+TEST( Sampler, averaged_median ) {
+  Sampler<uint32_t, 10> sampler;
+  for ( unsigned char i = 0; i < 10; i++ )
+    sampler.set_next_sample( i );
+  throw_assert_eq( sampler.get_samples_count(), 10 );
+  throw_assert_eq( sampler.get_min(), 0 );
+  throw_assert_eq( sampler.get_max(), 9 );
+  throw_assert_eq( sampler.get_mean(), 4 );
+  throw_assert_eq( sampler.get_median(), 4 );
+  throw_assert_eq( sampler.get_percentile( 0.9 ), 9 );
+}
 
-    TEST( Sampler, no_samples )
-    {
-      Sampler<uint32_t, 10> sampler;
-      throw_assert_eq( sampler.get_samples_count(), 0 );
-      throw_assert_eq( sampler.get_max(), 0 );
-      throw_assert_eq( sampler.get_mean(), 0 );
-      throw_assert_eq( sampler.get_median(), 0 );
-      throw_assert_eq( sampler.get_percentile( 0.9 ), 0 );
-    }
+TEST( Sampler, no_samples ) {
+  Sampler<uint32_t, 10> sampler;
+  throw_assert_eq( sampler.get_samples_count(), 0 );
+  throw_assert_eq( sampler.get_max(), 0 );
+  throw_assert_eq( sampler.get_mean(), 0 );
+  throw_assert_eq( sampler.get_median(), 0 );
+  throw_assert_eq( sampler.get_percentile( 0.9 ), 0 );
+}
 
-    TEST( Sampler, one_sample )
-    {
-      Sampler<uint32_t, 10> sampler;
-      sampler.set_next_sample( 42 );
-      throw_assert_eq( sampler.get_samples_count(), 1 );
-      throw_assert_eq( sampler.get_min(), 42 );
-      throw_assert_eq( sampler.get_max(), 42 );
-      throw_assert_eq( sampler.get_mean(), 42 );
-      throw_assert_eq( sampler.get_median(), 42 );
-      throw_assert_eq( sampler.get_percentile( 0.9 ), 42 );
-    }
+TEST( Sampler, one_sample ) {
+  Sampler<uint32_t, 10> sampler;
+  sampler.set_next_sample( 42 );
+  throw_assert_eq( sampler.get_samples_count(), 1 );
+  throw_assert_eq( sampler.get_min(), 42 );
+  throw_assert_eq( sampler.get_max(), 42 );
+  throw_assert_eq( sampler.get_mean(), 42 );
+  throw_assert_eq( sampler.get_median(), 42 );
+  throw_assert_eq( sampler.get_percentile( 0.9 ), 42 );
+}
 
-    TEST( Sampler, single_median )
-    {
-      Sampler<double, 9> sampler;
-      for ( unsigned char i = 0; i < 9; i++ )
-        sampler.set_next_sample( i );
-      throw_assert_eq( sampler.get_samples_count(), 9 );
-      throw_assert_eq( sampler.get_min(), 0 );
-      throw_assert_eq( sampler.get_max(), 8 );
-      throw_assert_eq( sampler.get_mean(), 4 );
-      throw_assert_eq( sampler.get_median(), 4 );
-      throw_assert_eq( sampler.get_percentile( 0.9 ), 8 );
-    }
+TEST( Sampler, single_median ) {
+  Sampler<double, 9> sampler;
+  for ( unsigned char i = 0; i < 9; i++ )
+    sampler.set_next_sample( i );
+  throw_assert_eq( sampler.get_samples_count(), 9 );
+  throw_assert_eq( sampler.get_min(), 0 );
+  throw_assert_eq( sampler.get_max(), 8 );
+  throw_assert_eq( sampler.get_mean(), 4 );
+  throw_assert_eq( sampler.get_median(), 4 );
+  throw_assert_eq( sampler.get_percentile( 0.9 ), 8 );
+}
 
-    TEST( Sampler, too_many_samples )
-    {
-      Sampler<uint32_t, 10> sampler;
-      for ( unsigned char i = 0; i < 15; i++ )
-        sampler.set_next_sample( i );
-      throw_assert_eq( sampler.get_samples_count(), 10 );
-    }
-  }
+TEST( Sampler, too_many_samples ) {
+  Sampler<uint32_t, 10> sampler;
+  for ( unsigned char i = 0; i < 15; i++ )
+    sampler.set_next_sample( i );
+  throw_assert_eq( sampler.get_samples_count(), 10 );
+}
+}
 }

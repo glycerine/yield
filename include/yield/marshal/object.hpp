@@ -35,27 +35,28 @@
 #include "yield/object.hpp"
 
 
-namespace yield
-{
-  namespace marshal
-  {
-    class Marshaller;
-    class Unmarshaller;
+namespace yield {
+namespace marshal {
+class Marshaller;
+class Unmarshaller;
 
 
-    class Object : public yield::Object
-    {
-    public:
-      virtual void marshal( Marshaller& ) const { }
-      virtual void unmarshal( Unmarshaller& ) { }
+class Object : public yield::Object {
+public:
+  virtual void marshal( Marshaller& ) const { }
+  virtual void unmarshal( Unmarshaller& ) { }
 
-      // yield::Object
-      virtual uint32_t get_type_id() const = 0;
-      virtual const char* get_type_name() const = 0;
-      Object& inc_ref() { return yield::Object::inc_ref( *this ); }
-      virtual bool operator==( const Object& ) const { return false; }
-    };
+  // yield::Object
+  virtual uint32_t get_type_id() const = 0;
+  virtual const char* get_type_name() const = 0;
+  Object& inc_ref() {
+    return yield::Object::inc_ref( *this );
   }
+  virtual bool operator==( const Object& ) const {
+    return false;
+  }
+};
+}
 }
 
 

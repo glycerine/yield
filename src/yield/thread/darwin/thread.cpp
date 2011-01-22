@@ -31,29 +31,24 @@
 #include "thread.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace darwin
-    {
-      Thread::Thread( Runnable& runnable )
-        : yield::thread::posix::Thread( runnable )
-      { }
+namespace yield {
+namespace thread {
+namespace darwin {
+Thread::Thread( Runnable& runnable )
+  : yield::thread::posix::Thread( runnable )
+{ }
 
-      Thread::Thread( pthread_t pthread )
-        : yield::thread::posix::Thread( handle )
-      { }
+Thread::Thread( pthread_t pthread )
+  : yield::thread::posix::Thread( handle )
+{ }
 
-      Thread* Thread::self()
-      {
-        return new Thread( pthread_self() );
-      }
+Thread* Thread::self() {
+  return new Thread( pthread_self() );
+}
 
-      void Thread::yield()
-      {
-        pthread_YIELD_np();
-      }
-    }
-  }
+void Thread::yield() {
+  pthread_YIELD_np();
+}
+}
+}
 }

@@ -36,172 +36,161 @@
 
 
 
-namespace yield
-{
-  namespace fs
-  {
-    namespace win32
-    {
-      class StatBY_HANDLE_FILE_INFORMATIONTest : public StatTest
-      {
-      public:
-        StatBY_HANDLE_FILE_INFORMATIONTest( yield::fs::Volume& volume )
-          : StatTest( volume )
-        { }
+namespace yield {
+namespace fs {
+namespace win32 {
+class StatBY_HANDLE_FILE_INFORMATIONTest : public StatTest {
+public:
+  StatBY_HANDLE_FILE_INFORMATIONTest( yield::fs::Volume& volume )
+    : StatTest( volume )
+  { }
 
-        virtual void run()
-        {
-          auto_Object<Stat> stbuf1
-            = static_cast<Stat*>( get_volume().stat( get_test_file_name() ) );
+  virtual void run() {
+    auto_Object<Stat> stbuf1
+    = static_cast<Stat*>( get_volume().stat( get_test_file_name() ) );
 
-          BY_HANDLE_FILE_INFORMATION bhfi = *stbuf1;
+    BY_HANDLE_FILE_INFORMATION bhfi = *stbuf1;
 
-          throw_assert_ne( bhfi.dwFileAttributes, 0 );
+    throw_assert_ne( bhfi.dwFileAttributes, 0 );
 
-          throw_assert_ne( DateTime( bhfi.ftCreationTime ), 0 );
+    throw_assert_ne( DateTime( bhfi.ftCreationTime ), 0 );
 
-          throw_assert_ge
-          (
-            DateTime( bhfi.ftLastAccessTime ),
-            DateTime( bhfi.ftCreationTime )
-          );
+    throw_assert_ge
+    (
+      DateTime( bhfi.ftLastAccessTime ),
+      DateTime( bhfi.ftCreationTime )
+    );
 
-          throw_assert_ge
-          (
-            DateTime( bhfi.ftLastWriteTime ),
-            DateTime( bhfi.ftCreationTime )
-          );
+    throw_assert_ge
+    (
+      DateTime( bhfi.ftLastWriteTime ),
+      DateTime( bhfi.ftCreationTime )
+    );
 
-          throw_assert_eq( bhfi.nFileSizeLow, 0 );
-          throw_assert_eq( bhfi.nFileSizeHigh, 0 );
+    throw_assert_eq( bhfi.nFileSizeLow, 0 );
+    throw_assert_eq( bhfi.nFileSizeHigh, 0 );
 
-          throw_assert_eq( bhfi.nNumberOfLinks, 1 );
+    throw_assert_eq( bhfi.nNumberOfLinks, 1 );
 
-          throw_assert_eq( bhfi.nFileIndexLow, 0 );
-          throw_assert_eq( bhfi.nFileIndexHigh, 0 );
+    throw_assert_eq( bhfi.nFileIndexLow, 0 );
+    throw_assert_eq( bhfi.nFileIndexHigh, 0 );
 
-          Stat stbuf2( bhfi );
-          throw_assert_eq( stbuf2, *stbuf1 );
+    Stat stbuf2( bhfi );
+    throw_assert_eq( stbuf2, *stbuf1 );
 
-          stbuf2 = bhfi;
-          throw_assert_eq( stbuf2, *stbuf1 );
-        }
-      };
-
-
-      class StatWIN32_FILE_ATTRIBUTE_DATATest : public StatTest
-      {
-      public:
-        StatWIN32_FILE_ATTRIBUTE_DATATest( yield::fs::Volume& volume )
-          : StatTest( volume )
-        { }
-
-        virtual void run()
-        {
-          auto_Object<Stat> stbuf1
-            = static_cast<Stat*>( get_volume().stat( get_test_file_name() ) );
-
-          WIN32_FILE_ATTRIBUTE_DATA fad = *stbuf1;
-
-          throw_assert_ne( fad.dwFileAttributes, 0 );
-
-          throw_assert_ne( DateTime( fad.ftCreationTime ), 0 );
-
-          throw_assert_ge
-          (
-            DateTime( fad.ftLastAccessTime ),
-            DateTime( fad.ftCreationTime )
-          );
-
-          throw_assert_ge
-          (
-            DateTime( fad.ftLastWriteTime ),
-            DateTime( fad.ftCreationTime )
-          );
-
-          throw_assert_eq( fad.nFileSizeLow, 0 );
-          throw_assert_eq( fad.nFileSizeHigh, 0 );
-
-          Stat stbuf2( fad );
-          throw_assert_eq( stbuf2, *stbuf1 );
-
-          stbuf2 = fad;
-          throw_assert_eq( stbuf2, *stbuf1 );
-        }
-      };
-
-
-      class StatWIN32_FIND_DATATest : public StatTest
-      {
-      public:
-        StatWIN32_FIND_DATATest( yield::fs::Volume& volume )
-          : StatTest( volume )
-        { }
-
-        virtual void run()
-        {
-          auto_Object<Stat> stbuf1
-            = static_cast<Stat*>( get_volume().stat( get_test_file_name() ) );
-
-          WIN32_FIND_DATA fd = *stbuf1;
-
-          throw_assert_ne( fd.dwFileAttributes, 0 );
-
-          throw_assert_ne( DateTime( fd.ftCreationTime ), 0 );
-
-          throw_assert_ge
-          (
-            DateTime( fd.ftLastAccessTime ),
-            DateTime( fd.ftCreationTime )
-          );
-
-          throw_assert_ge
-          (
-            DateTime( fd.ftLastWriteTime ),
-            DateTime( fd.ftCreationTime )
-          );
-
-          throw_assert_eq( fd.nFileSizeLow, 0 );
-          throw_assert_eq( fd.nFileSizeHigh, 0 );
-
-          throw_assert_eq( fd.cFileName[0], 0 );
-          throw_assert_eq( fd.cAlternateFileName[0], 0 );
-
-          Stat stbuf2( fd );
-          throw_assert_eq( stbuf2, *stbuf1 );
-
-          stbuf2 = fd;
-          throw_assert_eq( stbuf2, *stbuf1 );
-        }
-      };
-
-
-      class StatTestSuite : public yield::fs::StatTestSuite<Volume>
-      {
-      public:
-        StatTestSuite()
-        {
-          add
-          (
-            "Stat+BY_HANDLE_FILE_INFORMATION()",
-            new StatBY_HANDLE_FILE_INFORMATIONTest( get_volume() )
-          );
-
-          add
-          (
-            "Stat+WIN32_FILE_ATTRIBUTE_DATA",
-            new StatWIN32_FILE_ATTRIBUTE_DATATest( get_volume() )
-          );
-
-          add
-          (
-            "Stat+WIN32_FIND_DATA",
-            new StatWIN32_FIND_DATATest( get_volume() )
-          );
-        }
-      };
-    }
+    stbuf2 = bhfi;
+    throw_assert_eq( stbuf2, *stbuf1 );
   }
+};
+
+
+class StatWIN32_FILE_ATTRIBUTE_DATATest : public StatTest {
+public:
+  StatWIN32_FILE_ATTRIBUTE_DATATest( yield::fs::Volume& volume )
+    : StatTest( volume )
+  { }
+
+  virtual void run() {
+    auto_Object<Stat> stbuf1
+    = static_cast<Stat*>( get_volume().stat( get_test_file_name() ) );
+
+    WIN32_FILE_ATTRIBUTE_DATA fad = *stbuf1;
+
+    throw_assert_ne( fad.dwFileAttributes, 0 );
+
+    throw_assert_ne( DateTime( fad.ftCreationTime ), 0 );
+
+    throw_assert_ge
+    (
+      DateTime( fad.ftLastAccessTime ),
+      DateTime( fad.ftCreationTime )
+    );
+
+    throw_assert_ge
+    (
+      DateTime( fad.ftLastWriteTime ),
+      DateTime( fad.ftCreationTime )
+    );
+
+    throw_assert_eq( fad.nFileSizeLow, 0 );
+    throw_assert_eq( fad.nFileSizeHigh, 0 );
+
+    Stat stbuf2( fad );
+    throw_assert_eq( stbuf2, *stbuf1 );
+
+    stbuf2 = fad;
+    throw_assert_eq( stbuf2, *stbuf1 );
+  }
+};
+
+
+class StatWIN32_FIND_DATATest : public StatTest {
+public:
+  StatWIN32_FIND_DATATest( yield::fs::Volume& volume )
+    : StatTest( volume )
+  { }
+
+  virtual void run() {
+    auto_Object<Stat> stbuf1
+    = static_cast<Stat*>( get_volume().stat( get_test_file_name() ) );
+
+    WIN32_FIND_DATA fd = *stbuf1;
+
+    throw_assert_ne( fd.dwFileAttributes, 0 );
+
+    throw_assert_ne( DateTime( fd.ftCreationTime ), 0 );
+
+    throw_assert_ge
+    (
+      DateTime( fd.ftLastAccessTime ),
+      DateTime( fd.ftCreationTime )
+    );
+
+    throw_assert_ge
+    (
+      DateTime( fd.ftLastWriteTime ),
+      DateTime( fd.ftCreationTime )
+    );
+
+    throw_assert_eq( fd.nFileSizeLow, 0 );
+    throw_assert_eq( fd.nFileSizeHigh, 0 );
+
+    throw_assert_eq( fd.cFileName[0], 0 );
+    throw_assert_eq( fd.cAlternateFileName[0], 0 );
+
+    Stat stbuf2( fd );
+    throw_assert_eq( stbuf2, *stbuf1 );
+
+    stbuf2 = fd;
+    throw_assert_eq( stbuf2, *stbuf1 );
+  }
+};
+
+
+class StatTestSuite : public yield::fs::StatTestSuite<Volume> {
+public:
+  StatTestSuite() {
+    add
+    (
+      "Stat+BY_HANDLE_FILE_INFORMATION()",
+      new StatBY_HANDLE_FILE_INFORMATIONTest( get_volume() )
+    );
+
+    add
+    (
+      "Stat+WIN32_FILE_ATTRIBUTE_DATA",
+      new StatWIN32_FILE_ATTRIBUTE_DATATest( get_volume() )
+    );
+
+    add
+    (
+      "Stat+WIN32_FIND_DATA",
+      new StatWIN32_FIND_DATATest( get_volume() )
+    );
+  }
+};
+}
+}
 }
 
 TEST_SUITE_EX( Win32Stat, yield::fs::win32::StatTestSuite );

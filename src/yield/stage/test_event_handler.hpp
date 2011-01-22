@@ -36,31 +36,28 @@
 #include "yield/event_handler.hpp"
 
 
-namespace yield
-{
-  namespace stage
-  {
-    class TestEventHandler : public EventHandler
-    {
-    public:
-      TestEventHandler()
-      {
-        seen_events_count = 0;
-      }
-
-      uint8_t get_seen_events_count() const { return seen_events_count; }
-
-      // EventHandler
-      void handle( Event& event )
-      {
-        seen_events_count++;
-        Event::dec_ref( event );
-      }
-
-    private:
-      uint8_t seen_events_count;
-    };
+namespace yield {
+namespace stage {
+class TestEventHandler : public EventHandler {
+public:
+  TestEventHandler() {
+    seen_events_count = 0;
   }
+
+  uint8_t get_seen_events_count() const {
+    return seen_events_count;
+  }
+
+  // EventHandler
+  void handle( Event& event ) {
+    seen_events_count++;
+    Event::dec_ref( event );
+  }
+
+private:
+  uint8_t seen_events_count;
+};
+}
 }
 
 

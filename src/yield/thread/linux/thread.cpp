@@ -35,56 +35,47 @@
 #include <sys/syscall.h>
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace linux
-    {
-      Thread::Thread( Runnable& runnable )
-        : yield::thread::posix::Thread( runnable )
-      {
-        tid = 0;
-      }
+namespace yield {
+namespace thread {
+namespace linux {
+Thread::Thread( Runnable& runnable )
+  : yield::thread::posix::Thread( runnable ) {
+  tid = 0;
+}
 
-      Thread::Thread( pthread_t pthread, pid_t tid )
-        : yield::thread::posix::Thread( pthread ),
-          tid( tid )
-      { }
+Thread::Thread( pthread_t pthread, pid_t tid )
+  : yield::thread::posix::Thread( pthread ),
+    tid( tid )
+{ }
 
-      void* Thread::run()
-      {
-        tid = syscall( SYS_gettid );
-        return yield::thread::posix::Thread::run();
-      }
+void* Thread::run() {
+  tid = syscall( SYS_gettid );
+  return yield::thread::posix::Thread::run();
+}
 
-      Thread* Thread::self()
-      {
-        return new Thread( pthread_self(), syscall( SYS_gettid ) );
-      }
+Thread* Thread::self() {
+  return new Thread( pthread_self(), syscall( SYS_gettid ) );
+}
 
-      bool Thread::setaffinity( uint16_t logical_processor_i )
-      {
-        cpu_set_t cpu_set;
-        CPU_ZERO( &cpu_set );
-        CPU_SET( logical_processor_i, &cpu_set );
-        return sched_setaffinity( tid, sizeof( cpu_set ), &cpu_set ) == 0;
-      }
+bool Thread::setaffinity( uint16_t logical_processor_i ) {
+  cpu_set_t cpu_set;
+  CPU_ZERO( &cpu_set );
+  CPU_SET( logical_processor_i, &cpu_set );
+  return sched_setaffinity( tid, sizeof( cpu_set ), &cpu_set ) == 0;
+}
 
-      bool Thread::setaffinity( const ProcessorSet& logical_processor_set )
-      {
-        return sched_setaffinity
-               (
-                 tid,
-                 sizeof( cpu_set_t ),
-                 logical_processor_set
-               ) == 0;
-      }
+bool Thread::setaffinity( const ProcessorSet& logical_processor_set ) {
+  return sched_setaffinity
+         (
+           tid,
+           sizeof( cpu_set_t ),
+           logical_processor_set
+         ) == 0;
+}
 
-      void Thread::yield()
-      {
-        pthread_yield();
-      }
-    }
-  }
+void Thread::yield() {
+  pthread_yield();
+}
+}
+}
 }

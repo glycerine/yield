@@ -34,90 +34,72 @@
 
 TEST_SUITE( FixedBuffer );
 
-namespace yield
-{
-  TEST_EX( FixedBuffer, copy, BufferCopyTest< FixedBuffer<512> > )
-  {
-    BufferCopyTest< FixedBuffer<512> >::run();
-  }
+namespace yield {
+TEST_EX( FixedBuffer, copy, BufferCopyTest< FixedBuffer<512> > ) {
+  BufferCopyTest< FixedBuffer<512> >::run();
+}
 
-  TEST_EX( FixedBuffer, data, BufferDataTest< FixedBuffer<512> > )
-  {
-    BufferDataTest< FixedBuffer<512> >::run();
-  }
+TEST_EX( FixedBuffer, data, BufferDataTest< FixedBuffer<512> > ) {
+  BufferDataTest< FixedBuffer<512> >::run();
+}
 
-  TEST_EX( FixedBuffer, empty, BufferEmptyTest< FixedBuffer<512> > )
-  {
-    BufferEmptyTest< FixedBuffer<512> >::run();
-  }
+TEST_EX( FixedBuffer, empty, BufferEmptyTest< FixedBuffer<512> > ) {
+  BufferEmptyTest< FixedBuffer<512> >::run();
+}
 
-  TEST_EX( FixedBuffer, get_next_buffer, BufferGetNextBufferTest< FixedBuffer<512> > )
-  {
-    BufferGetNextBufferTest< FixedBuffer<512> >::run();
-  }
+TEST_EX( FixedBuffer, get_next_buffer, BufferGetNextBufferTest< FixedBuffer<512> > ) {
+  BufferGetNextBufferTest< FixedBuffer<512> >::run();
+}
 
-  TEST_EX( FixedBuffer, init_c_string, BufferInitCStringTest< FixedBuffer<512> > )
-  {
-    BufferInitCStringTest< FixedBuffer<512> >::run();
-  }
+TEST_EX( FixedBuffer, init_c_string, BufferInitCStringTest< FixedBuffer<512> > ) {
+  BufferInitCStringTest< FixedBuffer<512> >::run();
+}
 
-  TEST_EX( FixedBuffer, init_string, BufferInitStringTest< FixedBuffer<512> > )
-  {
-    BufferInitStringTest< FixedBuffer<512> >::run();
-  }
+TEST_EX( FixedBuffer, init_string, BufferInitStringTest< FixedBuffer<512> > ) {
+  BufferInitStringTest< FixedBuffer<512> >::run();
+}
 
-  TEST_EX( FixedBuffer, operator_array, BufferOperatorArrayTest< FixedBuffer<512> > )
-  {
-    BufferOperatorArrayTest< FixedBuffer<512> >::run();
-  }
+TEST_EX( FixedBuffer, operator_array, BufferOperatorArrayTest< FixedBuffer<512> > ) {
+  BufferOperatorArrayTest< FixedBuffer<512> >::run();
+}
 
-  TEST_EX( FixedBuffer, operator_cast, BufferOperatorCastTest< FixedBuffer<512> > )
-  {
-    BufferOperatorCastTest< FixedBuffer<512> >::run();
-  }
+TEST_EX( FixedBuffer, operator_cast, BufferOperatorCastTest< FixedBuffer<512> > ) {
+  BufferOperatorCastTest< FixedBuffer<512> >::run();
+}
 
-  TEST_EX( FixedBuffer, operator_equals, BufferOperatorEqualsTest< FixedBuffer<512> > )
-  {
-    BufferOperatorEqualsTest< FixedBuffer<512> >::run();
-  }
+TEST_EX( FixedBuffer, operator_equals, BufferOperatorEqualsTest< FixedBuffer<512> > ) {
+  BufferOperatorEqualsTest< FixedBuffer<512> >::run();
+}
 
-  TEST_EX( FixedBuffer, put_buffer, BufferPutBufferTest< FixedBuffer<512> > )
-  {
-    BufferPutBufferTest< FixedBuffer<512> >::run();
-  }
+TEST_EX( FixedBuffer, put_buffer, BufferPutBufferTest< FixedBuffer<512> > ) {
+  BufferPutBufferTest< FixedBuffer<512> >::run();
+}
 
-  TEST_EX( FixedBuffer, put_char, BufferPutCharTest< FixedBuffer<512> > )
-  {
-    BufferPutCharTest< FixedBuffer<512> >::run();
-  }
+TEST_EX( FixedBuffer, put_char, BufferPutCharTest< FixedBuffer<512> > ) {
+  BufferPutCharTest< FixedBuffer<512> >::run();
+}
 
-  TEST_EX( FixedBuffer, put_c_string, BufferPutCStringTest< FixedBuffer<512> > )
-  {
-    BufferPutCStringTest< FixedBuffer<512> >::run();
-  }
+TEST_EX( FixedBuffer, put_c_string, BufferPutCStringTest< FixedBuffer<512> > ) {
+  BufferPutCStringTest< FixedBuffer<512> >::run();
+}
 
-  TEST_EX( FixedBuffer, put_c_string_size, BufferPutCStringSizeTest< FixedBuffer<512> > )
-  {
-    BufferPutCStringSizeTest< FixedBuffer<512> >::run();
-  }
+TEST_EX( FixedBuffer, put_c_string_size, BufferPutCStringSizeTest< FixedBuffer<512> > ) {
+  BufferPutCStringSizeTest< FixedBuffer<512> >::run();
+}
 
-  TEST_EX( FixedBuffer, put_iovec, BufferPutIOVecTest< FixedBuffer<512> > )
-  {
-    BufferPutIOVecTest< FixedBuffer<512> >::run();
-  }
+TEST_EX( FixedBuffer, put_iovec, BufferPutIOVecTest< FixedBuffer<512> > ) {
+  BufferPutIOVecTest< FixedBuffer<512> >::run();
+}
 
-  TEST_EX( FixedBuffer, put_string, BufferPutStringTest< FixedBuffer<512> > )
-  {
-    BufferPutStringTest< FixedBuffer<512> >::run();
-  }
+TEST_EX( FixedBuffer, put_string, BufferPutStringTest< FixedBuffer<512> > ) {
+  BufferPutStringTest< FixedBuffer<512> >::run();
+}
 
-  TEST_EX( FixedBuffer, set_next_buffer, BufferSetNextBufferTest< FixedBuffer<512> > )
-  {
-    BufferSetNextBufferTest< FixedBuffer<512> >::run();
-  }
+TEST_EX( FixedBuffer, set_next_buffer, BufferSetNextBufferTest< FixedBuffer<512> > ) {
+  BufferSetNextBufferTest< FixedBuffer<512> >::run();
+}
 
-  TEST_EX( FixedBuffer, size, BufferSizeTest< FixedBuffer<512> > )
-  {
-    BufferSizeTest< FixedBuffer<512> >::run();
-  }
+TEST_EX( FixedBuffer, size, BufferSizeTest< FixedBuffer<512> > ) {
+  BufferSizeTest< FixedBuffer<512> >::run();
+}
 }

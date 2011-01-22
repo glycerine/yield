@@ -35,17 +35,15 @@
 #include "yield/object.hpp"
 
 
-namespace yield
-{
-  class Channel;
+namespace yield {
+class Channel;
 
 
-  class ChannelPair : public Object
-  {
-  public:
-    virtual Channel& get_read_channel() = 0;
-    virtual Channel& get_write_channel() = 0;
-  };
+class ChannelPair : public Object {
+public:
+  virtual Channel& get_read_channel() = 0;
+  virtual Channel& get_write_channel() = 0;
+};
 }
 
 

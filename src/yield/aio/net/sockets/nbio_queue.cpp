@@ -40,119 +40,99 @@
 #include "yield/poll/socket_event.hpp"
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace net
-    {
-      namespace sockets
-      {
-        using std::map;
-        using yield::poll::SocketEvent;
-        using yield::net::sockets::SocketAddress;
-        using yield::net::sockets::StreamSocket;
+namespace yield {
+namespace aio {
+namespace net {
+namespace sockets {
+using std::map;
+using yield::poll::SocketEvent;
+using yield::net::sockets::SocketAddress;
+using yield::net::sockets::StreamSocket;
 
 
-        Event* NBIOQueue::dequeue( const Time& timeout )
-        {
-          Event* event = socket_event_queue.dequeue( timeout );
+Event* NBIOQueue::dequeue( const Time& timeout ) {
+  Event* event = socket_event_queue.dequeue( timeout );
 
-          if ( event != NULL )
-          {
-            switch ( event->get_type_id() )
-            {
-              case SocketEvent::TYPE_ID:
-              {
-                SocketEvent* socket_event = static_cast<SocketEvent*>( event );
+  if ( event != NULL ) {
+    switch ( event->get_type_id() ) {
+    case SocketEvent::TYPE_ID: {
+      SocketEvent* socket_event = static_cast<SocketEvent*>( event );
 
-                map<socket_t, AIOCB*>::iterator aiocb_i
-                  = issued_aiocbs.find( socket_event->get_socket() );
-                debug_assert_ne( aiocb_i, issued_aiocbs.end() );
+      map<socket_t, AIOCB*>::iterator aiocb_i
+      = issued_aiocbs.find( socket_event->get_socket() );
+      debug_assert_ne( aiocb_i, issued_aiocbs.end() );
 
-                SocketEvent::dec_ref( *socket_event );
+      SocketEvent::dec_ref( *socket_event );
 
-                AIOCB* aiocb = aiocb_i->second;
+      AIOCB* aiocb = aiocb_i->second;
 
-                if ( aiocb->get_channel().set_blocking_mode( false ) )
-                {
-                  switch ( aiocb->retry() )
-                  {
-                    case AIOCB::RETRY_STATUS_WANT_READ:
-                    case AIOCB::RETRY_STATUS_WANT_WRITE:
-                    {
-                      DebugBreak();
-                      return NULL;
-                    }
-                  }
-                }
-                else
-                  aiocb->set_error( Exception::get_last_error_code() );
-
-                if ( aiocb->get_next_aiocb() != NULL )
-                  aiocb_i->second = aiocb->get_next_aiocb();
-                else
-                  issued_aiocbs.erase( aiocb_i );
-
-                return aiocb;
-              }
-              break;
-
-              case acceptAIOCB::TYPE_ID:
-              case connectAIOCB::TYPE_ID:
-              case recvAIOCB::TYPE_ID:
-              case sendAIOCB::TYPE_ID:
-              {
-                AIOCB* aiocb = static_cast<AIOCB*>( event );
-
-                if ( aiocb->get_socket().set_blocking_mode( false ) )
-                {
-                  switch ( aiocb->retry() )
-                  {
-                    case AIOCB::RETRY_STATUS_COMPLETE:
-                    case AIOCB::RETRY_STATUS_ERROR: return aiocb;
-
-                    default:
-                    {
-                      DebugBreak();
-
-                      map<socket_t, AIOCB*>::iterator aiocb_i
-                        = issued_aiocbs.find( aiocb->get_socket() );
-
-                      if ( aiocb_i != issued_aiocbs.end() )
-                      {
-                        AIOCB* aiocb = aiocb_i->second;
-                        while ( aiocb->get_next_aiocb() != NULL )
-                          aiocb = aiocb->get_next_aiocb();
-                        aiocb->set_next_aiocb( aiocb );
-                      }
-                      else
-                        issued_aiocbs[aiocb->get_socket()] = aiocb;
-
-                      return NULL;
-                    }
-                  }
-                }
-                else
-                {
-                  aiocb->set_error( Exception::get_last_error_code() );
-                  return aiocb;
-                }
-              }
-              break;
-
-              default: return event;
-            }
-          }
-          else
-            return NULL;
+      if ( aiocb->get_channel().set_blocking_mode( false ) ) {
+        switch ( aiocb->retry() ) {
+        case AIOCB::RETRY_STATUS_WANT_READ:
+        case AIOCB::RETRY_STATUS_WANT_WRITE: {
+          DebugBreak();
+          return NULL;
         }
-
-        bool NBIOQueue::enqueue( Event& event )
-        {
-          return socket_event_queue.enqueue( event );
         }
+      } else
+        aiocb->set_error( Exception::get_last_error_code() );
+
+      if ( aiocb->get_next_aiocb() != NULL )
+        aiocb_i->second = aiocb->get_next_aiocb();
+      else
+        issued_aiocbs.erase( aiocb_i );
+
+      return aiocb;
+    }
+    break;
+
+    case acceptAIOCB::TYPE_ID:
+    case connectAIOCB::TYPE_ID:
+    case recvAIOCB::TYPE_ID:
+    case sendAIOCB::TYPE_ID: {
+      AIOCB* aiocb = static_cast<AIOCB*>( event );
+
+      if ( aiocb->get_socket().set_blocking_mode( false ) ) {
+        switch ( aiocb->retry() ) {
+        case AIOCB::RETRY_STATUS_COMPLETE:
+        case AIOCB::RETRY_STATUS_ERROR:
+          return aiocb;
+
+        default: {
+          DebugBreak();
+
+          map<socket_t, AIOCB*>::iterator aiocb_i
+          = issued_aiocbs.find( aiocb->get_socket() );
+
+          if ( aiocb_i != issued_aiocbs.end() ) {
+            AIOCB* aiocb = aiocb_i->second;
+            while ( aiocb->get_next_aiocb() != NULL )
+              aiocb = aiocb->get_next_aiocb();
+            aiocb->set_next_aiocb( aiocb );
+          } else
+            issued_aiocbs[aiocb->get_socket()] = aiocb;
+
+          return NULL;
+        }
+        }
+      } else {
+        aiocb->set_error( Exception::get_last_error_code() );
+        return aiocb;
       }
     }
-  }
+    break;
+
+    default:
+      return event;
+    }
+  } else
+    return NULL;
+}
+
+bool NBIOQueue::enqueue( Event& event ) {
+  return socket_event_queue.enqueue( event );
+}
+}
+}
+}
 }

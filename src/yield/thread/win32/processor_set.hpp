@@ -35,28 +35,26 @@
 #include "yield/types.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace win32
-    {
-      class ProcessorSet
-      {
-      public:
-        ProcessorSet();
+namespace yield {
+namespace thread {
+namespace win32 {
+class ProcessorSet {
+public:
+  ProcessorSet();
 
-        void clear();
-        void clear( uint16_t processor_i );
-        bool isset( uint16_t processor_i ) const;
-        operator uintptr_t() const { return mask; }
-        bool set( uint16_t processor_i );
-
-      private:
-        uintptr_t mask;
-      };
-    }
+  void clear();
+  void clear( uint16_t processor_i );
+  bool isset( uint16_t processor_i ) const;
+  operator uintptr_t() const {
+    return mask;
   }
+  bool set( uint16_t processor_i );
+
+private:
+  uintptr_t mask;
+};
+}
+}
 }
 
 

@@ -37,143 +37,127 @@
 #include <algorithm> // for std::sort
 
 
-namespace yield
-{
-  namespace thread
-  {
-    template <typename SampleType, size_t ArraySize>
-    class Sampler
-    {
-    public:
-      Sampler()
-      {
-        memset( samples, 0, sizeof( samples ) );
-        samples_pos = samples_count = 0;
-        min = static_cast<SampleType>( UINT64_MAX ); max = 0; total = 0;
-      }
+namespace yield {
+namespace thread {
+template <typename SampleType, size_t ArraySize>
+class Sampler {
+public:
+  Sampler() {
+    memset( samples, 0, sizeof( samples ) );
+    samples_pos = samples_count = 0;
+    min = static_cast<SampleType>( UINT64_MAX );
+    max = 0;
+    total = 0;
+  }
 
-      void clear()
-      {
-        //lock.acquire();
-        samples_count = 0;
-        //lock.release();
-      }
+  void clear() {
+    //lock.acquire();
+    samples_count = 0;
+    //lock.release();
+  }
 
-      SampleType get_max() const
-      {
-        return max;
-      }
+  SampleType get_max() const {
+    return max;
+  }
 
-      SampleType get_mean()
-      {
-        //lock.acquire();
-        SampleType mean;
+  SampleType get_mean() {
+    //lock.acquire();
+    SampleType mean;
 
-        if ( samples_count > 0 )
-          mean = static_cast<SampleType>
-                 (
-                   static_cast<double>( total ) /
-                   static_cast<double>( samples_count )
-                 );
-        else
-          mean = 0;
+    if ( samples_count > 0 )
+      mean = static_cast<SampleType>
+             (
+               static_cast<double>( total ) /
+               static_cast<double>( samples_count )
+             );
+    else
+      mean = 0;
 
-        //lock.release();
-        return mean;
-      }
+    //lock.release();
+    return mean;
+  }
 
-      SampleType get_median()
-      {
-        //lock.acquire();
+  SampleType get_median() {
+    //lock.acquire();
 
-        SampleType median;
+    SampleType median;
 
-        if ( samples_count > 0 )
-        {
-          std::sort( samples, samples + samples_count );
-          size_t sc_div_2 = samples_count / 2;
-          if ( samples_count % 2 == 1 )
-            median = samples[sc_div_2];
-          else
-          {
-            SampleType median_temp = samples[sc_div_2] + samples[sc_div_2-1];
-            if ( median_temp > 0 )
-              median = static_cast<SampleType>
-                       (
-                         static_cast<double>( median_temp ) / 2.0
-                       );
-            else
-              median = 0;
-          }
-        }
+    if ( samples_count > 0 ) {
+      std::sort( samples, samples + samples_count );
+      size_t sc_div_2 = samples_count / 2;
+      if ( samples_count % 2 == 1 )
+        median = samples[sc_div_2];
+      else {
+        SampleType median_temp = samples[sc_div_2] + samples[sc_div_2-1];
+        if ( median_temp > 0 )
+          median = static_cast<SampleType>
+                   (
+                     static_cast<double>( median_temp ) / 2.0
+                   );
         else
           median = 0;
-
-        //lock.release();
-
-        return median;
       }
+    } else
+      median = 0;
 
-      SampleType get_min() const
-      {
-        return min;
-      }
+    //lock.release();
 
-      SampleType get_percentile( double percentile )
-      {
-        if ( percentile > 0 && percentile < 100 )
-        {
-          //lock.acquire();
+    return median;
+  }
 
-          SampleType value;
+  SampleType get_min() const {
+    return min;
+  }
 
-          if ( samples_count > 0 )
-          {
-            std::sort( samples, samples + samples_count );
-            value =
-              samples[static_cast<size_t>( percentile *
-                static_cast<double>( samples_count ) )];
-          }
-          else
-            value = 0;
+  SampleType get_percentile( double percentile ) {
+    if ( percentile > 0 && percentile < 100 ) {
+      //lock.acquire();
 
-          //lock.release();
+      SampleType value;
 
-          return value;
-        }
-        else
-          return 0;
-      }
+      if ( samples_count > 0 ) {
+        std::sort( samples, samples + samples_count );
+        value =
+          samples[static_cast<size_t>( percentile *
+                                       static_cast<double>( samples_count ) )];
+      } else
+        value = 0;
 
-      uint32_t get_samples_count() const
-      {
-        return samples_count;
-      }
+      //lock.release();
 
-      void set_next_sample( SampleType sample )
-      {
-        //if ( lock.try_acquire() )
-        //{
-          samples[samples_pos] = sample;
-          samples_pos = ( samples_pos + 1 ) % ArraySize;
-          if ( samples_count < ArraySize ) samples_count++;
+      return value;
+    } else
+      return 0;
+  }
 
-          if ( sample < min )
-            min = sample;
-          if ( sample > max )
-            max = sample;
-          total += sample;
+  uint32_t get_samples_count() const {
+    return samples_count;
+  }
 
-        //  lock.release();
-        //}
-      }
+  void set_next_sample( SampleType sample ) {
+    //if ( lock.try_acquire() )
+    //{
+    samples[samples_pos] = sample;
+    samples_pos = ( samples_pos + 1 ) % ArraySize;
+    if ( samples_count < ArraySize ) samples_count++;
 
-    protected:
-      SampleType samples[ArraySize+1], min, max; SampleType total;
-      uint32_t samples_pos, samples_count;
-      // LockType lock;
-    };
-  };
+    if ( sample < min )
+      min = sample;
+    if ( sample > max )
+      max = sample;
+    total += sample;
+
+    //  lock.release();
+    //}
+  }
+
+protected:
+  SampleType samples[ArraySize+1], min, max;
+  SampleType total;
+  uint32_t samples_pos, samples_count;
+  // LockType lock;
+};
+};
 };
 
 

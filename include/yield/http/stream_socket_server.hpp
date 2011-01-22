@@ -36,67 +36,62 @@
 #include "yield/http/stream_socket_peer.hpp"
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace net
-    {
-      namespace sockets
-      {
-        class acceptAIOCB;
-      }
-    }
+namespace yield {
+namespace aio {
+namespace net {
+namespace sockets {
+class acceptAIOCB;
+}
+}
+}
+
+
+namespace http {
+class StreamSocketServer : public StreamSocketPeer<SocketServer> {
+protected:
+  class Connection : public StreamSocketPeer<SocketServer>::Connection {
+  public:
+    Connection
+    (
+      StreamSocketServer&,
+      YO_NEW_REF yield::net::sockets::SocketAddress& peername,
+      YO_NEW_REF yield::net::sockets::StreamSocket& socket_
+    );
+
+    virtual void handle( YO_NEW_REF yield::aio::net::sockets::acceptAIOCB& accept_aiocb ) = 0;
+  };
+
+protected:
+  StreamSocketServer
+  (
+    Log* error_log,
+    YO_NEW_REF yield::net::sockets::StreamSocket& socket_,
+    const yield::net::sockets::SocketAddress& sockname,
+    Log* trace_log
+  );
+
+  virtual ~StreamSocketServer();
+
+  virtual Connection&
+  create_connection
+  (
+    yield::net::sockets::SocketAddress& peername,
+    yield::net::sockets::StreamSocket& socket_
+  ) = 0;
+
+  void enqueue( YO_NEW_REF yield::aio::net::sockets::acceptAIOCB& accept_aiocb );
+
+  yield::net::sockets::StreamSocket& get_socket() const {
+    return socket_;
   }
 
+  // Stage
+  virtual void service( YO_NEW_REF Event& event );
 
-  namespace http
-  {
-    class StreamSocketServer : public StreamSocketPeer<SocketServer>
-    {
-    protected:
-      class Connection : public StreamSocketPeer<SocketServer>::Connection
-      {
-      public:
-        Connection
-        (
-          StreamSocketServer&,
-          YO_NEW_REF yield::net::sockets::SocketAddress& peername,
-          YO_NEW_REF yield::net::sockets::StreamSocket& socket_
-        );
-
-        virtual void handle( YO_NEW_REF yield::aio::net::sockets::acceptAIOCB& accept_aiocb ) = 0;
-      };
-
-    protected:
-      StreamSocketServer
-      (
-        Log* error_log,
-        YO_NEW_REF yield::net::sockets::StreamSocket& socket_,
-        const yield::net::sockets::SocketAddress& sockname,
-        Log* trace_log
-      );
-
-      virtual ~StreamSocketServer();
-
-      virtual Connection&
-      create_connection
-      (
-        yield::net::sockets::SocketAddress& peername,
-        yield::net::sockets::StreamSocket& socket_
-      ) = 0;
-
-      void enqueue( YO_NEW_REF yield::aio::net::sockets::acceptAIOCB& accept_aiocb );
-
-      yield::net::sockets::StreamSocket& get_socket() const { return socket_; }
-
-      // Stage
-      virtual void service( YO_NEW_REF Event& event );
-
-    private:
-      yield::net::sockets::StreamSocket& socket_;
-    };
-  }
+private:
+  yield::net::sockets::StreamSocket& socket_;
+};
+}
 }
 
 

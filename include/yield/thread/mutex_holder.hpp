@@ -32,20 +32,21 @@
 #define _YIELD_THREAD_MUTEX_HOLDER_HPP_
 
 
-namespace yield
-{
-  namespace thread
-  {
-    class MutexHolder
-    {
-    public:
-      MutexHolder( Mutex& mutex ) : mutex( mutex ) { mutex.lock(); }
-      ~MutexHolder() { mutex.unlock(); }
-
-    private:
-      Mutex& mutex;
-    };
+namespace yield {
+namespace thread {
+class MutexHolder {
+public:
+  MutexHolder( Mutex& mutex ) : mutex( mutex ) {
+    mutex.lock();
   }
+  ~MutexHolder() {
+    mutex.unlock();
+  }
+
+private:
+  Mutex& mutex;
+};
+}
 }
 
 

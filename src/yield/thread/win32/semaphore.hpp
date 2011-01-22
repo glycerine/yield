@@ -32,35 +32,33 @@
 #define _YIELD_THREAD_WIN32_SEMAPHORE_HPP_
 
 
-namespace yield
-{
-  class Time;
+namespace yield {
+class Time;
 
 
-  namespace thread
-  {
-    namespace win32
-    {
-      class Semaphore
-      {
-      public:
-        Semaphore();
-        ~Semaphore();
+namespace thread {
+namespace win32 {
+class Semaphore {
+public:
+  Semaphore();
+  ~Semaphore();
 
-        operator void*() const { return hSemaphore; }
-        void post();
-        bool timedwait( const Time& timeout );
-        bool trywait();
-        bool wait();
-
-      private:
-        Semaphore( void* hSemaphore );
-
-      private:
-        void* hSemaphore;
-      };
-    }
+  operator void*() const {
+    return hSemaphore;
   }
+  void post();
+  bool timedwait( const Time& timeout );
+  bool trywait();
+  bool wait();
+
+private:
+  Semaphore( void* hSemaphore );
+
+private:
+  void* hSemaphore;
+};
+}
+}
 }
 
 

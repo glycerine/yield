@@ -33,26 +33,22 @@
 #include <Windows.h>
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace fs
-    {
-      bool setlkAIOCB::issue( yield::aio::win32::AIOQueue& )
-      {
-        return LockFileEx
-                (
-                  get_file(),
-                  flock_.is_exclusive() ? LOCKFILE_EXCLUSIVE_LOCK : 0,
-                  0,
-                  static_cast<DWORD>( flock_.get_len() ),
-                  static_cast<DWORD>( flock_.get_len() >> 32 ),
-                  *this
-                ) == TRUE
-                ||
-                GetLastError() == ERROR_IO_PENDING;
-      }
-    }
-  }
+namespace yield {
+namespace aio {
+namespace fs {
+bool setlkAIOCB::issue( yield::aio::win32::AIOQueue& ) {
+  return LockFileEx
+         (
+           get_file(),
+           flock_.is_exclusive() ? LOCKFILE_EXCLUSIVE_LOCK : 0,
+           0,
+           static_cast<DWORD>( flock_.get_len() ),
+           static_cast<DWORD>( flock_.get_len() >> 32 ),
+           *this
+         ) == TRUE
+         ||
+         GetLastError() == ERROR_IO_PENDING;
+}
+}
+}
 }

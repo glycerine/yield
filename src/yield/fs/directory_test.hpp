@@ -39,68 +39,70 @@
 #include "yunit.hpp"
 
 
-namespace yield
-{
-  namespace fs
-  {
-    class DirectoryTest : public yunit::Test
-    {
-    public:
-      virtual ~DirectoryTest()
-      {
-        Volume::dec_ref( volume );
-      }
+namespace yield {
+namespace fs {
+class DirectoryTest : public yunit::Test {
+public:
+  virtual ~DirectoryTest() {
+    Volume::dec_ref( volume );
+  }
 
-    protected:
-      DirectoryTest( Volume& volume )
-        : test_dir_name( "directory_test" ),
-          test_file_name( "directory_test.txt" ),
-          test_file_path( test_dir_name / test_file_name ),
-          volume( volume.inc_ref() )
-      {
-        directory = NULL;
-      }
+protected:
+  DirectoryTest( Volume& volume )
+    : test_dir_name( "directory_test" ),
+      test_file_name( "directory_test.txt" ),
+      test_file_path( test_dir_name / test_file_name ),
+      volume( volume.inc_ref() ) {
+    directory = NULL;
+  }
 
-      // yunit::Test
-      void setup()
-      {
-        teardown();
+  // yunit::Test
+  void setup() {
+    teardown();
 
-        if ( !get_volume().mkdir( get_test_dir_name() ) )
-          throw Exception();
+    if ( !get_volume().mkdir( get_test_dir_name() ) )
+      throw Exception();
 
-        if ( !get_volume().touch( get_test_file_path() ) )
-          throw Exception();
+    if ( !get_volume().touch( get_test_file_path() ) )
+      throw Exception();
 
-        directory = get_volume().opendir( get_test_dir_name() );
-        if ( directory == NULL )
-          throw Exception();
-      }
+    directory = get_volume().opendir( get_test_dir_name() );
+    if ( directory == NULL )
+      throw Exception();
+  }
 
-      void teardown()
-      {
-        Directory::dec_ref( directory );
-        directory = NULL;
+  void teardown() {
+    Directory::dec_ref( directory );
+    directory = NULL;
 
-        if ( get_volume().exists( get_test_dir_name() ) )
-        {
-          if ( !get_volume().rmtree( get_test_dir_name() ) )
-            throw Exception();
-        }
-      }
+    if ( get_volume().exists( get_test_dir_name() ) ) {
+      if ( !get_volume().rmtree( get_test_dir_name() ) )
+        throw Exception();
+    }
+  }
 
-    protected:
-      Directory& get_directory() const { return *directory; }
-      const Path& get_test_dir_name() const { return test_dir_name; }
-      const Path& get_test_file_name() const { return test_file_name; }
-      const Path& get_test_file_path() const { return test_file_path; }
-      Volume& get_volume() const { return volume; }
+protected:
+  Directory& get_directory() const {
+    return *directory;
+  }
+  const Path& get_test_dir_name() const {
+    return test_dir_name;
+  }
+  const Path& get_test_file_name() const {
+    return test_file_name;
+  }
+  const Path& get_test_file_path() const {
+    return test_file_path;
+  }
+  Volume& get_volume() const {
+    return volume;
+  }
 
-    private:
-      Directory* directory;
-      Path test_dir_name, test_file_name, test_file_path;
-      Volume& volume;
-    };
+private:
+  Directory* directory;
+  Path test_dir_name, test_file_name, test_file_path;
+  Volume& volume;
+};
 
 
 #define YIELD_PLATFORM_DIRECTORY_TEST( TestName ) \
@@ -115,109 +117,100 @@ namespace yield
       inline void Directory_##TestName##Test::run()
 
 
-    class DirectoryCloseTest : public DirectoryTest
-    {
-    public:
-      DirectoryCloseTest( Volume& volume )
-        : DirectoryTest( volume )
-      { }
+class DirectoryCloseTest : public DirectoryTest {
+public:
+  DirectoryCloseTest( Volume& volume )
+    : DirectoryTest( volume )
+  { }
 
-      // Test
-      void run()
-      {
-        if ( !get_directory().close() ) throw Exception();
-      }
-    };
-
-
-    class DirectoryReadTest : public DirectoryTest
-    {
-    public:
-      DirectoryReadTest( Volume& volume )
-        : DirectoryTest( volume )
-      { }
-
-      // Test
-      void run()
-      {
-        {
-          auto_Object<Directory::Entry> dentry = get_directory().read();
-          throw_assert_eq( dentry->get_name(), Path::CURRENT_DIRECTORY );
-          throw_assert( dentry->ISDIR() );
-        }
-
-        {
-          auto_Object<Directory::Entry> dentry = get_directory().read();
-          throw_assert_eq( dentry->get_name(), Path::PARENT_DIRECTORY );
-          throw_assert( dentry->ISDIR() );
-        }
-
-        {
-          auto_Object<Directory::Entry> dentry = get_directory().read();
-          throw_assert_eq( dentry->get_name(), get_test_file_name() );
-          throw_assert( dentry->has_atime() );
-          throw_assert( dentry->has_ctime() );
-          throw_assert( dentry->has_mtime() );
-          throw_assert( dentry->has_nlink() );
-          throw_assert( dentry->has_size() );
-          throw_assert_false( dentry->is_hidden() );
-          throw_assert( dentry->ISREG() );
-        }
-
-        {
-          Directory::Entry* dentry = get_directory().read();
-          if ( dentry != NULL )
-          {
-            Directory::Entry::dec_ref( *dentry );
-            throw_assert( false );
-          }
-        }
-      }
-    };
-
-
-    class DirectoryRewindTest : public DirectoryTest
-    {
-    public:
-      DirectoryRewindTest( Volume& volume )
-        : DirectoryTest( volume )
-      { }
-
-      // Test
-      void run()
-      {
-        {
-          auto_Object<Directory::Entry> dentry = get_directory().read();
-          throw_assert_eq( dentry->get_name(), Path::CURRENT_DIRECTORY );
-        }
-
-        get_directory().rewind();
-
-        {
-          auto_Object<Directory::Entry> dentry = get_directory().read();
-          throw_assert_eq( dentry->get_name(), Path::CURRENT_DIRECTORY );
-        }
-      }
-    };
-
-
-    template <class VolumeType>
-    class DirectoryTestSuite : public yunit::TestSuite
-    {
-    public:
-      DirectoryTestSuite( YO_NEW_REF VolumeType* volume = NULL )
-      {
-        if ( volume == NULL )
-          volume = new VolumeType;
-
-        add( "Directory::close", new DirectoryCloseTest( *volume ) );
-        add( "Directory::read", new DirectoryReadTest( *volume ) );
-        add( "Directory::rewind", new DirectoryRewindTest( *volume ) );
-
-        Volume::dec_ref( *volume );
-      }
-    };
+  // Test
+  void run() {
+    if ( !get_directory().close() ) throw Exception();
   }
+};
+
+
+class DirectoryReadTest : public DirectoryTest {
+public:
+  DirectoryReadTest( Volume& volume )
+    : DirectoryTest( volume )
+  { }
+
+  // Test
+  void run() {
+    {
+      auto_Object<Directory::Entry> dentry = get_directory().read();
+      throw_assert_eq( dentry->get_name(), Path::CURRENT_DIRECTORY );
+      throw_assert( dentry->ISDIR() );
+    }
+
+    {
+      auto_Object<Directory::Entry> dentry = get_directory().read();
+      throw_assert_eq( dentry->get_name(), Path::PARENT_DIRECTORY );
+      throw_assert( dentry->ISDIR() );
+    }
+
+    {
+      auto_Object<Directory::Entry> dentry = get_directory().read();
+      throw_assert_eq( dentry->get_name(), get_test_file_name() );
+      throw_assert( dentry->has_atime() );
+      throw_assert( dentry->has_ctime() );
+      throw_assert( dentry->has_mtime() );
+      throw_assert( dentry->has_nlink() );
+      throw_assert( dentry->has_size() );
+      throw_assert_false( dentry->is_hidden() );
+      throw_assert( dentry->ISREG() );
+    }
+
+    {
+      Directory::Entry* dentry = get_directory().read();
+      if ( dentry != NULL ) {
+        Directory::Entry::dec_ref( *dentry );
+        throw_assert( false );
+      }
+    }
+  }
+};
+
+
+class DirectoryRewindTest : public DirectoryTest {
+public:
+  DirectoryRewindTest( Volume& volume )
+    : DirectoryTest( volume )
+  { }
+
+  // Test
+  void run() {
+    {
+      auto_Object<Directory::Entry> dentry = get_directory().read();
+      throw_assert_eq( dentry->get_name(), Path::CURRENT_DIRECTORY );
+    }
+
+    get_directory().rewind();
+
+    {
+      auto_Object<Directory::Entry> dentry = get_directory().read();
+      throw_assert_eq( dentry->get_name(), Path::CURRENT_DIRECTORY );
+    }
+  }
+};
+
+
+template <class VolumeType>
+class DirectoryTestSuite : public yunit::TestSuite {
+public:
+  DirectoryTestSuite( YO_NEW_REF VolumeType* volume = NULL ) {
+    if ( volume == NULL )
+      volume = new VolumeType;
+
+    add( "Directory::close", new DirectoryCloseTest( *volume ) );
+    add( "Directory::read", new DirectoryReadTest( *volume ) );
+    add( "Directory::rewind", new DirectoryRewindTest( *volume ) );
+
+    Volume::dec_ref( *volume );
+  }
+};
+}
 }
 
 

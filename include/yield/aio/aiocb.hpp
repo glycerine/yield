@@ -33,22 +33,20 @@
 
 
 #ifdef _WIN32
-  #include "yield/aio/win32/aiocb.hpp"
+#include "yield/aio/win32/aiocb.hpp"
 #else
-  #include "yield/aio/posix/aiocb.hpp"
+#include "yield/aio/posix/aiocb.hpp"
 #endif
 
 
-namespace yield
-{
-  namespace aio
-  {
-    #ifdef _WIN32
-      typedef win32::AIOCB AIOCB;
-    #else
-      typedef posix::AIOCB AIOCB;
-    #endif
-  }
+namespace yield {
+namespace aio {
+#ifdef _WIN32
+typedef win32::AIOCB AIOCB;
+#else
+typedef posix::AIOCB AIOCB;
+#endif
+}
 }
 
 

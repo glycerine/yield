@@ -36,19 +36,16 @@
 #include "yield/http/http_request.hpp"
 
 
-namespace yield
-{
-  namespace http
-  {
-    class HTTPRequestHandler : public EventHandler
-    {
-    public:
-      virtual void handle( YO_NEW_REF HTTPRequest& http_request ) = 0;
+namespace yield {
+namespace http {
+class HTTPRequestHandler : public EventHandler {
+public:
+  virtual void handle( YO_NEW_REF HTTPRequest& http_request ) = 0;
 
-      // EventHandler
-      virtual void handle( YO_NEW_REF Event& event );
-    };
-  }
+  // EventHandler
+  virtual void handle( YO_NEW_REF Event& event );
+};
+}
 }
 
 

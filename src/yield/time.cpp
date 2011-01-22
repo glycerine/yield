@@ -31,84 +31,75 @@
 #include "yield/time.hpp"
 
 #if defined(_WIN32)
-  #include <Windows.h> // For FILETIME
+#include <Windows.h> // For FILETIME
 #elif defined(__MACH__)
-  #include <sys/time.h> // For gettimeofday
+#include <sys/time.h> // For gettimeofday
 #else
-  #include <time.h>
+#include <time.h>
 #endif
 
 
-namespace yield
-{
-  Time Time::now()
-  {
-    #if defined(__MACH__)
-      timeval tv;
-      gettimeofday( &tv, NULL );
-      return Time( tv );
-    #elif defined(_WIN32)
-      FILETIME file_time;
-      GetSystemTimeAsFileTime( &file_time );
-      ULARGE_INTEGER file_time_combined;
-      file_time_combined.LowPart = file_time.dwLowDateTime;
-      file_time_combined.HighPart = file_time.dwHighDateTime;
-      return Time( file_time_combined.QuadPart * 100 );
-    #else
-      // POSIX real time
-      timespec ts;
-      clock_gettime( CLOCK_REALTIME, &ts );
-      return Time( ts );
-    #endif
-  }
+namespace yield {
+Time Time::now() {
+#if defined(__MACH__)
+  timeval tv;
+  gettimeofday( &tv, NULL );
+  return Time( tv );
+#elif defined(_WIN32)
+  FILETIME file_time;
+  GetSystemTimeAsFileTime( &file_time );
+  ULARGE_INTEGER file_time_combined;
+  file_time_combined.LowPart = file_time.dwLowDateTime;
+  file_time_combined.HighPart = file_time.dwHighDateTime;
+  return Time( file_time_combined.QuadPart * 100 );
+#else
+  // POSIX real time
+  timespec ts;
+  clock_gettime( CLOCK_REALTIME, &ts );
+  return Time( ts );
+#endif
+}
 
-  #ifdef __MACH__
-    Time::operator mach_timespec_t() const
-    {
-      mach_timespec_t ts = { _ns / NS_IN_S, _ns % NS_IN_S };
-      return ts;
-    }
-  #endif
+#ifdef __MACH__
+Time::operator mach_timespec_t() const {
+  mach_timespec_t ts = { _ns / NS_IN_S, _ns % NS_IN_S };
+  return ts;
+}
+#endif
 
-  #ifndef _WIN32
-    Time::Time( const timespec& ts )
-    {
-      *this = ts;
-    }
+#ifndef _WIN32
+Time::Time( const timespec& ts ) {
+  *this = ts;
+}
 
-    Time& Time::operator=( const timespec& ts )
-    {
-      _ns = ts.tv_sec * NS_IN_S + ts.tv_nsec;
-      return *this;
-    }
+Time& Time::operator=( const timespec& ts ) {
+  _ns = ts.tv_sec * NS_IN_S + ts.tv_nsec;
+  return *this;
+}
 
-    Time::operator timespec() const
-    {
-      timespec ts;
-      ts.tv_sec = _ns / NS_IN_S;
-      ts.tv_nsec = _ns % NS_IN_S;
-      return ts;
-    }
+Time::operator timespec() const {
+  timespec ts;
+  ts.tv_sec = _ns / NS_IN_S;
+  ts.tv_nsec = _ns % NS_IN_S;
+  return ts;
+}
 
-    Time::Time( const timeval& tv )
-    {
-      *this = tv;
-    }
+Time::Time( const timeval& tv ) {
+  *this = tv;
+}
 
-    Time& Time::operator=( const timeval& tv )
-    {
-      _ns = tv.tv_sec * NS_IN_S
-            +
-            static_cast<uint64_t>( tv.tv_usec * NS_IN_US );
-      return *this;
-    }
+Time& Time::operator=( const timeval& tv ) {
+  _ns = tv.tv_sec * NS_IN_S
+        +
+        static_cast<uint64_t>( tv.tv_usec * NS_IN_US );
+  return *this;
+}
 
-    Time::operator timeval() const
-    {
-      timeval tv;
-      tv.tv_sec = static_cast<time_t>( _ns / NS_IN_S );
-      tv.tv_usec = ( _ns % NS_IN_S ) / NS_IN_US;
-      return tv;
-    }
-  #endif
+Time::operator timeval() const {
+  timeval tv;
+  tv.tv_sec = static_cast<time_t>( _ns / NS_IN_S );
+  tv.tv_usec = ( _ns % NS_IN_S ) / NS_IN_US;
+  return tv;
+}
+#endif
 }

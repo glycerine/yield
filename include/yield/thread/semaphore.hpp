@@ -32,44 +32,49 @@
 #define _YIELD_THREAD_SEMAPHORE_HPP_
 
 
-namespace yield
-{
-  class Time;
+namespace yield {
+class Time;
 
 
-  namespace thread
-  {
-    #if defined(__MACH__)
-      namespace darwin { class Semaphore; }
-    #elif defined(_WIN32)
-      namespace win32 { class Semaphore; }
-    #else
-      namespace posix { class Semaphore; }
-    #endif
+namespace thread {
+#if defined(__MACH__)
+namespace darwin {
+class Semaphore;
+}
+#elif defined(_WIN32)
+namespace win32 {
+class Semaphore;
+}
+#else
+namespace posix {
+class Semaphore;
+}
+#endif
 
 
-    class Semaphore
-    {
-    public:
-      Semaphore();
-      ~Semaphore();
+class Semaphore {
+public:
+  Semaphore();
+  ~Semaphore();
 
-      void post();
-      bool timedwait( const Time& timeout );
-      bool trywait();
-      bool wait();
-      bool wait( const Time& timeout ) { return timedwait( timeout ); }
-
-    private:
-      #if defined(__MACH__)
-        darwin::Semaphore* pimpl;
-      #elif defined(_WIN32)
-        win32::Semaphore* pimpl;
-      #else
-        posix::Semaphore* pimpl;
-      #endif
-    };
+  void post();
+  bool timedwait( const Time& timeout );
+  bool trywait();
+  bool wait();
+  bool wait( const Time& timeout ) {
+    return timedwait( timeout );
   }
+
+private:
+#if defined(__MACH__)
+  darwin::Semaphore* pimpl;
+#elif defined(_WIN32)
+  win32::Semaphore* pimpl;
+#else
+  posix::Semaphore* pimpl;
+#endif
+};
+}
 }
 
 

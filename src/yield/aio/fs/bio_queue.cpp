@@ -36,29 +36,24 @@
 #include "yield/aio/fs/unlk_aiocb.hpp"
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace fs
-    {
-      bool BIOQueue::enqueue( YO_NEW_REF Event& event )
-      {
-        switch ( event.get_type_id() )
-        {
-          case fsyncAIOCB::TYPE_ID:
-          case preadAIOCB::TYPE_ID:
-          case pwriteAIOCB::TYPE_ID:
-          case setlkAIOCB::TYPE_ID:
-          case unlkAIOCB::TYPE_ID:
-          {
-            AIOCB& aiocb = static_cast<AIOCB&>( event );
-            return yield::aio::BIOQueue::enqueue( aiocb );
-          }
-
-          default: return yield::aio::BIOQueue::enqueue( event );
-        }
-      }
-    }
+namespace yield {
+namespace aio {
+namespace fs {
+bool BIOQueue::enqueue( YO_NEW_REF Event& event ) {
+  switch ( event.get_type_id() ) {
+  case fsyncAIOCB::TYPE_ID:
+  case preadAIOCB::TYPE_ID:
+  case pwriteAIOCB::TYPE_ID:
+  case setlkAIOCB::TYPE_ID:
+  case unlkAIOCB::TYPE_ID: {
+    AIOCB& aiocb = static_cast<AIOCB&>( event );
+    return yield::aio::BIOQueue::enqueue( aiocb );
   }
+
+  default:
+    return yield::aio::BIOQueue::enqueue( event );
+  }
+}
+}
+}
 }

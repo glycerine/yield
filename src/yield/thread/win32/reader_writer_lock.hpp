@@ -36,33 +36,29 @@
 #include "yield/types.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace win32
-    {
-      class ReaderWriterLock
-      {
-      public:
-        ReaderWriterLock();
-        ~ReaderWriterLock();
+namespace yield {
+namespace thread {
+namespace win32 {
+class ReaderWriterLock {
+public:
+  ReaderWriterLock();
+  ~ReaderWriterLock();
 
-        bool rdlock();
-        void rdunlock();
-        bool tryrdlock();
-        bool trywrlock();
-        bool wrlock();
-        void wrunlock();
+  bool rdlock();
+  void rdunlock();
+  bool tryrdlock();
+  bool trywrlock();
+  bool wrlock();
+  void wrunlock();
 
-      private:
-        uint32_t active_writer_readers;
-        LightweightMutex cs;
-        void *hReadyToRead, *hReadyToWrite;
-        int32_t waiting_readers_count, waiting_writers_count;
-      };
-    }
-  }
+private:
+  uint32_t active_writer_readers;
+  LightweightMutex cs;
+  void *hReadyToRead, *hReadyToWrite;
+  int32_t waiting_readers_count, waiting_writers_count;
+};
+}
+}
 }
 
 

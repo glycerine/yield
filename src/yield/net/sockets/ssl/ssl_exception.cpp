@@ -30,33 +30,28 @@
 
 #ifdef YIELD_HAVE_OPENSSL
 
-  #include "yield/net/sockets/ssl/ssl_exception.hpp"
+#include "yield/net/sockets/ssl/ssl_exception.hpp"
 
-  #include <openssl/err.h>
-  #include <openssl/ssl.h>
+#include <openssl/err.h>
+#include <openssl/ssl.h>
 
 
-  namespace yield
-  {
-    namespace net
-    {
-      namespace sockets
-      {
-        namespace ssl
-        {
-          SSLException::SSLException()
-            : Exception( ERR_peek_error() )
-          {
-            SSL_load_error_strings();
+namespace yield {
+namespace net {
+namespace sockets {
+namespace ssl {
+SSLException::SSLException()
+  : Exception( ERR_peek_error() ) {
+  SSL_load_error_strings();
 
-            char error_message[256];
-            ERR_error_string_n( ERR_peek_error(), error_message, 256 );
-            set_error_message( error_message );
-          }
-        }
-      }
-    }
-  }
+  char error_message[256];
+  ERR_error_string_n( ERR_peek_error(), error_message, 256 );
+  set_error_message( error_message );
+}
+}
+}
+}
+}
 
 #endif
 //

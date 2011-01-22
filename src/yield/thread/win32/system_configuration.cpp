@@ -33,24 +33,21 @@
 #include <Windows.h>
 
 
-namespace yield
-{
-  namespace thread
-  {
-    long SystemConfiguration::operator()( Variable variable )
-    {
-      switch ( variable )
-      {
-        case ONLINE_LOGICAL_PROCESSOR_COUNT:
-        case ONLINE_PHYSICAL_PROCESSOR_COUNT:
-        {
-          SYSTEM_INFO available_info;
-          GetSystemInfo( &available_info );
-          return available_info.dwNumberOfProcessors;
-        }
-
-        default: DebugBreak(); return -1;
-      }
-    }
+namespace yield {
+namespace thread {
+long SystemConfiguration::operator()( Variable variable ) {
+  switch ( variable ) {
+  case ONLINE_LOGICAL_PROCESSOR_COUNT:
+  case ONLINE_PHYSICAL_PROCESSOR_COUNT: {
+    SYSTEM_INFO available_info;
+    GetSystemInfo( &available_info );
+    return available_info.dwNumberOfProcessors;
   }
+
+  default:
+    DebugBreak();
+    return -1;
+  }
+}
+}
 }

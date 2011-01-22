@@ -35,34 +35,34 @@
 #include "yield/aio/fs/aiocb.hpp"
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace fs
-    {
-      class fsyncAIOCB : public AIOCB
-      {
-      public:
-        const static uint32_t TYPE_ID = 1349938901UL;
+namespace yield {
+namespace aio {
+namespace fs {
+class fsyncAIOCB : public AIOCB {
+public:
+  const static uint32_t TYPE_ID = 1349938901UL;
 
-      public:
-        fsyncAIOCB( yield::fs::File& file )
-          : AIOCB( file )
-        { }
+public:
+  fsyncAIOCB( yield::fs::File& file )
+    : AIOCB( file )
+  { }
 
-        // yield::Object
-        uint32_t get_type_id() const { return TYPE_ID; }
-        const char* get_type_name() const { return "yield::aio::fs::fsyncAIOCB"; }
-
-        // yield::aio::AIOCB
-        #ifndef _WIN32
-          bool issue( EventHandler& completion_handler );
-        #endif
-        RetryStatus retry();
-      };
-    }
+  // yield::Object
+  uint32_t get_type_id() const {
+    return TYPE_ID;
   }
+  const char* get_type_name() const {
+    return "yield::aio::fs::fsyncAIOCB";
+  }
+
+  // yield::aio::AIOCB
+#ifndef _WIN32
+  bool issue( EventHandler& completion_handler );
+#endif
+  RetryStatus retry();
+};
+}
+}
 }
 
 

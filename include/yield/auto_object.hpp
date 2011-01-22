@@ -36,56 +36,56 @@
 #include "yield/object.hpp"
 
 
-namespace yield
-{
-  // Similar to auto_ptr, but using object references instead of delete
-  // Unlike auto_ptr auto_Object is immutable, so there is no release(),
-  // reset(), or operator=().
-  // The class is primarily intended for use in testing, where an object
-  // should be deleted when it goes out of scope because of an exception.
-  // The *object constructor throws an Exception if object is NULL.
-  // That's why this is here and not in yidl.
-  template <class ObjectType = Object>
-  class auto_Object
-  {
-  public:
-    auto_Object( YO_NEW_REF ObjectType* object )
-      : object( *object )
-    {
-      if ( object == NULL )
-        throw Exception();
-    }
+namespace yield {
+// Similar to auto_ptr, but using object references instead of delete
+// Unlike auto_ptr auto_Object is immutable, so there is no release(),
+// reset(), or operator=().
+// The class is primarily intended for use in testing, where an object
+// should be deleted when it goes out of scope because of an exception.
+// The *object constructor throws an Exception if object is NULL.
+// That's why this is here and not in yidl.
+template <class ObjectType = Object>
+class auto_Object {
+public:
+  auto_Object( YO_NEW_REF ObjectType* object )
+    : object( *object ) {
+    if ( object == NULL )
+      throw Exception();
+  }
 
-    auto_Object( YO_NEW_REF ObjectType& object )
-      : object( object )
-    { }
+  auto_Object( YO_NEW_REF ObjectType& object )
+    : object( object )
+  { }
 
-    ~auto_Object()
-    {
-      Object::dec_ref( object );
-    }
+  ~auto_Object() {
+    Object::dec_ref( object );
+  }
 
-    auto_Object( const auto_Object<ObjectType>& other )
-      : object( Object::inc_ref( other.object ) )
-    { }
+  auto_Object( const auto_Object<ObjectType>& other )
+    : object( Object::inc_ref( other.object ) )
+  { }
 
-    inline ObjectType& get() const { return object; }
-    inline ObjectType* operator->() const { return &get(); }
-    inline ObjectType& operator*() const { return get(); }
+  inline ObjectType& get() const {
+    return object;
+  }
+  inline ObjectType* operator->() const {
+    return &get();
+  }
+  inline ObjectType& operator*() const {
+    return get();
+  }
 
-    inline bool operator==( const auto_Object<ObjectType>& other ) const
-    {
-      return &get() == &other.get();
-    }
+  inline bool operator==( const auto_Object<ObjectType>& other ) const {
+    return &get() == &other.get();
+  }
 
-    inline bool operator!=( const auto_Object<ObjectType>& other ) const
-    {
-      return &get() != &other.get();
-    }
+  inline bool operator!=( const auto_Object<ObjectType>& other ) const {
+    return &get() != &other.get();
+  }
 
-  private:
-    ObjectType& object;
-  };
+private:
+  ObjectType& object;
+};
 }
 
 

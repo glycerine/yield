@@ -31,37 +31,29 @@
 #include "processor_set.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace linux
-    {
-      ProcessorSet::ProcessorSet()
-      {
-        CPU_ZERO( &cpu_set );
-      }
+namespace yield {
+namespace thread {
+namespace linux {
+ProcessorSet::ProcessorSet() {
+  CPU_ZERO( &cpu_set );
+}
 
-      void ProcessorSet::clear()
-      {
-        CPU_ZERO( &cpu_set );
-      }
+void ProcessorSet::clear() {
+  CPU_ZERO( &cpu_set );
+}
 
-      void ProcessorSet::clear( uint16_t processor_i )
-      {
-        CPU_CLR( processor_i, &cpu_set );
-      }
+void ProcessorSet::clear( uint16_t processor_i ) {
+  CPU_CLR( processor_i, &cpu_set );
+}
 
-      bool ProcessorSet::isset( uint16_t processor_i ) const
-      {
-        return CPU_ISSET( processor_i, &cpu_set );
-      }
+bool ProcessorSet::isset( uint16_t processor_i ) const {
+  return CPU_ISSET( processor_i, &cpu_set );
+}
 
-      bool ProcessorSet::set( uint16_t processor_i )
-      {
-        CPU_SET( processor_i, &cpu_set );
-        return true;
-      }
-    }
-  }
+bool ProcessorSet::set( uint16_t processor_i ) {
+  CPU_SET( processor_i, &cpu_set );
+  return true;
+}
+}
+}
 }

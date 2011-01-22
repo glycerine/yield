@@ -38,161 +38,146 @@
 #include "yield/net/sockets/stream_socket.hpp"
 
 
-namespace yield
-{
-  namespace http
-  {
-    using yield::net::URI;
-    using yield::net::sockets::SocketAddress;
-    using yield::net::sockets::StreamSocket;
+namespace yield {
+namespace http {
+using yield::net::URI;
+using yield::net::sockets::SocketAddress;
+using yield::net::sockets::StreamSocket;
 
 
-    StreamSocketClient::StreamSocketClient
-    (
-      const Configuration& configuration,
-      Log* error_log,
-      Log* trace_log,
-      const URI& uri
-    )
-    : StreamSocketPeer<SocketClient>( error_log, trace_log ),
-      configuration( configuration ),
-      peername( *new SocketAddress( uri ) )
-    { }
+StreamSocketClient::StreamSocketClient
+(
+  const Configuration& configuration,
+  Log* error_log,
+  Log* trace_log,
+  const URI& uri
+)
+  : StreamSocketPeer<SocketClient>( error_log, trace_log ),
+    configuration( configuration ),
+    peername( *new SocketAddress( uri ) )
+{ }
 
-    StreamSocketClient::~StreamSocketClient()
-    {
-      SocketAddress::dec_ref( peername );
-    }
+StreamSocketClient::~StreamSocketClient() {
+  SocketAddress::dec_ref( peername );
+}
 
-    void StreamSocketClient::service( YO_NEW_REF Event& event )
-    {
-      switch ( event.get_type_id() )
-      {
-        case connectAIOCB::TYPE_ID:
-        {
-          connectAIOCB& connect_aiocb = static_cast<connectAIOCB&>( event );
-          Connection& connection
-            = static_cast<Connection&>( connect_aiocb.get_connection() );
+void StreamSocketClient::service( YO_NEW_REF Event& event ) {
+  switch ( event.get_type_id() ) {
+  case connectAIOCB::TYPE_ID: {
+    connectAIOCB& connect_aiocb = static_cast<connectAIOCB&>( event );
+    Connection& connection
+    = static_cast<Connection&>( connect_aiocb.get_connection() );
 
-          if ( connect_aiocb.get_error() == 0 )
-          {
-            if ( get_trace_log() != NULL )
-            {
-              get_trace_log()->get_stream( Log::INFO ) <<
-                connection.get_log_prefix() << ": " <<
-                connect_aiocb.get_type_name() <<
-                "( socket=" <<
-                  static_cast<socket_t>( connect_aiocb.get_socket() ) <<
-                ", peername=" << connect_aiocb.get_peername() <<
-                ", return=" << connect_aiocb.get_return() <<
-                ", send_buffer=";
+    if ( connect_aiocb.get_error() == 0 ) {
+      if ( get_trace_log() != NULL ) {
+        get_trace_log()->get_stream( Log::INFO ) <<
+            connection.get_log_prefix() << ": " <<
+            connect_aiocb.get_type_name() <<
+            "( socket=" <<
+            static_cast<socket_t>( connect_aiocb.get_socket() ) <<
+            ", peername=" << connect_aiocb.get_peername() <<
+            ", return=" << connect_aiocb.get_return() <<
+            ", send_buffer=";
 
-              if ( connect_aiocb.get_send_buffer() != NULL )
-                get_trace_log()->write( *connect_aiocb.get_send_buffer(), Log::INFO );
-              else
-                get_trace_log()->write( "NULL )", Log::INFO );
-            }
-          }
-          else
-          {
-            if ( get_error_log() != NULL )
-            {
-              get_error_log()->get_stream( Log::ERR ) <<
-                connection.get_log_prefix() << ": " <<
-                "error in " << connect_aiocb.get_type_name() << ":" <<
-                Exception( connect_aiocb.get_error() );
-            }
-          }
-
-          connection.handle( connect_aiocb );
-        }
-        break;
-
-        default: StreamSocketPeer<SocketClient>::service( event ); break;
+        if ( connect_aiocb.get_send_buffer() != NULL )
+          get_trace_log()->write( *connect_aiocb.get_send_buffer(), Log::INFO );
+        else
+          get_trace_log()->write( "NULL )", Log::INFO );
+      }
+    } else {
+      if ( get_error_log() != NULL ) {
+        get_error_log()->get_stream( Log::ERR ) <<
+                                                connection.get_log_prefix() << ": " <<
+                                                "error in " << connect_aiocb.get_type_name() << ":" <<
+                                                Exception( connect_aiocb.get_error() );
       }
     }
 
-
-    StreamSocketClient::Configuration::Configuration
-    (
-      uint16_t concurrency_level,
-      const Time& connect_timeout,
-      const Time& recv_timeout,
-      const uint16_t recv_tries_max,
-      const Time& send_timeout,
-      const uint16_t send_tries_max
-    )
-    : concurrency_level( concurrency_level ),
-      connect_timeout( connect_timeout ),
-      recv_timeout( recv_timeout ),
-      recv_tries_max( recv_tries_max ),
-      send_timeout( send_timeout ),
-      send_tries_max( send_tries_max )
-    { }
-
-    void
-    StreamSocketClient::Configuration::
-    set_connect_timeout
-    (
-      const Time& connect_timeout
-    )
-    {
-      this->connect_timeout = connect_timeout;
-    }
-
-    void
-    StreamSocketClient::Configuration::set_recv_timeout
-    (
-      const Time& recv_timeout
-    )
-    {
-      this->recv_timeout = recv_timeout;
-    }
-
-    void
-    StreamSocketClient::Configuration::set_send_timeout
-    (
-      const Time& send_timeout
-    )
-    {
-      this->send_timeout = send_timeout;
-    }
-
-
-    StreamSocketClient::Connection::Connection
-    (
-      StreamSocketClient& client,
-      YO_NEW_REF StreamSocket& socket_
-    )
-    : StreamSocketPeer<SocketClient>::Connection
-      (
-        client,
-        client.get_peername(),
-        socket_
-      ),
-      configuration( client.get_configuration() )
-    {
-      #ifdef _WIN32
-        if ( !socket_.bind( SocketAddress::IN_ANY ) )
-          throw Exception();
-      #endif
-
-      if ( !get_aio_queue().associate( socket_ ) )
-        throw Exception();
-    }
-
-    void
-    StreamSocketClient::Connection::enqueue
-    (
-      YO_NEW_REF connectAIOCB& connect_aiocb
-    )
-    {
-      if ( !get_aio_queue().enqueue( connect_aiocb ) )
-      {
-        //uint32_t last_error_code = Exception::get_last_error_code();
-        connectAIOCB::dec_ref( connect_aiocb );
-        DebugBreak();
-      }
-    }
+    connection.handle( connect_aiocb );
   }
+  break;
+
+  default:
+    StreamSocketPeer<SocketClient>::service( event );
+    break;
+  }
+}
+
+
+StreamSocketClient::Configuration::Configuration
+(
+  uint16_t concurrency_level,
+  const Time& connect_timeout,
+  const Time& recv_timeout,
+  const uint16_t recv_tries_max,
+  const Time& send_timeout,
+  const uint16_t send_tries_max
+)
+  : concurrency_level( concurrency_level ),
+    connect_timeout( connect_timeout ),
+    recv_timeout( recv_timeout ),
+    recv_tries_max( recv_tries_max ),
+    send_timeout( send_timeout ),
+    send_tries_max( send_tries_max )
+{ }
+
+void
+StreamSocketClient::Configuration::
+set_connect_timeout
+(
+  const Time& connect_timeout
+) {
+  this->connect_timeout = connect_timeout;
+}
+
+void
+StreamSocketClient::Configuration::set_recv_timeout
+(
+  const Time& recv_timeout
+) {
+  this->recv_timeout = recv_timeout;
+}
+
+void
+StreamSocketClient::Configuration::set_send_timeout
+(
+  const Time& send_timeout
+) {
+  this->send_timeout = send_timeout;
+}
+
+
+StreamSocketClient::Connection::Connection
+(
+  StreamSocketClient& client,
+  YO_NEW_REF StreamSocket& socket_
+)
+  : StreamSocketPeer<SocketClient>::Connection
+  (
+    client,
+    client.get_peername(),
+    socket_
+  ),
+  configuration( client.get_configuration() ) {
+#ifdef _WIN32
+  if ( !socket_.bind( SocketAddress::IN_ANY ) )
+    throw Exception();
+#endif
+
+  if ( !get_aio_queue().associate( socket_ ) )
+    throw Exception();
+}
+
+void
+StreamSocketClient::Connection::enqueue
+(
+  YO_NEW_REF connectAIOCB& connect_aiocb
+) {
+  if ( !get_aio_queue().enqueue( connect_aiocb ) ) {
+    //uint32_t last_error_code = Exception::get_last_error_code();
+    connectAIOCB::dec_ref( connect_aiocb );
+    DebugBreak();
+  }
+}
+}
 }

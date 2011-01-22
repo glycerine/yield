@@ -35,41 +35,38 @@
 #include "yield/net/sockets/datagram_socket.hpp"
 
 
-namespace yield
-{
-  namespace net
-  {
-    namespace sockets
-    {
-      class UDPSocket : public DatagramSocket
-      {
-      public:
-        static int DOMAIN_DEFAULT; // AF_INET
-        static int PROTOCOL; // IPPROTO_UDP
+namespace yield {
+namespace net {
+namespace sockets {
+class UDPSocket : public DatagramSocket {
+public:
+  static int DOMAIN_DEFAULT; // AF_INET
+  static int PROTOCOL; // IPPROTO_UDP
 
-      public:
-        UDPSocket( int domain = DOMAIN_DEFAULT )
-          : DatagramSocket( domain )
-        { }
+public:
+  UDPSocket( int domain = DOMAIN_DEFAULT )
+    : DatagramSocket( domain )
+  { }
 
-        UDPSocket( int domain, socket_t socket_ )
-          : DatagramSocket( domain, PROTOCOL, socket_ )
-        { }
+  UDPSocket( int domain, socket_t socket_ )
+    : DatagramSocket( domain, PROTOCOL, socket_ )
+  { }
 
-        static YO_NEW_REF UDPSocket* create( int domain = DOMAIN_DEFAULT )
-        {
-          socket_t socket_ = Socket::create( domain, TYPE, PROTOCOL );
-          if ( socket_ != static_cast<socket_t>( -1 ) )
-            return new UDPSocket( domain, socket_ );
-          else
-            return NULL;
-        }
-
-        // Object
-        UDPSocket& inc_ref() { return Object::inc_ref( *this ); }
-      };
-    }
+  static YO_NEW_REF UDPSocket* create( int domain = DOMAIN_DEFAULT ) {
+    socket_t socket_ = Socket::create( domain, TYPE, PROTOCOL );
+    if ( socket_ != static_cast<socket_t>( -1 ) )
+      return new UDPSocket( domain, socket_ );
+    else
+      return NULL;
   }
+
+  // Object
+  UDPSocket& inc_ref() {
+    return Object::inc_ref( *this );
+  }
+};
+}
+}
 }
 
 

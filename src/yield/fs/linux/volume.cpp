@@ -36,45 +36,39 @@
 #include <fcntl.h>
 
 
-namespace yield
-{
-  namespace fs
-  {
-    namespace linux
-    {
-      yield::fs::File*
-      Volume::open
-      (
-        const Path& path,
-        uint32_t flags,
-        mode_t mode,
-        uint32_t attributes
-      )
-      {
-        fd_t fd = ::open( path.c_str(), flags, mode );
-        if ( fd != -1 )
-          return new File( fd );
-        else
-          return NULL;
-      }
+namespace yield {
+namespace fs {
+namespace linux {
+yield::fs::File*
+Volume::open
+(
+  const Path& path,
+  uint32_t flags,
+  mode_t mode,
+  uint32_t attributes
+) {
+  fd_t fd = ::open( path.c_str(), flags, mode );
+  if ( fd != -1 )
+    return new File( fd );
+  else
+    return NULL;
+}
 
-      YO_NEW_REF yield::fs::Directory* Volume::opendir( const Path& path )
-      {
-        DIR* dirp = ::opendir( path.c_str() );
-        if ( dirp != NULL )
-          return new Directory( dirp, path );
-        else
-          return NULL;
-      }
+YO_NEW_REF yield::fs::Directory* Volume::opendir( const Path& path ) {
+  DIR* dirp = ::opendir( path.c_str() );
+  if ( dirp != NULL )
+    return new Directory( dirp, path );
+  else
+    return NULL;
+}
 
-      yield::fs::ExtendedAttributes*
-      Volume::openxattrs
-      (
-        const Path& path
-      )
-      {
-        return new ExtendedAttributes( path );
-      }
-    }
-  }
+yield::fs::ExtendedAttributes*
+Volume::openxattrs
+(
+  const Path& path
+) {
+  return new ExtendedAttributes( path );
+}
+}
+}
 }

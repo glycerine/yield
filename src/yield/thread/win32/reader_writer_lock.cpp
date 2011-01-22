@@ -35,164 +35,142 @@
 #include <Windows.h>
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace win32
-    {
-      // Adapted from the RWLockFavorWriters example at
-      // http://msdn.microsoft.com/en-us/magazine/cc163405.aspx
+namespace yield {
+namespace thread {
+namespace win32 {
+// Adapted from the RWLockFavorWriters example at
+// http://msdn.microsoft.com/en-us/magazine/cc163405.aspx
 
-      ReaderWriterLock::ReaderWriterLock()
-      {
-        hReadyToRead = CreateEvent( NULL, TRUE, FALSE, NULL );
-        if ( hReadyToRead == NULL )
-          throw Exception();
+ReaderWriterLock::ReaderWriterLock() {
+  hReadyToRead = CreateEvent( NULL, TRUE, FALSE, NULL );
+  if ( hReadyToRead == NULL )
+    throw Exception();
 
-        hReadyToWrite = CreateSemaphore( NULL, 0, 1, NULL );
-        if ( hReadyToWrite == NULL )
-        {
-          DWORD dwLastError = GetLastError();
-          CloseHandle( hReadyToRead );
-          throw Exception( dwLastError );
-        }
-
-        active_writer_readers = 0;
-        waiting_readers_count = waiting_writers_count = 0;
-      }
-
-      ReaderWriterLock::~ReaderWriterLock()
-      {
-        CloseHandle( hReadyToRead );
-        CloseHandle( hReadyToWrite );
-      }
-
-      bool ReaderWriterLock::rdlock()
-      {
-        bool notify_readers = false;
-
-        cs.lock();
-
-        if ( waiting_writers_count > 0 || HIWORD( active_writer_readers ) > 0 )
-        {
-          waiting_readers_count++;
-
-          for ( ;; )
-          {
-            ResetEvent( hReadyToRead );
-
-            cs.unlock();
-            WaitForSingleObject( hReadyToRead, INFINITE );
-            cs.lock();
-
-            if
-            (
-              waiting_writers_count == 0
-              &&
-              HIWORD( active_writer_readers ) == 0
-            )
-              break;
-          }
-
-          waiting_readers_count--;
-          debug_assert_ge( waiting_readers_count, 0 );
-
-          active_writer_readers++;
-        }
-        else if ( ( ++active_writer_readers == 1 ) && waiting_readers_count != 0 )
-          notify_readers = true;
-
-        debug_assert_ne( HIWORD( active_writer_readers ), 0 );
-
-        cs.unlock();
-
-        if ( notify_readers )
-          SetEvent( hReadyToRead );
-
-        return true;
-      }
-
-      void ReaderWriterLock::rdunlock()
-      {
-        cs.lock();
-
-        debug_assert_eq( HIWORD( active_writer_readers ), 0 );
-        debug_assert_gt( LOWORD( active_writer_readers ), 0 );
-
-        if ( --active_writer_readers == 0 )
-          ResetEvent( hReadyToRead );
-
-        if ( waiting_writers_count != 0 && active_writer_readers == 0 )
-        {
-          waiting_writers_count--;
-          active_writer_readers = MAKELONG( 0, 1 );
-          ReleaseSemaphore( hReadyToWrite, 1, NULL );
-        }
-
-        cs.unlock();
-      }
-
-      bool ReaderWriterLock::tryrdlock()
-      {
-        DebugBreak();
-        return false;
-      }
-
-      bool ReaderWriterLock::trywrlock()
-      {
-        DebugBreak();
-        return false;
-      }
-
-      bool ReaderWriterLock::wrlock()
-      {
-        cs.lock();
-
-        if ( active_writer_readers != 0 )
-        {
-          waiting_writers_count++;
-          cs.unlock();
-          WaitForSingleObject( hReadyToWrite, INFINITE );
-        }
-        else
-        {
-          debug_assert_eq( active_writer_readers, 0 );
-          active_writer_readers = MAKELONG( 0, 1 );
-          cs.unlock();
-        }
-
-        return true;
-      }
-
-      void ReaderWriterLock::wrunlock()
-      {
-        bool notify_readers = false, notify_writer = false;
-
-        cs.lock();
-
-        debug_assert_eq( HIWORD( active_writer_readers ), 1 );
-        debug_assert_eq( LOWORD( active_writer_readers ), 0 );
-
-        if ( waiting_writers_count != 0 )
-        {
-          waiting_writers_count--;
-          notify_writer = true;
-        }
-        else
-        {
-          active_writer_readers = 0;
-          if ( waiting_readers_count != 0 )
-            notify_readers = true;
-        }
-
-        cs.unlock();
-
-        if ( notify_writer )
-          ReleaseSemaphore( hReadyToWrite, 1, NULL );
-        else if ( notify_readers )
-          SetEvent( hReadyToRead );
-      }
-    }
+  hReadyToWrite = CreateSemaphore( NULL, 0, 1, NULL );
+  if ( hReadyToWrite == NULL ) {
+    DWORD dwLastError = GetLastError();
+    CloseHandle( hReadyToRead );
+    throw Exception( dwLastError );
   }
+
+  active_writer_readers = 0;
+  waiting_readers_count = waiting_writers_count = 0;
+}
+
+ReaderWriterLock::~ReaderWriterLock() {
+  CloseHandle( hReadyToRead );
+  CloseHandle( hReadyToWrite );
+}
+
+bool ReaderWriterLock::rdlock() {
+  bool notify_readers = false;
+
+  cs.lock();
+
+  if ( waiting_writers_count > 0 || HIWORD( active_writer_readers ) > 0 ) {
+    waiting_readers_count++;
+
+    for ( ;; ) {
+      ResetEvent( hReadyToRead );
+
+      cs.unlock();
+      WaitForSingleObject( hReadyToRead, INFINITE );
+      cs.lock();
+
+      if
+      (
+        waiting_writers_count == 0
+        &&
+        HIWORD( active_writer_readers ) == 0
+      )
+        break;
+    }
+
+    waiting_readers_count--;
+    debug_assert_ge( waiting_readers_count, 0 );
+
+    active_writer_readers++;
+  } else if ( ( ++active_writer_readers == 1 ) && waiting_readers_count != 0 )
+    notify_readers = true;
+
+  debug_assert_ne( HIWORD( active_writer_readers ), 0 );
+
+  cs.unlock();
+
+  if ( notify_readers )
+    SetEvent( hReadyToRead );
+
+  return true;
+}
+
+void ReaderWriterLock::rdunlock() {
+  cs.lock();
+
+  debug_assert_eq( HIWORD( active_writer_readers ), 0 );
+  debug_assert_gt( LOWORD( active_writer_readers ), 0 );
+
+  if ( --active_writer_readers == 0 )
+    ResetEvent( hReadyToRead );
+
+  if ( waiting_writers_count != 0 && active_writer_readers == 0 ) {
+    waiting_writers_count--;
+    active_writer_readers = MAKELONG( 0, 1 );
+    ReleaseSemaphore( hReadyToWrite, 1, NULL );
+  }
+
+  cs.unlock();
+}
+
+bool ReaderWriterLock::tryrdlock() {
+  DebugBreak();
+  return false;
+}
+
+bool ReaderWriterLock::trywrlock() {
+  DebugBreak();
+  return false;
+}
+
+bool ReaderWriterLock::wrlock() {
+  cs.lock();
+
+  if ( active_writer_readers != 0 ) {
+    waiting_writers_count++;
+    cs.unlock();
+    WaitForSingleObject( hReadyToWrite, INFINITE );
+  } else {
+    debug_assert_eq( active_writer_readers, 0 );
+    active_writer_readers = MAKELONG( 0, 1 );
+    cs.unlock();
+  }
+
+  return true;
+}
+
+void ReaderWriterLock::wrunlock() {
+  bool notify_readers = false, notify_writer = false;
+
+  cs.lock();
+
+  debug_assert_eq( HIWORD( active_writer_readers ), 1 );
+  debug_assert_eq( LOWORD( active_writer_readers ), 0 );
+
+  if ( waiting_writers_count != 0 ) {
+    waiting_writers_count--;
+    notify_writer = true;
+  } else {
+    active_writer_readers = 0;
+    if ( waiting_readers_count != 0 )
+      notify_readers = true;
+  }
+
+  cs.unlock();
+
+  if ( notify_writer )
+    ReleaseSemaphore( hReadyToWrite, 1, NULL );
+  else if ( notify_readers )
+    SetEvent( hReadyToRead );
+}
+}
+}
 }

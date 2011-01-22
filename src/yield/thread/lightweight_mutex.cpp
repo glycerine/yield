@@ -29,44 +29,37 @@
 
 
 #ifdef _WIN32
-  #include "win32/lightweight_mutex.hpp"
+#include "win32/lightweight_mutex.hpp"
 #else
-  #include "posix/mutex.hpp"
+#include "posix/mutex.hpp"
 #endif
 #include "yield/thread/lightweight_mutex.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    LightweightMutex::LightweightMutex()
-    {
-      #ifdef _WIN32
-        pimpl = new win32::LightweightMutex;
-      #else
-        pimpl = new posix::Mutex;
-      #endif
-    }
+namespace yield {
+namespace thread {
+LightweightMutex::LightweightMutex() {
+#ifdef _WIN32
+  pimpl = new win32::LightweightMutex;
+#else
+  pimpl = new posix::Mutex;
+#endif
+}
 
-    LightweightMutex::~LightweightMutex()
-    {
-      delete pimpl;
-    }
+LightweightMutex::~LightweightMutex() {
+  delete pimpl;
+}
 
-    bool LightweightMutex::lock()
-    {
-      return pimpl->lock();
-    }
+bool LightweightMutex::lock() {
+  return pimpl->lock();
+}
 
-    bool LightweightMutex::trylock()
-    {
-      return pimpl->trylock();
-    }
+bool LightweightMutex::trylock() {
+  return pimpl->trylock();
+}
 
-    void LightweightMutex::unlock()
-    {
-      pimpl->unlock();
-    }
-  }
+void LightweightMutex::unlock() {
+  pimpl->unlock();
+}
+}
 }

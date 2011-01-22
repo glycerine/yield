@@ -36,40 +36,34 @@
 
 TEST_SUITE( UUID );
 
-namespace yield
-{
-  namespace net
-  {
-    #if defined(__sun) || defined(_WIN32) || defined(YIELD_HAVE_LINUX_LIBUUID)
-      TEST( UUID, create )
-      {
-        UUID uuid;
-      }
+namespace yield {
+namespace net {
+#if defined(__sun) || defined(_WIN32) || defined(YIELD_HAVE_LINUX_LIBUUID)
+TEST( UUID, create ) {
+  UUID uuid;
+}
 
-      TEST( UUID, cast_to_string )
-      {
-        UUID uuid;
-        string uuid_str = uuid;
-        throw_assert_false( uuid_str.empty() );
-        #if defined(_WIN32) || defined(YIELD_HAVE_LINUX_LIBUUID)
-          throw_assert_eq( uuid_str.size(), 36 );
-        #endif
-      }
+TEST( UUID, cast_to_string ) {
+  UUID uuid;
+  string uuid_str = uuid;
+  throw_assert_false( uuid_str.empty() );
+#if defined(_WIN32) || defined(YIELD_HAVE_LINUX_LIBUUID)
+  throw_assert_eq( uuid_str.size(), 36 );
+#endif
+}
 
-      TEST( UUID, compare )
-      {
-        UUID uuid1, uuid2;
-        throw_assert_ne( uuid1, uuid2 );
-      }
+TEST( UUID, compare ) {
+  UUID uuid1, uuid2;
+  throw_assert_ne( uuid1, uuid2 );
+}
 
-      TEST( UUID, parse )
-      {
-        UUID uuid1;
-        string uuid1_str = uuid1;
+TEST( UUID, parse ) {
+  UUID uuid1;
+  string uuid1_str = uuid1;
 
-        UUID uuid2( uuid1_str );
-        throw_assert_eq( uuid1, uuid2 );
-      }
-    #endif
-  }
+  UUID uuid2( uuid1_str );
+  throw_assert_eq( uuid1, uuid2 );
+}
+#endif
+}
 }

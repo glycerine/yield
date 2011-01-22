@@ -35,20 +35,16 @@
 #include "../posix/process.hpp"
 
 
-namespace yield
-{
-  namespace process
-  {
-    namespace sunos
-    {
-      class Process : public yield::process::posix::Process
-      {
-      public:
-        // Process
-        static tstring get_current_executable_file_path();
-      };
-    }
-  }
+namespace yield {
+namespace process {
+namespace sunos {
+class Process : public yield::process::posix::Process {
+public:
+  // Process
+  static tstring get_current_executable_file_path();
+};
+}
+}
 }
 
 

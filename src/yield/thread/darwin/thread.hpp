@@ -35,25 +35,21 @@
 #include "../posix/thread.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace darwin
-    {
-      class Thread : public yield::thread::posix::Thread
-      {
-      public:
-        Thread( Runnable& );
+namespace yield {
+namespace thread {
+namespace darwin {
+class Thread : public yield::thread::posix::Thread {
+public:
+  Thread( Runnable& );
 
-        static Thread* self();
-        void yield();
+  static Thread* self();
+  void yield();
 
-      private:
-        Thread( pthread_t );
-      };
-    }
-  }
+private:
+  Thread( pthread_t );
+};
+}
+}
 }
 
 

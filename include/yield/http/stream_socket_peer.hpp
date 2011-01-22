@@ -36,120 +36,124 @@
 #include "yield/aio/net/sockets/send_aiocb.hpp"
 
 
-namespace yield
-{
-  namespace net
-  {
-    namespace sockets
-    {
-      class StreamSocket;
+namespace yield {
+namespace net {
+namespace sockets {
+class StreamSocket;
+}
+}
+
+
+namespace http {
+template <class SocketPeerType>
+class StreamSocketPeer : public SocketPeerType {
+protected:
+  class recvAIOCB;
+  class sendAIOCB;
+
+
+  class Connection : public EventHandler {
+  public:
+    Connection
+    (
+      StreamSocketPeer&,
+      yield::net::sockets::SocketAddress& peername,
+      YO_NEW_REF yield::net::sockets::StreamSocket& socket_
+    );
+
+    virtual ~Connection();
+
+    void close();
+
+    const string& get_log_prefix();
+    yield::net::sockets::SocketAddress& get_peername() const {
+      return peername;
     }
-  }
+    yield::net::sockets::StreamSocket& get_socket() const {
+      return *socket_;
+    }
+
+    virtual void handle( YO_NEW_REF recvAIOCB& recv_aiocb ) = 0;
+    virtual void handle( YO_NEW_REF sendAIOCB& send_aiocb ) = 0;
+
+    // Object
+    virtual const char* get_type_name() const {
+      return "yield::net::sockets::StreamSocketPeer::Connection";
+    }
+
+    Connection& inc_ref() {
+      return Object::inc_ref( *this );
+    }
+
+  protected:
+    void enqueue( YO_NEW_REF recvAIOCB& recv_aiocb );
+    void enqueue( YO_NEW_REF sendAIOCB& send_aiocb );
+
+    yield::aio::net::sockets::AIOQueue& get_aio_queue() const {
+      return aio_queue;
+    }
+    Log* get_error_log() const {
+      return error_log;
+    }
+    Log* get_trace_log() const {
+      return trace_log;
+    }
+
+  private:
+    yield::aio::net::sockets::AIOQueue& aio_queue;
+    Log* error_log;
+    string log_prefix;
+    yield::net::sockets::SocketAddress& peername;
+    yield::net::sockets::StreamSocket* socket_;
+    Log* trace_log;
+  };
 
 
-  namespace http
-  {
-    template <class SocketPeerType>
-    class StreamSocketPeer : public SocketPeerType
-    {
-    protected:
-      class recvAIOCB;
-      class sendAIOCB;
+  class AIOCB {
+  public:
+    Connection& get_connection() {
+      return connection;
+    }
+
+  protected:
+    AIOCB( Connection& connection )
+      : connection( connection.inc_ref() )
+    { }
+
+  private:
+    Connection& connection;
+  };
 
 
-      class Connection : public EventHandler
-      {
-      public:
-        Connection
-        (
-          StreamSocketPeer&,
-          yield::net::sockets::SocketAddress& peername,
-          YO_NEW_REF yield::net::sockets::StreamSocket& socket_
-        );
-
-        virtual ~Connection();
-
-        void close();
-
-        const string& get_log_prefix();
-        yield::net::sockets::SocketAddress& get_peername() const { return peername; }
-        yield::net::sockets::StreamSocket& get_socket() const { return *socket_; }
-
-        virtual void handle( YO_NEW_REF recvAIOCB& recv_aiocb ) = 0;
-        virtual void handle( YO_NEW_REF sendAIOCB& send_aiocb ) = 0;
-
-        // Object
-        virtual const char* get_type_name() const
-        {
-          return "yield::net::sockets::StreamSocketPeer::Connection";
-        }
-
-        Connection& inc_ref() { return Object::inc_ref( *this ); }
-
-      protected:
-        void enqueue( YO_NEW_REF recvAIOCB& recv_aiocb );
-        void enqueue( YO_NEW_REF sendAIOCB& send_aiocb );
-
-        yield::aio::net::sockets::AIOQueue& get_aio_queue() const { return aio_queue; }
-        Log* get_error_log() const { return error_log; }
-        Log* get_trace_log() const { return trace_log; }
-
-      private:
-        yield::aio::net::sockets::AIOQueue& aio_queue;
-        Log* error_log;
-        string log_prefix;
-        yield::net::sockets::SocketAddress& peername;
-        yield::net::sockets::StreamSocket* socket_;
-        Log* trace_log;
-      };
+  class recvAIOCB
+    : public yield::aio::net::sockets::recvAIOCB,
+      public StreamSocketPeer::AIOCB {
+  public:
+    recvAIOCB( Connection& connection, YO_NEW_REF Buffer& buffer )
+      : yield::aio::net::sockets::recvAIOCB( connection.get_socket(), buffer, 0 ),
+        StreamSocketPeer::AIOCB( connection )
+    { }
+  };
 
 
-      class AIOCB
-      {
-      public:
-        Connection& get_connection() { return connection; }
+  class sendAIOCB
+    : public yield::aio::net::sockets::sendAIOCB,
+      public StreamSocketPeer::AIOCB {
+  public:
+    sendAIOCB( Connection& connection, YO_NEW_REF Buffer& buffer )
+      : yield::aio::net::sockets::sendAIOCB( connection.get_socket(), buffer, 0 ),
+        StreamSocketPeer::AIOCB( connection )
+    { }
+  };
 
-      protected:
-        AIOCB( Connection& connection )
-          : connection( connection.inc_ref() )
-        { }
+protected:
+  StreamSocketPeer( Log* error_log, Log* trace_log );
+  virtual ~StreamSocketPeer() { }
 
-      private:
-        Connection& connection;
-      };
-
-
-      class recvAIOCB
-        : public yield::aio::net::sockets::recvAIOCB,
-          public StreamSocketPeer::AIOCB
-      {
-      public:
-        recvAIOCB( Connection& connection, YO_NEW_REF Buffer& buffer )
-          : yield::aio::net::sockets::recvAIOCB( connection.get_socket(), buffer, 0 ),
-            StreamSocketPeer::AIOCB( connection )
-        { }
-      };
-
-
-      class sendAIOCB
-        : public yield::aio::net::sockets::sendAIOCB,
-          public StreamSocketPeer::AIOCB
-      {
-      public:
-        sendAIOCB( Connection& connection, YO_NEW_REF Buffer& buffer )
-          : yield::aio::net::sockets::sendAIOCB( connection.get_socket(), buffer, 0 ),
-            StreamSocketPeer::AIOCB( connection )
-        { }
-      };
-
-    protected:
-      StreamSocketPeer( Log* error_log, Log* trace_log );
-      virtual ~StreamSocketPeer() { }
-
-      // Stage
-      virtual void service( YO_NEW_REF Event& event );
-    };
-  }
+  // Stage
+  virtual void service( YO_NEW_REF Event& event );
+};
+}
 }
 
 

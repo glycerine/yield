@@ -37,32 +37,28 @@
 #include <string>
 using std::string;
 #ifdef YIELD_HAVE_LINUX_LIBUUID
-  #include <uuid/uuid.h>
+#include <uuid/uuid.h>
 #endif
 
 
-namespace yield
-{
-  namespace net
-  {
-    namespace linux
-    {
-      #ifdef YIELD_HAVE_LINUX_LIBUUID
-        class UUID
-        {
-        public:
-          UUID();
-          UUID( const string& uuid );
+namespace yield {
+namespace net {
+namespace linux {
+#ifdef YIELD_HAVE_LINUX_LIBUUID
+class UUID {
+public:
+  UUID();
+  UUID( const string& uuid );
 
-          bool operator==( const UUID& ) const;
-          operator string() const;
+  bool operator==( const UUID& ) const;
+  operator string() const;
 
-        private:
-          uuid_t uuid;
-        };
-      #endif
-    };
-  };
+private:
+  uuid_t uuid;
+};
+#endif
+};
+};
 };
 
 

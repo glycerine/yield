@@ -32,24 +32,20 @@
 #include "yield/thread/non_blocking_concurrent_queue.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    class NonBlockingConcurrentQueueTestSuite
-      : public QueueTestSuite< NonBlockingConcurrentQueue<uint32_t, 8> >
-    {
-    public:
-      NonBlockingConcurrentQueueTestSuite()
-      {
-        add
-        (
-          "queue full",
-          new QueueFullTest<NonBlockingConcurrentQueue<uint32_t, 8> >
-        );
-      }
-    };
+namespace yield {
+namespace thread {
+class NonBlockingConcurrentQueueTestSuite
+    : public QueueTestSuite< NonBlockingConcurrentQueue<uint32_t, 8> > {
+public:
+  NonBlockingConcurrentQueueTestSuite() {
+    add
+    (
+      "queue full",
+      new QueueFullTest<NonBlockingConcurrentQueue<uint32_t, 8> >
+    );
   }
+};
+}
 }
 
 TEST_SUITE_EX( NonBlockingConcurrentQueue, yield::thread::NonBlockingConcurrentQueueTestSuite );

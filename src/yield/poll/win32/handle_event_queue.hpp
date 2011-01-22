@@ -36,35 +36,31 @@
 #include "yield/thread/non_blocking_concurrent_queue.hpp"
 
 
-namespace yield
-{
-  namespace poll
-  {
-    namespace win32
-    {
-      class HandleEventQueue
-        : public EventQueue,
-          private yield::thread::NonBlockingConcurrentQueue<Event, 32>
-      {
-      public:
-        HandleEventQueue();
-        ~HandleEventQueue();
+namespace yield {
+namespace poll {
+namespace win32 {
+class HandleEventQueue
+  : public EventQueue,
+    private yield::thread::NonBlockingConcurrentQueue<Event, 32> {
+public:
+  HandleEventQueue();
+  ~HandleEventQueue();
 
-        bool associate( fd_t fd, uint16_t events );
-        bool dissociate( fd_t fd );
+  bool associate( fd_t fd, uint16_t events );
+  bool dissociate( fd_t fd );
 
-        // EventQueue
-        bool enqueue( YO_NEW_REF Event& event );
-        YO_NEW_REF Event* dequeue( const Time& timeout );
+  // EventQueue
+  bool enqueue( YO_NEW_REF Event& event );
+  YO_NEW_REF Event* dequeue( const Time& timeout );
 
-      private:
-        HandleEventQueue( void* hWakeEvent );
+private:
+  HandleEventQueue( void* hWakeEvent );
 
-      private:
-        vector<fd_t> fds;
-      };
-    }
-  }
+private:
+  vector<fd_t> fds;
+};
+}
+}
 }
 
 

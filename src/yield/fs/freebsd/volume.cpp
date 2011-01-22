@@ -35,36 +35,31 @@
 #include <fcntl.h>
 
 
-namespace yield
-{
-  namespace fs
-  {
-    namespace freebsd
-    {
-      yield::fs::File*
-      Volume::open
-      (
-        const Path& path,
-        uint32_t flags,
-        mode_t mode,
-        uint32_t attributes
-      )
-      {
-        fd_t fd = ::open( path.c_str(), flags, mode );
-        if ( fd != -1 )
-          return new File( fd );
-        else
-          return NULL;
-      }
+namespace yield {
+namespace fs {
+namespace freebsd {
+yield::fs::File*
+Volume::open
+(
+  const Path& path,
+  uint32_t flags,
+  mode_t mode,
+  uint32_t attributes
+) {
+  fd_t fd = ::open( path.c_str(), flags, mode );
+  if ( fd != -1 )
+    return new File( fd );
+  else
+    return NULL;
+}
 
-      yield::fs::ExtendedAttributes*
-      Volume::openxattrs
-      (
-        const Path& path
-      )
-      {
-        return new ExtendedAttributes( path );
-      }
-    }
-  }
+yield::fs::ExtendedAttributes*
+Volume::openxattrs
+(
+  const Path& path
+) {
+  return new ExtendedAttributes( path );
+}
+}
+}
 }

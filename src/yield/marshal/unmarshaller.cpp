@@ -31,43 +31,34 @@
 #include "yield/marshal/unmarshaller.hpp"
 
 
-namespace yield
-{
-  namespace marshal
-  {
-    float Unmarshaller::read_float( const Object& key )
-    {
-      return static_cast<float>( read_double( key ) );
-    }
+namespace yield {
+namespace marshal {
+float Unmarshaller::read_float( const Object& key ) {
+  return static_cast<float>( read_double( key ) );
+}
 
-    int8_t Unmarshaller::read_int8( const Object& key )
-    {
-      return static_cast<int8_t>( read_int16( key ) );
-    }
+int8_t Unmarshaller::read_int8( const Object& key ) {
+  return static_cast<int8_t>( read_int16( key ) );
+}
 
-    int16_t Unmarshaller::read_int16( const Object& key )
-    {
-      return static_cast<int16_t>( read_int32( key ) );
-    }
+int16_t Unmarshaller::read_int16( const Object& key ) {
+  return static_cast<int16_t>( read_int32( key ) );
+}
 
-    int32_t Unmarshaller::read_int32( const Object& key )
-    {
-      return static_cast<int32_t>( read_int64( key ) );
-    }
+int32_t Unmarshaller::read_int32( const Object& key ) {
+  return static_cast<int32_t>( read_int64( key ) );
+}
 
-    uint8_t Unmarshaller::read_uint8( const Object& key )
-    {
-      return static_cast<uint8_t>( read_uint16( key ) );
-    }
+uint8_t Unmarshaller::read_uint8( const Object& key ) {
+  return static_cast<uint8_t>( read_uint16( key ) );
+}
 
-    uint16_t Unmarshaller::read_uint16( const Object& key )
-    {
-      return static_cast<uint16_t>( read_uint32( key ) );
-    }
+uint16_t Unmarshaller::read_uint16( const Object& key ) {
+  return static_cast<uint16_t>( read_uint32( key ) );
+}
 
-    uint32_t Unmarshaller::read_uint32( const Object& key )
-    {
-      return static_cast<uint32_t>( read_uint64( key ) );
-    }
-  }
+uint32_t Unmarshaller::read_uint32( const Object& key ) {
+  return static_cast<uint32_t>( read_uint64( key ) );
+}
+}
 }

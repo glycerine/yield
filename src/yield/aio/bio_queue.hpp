@@ -36,35 +36,31 @@
 #include "yield/aio/aiocb.hpp"
 
 
-namespace yield
-{
-  namespace stage
-  {
-    class SynchronizedEventQueue;
-  }
+namespace yield {
+namespace stage {
+class SynchronizedEventQueue;
+}
 
 
-  namespace aio
-  {
-    class BIOQueue : public EventQueue
-    {
-    public:
-      bool enqueue( YO_NEW_REF AIOCB& aiocb );
+namespace aio {
+class BIOQueue : public EventQueue {
+public:
+  bool enqueue( YO_NEW_REF AIOCB& aiocb );
 
-      // yield::EventQueue
-      YO_NEW_REF Event& dequeue();
-      YO_NEW_REF Event* dequeue( const Time& timeout );
-      virtual bool enqueue( YO_NEW_REF Event& event );
-      YO_NEW_REF Event* trydequeue();
+  // yield::EventQueue
+  YO_NEW_REF Event& dequeue();
+  YO_NEW_REF Event* dequeue( const Time& timeout );
+  virtual bool enqueue( YO_NEW_REF Event& event );
+  YO_NEW_REF Event* trydequeue();
 
-    protected:
-      BIOQueue();
-      ~BIOQueue();
+protected:
+  BIOQueue();
+  ~BIOQueue();
 
-    private:
-      yield::stage::SynchronizedEventQueue* completed_event_queue;
-    };
-  }
+private:
+  yield::stage::SynchronizedEventQueue* completed_event_queue;
+};
+}
 }
 
 

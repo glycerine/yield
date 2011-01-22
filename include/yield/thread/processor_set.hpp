@@ -35,44 +35,49 @@
 #include "yield/object.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    #if defined(__linux__)
-      namespace linux { class ProcessorSet; }
-    #elif defined(__sun)
-      namespace sunos { class ProcessorSet; }
-    #elif defined(_WIN32)
-      namespace win32 { class ProcessorSet; }
-    #endif
+namespace yield {
+namespace thread {
+#if defined(__linux__)
+namespace linux {
+class ProcessorSet;
+}
+#elif defined(__sun)
+namespace sunos {
+class ProcessorSet;
+}
+#elif defined(_WIN32)
+namespace win32 {
+class ProcessorSet;
+}
+#endif
 
 
-    class ProcessorSet : public Object
-    {
-    public:
-      ProcessorSet();
-      ~ProcessorSet();
+class ProcessorSet : public Object {
+public:
+  ProcessorSet();
+  ~ProcessorSet();
 
-      void clear();
-      void clear( uint16_t processor_i );
-      uint16_t count() const;
-      bool empty() const { return count() == 0; }
-      bool isset( uint16_t processor_i ) const;
-      bool set( uint16_t processor_i );
-
-    private:
-      friend class Thread;
-
-      #if defined(__linux__)
-        linux::ProcessorSet* pimpl;
-      #elif defined(__sun)
-        sunos::ProcessorSet* pimpl;
-      #elif defined(_WIN32)
-        win32::ProcessorSet* pimpl;
-      #endif
-    };
+  void clear();
+  void clear( uint16_t processor_i );
+  uint16_t count() const;
+  bool empty() const {
+    return count() == 0;
   }
+  bool isset( uint16_t processor_i ) const;
+  bool set( uint16_t processor_i );
+
+private:
+  friend class Thread;
+
+#if defined(__linux__)
+  linux::ProcessorSet* pimpl;
+#elif defined(__sun)
+  sunos::ProcessorSet* pimpl;
+#elif defined(_WIN32)
+  win32::ProcessorSet* pimpl;
+#endif
+};
+}
 }
 
 

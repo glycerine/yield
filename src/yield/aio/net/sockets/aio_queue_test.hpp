@@ -44,128 +44,117 @@
 #include "yunit.hpp"
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace net
-    {
-      namespace sockets
-      {
-        using yield::net::sockets::SocketPair;
+namespace yield {
+namespace aio {
+namespace net {
+namespace sockets {
+using yield::net::sockets::SocketPair;
 
 
-        template <class AIOQueueType>
-        class AIOQueueTest : public yunit::Test
-        {
-        public:
-          // yunit::Test
-          void setup()
-          {
-            aio_queue = new AIOQueueType;
-          }
-
-          void teardown()
-          {
-            delete aio_queue;
-            aio_queue = NULL;
-          }
-
-        protected:
-          AIOQueueType& get_aio_queue() const { return *aio_queue; }
-
-        private:
-          AIOQueueType* aio_queue;
-        };
-
-
-        template <class AIOQueueType>
-        class AIOQueueRecvTest : public AIOQueueTest<AIOQueueType>
-        {
-        public:
-          // yunit::Test
-          void run()
-          {
-            SocketPair sockets;
-            if ( !this->get_aio_queue().associate( sockets.first() ) )
-              throw Exception();
-
-            sockets.second().send( "m", 1, 0 );
-
-            auto_Object<Buffer> buffer = new Page;
-
-            auto_Object<recvAIOCB> aiocb
-              = new recvAIOCB( sockets.first(), buffer->inc_ref(), 0 );
-
-            if ( !this->get_aio_queue().enqueue( aiocb->inc_ref() ) )
-              throw Exception();
-
-            auto_Object<recvAIOCB> out_aiocb
-              = object_cast<recvAIOCB>( this->get_aio_queue().dequeue() );
-            throw_assert_eq( &out_aiocb.get(), &aiocb.get() );
-            throw_assert_eq( out_aiocb->get_error(), 0 );
-            throw_assert_eq( out_aiocb->get_return(), 1 );
-            throw_assert_eq( buffer->size(), 1 );
-            throw_assert_eq( ( *buffer )[0], 'm' );
-          }
-        };
-
-
-        template <class AIOQueueType>
-        class AIOQueueSendTest : public AIOQueueTest<AIOQueueType>
-        {
-        public:
-          // yunit::Test
-          void run()
-          {
-            SocketPair sockets;
-            if ( !this->get_aio_queue().associate( sockets.first() ) )
-              throw Exception();
-
-            auto_Object<Buffer> buffer = new Page;
-            buffer->put( 'm', 512 );
-
-            auto_Object<sendAIOCB> aiocb
-              = new sendAIOCB( sockets.first(), buffer->inc_ref(), 0 );
-
-            if ( !this->get_aio_queue().enqueue( aiocb->inc_ref() ) )
-              throw Exception();
-
-            auto_Object<sendAIOCB> out_aiocb
-              = object_cast<sendAIOCB>( this->get_aio_queue().dequeue() );
-            throw_assert_eq( &out_aiocb.get(), &aiocb.get() );
-            throw_assert_eq( out_aiocb->get_error(), 0 );
-            throw_assert_eq( out_aiocb->get_return(), 512 );
-          }
-        };
-
-
-        template <class AIOQueueType>
-        class AIOQueueTestSuite : public EventQueueTestSuite<AIOQueueType>
-        {
-        public:
-          AIOQueueTestSuite()
-          {
-            add( "AIOQueue::dequeue", new EventQueueDequeueTest<AIOQueueType> );
-            add( "AIOQueue + recv", new AIOQueueRecvTest<AIOQueueType> );
-            add( "AIOQueue + send", new AIOQueueSendTest<AIOQueueType> );
-
-            add
-            (
-              "AIOQueue::timeddequeue",
-              new EventQueueTimedDequeueTest<AIOQueueType>
-            );
-
-            add
-            (
-              "AIOQueue::trydequeue",
-              new EventQueueTryDequeueTest<AIOQueueType>
-            );
-          }
-        };
-      }
-    }
+template <class AIOQueueType>
+class AIOQueueTest : public yunit::Test {
+public:
+  // yunit::Test
+  void setup() {
+    aio_queue = new AIOQueueType;
   }
+
+  void teardown() {
+    delete aio_queue;
+    aio_queue = NULL;
+  }
+
+protected:
+  AIOQueueType& get_aio_queue() const {
+    return *aio_queue;
+  }
+
+private:
+  AIOQueueType* aio_queue;
+};
+
+
+template <class AIOQueueType>
+class AIOQueueRecvTest : public AIOQueueTest<AIOQueueType> {
+public:
+  // yunit::Test
+  void run() {
+    SocketPair sockets;
+    if ( !this->get_aio_queue().associate( sockets.first() ) )
+      throw Exception();
+
+    sockets.second().send( "m", 1, 0 );
+
+    auto_Object<Buffer> buffer = new Page;
+
+    auto_Object<recvAIOCB> aiocb
+    = new recvAIOCB( sockets.first(), buffer->inc_ref(), 0 );
+
+    if ( !this->get_aio_queue().enqueue( aiocb->inc_ref() ) )
+      throw Exception();
+
+    auto_Object<recvAIOCB> out_aiocb
+    = object_cast<recvAIOCB>( this->get_aio_queue().dequeue() );
+    throw_assert_eq( &out_aiocb.get(), &aiocb.get() );
+    throw_assert_eq( out_aiocb->get_error(), 0 );
+    throw_assert_eq( out_aiocb->get_return(), 1 );
+    throw_assert_eq( buffer->size(), 1 );
+    throw_assert_eq( ( *buffer )[0], 'm' );
+  }
+};
+
+
+template <class AIOQueueType>
+class AIOQueueSendTest : public AIOQueueTest<AIOQueueType> {
+public:
+  // yunit::Test
+  void run() {
+    SocketPair sockets;
+    if ( !this->get_aio_queue().associate( sockets.first() ) )
+      throw Exception();
+
+    auto_Object<Buffer> buffer = new Page;
+    buffer->put( 'm', 512 );
+
+    auto_Object<sendAIOCB> aiocb
+    = new sendAIOCB( sockets.first(), buffer->inc_ref(), 0 );
+
+    if ( !this->get_aio_queue().enqueue( aiocb->inc_ref() ) )
+      throw Exception();
+
+    auto_Object<sendAIOCB> out_aiocb
+    = object_cast<sendAIOCB>( this->get_aio_queue().dequeue() );
+    throw_assert_eq( &out_aiocb.get(), &aiocb.get() );
+    throw_assert_eq( out_aiocb->get_error(), 0 );
+    throw_assert_eq( out_aiocb->get_return(), 512 );
+  }
+};
+
+
+template <class AIOQueueType>
+class AIOQueueTestSuite : public EventQueueTestSuite<AIOQueueType> {
+public:
+  AIOQueueTestSuite() {
+    add( "AIOQueue::dequeue", new EventQueueDequeueTest<AIOQueueType> );
+    add( "AIOQueue + recv", new AIOQueueRecvTest<AIOQueueType> );
+    add( "AIOQueue + send", new AIOQueueSendTest<AIOQueueType> );
+
+    add
+    (
+      "AIOQueue::timeddequeue",
+      new EventQueueTimedDequeueTest<AIOQueueType>
+    );
+
+    add
+    (
+      "AIOQueue::trydequeue",
+      new EventQueueTryDequeueTest<AIOQueueType>
+    );
+  }
+};
+}
+}
+}
 }
 
 

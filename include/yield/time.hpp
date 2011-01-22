@@ -35,118 +35,172 @@
 #include "yield/types.hpp"
 
 #ifdef __MACH__
-  struct mach_timespec;
-  typedef mach_timespec mach_timespec_t;
+struct mach_timespec;
+typedef mach_timespec mach_timespec_t;
 #endif
 
 
-namespace yield
-{
-  class Time
-  {
-  public:
-    const static uint64_t NS_IN_US = static_cast<uint64_t>( 1000 );
-    const static uint64_t NS_IN_MS = static_cast<uint64_t>( 1000000 );
-    const static uint64_t NS_IN_S  = static_cast<uint64_t>( 1000000000 );
-    const static uint64_t FOREVER  = static_cast<uint64_t>( ~0 );
+namespace yield {
+class Time {
+public:
+  const static uint64_t NS_IN_US = static_cast<uint64_t>( 1000 );
+  const static uint64_t NS_IN_MS = static_cast<uint64_t>( 1000000 );
+  const static uint64_t NS_IN_S  = static_cast<uint64_t>( 1000000000 );
+  const static uint64_t FOREVER  = static_cast<uint64_t>( ~0 );
 
-  public:
-    Time( uint64_t ns ) : _ns( ns ) { }
-    Time( int s ) : _ns( s * NS_IN_S ) { }
-    Time( double s )
-      : _ns( static_cast<uint64_t>( s * static_cast<double>( NS_IN_S ) ) )
-    { }
+public:
+  Time( uint64_t ns ) : _ns( ns ) { }
+  Time( int s ) : _ns( s * NS_IN_S ) { }
+  Time( double s )
+    : _ns( static_cast<uint64_t>( s * static_cast<double>( NS_IN_S ) ) )
+  { }
 
-    Time( const Time& t ) : _ns( t._ns ) { }
+  Time( const Time& t ) : _ns( t._ns ) { }
 
-    #ifndef _WIN32
-      Time( const timespec& );
-      Time( const timeval& );
-    #endif
+#ifndef _WIN32
+  Time( const timespec& );
+  Time( const timeval& );
+#endif
 
-    double ms() const { return static_cast<double>( _ns ) / NS_IN_MS; }
-    static Time now();
-    uint64_t ns() const { return _ns; }
-    double s() const { return static_cast<double>( _ns ) / NS_IN_S; }
-    double us() const { return static_cast<double>( _ns ) / NS_IN_US; }
-    operator uint64_t() const { return _ns; }
+  double ms() const {
+    return static_cast<double>( _ns ) / NS_IN_MS;
+  }
+  static Time now();
+  uint64_t ns() const {
+    return _ns;
+  }
+  double s() const {
+    return static_cast<double>( _ns ) / NS_IN_S;
+  }
+  double us() const {
+    return static_cast<double>( _ns ) / NS_IN_US;
+  }
+  operator uint64_t() const {
+    return _ns;
+  }
 
-    #ifdef __MACH__
-      operator mach_timespec_t() const;
-    #endif
-    #ifndef _WIN32
-      Time& operator=( const timespec& );
-      operator timespec() const;
-      Time& operator=( const struct timeval& );
-      operator timeval() const;
-    #endif
+#ifdef __MACH__
+  operator mach_timespec_t() const;
+#endif
+#ifndef _WIN32
+  Time& operator=( const timespec& );
+  operator timespec() const;
+  Time& operator=( const struct timeval& );
+  operator timeval() const;
+#endif
 
-    Time& operator=( const Time& t ) { _ns = t._ns; return *this; }
-    Time& operator=( uint64_t ns ) { _ns = ns; return *this; }
+  Time& operator=( const Time& t ) {
+    _ns = t._ns;
+    return *this;
+  }
+  Time& operator=( uint64_t ns ) {
+    _ns = ns;
+    return *this;
+  }
 
-    Time operator+( const Time& t ) const { return Time( _ns + t._ns ); }
-    Time operator+( uint64_t ns ) const { return Time( _ns + ns ); }
-    Time& operator+=( const Time& t ) { _ns += t._ns; return *this; }
-    Time& operator+=( uint64_t ns ) { _ns += ns; return *this; }
+  Time operator+( const Time& t ) const {
+    return Time( _ns + t._ns );
+  }
+  Time operator+( uint64_t ns ) const {
+    return Time( _ns + ns );
+  }
+  Time& operator+=( const Time& t ) {
+    _ns += t._ns;
+    return *this;
+  }
+  Time& operator+=( uint64_t ns ) {
+    _ns += ns;
+    return *this;
+  }
 
-    Time operator-( const Time& t ) const
-    {
-      if ( _ns >= t._ns )
-        return Time( _ns - t._ns );
-      else
-        return Time( static_cast<uint64_t>( 0 ) );
-    }
+  Time operator-( const Time& t ) const {
+    if ( _ns >= t._ns )
+      return Time( _ns - t._ns );
+    else
+      return Time( static_cast<uint64_t>( 0 ) );
+  }
 
-    Time operator-( uint64_t ns ) const
-    {
-      if ( _ns >= ns )
-        return Time( _ns - ns );
-      else
-        return Time( static_cast<uint64_t>( 0 ) );
-    }
+  Time operator-( uint64_t ns ) const {
+    if ( _ns >= ns )
+      return Time( _ns - ns );
+    else
+      return Time( static_cast<uint64_t>( 0 ) );
+  }
 
-    Time& operator-=( const Time& t )
-    {
-      _ns = ( _ns >= t._ns ) ? ( _ns - t._ns ) : 0;
-      return *this;
-    }
+  Time& operator-=( const Time& t ) {
+    _ns = ( _ns >= t._ns ) ? ( _ns - t._ns ) : 0;
+    return *this;
+  }
 
-    Time& operator-=( uint64_t ns )
-    {
-      if ( _ns >= ns )
-        _ns -= ns;
-      else
-        _ns = 0;
+  Time& operator-=( uint64_t ns ) {
+    if ( _ns >= ns )
+      _ns -= ns;
+    else
+      _ns = 0;
 
-      return *this;
-    }
+    return *this;
+  }
 
-    Time operator*( const Time& t ) const { return Time( _ns * t._ns ); }
-    Time operator*( uint64_t ns ) const { return Time( _ns * ns ); }
-    Time& operator*=( const Time& t ) { _ns *= t._ns; return *this; }
-    Time& operator*=( const uint64_t ns ) { _ns *= ns; return *this; }
+  Time operator*( const Time& t ) const {
+    return Time( _ns * t._ns );
+  }
+  Time operator*( uint64_t ns ) const {
+    return Time( _ns * ns );
+  }
+  Time& operator*=( const Time& t ) {
+    _ns *= t._ns;
+    return *this;
+  }
+  Time& operator*=( const uint64_t ns ) {
+    _ns *= ns;
+    return *this;
+  }
 
-    bool operator==( const Time& t ) const { return _ns == t._ns; }
-    bool operator==( uint64_t ns ) const { return _ns == ns; }
+  bool operator==( const Time& t ) const {
+    return _ns == t._ns;
+  }
+  bool operator==( uint64_t ns ) const {
+    return _ns == ns;
+  }
 
-    bool operator!=( const Time& t ) const { return _ns != t._ns; }
-    bool operator!=( uint64_t ns ) const { return _ns != ns; }
+  bool operator!=( const Time& t ) const {
+    return _ns != t._ns;
+  }
+  bool operator!=( uint64_t ns ) const {
+    return _ns != ns;
+  }
 
-    bool operator<( const Time& t ) const { return _ns < t._ns; }
-    bool operator<( uint64_t ns ) const { return _ns < ns; }
+  bool operator<( const Time& t ) const {
+    return _ns < t._ns;
+  }
+  bool operator<( uint64_t ns ) const {
+    return _ns < ns;
+  }
 
-    bool operator<=( const Time& t ) const { return _ns <= t._ns; }
-    bool operator<=( uint64_t ns ) const { return _ns <= ns; }
+  bool operator<=( const Time& t ) const {
+    return _ns <= t._ns;
+  }
+  bool operator<=( uint64_t ns ) const {
+    return _ns <= ns;
+  }
 
-    bool operator>( const Time& t ) const { return _ns > t._ns; }
-    bool operator>( uint64_t ns ) const { return _ns > ns; }
+  bool operator>( const Time& t ) const {
+    return _ns > t._ns;
+  }
+  bool operator>( uint64_t ns ) const {
+    return _ns > ns;
+  }
 
-    bool operator>=( const Time& t ) const { return _ns >= t._ns; }
-    bool operator>=( uint64_t ns ) const { return _ns >= ns; }
+  bool operator>=( const Time& t ) const {
+    return _ns >= t._ns;
+  }
+  bool operator>=( uint64_t ns ) const {
+    return _ns >= ns;
+  }
 
-  private:
-    uint64_t _ns; // Not relative to any epoch
-  };
+private:
+  uint64_t _ns; // Not relative to any epoch
+};
 }
 
 

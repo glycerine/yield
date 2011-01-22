@@ -38,103 +38,85 @@
 #include <queue>
 
 
-namespace yield
-{
-  namespace thread
-  {
-    template <class ElementType>
-    class SynchronizedQueue : private std::queue<ElementType*>
-    {
-    public:
-      ElementType& dequeue()
-      {
-        cond.lock_mutex();
+namespace yield {
+namespace thread {
+template <class ElementType>
+class SynchronizedQueue : private std::queue<ElementType*> {
+public:
+  ElementType& dequeue() {
+    cond.lock_mutex();
 
-        while ( std::queue<ElementType*>::empty() )
-          cond.wait();
+    while ( std::queue<ElementType*>::empty() )
+      cond.wait();
 
-        ElementType* element = std::queue<ElementType*>::front();
-        std::queue<ElementType*>::pop();
+    ElementType* element = std::queue<ElementType*>::front();
+    std::queue<ElementType*>::pop();
 
-        cond.unlock_mutex();
+    cond.unlock_mutex();
 
-        return *element;
-      }
+    return *element;
+  }
 
-      ElementType* dequeue( const Time& timeout )
-      {
-        Time timeout_left( timeout );
+  ElementType* dequeue( const Time& timeout ) {
+    Time timeout_left( timeout );
 
-        cond.lock_mutex();
+    cond.lock_mutex();
 
-        if ( !std::queue<ElementType*>::empty() )
-        {
+    if ( !std::queue<ElementType*>::empty() ) {
+      ElementType* element = std::queue<ElementType*>::front();
+      std::queue<ElementType*>::pop();
+      cond.unlock_mutex();
+      return element;
+    } else {
+      for ( ;; ) {
+        Time start_time = Time::now();
+
+        cond.wait( timeout_left );
+
+        if ( !std::queue<ElementType*>::empty() ) {
           ElementType* element = std::queue<ElementType*>::front();
           std::queue<ElementType*>::pop();
           cond.unlock_mutex();
           return element;
-        }
-        else
-        {
-          for ( ;; )
-          {
-            Time start_time = Time::now();
-
-            cond.wait( timeout_left );
-
-            if ( !std::queue<ElementType*>::empty() )
-            {
-              ElementType* element = std::queue<ElementType*>::front();
-              std::queue<ElementType*>::pop();
-              cond.unlock_mutex();
-              return element;
-            }
-            else
-            {
-              Time elapsed_time( Time::now() - start_time );
-              if ( elapsed_time < timeout_left )
-                timeout_left -= elapsed_time;
-              else
-              {
-                cond.unlock_mutex();
-                return NULL;
-              }
-            }
+        } else {
+          Time elapsed_time( Time::now() - start_time );
+          if ( elapsed_time < timeout_left )
+            timeout_left -= elapsed_time;
+          else {
+            cond.unlock_mutex();
+            return NULL;
           }
         }
       }
-
-      bool enqueue( ElementType& element )
-      {
-        cond.lock_mutex();
-        std::queue<ElementType*>::push( &element );
-        cond.signal();
-        cond.unlock_mutex();
-        return true;
-      }
-
-      ElementType* trydequeue()
-      {
-        if ( cond.trylock_mutex() )
-        {
-          if ( !std::queue<ElementType*>::empty() )
-          {
-            ElementType* element = std::queue<ElementType*>::front();
-            std::queue<ElementType*>::pop();
-            cond.unlock_mutex();
-            return element;
-          }
-          else
-            cond.unlock_mutex();
-        }
-
-        return NULL;
-      }
-
-    private:
-      yield::thread::ConditionVariable cond;
-    };
+    }
   }
+
+  bool enqueue( ElementType& element ) {
+    cond.lock_mutex();
+    std::queue<ElementType*>::push( &element );
+    cond.signal();
+    cond.unlock_mutex();
+    return true;
+  }
+
+  ElementType* trydequeue() {
+    if ( cond.trylock_mutex() ) {
+      if ( !std::queue<ElementType*>::empty() ) {
+        ElementType* element = std::queue<ElementType*>::front();
+        std::queue<ElementType*>::pop();
+        cond.unlock_mutex();
+        return element;
+      } else
+        cond.unlock_mutex();
+    }
+
+    return NULL;
+  }
+
+private:
+  yield::thread::ConditionVariable cond;
+};
+}
 }
 
 

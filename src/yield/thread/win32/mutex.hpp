@@ -32,28 +32,26 @@
 #define _YIELD_THREAD_WIN32_MUTEX_HPP_
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace win32
-    {
-      class Mutex
-      {
-      public:
-        Mutex();
-        ~Mutex();
+namespace yield {
+namespace thread {
+namespace win32 {
+class Mutex {
+public:
+  Mutex();
+  ~Mutex();
 
-        bool lock();
-        operator void*() const { return hMutex; }
-        bool trylock();
-        void unlock();
-
-      private:
-        void* hMutex;
-      };
-    }
+  bool lock();
+  operator void*() const {
+    return hMutex;
   }
+  bool trylock();
+  void unlock();
+
+private:
+  void* hMutex;
+};
+}
+}
 }
 
 

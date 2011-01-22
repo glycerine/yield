@@ -33,32 +33,28 @@
 #include "yield/http/socket_peer.hpp"
 
 
-namespace yield
-{
-  namespace http
-  {
-    using yield::aio::net::sockets::AIOQueue;
+namespace yield {
+namespace http {
+using yield::aio::net::sockets::AIOQueue;
 
 
-    SocketPeer::SocketPeer
-    (
-      Log* error_log,
-      Log* trace_log
-    )
-    : yield::stage::Stage( *new AIOQueue ),
-      error_log( Object::inc_ref( error_log ) ),
-      trace_log( Object::inc_ref( trace_log ) )
-    { }
+SocketPeer::SocketPeer
+(
+  Log* error_log,
+  Log* trace_log
+)
+  : yield::stage::Stage( *new AIOQueue ),
+    error_log( Object::inc_ref( error_log ) ),
+    trace_log( Object::inc_ref( trace_log ) )
+{ }
 
-    SocketPeer::~SocketPeer()
-    {
-      Log::dec_ref( error_log );
-      Log::dec_ref( trace_log );
-    }
+SocketPeer::~SocketPeer() {
+  Log::dec_ref( error_log );
+  Log::dec_ref( trace_log );
+}
 
-    AIOQueue& SocketPeer::get_aio_queue()
-    {
-      return static_cast<AIOQueue&>( get_event_queue() );
-    }
-  }
+AIOQueue& SocketPeer::get_aio_queue() {
+  return static_cast<AIOQueue&>( get_event_queue() );
+}
+}
 }

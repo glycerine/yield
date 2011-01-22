@@ -37,68 +37,77 @@
 #include "yield/time.hpp"
 
 
-namespace yield
-{
-  class EventQueue;
+namespace yield {
+class EventQueue;
 
 
-  namespace stage
-  {
-    class Stage : public EventHandler
-    {
-    public:
-      class ShutdownEvent : public Event
-      {
-      public:
-        const static uint32_t TYPE_ID = 1809111020UL;
+namespace stage {
+class Stage : public EventHandler {
+public:
+  class ShutdownEvent : public Event {
+  public:
+    const static uint32_t TYPE_ID = 1809111020UL;
 
-        // Object
-        uint32_t get_type_id() const { return TYPE_ID; }
+    // Object
+    uint32_t get_type_id() const {
+      return TYPE_ID;
+    }
 
-        const char* get_type_name() const
-        {
-          return "yield::stage::Stage::ShutdownEvent";
-        }
-      };
-
-    public:
-      Stage( YO_NEW_REF EventHandler& );
-      Stage( YO_NEW_REF EventHandler&, YO_NEW_REF EventQueue& );
-      ~Stage();
-
-      double get_arrival_rate_s() const { return arrival_rate_s; }
-      double get_rho() const { return rho; }
-      double get_service_rate_s() const { return service_rate_s; }
-
-      void visit(); // Blocking
-      bool visit( const Time& timeout );
-
-      // Object
-      Stage& inc_ref() { return Object::inc_ref( *this ); }
-
-      // EventHandler
-      void handle( YO_NEW_REF Event& event ) { enqueue( event ); }
-
-    protected:
-      Stage( YO_NEW_REF EventQueue& );
-
-      EventQueue& get_event_queue() { return event_queue; }
-
-    private:
-      void enqueue( YO_NEW_REF Event& event );
-      void init();
-      virtual void service( YO_NEW_REF Event& event );
-
-    private:
-      double arrival_rate_s;
-      EventHandler* event_handler;
-      EventQueue& event_queue;
-      uint32_t event_queue_arrival_count, event_queue_length;
-      double rho;
-      double service_rate_s;
-      // Sampler<uint64_t, 1024, Mutex> service_times;
-    };
+    const char* get_type_name() const {
+      return "yield::stage::Stage::ShutdownEvent";
+    }
   };
+
+public:
+  Stage( YO_NEW_REF EventHandler& );
+  Stage( YO_NEW_REF EventHandler&, YO_NEW_REF EventQueue& );
+  ~Stage();
+
+  double get_arrival_rate_s() const {
+    return arrival_rate_s;
+  }
+  double get_rho() const {
+    return rho;
+  }
+  double get_service_rate_s() const {
+    return service_rate_s;
+  }
+
+  void visit(); // Blocking
+  bool visit( const Time& timeout );
+
+  // Object
+  Stage& inc_ref() {
+    return Object::inc_ref( *this );
+  }
+
+  // EventHandler
+  void handle( YO_NEW_REF Event& event ) {
+    enqueue( event );
+  }
+
+protected:
+  Stage( YO_NEW_REF EventQueue& );
+
+  EventQueue& get_event_queue() {
+    return event_queue;
+  }
+
+private:
+  void enqueue( YO_NEW_REF Event& event );
+  void init();
+  virtual void service( YO_NEW_REF Event& event );
+
+private:
+  double arrival_rate_s;
+  EventHandler* event_handler;
+  EventQueue& event_queue;
+  uint32_t event_queue_arrival_count, event_queue_length;
+  double rho;
+  double service_rate_s;
+  // Sampler<uint64_t, 1024, Mutex> service_times;
+};
+};
 };
 
 

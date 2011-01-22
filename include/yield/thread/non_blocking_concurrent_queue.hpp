@@ -36,162 +36,148 @@
 #include "yield/atomic.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    // Adapted from Michael, M. M. and Scott, M. L. 1996. Simple, fast, and practical
-    // non-blocking and blocking concurrent queue algorithms.
+namespace yield {
+namespace thread {
+// Adapted from Michael, M. M. and Scott, M. L. 1996. Simple, fast, and practical
+// non-blocking and blocking concurrent queue algorithms.
 
-    template <class ElementType, size_t Length>
-    class NonBlockingConcurrentQueue
-    {
-    public:
-      NonBlockingConcurrentQueue()
-      {
-        debug_assert_eq( sizeof( ElementType* ), sizeof( atomic_t ) );
+template <class ElementType, size_t Length>
+class NonBlockingConcurrentQueue {
+public:
+  NonBlockingConcurrentQueue() {
+    debug_assert_eq( sizeof( ElementType* ), sizeof( atomic_t ) );
 
-        elements[0] = 1; // Sentinel element
-        for ( size_t element_i = 1; element_i < Length + 2; element_i++ )
-          elements[element_i] = 0;
+    elements[0] = 1; // Sentinel element
+    for ( size_t element_i = 1; element_i < Length + 2; element_i++ )
+      elements[element_i] = 0;
 
-        head_element_i = 0;
-        tail_element_i = 1;
+    head_element_i = 0;
+    tail_element_i = 1;
+  }
+
+  bool enqueue( ElementType& element ) {
+    atomic_t new_element = reinterpret_cast<atomic_t>( &element );
+    debug_assert_false( new_element & 1 );
+    new_element >>= 1;
+    debug_assert_false( new_element & POINTER_HIGH_BIT );
+
+    for ( ;; ) {
+      atomic_t tail_element_i_copy = tail_element_i; // te
+      atomic_t last_try_element_i = tail_element_i_copy; // ate
+      atomic_t try_element = elements[last_try_element_i];
+      atomic_t try_element_i
+      = ( last_try_element_i + 1 ) % ( Length + 2 ); // temp
+
+      while ( try_element != 0 && try_element != 1 ) {
+        if ( tail_element_i_copy != tail_element_i ) break;
+        if ( try_element_i == head_element_i ) break;
+        try_element = elements[try_element_i];
+        last_try_element_i = try_element_i;
+        try_element_i = ( try_element_i + 1 ) % ( Length + 2 );
       }
 
-      bool enqueue( ElementType& element )
-      {
-        atomic_t new_element = reinterpret_cast<atomic_t>( &element );
-        debug_assert_false( new_element & 1 );
-        new_element >>= 1;
-        debug_assert_false( new_element & POINTER_HIGH_BIT );
+      if ( tail_element_i_copy != tail_element_i )
+        continue;
 
-        for ( ;; )
-        {
-          atomic_t tail_element_i_copy = tail_element_i; // te
-          atomic_t last_try_element_i = tail_element_i_copy; // ate
-          atomic_t try_element = elements[last_try_element_i];
-          atomic_t try_element_i
-            = ( last_try_element_i + 1 ) % ( Length + 2 ); // temp
+      if ( try_element_i == head_element_i ) {
+        last_try_element_i = try_element_i;
+        try_element_i = ( try_element_i + 1 ) % ( Length + 2 );
+        try_element = elements[try_element_i];
 
-          while ( try_element != 0 && try_element != 1 )
-          {
-            if ( tail_element_i_copy != tail_element_i ) break;
-            if ( try_element_i == head_element_i ) break;
-            try_element = elements[try_element_i];
-            last_try_element_i = try_element_i;
-            try_element_i = ( try_element_i + 1 ) % ( Length + 2 );
-          }
+        if ( try_element != 0 && try_element != 1 )
+          return false; // Queue is full
 
-          if ( tail_element_i_copy != tail_element_i )
-            continue;
+        atomic_cas( &head_element_i, try_element_i, last_try_element_i );
 
-          if ( try_element_i == head_element_i )
-          {
-            last_try_element_i = try_element_i;
-            try_element_i = ( try_element_i + 1 ) % ( Length + 2 );
-            try_element = elements[try_element_i];
-
-            if ( try_element != 0 && try_element != 1 )
-              return false; // Queue is full
-
-            atomic_cas( &head_element_i, try_element_i, last_try_element_i );
-
-            continue;
-          }
-
-          if ( tail_element_i_copy != tail_element_i )
-            continue;
-
-          if
-          (
-            atomic_cas
-            (
-              &elements[last_try_element_i],
-              try_element == 1
-                ? ( new_element | POINTER_HIGH_BIT )
-                : new_element,
-              try_element
-            )
-            ==
-            try_element
-          )
-          {
-            if ( try_element_i % 2 == 0 )
-              atomic_cas( &tail_element_i, try_element_i, tail_element_i_copy );
-
-            return true;
-          }
-        }
+        continue;
       }
 
-      ElementType* trydequeue()
-      {
-        for ( ;; )
-        {
-          atomic_t head_element_i_copy = head_element_i;
-          atomic_t try_element_i = ( head_element_i_copy + 1 ) % ( Length + 2 );
-          atomic_t try_element = elements[try_element_i];
+      if ( tail_element_i_copy != tail_element_i )
+        continue;
 
-          while ( try_element == 0 || try_element == 1 )
-          {
-            if ( head_element_i_copy != head_element_i ) break;
-            if ( try_element_i == tail_element_i ) return 0;
-            try_element_i = ( try_element_i + 1 ) % ( Length + 2 );
-            try_element = elements[try_element_i];
-          }
+      if
+      (
+        atomic_cas
+        (
+          &elements[last_try_element_i],
+          try_element == 1
+          ? ( new_element | POINTER_HIGH_BIT )
+          : new_element,
+          try_element
+        )
+        ==
+        try_element
+      ) {
+        if ( try_element_i % 2 == 0 )
+          atomic_cas( &tail_element_i, try_element_i, tail_element_i_copy );
 
-          if ( head_element_i_copy != head_element_i )
-            continue;
+        return true;
+      }
+    }
+  }
 
-          if ( try_element_i == tail_element_i )
-          {
-            atomic_cas
-            (
-              &tail_element_i,
-              ( try_element_i + 1 ) % ( Length + 2 ),
-              try_element_i
-            );
+  ElementType* trydequeue() {
+    for ( ;; ) {
+      atomic_t head_element_i_copy = head_element_i;
+      atomic_t try_element_i = ( head_element_i_copy + 1 ) % ( Length + 2 );
+      atomic_t try_element = elements[try_element_i];
 
-            continue;
-          }
-
-          if ( head_element_i_copy != head_element_i )
-            continue;
-
-          if
-          (
-            atomic_cas
-            (
-              &elements[try_element_i],
-              ( try_element & POINTER_HIGH_BIT ) ? 1 : 0,
-              try_element
-            )
-            ==
-            try_element
-          )
-          {
-            if ( try_element_i % 2 == 0 )
-              atomic_cas( &head_element_i, try_element_i, head_element_i_copy );
-
-            atomic_t return_element = try_element;
-            return_element &= POINTER_LOW_BITS;
-            return_element <<= 1;
-            return reinterpret_cast<ElementType*>( return_element );
-          }
-        }
+      while ( try_element == 0 || try_element == 1 ) {
+        if ( head_element_i_copy != head_element_i ) break;
+        if ( try_element_i == tail_element_i ) return 0;
+        try_element_i = ( try_element_i + 1 ) % ( Length + 2 );
+        try_element = elements[try_element_i];
       }
 
-    private:
-      const static atomic_t POINTER_HIGH_BIT
-        = static_cast<intptr_t>( 1 ) << ( ( sizeof( intptr_t ) * 8 ) - 1 );
-      const static atomic_t POINTER_LOW_BITS = ~POINTER_HIGH_BIT;
+      if ( head_element_i_copy != head_element_i )
+        continue;
 
-    private:
-      volatile atomic_t elements[Length + 2];
-      volatile atomic_t head_element_i, tail_element_i;
-    };
-  };
+      if ( try_element_i == tail_element_i ) {
+        atomic_cas
+        (
+          &tail_element_i,
+          ( try_element_i + 1 ) % ( Length + 2 ),
+          try_element_i
+        );
+
+        continue;
+      }
+
+      if ( head_element_i_copy != head_element_i )
+        continue;
+
+      if
+      (
+        atomic_cas
+        (
+          &elements[try_element_i],
+          ( try_element & POINTER_HIGH_BIT ) ? 1 : 0,
+          try_element
+        )
+        ==
+        try_element
+      ) {
+        if ( try_element_i % 2 == 0 )
+          atomic_cas( &head_element_i, try_element_i, head_element_i_copy );
+
+        atomic_t return_element = try_element;
+        return_element &= POINTER_LOW_BITS;
+        return_element <<= 1;
+        return reinterpret_cast<ElementType*>( return_element );
+      }
+    }
+  }
+
+private:
+  const static atomic_t POINTER_HIGH_BIT
+  = static_cast<intptr_t>( 1 ) << ( ( sizeof( intptr_t ) * 8 ) - 1 );
+  const static atomic_t POINTER_LOW_BITS = ~POINTER_HIGH_BIT;
+
+private:
+  volatile atomic_t elements[Length + 2];
+  volatile atomic_t head_element_i, tail_element_i;
+};
+};
 };
 
 

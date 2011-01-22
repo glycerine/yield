@@ -35,27 +35,35 @@
 #include "yield/message.hpp"
 
 
-namespace yield
-{
-  class Response : public Message
-  {
-  public:
-    const static uint32_t TYPE_ID = 1025441098UL;
+namespace yield {
+class Response : public Message {
+public:
+  const static uint32_t TYPE_ID = 1025441098UL;
 
-  public:
-    Response() { }
-    virtual ~Response() { }
+public:
+  Response() { }
+  virtual ~Response() { }
 
-    virtual bool is_exception() const { return false; }
+  virtual bool is_exception() const {
+    return false;
+  }
 
-    // Object
-    virtual uint32_t get_type_id() const { return TYPE_ID; }
-    virtual const char* get_type_name() const { return "yield::Response"; }
-    Response& inc_ref() { return Object::inc_ref( *this ); }
+  // Object
+  virtual uint32_t get_type_id() const {
+    return TYPE_ID;
+  }
+  virtual const char* get_type_name() const {
+    return "yield::Response";
+  }
+  Response& inc_ref() {
+    return Object::inc_ref( *this );
+  }
 
-    // Message
-    bool is_request() const { return false; }
-  };
+  // Message
+  bool is_request() const {
+    return false;
+  }
+};
 };
 
 

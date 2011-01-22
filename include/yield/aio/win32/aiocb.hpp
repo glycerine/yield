@@ -39,95 +39,103 @@ struct _OVERLAPPED;
 typedef struct _OVERLAPPED OVERLAPPED;
 
 
-namespace yield
-{
-  class Channel;
-  class EventHandler;
+namespace yield {
+class Channel;
+class EventHandler;
 
 
-  namespace aio
-  {
-    namespace win32
-    {
-      class AIOQueue;
+namespace aio {
+namespace win32 {
+class AIOQueue;
 
 
-      class AIOCB : public Event
-      {
-      public:
-        enum RetryStatus
-        {
-          RETRY_STATUS_COMPLETE,
-          RETRY_STATUS_ERROR,
-          RETRY_STATUS_WANT_READ,
-          RETRY_STATUS_WANT_WRITE
-        };
+class AIOCB : public Event {
+public:
+  enum RetryStatus {
+    RETRY_STATUS_COMPLETE,
+    RETRY_STATUS_ERROR,
+    RETRY_STATUS_WANT_READ,
+    RETRY_STATUS_WANT_WRITE
+  };
 
-      public:
-        virtual ~AIOCB();
+public:
+  virtual ~AIOCB();
 
-        bool cancel();
+  bool cancel();
 
-        static AIOCB& cast( ::OVERLAPPED& );
+  static AIOCB& cast( ::OVERLAPPED& );
 
-        Channel& get_channel() { return channel; }
-        EventHandler* get_completion_handler() { return completion_handler; }
-        uint32_t get_error() const { return error; }
-        size_t get_nbytes() const { return nbytes; }
-        uint64_t get_offset() const;
-        ssize_t get_return() const { return return_; }
-
-        virtual bool issue( EventHandler& completion_handler );
-        virtual bool issue( win32::AIOQueue& );
-        virtual RetryStatus retry() = 0;
-
-        void set_error( uint32_t error ) { this->error = error; }
-        virtual void set_return( ssize_t return_ ) { this->return_ = return_; }
-
-        // yield::Object
-        virtual uint32_t get_type_id() const = 0;
-        virtual const char* get_type_name() const = 0;
-        AIOCB& inc_ref() { return Object::inc_ref( *this ); }
-
-      protected:
-        AIOCB( Channel&, void* buf, size_t nbytes, uint64_t offset );
-
-        operator ::OVERLAPPED*();
-
-        void set_completion_handler( EventHandler& completion_handler );
-
-      private:
-        typedef struct
-        {
-          unsigned long* Internal;
-          unsigned long* InternalHigh;
-          #pragma warning( push )
-          #pragma warning( disable: 4201 )
-            union
-            {
-              struct
-              {
-                unsigned long Offset;
-                unsigned long OffsetHigh;
-              };
-              void* Pointer;
-            };
-          #pragma warning( pop )
-          void* hEvent;
-        } OVERLAPPED;
-
-      private:
-        OVERLAPPED overlapped;
-        AIOCB* this_aiocb;
-
-        Channel& channel;
-        EventHandler* completion_handler;
-        uint32_t error;
-        size_t nbytes;
-        ssize_t return_;
-      };
-    }
+  Channel& get_channel() {
+    return channel;
   }
+  EventHandler* get_completion_handler() {
+    return completion_handler;
+  }
+  uint32_t get_error() const {
+    return error;
+  }
+  size_t get_nbytes() const {
+    return nbytes;
+  }
+  uint64_t get_offset() const;
+  ssize_t get_return() const {
+    return return_;
+  }
+
+  virtual bool issue( EventHandler& completion_handler );
+  virtual bool issue( win32::AIOQueue& );
+  virtual RetryStatus retry() = 0;
+
+  void set_error( uint32_t error ) {
+    this->error = error;
+  }
+  virtual void set_return( ssize_t return_ ) {
+    this->return_ = return_;
+  }
+
+  // yield::Object
+  virtual uint32_t get_type_id() const = 0;
+  virtual const char* get_type_name() const = 0;
+  AIOCB& inc_ref() {
+    return Object::inc_ref( *this );
+  }
+
+protected:
+  AIOCB( Channel&, void* buf, size_t nbytes, uint64_t offset );
+
+  operator ::OVERLAPPED*();
+
+  void set_completion_handler( EventHandler& completion_handler );
+
+private:
+  typedef struct {
+    unsigned long* Internal;
+    unsigned long* InternalHigh;
+#pragma warning( push )
+#pragma warning( disable: 4201 )
+    union {
+      struct {
+        unsigned long Offset;
+        unsigned long OffsetHigh;
+      };
+      void* Pointer;
+    };
+#pragma warning( pop )
+    void* hEvent;
+  } OVERLAPPED;
+
+private:
+  OVERLAPPED overlapped;
+  AIOCB* this_aiocb;
+
+  Channel& channel;
+  EventHandler* completion_handler;
+  uint32_t error;
+  size_t nbytes;
+  ssize_t return_;
+};
+}
+}
 }
 
 

@@ -35,42 +35,45 @@
 #include "yield/object.hpp"
 
 
-namespace yield
-{
-  namespace net
-  {
-    #if defined(__sun)
-      namespace sunos { class UUID; }
-    #elif defined(_WIN32)
-      namespace win32 { class UUID; }
-    #elif defined(YIELD_HAVE_LINUX_LIBUUID)
-      namespace linux { class UUID; }
-    #endif
+namespace yield {
+namespace net {
+#if defined(__sun)
+namespace sunos {
+class UUID;
+}
+#elif defined(_WIN32)
+namespace win32 {
+class UUID;
+}
+#elif defined(YIELD_HAVE_LINUX_LIBUUID)
+namespace linux {
+class UUID;
+}
+#endif
 
 
-    #if defined(__sun) || defined(_WIN32) || defined(YIELD_HAVE_LINUX_LIBUUID)
-      class UUID : public Object
-      {
-      public:
-        UUID();
-        UUID( const string& uuid );
-        ~UUID();
+#if defined(__sun) || defined(_WIN32) || defined(YIELD_HAVE_LINUX_LIBUUID)
+class UUID : public Object {
+public:
+  UUID();
+  UUID( const string& uuid );
+  ~UUID();
 
-        bool operator!=( const UUID& ) const;
-        bool operator==( const UUID& ) const;
-        operator string() const;
+  bool operator!=( const UUID& ) const;
+  bool operator==( const UUID& ) const;
+  operator string() const;
 
-      private:
-        #if defined(__sun)
-          sunos::UUID* pimpl;
-        #elif defined(_WIN32)
-          win32::UUID* pimpl;
-        #elif defined(YIELD_HAVE_LINUX_LIBUUID)
-          linux::UUID* pimpl;
-        #endif
-      };
-    #endif
-  }
+private:
+#if defined(__sun)
+  sunos::UUID* pimpl;
+#elif defined(_WIN32)
+  win32::UUID* pimpl;
+#elif defined(YIELD_HAVE_LINUX_LIBUUID)
+  linux::UUID* pimpl;
+#endif
+};
+#endif
+}
 }
 
 

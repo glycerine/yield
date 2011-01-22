@@ -36,60 +36,70 @@
 
 
 #ifdef _WIN32
-  #ifndef POLLIN
-    #define POLLRDNORM  0x0100
-    #define POLLRDBAND  0x0200
-    #define POLLIN      (POLLRDNORM | POLLRDBAND)
-    #define POLLPRI     0x0400
+#ifndef POLLIN
+#define POLLRDNORM  0x0100
+#define POLLRDBAND  0x0200
+#define POLLIN      (POLLRDNORM | POLLRDBAND)
+#define POLLPRI     0x0400
 
-    #define POLLWRNORM  0x0010
-    #define POLLOUT     (POLLWRNORM)
-    #define POLLWRBAND  0x0020
+#define POLLWRNORM  0x0010
+#define POLLOUT     (POLLWRNORM)
+#define POLLWRBAND  0x0020
 
-    #define POLLERR     0x0001
-    #define POLLHUP     0x0002
-    #define POLLNVAL    0x0004
-  #endif
+#define POLLERR     0x0001
+#define POLLHUP     0x0002
+#define POLLNVAL    0x0004
+#endif
 #else
-  #include <poll.h>
+#include <poll.h>
 #endif
 
 
-namespace yield
-{
-  namespace poll
-  {
-    class FDEvent : public Event
-    {
-    public:
-      const static uint32_t TYPE_ID = 117149474;
+namespace yield {
+namespace poll {
+class FDEvent : public Event {
+public:
+  const static uint32_t TYPE_ID = 117149474;
 
-    public:
-      FDEvent()
-      {
-        events = POLLIN;
-        fd = INVALID_FD;
-      }
-
-      FDEvent( uint16_t events, fd_t fd )
-        : events( events ), fd( fd )
-      { }
-
-      uint16_t get_events() const { return events; }
-      fd_t get_fd() const { return fd; }
-      operator uint16_t() const { return get_events(); }
-      void set_events( uint16_t events ) { this->events = events; }
-      void set_fd( fd_t fd ) { this->fd = fd; }
-
-      // Object
-      virtual uint32_t get_type_id() const { return TYPE_ID; }
-      virtual const char* get_type_name() const { return "yield::poll::FDEvent"; }
-
-    private:
-      uint16_t events;
-      fd_t fd;
-    };
+public:
+  FDEvent() {
+    events = POLLIN;
+    fd = INVALID_FD;
   }
+
+  FDEvent( uint16_t events, fd_t fd )
+    : events( events ), fd( fd )
+  { }
+
+  uint16_t get_events() const {
+    return events;
+  }
+  fd_t get_fd() const {
+    return fd;
+  }
+  operator uint16_t() const {
+    return get_events();
+  }
+  void set_events( uint16_t events ) {
+    this->events = events;
+  }
+  void set_fd( fd_t fd ) {
+    this->fd = fd;
+  }
+
+  // Object
+  virtual uint32_t get_type_id() const {
+    return TYPE_ID;
+  }
+  virtual const char* get_type_name() const {
+    return "yield::poll::FDEvent";
+  }
+
+private:
+  uint16_t events;
+  fd_t fd;
+};
+}
 }
 
 

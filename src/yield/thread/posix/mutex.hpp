@@ -37,27 +37,23 @@
 #include <pthread.h>
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace posix
-    {
-      class Mutex
-      {
-      public:
-        Mutex();
-        ~Mutex();
+namespace yield {
+namespace thread {
+namespace posix {
+class Mutex {
+public:
+  Mutex();
+  ~Mutex();
 
-        bool lock();
-        bool trylock();
-        void unlock();
+  bool lock();
+  bool trylock();
+  void unlock();
 
-      private:
-        pthread_mutex_t mutex;
-      };
-    }
-  }
+private:
+  pthread_mutex_t mutex;
+};
+}
+}
 }
 
 

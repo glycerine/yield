@@ -36,54 +36,58 @@
 #include "yield/net/sockets/socket.hpp"
 
 
-namespace yield
-{
-  namespace net
-  {
-    namespace sockets
-    {
-      class SocketPair : public ChannelPair
-      {
-      public:
-        static int DOMAIN_DEFAULT; // AF_UNIX
-        const static int PROTOCOL_DEFAULT = Socket::PROTOCOL_DEFAULT;
-        static int TYPE_DEFAULT; // SOCK_STREAM        
+namespace yield {
+namespace net {
+namespace sockets {
+class SocketPair : public ChannelPair {
+public:
+  static int DOMAIN_DEFAULT; // AF_UNIX
+  const static int PROTOCOL_DEFAULT = Socket::PROTOCOL_DEFAULT;
+  static int TYPE_DEFAULT; // SOCK_STREAM
 
-      public:
-        SocketPair
-        (
-          int domain = DOMAIN_DEFAULT,
-          int type = TYPE_DEFAULT,
-          int protocol = Socket::PROTOCOL_DEFAULT
-        );
+public:
+  SocketPair
+  (
+    int domain = DOMAIN_DEFAULT,
+    int type = TYPE_DEFAULT,
+    int protocol = Socket::PROTOCOL_DEFAULT
+  );
 
-        ~SocketPair();
+  ~SocketPair();
 
-        static YO_NEW_REF SocketPair*
-        create
-        (
-          int domain = DOMAIN_DEFAULT,
-          int type = TYPE_DEFAULT,
-          int protocol = Socket::PROTOCOL_DEFAULT
-        );
+  static YO_NEW_REF SocketPair*
+  create
+  (
+    int domain = DOMAIN_DEFAULT,
+    int type = TYPE_DEFAULT,
+    int protocol = Socket::PROTOCOL_DEFAULT
+  );
 
-        Socket& first() const { return *sockets[0]; }
-        Socket& second() const { return *sockets[1]; }
-
-        // ChannelPair
-        Channel& get_read_channel() { return first(); }
-        Channel& get_write_channel() { return second(); }
-
-      private:
-        SocketPair( YO_NEW_REF Socket** );
-
-        static bool socketpair( int domain, int type, int protocol, Socket** );
-
-      private:
-        Socket* sockets[2];
-      };
-    }
+  Socket& first() const {
+    return *sockets[0];
   }
+  Socket& second() const {
+    return *sockets[1];
+  }
+
+  // ChannelPair
+  Channel& get_read_channel() {
+    return first();
+  }
+  Channel& get_write_channel() {
+    return second();
+  }
+
+private:
+  SocketPair( YO_NEW_REF Socket** );
+
+  static bool socketpair( int domain, int type, int protocol, Socket** );
+
+private:
+  Socket* sockets[2];
+};
+}
+}
 }
 
 

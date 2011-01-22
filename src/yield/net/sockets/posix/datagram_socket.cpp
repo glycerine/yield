@@ -33,13 +33,10 @@
 #include <sys/socket.h>
 
 
-namespace yield
-{
-  namespace net
-  {
-    namespace sockets
-    {
-      int DatagramSocket::TYPE = SOCK_DGRAM;
-    }
-  }
+namespace yield {
+namespace net {
+namespace sockets {
+int DatagramSocket::TYPE = SOCK_DGRAM;
+}
+}
 }

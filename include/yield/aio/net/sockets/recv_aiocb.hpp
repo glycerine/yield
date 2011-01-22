@@ -37,57 +37,60 @@
 #include "yield/net/sockets/socket_address.hpp"
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace net
-    {
-      namespace sockets
-      {
-        class recvAIOCB : public AIOCB
-        {
-        public:
-          const static uint32_t TYPE_ID = 3045195539UL;
+namespace yield {
+namespace aio {
+namespace net {
+namespace sockets {
+class recvAIOCB : public AIOCB {
+public:
+  const static uint32_t TYPE_ID = 3045195539UL;
 
-        public:
-          recvAIOCB
-          (
-            yield::net::sockets::Socket& socket_,
-            Buffer& buffer,
-            const yield::net::sockets::Socket::MessageFlags& flags
-          );
+public:
+  recvAIOCB
+  (
+    yield::net::sockets::Socket& socket_,
+    Buffer& buffer,
+    const yield::net::sockets::Socket::MessageFlags& flags
+  );
 
-          ~recvAIOCB();
+  ~recvAIOCB();
 
-          Buffer& get_buffer() const { return buffer; }
-          const yield::net::sockets::Socket::MessageFlags& get_flags() const;
-          const yield::net::sockets::SocketAddress& get_peername() const;
-          yield::net::sockets::SocketAddress& get_peername() { return peername; }
-
-          // yield::Object
-          uint32_t get_type_id() const { return TYPE_ID; }
-          const char* get_type_name() const { return "yield::aio::net::sockets::recvAIOCB"; }
-
-          // yield::aio::AIOCB
-          #ifdef _WIN32
-            bool issue( EventHandler& completion_handler );
-            bool issue( yield::aio::win32::AIOQueue& );
-          #endif
-          RetryStatus retry();
-          void set_return( ssize_t return_ );
-
-        private:
-          recvAIOCB( recvAIOCB& other );
-
-        private:
-          Buffer& buffer;
-          yield::net::sockets::Socket::MessageFlags flags;
-          yield::net::sockets::SocketAddress peername;
-        };
-      }
-    }
+  Buffer& get_buffer() const {
+    return buffer;
   }
+  const yield::net::sockets::Socket::MessageFlags& get_flags() const;
+  const yield::net::sockets::SocketAddress& get_peername() const;
+  yield::net::sockets::SocketAddress& get_peername() {
+    return peername;
+  }
+
+  // yield::Object
+  uint32_t get_type_id() const {
+    return TYPE_ID;
+  }
+  const char* get_type_name() const {
+    return "yield::aio::net::sockets::recvAIOCB";
+  }
+
+  // yield::aio::AIOCB
+#ifdef _WIN32
+  bool issue( EventHandler& completion_handler );
+  bool issue( yield::aio::win32::AIOQueue& );
+#endif
+  RetryStatus retry();
+  void set_return( ssize_t return_ );
+
+private:
+  recvAIOCB( recvAIOCB& other );
+
+private:
+  Buffer& buffer;
+  yield::net::sockets::Socket::MessageFlags flags;
+  yield::net::sockets::SocketAddress peername;
+};
+}
+}
+}
 }
 
 

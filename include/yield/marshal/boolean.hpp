@@ -35,31 +35,34 @@
 #include "yield/marshal/object.hpp"
 
 
-namespace yield
-{
-  namespace marshal
-  {
-    class Boolean : public Object
-    {
-    public:
-      const static uint32_t TYPE_ID = 1032316735UL;
+namespace yield {
+namespace marshal {
+class Boolean : public Object {
+public:
+  const static uint32_t TYPE_ID = 1032316735UL;
 
-    public:
-      Boolean() : value( false ) { }
-      Boolean( bool value ) : value( value ) { }
+public:
+  Boolean() : value( false ) { }
+  Boolean( bool value ) : value( value ) { }
 
-      operator bool() const { return value; }
-
-      // Object
-      uint32_t get_type_id() const { return TYPE_ID; }
-      const char* get_type_name() const { return "yield::marshal::Boolean"; }
-
-      bool operator==( const Object& other ) const;
-
-    private:
-      bool value;
-    };
+  operator bool() const {
+    return value;
   }
+
+  // Object
+  uint32_t get_type_id() const {
+    return TYPE_ID;
+  }
+  const char* get_type_name() const {
+    return "yield::marshal::Boolean";
+  }
+
+  bool operator==( const Object& other ) const;
+
+private:
+  bool value;
+};
+}
 }
 
 

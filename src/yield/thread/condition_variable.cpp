@@ -29,64 +29,53 @@
 
 
 #ifdef _WIN32
-  #include "win32/condition_variable.hpp"
+#include "win32/condition_variable.hpp"
 #else
-  #include "posix/condition_variable.hpp"
+#include "posix/condition_variable.hpp"
 #endif
 #include "yield/thread/condition_variable.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    ConditionVariable::ConditionVariable()
-    {
-      #ifdef _WIN32
-        pimpl = new win32::ConditionVariable;
-      #else
-        pimpl = new posix::ConditionVariable;
-      #endif
-    }
+namespace yield {
+namespace thread {
+ConditionVariable::ConditionVariable() {
+#ifdef _WIN32
+  pimpl = new win32::ConditionVariable;
+#else
+  pimpl = new posix::ConditionVariable;
+#endif
+}
 
-    ConditionVariable::~ConditionVariable()
-    {
-      delete pimpl;
-    }
+ConditionVariable::~ConditionVariable() {
+  delete pimpl;
+}
 
-    void ConditionVariable::broadcast()
-    {
-      return pimpl->broadcast();
-    }
+void ConditionVariable::broadcast() {
+  return pimpl->broadcast();
+}
 
-    bool ConditionVariable::lock_mutex()
-    {
-      return pimpl->lock_mutex();
-    }
+bool ConditionVariable::lock_mutex() {
+  return pimpl->lock_mutex();
+}
 
-    void ConditionVariable::signal()
-    {
-      return pimpl->signal();
-    }
+void ConditionVariable::signal() {
+  return pimpl->signal();
+}
 
-    bool ConditionVariable::timedwait( const Time& timeout )
-    {
-      return pimpl->timedwait( timeout );
-    }
+bool ConditionVariable::timedwait( const Time& timeout ) {
+  return pimpl->timedwait( timeout );
+}
 
-    bool ConditionVariable::trylock_mutex()
-    {
-      return pimpl->trylock_mutex();
-    }
+bool ConditionVariable::trylock_mutex() {
+  return pimpl->trylock_mutex();
+}
 
-    void ConditionVariable::unlock_mutex()
-    {
-      return pimpl->unlock_mutex();
-    }
+void ConditionVariable::unlock_mutex() {
+  return pimpl->unlock_mutex();
+}
 
-    bool ConditionVariable::wait()
-    {
-      return pimpl->wait();
-    }
-  }
+bool ConditionVariable::wait() {
+  return pimpl->wait();
+}
+}
 }

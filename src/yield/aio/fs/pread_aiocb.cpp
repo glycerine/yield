@@ -34,103 +34,85 @@
 #include "yield/fs/file.hpp"
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace fs
-    {
-      preadAIOCB::preadAIOCB
-      (
-        yield::fs::File& file,
-        YO_NEW_REF Page& page,
-        size_t nbytes,
-        uint64_t offset
-      )
-        : AIOCB( file, page, nbytes, offset ), page( page )
-      { }
+namespace yield {
+namespace aio {
+namespace fs {
+preadAIOCB::preadAIOCB
+(
+  yield::fs::File& file,
+  YO_NEW_REF Page& page,
+  size_t nbytes,
+  uint64_t offset
+)
+  : AIOCB( file, page, nbytes, offset ), page( page )
+{ }
 
-      preadAIOCB::~preadAIOCB()
-      {
-        Page::dec_ref( page );
-      }
+preadAIOCB::~preadAIOCB() {
+  Page::dec_ref( page );
+}
 
-      void preadAIOCB::set_return( ssize_t return_ )
-      {
-        if ( return_ >= 0 )
-        {
-          Page* page = &get_page();
-          for ( ;; )
-          {
-            size_t page_left = page->capacity() - page->size();
+void preadAIOCB::set_return( ssize_t return_ ) {
+  if ( return_ >= 0 ) {
+    Page* page = &get_page();
+    for ( ;; ) {
+      size_t page_left = page->capacity() - page->size();
 
-            if ( static_cast<size_t>( return_ ) <= page_left )
-            {
-              page->resize( page->size() + return_ );
-              break;
-            }
-            else
-            {
-              page->resize( page->capacity() );
-              return_ -= page_left;
-              page = page->get_next_page();
-            }
-          }
-        }
-
-        AIOCB::set_return( return_ );
-      }
-
-      preadAIOCB::RetryStatus preadAIOCB::retry()
-      {
-        ssize_t return_;
-
-        if ( get_page().get_next_page() == NULL ) // pread
-        {
-          return_
-            = get_file().pread
-              (
-                static_cast<char*>( get_page() )
-                  + get_page().size(),
-                get_page().capacity()
-                  - get_page().size(),
-                get_offset()
-              );
-        }
-        else // preadv
-        {
-          vector<iovec> iov;
-          Page* page = &get_page();
-          do
-          {
-            iovec page_iov;
-            page_iov.iov_base
-              = static_cast<char*>( *page ) + page->size();
-            page_iov.iov_len = page->capacity() - page->size();
-            iov.push_back( page_iov );
-            page = page->get_next_page();
-          } while ( page != NULL );
-
-          return_
-            = get_file().preadv
-              (
-                &iov[0],
-                iov.size(),
-                get_offset()
-              );
-        }
-
-        if ( return_ >= 0 )
-        {
-          set_return( return_ );
-          return RETRY_STATUS_COMPLETE;
-        }
-        else
-        {
-          set_error( Exception::get_last_error_code() );
-          return RETRY_STATUS_ERROR;
-        }
+      if ( static_cast<size_t>( return_ ) <= page_left ) {
+        page->resize( page->size() + return_ );
+        break;
+      } else {
+        page->resize( page->capacity() );
+        return_ -= page_left;
+        page = page->get_next_page();
       }
     }
   }
+
+  AIOCB::set_return( return_ );
+}
+
+preadAIOCB::RetryStatus preadAIOCB::retry() {
+  ssize_t return_;
+
+  if ( get_page().get_next_page() == NULL ) { // pread
+    return_
+    = get_file().pread
+      (
+        static_cast<char*>( get_page() )
+        + get_page().size(),
+        get_page().capacity()
+        - get_page().size(),
+        get_offset()
+      );
+  } else { // preadv
+    vector<iovec> iov;
+    Page* page = &get_page();
+    do {
+      iovec page_iov;
+      page_iov.iov_base
+      = static_cast<char*>( *page ) + page->size();
+      page_iov.iov_len = page->capacity() - page->size();
+      iov.push_back( page_iov );
+      page = page->get_next_page();
+    } while ( page != NULL );
+
+    return_
+    = get_file().preadv
+      (
+        &iov[0],
+        iov.size(),
+        get_offset()
+      );
+  }
+
+  if ( return_ >= 0 ) {
+    set_return( return_ );
+    return RETRY_STATUS_COMPLETE;
+  } else {
+    set_error( Exception::get_last_error_code() );
+    return RETRY_STATUS_ERROR;
+  }
+}
+}
+}
 }

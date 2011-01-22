@@ -32,43 +32,37 @@
 #include "yield/fs/memory_mapped_file.hpp"
 
 
-namespace yield
-{
-  namespace fs
-  {
-    MemoryMappedFile::MemoryMappedFile
-    (
-      size_t capacity,
-      YO_NEW_REF File& file,
-      int flags,
-      uint64_t offset,
-      int prot
-    )
-    : Buffer( capacity ),
-      file( file ),
-      flags( flags ),
-      offset( offset ),
-      prot( prot )
-    { }
+namespace yield {
+namespace fs {
+MemoryMappedFile::MemoryMappedFile
+(
+  size_t capacity,
+  YO_NEW_REF File& file,
+  int flags,
+  uint64_t offset,
+  int prot
+)
+  : Buffer( capacity ),
+    file( file ),
+    flags( flags ),
+    offset( offset ),
+    prot( prot )
+{ }
 
-    MemoryMappedFile::~MemoryMappedFile()
-    {
-      File::dec_ref( file );
-    }
+MemoryMappedFile::~MemoryMappedFile() {
+  File::dec_ref( file );
+}
 
-    bool MemoryMappedFile::close()
-    {
-      return unmap() && get_file().close();
-    }
+bool MemoryMappedFile::close() {
+  return unmap() && get_file().close();
+}
 
-    bool MemoryMappedFile::sync()
-    {
-      return sync( data(), capacity() );
-    }
+bool MemoryMappedFile::sync() {
+  return sync( data(), capacity() );
+}
 
-    bool MemoryMappedFile::sync( size_t offset, size_t length )
-    {
-      return sync( static_cast<char*>( data() ) + offset, length );
-    }
-  }
+bool MemoryMappedFile::sync( size_t offset, size_t length ) {
+  return sync( static_cast<char*>( data() ) + offset, length );
+}
+}
 }

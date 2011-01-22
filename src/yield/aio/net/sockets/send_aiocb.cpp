@@ -33,121 +33,103 @@
 #include "yield/net/sockets/socket_address.hpp"
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace net
-    {
-      namespace sockets
-      {
-        using yield::net::sockets::Socket;
-        using yield::net::sockets::SocketAddress;
+namespace yield {
+namespace aio {
+namespace net {
+namespace sockets {
+using yield::net::sockets::Socket;
+using yield::net::sockets::SocketAddress;
 
 
-        sendAIOCB::sendAIOCB
+sendAIOCB::sendAIOCB
+(
+  Socket& socket_,
+  YO_NEW_REF Buffer& buffer,
+  const Socket::MessageFlags& flags,
+  SocketAddress* peername
+)
+  : AIOCB( socket_, buffer, buffer.size() ),
+    buffer( buffer ),
+    flags( flags ),
+    peername( Object::inc_ref( peername ) )
+{ }
+
+sendAIOCB::sendAIOCB( sendAIOCB& other )
+  : AIOCB( other.get_socket(), other.buffer, other.buffer.size() ),
+    buffer( other.buffer.inc_ref() ),
+    flags( other.flags ),
+    peername( Object::inc_ref( other.peername ) )
+{ }
+
+sendAIOCB::~sendAIOCB() {
+  Buffer::dec_ref( buffer );
+  SocketAddress::dec_ref( peername );
+}
+
+const Socket::MessageFlags& sendAIOCB::get_flags() const {
+  return flags;
+}
+
+const SocketAddress* sendAIOCB::get_peername() const {
+  return peername;
+}
+
+
+sendAIOCB::RetryStatus sendAIOCB::retry() {
+  ssize_t send_ret;
+
+  if ( get_buffer().get_next_buffer() == NULL ) {
+    if ( get_peername() == NULL ) {
+      send_ret
+      = get_socket().send
         (
-          Socket& socket_,
-          YO_NEW_REF Buffer& buffer,
-          const Socket::MessageFlags& flags,
-          SocketAddress* peername
-        )
-        : AIOCB( socket_, buffer, buffer.size() ),
-          buffer( buffer ),
-          flags( flags ),
-          peername( Object::inc_ref( peername ) )
-        { }
-
-        sendAIOCB::sendAIOCB( sendAIOCB& other )
-          : AIOCB( other.get_socket(), other.buffer, other.buffer.size() ),
-            buffer( other.buffer.inc_ref() ),
-            flags( other.flags ),
-            peername( Object::inc_ref( other.peername ) )
-        { }
-
-        sendAIOCB::~sendAIOCB()
-        {
-          Buffer::dec_ref( buffer );
-          SocketAddress::dec_ref( peername );
-        }
-
-        const Socket::MessageFlags& sendAIOCB::get_flags() const
-        {
-          return flags;
-        }
-
-        const SocketAddress* sendAIOCB::get_peername() const
-        {
-          return peername;
-        }
-
-
-        sendAIOCB::RetryStatus sendAIOCB::retry()
-        {
-          ssize_t send_ret;
-
-          if ( get_buffer().get_next_buffer() == NULL )
-          {
-            if ( get_peername() == NULL )
-            {
-              send_ret
-                = get_socket().send
-                  (
-                    get_buffer(),
-                    get_buffer().size(),
-                    get_flags()
-                  );
-            }
-            else
-            {
-              send_ret
-                = get_socket().sendto
-                  (
-                    get_buffer(),
-                    get_buffer().size(),
-                    get_flags(),
-                    *get_peername()
-                  );
-            }
-          }
-          else
-          {
-            vector<iovec> iovs;
-            Buffer* next_buffer = &get_buffer();
-            do
-            {
-              iovec iov;
-              iov.iov_base = *next_buffer;
-              iov.iov_len = next_buffer->size();
-              next_buffer = next_buffer->get_next_buffer();
-            } while ( next_buffer != NULL );
-
-            send_ret
-              = get_socket().sendmsg
-                (
-                  &iovs[0],
-                  iovs.size(),
-                  get_flags(),
-                  get_peername()
-                );
-          }
-
-          if ( send_ret >= 0 )
-          {
-            set_return( send_ret );
-            return RETRY_STATUS_COMPLETE;
-          }
-          else if ( get_socket().want_send() )
-            return RETRY_STATUS_WANT_WRITE;
-          else if ( get_socket().want_recv() )
-            return RETRY_STATUS_WANT_READ;
-          else
-          {
-            set_error( Exception::get_last_error_code() );
-            return RETRY_STATUS_ERROR;
-          }
-        }
-      }
+          get_buffer(),
+          get_buffer().size(),
+          get_flags()
+        );
+    } else {
+      send_ret
+      = get_socket().sendto
+        (
+          get_buffer(),
+          get_buffer().size(),
+          get_flags(),
+          *get_peername()
+        );
     }
+  } else {
+    vector<iovec> iovs;
+    Buffer* next_buffer = &get_buffer();
+    do {
+      iovec iov;
+      iov.iov_base = *next_buffer;
+      iov.iov_len = next_buffer->size();
+      next_buffer = next_buffer->get_next_buffer();
+    } while ( next_buffer != NULL );
+
+    send_ret
+    = get_socket().sendmsg
+      (
+        &iovs[0],
+        iovs.size(),
+        get_flags(),
+        get_peername()
+      );
   }
+
+  if ( send_ret >= 0 ) {
+    set_return( send_ret );
+    return RETRY_STATUS_COMPLETE;
+  } else if ( get_socket().want_send() )
+    return RETRY_STATUS_WANT_WRITE;
+  else if ( get_socket().want_recv() )
+    return RETRY_STATUS_WANT_READ;
+  else {
+    set_error( Exception::get_last_error_code() );
+    return RETRY_STATUS_ERROR;
+  }
+}
+}
+}
+}
 }

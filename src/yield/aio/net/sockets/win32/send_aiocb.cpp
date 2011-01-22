@@ -34,123 +34,109 @@
 #include "yield/net/sockets/win32/winsock.hpp"
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace net
-    {
-      namespace sockets
-      {
-        using yield::net::sockets::Socket;
-        using yield::net::sockets::SocketAddress;
+namespace yield {
+namespace aio {
+namespace net {
+namespace sockets {
+using yield::net::sockets::Socket;
+using yield::net::sockets::SocketAddress;
 
 
-        static int
-        WSASendTo
-        (
-          Socket& socket_,
-          Buffer& buffer,
-          const Socket::MessageFlags& flags,
-          const SocketAddress* peername,
-          LPWSAOVERLAPPED lpOverlapped,
-          LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
-        )
-        {
-          const sockaddr* lpTo = NULL;
-          socklen_t iToLen = 0;
-          if ( peername != NULL )
-          {
-            peername = peername->filter( socket_.get_domain() );
-            if ( peername != NULL )
-            {
-              lpTo = *peername;
-              iToLen = peername->len();
-            }
-            else
-              return false;
-          }
-
-          if ( buffer.get_next_buffer() == NULL )
-          {
-            WSABUF wsabuf;
-            wsabuf.buf = buffer;
-            wsabuf.len = buffer.size();
-
-            return WSASendTo
-                   (
-                     socket_,
-                     &wsabuf,
-                     1,
-                     NULL,
-                     flags,
-                     lpTo,
-                     iToLen,
-                     lpOverlapped,
-                     lpCompletionRoutine
-                   );
-          }
-          else // Gather I/O
-          {
-            vector<WSABUF> wsabufs;
-            Buffer* next_buffer = &buffer;
-            do
-            {
-              WSABUF wsabuf;
-              wsabuf.buf = static_cast<char*>( *next_buffer );
-              wsabuf.len = next_buffer->size();
-              wsabufs.push_back( wsabuf );
-              next_buffer = next_buffer->get_next_buffer();
-            } while ( next_buffer != NULL );
-
-            return WSASendTo
-                   (
-                     socket_,
-                     &wsabufs[0],
-                     wsabufs.size(),
-                     NULL,
-                     flags,
-                     lpTo,
-                     iToLen,
-                     lpOverlapped,
-                     lpCompletionRoutine
-                   );
-          }
-        }
-
-
-        bool sendAIOCB::issue( EventHandler& completion_handler )
-        {
-          set_completion_handler( completion_handler );
-
-          return WSASendTo
-                 (
-                   get_socket(),
-                   get_buffer(),
-                   get_flags(),
-                   get_peername(),
-                   *this,
-                   CompletionRoutine
-                 ) == 0
-                 ||
-                 WSAGetLastError() == WSA_IO_PENDING;
-        }
-
-        bool sendAIOCB::issue( yield::aio::win32::AIOQueue& )
-        {
-          return WSASendTo
-                 (
-                   get_socket(),
-                   get_buffer(),
-                   get_flags(),
-                   get_peername(),
-                   *this,
-                   NULL
-                 ) == 0
-                 ||
-                 WSAGetLastError() == WSA_IO_PENDING;
-        }
-      }
-    }
+static int
+WSASendTo
+(
+  Socket& socket_,
+  Buffer& buffer,
+  const Socket::MessageFlags& flags,
+  const SocketAddress* peername,
+  LPWSAOVERLAPPED lpOverlapped,
+  LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
+) {
+  const sockaddr* lpTo = NULL;
+  socklen_t iToLen = 0;
+  if ( peername != NULL ) {
+    peername = peername->filter( socket_.get_domain() );
+    if ( peername != NULL ) {
+      lpTo = *peername;
+      iToLen = peername->len();
+    } else
+      return false;
   }
+
+  if ( buffer.get_next_buffer() == NULL ) {
+    WSABUF wsabuf;
+    wsabuf.buf = buffer;
+    wsabuf.len = buffer.size();
+
+    return WSASendTo
+           (
+             socket_,
+             &wsabuf,
+             1,
+             NULL,
+             flags,
+             lpTo,
+             iToLen,
+             lpOverlapped,
+             lpCompletionRoutine
+           );
+  } else { // Gather I/O
+    vector<WSABUF> wsabufs;
+    Buffer* next_buffer = &buffer;
+    do {
+      WSABUF wsabuf;
+      wsabuf.buf = static_cast<char*>( *next_buffer );
+      wsabuf.len = next_buffer->size();
+      wsabufs.push_back( wsabuf );
+      next_buffer = next_buffer->get_next_buffer();
+    } while ( next_buffer != NULL );
+
+    return WSASendTo
+           (
+             socket_,
+             &wsabufs[0],
+             wsabufs.size(),
+             NULL,
+             flags,
+             lpTo,
+             iToLen,
+             lpOverlapped,
+             lpCompletionRoutine
+           );
+  }
+}
+
+
+bool sendAIOCB::issue( EventHandler& completion_handler ) {
+  set_completion_handler( completion_handler );
+
+  return WSASendTo
+         (
+           get_socket(),
+           get_buffer(),
+           get_flags(),
+           get_peername(),
+           *this,
+           CompletionRoutine
+         ) == 0
+         ||
+         WSAGetLastError() == WSA_IO_PENDING;
+}
+
+bool sendAIOCB::issue( yield::aio::win32::AIOQueue& ) {
+  return WSASendTo
+         (
+           get_socket(),
+           get_buffer(),
+           get_flags(),
+           get_peername(),
+           *this,
+           NULL
+         ) == 0
+         ||
+         WSAGetLastError() == WSA_IO_PENDING;
+}
+}
+}
+}
 }

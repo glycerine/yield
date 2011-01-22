@@ -31,17 +31,13 @@
 #include "yield/aio/fs/pread_aiocb.hpp"
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace fs
-    {
-      bool preadAIOCB::issue( EventHandler& completion_handler )
-      {
-        set_completion_handler( completion_handler );
-        return aio_read( *this ) == 0;
-      }
-    }
-  }
+namespace yield {
+namespace aio {
+namespace fs {
+bool preadAIOCB::issue( EventHandler& completion_handler ) {
+  set_completion_handler( completion_handler );
+  return aio_read( *this ) == 0;
+}
+}
+}
 }

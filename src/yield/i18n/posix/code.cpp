@@ -31,15 +31,12 @@
 #include "yield/i18n/posix/code.hpp"
 
 
-namespace yield
-{
-  namespace i18n
-  {
-    namespace posix
-    {
-      const Code Code::CHAR( "" );
-      const Code Code::ISO88591( "ISO-8859-1" );
-      const Code Code::UTF8( "UTF-8" );
-    }
-  }
+namespace yield {
+namespace i18n {
+namespace posix {
+const Code Code::CHAR( "" );
+const Code Code::ISO88591( "ISO-8859-1" );
+const Code Code::UTF8( "UTF-8" );
+}
+}
 }

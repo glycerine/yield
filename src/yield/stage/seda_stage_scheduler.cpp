@@ -37,67 +37,58 @@
 #include "yield/thread/thread.hpp"
 
 
-namespace yield
-{
-  namespace stage
-  {
-    using yield::thread::Thread;
+namespace yield {
+namespace stage {
+using yield::thread::Thread;
 
 
-    class SEDAStageScheduler::SEDAStage : public yield::thread::Runnable
-    {
-    public:
-      SEDAStage( Stage& stage )
-        : stage( stage.inc_ref() )
-      {
-        should_run = true;
-      }
-
-      void stop()
-      {
-        should_run = false;
-        stage.handle( *new Stage::ShutdownEvent );
-      }
-
-      // yield::thread::Runnable
-      void run()
-      {
-        while ( should_run )
-          stage.visit();
-      }
-
-    private:
-      bool should_run;
-      Stage& stage;
-    };
-
-
-    SEDAStageScheduler::~SEDAStageScheduler()
-    {
-      for
-      (
-        vector<Thread*>::iterator thread_i = threads.begin();
-        thread_i != threads.end();
-        ++thread_i
-      )
-      {
-        static_cast<SEDAStage*>( ( *thread_i )->get_runnable() )->stop();
-        ( *thread_i )->join();
-        Thread::dec_ref( **thread_i );
-      }
-    }
-
-    void
-    SEDAStageScheduler::schedule
-    (
-      Stage& stage,
-      ConcurrencyLevel concurrency_level
-    )
-    {
-      SEDAStage* seda_stage = new SEDAStage( stage );
-
-      for ( int16_t thread_i = 0; thread_i < concurrency_level; thread_i++ )
-        threads.push_back( new Thread( *seda_stage ) );
-    }
+class SEDAStageScheduler::SEDAStage : public yield::thread::Runnable {
+public:
+  SEDAStage( Stage& stage )
+    : stage( stage.inc_ref() ) {
+    should_run = true;
   }
+
+  void stop() {
+    should_run = false;
+    stage.handle( *new Stage::ShutdownEvent );
+  }
+
+  // yield::thread::Runnable
+  void run() {
+    while ( should_run )
+      stage.visit();
+  }
+
+private:
+  bool should_run;
+  Stage& stage;
+};
+
+
+SEDAStageScheduler::~SEDAStageScheduler() {
+  for
+  (
+    vector<Thread*>::iterator thread_i = threads.begin();
+    thread_i != threads.end();
+    ++thread_i
+  ) {
+    static_cast<SEDAStage*>( ( *thread_i )->get_runnable() )->stop();
+    ( *thread_i )->join();
+    Thread::dec_ref( **thread_i );
+  }
+}
+
+void
+SEDAStageScheduler::schedule
+(
+  Stage& stage,
+  ConcurrencyLevel concurrency_level
+) {
+  SEDAStage* seda_stage = new SEDAStage( stage );
+
+  for ( int16_t thread_i = 0; thread_i < concurrency_level; thread_i++ )
+    threads.push_back( new Thread( *seda_stage ) );
+}
+}
 }

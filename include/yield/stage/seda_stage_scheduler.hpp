@@ -35,28 +35,27 @@
 #include "yield/stage/stage_scheduler.hpp"
 
 
-namespace yield
-{
-  namespace thread { class Thread; }
+namespace yield {
+namespace thread {
+class Thread;
+}
 
 
-  namespace stage
-  {
-    class SEDAStageScheduler : public StageScheduler
-    {
-    public:
-      ~SEDAStageScheduler();
+namespace stage {
+class SEDAStageScheduler : public StageScheduler {
+public:
+  ~SEDAStageScheduler();
 
-      // StageScheduler
-      void schedule( Stage&, ConcurrencyLevel );
+  // StageScheduler
+  void schedule( Stage&, ConcurrencyLevel );
 
-    private:
-      class SEDAStage;
+private:
+  class SEDAStage;
 
-    private:
-      vector<yield::thread::Thread*> threads;
-    };
-  }
+private:
+  vector<yield::thread::Thread*> threads;
+};
+}
 }
 
 

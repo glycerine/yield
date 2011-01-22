@@ -38,51 +38,53 @@
 #include "yield/thread/unit_concurrent_queue.hpp"
 
 
-namespace yield
-{
-  namespace thread { class Thread; }
+namespace yield {
+namespace thread {
+class Thread;
+}
 
 
-  namespace stage
-  {
-    class PollingStageScheduler : public StageScheduler
-    {
-    public:
-      virtual ~PollingStageScheduler();
+namespace stage {
+class PollingStageScheduler : public StageScheduler {
+public:
+  virtual ~PollingStageScheduler();
 
-      // StageScheduler
-      void schedule( Stage&, ConcurrencyLevel );
+  // StageScheduler
+  void schedule( Stage&, ConcurrencyLevel );
 
-    protected:
-      class StagePoller : public yield::thread::Runnable
-      {
-      public:
-        virtual ~StagePoller();
+protected:
+  class StagePoller : public yield::thread::Runnable {
+  public:
+    virtual ~StagePoller();
 
-        void schedule( Stage& );
-        void stop() { _should_run = false; }
+    void schedule( Stage& );
+    void stop() {
+      _should_run = false;
+    }
 
-      protected:
-        StagePoller( Stage& );
+  protected:
+    StagePoller( Stage& );
 
-        vector<Stage*>& get_stages();
-        inline bool should_run() const { return _should_run; }
+    vector<Stage*>& get_stages();
+    inline bool should_run() const {
+      return _should_run;
+    }
 
-      private:
-        yield::thread::UnitConcurrentQueue<Stage> new_stage;
-        bool _should_run;
-        vector<Stage*> stages;
-      };
+  private:
+    yield::thread::UnitConcurrentQueue<Stage> new_stage;
+    bool _should_run;
+    vector<Stage*> stages;
+  };
 
-    protected:
-      PollingStageScheduler() { }
+protected:
+  PollingStageScheduler() { }
 
-      virtual YO_NEW_REF StagePoller& createStagePoller( Stage& ) = 0;
+  virtual YO_NEW_REF StagePoller& createStagePoller( Stage& ) = 0;
 
-    private:
-      vector<yield::thread::Thread*> threads;
-    };
-  }
+private:
+  vector<yield::thread::Thread*> threads;
+};
+}
 }
 
 

@@ -39,118 +39,101 @@
 #include <sstream> // For std::ostringstream
 
 
-namespace yield
-{
-  namespace marshal
-  {
-    namespace json
-    {
-      void JSONMarshaller::write( const Object& key, bool value )
-      {
-        write_key( key );
-        JSONEncoder::write( value );
-      }
+namespace yield {
+namespace marshal {
+namespace json {
+void JSONMarshaller::write( const Object& key, bool value ) {
+  write_key( key );
+  JSONEncoder::write( value );
+}
 
-      void JSONMarshaller::write( const Object& key, double value )
-      {
-        write_key( key );
-        JSONEncoder::write( value );
-      }
+void JSONMarshaller::write( const Object& key, double value ) {
+  write_key( key );
+  JSONEncoder::write( value );
+}
 
-      void JSONMarshaller::write( const Object& key, int64_t value )
-      {
-        write_key( key );
-        JSONEncoder::write( value );
-      }
+void JSONMarshaller::write( const Object& key, int64_t value ) {
+  write_key( key );
+  JSONEncoder::write( value );
+}
 
-      void JSONMarshaller::write( const Object& key, const Null& value )
-      {
-        write_key( key );
-        JSONEncoder::write( static_cast<const char*>( NULL ) );
-      }
+void JSONMarshaller::write( const Object& key, const Null& value ) {
+  write_key( key );
+  JSONEncoder::write( static_cast<const char*>( NULL ) );
+}
 
-      void JSONMarshaller::write( const Object& key, const Object& value )
-      {
-        write_key( key );
+void JSONMarshaller::write( const Object& key, const Object& value ) {
+  write_key( key );
 
-        JSONEncoder::open_object();
-        in_object_stack.push( true );
+  JSONEncoder::open_object();
+  in_object_stack.push( true );
 
-        value.marshal( *this );
+  value.marshal( *this );
 
-        in_object_stack.pop();
-        JSONEncoder::close_object();
-      }
+  in_object_stack.pop();
+  JSONEncoder::close_object();
+}
 
-      void JSONMarshaller::write( const Object& key, const Sequence& value )
-      {
-        write_key( key );
+void JSONMarshaller::write( const Object& key, const Sequence& value ) {
+  write_key( key );
 
-        JSONEncoder::open_array();
-        in_object_stack.push( false );
+  JSONEncoder::open_array();
+  in_object_stack.push( false );
 
-        value.marshal( *this );
+  value.marshal( *this );
 
-        in_object_stack.pop();
-        JSONEncoder::close_array();
-      }
+  in_object_stack.pop();
+  JSONEncoder::close_array();
+}
 
-      void
-      JSONMarshaller::write
-      (
-        const Object& key,
-        const char* value,
-        size_t value_len
-      )
-      {
-        write_key( key );
-        JSONEncoder::write( value, value_len );
-      }
+void
+JSONMarshaller::write
+(
+  const Object& key,
+  const char* value,
+  size_t value_len
+) {
+  write_key( key );
+  JSONEncoder::write( value, value_len );
+}
 
-      void JSONMarshaller::write( const Object& key, uint64_t value )
-      {
-        write_key( key );
-        JSONEncoder::write( value );
-      }
+void JSONMarshaller::write( const Object& key, uint64_t value ) {
+  write_key( key );
+  JSONEncoder::write( value );
+}
 
-      void JSONMarshaller::write_key( const Object& key )
-      {
-        if ( !in_object_stack.empty() && in_object_stack.top() )
-        {
-          switch ( key.get_type_id() )
-          {
-            case Double::TYPE_ID:
-            {
-              std::ostringstream json_key;
-              json_key << static_cast<const Double&>( key );
-              JSONEncoder::write( json_key.str() );
-            }
-            break;
+void JSONMarshaller::write_key( const Object& key ) {
+  if ( !in_object_stack.empty() && in_object_stack.top() ) {
+    switch ( key.get_type_id() ) {
+    case Double::TYPE_ID: {
+      std::ostringstream json_key;
+      json_key << static_cast<const Double&>( key );
+      JSONEncoder::write( json_key.str() );
+    }
+    break;
 
-            case Integer::TYPE_ID:
-            {
-              std::ostringstream json_key;
-              json_key << static_cast<const Double&>( key );
-              JSONEncoder::write( json_key.str() );
-            }
-            break;
+    case Integer::TYPE_ID: {
+      std::ostringstream json_key;
+      json_key << static_cast<const Double&>( key );
+      JSONEncoder::write( json_key.str() );
+    }
+    break;
 
-            case Null::TYPE_ID: break;
+    case Null::TYPE_ID:
+      break;
 
-            case String::TYPE_ID:
-            {
-              JSONEncoder::write( static_cast<const String&>( key ) );
-            }
-            break;
+    case String::TYPE_ID: {
+      JSONEncoder::write( static_cast<const String&>( key ) );
+    }
+    break;
 
-            case StringLiteral::TYPE_ID:
-            {
-              JSONEncoder::write( static_cast<const StringLiteral&>( key ) );
-            }
-            break;
-          }
-        }
-      }
+    case StringLiteral::TYPE_ID: {
+      JSONEncoder::write( static_cast<const StringLiteral&>( key ) );
+    }
+    break;
     }
   }
+}
+}
+}
 }

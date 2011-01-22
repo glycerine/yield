@@ -33,248 +33,224 @@
 #include <Windows.h>
 
 
-namespace yield
-{
-  namespace i18n
-  {
-    namespace win32
-    {
-      iconv::iconv( Code tocode, Code fromcode )
-        : fromcode( fromcode ), tocode( tocode )
-      { }
+namespace yield {
+namespace i18n {
+namespace win32 {
+iconv::iconv( Code tocode, Code fromcode )
+  : fromcode( fromcode ), tocode( tocode )
+{ }
 
-      size_t
-      iconv::operator()
+size_t
+iconv::operator()
+(
+  const char** inbuf,
+  size_t* inbytesleft,
+  char** outbuf,
+  size_t* outbytesleft
+) {
+  int inbuf_w_len
+  = MultiByteToWideChar
+    (
+      fromcode,
+      0,
+      *inbuf,
+      static_cast<int>( *inbytesleft ),
+      NULL,
+      0
+    );
+
+  if ( inbuf_w_len > 0 ) {
+    wchar_t* inbuf_w = new wchar_t[inbuf_w_len];
+
+    inbuf_w_len
+    = MultiByteToWideChar
       (
-        const char** inbuf,
-        size_t* inbytesleft,
-        char** outbuf,
-        size_t* outbytesleft
-      )
-      {
-        int inbuf_w_len
-          = MultiByteToWideChar
-            (
-              fromcode,
-              0,
-              *inbuf,
-              static_cast<int>( *inbytesleft ),
-              NULL,
-              0
-            );
+        fromcode,
+        0,
+        *inbuf,
+        static_cast<int>( *inbytesleft ),
+        inbuf_w,
+        inbuf_w_len
+      );
 
-        if ( inbuf_w_len > 0 )
-        {
-          wchar_t* inbuf_w = new wchar_t[inbuf_w_len];
+    if ( inbuf_w_len > 0 ) {
+      int outbyteswritten
+      = WideCharToMultiByte
+        (
+          tocode,
+          0,
+          inbuf_w,
+          inbuf_w_len,
+          *outbuf,
+          *outbytesleft,
+          0,
+          0
+        );
 
-          inbuf_w_len
-            = MultiByteToWideChar
-              (
-                fromcode,
-                0,
-                *inbuf,
-                static_cast<int>( *inbytesleft ),
-                inbuf_w,
-                inbuf_w_len
-              );
+      delete [] inbuf_w;
 
-          if ( inbuf_w_len > 0 )
-          {
-            int outbyteswritten
-              = WideCharToMultiByte
-                (
-                  tocode,
-                  0,
-                  inbuf_w,
-                  inbuf_w_len,
-                  *outbuf,
-                  *outbytesleft,
-                  0,
-                  0
-                );
-
-            delete [] inbuf_w;
-
-            if ( outbyteswritten > 0 )
-            {
-              *inbuf += *inbytesleft;
-              *inbytesleft = 0;
-              *outbuf += outbyteswritten;
-              *outbytesleft -= outbyteswritten;
-              return outbyteswritten;
-            }
-          }
-          else
-            delete [] inbuf_w;
-        }
-
-        return static_cast<size_t>( -1 );
+      if ( outbyteswritten > 0 ) {
+        *inbuf += *inbytesleft;
+        *inbytesleft = 0;
+        *outbuf += outbyteswritten;
+        *outbytesleft -= outbyteswritten;
+        return outbyteswritten;
       }
-
-      bool iconv::operator()( const string& inbuf, string& outbuf )
-      {
-        int inbuf_w_len
-          = MultiByteToWideChar
-            (
-              fromcode,
-              0,
-              inbuf.c_str(),
-              inbuf.size(),
-              NULL,
-              0
-            );
-
-        if ( inbuf_w_len > 0 )
-        {
-          wchar_t* inbuf_w = new wchar_t[inbuf_w_len];
-
-          inbuf_w_len
-            = MultiByteToWideChar
-              (
-                fromcode,
-                0,
-                inbuf.c_str(),
-                inbuf.size(),
-                inbuf_w,
-                inbuf_w_len
-              );
-
-          if ( inbuf_w_len > 0 )
-          {
-            int outbuf_c_len
-              = WideCharToMultiByte
-                (
-                  tocode,
-                  0,
-                  inbuf_w,
-                  inbuf_w_len,
-                  NULL,
-                  0,
-                  0,
-                  0
-                );
-
-            if ( outbuf_c_len > 0 )
-            {
-              char* outbuf_c = new char[outbuf_c_len];
-
-              outbuf_c_len
-                = WideCharToMultiByte
-                  (
-                    tocode,
-                    0,
-                    inbuf_w,
-                    inbuf_w_len,
-                    outbuf_c,
-                    outbuf_c_len,
-                    0,
-                    0
-                  );
-
-              if ( outbuf_c_len > 0 )
-              {
-                outbuf.append( outbuf_c, outbuf_c_len );
-                delete [] outbuf_c;
-                return true;
-              }
-              else
-                delete [] outbuf_c;
-            }
-            else
-              delete [] inbuf_w;
-          }
-          else
-            delete [] inbuf_w;
-        }
-
-        return false;
-      }
-
-      bool iconv::operator()( const string& inbuf, wstring& outbuf )
-      {
-        int outbuf_w_len
-          = MultiByteToWideChar
-            (
-              fromcode,
-              0,
-              inbuf.c_str(),
-              inbuf.size(),
-              NULL,
-              0
-            );
-
-        if ( outbuf_w_len > 0 )
-        {
-          wchar_t* outbuf_w = new wchar_t[outbuf_w_len];
-
-          outbuf_w_len
-            = MultiByteToWideChar
-              (
-                fromcode,
-                0,
-                inbuf.c_str(),
-                inbuf.size(),
-                outbuf_w,
-                outbuf_w_len
-              );
-
-          if ( outbuf_w_len > 0 )
-          {
-            outbuf.append( outbuf_w, outbuf_w_len );
-            delete [] outbuf_w;
-            return true;
-          }
-          else
-            delete [] outbuf_w;
-        }
-
-        return false;
-      }
-
-      bool iconv::operator()( const wstring& inbuf, string& outbuf )
-      {
-        int outbuf_c_len
-          = WideCharToMultiByte
-            (
-              tocode,
-              0,
-              inbuf.c_str(),
-              inbuf.size(),
-              NULL,
-              0,
-              0,
-              0
-            );
-
-        if ( outbuf_c_len > 0 )
-        {
-          char* outbuf_c = new char[outbuf_c_len];
-
-          outbuf_c_len
-            = WideCharToMultiByte
-              (
-                tocode,
-                0,
-                inbuf.c_str(),
-                inbuf.size(),
-                outbuf_c,
-                outbuf_c_len,
-                0,
-                0
-              );
-
-          if ( outbuf_c_len > 0 )
-          {
-            outbuf.append( outbuf_c, outbuf_c_len );
-            delete [] outbuf_c;
-            return true;
-          }
-          else
-            delete [] outbuf_c;
-        }
-
-        return false;
-      }
-    }
+    } else
+      delete [] inbuf_w;
   }
+
+  return static_cast<size_t>( -1 );
+}
+
+bool iconv::operator()( const string& inbuf, string& outbuf ) {
+  int inbuf_w_len
+  = MultiByteToWideChar
+    (
+      fromcode,
+      0,
+      inbuf.c_str(),
+      inbuf.size(),
+      NULL,
+      0
+    );
+
+  if ( inbuf_w_len > 0 ) {
+    wchar_t* inbuf_w = new wchar_t[inbuf_w_len];
+
+    inbuf_w_len
+    = MultiByteToWideChar
+      (
+        fromcode,
+        0,
+        inbuf.c_str(),
+        inbuf.size(),
+        inbuf_w,
+        inbuf_w_len
+      );
+
+    if ( inbuf_w_len > 0 ) {
+      int outbuf_c_len
+      = WideCharToMultiByte
+        (
+          tocode,
+          0,
+          inbuf_w,
+          inbuf_w_len,
+          NULL,
+          0,
+          0,
+          0
+        );
+
+      if ( outbuf_c_len > 0 ) {
+        char* outbuf_c = new char[outbuf_c_len];
+
+        outbuf_c_len
+        = WideCharToMultiByte
+          (
+            tocode,
+            0,
+            inbuf_w,
+            inbuf_w_len,
+            outbuf_c,
+            outbuf_c_len,
+            0,
+            0
+          );
+
+        if ( outbuf_c_len > 0 ) {
+          outbuf.append( outbuf_c, outbuf_c_len );
+          delete [] outbuf_c;
+          return true;
+        } else
+          delete [] outbuf_c;
+      } else
+        delete [] inbuf_w;
+    } else
+      delete [] inbuf_w;
+  }
+
+  return false;
+}
+
+bool iconv::operator()( const string& inbuf, wstring& outbuf ) {
+  int outbuf_w_len
+  = MultiByteToWideChar
+    (
+      fromcode,
+      0,
+      inbuf.c_str(),
+      inbuf.size(),
+      NULL,
+      0
+    );
+
+  if ( outbuf_w_len > 0 ) {
+    wchar_t* outbuf_w = new wchar_t[outbuf_w_len];
+
+    outbuf_w_len
+    = MultiByteToWideChar
+      (
+        fromcode,
+        0,
+        inbuf.c_str(),
+        inbuf.size(),
+        outbuf_w,
+        outbuf_w_len
+      );
+
+    if ( outbuf_w_len > 0 ) {
+      outbuf.append( outbuf_w, outbuf_w_len );
+      delete [] outbuf_w;
+      return true;
+    } else
+      delete [] outbuf_w;
+  }
+
+  return false;
+}
+
+bool iconv::operator()( const wstring& inbuf, string& outbuf ) {
+  int outbuf_c_len
+  = WideCharToMultiByte
+    (
+      tocode,
+      0,
+      inbuf.c_str(),
+      inbuf.size(),
+      NULL,
+      0,
+      0,
+      0
+    );
+
+  if ( outbuf_c_len > 0 ) {
+    char* outbuf_c = new char[outbuf_c_len];
+
+    outbuf_c_len
+    = WideCharToMultiByte
+      (
+        tocode,
+        0,
+        inbuf.c_str(),
+        inbuf.size(),
+        outbuf_c,
+        outbuf_c_len,
+        0,
+        0
+      );
+
+    if ( outbuf_c_len > 0 ) {
+      outbuf.append( outbuf_c, outbuf_c_len );
+      delete [] outbuf_c;
+      return true;
+    } else
+      delete [] outbuf_c;
+  }
+
+  return false;
+}
+}
+}
 }

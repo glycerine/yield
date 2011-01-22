@@ -32,35 +32,36 @@
 #define _YIELD_THREAD_LIGHTWEIGHT_MUTEX_HPP_
 
 
-namespace yield
-{
-  namespace thread
-  {
-    #ifdef _WIN32
-      namespace win32 { class LightweightMutex; }
-    #else
-      namespace posix { class Mutex; }
-    #endif
+namespace yield {
+namespace thread {
+#ifdef _WIN32
+namespace win32 {
+class LightweightMutex;
+}
+#else
+namespace posix {
+class Mutex;
+}
+#endif
 
 
-    class LightweightMutex
-    {
-    public:
-      LightweightMutex();
-      ~LightweightMutex();
+class LightweightMutex {
+public:
+  LightweightMutex();
+  ~LightweightMutex();
 
-      bool lock();
-      bool trylock();
-      void unlock();
+  bool lock();
+  bool trylock();
+  void unlock();
 
-    private:
-      #ifdef _WIN32
-        win32::LightweightMutex* pimpl;
-      #else
-        posix::Mutex* pimpl;
-      #endif
-    };
-  }
+private:
+#ifdef _WIN32
+  win32::LightweightMutex* pimpl;
+#else
+  posix::Mutex* pimpl;
+#endif
+};
+}
 }
 
 

@@ -33,207 +33,204 @@
 #include "yield/fs/file.hpp"
 
 
-namespace yield
-{
-  namespace fs
-  {
-    size_t File::getpagesize()
-    {
-      return Page::getpagesize();
-    }
+namespace yield {
+namespace fs {
+size_t File::getpagesize() {
+  return Page::getpagesize();
+}
 
-    //bool
-    //File::trace
-    //(
-    //  Log& log,
-    //  const char* method,
-    //  const Path& path,
-    //  bool ret
-    //)
-    //{
-    //  return Volume::trace( log, method, path, ret );
-    //}
+//bool
+//File::trace
+//(
+//  Log& log,
+//  const char* method,
+//  const Path& path,
+//  bool ret
+//)
+//{
+//  return Volume::trace( log, method, path, ret );
+//}
 
-    //Stat* File::trace_getattr( Log& log, const Path& path, Stat* ret )
-    //{
-    //  return Volume::trace_getattr( log, path, ret );
-    //}
+//Stat* File::trace_getattr( Log& log, const Path& path, Stat* ret )
+//{
+//  return Volume::trace_getattr( log, path, ret );
+//}
 
-    //File::Lock*
-    //File::trace_getlk
-    //(
-    //  Log& log,
-    //  const Path& path,
-    //  const Lock& lock,
-    //  Lock* ret
-    //)
-    //{
-    //  uint32_t last_error_code = Exception::get_last_error_code();
+//File::Lock*
+//File::trace_getlk
+//(
+//  Log& log,
+//  const Path& path,
+//  const Lock& lock,
+//  Lock* ret
+//)
+//{
+//  uint32_t last_error_code = Exception::get_last_error_code();
 
-    //  {
-    //    Log::Stream log_stream = log.get_stream( Log::INFO );
-    //    log_stream << "File::getlk( " << path << ", " << lock << " ) -> ";
-    //    if ( ret != NULL ) log_stream << *ret << ".";
-    //    else log_stream << "failed: " << Exception( last_error_code ) << ".";
-    //  }
+//  {
+//    Log::Stream log_stream = log.get_stream( Log::INFO );
+//    log_stream << "File::getlk( " << path << ", " << lock << " ) -> ";
+//    if ( ret != NULL ) log_stream << *ret << ".";
+//    else log_stream << "failed: " << Exception( last_error_code ) << ".";
+//  }
 
-    //  Exception::set_last_error_code( last_error_code );
+//  Exception::set_last_error_code( last_error_code );
 
-    //  return ret;
-    //}
+//  return ret;
+//}
 
-    //ssize_t
-    //File::trace_read
-    //(
-    //  Log& log,
-    //  const Path& path,
-    //  void* buf,
-    //  size_t buflen,
-    //  ssize_t ret
-    //)
-    //{
-    //  uint32_t last_error_code = Exception::get_last_error_code();
+//ssize_t
+//File::trace_read
+//(
+//  Log& log,
+//  const Path& path,
+//  void* buf,
+//  size_t buflen,
+//  ssize_t ret
+//)
+//{
+//  uint32_t last_error_code = Exception::get_last_error_code();
 
-    //  {
-    //    Log::Stream log_stream = log.get_stream( Log::INFO );
-    //    log_stream << "File::read( " << path << ", buf, " << buflen << " ) -> ";
-    //    if ( ret >= 0 ) log_stream << static_cast<size_t>( ret ) << ".";
-    //    else log_stream << "failed: " << Exception( last_error_code );
-    //  }
+//  {
+//    Log::Stream log_stream = log.get_stream( Log::INFO );
+//    log_stream << "File::read( " << path << ", buf, " << buflen << " ) -> ";
+//    if ( ret >= 0 ) log_stream << static_cast<size_t>( ret ) << ".";
+//    else log_stream << "failed: " << Exception( last_error_code );
+//  }
 
-    //  Exception::set_last_error_code( last_error_code );
+//  Exception::set_last_error_code( last_error_code );
 
-    //  return ret;
-    //}
+//  return ret;
+//}
 
-    //bool
-    //File::trace_setlk
-    //(
-    //  Log& log,
-    //  const Path& path,
-    //  const Lock& lock,
-    //  bool ret
-    //)
-    //{
-    //  uint32_t last_error_code = Exception::get_last_error_code();
+//bool
+//File::trace_setlk
+//(
+//  Log& log,
+//  const Path& path,
+//  const Lock& lock,
+//  bool ret
+//)
+//{
+//  uint32_t last_error_code = Exception::get_last_error_code();
 
-    //  {
-    //    Log::Stream log_stream = log.get_stream( Log::INFO );
-    //    log_stream << "File::setlk( " << path << ", " << lock << " ) -> ";
-    //    if ( ret ) log_stream << "succeeded.";
-    //    else log_stream << "failed: " << Exception( last_error_code ) << ".";
-    //  }
+//  {
+//    Log::Stream log_stream = log.get_stream( Log::INFO );
+//    log_stream << "File::setlk( " << path << ", " << lock << " ) -> ";
+//    if ( ret ) log_stream << "succeeded.";
+//    else log_stream << "failed: " << Exception( last_error_code ) << ".";
+//  }
 
-    //  Exception::set_last_error_code( last_error_code );
+//  Exception::set_last_error_code( last_error_code );
 
-    //  return ret;
-    //}
+//  return ret;
+//}
 
-    //bool
-    //File::trace_setlkw
-    //(
-    //  Log& log,
-    //  const Path& path,
-    //  const Lock& lock,
-    //  bool ret
-    //)
-    //{
-    //  uint32_t last_error_code = Exception::get_last_error_code();
+//bool
+//File::trace_setlkw
+//(
+//  Log& log,
+//  const Path& path,
+//  const Lock& lock,
+//  bool ret
+//)
+//{
+//  uint32_t last_error_code = Exception::get_last_error_code();
 
-    //  {
-    //    Log::Stream log_stream = log.get_stream( Log::INFO );
-    //    log_stream << "File::setlkw( " << path << ", " << lock << " ) -> ";
-    //    if ( ret ) log_stream << "succeeded.";
-    //    else log_stream << "failed: " << Exception( last_error_code ) << ".";
-    //  }
+//  {
+//    Log::Stream log_stream = log.get_stream( Log::INFO );
+//    log_stream << "File::setlkw( " << path << ", " << lock << " ) -> ";
+//    if ( ret ) log_stream << "succeeded.";
+//    else log_stream << "failed: " << Exception( last_error_code ) << ".";
+//  }
 
-    //  Exception::set_last_error_code( last_error_code );
+//  Exception::set_last_error_code( last_error_code );
 
-    //  return ret;
-    //}
+//  return ret;
+//}
 
-    //bool
-    //File::trace_truncate
-    //(
-    //  Log& log,
-    //  const Path& path,
-    //  uint64_t new_size,
-    //  bool ret
-    //)
-    //{
-    //  return Volume::trace_truncate( log, path, new_size, ret );
-    //}
+//bool
+//File::trace_truncate
+//(
+//  Log& log,
+//  const Path& path,
+//  uint64_t new_size,
+//  bool ret
+//)
+//{
+//  return Volume::trace_truncate( log, path, new_size, ret );
+//}
 
-    //ssize_t
-    //File::trace_write
-    //(
-    //  Log& log,
-    //  const Path& path,
-    //  const void* buf,
-    //  size_t buflen,
-    //  ssize_t ret
-    //)
-    //{
-    //  uint32_t last_error_code = Exception::get_last_error_code();
+//ssize_t
+//File::trace_write
+//(
+//  Log& log,
+//  const Path& path,
+//  const void* buf,
+//  size_t buflen,
+//  ssize_t ret
+//)
+//{
+//  uint32_t last_error_code = Exception::get_last_error_code();
 
-    //  {
-    //    Log::Stream log_stream = log.get_stream( Log::INFO );
-    //    log_stream << "File::write( " << path << ", buf, " << buflen << " ) -> ";
-    //    if ( ret >= 0 ) log_stream << static_cast<size_t>( ret ) << ".";
-    //    else log_stream << "failed: " << Exception( last_error_code );
-    //  }
+//  {
+//    Log::Stream log_stream = log.get_stream( Log::INFO );
+//    log_stream << "File::write( " << path << ", buf, " << buflen << " ) -> ";
+//    if ( ret >= 0 ) log_stream << static_cast<size_t>( ret ) << ".";
+//    else log_stream << "failed: " << Exception( last_error_code );
+//  }
 
-    //  Exception::set_last_error_code( last_error_code );
+//  Exception::set_last_error_code( last_error_code );
 
-    //  return ret;
-    //}
+//  return ret;
+//}
 
-    //ssize_t
-    //File::trace_writev
-    //(
-    //  Log& log,
-    //  const Path& path,
-    //  const iovec* iov,
-    //  int iovlen,
-    //  ssize_t ret
-    //)
-    //{
-    //  uint32_t last_error_code = Exception::get_last_error_code();
+//ssize_t
+//File::trace_writev
+//(
+//  Log& log,
+//  const Path& path,
+//  const iovec* iov,
+//  int iovlen,
+//  ssize_t ret
+//)
+//{
+//  uint32_t last_error_code = Exception::get_last_error_code();
 
-    //  {
-    //    Log::Stream log_stream = log.get_stream( Log::INFO );
-    //    log_stream << "File::writev( " << path << ", iov, " << iovlen << " ) -> ";
-    //    if ( ret >= 0 ) log_stream << static_cast<size_t>( ret ) << ".";
-    //    else log_stream << "failed: " << Exception( last_error_code );
-    //  }
+//  {
+//    Log::Stream log_stream = log.get_stream( Log::INFO );
+//    log_stream << "File::writev( " << path << ", iov, " << iovlen << " ) -> ";
+//    if ( ret >= 0 ) log_stream << static_cast<size_t>( ret ) << ".";
+//    else log_stream << "failed: " << Exception( last_error_code );
+//  }
 
-    //  Exception::set_last_error_code( last_error_code );
+//  Exception::set_last_error_code( last_error_code );
 
-    //  return ret;
-    //}
+//  return ret;
+//}
 
 
-    //std::ostream& operator<<( std::ostream& os, const File::Lock& lock )
-    //{
-    //  os << "File::Lock{ ";
+//std::ostream& operator<<( std::ostream& os, const File::Lock& lock )
+//{
+//  os << "File::Lock{ ";
 
-    //  os << "start: " << lock.get_start() << ", ";
-    //  os << "len: " << lock.get_len() << ", ";
-    //  os << "pid: " << lock.get_pid() << ", ";
+//  os << "start: " << lock.get_start() << ", ";
+//  os << "len: " << lock.get_len() << ", ";
+//  os << "pid: " << lock.get_pid() << ", ";
 
-    //  os << "type: " << ( lock.is_exclusive() ? "write" : "read" );
+//  os << "type: " << ( lock.is_exclusive() ? "write" : "read" );
 
-    //  os << "whence: ";
-    //  switch ( lock.get_whence() )
-    //  {
-    //    case SEEK_SET: os << "SEEK_SET"; break;
-    //    case SEEK_CUR: os << "SEEK_CUR"; break;
-    //    case SEEK_END: os << "SEEK_END"; break;
-    //  }
+//  os << "whence: ";
+//  switch ( lock.get_whence() )
+//  {
+//    case SEEK_SET: os << "SEEK_SET"; break;
+//    case SEEK_CUR: os << "SEEK_CUR"; break;
+//    case SEEK_END: os << "SEEK_END"; break;
+//  }
 
-    //  os << " }";
+//  os << " }";
 
-    //  return os;
-    //}
-  }
+//  return os;
+//}
+}
 }

@@ -38,83 +38,90 @@
 #include <utility> // for std::pair
 
 
-namespace yield
-{
-  namespace http
-  {
-    template <class HTTPMessageType>
-    class HTTPMessage
-    {
-    public:
-      const static size_t CONTENT_LENGTH_CHUNKED = SIZE_MAX;
+namespace yield {
+namespace http {
+template <class HTTPMessageType>
+class HTTPMessage {
+public:
+  const static size_t CONTENT_LENGTH_CHUNKED = SIZE_MAX;
 
-    public:
-      void* get_body() const { return body; }
-      size_t get_content_length() const { return content_length; }
-      DateTime get_date_field( const char* name = "Date" ) const;
-      bool get_field( const char* name, OUT iovec& value ) const;
-      string get_field( const char* name, const char* default_val = "" ) const;
-      float get_http_version() const { return http_version; }
-      bool has_field( const char* name ) const;
-
-      operator Buffer&();
-
-      string operator[]( const char* name ) { return get_field( name ); }
-
-      HTTPMessageType& set_field( const char* name, const char* value );
-      HTTPMessageType& set_field( const string& name, const string& value );
-      HTTPMessageType& set_field( const char* name, const iovec& value );
-      HTTPMessageType& set_field( const char* name, const DateTime& value );
-      HTTPMessageType& set_field( const char* name, size_t value );
-
-      HTTPMessageType&
-      set_field
-      (
-        const char* name,
-        const char* value,
-        size_t value_len
-      );
-
-      HTTPMessageType&
-      set_field
-      (
-        const char* name,
-        size_t name_len,
-        const char* value,
-        size_t value_len
-      );
-
-    protected:
-      HTTPMessage
-      (
-        void* body,
-        Buffer& buffer,
-        size_t content_length,
-        uint16_t fields_offset,
-        float http_version
-      );
-
-      HTTPMessage
-      (
-        YO_NEW_REF Buffer* body,
-        float http_version
-      );
-
-      virtual ~HTTPMessage();
-
-      void finalize();
-      Buffer& get_buffer() { return buffer; }
-      bool is_finalized() const;
-      void mark_fields_offset();
-
-    private:
-      void* body;
-      Buffer& buffer;
-      size_t content_length;
-      uint16_t fields_offset;
-      float http_version;
-    };
+public:
+  void* get_body() const {
+    return body;
   }
+  size_t get_content_length() const {
+    return content_length;
+  }
+  DateTime get_date_field( const char* name = "Date" ) const;
+  bool get_field( const char* name, OUT iovec& value ) const;
+  string get_field( const char* name, const char* default_val = "" ) const;
+  float get_http_version() const {
+    return http_version;
+  }
+  bool has_field( const char* name ) const;
+
+  operator Buffer&();
+
+  string operator[]( const char* name ) {
+    return get_field( name );
+  }
+
+  HTTPMessageType& set_field( const char* name, const char* value );
+  HTTPMessageType& set_field( const string& name, const string& value );
+  HTTPMessageType& set_field( const char* name, const iovec& value );
+  HTTPMessageType& set_field( const char* name, const DateTime& value );
+  HTTPMessageType& set_field( const char* name, size_t value );
+
+  HTTPMessageType&
+  set_field
+  (
+    const char* name,
+    const char* value,
+    size_t value_len
+  );
+
+  HTTPMessageType&
+  set_field
+  (
+    const char* name,
+    size_t name_len,
+    const char* value,
+    size_t value_len
+  );
+
+protected:
+  HTTPMessage
+  (
+    void* body,
+    Buffer& buffer,
+    size_t content_length,
+    uint16_t fields_offset,
+    float http_version
+  );
+
+  HTTPMessage
+  (
+    YO_NEW_REF Buffer* body,
+    float http_version
+  );
+
+  virtual ~HTTPMessage();
+
+  void finalize();
+  Buffer& get_buffer() {
+    return buffer;
+  }
+  bool is_finalized() const;
+  void mark_fields_offset();
+
+private:
+  void* body;
+  Buffer& buffer;
+  size_t content_length;
+  uint16_t fields_offset;
+  float http_version;
+};
+}
 }
 
 

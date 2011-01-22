@@ -32,52 +32,45 @@
 #include "yield/exception.hpp"
 
 
-namespace yield
-{
-  namespace net
-  {
-    namespace win32
-    {
-      UUID::UUID()
-      {
-        if ( UuidCreate( &uuid ) != RPC_S_OK )
-          throw Exception();
-      }
+namespace yield {
+namespace net {
+namespace win32 {
+UUID::UUID() {
+  if ( UuidCreate( &uuid ) != RPC_S_OK )
+    throw Exception();
+}
 
-      UUID::UUID( const string& uuid )
-      {
-        if
-        (
-          UuidFromStringA
-          (
-            reinterpret_cast<RPC_CSTR>
-            (
-              const_cast<char*>( uuid.c_str() )
-            ),
-            &this->uuid
-          )
-          != RPC_S_OK
-        )
-          throw Exception();
-      }
+UUID::UUID( const string& uuid ) {
+  if
+  (
+    UuidFromStringA
+    (
+      reinterpret_cast<RPC_CSTR>
+      (
+        const_cast<char*>( uuid.c_str() )
+      ),
+      &this->uuid
+    )
+    != RPC_S_OK
+  )
+    throw Exception();
+}
 
-      bool UUID::operator==( const UUID& other ) const
-      {
-        return memcmp( &uuid, &other.uuid, sizeof( uuid ) ) == 0;
-      }
+bool UUID::operator==( const UUID& other ) const {
+  return memcmp( &uuid, &other.uuid, sizeof( uuid ) ) == 0;
+}
 
-      UUID::operator string() const
-      {
-        RPC_CSTR temp_to_string;
-        UuidToStringA
-        (
-          &uuid,
-          &temp_to_string
-        );
-        string to_string( reinterpret_cast<char*>( temp_to_string ) );
-        RpcStringFreeA( &temp_to_string );
-        return to_string;
-      }
-    }
-  }
+UUID::operator string() const {
+  RPC_CSTR temp_to_string;
+  UuidToStringA
+  (
+    &uuid,
+    &temp_to_string
+  );
+  string to_string( reinterpret_cast<char*>( temp_to_string ) );
+  RpcStringFreeA( &temp_to_string );
+  return to_string;
+}
+}
+}
 }

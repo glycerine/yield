@@ -32,41 +32,33 @@
 #include "file.hpp"
 
 
-namespace yield
-{
-  namespace fs
-  {
-    namespace linux
-    {
-      File::File( fd_t fd )
-        : yield::fs::posix::File( fd )
-      {
-        xattrs = NULL;
-      }
+namespace yield {
+namespace fs {
+namespace linux {
+File::File( fd_t fd )
+  : yield::fs::posix::File( fd ) {
+  xattrs = NULL;
+}
 
-      File::~File()
-      {
-        ExtendedAttributes::dec_ref( xattrs );
-      }
+File::~File() {
+  ExtendedAttributes::dec_ref( xattrs );
+}
 
-      bool File::datasync()
-      {
-        return fdatasync( *this ) != -1;
-      }
+bool File::datasync() {
+  return fdatasync( *this ) != -1;
+}
 
-      yield::fs::ExtendedAttributes* File::openxattrs()
-      {
-        if ( xattrs == NULL )
-        {
-          fd_t dup_fd = dup( *this );
-          if ( dup_fd != -1 )
-            xattrs = new ExtendedAttributes( dup_fd );
-          else
-            return NULL;
-        }
-
-        return &xattrs->inc_ref();
-      }
-    }
+yield::fs::ExtendedAttributes* File::openxattrs() {
+  if ( xattrs == NULL ) {
+    fd_t dup_fd = dup( *this );
+    if ( dup_fd != -1 )
+      xattrs = new ExtendedAttributes( dup_fd );
+    else
+      return NULL;
   }
+
+  return &xattrs->inc_ref();
+}
+}
+}
 }

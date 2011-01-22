@@ -31,21 +31,17 @@
 #include "socket_pair_test.hpp"
 
 
-namespace yield
-{
-  namespace net
-  {
-    namespace sockets
-    {
-      class SocketPairTestSuite : public ChannelTestSuite
-      {
-      public:
-        SocketPairTestSuite()
-          : ChannelTestSuite( *new SocketPairFactory )
-        { }
-      };
-    }
-  }
+namespace yield {
+namespace net {
+namespace sockets {
+class SocketPairTestSuite : public ChannelTestSuite {
+public:
+  SocketPairTestSuite()
+    : ChannelTestSuite( *new SocketPairFactory )
+  { }
+};
+}
+}
 }
 
 TEST_SUITE_EX( SocketPair, yield::net::sockets::SocketPairTestSuite );

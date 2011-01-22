@@ -32,26 +32,24 @@
 #include "yield/thread/system_configuration.hpp"
 
 
-namespace yield
-{
-  namespace stage
-  {
-    using yield::thread::SystemConfiguration;
+namespace yield {
+namespace stage {
+using yield::thread::SystemConfiguration;
 
 
-    const StageScheduler::ConcurrencyLevel
-      StageScheduler::ConcurrencyLevel::DEFAULT( 1 );
+const StageScheduler::ConcurrencyLevel
+StageScheduler::ConcurrencyLevel::DEFAULT( 1 );
 
-    const StageScheduler::ConcurrencyLevel
-      StageScheduler::ConcurrencyLevel::PER_PROCESSOR
-      (
-        static_cast<uint16_t>
-        (
-          SystemConfiguration()
-          (
-            SystemConfiguration::ONLINE_LOGICAL_PROCESSOR_COUNT
-          )
-        )
-      );
-  }
+const StageScheduler::ConcurrencyLevel
+StageScheduler::ConcurrencyLevel::PER_PROCESSOR
+(
+  static_cast<uint16_t>
+  (
+    SystemConfiguration()
+    (
+      SystemConfiguration::ONLINE_LOGICAL_PROCESSOR_COUNT
+    )
+  )
+);
+}
 }

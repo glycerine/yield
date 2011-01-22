@@ -36,55 +36,60 @@
 #include "yield/http/http_message.hpp"
 
 
-namespace yield
-{
-  namespace http
-  {
-    class HTTPResponse : public Response, public HTTPMessage<HTTPResponse>
-    {
-    public:
-      const static uint32_t TYPE_ID = 654743796;
+namespace yield {
+namespace http {
+class HTTPResponse : public Response, public HTTPMessage<HTTPResponse> {
+public:
+  const static uint32_t TYPE_ID = 654743796;
 
-    public:
-      virtual ~HTTPResponse() { }
+public:
+  virtual ~HTTPResponse() { }
 
-      uint16_t get_status_code() const { return status_code; }
-
-      // Object
-      HTTPResponse& inc_ref() { return Object::inc_ref( *this ); }
-
-      // Event
-      uint32_t get_type_id() const { return TYPE_ID; }
-      const char* get_type_name() const { return "yield::http::HTTPResponse"; }
-
-    private:
-      friend class HTTPResponseParser;
-
-      HTTPResponse // Incoming
-      (
-        void* body,
-        Buffer& buffer,
-        size_t content_length,
-        uint16_t fields_offset,
-        float http_version,
-        uint16_t status_code
-      );
-
-    private:
-      friend class HTTPRequest;
-      friend class HTTPRequestParser;
-
-      HTTPResponse // Outgoing
-      (
-        YO_NEW_REF Buffer* body,
-        float http_version,
-        uint16_t status_code
-      );
-
-    private:
-      uint16_t status_code;
-    };
+  uint16_t get_status_code() const {
+    return status_code;
   }
+
+  // Object
+  HTTPResponse& inc_ref() {
+    return Object::inc_ref( *this );
+  }
+
+  // Event
+  uint32_t get_type_id() const {
+    return TYPE_ID;
+  }
+  const char* get_type_name() const {
+    return "yield::http::HTTPResponse";
+  }
+
+private:
+  friend class HTTPResponseParser;
+
+  HTTPResponse // Incoming
+  (
+    void* body,
+    Buffer& buffer,
+    size_t content_length,
+    uint16_t fields_offset,
+    float http_version,
+    uint16_t status_code
+  );
+
+private:
+  friend class HTTPRequest;
+  friend class HTTPRequestParser;
+
+  HTTPResponse // Outgoing
+  (
+    YO_NEW_REF Buffer* body,
+    float http_version,
+    uint16_t status_code
+  );
+
+private:
+  uint16_t status_code;
+};
+}
 }
 
 

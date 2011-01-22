@@ -36,58 +36,54 @@
 #include "yield/i18n/code.hpp"
 
 
-namespace yield
-{
-  namespace i18n
-  {
-    namespace posix
-    {
-      class iconv
-      {
-      public:
+namespace yield {
+namespace i18n {
+namespace posix {
+class iconv {
+public:
 
-      public:
-        iconv( Code tocode, Code fromcode );
-        ~iconv();
+public:
+  iconv( Code tocode, Code fromcode );
+  ~iconv();
 
-        // iconv.3
-        size_t
-        operator()
-        (
-          const char** inbuf,
-          size_t* inbytesleft,
-          char** outbuf,
-          size_t* outbytesleft
-        );
+  // iconv.3
+  size_t
+  operator()
+  (
+    const char** inbuf,
+    size_t* inbytesleft,
+    char** outbuf,
+    size_t* outbytesleft
+  );
 
-        // Other operator()'s return false on failure
-        bool operator()( const string& inbuf, string& outbuf );
+  // Other operator()'s return false on failure
+  bool operator()( const string& inbuf, string& outbuf );
 
-      private:
-        size_t
-        iconv_to_char
-        (
-          const char** inbuf,
-          size_t* inbytesleft,
-          char** outbuf,
-          size_t* outbytesleft
-        );
+private:
+  size_t
+  iconv_to_char
+  (
+    const char** inbuf,
+    size_t* inbytesleft,
+    char** outbuf,
+    size_t* outbytesleft
+  );
 
-        template <class outbufStringType>
-        bool iconv_to_string
-        (
-          const char* inbuf,
-          size_t inbytesleft,
-          outbufStringType& outbuf
-        );
+  template <class outbufStringType>
+  bool iconv_to_string
+  (
+    const char* inbuf,
+    size_t inbytesleft,
+    outbufStringType& outbuf
+  );
 
-        bool reset();
+  bool reset();
 
-      private:
-        void* cd;
-      };
-    }
-  }
+private:
+  void* cd;
+};
+}
+}
 }
 
 

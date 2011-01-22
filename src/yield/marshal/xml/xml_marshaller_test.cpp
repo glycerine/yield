@@ -36,37 +36,32 @@
 #include <iostream>
 
 
-namespace yield
-{
-  namespace marshal
-  {
-    namespace xml
-    {
-      template <class ObjectType>
-      class XMLMarshallerTest : public MarshallerTest<ObjectType>
-      {
-      public:
-        XMLMarshallerTest( YO_NEW_REF ObjectType* object )
-          : MarshallerTest<ObjectType>( object )
-        { }
+namespace yield {
+namespace marshal {
+namespace xml {
+template <class ObjectType>
+class XMLMarshallerTest : public MarshallerTest<ObjectType> {
+public:
+  XMLMarshallerTest( YO_NEW_REF ObjectType* object )
+    : MarshallerTest<ObjectType>( object )
+  { }
 
-        // yunit::Test
-        void run()
-        {
-          XMLMarshaller xml_marshaller;
-          xml_marshaller.write( Null(), *this->object );
-          Buffer& buffer = xml_marshaller.get_buffer();
+  // yunit::Test
+  void run() {
+    XMLMarshaller xml_marshaller;
+    xml_marshaller.write( Null(), *this->object );
+    Buffer& buffer = xml_marshaller.get_buffer();
 
-          std::cout << string( buffer, buffer.size() ) << std::endl;
+    std::cout << string( buffer, buffer.size() ) << std::endl;
 
-          XMLUnmarshaller xml_unmarshaller( buffer );
-          xml_unmarshaller.read_object( Null(), *this->empty_object );
+    XMLUnmarshaller xml_unmarshaller( buffer );
+    xml_unmarshaller.read_object( Null(), *this->empty_object );
 
-          throw_assert_eq( *this->object, *this->empty_object );
-        }
-      };
-    }
+    throw_assert_eq( *this->object, *this->empty_object );
   }
+};
+}
+}
 }
 
 TEST_SUITE_EX( XMLMarshaller, yield::marshal::MarshallerTestSuite<yield::marshal::xml::XMLMarshallerTest> );

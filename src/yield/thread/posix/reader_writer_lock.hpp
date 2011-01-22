@@ -37,30 +37,26 @@
 #include <pthread.h>
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace posix
-    {
-      class ReaderWriterLock
-      {
-      public:
-        ReaderWriterLock();
-        ~ReaderWriterLock();
+namespace yield {
+namespace thread {
+namespace posix {
+class ReaderWriterLock {
+public:
+  ReaderWriterLock();
+  ~ReaderWriterLock();
 
-        bool rdlock();
-        void rdunlock();
-        bool tryrdlock();
-        bool trywrlock();
-        bool wrlock();
-        void wrunlock();
+  bool rdlock();
+  void rdunlock();
+  bool tryrdlock();
+  bool trywrlock();
+  bool wrlock();
+  void wrunlock();
 
-      private:
-        pthread_rwlock_t rwlock;
-      };
-    }
-  }
+private:
+  pthread_rwlock_t rwlock;
+};
+}
+}
 }
 
 

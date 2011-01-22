@@ -38,135 +38,124 @@
 
 TEST_SUITE( Log );
 
-namespace yield
-{
-  class LogTest : public yunit::Test
-  {
-  public:
-    LogTest()
-      : test_string( "log_test" )
-    { }
+namespace yield {
+class LogTest : public yunit::Test {
+public:
+  LogTest()
+    : test_string( "log_test" )
+  { }
 
-    void setup()
-    {
-      log = &Log::open( log_oss, Log::DEBUG );
-    }
-
-    void teardown()
-    {
-      Log::dec_ref( log );
-    }
-
-  protected:
-    Log& get_log() const { return *log; }
-    std::ostringstream& get_log_oss() { return log_oss; }
-    const string& get_test_string() { return test_string; }
-
-  private:
-    Log* log;
-    std::ostringstream log_oss;
-    string test_string;
-  };
-
-  TEST_EX( Log, get_stream, LogTest )
-  {
-    get_log().get_stream() << get_test_string();
-    throw_assert_ge( get_log_oss().str().size(), get_test_string().size() );
+  void setup() {
+    log = &Log::open( log_oss, Log::DEBUG );
   }
 
-  TEST_EX( Log, get_stream_ignore, LogTest )
-  {
-    get_log().get_stream( Log::Level( 8 ) ) << get_test_string();
-    throw_assert_eq( get_log_oss().str().size(), 0 );
+  void teardown() {
+    Log::dec_ref( log );
   }
 
-  TEST_EX( Log, Stream_copy, LogTest )
-  {
-    Log::Stream log_stream( get_log().get_stream() );
+protected:
+  Log& get_log() const {
+    return *log;
+  }
+  std::ostringstream& get_log_oss() {
+    return log_oss;
+  }
+  const string& get_test_string() {
+    return test_string;
   }
 
-  TEST_EX( Log, write_buffer, LogTest )
-  {
-    get_log().write( StringBuffer( 1024 ), Log::EMERG );
-    throw_assert_ge( get_log_oss().str().size(), get_test_string().size() );
+private:
+  Log* log;
+  std::ostringstream log_oss;
+  string test_string;
+};
 
-    get_log().write( StringBuffer( get_test_string() ), Log::EMERG );
-    throw_assert_ge( get_log_oss().str().size(), get_test_string().size() );
+TEST_EX( Log, get_stream, LogTest ) {
+  get_log().get_stream() << get_test_string();
+  throw_assert_ge( get_log_oss().str().size(), get_test_string().size() );
+}
+
+TEST_EX( Log, get_stream_ignore, LogTest ) {
+  get_log().get_stream( Log::Level( 8 ) ) << get_test_string();
+  throw_assert_eq( get_log_oss().str().size(), 0 );
+}
+
+TEST_EX( Log, Stream_copy, LogTest ) {
+  Log::Stream log_stream( get_log().get_stream() );
+}
+
+TEST_EX( Log, write_buffer, LogTest ) {
+  get_log().write( StringBuffer( 1024 ), Log::EMERG );
+  throw_assert_ge( get_log_oss().str().size(), get_test_string().size() );
+
+  get_log().write( StringBuffer( get_test_string() ), Log::EMERG );
+  throw_assert_ge( get_log_oss().str().size(), get_test_string().size() );
+}
+
+TEST_EX( Log, write_ignore, LogTest ) {
+  get_log().write( get_test_string(), Log::Level( 8 ) );
+  throw_assert_eq( get_log_oss().str().size(), 0 );
+}
+
+TEST_EX( Log, write_c_string, LogTest ) {
+  get_log().write( get_test_string().c_str(), Log::EMERG );
+  throw_assert_eq( get_log_oss().str().size(), get_test_string().size() );
+}
+
+TEST_EX( Log, write_string, LogTest ) {
+  get_log().write( get_test_string(), Log::EMERG );
+  throw_assert_eq( get_log_oss().str().size(), get_test_string().size() );
+}
+
+TEST_EX( Log, write_unprintable, LogTest ) {
+  uint8_t unprintable_string[8];
+  char printable_string[8];
+  for ( uint8_t i = 0; i < get_test_string().size(); i++ ) {
+    unprintable_string[i] = i;
+    printable_string[i] = '.';
   }
 
-  TEST_EX( Log, write_ignore, LogTest )
-  {
-    get_log().write( get_test_string(), Log::Level( 8 ) );
-    throw_assert_eq( get_log_oss().str().size(), 0 );
-  }
+  get_log().write
+  (
+    unprintable_string,
+    get_test_string().size(),
+    Log::EMERG
+  );
 
-  TEST_EX( Log, write_c_string, LogTest )
-  {
-    get_log().write( get_test_string().c_str(), Log::EMERG );
-    throw_assert_eq( get_log_oss().str().size(), get_test_string().size() );
-  }
+  throw_assert_ge( get_log_oss().str().size(), get_test_string().size() );
+}
 
-  TEST_EX( Log, write_string, LogTest )
-  {
-    get_log().write( get_test_string(), Log::EMERG );
-    throw_assert_eq( get_log_oss().str().size(), get_test_string().size() );
-  }
+TEST( Log, Level_compare ) {
+  throw_assert_eq( Log::EMERG, Log::EMERG );
+  throw_assert_lt( Log::EMERG, Log::ALERT );
+  throw_assert_le( Log::EMERG, Log::ALERT );
+  throw_assert_gt( Log::ALERT, Log::EMERG );
+  throw_assert_ge( Log::ALERT, Log::EMERG );
+}
 
-  TEST_EX( Log, write_unprintable, LogTest )
-  {
-    uint8_t unprintable_string[8];
-    char printable_string[8];
-    for ( uint8_t i = 0; i < get_test_string().size(); i++ )
-    {
-      unprintable_string[i] = i;
-      printable_string[i] = '.';
-    }
+TEST( Log, Level_from_int ) {
+  throw_assert_eq( Log::Level( static_cast<uint8_t>( 0 ) ), Log::EMERG );
+  throw_assert_eq( Log::Level( static_cast<uint8_t>( 1 ) ), Log::ALERT );
+  throw_assert_eq( Log::Level( static_cast<uint8_t>( 2 ) ), Log::CRIT );
+  throw_assert_eq( Log::Level( static_cast<uint8_t>( 3 ) ), Log::ERR );
+  throw_assert_eq( Log::Level( static_cast<uint8_t>( 4 ) ), Log::WARNING );
+  throw_assert_eq( Log::Level( static_cast<uint8_t>( 5 ) ), Log::NOTICE );
+  throw_assert_eq( Log::Level( static_cast<uint8_t>( 6 ) ), Log::INFO );
+  throw_assert_eq( Log::Level( static_cast<uint8_t>( 7 ) ), Log::DEBUG );
+}
 
-    get_log().write
-    (
-      unprintable_string,
-      get_test_string().size(),
-      Log::EMERG
-    );
+TEST( Log, Level_from_c_string ) {
+  throw_assert_eq( Log::Level( "EMERG" ), Log::EMERG );
+  throw_assert_eq( Log::Level( "ALERT" ), Log::ALERT );
+  throw_assert_eq( Log::Level( "CRIT" ), Log::CRIT );
+  throw_assert_eq( Log::Level( "ERR" ), Log::ERR );
+  throw_assert_eq( Log::Level( "WARNING" ), Log::WARNING );
+  throw_assert_eq( Log::Level( "NOTICE" ), Log::NOTICE );
+  throw_assert_eq( Log::Level( "INFO" ), Log::INFO );
+  throw_assert_eq( Log::Level( "DEBUG" ), Log::DEBUG );
+}
 
-    throw_assert_ge( get_log_oss().str().size(), get_test_string().size() );
-  }
-
-  TEST( Log, Level_compare )
-  {
-    throw_assert_eq( Log::EMERG, Log::EMERG );
-    throw_assert_lt( Log::EMERG, Log::ALERT );
-    throw_assert_le( Log::EMERG, Log::ALERT );
-    throw_assert_gt( Log::ALERT, Log::EMERG );
-    throw_assert_ge( Log::ALERT, Log::EMERG );
-  }
-
-  TEST( Log, Level_from_int )
-  {
-    throw_assert_eq( Log::Level( static_cast<uint8_t>( 0 ) ), Log::EMERG );
-    throw_assert_eq( Log::Level( static_cast<uint8_t>( 1 ) ), Log::ALERT );
-    throw_assert_eq( Log::Level( static_cast<uint8_t>( 2 ) ), Log::CRIT );
-    throw_assert_eq( Log::Level( static_cast<uint8_t>( 3 ) ), Log::ERR );
-    throw_assert_eq( Log::Level( static_cast<uint8_t>( 4 ) ), Log::WARNING );
-    throw_assert_eq( Log::Level( static_cast<uint8_t>( 5 ) ), Log::NOTICE );
-    throw_assert_eq( Log::Level( static_cast<uint8_t>( 6 ) ), Log::INFO );
-    throw_assert_eq( Log::Level( static_cast<uint8_t>( 7 ) ), Log::DEBUG );
-  }
-
-  TEST( Log, Level_from_c_string )
-  {
-    throw_assert_eq( Log::Level( "EMERG" ), Log::EMERG );
-    throw_assert_eq( Log::Level( "ALERT" ), Log::ALERT );
-    throw_assert_eq( Log::Level( "CRIT" ), Log::CRIT );
-    throw_assert_eq( Log::Level( "ERR" ), Log::ERR );
-    throw_assert_eq( Log::Level( "WARNING" ), Log::WARNING );
-    throw_assert_eq( Log::Level( "NOTICE" ), Log::NOTICE );
-    throw_assert_eq( Log::Level( "INFO" ), Log::INFO );
-    throw_assert_eq( Log::Level( "DEBUG" ), Log::DEBUG );
-  }
-
-  TEST( Log, Level_from_string )
-  {
-    throw_assert_eq( Log::Level( string( "EMERG" ) ), Log::EMERG );
-  }
+TEST( Log, Level_from_string ) {
+  throw_assert_eq( Log::Level( string( "EMERG" ) ), Log::EMERG );
+}
 }

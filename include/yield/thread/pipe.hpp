@@ -37,81 +37,85 @@
 #include "yield/exception.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    class Pipe : public ChannelPair
-    {
-    public:
-      class End : public Channel
-      {
-      public:
-        End( fd_t fd ) : fd( fd ) { }
-        ~End() { close(); }
+namespace yield {
+namespace thread {
+class Pipe : public ChannelPair {
+public:
+  class End : public Channel {
+  public:
+    End( fd_t fd ) : fd( fd ) { }
+    ~End() {
+      close();
+    }
 
-        // Channel
-        bool close();
-        operator fd_t() const { return fd; }
-        ssize_t read( void* buf, size_t buflen );
-        ssize_t readv( const iovec* iov, int iovlen );
-        bool set_blocking_mode( bool blocking_mode );
-        ssize_t write( const void* buf, size_t buflen );
-        ssize_t writev( const iovec* iov, int iovlen );
+    // Channel
+    bool close();
+    operator fd_t() const {
+      return fd;
+    }
+    ssize_t read( void* buf, size_t buflen );
+    ssize_t readv( const iovec* iov, int iovlen );
+    bool set_blocking_mode( bool blocking_mode );
+    ssize_t write( const void* buf, size_t buflen );
+    ssize_t writev( const iovec* iov, int iovlen );
 
-      private:
-        fd_t fd;
-      };
+  private:
+    fd_t fd;
+  };
 
-    public:
-      Pipe()
-      {
-        fd_t ends[2];
-        if ( Pipe::pipe( ends ) )
-        {
-          this->ends[0] = new End( ends[0] );
-          this->ends[1] = new End( ends[1] );
-        }
-        else
-          throw Exception();
-      }
-
-      ~Pipe()
-      {
-        Channel::dec_ref( *ends[0] );
-        Channel::dec_ref( *ends[1] );
-      }
-
-      static YO_NEW_REF Pipe* create()
-      {
-        fd_t ends[2];
-        if ( Pipe::pipe( ends ) )
-          return new Pipe( ends );
-        else
-          return NULL;
-      }
-
-      End& get_read_end() { return *ends[0]; }
-      End& get_write_end() { return *ends[1]; }
-      End& operator[]( size_t n ) { return *ends[n]; }
-
-      // yield::ChannelPair
-      Channel& get_read_channel() { return get_read_end(); }
-      Channel& get_write_channel() { return get_write_end(); }
-
-    private:
-      Pipe( fd_t ends[2] )
-      {
-        this->ends[0] = new End( ends[0] );
-        this->ends[1] = new End( ends[1] );
-      }
-
-      static bool pipe( fd_t ends[2] );
-
-    private:
-      End* ends[2];
-    };
+public:
+  Pipe() {
+    fd_t ends[2];
+    if ( Pipe::pipe( ends ) ) {
+      this->ends[0] = new End( ends[0] );
+      this->ends[1] = new End( ends[1] );
+    } else
+      throw Exception();
   }
+
+  ~Pipe() {
+    Channel::dec_ref( *ends[0] );
+    Channel::dec_ref( *ends[1] );
+  }
+
+  static YO_NEW_REF Pipe* create() {
+    fd_t ends[2];
+    if ( Pipe::pipe( ends ) )
+      return new Pipe( ends );
+    else
+      return NULL;
+  }
+
+  End& get_read_end() {
+    return *ends[0];
+  }
+  End& get_write_end() {
+    return *ends[1];
+  }
+  End& operator[]( size_t n ) {
+    return *ends[n];
+  }
+
+  // yield::ChannelPair
+  Channel& get_read_channel() {
+    return get_read_end();
+  }
+  Channel& get_write_channel() {
+    return get_write_end();
+  }
+
+private:
+  Pipe( fd_t ends[2] ) {
+    this->ends[0] = new End( ends[0] );
+    this->ends[1] = new End( ends[1] );
+  }
+
+  static bool pipe( fd_t ends[2] );
+
+private:
+  End* ends[2];
+};
+}
 }
 
 

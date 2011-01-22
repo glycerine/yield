@@ -35,26 +35,22 @@
 #include <Windows.h>
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace fs
-    {
-      void __stdcall
-      AIOCB::CompletionRoutine
-      (
-        unsigned long dwErrorCode,
-        unsigned long dwNumberOfBytesTransfered,
-        ::OVERLAPPED* lpOverlapped
-      )
-      {
-        yield::aio::AIOCB& aiocb = AIOCB::cast( *lpOverlapped );
-        aiocb.set_error( dwErrorCode );
-        aiocb.set_return( dwNumberOfBytesTransfered );
-        debug_assert_ne( aiocb.get_completion_handler(), NULL );
-        aiocb.get_completion_handler()->handle( aiocb );
-      }
-    }
-  }
+namespace yield {
+namespace aio {
+namespace fs {
+void __stdcall
+AIOCB::CompletionRoutine
+(
+  unsigned long dwErrorCode,
+  unsigned long dwNumberOfBytesTransfered,
+  ::OVERLAPPED* lpOverlapped
+) {
+  yield::aio::AIOCB& aiocb = AIOCB::cast( *lpOverlapped );
+  aiocb.set_error( dwErrorCode );
+  aiocb.set_return( dwNumberOfBytesTransfered );
+  debug_assert_ne( aiocb.get_completion_handler(), NULL );
+  aiocb.get_completion_handler()->handle( aiocb );
+}
+}
+}
 }

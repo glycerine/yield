@@ -36,60 +36,51 @@
 #include <mach/task.h>
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace darwin
-    {
-      Semaphore::Semaphore( semaphore_t sem )
-        : sem( sem )
-      { }
+namespace yield {
+namespace thread {
+namespace darwin {
+Semaphore::Semaphore( semaphore_t sem )
+  : sem( sem )
+{ }
 
-      Semaphore::~Semaphore()
-      {
-        semaphore_destroy( mach_task_self(), sem );
-      }
+Semaphore::~Semaphore() {
+  semaphore_destroy( mach_task_self(), sem );
+}
 
-      Semaphore* Semaphore::create()
-      {
-        semaphore_t sem;
-        if
-        (
-          semaphore_create
-          (
-            mach_task_self(),
-            &sem,
-            SYNC_POLICY_FIFO,
-            0
-          )
-          == KERN_SUCCESS
-        )
-          return new Semaphore( sem );
-        else
-          return NULL;
-      }
+Semaphore* Semaphore::create() {
+  semaphore_t sem;
+  if
+  (
+    semaphore_create
+    (
+      mach_task_self(),
+      &sem,
+      SYNC_POLICY_FIFO,
+      0
+    )
+    == KERN_SUCCESS
+  )
+    return new Semaphore( sem );
+  else
+    return NULL;
+}
 
-      void Semaphore::post()
-      {
-        semaphore_signal( sem );
-      }
+void Semaphore::post() {
+  semaphore_signal( sem );
+}
 
-      bool Semaphore::timedwait( const Time& timeout )
-      {
-        return semaphore_timedwait( sem, timeout ) == KERN_SUCCESS;
-      }
+bool Semaphore::timedwait( const Time& timeout ) {
+  return semaphore_timedwait( sem, timeout ) == KERN_SUCCESS;
+}
 
-      bool Semaphore::trywait()
-      {
-        mach_timespec_t timeout_m_ts = { 0, 0 };
-        return semaphore_timedwait( sem, timeout_m_ts ) == KERN_SUCCESS;
-      }
+bool Semaphore::trywait() {
+  mach_timespec_t timeout_m_ts = { 0, 0 };
+  return semaphore_timedwait( sem, timeout_m_ts ) == KERN_SUCCESS;
+}
 
-      bool Semaphore::wait()
-      {
-        return semaphore_wait( sem ) == KERN_SUCCESS;
-      }
-    }
-  }
+bool Semaphore::wait() {
+  return semaphore_wait( sem ) == KERN_SUCCESS;
+}
+}
+}
 }

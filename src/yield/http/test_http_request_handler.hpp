@@ -36,26 +36,22 @@
 #include "yield/http/http_request_handler.hpp"
 
 
-namespace yield
-{
-  namespace http
-  {
-    class TestHTTPRequestHandler : public HTTPRequestHandler
-    {
-      // HTTPRequestHandler
-      void handle( YO_NEW_REF HTTPRequest& http_request )
-      {
-        if ( http_request.get_uri().get_path() == "/" )
-          http_request.respond( 200, "Hello world" );
-        else if ( http_request.get_uri().get_path() == "/drop" )
-          ;
-        else
-          http_request.respond( 404 );
+namespace yield {
+namespace http {
+class TestHTTPRequestHandler : public HTTPRequestHandler {
+  // HTTPRequestHandler
+  void handle( YO_NEW_REF HTTPRequest& http_request ) {
+    if ( http_request.get_uri().get_path() == "/" )
+      http_request.respond( 200, "Hello world" );
+    else if ( http_request.get_uri().get_path() == "/drop" )
+      ;
+    else
+      http_request.respond( 404 );
 
-        HTTPRequest::dec_ref( http_request );
-      }
-    };
+    HTTPRequest::dec_ref( http_request );
   }
+};
+}
 }
 
 

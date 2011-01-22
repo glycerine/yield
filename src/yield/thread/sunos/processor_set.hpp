@@ -35,59 +35,56 @@
 #include "yield/thread/processor_set.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    class ProcessorSet : public Object
-    {
-    public:
-      ProcessorSet();
-      ~ProcessorSet();
+namespace yield {
+namespace thread {
+class ProcessorSet : public Object {
+public:
+  ProcessorSet();
+  ~ProcessorSet();
 
-      void clear();
-      void clear( uint16_t processor_i );
+  void clear();
+  void clear( uint16_t processor_i );
 
-      uint16_t count() const
-      {
-        uint16_t count = 0;
+  uint16_t count() const {
+    uint16_t count = 0;
 
-        for
-        (
-          uint16_t processor_i = 0;
-          processor_i < static_cast<uint16_t>( -1 );
-          processor_i++
-        )
-        {
-          if ( isset( processor_i ) )
-            count++;
-        }
+    for
+    (
+      uint16_t processor_i = 0;
+      processor_i < static_cast<uint16_t>( -1 );
+      processor_i++
+    ) {
+      if ( isset( processor_i ) )
+        count++;
+    }
 
-        return count;
-      }
-
-      bool empty() const { return count() == 0; }
-      bool isset( uint16_t processor_i ) const;
-      bool set( uint16_t processor_i );
-
-    private:
-      ProcessorSet( const ProcessorSet& ) { } // Prevent copying
-
-    private:
-      friend class Process;
-
-      #if defined(_WIN32)
-        friend class win32::Thread;
-        uintptr_t mask;
-      #elif defined(__linux__)
-        friend class posix::Thread;
-        cpu_set_t cpu_set;
-      #elif defined(__sun)
-        friend class posix::Thread;
-        int psetid;
-      #endif
-    };
+    return count;
   }
+
+  bool empty() const {
+    return count() == 0;
+  }
+  bool isset( uint16_t processor_i ) const;
+  bool set( uint16_t processor_i );
+
+private:
+  ProcessorSet( const ProcessorSet& ) { } // Prevent copying
+
+private:
+  friend class Process;
+
+#if defined(_WIN32)
+  friend class win32::Thread;
+  uintptr_t mask;
+#elif defined(__linux__)
+  friend class posix::Thread;
+  cpu_set_t cpu_set;
+#elif defined(__sun)
+  friend class posix::Thread;
+  int psetid;
+#endif
+};
+}
 }
 
 

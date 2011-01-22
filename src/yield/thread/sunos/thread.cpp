@@ -35,60 +35,51 @@
 #include <sys/pset.h>
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace sunos
-    {
-      Thread::Thread( Runnable& runnable )
-        : yield::thread::posix::Thread( runnable )
-      {
-        thread = 0;
-      }
+namespace yield {
+namespace thread {
+namespace sunos {
+Thread::Thread( Runnable& runnable )
+  : yield::thread::posix::Thread( runnable ) {
+  thread = 0;
+}
 
-      Thread::Thread( pthread_t pthread, thread_t thread )
-        : yield::thread::posix::Thread( pthread ),
-          thread( thread )
-      { }
+Thread::Thread( pthread_t pthread, thread_t thread )
+  : yield::thread::posix::Thread( pthread ),
+    thread( thread )
+{ }
 
-      void* Thread::run()
-      {
-        thread = thr_self();
-        return yield::thread::posix::Thread::run();
-      }
+void* Thread::run() {
+  thread = thr_self();
+  return yield::thread::posix::Thread::run();
+}
 
-      Thread* Thread::self()
-      {
-        return new Thread( pthread_self(), thr_self() );
-      }
+Thread* Thread::self() {
+  return new Thread( pthread_self(), thr_self() );
+}
 
-      bool Thread::setaffinity( uint16_t logical_processor_i )
-      {
-        return processor_bind
-               (
-                 P_LWPID,
-                 thread,
-                 logical_processor_i,
-                 NULL
-               ) == 0;
-      }
+bool Thread::setaffinity( uint16_t logical_processor_i ) {
+  return processor_bind
+         (
+           P_LWPID,
+           thread,
+           logical_processor_i,
+           NULL
+         ) == 0;
+}
 
-      bool Thread::setaffinity( const ProcessorSet& logical_processor_set )
-      {
-        return pset_bind
-               (
-                 logical_processor_set,
-                 P_LWPID,
-                 thread,
-                 NULL
-               ) == 0;
-      }
+bool Thread::setaffinity( const ProcessorSet& logical_processor_set ) {
+  return pset_bind
+         (
+           logical_processor_set,
+           P_LWPID,
+           thread,
+           NULL
+         ) == 0;
+}
 
-      void Thread::yield()
-      {
-        sleep( 0 );
-      }
-    }
-  }
+void Thread::yield() {
+  sleep( 0 );
+}
+}
+}
 }

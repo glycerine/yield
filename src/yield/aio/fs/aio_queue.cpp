@@ -30,49 +30,41 @@
 
 #include "bio_queue.hpp"
 #ifdef _WIN32
-  #include "win32/aio_queue.hpp"
+#include "win32/aio_queue.hpp"
 #else
-  #include "posix/aio_queue.hpp"
+#include "posix/aio_queue.hpp"
 #endif
 #include "yield/assert.hpp"
 #include "yield/time.hpp"
 #include "yield/aio/fs/aio_queue.hpp"
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace fs
-    {
-      AIOQueue::AIOQueue()
-      {
-        #ifdef _WIN32
-          pimpl = new win32::AIOQueue;
-        #else
-          pimpl = new posix::AIOQueue;
-        #endif
-      }
+namespace yield {
+namespace aio {
+namespace fs {
+AIOQueue::AIOQueue() {
+#ifdef _WIN32
+  pimpl = new win32::AIOQueue;
+#else
+  pimpl = new posix::AIOQueue;
+#endif
+}
 
-      AIOQueue::~AIOQueue()
-      {
-        delete pimpl;
-      }
+AIOQueue::~AIOQueue() {
+  delete pimpl;
+}
 
-      bool AIOQueue::associate( fd_t fd )
-      {
-        return pimpl->associate( fd );
-      }
+bool AIOQueue::associate( fd_t fd ) {
+  return pimpl->associate( fd );
+}
 
-      YO_NEW_REF Event* AIOQueue::dequeue( const Time& timeout )
-      {
-        return pimpl->dequeue( timeout );
-      }
+YO_NEW_REF Event* AIOQueue::dequeue( const Time& timeout ) {
+  return pimpl->dequeue( timeout );
+}
 
-      bool AIOQueue::enqueue( YO_NEW_REF Event& event )
-      {
-        return pimpl->enqueue( event );
-      }
-    }
-  }
+bool AIOQueue::enqueue( YO_NEW_REF Event& event ) {
+  return pimpl->enqueue( event );
+}
+}
+}
 }

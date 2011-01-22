@@ -35,62 +35,61 @@
 #include "yield/aio/net/sockets/aiocb.hpp"
 
 
-namespace yield
-{
-  namespace net
-  {
-    namespace sockets
-    {
-      class SocketAddress;
-      class StreamSocket;
-    }
+namespace yield {
+namespace net {
+namespace sockets {
+class SocketAddress;
+class StreamSocket;
+}
+}
+
+
+namespace aio {
+namespace net {
+namespace sockets {
+class connectAIOCB : public AIOCB {
+public:
+  const static uint32_t TYPE_ID = 2458109810UL;
+
+public:
+  connectAIOCB
+  (
+    yield::net::sockets::StreamSocket& socket_,
+    yield::net::sockets::SocketAddress& peername,
+    YO_NEW_REF Buffer* send_buffer = NULL
+  );
+
+  ~connectAIOCB();
+
+  const yield::net::sockets::SocketAddress& get_peername() const;
+  Buffer* get_send_buffer() const {
+    return send_buffer;
   }
 
-
-  namespace aio
-  {
-    namespace net
-    {
-      namespace sockets
-      {
-        class connectAIOCB : public AIOCB
-        {
-        public:
-          const static uint32_t TYPE_ID = 2458109810UL;
-
-        public:
-          connectAIOCB
-          (
-            yield::net::sockets::StreamSocket& socket_,
-            yield::net::sockets::SocketAddress& peername,
-            YO_NEW_REF Buffer* send_buffer = NULL
-          );
-
-          ~connectAIOCB();
-
-          const yield::net::sockets::SocketAddress& get_peername() const;
-          Buffer* get_send_buffer() const { return send_buffer; }
-
-          // yield::Object
-          uint32_t get_type_id() const { return TYPE_ID; }
-          const char* get_type_name() const { return "yield::aio::net::sockets::connectAIOCB"; }
-
-          // yield::aio::AIOCB
-          #ifdef _WIN32
-            bool issue( yield::aio::win32::AIOQueue& );
-          #endif
-          RetryStatus retry();
-
-        private:
-          connectAIOCB( connectAIOCB& other );
-
-        private:
-          yield::net::sockets::SocketAddress& peername;
-          Buffer* send_buffer;
-        };
-      }
-    }
+  // yield::Object
+  uint32_t get_type_id() const {
+    return TYPE_ID;
   }
+  const char* get_type_name() const {
+    return "yield::aio::net::sockets::connectAIOCB";
+  }
+
+  // yield::aio::AIOCB
+#ifdef _WIN32
+  bool issue( yield::aio::win32::AIOQueue& );
+#endif
+  RetryStatus retry();
+
+private:
+  connectAIOCB( connectAIOCB& other );
+
+private:
+  yield::net::sockets::SocketAddress& peername;
+  Buffer* send_buffer;
+};
+}
+}
+}
 }
 
 

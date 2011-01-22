@@ -33,22 +33,20 @@
 
 
 #ifdef _WIN32
-  #include "yield/i18n/win32/tstring.hpp"
+#include "yield/i18n/win32/tstring.hpp"
 #else
-  #include "yield/i18n/posix/tstring.hpp"
+#include "yield/i18n/posix/tstring.hpp"
 #endif
 
 
-namespace yield
-{
-  namespace i18n
-  {
-    #ifdef _WIN32
-      typedef win32::tstring tstring;
-    #else
-      typedef posix::tstring tstring;
-    #endif
-  }
+namespace yield {
+namespace i18n {
+#ifdef _WIN32
+typedef win32::tstring tstring;
+#else
+typedef posix::tstring tstring;
+#endif
+}
 }
 
 

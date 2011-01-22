@@ -35,16 +35,18 @@
 #include "yield/object.hpp"
 
 
-namespace yield
-{
-  class TestObject : public Object
-  {
-  public:
-    TestObject() { deleted = false; }
-    ~TestObject() { deleted = true; }
+namespace yield {
+class TestObject : public Object {
+public:
+  TestObject() {
+    deleted = false;
+  }
+  ~TestObject() {
+    deleted = true;
+  }
 
-    static bool deleted;
-  };
+  static bool deleted;
+};
 }
 
 

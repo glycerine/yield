@@ -39,104 +39,91 @@
 #include "yield/net/sockets/socket_address.hpp"
 
 
-namespace yield
-{
-  namespace net
-  {
-    namespace sockets
+namespace yield {
+namespace net {
+namespace sockets {
+template <class SocketType>
+class SocketBindTest : public yunit::Test {
+public:
+  // Test
+  void run() {
+    auto_Object<SocketType> socket_ = SocketType::create();
+    if ( !socket_->bind( SocketAddress( SocketAddress::IN_ANY, 31000 ) ) )
+      throw Exception();
+  }
+};
+
+
+class SocketGetFQDNTest : public yunit::Test {
+public:
+  // Test
+  void run() {
+    string hostname = Socket::gethostname();
+    string fqdn = Socket::getfqdn();
+    throw_assert_false( fqdn.empty() );
+    throw_assert_eq( fqdn.find( hostname ), 0 );
+    throw_assert_ge( fqdn.size(), hostname.size() );
+  }
+};
+
+
+class SocketGetHostNameTest : public yunit::Test {
+public:
+  // Test
+  void run() {
+    string hostname = Socket::gethostname();
+    throw_assert_false( hostname.empty() );
+    throw_assert_ne( hostname, "localhost" );
+  }
+};
+
+
+template <class SocketType>
+class SocketShutdownTest : public yunit::Test {
+public:
+  // Test
+  void run() {
     {
-      template <class SocketType>
-      class SocketBindTest : public yunit::Test
-      {
-      public:
-        // Test
-        void run()
-        {
-          auto_Object<SocketType> socket_ = SocketType::create();
-          if ( !socket_->bind( SocketAddress( SocketAddress::IN_ANY, 31000 ) ) )
-            throw Exception();
-        }
-      };
+      auto_Object<SocketType> socket_ = SocketType::create();
 
+      if ( !socket_->shutdown( true, false ) )
+        throw Exception();
 
-      class SocketGetFQDNTest : public yunit::Test
-      {
-      public:
-        // Test
-        void run()
-        {
-          string hostname = Socket::gethostname();
-          string fqdn = Socket::getfqdn();
-          throw_assert_false( fqdn.empty() );
-          throw_assert_eq( fqdn.find( hostname ), 0 );
-          throw_assert_ge( fqdn.size(), hostname.size() );
-        }
-      };
+      if ( !socket_->shutdown( false, true ) )
+        throw Exception();
+    }
 
+    {
+      auto_Object<SocketType> socket_ = SocketType::create();
 
-      class SocketGetHostNameTest : public yunit::Test
-      {
-      public:
-        // Test
-        void run()
-        {
-          string hostname = Socket::gethostname();
-          throw_assert_false( hostname.empty() );
-          throw_assert_ne( hostname, "localhost" );
-        }
-      };
-
-
-      template <class SocketType>
-      class SocketShutdownTest : public yunit::Test
-      {
-      public:
-        // Test
-        void run()
-        {
-          {
-            auto_Object<SocketType> socket_ = SocketType::create();
-
-            if ( !socket_->shutdown( true, false ) )
-              throw Exception();
-
-            if ( !socket_->shutdown( false, true ) )
-              throw Exception();
-          }
-
-          {
-            auto_Object<SocketType> socket_ = SocketType::create();
-
-            if ( !socket_->shutdown( true, true ) )
-              throw Exception();
-          }
-        }
-      };
-
-
-      template <class SocketType>
-      class SocketTestSuite : public ChannelTestSuite
-      {
-      public:
-        SocketTestSuite()
-          : ChannelTestSuite
-            (
-              *new SocketPairFactory
-                   (
-                     SocketType::DOMAIN_DEFAULT,
-                     SocketType::TYPE,
-                     SocketType::PROTOCOL
-                   )
-            )
-        {
-          add( "Socket::bind", new SocketBindTest<SocketType> );
-          add( "Socket::getfqdn()", new SocketGetFQDNTest );
-          add( "Socket::gethostname", new SocketGetHostNameTest );
-          add( "Socket::shutdown", new SocketShutdownTest<SocketType> );
-        }
-      };
+      if ( !socket_->shutdown( true, true ) )
+        throw Exception();
     }
   }
+};
+
+
+template <class SocketType>
+class SocketTestSuite : public ChannelTestSuite {
+public:
+  SocketTestSuite()
+    : ChannelTestSuite
+    (
+      *new SocketPairFactory
+      (
+        SocketType::DOMAIN_DEFAULT,
+        SocketType::TYPE,
+        SocketType::PROTOCOL
+      )
+    ) {
+    add( "Socket::bind", new SocketBindTest<SocketType> );
+    add( "Socket::getfqdn()", new SocketGetFQDNTest );
+    add( "Socket::gethostname", new SocketGetHostNameTest );
+    add( "Socket::shutdown", new SocketShutdownTest<SocketType> );
+  }
+};
+}
+}
 }
 
 

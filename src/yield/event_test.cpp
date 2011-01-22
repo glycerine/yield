@@ -35,16 +35,13 @@
 
 TEST_SUITE( Event );
 
-namespace yield
-{
-  TEST( Event, is_message )
-  {
-    throw_assert_false( Event().is_message() );
-  }
+namespace yield {
+TEST( Event, is_message ) {
+  throw_assert_false( Event().is_message() );
+}
 
-  TEST( Event, rtti )
-  {
-    throw_assert_eq( Event().get_type_id(), Event::TYPE_ID );
-    throw_assert_eq( strcmp( Event().get_type_name(), "yield::Event" ), 0 );
-  }
+TEST( Event, rtti ) {
+  throw_assert_eq( Event().get_type_id(), Event::TYPE_ID );
+  throw_assert_eq( strcmp( Event().get_type_name(), "yield::Event" ), 0 );
+}
 }

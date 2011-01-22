@@ -29,151 +29,129 @@
 
 
 #if defined(__linux__)
-  #include "linux/thread.hpp"
+#include "linux/thread.hpp"
 #elif defined(__MACH__)
-  #include "darwin/thread.hpp"
+#include "darwin/thread.hpp"
 #elif defined(__sun)
-  #include "sunos/thread.hpp"
+#include "sunos/thread.hpp"
 #elif defined(_WIN32)
-  #include "win32/thread.hpp"
+#include "win32/thread.hpp"
 #else
-  #include "posix/thread.hpp"
+#include "posix/thread.hpp"
 #endif
 #include "yield/thread/static_runnable.hpp"
 #include "yield/thread/processor_set.hpp"
 #include "yield/thread/thread.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    Thread::Thread( Runnable& runnable )
-    {
-      init( runnable );
-    }
+namespace yield {
+namespace thread {
+Thread::Thread( Runnable& runnable ) {
+  init( runnable );
+}
 
-    Thread::Thread( void ( *run )( void* ), void* context )
-    {
-      StaticRunnable* static_runnable = new StaticRunnable( run, context );
-      init( *static_runnable );
-      StaticRunnable::dec_ref( *static_runnable );
-    }
+Thread::Thread( void ( *run )( void* ), void* context ) {
+  StaticRunnable* static_runnable = new StaticRunnable( run, context );
+  init( *static_runnable );
+  StaticRunnable::dec_ref( *static_runnable );
+}
 
-    Thread::~Thread()
-    {
-      delete pimpl;
-    }
+Thread::~Thread() {
+  delete pimpl;
+}
 
-    bool Thread::cancel()
-    {
-      return pimpl->cancel();
-    }
+bool Thread::cancel() {
+  return pimpl->cancel();
+}
 
-    Runnable* Thread::get_runnable() const
-    {
-      return pimpl->get_runnable();
-    }
+Runnable* Thread::get_runnable() const {
+  return pimpl->get_runnable();
+}
 
-    void* Thread::getspecific( uintptr_t key )
-    {
-      return pimpl->getspecific( key );
-    }
+void* Thread::getspecific( uintptr_t key ) {
+  return pimpl->getspecific( key );
+}
 
-    void Thread::init( Runnable& runnable )
-    {
-      #if defined(__linux__)
-        pimpl = new linux::Thread( runnable );
-      #elif defined(__MACH__)
-        pimpl = new darwin::Thread( runnable );
-      #elif defined(__sun)
-        pimpl = new sunos::Thread( runnable );
-      #elif defined(_WIN32)
-        pimpl = new win32::Thread( runnable );
-      #else
-        pimpl = new posix::Thread( runnable );
-      #endif
-    }
+void Thread::init( Runnable& runnable ) {
+#if defined(__linux__)
+  pimpl = new linux::Thread( runnable );
+#elif defined(__MACH__)
+  pimpl = new darwin::Thread( runnable );
+#elif defined(__sun)
+  pimpl = new sunos::Thread( runnable );
+#elif defined(_WIN32)
+  pimpl = new win32::Thread( runnable );
+#else
+  pimpl = new posix::Thread( runnable );
+#endif
+}
 
-    bool Thread::is_running() const
-    {
-      return pimpl->is_running();
-    }
+bool Thread::is_running() const {
+  return pimpl->is_running();
+}
 
-    bool Thread::join()
-    {
-      return pimpl->join();
-    }
+bool Thread::join() {
+  return pimpl->join();
+}
 
-    uintptr_t Thread::key_create()
-    {
-      return pimpl->key_create();
-    }
+uintptr_t Thread::key_create() {
+  return pimpl->key_create();
+}
 
-    bool Thread::key_delete( uintptr_t key )
-    {
-      return pimpl->key_delete( key );
-    }
+bool Thread::key_delete( uintptr_t key ) {
+  return pimpl->key_delete( key );
+}
 
-    void Thread::nanosleep( const Time& timeout )
-    {
-      return pimpl->nanosleep( timeout );
-    }
+void Thread::nanosleep( const Time& timeout ) {
+  return pimpl->nanosleep( timeout );
+}
 
-    auto_Object<Thread> Thread::self()
-    {
-      #if defined(__linux__)
-        return new Thread( linux::Thread::self() );
-      #elif defined(__MACH__)
-        return new Thread( darwin::Thread::self();
-      #elif defined(__sun)
-        return new Thread( sunos::Thread::self() );
-      #elif defined(_WIN32)
-        return new Thread( win32::Thread::self() );
-      #else
-        return new Thread( posix::Thread::self() );
-      #endif
-    }
+auto_Object<Thread> Thread::self() {
+#if defined(__linux__)
+  return new Thread( linux::Thread::self() );
+#elif defined(__MACH__)
+  return new Thread( darwin::Thread::self();
+#elif defined(__sun)
+  return new Thread( sunos::Thread::self() );
+#elif defined(_WIN32)
+  return new Thread( win32::Thread::self() );
+#else
+  return new Thread( posix::Thread::self() );
+#endif
+}
 
-    bool Thread::setaffinity( uint16_t logical_processor_i )
-    {
-      #if defined(__linux__) || defined(__sun) || defined(_WIN32)
-        return pimpl->setaffinity( logical_processor_i );
-      #endif
-    }
+bool Thread::setaffinity( uint16_t logical_processor_i ) {
+#if defined(__linux__) || defined(__sun) || defined(_WIN32)
+  return pimpl->setaffinity( logical_processor_i );
+#endif
+}
 
-    bool Thread::setaffinity( const ProcessorSet& logical_processor_set )
-    {
-      #if defined(__linux__) || defined(__sun) || defined(_WIN32)
-        return pimpl->setaffinity( *logical_processor_set.pimpl );
-      #endif
-    }
+bool Thread::setaffinity( const ProcessorSet& logical_processor_set ) {
+#if defined(__linux__) || defined(__sun) || defined(_WIN32)
+  return pimpl->setaffinity( *logical_processor_set.pimpl );
+#endif
+}
 
-    void Thread::set_name( const char* name )
-    {
-      #ifdef _WIN32
-        return pimpl->set_name( name );
-      #endif
-    }
+void Thread::set_name( const char* name ) {
+#ifdef _WIN32
+  return pimpl->set_name( name );
+#endif
+}
 
-    bool Thread::setspecific( uintptr_t key, intptr_t value )
-    {
-      return setspecific( key, reinterpret_cast<void*>( value ) );
-    }
+bool Thread::setspecific( uintptr_t key, intptr_t value ) {
+  return setspecific( key, reinterpret_cast<void*>( value ) );
+}
 
-    bool Thread::setspecific( uintptr_t key, uintptr_t value )
-    {
-      return setspecific( key, reinterpret_cast<void*>( value ) );
-    }
+bool Thread::setspecific( uintptr_t key, uintptr_t value ) {
+  return setspecific( key, reinterpret_cast<void*>( value ) );
+}
 
-    bool Thread::setspecific( uintptr_t key, void* value )
-    {
-      return pimpl->setspecific( key, value );
-    }
+bool Thread::setspecific( uintptr_t key, void* value ) {
+  return pimpl->setspecific( key, value );
+}
 
-    void Thread::yield()
-    {
-      return pimpl->yield();
-    }
-  }
+void Thread::yield() {
+  return pimpl->yield();
+}
+}
 }

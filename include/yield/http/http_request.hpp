@@ -38,86 +38,92 @@
 #include "yield/net/uri.hpp"
 
 
-namespace yield
-{
-  class Exception;
+namespace yield {
+class Exception;
 
 
-  namespace http
-  {
-    class HTTPResponse;
+namespace http {
+class HTTPResponse;
 
 
-    class HTTPRequest : public Request, public HTTPMessage<HTTPRequest>
-    {
-    public:
-      enum Method
-      {
-        METHOD_CONNECT,
-        METHOD_COPY,
-        METHOD_DELETE,
-        METHOD_GET,
-        METHOD_HEAD,
-        METHOD_MKCOL,
-        METHOD_LOCK,
-        METHOD_MOVE,
-        METHOD_OPTIONS,
-        METHOD_PATCH,
-        METHOD_POST,
-        METHOD_PROPFIND,
-        METHOD_PROPPATCH,
-        METHOD_PUT,
-        METHOD_TRACE,
-        METHOD_UNLOCK
-      };
+class HTTPRequest : public Request, public HTTPMessage<HTTPRequest> {
+public:
+  enum Method {
+    METHOD_CONNECT,
+    METHOD_COPY,
+    METHOD_DELETE,
+    METHOD_GET,
+    METHOD_HEAD,
+    METHOD_MKCOL,
+    METHOD_LOCK,
+    METHOD_MOVE,
+    METHOD_OPTIONS,
+    METHOD_PATCH,
+    METHOD_POST,
+    METHOD_PROPFIND,
+    METHOD_PROPPATCH,
+    METHOD_PUT,
+    METHOD_TRACE,
+    METHOD_UNLOCK
+  };
 
-      const static uint32_t TYPE_ID = 707981577;
+  const static uint32_t TYPE_ID = 707981577;
 
-    public:
-      HTTPRequest
-      (
-        Method method,
-        const yield::net::URI& uri,
-        YO_NEW_REF Buffer* body = NULL
-      );
+public:
+  HTTPRequest
+  (
+    Method method,
+    const yield::net::URI& uri,
+    YO_NEW_REF Buffer* body = NULL
+  );
 
-      const DateTime& get_creation_date_time() const;
-      Method get_method() const { return method; }
-      const yield::net::URI& get_uri() const { return uri; }
-
-      void respond( YO_NEW_REF HTTPResponse& http_response );
-      void respond( uint16_t status_code );
-      void respond( uint16_t status_code, const char* body );
-      void respond( uint16_t status_code, YO_NEW_REF Buffer& body );
-      void respond( YO_NEW_REF Exception& exception );
-
-      // Object
-      HTTPRequest& inc_ref() { return Object::inc_ref( *this ); }
-
-      // Event
-      uint32_t get_type_id() const { return TYPE_ID; }
-      const char* get_type_name() const { return "yield::http::HTTPRequest"; }
-
-    private:
-      friend class HTTPRequestParser;
-
-      HTTPRequest
-      (
-        void* body,
-        Buffer& buffer,
-        size_t content_length,
-        uint16_t fields_offset,
-        float http_version,
-        Method method,
-        const yield::net::URI& uri
-      );
-
-    private:
-      DateTime creation_date_time;
-      Method method;
-      yield::net::URI uri;
-    };
+  const DateTime& get_creation_date_time() const;
+  Method get_method() const {
+    return method;
   }
+  const yield::net::URI& get_uri() const {
+    return uri;
+  }
+
+  void respond( YO_NEW_REF HTTPResponse& http_response );
+  void respond( uint16_t status_code );
+  void respond( uint16_t status_code, const char* body );
+  void respond( uint16_t status_code, YO_NEW_REF Buffer& body );
+  void respond( YO_NEW_REF Exception& exception );
+
+  // Object
+  HTTPRequest& inc_ref() {
+    return Object::inc_ref( *this );
+  }
+
+  // Event
+  uint32_t get_type_id() const {
+    return TYPE_ID;
+  }
+  const char* get_type_name() const {
+    return "yield::http::HTTPRequest";
+  }
+
+private:
+  friend class HTTPRequestParser;
+
+  HTTPRequest
+  (
+    void* body,
+    Buffer& buffer,
+    size_t content_length,
+    uint16_t fields_offset,
+    float http_version,
+    Method method,
+    const yield::net::URI& uri
+  );
+
+private:
+  DateTime creation_date_time;
+  Method method;
+  yield::net::URI uri;
+};
+}
 }
 
 

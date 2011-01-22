@@ -37,43 +37,35 @@
 #include <queue>
 
 
-namespace yield
-{
-  namespace thread
-  {
-    template <class ElementType>
-    class BlockingConcurrentQueue : private std::queue<ElementType*>
-    {
-    public:
-      bool enqueue( ElementType& element )
-      {
-        mutex.lock();
-        std::queue<ElementType*>::push( &element );
-        mutex.unlock();
-        return true;
-      }
-
-      ElementType* trydequeue()
-      {
-        mutex.lock();
-        if ( !std::queue<ElementType*>::empty() )
-        {
-          ElementType* element = std::queue<ElementType*>::front();
-          std::queue<ElementType*>::pop();
-          mutex.unlock();
-          return element;
-        }
-        else
-        {
-          mutex.unlock();
-          return NULL;
-        }
-      }
-
-    private:
-      yield::thread::Mutex mutex;
-    };
+namespace yield {
+namespace thread {
+template <class ElementType>
+class BlockingConcurrentQueue : private std::queue<ElementType*> {
+public:
+  bool enqueue( ElementType& element ) {
+    mutex.lock();
+    std::queue<ElementType*>::push( &element );
+    mutex.unlock();
+    return true;
   }
+
+  ElementType* trydequeue() {
+    mutex.lock();
+    if ( !std::queue<ElementType*>::empty() ) {
+      ElementType* element = std::queue<ElementType*>::front();
+      std::queue<ElementType*>::pop();
+      mutex.unlock();
+      return element;
+    } else {
+      mutex.unlock();
+      return NULL;
+    }
+  }
+
+private:
+  yield::thread::Mutex mutex;
+};
+}
 }
 
 

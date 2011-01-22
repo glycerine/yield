@@ -32,17 +32,13 @@
 #include "yield/aio/fs/pwrite_aiocb.hpp"
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace fs
-    {
-      bool pwriteAIOCB::issue( EventHandler& completion_handler )
-      {
-        set_completion_handler( completion_handler );
-        return aio_write( *this ) == 0;
-      }
-    }
-  }
+namespace yield {
+namespace aio {
+namespace fs {
+bool pwriteAIOCB::issue( EventHandler& completion_handler ) {
+  set_completion_handler( completion_handler );
+  return aio_write( *this ) == 0;
+}
+}
+}
 }

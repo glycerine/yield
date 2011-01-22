@@ -37,103 +37,88 @@
 
 TEST_SUITE( ReaderWriterLock );
 
-namespace yield
-{
-  namespace thread
-  {
-    class ReaderWriterLockTest : public yunit::Test
-    {
-    public:
-      // Test
-      void setup()
-      {
-        rwlock = new ReaderWriterLock;
-      }
-
-      void teardown()
-      {
-        delete rwlock;
-        rwlock = NULL;
-      }
-
-    protected:
-      ReaderWriterLock* rwlock;
-    };
-
-
-    TEST_EX( ReaderWriterLock, rdlock, ReaderWriterLockTest )
-    {
-      bool rdlock_ret = rwlock->rdlock();
-      throw_assert( rdlock_ret );
-    }
-
-    class ReaderWriterLockMultiReaderTest : public ReaderWriterLockTest
-    {
-    public:
-      // Test
-      virtual void run()
-      {
-        bool rdlock_ret = rwlock->rdlock();
-        throw_assert( rdlock_ret );
-
-        auto_Object<Thread> thread = new Thread( thread_run, this );
-        thread->join();
-      }
-
-    private:
-      static void thread_run( void* this_ )
-      {
-        bool rdlock_ret
-          = static_cast<ReaderWriterLockMultiReaderTest*>( this_ )
-              ->rwlock->rdlock();
-        throw_assert( rdlock_ret );
-      }
-    };
-
-    TEST_EX
-    (
-      ReaderWriterLock,
-      rdlock_multiple,
-      ReaderWriterLockMultiReaderTest
-    )
-    {
-      ReaderWriterLockMultiReaderTest::run();
-    }
-
-    TEST_EX( ReaderWriterLock, rdunlock, ReaderWriterLockTest )
-    {
-      bool rdlock_ret = rwlock->rdlock();
-      throw_assert( rdlock_ret );
-      rwlock->rdunlock();
-      rdlock_ret = rwlock->rdlock();
-      throw_assert( rdlock_ret );
-    }
-
-    TEST_EX( ReaderWriterLock, tryrdlock, ReaderWriterLockTest )
-    {
-      bool tryrdlock_ret = rwlock->tryrdlock();
-      throw_assert( tryrdlock_ret );
-    }
-
-    TEST_EX( ReaderWriterLock, trywrlock, ReaderWriterLockTest )
-    {
-      bool trywrlock_ret = rwlock->trywrlock();
-      throw_assert( trywrlock_ret );
-    }
-
-    TEST_EX( ReaderWriterLock, wrlock, ReaderWriterLockTest )
-    {
-      bool wrlock_ret = rwlock->wrlock();
-      throw_assert( wrlock_ret );
-    }
-
-    TEST_EX( ReaderWriterLock, wrunlock, ReaderWriterLockTest )
-    {
-      bool wrlock_ret = rwlock->wrlock();
-      throw_assert( wrlock_ret );
-      rwlock->wrunlock();
-      wrlock_ret = rwlock->wrlock();
-      throw_assert( wrlock_ret );
-    }
+namespace yield {
+namespace thread {
+class ReaderWriterLockTest : public yunit::Test {
+public:
+  // Test
+  void setup() {
+    rwlock = new ReaderWriterLock;
   }
+
+  void teardown() {
+    delete rwlock;
+    rwlock = NULL;
+  }
+
+protected:
+  ReaderWriterLock* rwlock;
+};
+
+
+TEST_EX( ReaderWriterLock, rdlock, ReaderWriterLockTest ) {
+  bool rdlock_ret = rwlock->rdlock();
+  throw_assert( rdlock_ret );
+}
+
+class ReaderWriterLockMultiReaderTest : public ReaderWriterLockTest {
+public:
+  // Test
+  virtual void run() {
+    bool rdlock_ret = rwlock->rdlock();
+    throw_assert( rdlock_ret );
+
+    auto_Object<Thread> thread = new Thread( thread_run, this );
+    thread->join();
+  }
+
+private:
+  static void thread_run( void* this_ ) {
+    bool rdlock_ret
+    = static_cast<ReaderWriterLockMultiReaderTest*>( this_ )
+      ->rwlock->rdlock();
+    throw_assert( rdlock_ret );
+  }
+};
+
+TEST_EX
+(
+  ReaderWriterLock,
+  rdlock_multiple,
+  ReaderWriterLockMultiReaderTest
+) {
+  ReaderWriterLockMultiReaderTest::run();
+}
+
+TEST_EX( ReaderWriterLock, rdunlock, ReaderWriterLockTest ) {
+  bool rdlock_ret = rwlock->rdlock();
+  throw_assert( rdlock_ret );
+  rwlock->rdunlock();
+  rdlock_ret = rwlock->rdlock();
+  throw_assert( rdlock_ret );
+}
+
+TEST_EX( ReaderWriterLock, tryrdlock, ReaderWriterLockTest ) {
+  bool tryrdlock_ret = rwlock->tryrdlock();
+  throw_assert( tryrdlock_ret );
+}
+
+TEST_EX( ReaderWriterLock, trywrlock, ReaderWriterLockTest ) {
+  bool trywrlock_ret = rwlock->trywrlock();
+  throw_assert( trywrlock_ret );
+}
+
+TEST_EX( ReaderWriterLock, wrlock, ReaderWriterLockTest ) {
+  bool wrlock_ret = rwlock->wrlock();
+  throw_assert( wrlock_ret );
+}
+
+TEST_EX( ReaderWriterLock, wrunlock, ReaderWriterLockTest ) {
+  bool wrlock_ret = rwlock->wrlock();
+  throw_assert( wrlock_ret );
+  rwlock->wrunlock();
+  wrlock_ret = rwlock->wrlock();
+  throw_assert( wrlock_ret );
+}
+}
 }

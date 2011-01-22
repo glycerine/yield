@@ -35,16 +35,15 @@
 #include "yield/marshal/object.hpp"
 
 
-namespace yield
-{
-  namespace marshal
-  {
-    class Map : public Object
-    {
-    public:
-      virtual size_t get_size() const { return 0; }
-    };
+namespace yield {
+namespace marshal {
+class Map : public Object {
+public:
+  virtual size_t get_size() const {
+    return 0;
   }
+};
+}
 }
 
 

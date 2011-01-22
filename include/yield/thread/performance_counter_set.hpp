@@ -35,46 +35,46 @@
 #include "yield/types.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    #if defined(__sun)
-      namespace sunos { class CPCPerformanceCounterSet; }
-    #elif defined(YIELD_HAVE_UNIX_PAPI)
-      namespace linux { class PAPIPerformanceCounterSet; }
-    #endif
+namespace yield {
+namespace thread {
+#if defined(__sun)
+namespace sunos {
+class CPCPerformanceCounterSet;
+}
+#elif defined(YIELD_HAVE_UNIX_PAPI)
+namespace linux {
+class PAPIPerformanceCounterSet;
+}
+#endif
 
 
-    #if defined(__sun) || defined(YIELD_HAVE_UNIX_PAPI)
-      class PerformanceCounterSet
-      {
-      public:
-        enum Event
-        {
-          EVENT_L1_DCM, // L1 data cache miss
-          EVENT_L2_DCM, // L2 data cache miss
-          EVENT_L2_ICM // L2 instruction cache miss
-        };
+#if defined(__sun) || defined(YIELD_HAVE_UNIX_PAPI)
+class PerformanceCounterSet {
+public:
+  enum Event {
+    EVENT_L1_DCM, // L1 data cache miss
+    EVENT_L2_DCM, // L2 data cache miss
+    EVENT_L2_ICM // L2 instruction cache miss
+  };
 
-      public:
-        PerformanceCounterSet();
-        ~PerformanceCounterSet();
+public:
+  PerformanceCounterSet();
+  ~PerformanceCounterSet();
 
-        bool add( Event event );
-        bool add( const char* event );
-        void start_counting();
-        void stop_counting( uint64_t* counts );
+  bool add( Event event );
+  bool add( const char* event );
+  void start_counting();
+  void stop_counting( uint64_t* counts );
 
-      private:
-        #if defined(__sun)
-          sunos::CPCPerformanceCounterSet* pimpl;
-        #elif defined(YIELD_HAVE_UNIX_PAPI)
-          unix::PAPIPerformanceCounterSet* pimpl;
-        #endif
-      };
-    #endif
-  }
+private:
+#if defined(__sun)
+  sunos::CPCPerformanceCounterSet* pimpl;
+#elif defined(YIELD_HAVE_UNIX_PAPI)
+  unix::PAPIPerformanceCounterSet* pimpl;
+#endif
+};
+#endif
+}
 }
 
 

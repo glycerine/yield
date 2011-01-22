@@ -39,8 +39,7 @@ extern yunit::TestSuite& XDRMarshallerTestSuite();
 extern yunit::TestSuite& XMLMarshallerTestSuite();
 
 
-int main( int, char** )
-{
+int main( int, char** ) {
   int failed_test_case_count = 0;
 
   // PrettyPrinter

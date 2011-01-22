@@ -38,58 +38,55 @@
 struct flock;
 
 
-namespace yield
-{
-  namespace fs
-  {
-    namespace posix
-    {
-      class File : public yield::fs::File
-      {
-      public:
-        class Lock : public yield::fs::File::Lock
-        {
-        public:
-          Lock( const flock& flock_ );
-          Lock( const yield::fs::File::Lock& );
+namespace yield {
+namespace fs {
+namespace posix {
+class File : public yield::fs::File {
+public:
+  class Lock : public yield::fs::File::Lock {
+  public:
+    Lock( const flock& flock_ );
+    Lock( const yield::fs::File::Lock& );
 
-          operator flock() const;
-        };
+    operator flock() const;
+  };
 
-      public:
-        File( fd_t fd );
-        virtual ~File();
+public:
+  File( fd_t fd );
+  virtual ~File();
 
-        // Channel
-        bool close();
-        operator fd_t() const { return fd; }
-        ssize_t read( void* buf, size_t buflen );
-        ssize_t readv( const iovec* iov, int iovlen );
-        bool set_blocking_mode( bool blocking_mode );
-        ssize_t write( const void* buf, size_t buflen );
-        ssize_t writev( const iovec* iov, int iovlen );
-
-        // yield::fs::File
-        YO_NEW_REF yield::fs::Stat* getattr();
-        YO_NEW_REF yield::fs::File::Lock* getlk( const yield::fs::File::Lock& );
-        virtual YO_NEW_REF ExtendedAttributes* openxattrs();
-        ssize_t pread( void*, size_t, uint64_t );
-        ssize_t preadv( const iovec*, int, uint64_t );
-        ssize_t pwrite( const void*, size_t, uint64_t );
-        ssize_t pwritev( const iovec*, int, uint64_t );
-        uint64_t seek( int64_t offset, uint8_t whence );
-        bool setlk( const yield::fs::File::Lock& );
-        bool setlkw( const yield::fs::File::Lock& );
-        bool sync();
-        uint64_t tell();
-        bool truncate( uint64_t new_size );
-        bool unlk( const yield::fs::File::Lock& );
-
-      private:
-        fd_t fd;
-      };
-    }
+  // Channel
+  bool close();
+  operator fd_t() const {
+    return fd;
   }
+  ssize_t read( void* buf, size_t buflen );
+  ssize_t readv( const iovec* iov, int iovlen );
+  bool set_blocking_mode( bool blocking_mode );
+  ssize_t write( const void* buf, size_t buflen );
+  ssize_t writev( const iovec* iov, int iovlen );
+
+  // yield::fs::File
+  YO_NEW_REF yield::fs::Stat* getattr();
+  YO_NEW_REF yield::fs::File::Lock* getlk( const yield::fs::File::Lock& );
+  virtual YO_NEW_REF ExtendedAttributes* openxattrs();
+  ssize_t pread( void*, size_t, uint64_t );
+  ssize_t preadv( const iovec*, int, uint64_t );
+  ssize_t pwrite( const void*, size_t, uint64_t );
+  ssize_t pwritev( const iovec*, int, uint64_t );
+  uint64_t seek( int64_t offset, uint8_t whence );
+  bool setlk( const yield::fs::File::Lock& );
+  bool setlkw( const yield::fs::File::Lock& );
+  bool sync();
+  uint64_t tell();
+  bool truncate( uint64_t new_size );
+  bool unlk( const yield::fs::File::Lock& );
+
+private:
+  fd_t fd;
+};
+}
+}
 }
 
 

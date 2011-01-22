@@ -35,31 +35,37 @@
 #include "yield/marshal/object.hpp"
 
 
-namespace yield
-{
-  namespace marshal
-  {
-    class Double : public Object
-    {
-    public:
-      const static uint32_t TYPE_ID = 1708433041UL;
+namespace yield {
+namespace marshal {
+class Double : public Object {
+public:
+  const static uint32_t TYPE_ID = 1708433041UL;
 
-    public:
-      Double() : value( 0.0 ) { }
-      Double( double value ) : value( value ) { }
+public:
+  Double() : value( 0.0 ) { }
+  Double( double value ) : value( value ) { }
 
-      operator double() const { return value; }
-      Double& operator=( double value ) { this->value = value; return *this; }
-
-      // Object
-      uint32_t get_type_id() const { return TYPE_ID; }
-      const char* get_type_name() const { return "yield::marshal::Double"; }
-      bool operator==( const Object& other ) const;
-
-    private:
-      double value;
-    };
+  operator double() const {
+    return value;
   }
+  Double& operator=( double value ) {
+    this->value = value;
+    return *this;
+  }
+
+  // Object
+  uint32_t get_type_id() const {
+    return TYPE_ID;
+  }
+  const char* get_type_name() const {
+    return "yield::marshal::Double";
+  }
+  bool operator==( const Object& other ) const;
+
+private:
+  double value;
+};
+}
 }
 
 

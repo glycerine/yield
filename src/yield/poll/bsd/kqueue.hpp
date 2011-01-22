@@ -37,35 +37,31 @@
 #include <sys/event.h>
 
 
-namespace yield
-{
-  namespace poll
-  {
-    namespace bsd
-    {
-      class Kqueue : public EventQueue
-      {
-      public:
-        ~Kqueue();
-        static Kqueue* create();
+namespace yield {
+namespace poll {
+namespace bsd {
+class Kqueue : public EventQueue {
+public:
+  ~Kqueue();
+  static Kqueue* create();
 
-        bool associate( fd_t fd, uint16_t events );
-        bool dissociate( fd_t fd );
+  bool associate( fd_t fd, uint16_t events );
+  bool dissociate( fd_t fd );
 
-        // FDEventQueue
-        int16_t dequeue( FDEvent* fd_events, int16_t fd_events_len, const Time& timeout );
-        void wake();
+  // FDEventQueue
+  int16_t dequeue( FDEvent* fd_events, int16_t fd_events_len, const Time& timeout );
+  void wake();
 
-      private:
-        Kqueue( int kq, int* wake_pipe );
+private:
+  Kqueue( int kq, int* wake_pipe );
 
-      private:
-        vector<kevent> kevents;
-        int kq;
-        int wake_pipe[2];
-      };
-    }
-  }
+private:
+  vector<kevent> kevents;
+  int kq;
+  int wake_pipe[2];
+};
+}
+}
 }
 
 

@@ -39,26 +39,22 @@ using std::string;
 #include <uuid/uuid.h>
 
 
-namespace yield
-{
-  namespace net
-  {
-    namespace sunos
-    {
-      class UUID
-      {
-      public:
-        UUID();
-        UUID( const string& uuid );
+namespace yield {
+namespace net {
+namespace sunos {
+class UUID {
+public:
+  UUID();
+  UUID( const string& uuid );
 
-        bool operator==( const UUID& ) const;
-        operator string() const;
+  bool operator==( const UUID& ) const;
+  operator string() const;
 
-      private:
-        uuid_t uuid;
-      };
-    };
-  };
+private:
+  uuid_t uuid;
+};
+};
+};
 };
 
 

@@ -32,77 +32,65 @@
 #undef unix
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace unix
-    {
-      #ifdef YIELD_HAVE_UNIX_PTH
-        Fiber::Fiber( pth_t pth )
-          : pth( pth )
-        { }
+namespace yield {
+namespace thread {
+namespace unix {
+#ifdef YIELD_HAVE_UNIX_PTH
+Fiber::Fiber( pth_t pth )
+  : pth( pth )
+{ }
 
-        Fiber* Fiber::create( Runnable& runnable )
-        {
-          Fiber* fiber = new Fiber( runnable );
+Fiber* Fiber::create( Runnable& runnable ) {
+  Fiber* fiber = new Fiber( runnable );
 
-          pth_t pth = pth_spawn( PTH_ATTR_DEFAULT, run, fiber );
-          if ( pth != NULL )
-            return fiber;
-          else
-            delete fiber;
+  pth_t pth = pth_spawn( PTH_ATTR_DEFAULT, run, fiber );
+  if ( pth != NULL )
+    return fiber;
+  else
+    delete fiber;
 
-          return NULL;
-        }
+  return NULL;
+}
 
-        void* Fiber::getspecific( uintptr_t key )
-        {
-          return pth_key_getdata( key );
-        }
+void* Fiber::getspecific( uintptr_t key ) {
+  return pth_key_getdata( key );
+}
 
-        uintptr_t Fiber::key_create()
-        {
-          pth_key_t key;
-          if ( pth_key_create( &key, NULL ) == 0 )
-            return key;
-          else
-            return static_cast<pth_key_t>( -1 );
-        }
+uintptr_t Fiber::key_create() {
+  pth_key_t key;
+  if ( pth_key_create( &key, NULL ) == 0 )
+    return key;
+  else
+    return static_cast<pth_key_t>( -1 );
+}
 
-        bool Fiber::key_delete( uintptr_t key )
-        {
-          return pth_key_delete( key ) == 0;
-        }
+bool Fiber::key_delete( uintptr_t key ) {
+  return pth_key_delete( key ) == 0;
+}
 
-        Fiber* Fiber::self()
-        {
-          return new Fiber( pth_self() );
-        }
+Fiber* Fiber::self() {
+  return new Fiber( pth_self() );
+}
 
-        void* Fiber::run( void* this_ )
-        {
-          static_cast<Fiber*>( this_ )->state = STATE_RUNNING;
-          static_cast<Fiber*>( this_ )->runnable->run();
-          static_cast<Fiber*>( this_ )->state = STATE_SUSPENDED;
-          return NULL;
-        }
+void* Fiber::run( void* this_ ) {
+  static_cast<Fiber*>( this_ )->state = STATE_RUNNING;
+  static_cast<Fiber*>( this_ )->runnable->run();
+  static_cast<Fiber*>( this_ )->state = STATE_SUSPENDED;
+  return NULL;
+}
 
-        bool Fiber::setspecific( uintptr_t key, void* value )
-        {
-          return pth_key_setdata( key, value ) == 0;
-         }
+bool Fiber::setspecific( uintptr_t key, void* value ) {
+  return pth_key_setdata( key, value ) == 0;
+}
 
-        void Fiber::yield()
-        {
-          pth_yield( NULL );
-        }
+void Fiber::yield() {
+  pth_yield( NULL );
+}
 
-        void Fiber::yield( Fiber& to_fiber )
-        {
-          pth_yield( to_fiber );
-        }
-      #endif
-    }
-  }
+void Fiber::yield( Fiber& to_fiber ) {
+  pth_yield( to_fiber );
+}
+#endif
+}
+}
 }

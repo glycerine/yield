@@ -44,50 +44,58 @@ typedef _WIN32_FIND_DATAW WIN32_FIND_DATAW;
 typedef WIN32_FIND_DATAW WIN32_FIND_DATA;
 
 
-namespace yield
-{
-  namespace fs
-  {
-    namespace win32
-    {
-      class Stat : public yield::fs::Stat
-      {
-      public:
-        Stat();
-        Stat( const BY_HANDLE_FILE_INFORMATION& );
-        Stat( const WIN32_FILE_ATTRIBUTE_DATA& );
-        Stat( const WIN32_FIND_DATA& );
+namespace yield {
+namespace fs {
+namespace win32 {
+class Stat : public yield::fs::Stat {
+public:
+  Stat();
+  Stat( const BY_HANDLE_FILE_INFORMATION& );
+  Stat( const WIN32_FILE_ATTRIBUTE_DATA& );
+  Stat( const WIN32_FIND_DATA& );
 
-        operator BY_HANDLE_FILE_INFORMATION() const;
-        operator WIN32_FILE_ATTRIBUTE_DATA() const;
-        operator WIN32_FIND_DATA() const;
+  operator BY_HANDLE_FILE_INFORMATION() const;
+  operator WIN32_FILE_ATTRIBUTE_DATA() const;
+  operator WIN32_FIND_DATA() const;
 
-        Stat& operator=( const BY_HANDLE_FILE_INFORMATION& );
-        Stat& operator=( const WIN32_FILE_ATTRIBUTE_DATA& );
-        Stat& operator=( const WIN32_FIND_DATA& );
+  Stat& operator=( const BY_HANDLE_FILE_INFORMATION& );
+  Stat& operator=( const WIN32_FILE_ATTRIBUTE_DATA& );
+  Stat& operator=( const WIN32_FIND_DATA& );
 
-        // Stat
-        const DateTime& get_atime() const { return atime; }
-        uint32_t get_attributes() const { return attributes; }
-        const DateTime& get_ctime() const { return ctime; }
-        const DateTime& get_mtime() const { return mtime; }
-        int16_t get_nlink() const { return nlink; }
-        uint64_t get_size() const { return size; }
-        Type get_type() const;
-
-      private:
-        void set_size( uint32_t nFileSizeLow, uint32_t nFileSizeHigh );
-
-      private:
-        DateTime atime;
-        uint32_t attributes;
-        DateTime ctime;
-        DateTime mtime;
-        int16_t nlink;
-        uint64_t size;
-      };
-    }
+  // Stat
+  const DateTime& get_atime() const {
+    return atime;
   }
+  uint32_t get_attributes() const {
+    return attributes;
+  }
+  const DateTime& get_ctime() const {
+    return ctime;
+  }
+  const DateTime& get_mtime() const {
+    return mtime;
+  }
+  int16_t get_nlink() const {
+    return nlink;
+  }
+  uint64_t get_size() const {
+    return size;
+  }
+  Type get_type() const;
+
+private:
+  void set_size( uint32_t nFileSizeLow, uint32_t nFileSizeHigh );
+
+private:
+  DateTime atime;
+  uint32_t attributes;
+  DateTime ctime;
+  DateTime mtime;
+  int16_t nlink;
+  uint64_t size;
+};
+}
+}
 }
 
 

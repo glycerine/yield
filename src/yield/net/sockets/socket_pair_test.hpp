@@ -36,35 +36,30 @@
 #include "yield/net/sockets/socket_pair.hpp"
 
 
-namespace yield
-{
-  namespace net
-  {
-    namespace sockets
-    {
-      class SocketPairFactory : public ChannelPairFactory
-      {
-      public:
-        SocketPairFactory
-        (
-          int domain = SocketPair::DOMAIN_DEFAULT,
-          int type = SocketPair::TYPE_DEFAULT,
-          int protocol = SocketPair::PROTOCOL_DEFAULT
-        )
-          : domain( domain ), type( type ), protocol( protocol )
-        { }
+namespace yield {
+namespace net {
+namespace sockets {
+class SocketPairFactory : public ChannelPairFactory {
+public:
+  SocketPairFactory
+  (
+    int domain = SocketPair::DOMAIN_DEFAULT,
+    int type = SocketPair::TYPE_DEFAULT,
+    int protocol = SocketPair::PROTOCOL_DEFAULT
+  )
+    : domain( domain ), type( type ), protocol( protocol )
+  { }
 
-        // yield::ChannelPairFactory
-        ChannelPair& createChannelPair()
-        {
-          return *new SocketPair( domain, type, protocol );
-        }
-
-      private:
-        int domain, type, protocol;
-      };
-    }
+  // yield::ChannelPairFactory
+  ChannelPair& createChannelPair() {
+    return *new SocketPair( domain, type, protocol );
   }
+
+private:
+  int domain, type, protocol;
+};
+}
+}
 }
 
 #endif

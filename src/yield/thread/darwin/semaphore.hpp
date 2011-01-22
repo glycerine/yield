@@ -37,33 +37,31 @@
 #include <mach/semaphore.h>
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace darwin
-    {
-      class Semaphore : public yield::thread::Semaphore
-      {
-      public:
-        ~Semaphore();
-        static Semaphore* create();
-        operator semaphore_t() const { return sem; }
-
-        // yield::thread::Semaphore
-        void post();
-        bool timedwait( const Time& timeout );
-        bool trywait();
-        bool wait();
-
-      private:
-        Semaphore( semaphore_t );
-
-      private:
-        semaphore_t sem;
-      };
-    }
+namespace yield {
+namespace thread {
+namespace darwin {
+class Semaphore : public yield::thread::Semaphore {
+public:
+  ~Semaphore();
+  static Semaphore* create();
+  operator semaphore_t() const {
+    return sem;
   }
+
+  // yield::thread::Semaphore
+  void post();
+  bool timedwait( const Time& timeout );
+  bool trywait();
+  bool wait();
+
+private:
+  Semaphore( semaphore_t );
+
+private:
+  semaphore_t sem;
+};
+}
+}
 }
 
 

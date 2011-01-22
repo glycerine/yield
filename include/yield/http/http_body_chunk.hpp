@@ -35,37 +35,38 @@
 #include "yield/page.hpp"
 
 
-namespace yield
-{
-  namespace http
-  {
-    class HTTPBodyChunk : public Page
-    {
-    public:
-      const static uint32_t TYPE_ID = 3435197009UL;
+namespace yield {
+namespace http {
+class HTTPBodyChunk : public Page {
+public:
+  const static uint32_t TYPE_ID = 3435197009UL;
 
-    public:
-      HTTPBodyChunk()
-      {
-        is_last_ = true;
-      }
-
-      HTTPBodyChunk( const void* data, size_t size )
-        : Page( data, size )
-      {
-        is_last_ = false;
-      }
-
-      bool is_last() const { return is_last_; }
-
-      // Object
-      uint32_t get_type_id() const { return TYPE_ID; }
-      const char* get_type_name() const { return "yield::http::HTTPBodyChunk"; }
-
-    private:
-      bool is_last_;
-    };
+public:
+  HTTPBodyChunk() {
+    is_last_ = true;
   }
+
+  HTTPBodyChunk( const void* data, size_t size )
+    : Page( data, size ) {
+    is_last_ = false;
+  }
+
+  bool is_last() const {
+    return is_last_;
+  }
+
+  // Object
+  uint32_t get_type_id() const {
+    return TYPE_ID;
+  }
+  const char* get_type_name() const {
+    return "yield::http::HTTPBodyChunk";
+  }
+
+private:
+  bool is_last_;
+};
+}
 }
 
 

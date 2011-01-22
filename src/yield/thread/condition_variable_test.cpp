@@ -37,70 +37,62 @@
 
 TEST_SUITE( ConditionVariable );
 
-namespace yield
-{
-  namespace thread
-  {
-    class ConditionVariableTest : public yunit::Test
-    {
-    public:
-      // Test
-      void setup()
-      {
-        cond = new ConditionVariable;
-      }
-
-      void teardown()
-      {
-        delete cond;
-        cond = NULL;
-      }
-
-    protected:
-      static void thread_run( void* this_ )
-      {
-        static_cast<ConditionVariableTest*>( this_ )->cond->lock_mutex();
-        static_cast<ConditionVariableTest*>( this_ )->cond->signal();
-        static_cast<ConditionVariableTest*>( this_ )->cond->unlock_mutex();
-      }
-
-    protected:
-      ConditionVariable* cond;
-    };
-
-
-    TEST_EX( ConditionVariable, timedwait, ConditionVariableTest )
-    {
-      bool lock_ret = cond->lock_mutex();
-      throw_assert( lock_ret );
-
-      bool wait_ret = cond->wait( 0.1 );
-      throw_assert_false( wait_ret );
-
-      auto_Object<Thread> thread = new Thread( thread_run, this );
-
-      Thread::self()->nanosleep( 0.01 );
-
-      cond->unlock_mutex();
-
-      thread->join();
-    }
-
-    TEST_EX( ConditionVariable, wait, ConditionVariableTest )
-    {
-      bool lock_ret = cond->lock_mutex();
-      throw_assert( lock_ret );
-
-      auto_Object<Thread> thread = new Thread( thread_run, this );
-
-      bool wait_ret = cond->wait();
-      throw_assert( wait_ret );
-
-      Thread::self()->nanosleep( 0.1 );
-
-      cond->unlock_mutex();
-
-      thread->join();
-    }
+namespace yield {
+namespace thread {
+class ConditionVariableTest : public yunit::Test {
+public:
+  // Test
+  void setup() {
+    cond = new ConditionVariable;
   }
+
+  void teardown() {
+    delete cond;
+    cond = NULL;
+  }
+
+protected:
+  static void thread_run( void* this_ ) {
+    static_cast<ConditionVariableTest*>( this_ )->cond->lock_mutex();
+    static_cast<ConditionVariableTest*>( this_ )->cond->signal();
+    static_cast<ConditionVariableTest*>( this_ )->cond->unlock_mutex();
+  }
+
+protected:
+  ConditionVariable* cond;
+};
+
+
+TEST_EX( ConditionVariable, timedwait, ConditionVariableTest ) {
+  bool lock_ret = cond->lock_mutex();
+  throw_assert( lock_ret );
+
+  bool wait_ret = cond->wait( 0.1 );
+  throw_assert_false( wait_ret );
+
+  auto_Object<Thread> thread = new Thread( thread_run, this );
+
+  Thread::self()->nanosleep( 0.01 );
+
+  cond->unlock_mutex();
+
+  thread->join();
+}
+
+TEST_EX( ConditionVariable, wait, ConditionVariableTest ) {
+  bool lock_ret = cond->lock_mutex();
+  throw_assert( lock_ret );
+
+  auto_Object<Thread> thread = new Thread( thread_run, this );
+
+  bool wait_ret = cond->wait();
+  throw_assert( wait_ret );
+
+  Thread::self()->nanosleep( 0.1 );
+
+  cond->unlock_mutex();
+
+  thread->join();
+}
+}
 }

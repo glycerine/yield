@@ -34,56 +34,45 @@
 #include "yield/net/sockets/stream_socket.hpp"
 
 
-namespace yield
-{
-  namespace aio
-  {
-    namespace net
-    {
-      namespace sockets
-      {
-        using yield::net::sockets::SocketAddress;
-        using yield::net::sockets::StreamSocket;
+namespace yield {
+namespace aio {
+namespace net {
+namespace sockets {
+using yield::net::sockets::SocketAddress;
+using yield::net::sockets::StreamSocket;
 
 
-        acceptAIOCB::~acceptAIOCB()
-        {
-          StreamSocket::dec_ref( accepted_socket );
-          SocketAddress::dec_ref( peername );
-          Buffer::dec_ref( recv_buffer );
-        }
+acceptAIOCB::~acceptAIOCB() {
+  StreamSocket::dec_ref( accepted_socket );
+  SocketAddress::dec_ref( peername );
+  Buffer::dec_ref( recv_buffer );
+}
 
 
-        StreamSocket* acceptAIOCB::get_accepted_socket() const
-        {
-          return accepted_socket;
-        }
+StreamSocket* acceptAIOCB::get_accepted_socket() const {
+  return accepted_socket;
+}
 
-        SocketAddress& acceptAIOCB::get_peername() const
-        {
-          return peername;
-        }
+SocketAddress& acceptAIOCB::get_peername() const {
+  return peername;
+}
 
-        acceptAIOCB::RetryStatus acceptAIOCB::retry()
-        {
-          accepted_socket
-            = static_cast<StreamSocket&>( get_socket() )
-                .accept( get_peername() );
+acceptAIOCB::RetryStatus acceptAIOCB::retry() {
+  accepted_socket
+  = static_cast<StreamSocket&>( get_socket() )
+    .accept( get_peername() );
 
-          if ( accepted_socket != NULL )
-          {
-            set_return( 0 );
-            return RETRY_STATUS_COMPLETE;
-          }
-          else if ( static_cast<StreamSocket&>( get_socket() ).want_accept() )
-            return RETRY_STATUS_WANT_READ;
-          else
-          {
-            set_error( Exception::get_last_error_code() );
-            return RETRY_STATUS_ERROR;
-          }
-        }
-      }
-    }
+  if ( accepted_socket != NULL ) {
+    set_return( 0 );
+    return RETRY_STATUS_COMPLETE;
+  } else if ( static_cast<StreamSocket&>( get_socket() ).want_accept() )
+    return RETRY_STATUS_WANT_READ;
+  else {
+    set_error( Exception::get_last_error_code() );
+    return RETRY_STATUS_ERROR;
   }
+}
+}
+}
+}
 }

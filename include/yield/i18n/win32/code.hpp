@@ -35,32 +35,30 @@
 #include "yield/types.hpp"
 
 
-namespace yield
-{
-  namespace i18n
-  {
-    namespace win32
-    {
-      class Code
-      {
-      public:
-        const static Code CHAR;
-        const static Code ISO88591;
-        const static Code UTF8;
-        const static Code WCHAR_T;
+namespace yield {
+namespace i18n {
+namespace win32 {
+class Code {
+public:
+  const static Code CHAR;
+  const static Code ISO88591;
+  const static Code UTF8;
+  const static Code WCHAR_T;
 
-      public:
-        Code( uint32_t code_page )
-          : code_page( code_page )
-        { }
+public:
+  Code( uint32_t code_page )
+    : code_page( code_page )
+  { }
 
-        operator uint32_t() const { return code_page; }
-
-      private:
-        uint32_t code_page;
-      };
-    }
+  operator uint32_t() const {
+    return code_page;
   }
+
+private:
+  uint32_t code_page;
+};
+}
+}
 }
 
 

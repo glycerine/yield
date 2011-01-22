@@ -33,38 +33,32 @@
 #include "yield/marshal/string_literal.hpp"
 
 
-namespace yield
-{
-  namespace marshal
-  {
-    StringLiteral::StringLiteral( const char* value )
-      : value( value )
-    {
-      debug_assert_ne( value, NULL );
-    }
+namespace yield {
+namespace marshal {
+StringLiteral::StringLiteral( const char* value )
+  : value( value ) {
+  debug_assert_ne( value, NULL );
+}
 
-    bool StringLiteral::operator==( const Object& other ) const
-    {
-      switch ( other.get_type_id() )
-      {
-        case String::TYPE_ID:
-        {
-          return value == static_cast<const String&>( other );
-        }
-        break;
-
-        case StringLiteral::TYPE_ID:
-        {
-          return strcmp
-                 (
-                   value,
-                   static_cast<const StringLiteral&>( other ).value
-                 ) == 0;
-        }
-        break;
-
-        default: return false;
-      }
-    }
+bool StringLiteral::operator==( const Object& other ) const {
+  switch ( other.get_type_id() ) {
+  case String::TYPE_ID: {
+    return value == static_cast<const String&>( other );
   }
+  break;
+
+  case StringLiteral::TYPE_ID: {
+    return strcmp
+           (
+             value,
+             static_cast<const StringLiteral&>( other ).value
+           ) == 0;
+  }
+  break;
+
+  default:
+    return false;
+  }
+}
+}
 }

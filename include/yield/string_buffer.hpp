@@ -35,28 +35,30 @@
 #include "yield/buffer.hpp"
 
 
-namespace yield
-{
-  class StringBuffer : public Buffer
-  {
-  public:
-    StringBuffer();
-    StringBuffer( size_t capacity );
-    StringBuffer( const string& data );
-    StringBuffer( const void* data, size_t size );
-    StringBuffer( size_t capacity, const void* data, size_t size );
-    StringBuffer( const Buffer& );
-    StringBuffer( const StringBuffer& );
-    virtual ~StringBuffer();
+namespace yield {
+class StringBuffer : public Buffer {
+public:
+  StringBuffer();
+  StringBuffer( size_t capacity );
+  StringBuffer( const string& data );
+  StringBuffer( const void* data, size_t size );
+  StringBuffer( size_t capacity, const void* data, size_t size );
+  StringBuffer( const Buffer& );
+  StringBuffer( const StringBuffer& );
+  virtual ~StringBuffer();
 
-    // Buffer
-    void* data() { return data_; }
-    const void* data() const { return data_; }
-    void reserve( size_t new_capacity );
+  // Buffer
+  void* data() {
+    return data_;
+  }
+  const void* data() const {
+    return data_;
+  }
+  void reserve( size_t new_capacity );
 
-  private:
-    uint8_t* data_;
-  };
+private:
+  uint8_t* data_;
+};
 }
 
 

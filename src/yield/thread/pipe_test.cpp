@@ -32,26 +32,24 @@
 #include "yield/thread/pipe.hpp"
 
 
-namespace yield
-{
-  namespace thread
-  {
-    class PipeFactory : public ChannelPairFactory
-    {
-    public:
-      // yield::ChannelPairFactory
-      ChannelPair& createChannelPair() { return *new Pipe; }
-    };
-
-
-    class PipeTestSuite : public ChannelTestSuite
-    {
-    public:
-      PipeTestSuite()
-        : ChannelTestSuite( *new PipeFactory )
-      { }
-    };
+namespace yield {
+namespace thread {
+class PipeFactory : public ChannelPairFactory {
+public:
+  // yield::ChannelPairFactory
+  ChannelPair& createChannelPair() {
+    return *new Pipe;
   }
+};
+
+
+class PipeTestSuite : public ChannelTestSuite {
+public:
+  PipeTestSuite()
+    : ChannelTestSuite( *new PipeFactory )
+  { }
+};
+}
 }
 
 TEST_SUITE_EX( Pipe, yield::thread::PipeTestSuite );

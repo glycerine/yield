@@ -34,22 +34,19 @@
 #include <unistd.h>
 
 
-namespace yield
-{
-  namespace thread
-  {
-    long SystemConfiguration::operator()( Variable variable )
-    {
-      switch ( variable )
-      {
-        case ONLINE_LOGICAL_PROCESSOR_COUNT:
-        case ONLINE_PHYSICAL_PROCESSOR_COUNT:
-        {
-          return sysconf( _SC_NPROCESSORS_ONLN );
-        }
-
-        default: DebugBreak(); return -1;
-      }
-    }
+namespace yield {
+namespace thread {
+long SystemConfiguration::operator()( Variable variable ) {
+  switch ( variable ) {
+  case ONLINE_LOGICAL_PROCESSOR_COUNT:
+  case ONLINE_PHYSICAL_PROCESSOR_COUNT: {
+    return sysconf( _SC_NPROCESSORS_ONLN );
   }
+
+  default:
+    DebugBreak();
+    return -1;
+  }
+}
+}
 }

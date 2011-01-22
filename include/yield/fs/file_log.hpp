@@ -38,27 +38,24 @@
 #include <fcntl.h> // For O_*
 
 
-namespace yield
-{
-  namespace fs
-  {
-    class File;
+namespace yield {
+namespace fs {
+class File;
 
 
-    class FileLog : public yield::Log
-    {
-    public:
-      FileLog( const Path& file_path, const Level& level );
-      ~FileLog();
+class FileLog : public yield::Log {
+public:
+  FileLog( const Path& file_path, const Level& level );
+  ~FileLog();
 
-      // Log
-      void write( const char* str, size_t str_len );
+  // Log
+  void write( const char* str, size_t str_len );
 
-    private:
-      File* file;
-      Path file_path;
-    };
-  }
+private:
+  File* file;
+  Path file_path;
+};
+}
 }
 
 

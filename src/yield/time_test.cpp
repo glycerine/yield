@@ -35,61 +35,54 @@
 
 TEST_SUITE( Time );
 
-namespace yield
-{
-  #ifndef _WIN32
-    TEST( Time, as_timespec )
-    {
-      Time timeout( 10.0 );
-      timespec as_timespec = timeout;
-      throw_assert_eq( static_cast<long>( timeout.s() ), as_timespec.tv_sec );
-      throw_assert_lt( as_timespec.tv_nsec, static_cast<long>( Time::NS_IN_S ) );
-    }
+namespace yield {
+#ifndef _WIN32
+TEST( Time, as_timespec ) {
+  Time timeout( 10.0 );
+  timespec as_timespec = timeout;
+  throw_assert_eq( static_cast<long>( timeout.s() ), as_timespec.tv_sec );
+  throw_assert_lt( as_timespec.tv_nsec, static_cast<long>( Time::NS_IN_S ) );
+}
 
-    TEST( Time, as_timeval )
-    {
-      Time timeout( 10.0 );
-      timeval as_timeval = timeout;
-      throw_assert_eq( static_cast<long>( timeout.s() ), as_timeval.tv_sec );
-      throw_assert_lt
-      (
-        static_cast<uint64_t>( as_timeval.tv_usec ),
-        Time::NS_IN_MS
-      );
-    }
-  #endif
+TEST( Time, as_timeval ) {
+  Time timeout( 10.0 );
+  timeval as_timeval = timeout;
+  throw_assert_eq( static_cast<long>( timeout.s() ), as_timeval.tv_sec );
+  throw_assert_lt
+  (
+    static_cast<uint64_t>( as_timeval.tv_usec ),
+    Time::NS_IN_MS
+  );
+}
+#endif
 
-  TEST( Time, copy )
-  {
-    Time timeout( 10.0 );
-    Time timeout_copy( timeout );
-    throw_assert_eq( timeout.ns(), timeout_copy.ns() );
-  }
+TEST( Time, copy ) {
+  Time timeout( 10.0 );
+  Time timeout_copy( timeout );
+  throw_assert_eq( timeout.ns(), timeout_copy.ns() );
+}
 
-  #ifndef _WIN32
-    TEST( Time, from_timespec )
-    {
-      Time timeout( 10.0 );
-      timespec as_timespec = timeout;
-      Time timeout_copy( as_timespec );
-      throw_assert_eq( timeout, timeout_copy );
-    }
+#ifndef _WIN32
+TEST( Time, from_timespec ) {
+  Time timeout( 10.0 );
+  timespec as_timespec = timeout;
+  Time timeout_copy( as_timespec );
+  throw_assert_eq( timeout, timeout_copy );
+}
 
-    TEST( Time, from_timeval )
-    {
-      Time timeout( 10.0 );
-      timeval tv = timeout;
-      Time timeout_copy( tv );
-      throw_assert_eq( timeout, timeout_copy );
-    }
-  #endif
+TEST( Time, from_timeval ) {
+  Time timeout( 10.0 );
+  timeval tv = timeout;
+  Time timeout_copy( tv );
+  throw_assert_eq( timeout, timeout_copy );
+}
+#endif
 
-  TEST( Time, now )
-  {
-    Time time1( Time::now() );
-    throw_assert_gt( static_cast<uint64_t>( time1 ), 0 );
-    for ( uint32_t i = 0; i < UINT32_MAX / 16; i++ ) ;
-    Time time2( Time::now() );
-    throw_assert_gt( time2, time1 );
-  }
+TEST( Time, now ) {
+  Time time1( Time::now() );
+  throw_assert_gt( static_cast<uint64_t>( time1 ), 0 );
+  for ( uint32_t i = 0; i < UINT32_MAX / 16; i++ ) ;
+  Time time2( Time::now() );
+  throw_assert_gt( time2, time1 );
+}
 }

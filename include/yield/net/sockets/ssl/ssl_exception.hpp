@@ -35,24 +35,19 @@
 #include "yield/exception.hpp"
 
 
-namespace yield
-{
-  namespace net
-  {
-    namespace sockets
-    {
-      #ifdef YIELD_HAVE_OPENSSL
-        namespace ssl
-        {
-          class SSLException : public Exception
-          {
-          public:
-            SSLException();
-            };
-        }
-      #endif
-    }
-  }
+namespace yield {
+namespace net {
+namespace sockets {
+#ifdef YIELD_HAVE_OPENSSL
+namespace ssl {
+class SSLException : public Exception {
+public:
+  SSLException();
+};
+}
+#endif
+}
+}
 }
 
 

@@ -35,44 +35,48 @@
 #include "yield/event_queue.hpp"
 
 
-namespace yield
-{
-  namespace poll { class FDEventQueue; }
+namespace yield {
+namespace poll {
+class FDEventQueue;
+}
 
 
-  namespace poll
-  {
-    #ifdef _WIN32
-      namespace win32 { class WSAPoller; class Selector; }
-    #endif
+namespace poll {
+#ifdef _WIN32
+namespace win32 {
+class WSAPoller;
+class Selector;
+}
+#endif
 
 
-    class SocketEventQueue : public EventQueue
-    {
-    public:
-      SocketEventQueue();
-      ~SocketEventQueue();
+class SocketEventQueue : public EventQueue {
+public:
+  SocketEventQueue();
+  ~SocketEventQueue();
 
-      bool associate( socket_t socket_, int16_t events );
-      bool dissociate( socket_t socket_ );
+  bool associate( socket_t socket_, int16_t events );
+  bool dissociate( socket_t socket_ );
 
-      // EventQueue
-      YO_NEW_REF Event& dequeue() { return EventQueue::dequeue(); }
-      YO_NEW_REF Event* dequeue( const Time& timeout );
-      bool enqueue( YO_NEW_REF Event& event );
-
-    private:
-      #ifdef _WIN32
-        #if _WIN32_WINNT >= 0x0600
-          win32::WSAPoller* pimpl;
-        #else
-          win32::Selector* pimpl;
-        #endif
-      #else
-        yield::poll::FDEventQueue* pimpl;
-      #endif
-    };
+  // EventQueue
+  YO_NEW_REF Event& dequeue() {
+    return EventQueue::dequeue();
   }
+  YO_NEW_REF Event* dequeue( const Time& timeout );
+  bool enqueue( YO_NEW_REF Event& event );
+
+private:
+#ifdef _WIN32
+#if _WIN32_WINNT >= 0x0600
+  win32::WSAPoller* pimpl;
+#else
+  win32::Selector* pimpl;
+#endif
+#else
+  yield::poll::FDEventQueue* pimpl;
+#endif
+};
+}
 }
 
 

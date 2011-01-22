@@ -38,166 +38,143 @@
 #include <sstream> // for std::ostringstream
 
 
-namespace yield
-{
-  namespace marshal
-  {
-    namespace xml
-    {
-      XMLMarshaller::XMLMarshaller()
-      {
-        next_anonymous_key_i = 0;
-      }
+namespace yield {
+namespace marshal {
+namespace xml {
+XMLMarshaller::XMLMarshaller() {
+  next_anonymous_key_i = 0;
+}
 
-      XMLMarshaller::XMLMarshaller( Buffer& buffer )
-        : XMLEncoder( buffer )
-      {
-        next_anonymous_key_i = 0;
-      }
+XMLMarshaller::XMLMarshaller( Buffer& buffer )
+  : XMLEncoder( buffer ) {
+  next_anonymous_key_i = 0;
+}
 
-      template <typename ValueType>
-      void XMLMarshaller::add_attribute( const Object& key, ValueType value )
-      {
-        switch ( key.get_type_id() )
-        {
-          case Double::TYPE_ID:
-          {
-            std::ostringstream attribute_name;
-            attribute_name << "_" << static_cast<const Double&>( key );
-            XMLEncoder::add_attribute( attribute_name.str().c_str(), value );
-          }
-          break;
-
-          case Null::TYPE_ID:
-          {
-            std::ostringstream next_attribute_name;
-            next_attribute_name << "_" << next_anonymous_key_i;
-            XMLEncoder::add_attribute
-            (
-              next_attribute_name.str().c_str(),
-              value
-            );
-            next_anonymous_key_i++;
-          }
-          break;
-
-          case String::TYPE_ID:
-          {
-            XMLEncoder::add_attribute
-            (
-              static_cast<const String&>( key ).c_str(),
-              value
-            );
-          }
-          break;
-
-          case StringLiteral::TYPE_ID:
-          {
-            XMLEncoder::add_attribute
-            (
-              static_cast<const StringLiteral&>( key ),
-              value
-            );
-          }
-          break;
-
-          default: DebugBreak(); break;
-        }
-      }
-
-      void XMLMarshaller::end_element( const Object& key )
-      {
-        XMLEncoder::end_element();
-      }
-
-      void XMLMarshaller::start_element( const Object& key )
-      {
-        switch ( key.get_type_id() )
-        {
-          case Null::TYPE_ID:
-          {
-            XMLEncoder::start_element( "_" );
-          }
-          break;
-
-          case String::TYPE_ID:
-          {
-            XMLEncoder::start_element
-            (
-              static_cast<const String&>( key ).c_str()
-            );
-          }
-          break;
-
-          case StringLiteral::TYPE_ID:
-          {
-            XMLEncoder::start_element
-            (
-              static_cast<const StringLiteral&>( key )
-            );
-          }
-          break;
-
-          default: DebugBreak(); break;
-        }
-      }
-
-      void XMLMarshaller::write( const Object& key, bool value )
-      {
-        add_attribute( key, value );
-      }
-
-      void XMLMarshaller::write( const Object& key, double value  )
-      {
-        add_attribute( key, value );
-      }
-
-      void XMLMarshaller::write( const Object& key, int64_t value )
-      {
-        add_attribute( key, value );
-      }
-
-      void XMLMarshaller::write( const Object& key, const Null& value )
-      {
-        add_attribute( key, "null" );
-      }
-
-      void XMLMarshaller::write( const Object& key, const Object& value )
-      {
-        start_element( key );
-        value.marshal( *this );
-        end_element( key );
-      }
-
-      void XMLMarshaller::write( const Object& key, const Sequence& value )
-      {
-        if ( value.get_size() > 0 )
-        {
-          start_element( key );
-          value.marshal( *this );
-          end_element( key );
-        }
-      }
-
-      void
-      XMLMarshaller::write
-      (
-        const Object& key,
-        const char* value,
-        size_t value_len
-      )
-      {
-        if ( value_len > 0 )
-        {
-          debug_assert_eq( value[value_len], 0 );
-          add_attribute( key, value );
-        }
-      }
-
-      void XMLMarshaller::write( const Object& key, uint64_t value )
-      {
-        add_attribute( key, value );
-      }
-    }
+template <typename ValueType>
+void XMLMarshaller::add_attribute( const Object& key, ValueType value ) {
+  switch ( key.get_type_id() ) {
+  case Double::TYPE_ID: {
+    std::ostringstream attribute_name;
+    attribute_name << "_" << static_cast<const Double&>( key );
+    XMLEncoder::add_attribute( attribute_name.str().c_str(), value );
   }
+  break;
+
+  case Null::TYPE_ID: {
+    std::ostringstream next_attribute_name;
+    next_attribute_name << "_" << next_anonymous_key_i;
+    XMLEncoder::add_attribute
+    (
+      next_attribute_name.str().c_str(),
+      value
+    );
+    next_anonymous_key_i++;
+  }
+  break;
+
+  case String::TYPE_ID: {
+    XMLEncoder::add_attribute
+    (
+      static_cast<const String&>( key ).c_str(),
+      value
+    );
+  }
+  break;
+
+  case StringLiteral::TYPE_ID: {
+    XMLEncoder::add_attribute
+    (
+      static_cast<const StringLiteral&>( key ),
+      value
+    );
+  }
+  break;
+
+  default:
+    DebugBreak();
+    break;
+  }
+}
+
+void XMLMarshaller::end_element( const Object& key ) {
+  XMLEncoder::end_element();
+}
+
+void XMLMarshaller::start_element( const Object& key ) {
+  switch ( key.get_type_id() ) {
+  case Null::TYPE_ID: {
+    XMLEncoder::start_element( "_" );
+  }
+  break;
+
+  case String::TYPE_ID: {
+    XMLEncoder::start_element
+    (
+      static_cast<const String&>( key ).c_str()
+    );
+  }
+  break;
+
+  case StringLiteral::TYPE_ID: {
+    XMLEncoder::start_element
+    (
+      static_cast<const StringLiteral&>( key )
+    );
+  }
+  break;
+
+  default:
+    DebugBreak();
+    break;
+  }
+}
+
+void XMLMarshaller::write( const Object& key, bool value ) {
+  add_attribute( key, value );
+}
+
+void XMLMarshaller::write( const Object& key, double value  ) {
+  add_attribute( key, value );
+}
+
+void XMLMarshaller::write( const Object& key, int64_t value ) {
+  add_attribute( key, value );
+}
+
+void XMLMarshaller::write( const Object& key, const Null& value ) {
+  add_attribute( key, "null" );
+}
+
+void XMLMarshaller::write( const Object& key, const Object& value ) {
+  start_element( key );
+  value.marshal( *this );
+  end_element( key );
+}
+
+void XMLMarshaller::write( const Object& key, const Sequence& value ) {
+  if ( value.get_size() > 0 ) {
+    start_element( key );
+    value.marshal( *this );
+    end_element( key );
+  }
+}
+
+void
+XMLMarshaller::write
+(
+  const Object& key,
+  const char* value,
+  size_t value_len
+) {
+  if ( value_len > 0 ) {
+    debug_assert_eq( value[value_len], 0 );
+    add_attribute( key, value );
+  }
+}
+
+void XMLMarshaller::write( const Object& key, uint64_t value ) {
+  add_attribute( key, value );
+}
+}
+}
 }

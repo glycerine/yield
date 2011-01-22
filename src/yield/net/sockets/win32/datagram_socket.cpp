@@ -32,13 +32,10 @@
 #include "yield/net/sockets/win32/winsock.hpp"
 
 
-namespace yield
-{
-  namespace net
-  {
-    namespace sockets
-    {
-      int DatagramSocket::TYPE = SOCK_DGRAM;
-    }
-  }
+namespace yield {
+namespace net {
+namespace sockets {
+int DatagramSocket::TYPE = SOCK_DGRAM;
+}
+}
 }

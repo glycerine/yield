@@ -31,14 +31,11 @@
 #include "yield/http/socket_server.hpp"
 
 
-namespace yield
-{
-  namespace http
-  {
-    void SocketServer::serve_forever()
-    {
-      for ( ;; )
-        visit();
-    }
-  }
+namespace yield {
+namespace http {
+void SocketServer::serve_forever() {
+  for ( ;; )
+    visit();
+}
+}
 }

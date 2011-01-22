@@ -35,7 +35,7 @@
 #include "yield/config.hpp"
 
 #ifndef FD_SETSIZE
-  #define FD_SETSIZE 1024
+#define FD_SETSIZE 1024
 #endif
 // Order is important
 #include <WinSock2.h>

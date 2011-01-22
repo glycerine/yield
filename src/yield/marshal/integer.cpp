@@ -36,46 +36,38 @@
 #include <stdlib.h> // For atol
 
 
-namespace yield
-{
-  namespace marshal
-  {
-    Integer& Integer::operator=( int64_t value )
-    {
-      this->value = value;
-      return *this;
-    }
+namespace yield {
+namespace marshal {
+Integer& Integer::operator=( int64_t value ) {
+  this->value = value;
+  return *this;
+}
 
-    bool Integer::operator==( const Object& other ) const
-    {
-      switch ( other.get_type_id() )
-      {
-        case Double::TYPE_ID:
-        {
-          return value == static_cast<const Double&>( other );
-        }
-        break;
-
-        case Integer::TYPE_ID:
-        {
-          return value == static_cast<const Integer&>( other );
-        }
-        break;
-
-        case String::TYPE_ID:
-        {
-          return value == atol( static_cast<const String&>( other ).c_str() );
-        }
-        break;
-
-        case StringLiteral::TYPE_ID:
-        {
-          return value == atol( static_cast<const StringLiteral&>( other ) );
-        }
-        break;
-
-        default: return false;
-      }
-    }
+bool Integer::operator==( const Object& other ) const {
+  switch ( other.get_type_id() ) {
+  case Double::TYPE_ID: {
+    return value == static_cast<const Double&>( other );
   }
+  break;
+
+  case Integer::TYPE_ID: {
+    return value == static_cast<const Integer&>( other );
+  }
+  break;
+
+  case String::TYPE_ID: {
+    return value == atol( static_cast<const String&>( other ).c_str() );
+  }
+  break;
+
+  case StringLiteral::TYPE_ID: {
+    return value == atol( static_cast<const StringLiteral&>( other ) );
+  }
+  break;
+
+  default:
+    return false;
+  }
+}
+}
 }

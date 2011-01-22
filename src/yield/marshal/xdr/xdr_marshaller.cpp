@@ -36,131 +36,111 @@
 #include "yield/marshal/xdr/xdr_marshaller.hpp"
 
 
-namespace yield
-{
-  namespace marshal
-  {
-    namespace xdr
-    {
-      void XDRMarshaller::write( const Object& key, bool value )
-      {
-        write_key( key );
-        XDREncoder::write( value );
-      }
+namespace yield {
+namespace marshal {
+namespace xdr {
+void XDRMarshaller::write( const Object& key, bool value ) {
+  write_key( key );
+  XDREncoder::write( value );
+}
 
-      void XDRMarshaller::write( const Object& key, double value )
-      {
-        write_key( key );
-        XDREncoder::write( value );
-      }
+void XDRMarshaller::write( const Object& key, double value ) {
+  write_key( key );
+  XDREncoder::write( value );
+}
 
-      void XDRMarshaller::write( const Object& key, float value )
-      {
-        write_key( key );
-        XDREncoder::write( value );
-      }
+void XDRMarshaller::write( const Object& key, float value ) {
+  write_key( key );
+  XDREncoder::write( value );
+}
 
 
-      void XDRMarshaller::write( const Object& key, int32_t value )
-      {
-        write_key( key );
-        XDREncoder::write( value );
-      }
+void XDRMarshaller::write( const Object& key, int32_t value ) {
+  write_key( key );
+  XDREncoder::write( value );
+}
 
-      void XDRMarshaller::write( const Object& key, int64_t value )
-      {
-        write_key( key );
-        XDREncoder::write( value );
-      }
+void XDRMarshaller::write( const Object& key, int64_t value ) {
+  write_key( key );
+  XDREncoder::write( value );
+}
 
-      void XDRMarshaller::write( const Object& key, const Map& value )
-      {
-        write_key( key );
-        XDREncoder::write( static_cast<uint32_t>( value.get_size() ) );
-        in_map_stack.push( true );
-        value.marshal( *this );
-        in_map_stack.pop();
-      }
+void XDRMarshaller::write( const Object& key, const Map& value ) {
+  write_key( key );
+  XDREncoder::write( static_cast<uint32_t>( value.get_size() ) );
+  in_map_stack.push( true );
+  value.marshal( *this );
+  in_map_stack.pop();
+}
 
-      void XDRMarshaller::write( const Object& key, const Null& value )
-      {
-        write_key( key );
-        XDREncoder::write( static_cast<uint32_t>( 0 ) );
-      }
+void XDRMarshaller::write( const Object& key, const Null& value ) {
+  write_key( key );
+  XDREncoder::write( static_cast<uint32_t>( 0 ) );
+}
 
-      void XDRMarshaller::write( const Object& key, const Object& value )
-      {
-        write_key( key );
-        value.marshal( *this );
-      }
+void XDRMarshaller::write( const Object& key, const Object& value ) {
+  write_key( key );
+  value.marshal( *this );
+}
 
-      void XDRMarshaller::write( const Object& key, const Sequence& value )
-      {
-        write_key( key );
-        XDREncoder::write( static_cast<uint32_t>( value.get_size() ) );
-        value.marshal( *this );
-      }
+void XDRMarshaller::write( const Object& key, const Sequence& value ) {
+  write_key( key );
+  XDREncoder::write( static_cast<uint32_t>( value.get_size() ) );
+  value.marshal( *this );
+}
 
-      void XDRMarshaller::write( const Object& key, const char* value, size_t value_len )
-      {
-        write_key( key );
-        XDREncoder::write( value, value_len );
-      }
+void XDRMarshaller::write( const Object& key, const char* value, size_t value_len ) {
+  write_key( key );
+  XDREncoder::write( value, value_len );
+}
 
-      void XDRMarshaller::write( const Object& key, uint32_t value )
-      {
-        write_key( key );
-        XDREncoder::write( value );
-      }
+void XDRMarshaller::write( const Object& key, uint32_t value ) {
+  write_key( key );
+  XDREncoder::write( value );
+}
 
-      void XDRMarshaller::write( const Object& key, uint64_t value )
-      {
-        write_key( key );
-        XDREncoder::write( value );
-      }
+void XDRMarshaller::write( const Object& key, uint64_t value ) {
+  write_key( key );
+  XDREncoder::write( value );
+}
 
-      void XDRMarshaller::write_key( const Object& key )
-      {
-        if ( !in_map_stack.empty() && in_map_stack.top() )
-        {
-          switch ( key.get_type_id() )
-          {
-            case Double::TYPE_ID:
-            {
-              XDREncoder::write( static_cast<const Double&>( key ) );
-            }
-            break;
+void XDRMarshaller::write_key( const Object& key ) {
+  if ( !in_map_stack.empty() && in_map_stack.top() ) {
+    switch ( key.get_type_id() ) {
+    case Double::TYPE_ID: {
+      XDREncoder::write( static_cast<const Double&>( key ) );
+    }
+    break;
 
-            case Integer::TYPE_ID:
-            {
-              XDREncoder::write( static_cast<const Integer&>( key ) );
-            }
-            break;
+    case Integer::TYPE_ID: {
+      XDREncoder::write( static_cast<const Integer&>( key ) );
+    }
+    break;
 
-            case String::TYPE_ID:
-            {
-              XDREncoder::write
-              (
-                static_cast<const String&>( key ).data(),
-                static_cast<const String&>( key ).size()
-              );
-            }
-            break;
+    case String::TYPE_ID: {
+      XDREncoder::write
+      (
+        static_cast<const String&>( key ).data(),
+        static_cast<const String&>( key ).size()
+      );
+    }
+    break;
 
-            case StringLiteral::TYPE_ID:
-            {
-              XDREncoder::write
-              (
-                static_cast<const StringLiteral&>( key ),
-                strlen( static_cast<const StringLiteral&>( key ) )
-              );
-            }
-            break;
+    case StringLiteral::TYPE_ID: {
+      XDREncoder::write
+      (
+        static_cast<const StringLiteral&>( key ),
+        strlen( static_cast<const StringLiteral&>( key ) )
+      );
+    }
+    break;
 
-            default: DebugBreak(); break;
-          }
-        }
-      }
+    default:
+      DebugBreak();
+      break;
     }
   }
+}
+}
+}
 }

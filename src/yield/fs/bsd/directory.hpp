@@ -35,22 +35,18 @@
 #include "../posix/directory.hpp"
 
 
-namespace yield
-{
-  namespace fs
-  {
-    namespace bsd
-    {
-      class Directory : public yield::fs::posix::Directory
-      {
-      public:
-        Directory( DIR* dirp, const Path& path );
+namespace yield {
+namespace fs {
+namespace bsd {
+class Directory : public yield::fs::posix::Directory {
+public:
+  Directory( DIR* dirp, const Path& path );
 
-        // yield::fs::Directory
-        bool read( yield::fs::Directory::Entry&, Entry::Type types );
-      };
-    }
-  }
+  // yield::fs::Directory
+  bool read( yield::fs::Directory::Entry&, Entry::Type types );
+};
+}
+}
 }
 
 

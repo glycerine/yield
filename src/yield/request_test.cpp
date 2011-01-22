@@ -37,67 +37,59 @@
 
 TEST_SUITE( Request );
 
-namespace yield
-{
-  class TestEventHandler : public EventHandler
-  {
-  public:
-    // EventHandler
-    void handle( Event& ) { }
-  };
+namespace yield {
+class TestEventHandler : public EventHandler {
+public:
+  // EventHandler
+  void handle( Event& ) { }
+};
 
 
-  TEST( Request, createDefaultResponse )
+TEST( Request, createDefaultResponse ) {
+  throw_assert_eq( Request().createDefaultResponse(), NULL );
+}
+
+TEST( Request, get_response_handler ) {
+  throw_assert_eq( Request().get_response_handler(), NULL );
+}
+
+TEST( Request, is_request ) {
+  throw_assert( Request().is_request() );
+}
+
+TEST( Request, respond ) {
+  Response response;
+
   {
-    throw_assert_eq( Request().createDefaultResponse(), NULL );
+    Request().respond( response.inc_ref() );
   }
 
-  TEST( Request, get_response_handler )
   {
-    throw_assert_eq( Request().get_response_handler(), NULL );
+    auto_Object<EventHandler> event_handler = new TestEventHandler;
+    Request request;
+    request.set_response_handler( *event_handler );
+    request.respond( response );
+  }
+}
+
+TEST( Request, rtti ) {
+  throw_assert_eq( Request().get_type_id(), Request::TYPE_ID );
+  throw_assert_eq( strcmp( Request().get_type_name(), "yield::Request" ), 0 );
+}
+
+TEST( Request, set_response_handler ) {
+  {
+    Request request;
+    auto_Object<EventHandler> event_handler = new TestEventHandler;
+    request.set_response_handler( *event_handler );
+    throw_assert_eq( request.get_response_handler(), &event_handler.get() );
   }
 
-  TEST( Request, is_request )
   {
-    throw_assert( Request().is_request() );
+    Request request;
+    auto_Object<EventHandler> event_handler = new TestEventHandler;
+    request.set_response_handler( &event_handler->inc_ref() );
+    throw_assert_eq( request.get_response_handler(), &event_handler.get() );
   }
-
-  TEST( Request, respond )
-  {
-    Response response;
-
-    {
-      Request().respond( response.inc_ref() );
-    }
-
-    {
-      auto_Object<EventHandler> event_handler = new TestEventHandler;
-      Request request;
-      request.set_response_handler( *event_handler );
-      request.respond( response );
-    }
-  }
-
-  TEST( Request, rtti )
-  {
-    throw_assert_eq( Request().get_type_id(), Request::TYPE_ID );
-    throw_assert_eq( strcmp( Request().get_type_name(), "yield::Request" ), 0 );
-  }
-
-  TEST( Request, set_response_handler )
-  {
-    {
-      Request request;
-      auto_Object<EventHandler> event_handler = new TestEventHandler;
-      request.set_response_handler( *event_handler );
-      throw_assert_eq( request.get_response_handler(), &event_handler.get() );
-    }
-
-    {
-      Request request;
-      auto_Object<EventHandler> event_handler = new TestEventHandler;
-      request.set_response_handler( &event_handler->inc_ref() );
-      throw_assert_eq( request.get_response_handler(), &event_handler.get() );
-    }
-  }
+}
 }

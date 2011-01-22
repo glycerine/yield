@@ -36,41 +36,41 @@
 #include "yield/fs/memory_mapped_file.hpp"
 
 
-namespace yield
-{
-  namespace fs
-  {
-    namespace posix
-    {
-      class MemoryMappedFile : public yield::fs::MemoryMappedFile
-      {
-      public:
-        MemoryMappedFile
-        (
-          size_t capacity,
-          void* data,
-          YO_NEW_REF File& file,
-          int flags,
-          uint64_t offset,
-          int prot
-        );
+namespace yield {
+namespace fs {
+namespace posix {
+class MemoryMappedFile : public yield::fs::MemoryMappedFile {
+public:
+  MemoryMappedFile
+  (
+    size_t capacity,
+    void* data,
+    YO_NEW_REF File& file,
+    int flags,
+    uint64_t offset,
+    int prot
+  );
 
-        ~MemoryMappedFile();
+  ~MemoryMappedFile();
 
-        // Buffer
-        void* data() { return data_; }
-        const void* data() const { return data_; }
-        void reserve( size_t capacity );
-
-        // MemoryMappedFile
-        bool sync( void* ptr, size_t length );
-        bool unmap();
-
-      private:
-        void* data_;
-      };
-    }
+  // Buffer
+  void* data() {
+    return data_;
   }
+  const void* data() const {
+    return data_;
+  }
+  void reserve( size_t capacity );
+
+  // MemoryMappedFile
+  bool sync( void* ptr, size_t length );
+  bool unmap();
+
+private:
+  void* data_;
+};
+}
+}
 }
 
 

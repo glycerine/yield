@@ -36,30 +36,31 @@
 #include "yield/time.hpp"
 
 
-namespace yield
-{
-  class EventQueue : public EventHandler
-  {
-  public:
-    virtual ~EventQueue() { }
+namespace yield {
+class EventQueue : public EventHandler {
+public:
+  virtual ~EventQueue() { }
 
-    virtual YO_NEW_REF Event& dequeue()
-    {
-      Event* event = dequeue( Time::FOREVER );
-      while ( event == NULL )
-        event = dequeue( Time::FOREVER );
-      return *event;
-    }
+  virtual YO_NEW_REF Event& dequeue() {
+    Event* event = dequeue( Time::FOREVER );
+    while ( event == NULL )
+      event = dequeue( Time::FOREVER );
+    return *event;
+  }
 
-    virtual YO_NEW_REF Event* dequeue( const Time& timeout ) = 0;
+  virtual YO_NEW_REF Event* dequeue( const Time& timeout ) = 0;
 
-    virtual bool enqueue( YO_NEW_REF Event& event ) = 0;
+  virtual bool enqueue( YO_NEW_REF Event& event ) = 0;
 
-    virtual YO_NEW_REF Event* trydequeue() { return dequeue( 0 ); }
+  virtual YO_NEW_REF Event* trydequeue() {
+    return dequeue( 0 );
+  }
 
-    // EventHandler
-    void handle( YO_NEW_REF Event& event ) { enqueue( event ); }
-  };
+  // EventHandler
+  void handle( YO_NEW_REF Event& event ) {
+    enqueue( event );
+  }
+};
 };
 
 

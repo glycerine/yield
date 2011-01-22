@@ -32,7 +32,7 @@
 extern "C"
 {
 #endif
-  #include "yajl.h"
+#include "yajl.h"
 #ifdef _WIN32
 };
 #endif
@@ -43,111 +43,92 @@ extern "C"
 #include "yield/marshal/json/json_encoder.hpp"
 
 
-namespace yield
-{
-  namespace marshal
-  {
-    namespace json
-    {
-      JSONEncoder::JSONEncoder()
-        : buffer( *new StringBuffer )
-      {
-        writer = yajl_gen_alloc( NULL );
-        if ( writer == NULL )
-          throw Exception();
-      }
+namespace yield {
+namespace marshal {
+namespace json {
+JSONEncoder::JSONEncoder()
+  : buffer( *new StringBuffer ) {
+  writer = yajl_gen_alloc( NULL );
+  if ( writer == NULL )
+    throw Exception();
+}
 
-      JSONEncoder::JSONEncoder( Buffer& buffer )
-        : buffer( buffer.inc_ref() )
-      {
-        writer = yajl_gen_alloc( NULL );
-      }
+JSONEncoder::JSONEncoder( Buffer& buffer )
+  : buffer( buffer.inc_ref() ) {
+  writer = yajl_gen_alloc( NULL );
+}
 
-      JSONEncoder::~JSONEncoder()
-      {
-        Buffer::dec_ref( buffer );
-      }
+JSONEncoder::~JSONEncoder() {
+  Buffer::dec_ref( buffer );
+}
 
-      void JSONEncoder::close_array()
-      {
-        yajl_gen_array_close( writer );
-        flush();
-      }
+void JSONEncoder::close_array() {
+  yajl_gen_array_close( writer );
+  flush();
+}
 
-      void JSONEncoder::close_object()
-      {
-        yajl_gen_map_close( writer );
-        flush();
-      }
+void JSONEncoder::close_object() {
+  yajl_gen_map_close( writer );
+  flush();
+}
 
-      void JSONEncoder::flush()
-      {
-        const unsigned char* buffer;
-        unsigned int len;
-        yajl_gen_get_buf( writer, &buffer, &len );
-        this->buffer.put( buffer, len );
-        yajl_gen_clear( writer );
-      }
+void JSONEncoder::flush() {
+  const unsigned char* buffer;
+  unsigned int len;
+  yajl_gen_get_buf( writer, &buffer, &len );
+  this->buffer.put( buffer, len );
+  yajl_gen_clear( writer );
+}
 
-      void JSONEncoder::open_array()
-      {
-        yajl_gen_array_open( writer );
-      }
+void JSONEncoder::open_array() {
+  yajl_gen_array_open( writer );
+}
 
-      void JSONEncoder::open_object()
-      {
-        yajl_gen_map_open( writer );
-      }
+void JSONEncoder::open_object() {
+  yajl_gen_map_open( writer );
+}
 
-      void JSONEncoder::write( bool value )
-      {
-        yajl_gen_bool( writer, static_cast<int>( value ) );
-        flush();
-      }
+void JSONEncoder::write( bool value ) {
+  yajl_gen_bool( writer, static_cast<int>( value ) );
+  flush();
+}
 
-      void JSONEncoder::write( double value )
-      {
-        yajl_gen_double( writer, value );
-        flush();
-      }
+void JSONEncoder::write( double value ) {
+  yajl_gen_double( writer, value );
+  flush();
+}
 
-      void JSONEncoder::write( int64_t value )
-      {
-        yajl_gen_integer( writer, static_cast<long>( value ) );
-      }
+void JSONEncoder::write( int64_t value ) {
+  yajl_gen_integer( writer, static_cast<long>( value ) );
+}
 
-      void JSONEncoder::write( const char* value )
-      {
-        if ( value != NULL )
-          write( value, strnlen( value, UINT16_MAX ) );
-        else
-        {
-          yajl_gen_null( writer );
-          flush();
-        }
-      }
-
-      void JSONEncoder::write( const string& value )
-      {
-        write( value.data(), value.size() );
-      }
-
-      void JSONEncoder::write( const char* value, size_t value_len )
-      {
-        yajl_gen_string
-        (
-          writer,
-          reinterpret_cast<const unsigned char*>( value ),
-          strnlen( value, UINT16_MAX )
-        );
-
-        flush();
-      }
-
-      void JSONEncoder::write( uint64_t value )
-      {
-        yajl_gen_integer( writer, static_cast<long>( value ) );
-      }
-    }
+void JSONEncoder::write( const char* value ) {
+  if ( value != NULL )
+    write( value, strnlen( value, UINT16_MAX ) );
+  else {
+    yajl_gen_null( writer );
+    flush();
   }
+}
+
+void JSONEncoder::write( const string& value ) {
+  write( value.data(), value.size() );
+}
+
+void JSONEncoder::write( const char* value, size_t value_len ) {
+  yajl_gen_string
+  (
+    writer,
+    reinterpret_cast<const unsigned char*>( value ),
+    strnlen( value, UINT16_MAX )
+  );
+
+  flush();
+}
+
+void JSONEncoder::write( uint64_t value ) {
+  yajl_gen_integer( writer, static_cast<long>( value ) );
+}
+}
+}
 }

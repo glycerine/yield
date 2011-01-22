@@ -40,159 +40,180 @@
 #include "yield/http/stream_socket_peer.hpp"
 
 
-namespace yield
-{
-  namespace http
-  {
-    class StreamSocketClient : public StreamSocketPeer<SocketClient>
-    {
+namespace yield {
+namespace http {
+class StreamSocketClient : public StreamSocketPeer<SocketClient> {
+public:
+  class Configuration {
+  public:
+    const static uint16_t CONCURRENCY_LEVEL_DEFAULT = 1;
+    const static uint64_t CONNECT_TIMEOUT_DEFAULT = 5 * Time::NS_IN_S;
+    const static uint64_t RECV_TIMEOUT_DEFAULT = 5 * Time::NS_IN_S;
+    const static uint16_t RECV_TRIES_MAX_DEFAULT = 3;
+    const static uint64_t SEND_TIMEOUT_DEFAULT = 5 * Time::NS_IN_S;
+    const static uint16_t SEND_TRIES_MAX_DEFAULT = 3;
+
+  public:
+    Configuration
+    (
+      uint16_t concurrency_level = CONCURRENCY_LEVEL_DEFAULT,
+      const Time& connect_timeout = CONNECT_TIMEOUT_DEFAULT,
+      const Time& recv_timeout = RECV_TIMEOUT_DEFAULT,
+      const uint16_t recv_tries_max = RECV_TRIES_MAX_DEFAULT,
+      const Time& send_timeout = SEND_TIMEOUT_DEFAULT,
+      const uint16_t send_tries_max = SEND_TRIES_MAX_DEFAULT
+    );
+
+    uint16_t get_concurrency_level() const {
+      return concurrency_level;
+    }
+    const Time& get_connect_timeout() const {
+      return connect_timeout;
+    }
+    const Time& get_recv_timeout() const {
+      return recv_timeout;
+    }
+    uint16_t get_recv_tries_max() const {
+      return recv_tries_max;
+    }
+    const Time& get_send_timeout() const {
+      return send_timeout;
+    }
+    uint16_t get_send_tries_max() const {
+      return send_tries_max;
+    }
+
+    void set_connect_timeout( const Time& connect_timeout );
+    void set_recv_timeout( const Time& recv_timeout );
+    void set_send_timeout( const Time& send_timeout );
+
+  private:
+    uint16_t concurrency_level;
+    Time connect_timeout;
+    Time recv_timeout;
+    uint16_t recv_tries_max;
+    Time send_timeout;
+    uint16_t send_tries_max;
+  };
+
+public:
+  const Configuration& get_configuration() const {
+    return configuration;
+  }
+  yield::net::sockets::SocketAddress& get_peername() {
+    return peername;
+  }
+
+protected:
+  class connectAIOCB;
+
+
+  class Connection : public StreamSocketPeer<SocketClient>::Connection {
+  public:
+    Connection
+    (
+      StreamSocketClient&,
+      YO_NEW_REF yield::net::sockets::StreamSocket&
+    );
+
+    virtual ~Connection() { }
+
+    virtual void handle( YO_NEW_REF connectAIOCB& connect_aiocb ) = 0;
+
+  protected:
+    template <class RequestType>
+    class RequestState {
     public:
-      class Configuration
-      {
-      public:
-        const static uint16_t CONCURRENCY_LEVEL_DEFAULT = 1;
-        const static uint64_t CONNECT_TIMEOUT_DEFAULT = 5 * Time::NS_IN_S;
-        const static uint64_t RECV_TIMEOUT_DEFAULT = 5 * Time::NS_IN_S;
-        const static uint16_t RECV_TRIES_MAX_DEFAULT = 3;
-        const static uint64_t SEND_TIMEOUT_DEFAULT = 5 * Time::NS_IN_S;
-        const static uint16_t SEND_TRIES_MAX_DEFAULT = 3;
-
-      public:
-        Configuration
-        (
-          uint16_t concurrency_level = CONCURRENCY_LEVEL_DEFAULT,
-          const Time& connect_timeout = CONNECT_TIMEOUT_DEFAULT,
-          const Time& recv_timeout = RECV_TIMEOUT_DEFAULT,
-          const uint16_t recv_tries_max = RECV_TRIES_MAX_DEFAULT,
-          const Time& send_timeout = SEND_TIMEOUT_DEFAULT,
-          const uint16_t send_tries_max = SEND_TRIES_MAX_DEFAULT
-        );
-
-        uint16_t get_concurrency_level() const { return concurrency_level; }
-        const Time& get_connect_timeout() const { return connect_timeout; }
-        const Time& get_recv_timeout() const { return recv_timeout; }
-        uint16_t get_recv_tries_max() const { return recv_tries_max; }
-        const Time& get_send_timeout() const { return send_timeout; }
-        uint16_t get_send_tries_max() const { return send_tries_max; }
-
-        void set_connect_timeout( const Time& connect_timeout );
-        void set_recv_timeout( const Time& recv_timeout );
-        void set_send_timeout( const Time& send_timeout );
-
-      private:
-        uint16_t concurrency_level;
-        Time connect_timeout;
-        Time recv_timeout;
-        uint16_t recv_tries_max;
-        Time send_timeout;
-        uint16_t send_tries_max;
-      };
-
-    public:
-      const Configuration& get_configuration() const { return configuration; }
-      yield::net::sockets::SocketAddress& get_peername() { return peername; }
-
-    protected:
-      class connectAIOCB;
-
-
-      class Connection : public StreamSocketPeer<SocketClient>::Connection
-      {
-      public:
-        Connection
-        (
-          StreamSocketClient&,
-          YO_NEW_REF yield::net::sockets::StreamSocket&
-        );
-
-        virtual ~Connection() { }
-
-        virtual void handle( YO_NEW_REF connectAIOCB& connect_aiocb ) = 0;
-
-      protected:
-        template <class RequestType>
-        class RequestState
-        {
-        public:
-          RequestState
-          (
-            YO_NEW_REF RequestType& request,
-            YO_NEW_REF Buffer& request_buffer
-          )
-          : request( request ),
-            request_buffer( request_buffer )
-          {
-            recv_tries = send_tries = 0;
-          }
-
-          ~RequestState()
-          {
-            RequestType::dec_ref( request );
-            Buffer::dec_ref( request_buffer );
-          }
-
-          RequestType& get_request() { return request; }
-          Buffer& get_request_buffer() { return request_buffer; }
-          uint16_t get_recv_tries() const { return recv_tries; }
-          uint16_t get_send_tries() const { return send_tries; }
-          uint16_t inc_recv_tries() { return ++recv_tries; }
-          uint16_t inc_send_tries() { return ++send_tries; }
-
-        private:
-          RequestType& request;
-          Buffer& request_buffer;
-          uint16_t recv_tries, send_tries;
-        };
-
-      protected:
-        void enqueue( YO_NEW_REF connectAIOCB& connect_aiocb );
-
-        const Configuration& get_configuration() const { return configuration; }
-
-      private:
-        Configuration configuration;
-      };
-
-
-      class connectAIOCB
-        : public yield::aio::net::sockets::connectAIOCB,
-          public StreamSocketPeer<SocketClient>::AIOCB
-      {
-      public:
-        connectAIOCB
-        (
-          Connection& connection,
-          YO_NEW_REF Buffer* send_buffer = NULL
-        )
-        : yield::aio::net::sockets::connectAIOCB
-          (
-            connection.get_socket(),
-            connection.get_peername(),
-            send_buffer
-          ),
-          StreamSocketPeer<SocketClient>::AIOCB( connection )
-        { }
-      };
-
-    protected:
-      StreamSocketClient
+      RequestState
       (
-        const Configuration& configuration,
-        Log* error_log,
-        Log* trace_log,
-        const yield::net::URI& uri
-      );
+        YO_NEW_REF RequestType& request,
+        YO_NEW_REF Buffer& request_buffer
+      )
+        : request( request ),
+          request_buffer( request_buffer ) {
+        recv_tries = send_tries = 0;
+      }
 
-      virtual ~StreamSocketClient();
+      ~RequestState() {
+        RequestType::dec_ref( request );
+        Buffer::dec_ref( request_buffer );
+      }
 
-      // Stage
-      virtual void service( YO_NEW_REF Event& event );
+      RequestType& get_request() {
+        return request;
+      }
+      Buffer& get_request_buffer() {
+        return request_buffer;
+      }
+      uint16_t get_recv_tries() const {
+        return recv_tries;
+      }
+      uint16_t get_send_tries() const {
+        return send_tries;
+      }
+      uint16_t inc_recv_tries() {
+        return ++recv_tries;
+      }
+      uint16_t inc_send_tries() {
+        return ++send_tries;
+      }
 
     private:
-      Configuration configuration;
-      yield::net::sockets::SocketAddress& peername;
+      RequestType& request;
+      Buffer& request_buffer;
+      uint16_t recv_tries, send_tries;
     };
-  }
+
+  protected:
+    void enqueue( YO_NEW_REF connectAIOCB& connect_aiocb );
+
+    const Configuration& get_configuration() const {
+      return configuration;
+    }
+
+  private:
+    Configuration configuration;
+  };
+
+
+  class connectAIOCB
+    : public yield::aio::net::sockets::connectAIOCB,
+      public StreamSocketPeer<SocketClient>::AIOCB {
+  public:
+    connectAIOCB
+    (
+      Connection& connection,
+      YO_NEW_REF Buffer* send_buffer = NULL
+    )
+      : yield::aio::net::sockets::connectAIOCB
+      (
+        connection.get_socket(),
+        connection.get_peername(),
+        send_buffer
+      ),
+      StreamSocketPeer<SocketClient>::AIOCB( connection )
+    { }
+  };
+
+protected:
+  StreamSocketClient
+  (
+    const Configuration& configuration,
+    Log* error_log,
+    Log* trace_log,
+    const yield::net::URI& uri
+  );
+
+  virtual ~StreamSocketClient();
+
+  // Stage
+  virtual void service( YO_NEW_REF Event& event );
+
+private:
+  Configuration configuration;
+  yield::net::sockets::SocketAddress& peername;
+};
+}
 }
 
 

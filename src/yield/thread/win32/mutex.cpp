@@ -35,40 +35,32 @@
 #include <Windows.h>
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace win32
-    {
-      Mutex::Mutex()
-      {
-        hMutex = CreateEvent( NULL, FALSE, TRUE, NULL );
-        if ( hMutex == NULL )
-          throw Exception();
-      }
+namespace yield {
+namespace thread {
+namespace win32 {
+Mutex::Mutex() {
+  hMutex = CreateEvent( NULL, FALSE, TRUE, NULL );
+  if ( hMutex == NULL )
+    throw Exception();
+}
 
-      Mutex::~Mutex()
-      {
-        CloseHandle( hMutex );
-      }
+Mutex::~Mutex() {
+  CloseHandle( hMutex );
+}
 
-      bool Mutex::lock()
-      {
-        DWORD dwRet = WaitForSingleObjectEx( hMutex, INFINITE, TRUE );
-        return dwRet == WAIT_OBJECT_0 || dwRet == WAIT_ABANDONED;
-      }
+bool Mutex::lock() {
+  DWORD dwRet = WaitForSingleObjectEx( hMutex, INFINITE, TRUE );
+  return dwRet == WAIT_OBJECT_0 || dwRet == WAIT_ABANDONED;
+}
 
-      bool Mutex::trylock()
-      {
-        DWORD dwRet = WaitForSingleObjectEx( hMutex, 0, TRUE );
-        return dwRet == WAIT_OBJECT_0 || dwRet == WAIT_ABANDONED;
-      }
+bool Mutex::trylock() {
+  DWORD dwRet = WaitForSingleObjectEx( hMutex, 0, TRUE );
+  return dwRet == WAIT_OBJECT_0 || dwRet == WAIT_ABANDONED;
+}
 
-      void Mutex::unlock()
-      {
-        SetEvent( hMutex );
-      }
-    }
-  }
+void Mutex::unlock() {
+  SetEvent( hMutex );
+}
+}
+}
 }

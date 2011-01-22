@@ -39,121 +39,104 @@
 #include "yield/net/sockets/stream_socket.hpp"
 
 
-namespace yield
-{
-  namespace http
-  {
-    using yield::aio::net::sockets::acceptAIOCB;
-    using yield::net::sockets::SocketAddress;
-    using yield::net::sockets::StreamSocket;
+namespace yield {
+namespace http {
+using yield::aio::net::sockets::acceptAIOCB;
+using yield::net::sockets::SocketAddress;
+using yield::net::sockets::StreamSocket;
 
 
-    StreamSocketServer::StreamSocketServer
-    (
-      Log* error_log,
-      YO_NEW_REF StreamSocket& socket_,
-      const SocketAddress& sockname,
-      Log* trace_log
-    )
-    : StreamSocketPeer<SocketServer>( error_log, trace_log ),
-      socket_( socket_ )
-    {
-      debug_assert_eq( sockname.get_family(), socket_.get_domain() );
+StreamSocketServer::StreamSocketServer
+(
+  Log* error_log,
+  YO_NEW_REF StreamSocket& socket_,
+  const SocketAddress& sockname,
+  Log* trace_log
+)
+  : StreamSocketPeer<SocketServer>( error_log, trace_log ),
+    socket_( socket_ ) {
+  debug_assert_eq( sockname.get_family(), socket_.get_domain() );
 
-      if
-      (
-        socket_.bind( sockname )
-        &&
-        socket_.listen()
-        &&
-        get_aio_queue().associate( socket_ )
-      )
-      {
-        acceptAIOCB* accept_aiocb = new acceptAIOCB( socket_, new Page );
-        enqueue( *accept_aiocb );
-      }
-      else
-        throw Exception();
-    }
+  if
+  (
+    socket_.bind( sockname )
+    &&
+    socket_.listen()
+    &&
+    get_aio_queue().associate( socket_ )
+  ) {
+    acceptAIOCB* accept_aiocb = new acceptAIOCB( socket_, new Page );
+    enqueue( *accept_aiocb );
+  } else
+    throw Exception();
+}
 
-    StreamSocketServer::~StreamSocketServer()
-    {
-      StreamSocket::dec_ref( socket_ );
-    }
+StreamSocketServer::~StreamSocketServer() {
+  StreamSocket::dec_ref( socket_ );
+}
 
-    void StreamSocketServer::enqueue( YO_NEW_REF acceptAIOCB& accept_aiocb )
-    {
-      if ( !get_aio_queue().enqueue( accept_aiocb ) )
-      {
-        acceptAIOCB::dec_ref( accept_aiocb );
-        DebugBreak();
-      }
-    }
-
-    void StreamSocketServer::service( YO_NEW_REF Event& event )
-    {
-      switch ( event.get_type_id() )
-      {
-        case acceptAIOCB::TYPE_ID:
-        {
-          acceptAIOCB& accept_aiocb = static_cast<acceptAIOCB&>( event );
-
-          if ( accept_aiocb.get_error() == 0 )
-          {
-            StreamSocket& accepted_socket = *accept_aiocb.get_accepted_socket();
-
-            if ( get_aio_queue().associate( accepted_socket ) )
-            {
-              Connection& connection
-                = create_connection( accept_aiocb.get_peername(), accepted_socket );
-
-              if ( get_trace_log() != NULL )
-              {
-                Buffer* recv_buffer = accept_aiocb.get_recv_buffer();
-                if ( recv_buffer != NULL )
-                {
-                  get_trace_log()->get_stream( Log::INFO ) <<
-                    connection.get_log_prefix() <<
-                    ": accepted connection from " <<
-                    accept_aiocb.get_peername() << " with data ";
-                  get_trace_log()->write( *recv_buffer, Log::DEBUG );
-                }
-                else
-                {
-                  get_trace_log()->get_stream( Log::INFO ) <<
-                    connection.get_log_prefix() <<
-                    ": accepted connection from " <<
-                    accept_aiocb.get_peername();
-                }
-              }
-
-              connection.handle( accept_aiocb );
-            }
-            else
-              DebugBreak();
-          }
-          else
-            DebugBreak();
-
-          acceptAIOCB* next_accept_aiocb
-            = new acceptAIOCB( get_socket(), new Page );
-
-          enqueue( *next_accept_aiocb );
-        }
-        break;
-
-        default: StreamSocketPeer<SocketServer>::service( event ); break;
-      }
-    }
-
-
-    StreamSocketServer::Connection::Connection
-    (
-      StreamSocketServer& server,
-      YO_NEW_REF SocketAddress& peername,
-      StreamSocket& socket_
-    )
-    : StreamSocketPeer<SocketServer>::Connection( server, peername, socket_ )
-    { }
+void StreamSocketServer::enqueue( YO_NEW_REF acceptAIOCB& accept_aiocb ) {
+  if ( !get_aio_queue().enqueue( accept_aiocb ) ) {
+    acceptAIOCB::dec_ref( accept_aiocb );
+    DebugBreak();
   }
+}
+
+void StreamSocketServer::service( YO_NEW_REF Event& event ) {
+  switch ( event.get_type_id() ) {
+  case acceptAIOCB::TYPE_ID: {
+    acceptAIOCB& accept_aiocb = static_cast<acceptAIOCB&>( event );
+
+    if ( accept_aiocb.get_error() == 0 ) {
+      StreamSocket& accepted_socket = *accept_aiocb.get_accepted_socket();
+
+      if ( get_aio_queue().associate( accepted_socket ) ) {
+        Connection& connection
+        = create_connection( accept_aiocb.get_peername(), accepted_socket );
+
+        if ( get_trace_log() != NULL ) {
+          Buffer* recv_buffer = accept_aiocb.get_recv_buffer();
+          if ( recv_buffer != NULL ) {
+            get_trace_log()->get_stream( Log::INFO ) <<
+                connection.get_log_prefix() <<
+                ": accepted connection from " <<
+                accept_aiocb.get_peername() << " with data ";
+            get_trace_log()->write( *recv_buffer, Log::DEBUG );
+          } else {
+            get_trace_log()->get_stream( Log::INFO ) <<
+                connection.get_log_prefix() <<
+                ": accepted connection from " <<
+                accept_aiocb.get_peername();
+          }
+        }
+
+        connection.handle( accept_aiocb );
+      } else
+        DebugBreak();
+    } else
+      DebugBreak();
+
+    acceptAIOCB* next_accept_aiocb
+    = new acceptAIOCB( get_socket(), new Page );
+
+    enqueue( *next_accept_aiocb );
+  }
+  break;
+
+  default:
+    StreamSocketPeer<SocketServer>::service( event );
+    break;
+  }
+}
+
+
+StreamSocketServer::Connection::Connection
+(
+  StreamSocketServer& server,
+  YO_NEW_REF SocketAddress& peername,
+  StreamSocket& socket_
+)
+  : StreamSocketPeer<SocketServer>::Connection( server, peername, socket_ )
+{ }
+}
 }

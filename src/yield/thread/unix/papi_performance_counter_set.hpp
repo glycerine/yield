@@ -36,30 +36,26 @@
 #undef unix
 
 
-namespace yield
-{
-  namespace thread
-  {
-    namespace unix
-    {
-      #ifdef YIELD_HAVE_UNIX_PAPI
-        class PAPIPerformanceCounterSet
-        {
-        public:
-          PAPIPerformanceCounterSet();
-          ~PAPIPerformanceCounterSet();
+namespace yield {
+namespace thread {
+namespace unix {
+#ifdef YIELD_HAVE_UNIX_PAPI
+class PAPIPerformanceCounterSet {
+public:
+  PAPIPerformanceCounterSet();
+  ~PAPIPerformanceCounterSet();
 
-          bool add( Event event );
-          bool add( const char* event );
-          void start_counting();
-          void stop_counting( uint64_t* counts );
+  bool add( Event event );
+  bool add( const char* event );
+  void start_counting();
+  void stop_counting( uint64_t* counts );
 
-        private:
-          int eventset;
-        };
-      #endif
-    }
-  }
+private:
+  int eventset;
+};
+#endif
+}
+}
 }
 
 

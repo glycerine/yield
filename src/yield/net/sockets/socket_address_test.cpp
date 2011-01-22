@@ -40,53 +40,46 @@
 
 TEST_SUITE( SocketAddress );
 
-namespace yield
-{
-  namespace net
-  {
-    namespace sockets
-    {
-      TEST( SocketAddress, copy_constructor )
-      {
-        SocketAddress sockaddr1( TEST_NODENAME, TEST_SERVNAME );
-        SocketAddress sockaddr2( sockaddr1 );
-        throw_assert_eq( sockaddr1, sockaddr2 );
-      }
+namespace yield {
+namespace net {
+namespace sockets {
+TEST( SocketAddress, copy_constructor ) {
+  SocketAddress sockaddr1( TEST_NODENAME, TEST_SERVNAME );
+  SocketAddress sockaddr2( sockaddr1 );
+  throw_assert_eq( sockaddr1, sockaddr2 );
+}
 
-      TEST( SocketAddress, getnameinfo )
-      {
-        SocketAddress sockaddr( TEST_NODENAME, TEST_SERVNAME );
+TEST( SocketAddress, getnameinfo ) {
+  SocketAddress sockaddr( TEST_NODENAME, TEST_SERVNAME );
 
-        string hostname;
-        if ( !sockaddr.getnameinfo( hostname, false ) )
-          throw Exception();
-        throw_assert_false( hostname.empty() );
-        // hostname may not == TEST_NODENAME if the address was resolved differently
+  string hostname;
+  if ( !sockaddr.getnameinfo( hostname, false ) )
+    throw Exception();
+  throw_assert_false( hostname.empty() );
+  // hostname may not == TEST_NODENAME if the address was resolved differently
 
-        string hostname_numeric;
-        if ( !sockaddr.getnameinfo( hostname_numeric, true ) )
-          throw Exception();
-        throw_assert
-        (
-          hostname_numeric.find( '.' ) != string::npos
-          ||
-          hostname_numeric.find( ':' ) != string::npos
-        );
-      }
+  string hostname_numeric;
+  if ( !sockaddr.getnameinfo( hostname_numeric, true ) )
+    throw Exception();
+  throw_assert
+  (
+    hostname_numeric.find( '.' ) != string::npos
+    ||
+    hostname_numeric.find( ':' ) != string::npos
+  );
+}
 
-      TEST( SocketAddress, operator_string )
-      {
-        SocketAddress sockaddr( TEST_NODENAME, TEST_SERVNAME );
-        string sockaddr_string = sockaddr;
-        throw_assert_false( sockaddr_string.empty() );
-      }
+TEST( SocketAddress, operator_string ) {
+  SocketAddress sockaddr( TEST_NODENAME, TEST_SERVNAME );
+  string sockaddr_string = sockaddr;
+  throw_assert_false( sockaddr_string.empty() );
+}
 
-      TEST( SocketAddress, resolving_constructor )
-      {
-        SocketAddress( TEST_NODENAME, 80 );
-        SocketAddress( TEST_NODENAME, "80" );
-        SocketAddress( TEST_NODENAME, TEST_SERVNAME );
-      }
-    }
-  }
+TEST( SocketAddress, resolving_constructor ) {
+  SocketAddress( TEST_NODENAME, 80 );
+  SocketAddress( TEST_NODENAME, "80" );
+  SocketAddress( TEST_NODENAME, TEST_SERVNAME );
+}
+}
+}
 }

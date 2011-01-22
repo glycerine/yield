@@ -29,28 +29,27 @@
 
 
 #ifdef YIELD_HAVE_OPENSSL
-  #include "yield/net/sockets/ssl/ssl_context.hpp"
+#include "yield/net/sockets/ssl/ssl_context.hpp"
 #endif
 #include "yunit.hpp"
 
 #ifdef YIELD_HAVE_OPENSSL
-  #include <openssl/ssl.h>
+#include <openssl/ssl.h>
 #endif
 
 
 TEST_SUITE( SSLContext );
 
 #ifdef YIELD_HAVE_OPENSSL
-  TEST( SSLContext, PEM )
-  {
-    auto_Object<SSLContext> ssl_context
-      = SSLContext::create
-       (
-         SSLv23_client_method(),
-         SSLContext::TEST_PEM_CERTIFICATE,
-         SSLContext::TEST_PEM_PRIVATE_KEY,
-         SSLContext::TEST_PEM_PRIVATE_KEY_PASSPHRASE
-       );
-  }
+TEST( SSLContext, PEM ) {
+  auto_Object<SSLContext> ssl_context
+  = SSLContext::create
+    (
+      SSLv23_client_method(),
+      SSLContext::TEST_PEM_CERTIFICATE,
+      SSLContext::TEST_PEM_PRIVATE_KEY,
+      SSLContext::TEST_PEM_PRIVATE_KEY_PASSPHRASE
+    );
+}
 #endif
 //
