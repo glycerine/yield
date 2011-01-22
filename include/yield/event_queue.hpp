@@ -42,23 +42,23 @@ public:
   virtual ~EventQueue() { }
 
   virtual YO_NEW_REF Event& dequeue() {
-    Event* event = dequeue( Time::FOREVER );
-    while ( event == NULL )
-      event = dequeue( Time::FOREVER );
+    Event* event = dequeue(Time::FOREVER);
+    while (event == NULL)
+      event = dequeue(Time::FOREVER);
     return *event;
   }
 
-  virtual YO_NEW_REF Event* dequeue( const Time& timeout ) = 0;
+  virtual YO_NEW_REF Event* dequeue(const Time& timeout) = 0;
 
-  virtual bool enqueue( YO_NEW_REF Event& event ) = 0;
+  virtual bool enqueue(YO_NEW_REF Event& event) = 0;
 
   virtual YO_NEW_REF Event* trydequeue() {
-    return dequeue( 0 );
+    return dequeue(0);
   }
 
   // EventHandler
-  void handle( YO_NEW_REF Event& event ) {
-    enqueue( event );
+  void handle(YO_NEW_REF Event& event) {
+    enqueue(event);
   }
 };
 };

@@ -32,15 +32,15 @@
 #include "yield/net/sockets/udp_socket.hpp"
 
 
-TEST_SUITE_EX( UDPSocket, yield::net::sockets::SocketTestSuite<yield::net::sockets::UDPSocket> );
+TEST_SUITE_EX(UDPSocket, yield::net::sockets::SocketTestSuite<yield::net::sockets::UDPSocket>);
 
 
 namespace yield {
 namespace net {
 namespace sockets {
-TEST( UDPSocket, connect ) {
+TEST(UDPSocket, connect) {
   UDPSocket udp_socket;
-  if ( !udp_socket.connect( SocketAddress( "localhost", 31000 ) ) )
+  if (!udp_socket.connect(SocketAddress("localhost", 31000)))
     throw Exception();
 }
 }

@@ -55,9 +55,9 @@ namespace yield {
 namespace marshal {
 namespace json {
 JSONDecoder::JSONDecoder() {
-  JSONfalse = new Boolean( false );
+  JSONfalse = new Boolean(false);
   JSONnull = new Null;
-  JSONtrue = new Boolean( true );
+  JSONtrue = new Boolean(true);
 
   static yajl_callbacks JSONDecoder_yajl_callbacks
   = {
@@ -74,18 +74,18 @@ JSONDecoder::JSONDecoder() {
     yajl_end_array
   };
 
-  reader = yajl_alloc( &JSONDecoder_yajl_callbacks, NULL, this );
+  reader = yajl_alloc(&JSONDecoder_yajl_callbacks, NULL, this);
 }
 
 JSONDecoder::~JSONDecoder() {
-  Object::dec_ref( *JSONfalse );
-  Object::dec_ref( *JSONnull );
-  Object::dec_ref( *JSONtrue );
-  yajl_free( reader );
+  Object::dec_ref(*JSONfalse);
+  Object::dec_ref(*JSONnull);
+  Object::dec_ref(*JSONtrue);
+  yajl_free(reader);
 }
 
-YO_NEW_REF Object* JSONDecoder::decode( const Buffer& buffer ) {
-  return decode( buffer, buffer.size() );
+YO_NEW_REF Object* JSONDecoder::decode(const Buffer& buffer) {
+  return decode(buffer, buffer.size());
 }
 
 YO_NEW_REF Object*
@@ -99,19 +99,19 @@ JSONDecoder::decode
   = yajl_parse
     (
       reader,
-      reinterpret_cast<const uint8_t*>( json_text ),
+      reinterpret_cast<const uint8_t*>(json_text),
       json_text_len
     );
 
-  if ( yajl_parse_status == yajl_status_ok ) {
-    if ( !object_stack.empty() ) {
-      debug_assert_eq( object_stack.size(), 1 );
+  if (yajl_parse_status == yajl_status_ok) {
+    if (!object_stack.empty()) {
+      debug_assert_eq(object_stack.size(), 1);
       Object* object = object_stack.top();
       object_stack.pop();
       return object;
     } else
       return new ObjectMap;
-  } else if ( yajl_parse_status == yajl_status_insufficient_data ) {
+  } else if (yajl_parse_status == yajl_status_insufficient_data) {
     DebugBreak();
     return NULL;
   } else {
@@ -125,20 +125,20 @@ JSONDecoder::decode
   }
 }
 
-void JSONDecoder::handle( Object& object ) {
-  if ( !object_stack.empty() ) {
-    switch ( object_stack.top()->get_type_id() ) {
+void JSONDecoder::handle(Object& object) {
+  if (!object_stack.empty()) {
+    switch (object_stack.top()->get_type_id()) {
     case ObjectMap::TYPE_ID: {
-      debug_assert_ne( next_map_key, NULL );
-      static_cast<ObjectMap*>( object_stack.top() )->
-      insert( std::make_pair( next_map_key, &object ) );
+      debug_assert_ne(next_map_key, NULL);
+      static_cast<ObjectMap*>(object_stack.top())->
+      insert(std::make_pair(next_map_key, &object));
       next_map_key = NULL;
     }
     break;
 
     case ObjectVector::TYPE_ID: {
-      static_cast<ObjectVector*>( object_stack.top() )->
-      push_back( &object );
+      static_cast<ObjectVector*>(object_stack.top())->
+      push_back(&object);
     }
     break;
 
@@ -146,33 +146,33 @@ void JSONDecoder::handle( Object& object ) {
       DebugBreak();
     }
   } else
-    object_stack.push( &object );
+    object_stack.push(&object);
 }
 
-int JSONDecoder::yajl_boolean( void* this_, int value ) {
-  return static_cast<JSONDecoder*>( this_ )->yajl_boolean( value );
+int JSONDecoder::yajl_boolean(void* this_, int value) {
+  return static_cast<JSONDecoder*>(this_)->yajl_boolean(value);
 }
 
-int JSONDecoder::yajl_boolean( int value ) {
-  if ( value )
-    handle( JSONtrue->inc_ref() );
+int JSONDecoder::yajl_boolean(int value) {
+  if (value)
+    handle(JSONtrue->inc_ref());
   else
-    handle( JSONfalse->inc_ref() );
+    handle(JSONfalse->inc_ref());
 
   return 1;
 }
 
-int JSONDecoder::yajl_double( void* this_, double value ) {
-  return static_cast<JSONDecoder*>( this_ )->yajl_double( value );
+int JSONDecoder::yajl_double(void* this_, double value) {
+  return static_cast<JSONDecoder*>(this_)->yajl_double(value);
 }
 
-int JSONDecoder::yajl_double( double value ) {
-  handle( *new Double( value ) );
+int JSONDecoder::yajl_double(double value) {
+  handle(*new Double(value));
   return 1;
 }
 
-int JSONDecoder::yajl_end_array( void* this_ ) {
-  return static_cast<JSONDecoder*>( this_ )->yajl_end_array();
+int JSONDecoder::yajl_end_array(void* this_) {
+  return static_cast<JSONDecoder*>(this_)->yajl_end_array();
 }
 
 int JSONDecoder::yajl_end_array() {
@@ -185,8 +185,8 @@ int JSONDecoder::yajl_end_array() {
   return 1;
 }
 
-int JSONDecoder::yajl_end_map( void* this_ ) {
-  return static_cast<JSONDecoder*>( this_ )->yajl_end_map();
+int JSONDecoder::yajl_end_map(void* this_) {
+  return static_cast<JSONDecoder*>(this_)->yajl_end_map();
 }
 
 int JSONDecoder::yajl_end_map() {
@@ -199,13 +199,13 @@ int JSONDecoder::yajl_end_map() {
   return 1;
 }
 
-int JSONDecoder::yajl_integer( void* this_, long value ) {
-  return static_cast<JSONDecoder*>( this_ )
-         ->yajl_integer( value );
+int JSONDecoder::yajl_integer(void* this_, long value) {
+  return static_cast<JSONDecoder*>(this_)
+         ->yajl_integer(value);
 }
 
-int JSONDecoder::yajl_integer( long value ) {
-  handle( *new Integer( value ) );
+int JSONDecoder::yajl_integer(long value) {
+  handle(*new Integer(value));
   return 1;
 }
 
@@ -215,8 +215,8 @@ int JSONDecoder::yajl_map_key
   const uint8_t* map_key,
   unsigned int map_key_len
 ) {
-  return static_cast<JSONDecoder*>( this_ )
-         ->yajl_map_key( map_key, map_key_len );
+  return static_cast<JSONDecoder*>(this_)
+         ->yajl_map_key(map_key, map_key_len);
 }
 
 
@@ -226,38 +226,38 @@ int JSONDecoder::yajl_map_key
   unsigned int map_key_len
 ) {
   next_map_key
-  = new String( reinterpret_cast<const char*>( map_key ), map_key_len );
+  = new String(reinterpret_cast<const char*>(map_key), map_key_len);
   return 1;
 }
 
-int JSONDecoder::yajl_null( void* this_ ) {
-  return static_cast<JSONDecoder*>( this_ )->yajl_null();
+int JSONDecoder::yajl_null(void* this_) {
+  return static_cast<JSONDecoder*>(this_)->yajl_null();
 }
 
 int JSONDecoder::yajl_null() {
-  handle( JSONnull->inc_ref() );
+  handle(JSONnull->inc_ref());
   return 1;
 }
 
-int JSONDecoder::yajl_start_array( void* this_ ) {
-  return static_cast<JSONDecoder*>( this_ )->yajl_start_array();
+int JSONDecoder::yajl_start_array(void* this_) {
+  return static_cast<JSONDecoder*>(this_)->yajl_start_array();
 }
 
 int JSONDecoder::yajl_start_array() {
   ObjectVector* json_array = new ObjectVector;
-  handle( *json_array );
-  object_stack.push( json_array );
+  handle(*json_array);
+  object_stack.push(json_array);
   return 1;
 }
 
-int JSONDecoder::yajl_start_map( void* this_ ) {
-  return static_cast<JSONDecoder*>( this_ )->yajl_start_map();
+int JSONDecoder::yajl_start_map(void* this_) {
+  return static_cast<JSONDecoder*>(this_)->yajl_start_map();
 }
 
 int JSONDecoder::yajl_start_map() {
   ObjectMap* json_object = new ObjectMap;
-  handle( *json_object );
-  object_stack.push( json_object );
+  handle(*json_object);
+  object_stack.push(json_object);
   return 1;
 }
 
@@ -267,8 +267,8 @@ int JSONDecoder::yajl_string
   const uint8_t* buffer,
   unsigned int len
 ) {
-  return static_cast<JSONDecoder*>( this_ )
-         ->yajl_string( buffer, len );
+  return static_cast<JSONDecoder*>(this_)
+         ->yajl_string(buffer, len);
 }
 
 int JSONDecoder::yajl_string
@@ -276,7 +276,7 @@ int JSONDecoder::yajl_string
   const uint8_t* buffer,
   unsigned int len
 ) {
-  handle( *new String( reinterpret_cast<const char*>( buffer ), len ) );
+  handle(*new String(reinterpret_cast<const char*>(buffer), len));
   return 1;
 }
 }

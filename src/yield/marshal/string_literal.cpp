@@ -35,15 +35,15 @@
 
 namespace yield {
 namespace marshal {
-StringLiteral::StringLiteral( const char* value )
-  : value( value ) {
-  debug_assert_ne( value, NULL );
+StringLiteral::StringLiteral(const char* value)
+  : value(value) {
+  debug_assert_ne(value, NULL);
 }
 
-bool StringLiteral::operator==( const Object& other ) const {
-  switch ( other.get_type_id() ) {
+bool StringLiteral::operator==(const Object& other) const {
+  switch (other.get_type_id()) {
   case String::TYPE_ID: {
-    return value == static_cast<const String&>( other );
+    return value == static_cast<const String&>(other);
   }
   break;
 
@@ -51,7 +51,7 @@ bool StringLiteral::operator==( const Object& other ) const {
     return strcmp
            (
              value,
-             static_cast<const StringLiteral&>( other ).value
+             static_cast<const StringLiteral&>(other).value
            ) == 0;
   }
   break;

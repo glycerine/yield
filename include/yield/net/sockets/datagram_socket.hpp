@@ -43,12 +43,12 @@ public:
   static int TYPE; // SOCK_DGRAM
 
 public:
-  DatagramSocket( int domain, int protocol = PROTOCOL_DEFAULT )
-    : Socket( domain, TYPE, protocol )
+  DatagramSocket(int domain, int protocol = PROTOCOL_DEFAULT)
+    : Socket(domain, TYPE, protocol)
   { }
 
-  DatagramSocket( int domain, int protocol, socket_t socket_ )
-    : Socket( domain, TYPE, protocol, socket_ )
+  DatagramSocket(int domain, int protocol, socket_t socket_)
+    : Socket(domain, TYPE, protocol, socket_)
   { }
 
   virtual ~DatagramSocket() { }
@@ -59,16 +59,16 @@ public:
     int domain,
     int protocol = PROTOCOL_DEFAULT
   ) {
-    socket_t socket_ = Socket::create( domain, TYPE, protocol );
-    if ( socket_ != static_cast<socket_t>( -1 ) )
-      return new DatagramSocket( domain, protocol, socket_ );
+    socket_t socket_ = Socket::create(domain, TYPE, protocol);
+    if (socket_ != static_cast<socket_t>(-1))
+      return new DatagramSocket(domain, protocol, socket_);
     else
       return NULL;
   }
 
   // Object
   DatagramSocket& inc_ref() {
-    return Object::inc_ref( *this );
+    return Object::inc_ref(*this);
   }
 };
 }

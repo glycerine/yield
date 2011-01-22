@@ -83,9 +83,9 @@ public:
       return send_tries_max;
     }
 
-    void set_connect_timeout( const Time& connect_timeout );
-    void set_recv_timeout( const Time& recv_timeout );
-    void set_send_timeout( const Time& send_timeout );
+    void set_connect_timeout(const Time& connect_timeout);
+    void set_recv_timeout(const Time& recv_timeout);
+    void set_send_timeout(const Time& send_timeout);
 
   private:
     uint16_t concurrency_level;
@@ -118,7 +118,7 @@ protected:
 
     virtual ~Connection() { }
 
-    virtual void handle( YO_NEW_REF connectAIOCB& connect_aiocb ) = 0;
+    virtual void handle(YO_NEW_REF connectAIOCB& connect_aiocb) = 0;
 
   protected:
     template <class RequestType>
@@ -129,14 +129,14 @@ protected:
         YO_NEW_REF RequestType& request,
         YO_NEW_REF Buffer& request_buffer
       )
-        : request( request ),
-          request_buffer( request_buffer ) {
+        : request(request),
+          request_buffer(request_buffer) {
         recv_tries = send_tries = 0;
       }
 
       ~RequestState() {
-        RequestType::dec_ref( request );
-        Buffer::dec_ref( request_buffer );
+        RequestType::dec_ref(request);
+        Buffer::dec_ref(request_buffer);
       }
 
       RequestType& get_request() {
@@ -165,7 +165,7 @@ protected:
     };
 
   protected:
-    void enqueue( YO_NEW_REF connectAIOCB& connect_aiocb );
+    void enqueue(YO_NEW_REF connectAIOCB& connect_aiocb);
 
     const Configuration& get_configuration() const {
       return configuration;
@@ -191,7 +191,7 @@ protected:
         connection.get_peername(),
         send_buffer
       ),
-      StreamSocketPeer<SocketClient>::AIOCB( connection )
+      StreamSocketPeer<SocketClient>::AIOCB(connection)
     { }
   };
 
@@ -207,7 +207,7 @@ protected:
   virtual ~StreamSocketClient();
 
   // Stage
-  virtual void service( YO_NEW_REF Event& event );
+  virtual void service(YO_NEW_REF Event& event);
 
 private:
   Configuration configuration;

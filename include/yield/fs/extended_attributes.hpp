@@ -47,13 +47,13 @@ class ExtendedAttributes : public Object {
 public:
   virtual ~ExtendedAttributes() { }
 
-  virtual bool get( const char* name, string& value );
-  virtual ssize_t get( const char* name, void* value, size_t size ) = 0;
-  virtual bool list( vector<string>& out_names ) = 0;
-  virtual bool remove( const char* name ) = 0;
+  virtual bool get(const char* name, string& value);
+  virtual ssize_t get(const char* name, void* value, size_t size) = 0;
+  virtual bool list(vector<string>& out_names) = 0;
+  virtual bool remove(const char* name) = 0;
 
-  virtual bool set( const char* name, const char* value, int flags = 0 );
-  virtual bool set( const char* name, const string& value, int flags = 0 );
+  virtual bool set(const char* name, const char* value, int flags = 0);
+  virtual bool set(const char* name, const string& value, int flags = 0);
 
   virtual bool
   set
@@ -66,7 +66,7 @@ public:
 
   // Object
   ExtendedAttributes& inc_ref() {
-    return Object::inc_ref( *this );
+    return Object::inc_ref(*this);
   }
 };
 }

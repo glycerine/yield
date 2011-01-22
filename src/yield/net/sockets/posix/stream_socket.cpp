@@ -40,19 +40,19 @@ namespace sockets {
 int StreamSocket::TYPE = SOCK_STREAM;
 
 
-StreamSocket* StreamSocket::accept( SocketAddress& peername ) {
+StreamSocket* StreamSocket::accept(SocketAddress& peername) {
   socklen_t peernamelen = peername.len();
 
-  socket_t peer_socket = ::accept( *this, peername, &peernamelen );
+  socket_t peer_socket = ::accept(*this, peername, &peernamelen);
 
-  if ( peer_socket != -1 )
-    return dup2( peer_socket );
+  if (peer_socket != -1)
+    return dup2(peer_socket);
   else
     return NULL;
 }
 
 bool StreamSocket::listen() {
-  return ::listen( *this, SOMAXCONN ) != -1;
+  return ::listen(*this, SOMAXCONN) != -1;
 }
 
 bool StreamSocket::want_accept() const {
@@ -60,7 +60,7 @@ bool StreamSocket::want_accept() const {
 }
 
 bool StreamSocket::want_connect() const {
-  switch ( errno ) {
+  switch (errno) {
   case EALREADY:
   case EINPROGRESS:
   case EWOULDBLOCK:

@@ -32,4 +32,4 @@
 #include "yield/net/sockets/tcp_socket.hpp"
 
 
-TEST_SUITE_EX( TCPSocket, yield::net::sockets::SocketTestSuite<yield::net::sockets::TCPSocket> );
+TEST_SUITE_EX(TCPSocket, yield::net::sockets::SocketTestSuite<yield::net::sockets::TCPSocket>);

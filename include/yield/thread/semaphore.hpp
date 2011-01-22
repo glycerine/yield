@@ -58,11 +58,11 @@ public:
   ~Semaphore();
 
   void post();
-  bool timedwait( const Time& timeout );
+  bool timedwait(const Time& timeout);
   bool trywait();
   bool wait();
-  bool wait( const Time& timeout ) {
-    return timedwait( timeout );
+  bool wait(const Time& timeout) {
+    return timedwait(timeout);
   }
 
 private:

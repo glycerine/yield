@@ -33,33 +33,33 @@
 #include "yunit.hpp"
 
 
-TEST_SUITE( Object );
+TEST_SUITE(Object);
 
 namespace yield {
 bool TestObject::deleted = false;
 
 
-TEST( Object, dec_ref ) {
+TEST(Object, dec_ref) {
   TestObject* test_object = new TestObject;
-  Object::dec_ref( test_object );
-  throw_assert( TestObject::deleted );
+  Object::dec_ref(test_object);
+  throw_assert(TestObject::deleted);
 
   test_object = new TestObject;
-  Object::inc_ref( test_object );
-  Object::dec_ref( test_object );
-  throw_assert_false( TestObject::deleted );
-  Object::dec_ref( test_object );
-  throw_assert( TestObject::deleted );
+  Object::inc_ref(test_object);
+  Object::dec_ref(test_object);
+  throw_assert_false(TestObject::deleted);
+  Object::dec_ref(test_object);
+  throw_assert(TestObject::deleted);
 }
 
-TEST( Object, inc_ref ) {
+TEST(Object, inc_ref) {
   TestObject* test_object = new TestObject;
-  Object::inc_ref( test_object );
+  Object::inc_ref(test_object);
 }
 
-TEST( Object, rtti ) {
+TEST(Object, rtti) {
   TestObject test_object;
-  throw_assert_eq( test_object.get_type_id(), 0 );
-  throw_assert_eq( strlen( test_object.get_type_name() ), 0 );
+  throw_assert_eq(test_object.get_type_id(), 0);
+  throw_assert_eq(strlen(test_object.get_type_name()), 0);
 }
 }

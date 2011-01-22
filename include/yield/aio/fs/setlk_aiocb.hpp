@@ -49,7 +49,7 @@ public:
     yield::fs::File& file,
     const yield::fs::File::Lock& flock_
   )
-    : AIOCB( file, 0, flock_.get_start() ), flock_( flock_ )
+    : AIOCB(file, 0, flock_.get_start()), flock_(flock_)
   { }
 
   const yield::fs::File::Lock& get_flock() const {
@@ -66,7 +66,7 @@ public:
 
   // yield::aio::AIOCB
 #ifdef _WIN32
-  bool issue( yield::aio::win32::AIOQueue& );
+  bool issue(yield::aio::win32::AIOQueue&);
 #endif
   RetryStatus retry();
 

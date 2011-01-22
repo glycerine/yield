@@ -32,4 +32,4 @@
 #include "volume.hpp"
 
 
-TEST_SUITE_EX( LinuxVolume, yield::fs::VolumeTestSuite<yield::fs::linux::Volume> );
+TEST_SUITE_EX(LinuxVolume, yield::fs::VolumeTestSuite<yield::fs::linux::Volume>);

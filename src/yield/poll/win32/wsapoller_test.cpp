@@ -32,4 +32,4 @@
 #include "wsapoller.hpp"
 
 
-TEST_SUITE_EX( WSAPoller, yield::poll::SocketEventQueueTestSuite<yield::poll::win32::WSAPoller> );
+TEST_SUITE_EX(WSAPoller, yield::poll::SocketEventQueueTestSuite<yield::poll::win32::WSAPoller>);

@@ -41,7 +41,7 @@ namespace i18n {
 namespace win32 {
 class iconv {
 public:
-  iconv( Code tocode, Code fromcode );
+  iconv(Code tocode, Code fromcode);
 
   // iconv.3
   size_t
@@ -53,9 +53,9 @@ public:
     size_t* outbytesleft
   );
 
-  bool operator()( const string& inbuf, string& outbuf );
-  bool operator()( const string& inbuf, wstring& outbuf );
-  bool operator()( const wstring& inbuf, string& outbuf );
+  bool operator()(const string& inbuf, string& outbuf);
+  bool operator()(const string& inbuf, wstring& outbuf);
+  bool operator()(const wstring& inbuf, string& outbuf);
 
 private:
   Code fromcode, tocode;

@@ -37,69 +37,69 @@
 namespace yield {
 namespace thread {
 namespace posix {
-Thread::Thread( Runnable& runnable )
-  : runnable( &runnable ) {
+Thread::Thread(Runnable& runnable)
+  : runnable(&runnable) {
   state = STATE_READY;
 
   pthread_attr_t attr;
-  pthread_attr_init( &attr );
-  pthread_attr_setdetachstate( &attr, PTHREAD_CREATE_DETACHED );
+  pthread_attr_init(&attr);
+  pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 
-  if ( pthread_create( &pthread, &attr, &run, this ) == 0 ) {
-    pthread_attr_destroy( &attr );
+  if (pthread_create(&pthread, &attr, &run, this) == 0) {
+    pthread_attr_destroy(&attr);
 
-    while ( state == STATE_READY )
-      nanosleep( 0 );
+    while (state == STATE_READY)
+      nanosleep(0);
   } else {
-    pthread_attr_destroy( &attr );
+    pthread_attr_destroy(&attr);
     throw Exception();
   }
 }
 
-Thread::Thread( pthread_t pthread )
-  : pthread( pthread ) {
+Thread::Thread(pthread_t pthread)
+  : pthread(pthread) {
   runnable = NULL;
   state = STATE_READY;
 }
 
 Thread::~Thread() {
-  if ( is_running() ) {
+  if (is_running()) {
     cancel();
     join();
   }
 }
 
 bool Thread::cancel() {
-  return pthread_cancel( pthread ) == 0;
+  return pthread_cancel(pthread) == 0;
 }
 
-void* Thread::getspecific( uintptr_t key ) {
-  return pthread_getspecific( key );
+void* Thread::getspecific(uintptr_t key) {
+  return pthread_getspecific(key);
 }
 
 bool Thread::join() {
-  return pthread_join( pthread, NULL ) != -1;
+  return pthread_join(pthread, NULL) != -1;
 }
 
 uintptr_t Thread::key_create() {
   pthread_key_t key;
-  if ( pthread_key_create( &key, NULL ) == 0 )
+  if (pthread_key_create(&key, NULL) == 0)
     return key;
   else
-    return static_cast<uintptr_t>( -1 );
+    return static_cast<uintptr_t>(-1);
 }
 
-bool Thread::key_delete( uintptr_t key ) {
-  return pthread_key_delete( key ) == 0;
+bool Thread::key_delete(uintptr_t key) {
+  return pthread_key_delete(key) == 0;
 }
 
-void Thread::nanosleep( const Time& timeout ) {
+void Thread::nanosleep(const Time& timeout) {
   timespec timeout_ts = timeout;
-  ::nanosleep( &timeout_ts, NULL );
+  ::nanosleep(&timeout_ts, NULL);
 }
 
-void* Thread::run( void* this_ ) {
-  return static_cast<Thread*>( this_ )->run();
+void* Thread::run(void* this_) {
+  return static_cast<Thread*>(this_)->run();
 }
 
 void* Thread::run() {
@@ -109,8 +109,8 @@ void* Thread::run() {
   return NULL;
 }
 
-bool Thread::setspecific( uintptr_t key, void* value ) {
-  return pthread_setspecific( key, value ) == 0;
+bool Thread::setspecific(uintptr_t key, void* value) {
+  return pthread_setspecific(key, value) == 0;
 }
 }
 }

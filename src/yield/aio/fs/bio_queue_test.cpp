@@ -32,4 +32,4 @@
 #include "aio_queue_test.hpp"
 
 
-TEST_SUITE_EX( FileBIOQueue, yield::aio::fs::AIOQueueTestSuite<yield::aio::fs::BIOQueue> );
+TEST_SUITE_EX(FileBIOQueue, yield::aio::fs::AIOQueueTestSuite<yield::aio::fs::BIOQueue>);

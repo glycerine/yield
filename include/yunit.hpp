@@ -114,12 +114,12 @@ public:
 class TestSuite : private std::vector< std::pair<std::string, Test*> > {
 public:
   virtual ~TestSuite() {
-    for ( iterator test_i = begin(); test_i != end(); test_i++ )
+    for (iterator test_i = begin(); test_i != end(); test_i++)
       delete test_i->second;
   }
 
-  void add( const std::string& name, Test* test ) {
-    push_back( std::make_pair( name, test ) );
+  void add(const std::string& name, Test* test) {
+    push_back(std::make_pair(name, test));
   }
 
   bool empty() const {
@@ -129,7 +129,7 @@ public:
   virtual int run() {
     int failed_test_count = 0;
 
-    for ( iterator test_i = begin(); test_i != end(); ++test_i ) {
+    for (iterator test_i = begin(); test_i != end(); ++test_i) {
       bool called_run = false, called_teardown = false;
 
       try {
@@ -140,17 +140,17 @@ public:
         called_teardown = true;
         test_i->second->teardown();
         std::cout << ": passed";
-      } catch ( std::exception& exc ) {
+      } catch (std::exception& exc) {
         std::cout << " failed: " << exc.what();
         failed_test_count++;
       }
 
       std::cout << std::endl;
 
-      if ( called_run && !called_teardown )
+      if (called_run && !called_teardown)
         try {
           test_i->second->teardown();
-        } catch ( ... ) { }
+        } catch (...) { }
     }
 
     return failed_test_count;

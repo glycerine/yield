@@ -50,12 +50,12 @@ public:
 
   // yield::thread::Semaphore
   void post();
-  bool timedwait( const Time& timeout );
+  bool timedwait(const Time& timeout);
   bool trywait();
   bool wait();
 
 private:
-  Semaphore( semaphore_t );
+  Semaphore(semaphore_t);
 
 private:
   semaphore_t sem;

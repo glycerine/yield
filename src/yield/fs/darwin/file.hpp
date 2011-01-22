@@ -40,7 +40,7 @@ namespace fs {
 namespace darwin {
 class File : public yield::fs::posix::File {
 public:
-  File( fd_t fd );
+  File(fd_t fd);
   ~File();
 
   // yield::fs::File

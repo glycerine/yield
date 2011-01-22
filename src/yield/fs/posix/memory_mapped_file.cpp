@@ -49,27 +49,27 @@ MemoryMappedFile::MemoryMappedFile
   uint64_t offset,
   int prot
 )
-  : yield::fs::MemoryMappedFile( capacity, file, flags, offset, prot ),
-    data_( data )
+  : yield::fs::MemoryMappedFile(capacity, file, flags, offset, prot),
+    data_(data)
 { }
 
 MemoryMappedFile::~MemoryMappedFile() {
   close();
 }
 
-void MemoryMappedFile::reserve( size_t capacity ) {
-  if ( data_ != MAP_FAILED ) {
-    if ( !yield::fs::MemoryMappedFile::sync() )
+void MemoryMappedFile::reserve(size_t capacity) {
+  if (data_ != MAP_FAILED) {
+    if (!yield::fs::MemoryMappedFile::sync())
       throw Exception();
 
-    if ( !unmap() )
+    if (!unmap())
       throw Exception();
   }
 
-  debug_assert_eq( capacity_, 0 );
-  debug_assert_eq( data_, MAP_FAILED );
+  debug_assert_eq(capacity_, 0);
+  debug_assert_eq(data_, MAP_FAILED);
 
-  if ( get_file().truncate( capacity ) ) {
+  if (get_file().truncate(capacity)) {
     data_
     = Volume::mmap
       (
@@ -77,11 +77,11 @@ void MemoryMappedFile::reserve( size_t capacity ) {
         capacity,
         get_prot(),
         get_flags(),
-        static_cast<File&>( get_file() ),
+        static_cast<File&>(get_file()),
         get_offset()
       );
 
-    if ( data_ != MAP_FAILED )
+    if (data_ != MAP_FAILED)
       capacity_ = capacity;
     else
       throw Exception();
@@ -89,12 +89,12 @@ void MemoryMappedFile::reserve( size_t capacity ) {
     throw Exception();
 }
 
-bool MemoryMappedFile::sync( void* ptr, size_t length ) {
-  if ( data_ != MAP_FAILED ) {
+bool MemoryMappedFile::sync(void* ptr, size_t length) {
+  if (data_ != MAP_FAILED) {
 #ifdef __sun
-    return msync( static_cast<char*>( ptr ), length, MS_SYNC ) == 0;
+    return msync(static_cast<char*>(ptr), length, MS_SYNC) == 0;
 #else
-    return msync( ptr, length, MS_SYNC ) == 0;
+    return msync(ptr, length, MS_SYNC) == 0;
 #endif
   } else {
     errno = EBADF;
@@ -103,8 +103,8 @@ bool MemoryMappedFile::sync( void* ptr, size_t length ) {
 }
 
 bool MemoryMappedFile::unmap() {
-  if ( data_ != MAP_FAILED ) {
-    if ( munmap( data_, capacity() ) == 0 ) {
+  if (data_ != MAP_FAILED) {
+    if (munmap(data_, capacity()) == 0) {
       capacity_ = 0;
       data_ = MAP_FAILED;
       return true;

@@ -61,52 +61,52 @@ public:
     const iovec& userinfo
   );
 
-  URI( const char* uri ) throw( Exception );
-  URI( const string& uri ) throw( Exception );
-  URI( const char* uri, size_t uri_len ) throw( Exception );
+  URI(const char* uri) throw(Exception);
+  URI(const string& uri) throw(Exception);
+  URI(const char* uri, size_t uri_len) throw(Exception);
 
-  URI( URI& other );
-  URI( const URI& other );
+  URI(URI& other);
+  URI(const URI& other);
 
   ~URI();
 
   string get_fragment() const {
-    return iovec_to_string( fragment );
+    return iovec_to_string(fragment);
   }
-  void get_fragment( OUT iovec& frag ) const {
+  void get_fragment(OUT iovec& frag) const {
     frag = this->fragment;
   }
   string get_host() const {
-    return iovec_to_string( host );
+    return iovec_to_string(host);
   }
-  void get_host( OUT iovec& host ) const {
+  void get_host(OUT iovec& host) const {
     host = this->host;
   }
   string get_path() const {
-    return iovec_to_string( path );
+    return iovec_to_string(path);
   }
-  void get_path( OUT iovec& path ) const {
+  void get_path(OUT iovec& path) const {
     path = this->path;
   }
   uint16_t get_port() const {
     return port;
   }
   string get_scheme() const {
-    return iovec_to_string( scheme );
+    return iovec_to_string(scheme);
   }
-  void get_scheme( OUT iovec& scheme ) const {
+  void get_scheme(OUT iovec& scheme) const {
     scheme = this->scheme;
   }
   string get_query() const {
-    return iovec_to_string( query );
+    return iovec_to_string(query);
   }
-  void get_query( OUT iovec& query ) const {
+  void get_query(OUT iovec& query) const {
     query = this->query;
   }
   string get_userinfo() const {
-    return iovec_to_string( userinfo );
+    return iovec_to_string(userinfo);
   }
-  void get_userinfo( OUT iovec& ui ) const {
+  void get_userinfo(OUT iovec& ui) const {
     ui = this->userinfo;
   }
 
@@ -125,24 +125,24 @@ public:
 
   operator string() const;
 
-  URI operator+( const char* ) const;
-  URI operator+( const string& ) const;
+  URI operator+(const char*) const;
+  URI operator+(const string&) const;
 
-  void set_port( uint16_t port ) {
+  void set_port(uint16_t port) {
     this->port = port;
   }
 
   // Object
   URI& inc_ref() {
-    return Object::inc_ref( *this );
+    return Object::inc_ref(*this);
   }
 
 private:
-  friend std::ostream& operator<<( std::ostream&, const URI& );
+  friend std::ostream& operator<<(std::ostream&, const URI&);
 
 private:
-  void init( const char* uri, size_t uri_len );
-  static string iovec_to_string( const iovec& );
+  void init(const char* uri, size_t uri_len);
+  static string iovec_to_string(const iovec&);
 
   void
   rebase
@@ -164,7 +164,7 @@ private:
   iovec userinfo;
 };
 
-std::ostream& operator<<( std::ostream&, const URI& );
+std::ostream& operator<<(std::ostream&, const URI&);
 }
 }
 

@@ -69,14 +69,14 @@ public:
       uint64_t start,
       uint64_t len,
       bool exclusive = true,
-      pid_t pid = static_cast<pid_t>( -1 ), // getpid()
+      pid_t pid = static_cast<pid_t>(-1),   // getpid()
       int16_t whence = SEEK_SET
     )
-      : exclusive( exclusive ),
-        len( len ),
-        pid( pid ),
-        start( start ),
-        whence( whence )
+      : exclusive(exclusive),
+        len(len),
+        pid(pid),
+        start(start),
+        whence(whence)
     { }
 
     uint64_t get_len() const {
@@ -97,7 +97,7 @@ public:
 
     // Object
     File::Lock& inc_ref() {
-      return Object::inc_ref( *this );
+      return Object::inc_ref(*this);
     }
 
   private:
@@ -115,27 +115,27 @@ public:
     return sync();
   }
   virtual YO_NEW_REF Stat* getattr() = 0;
-  virtual YO_NEW_REF Lock* getlk( const Lock& ) = 0;
+  virtual YO_NEW_REF Lock* getlk(const Lock&) = 0;
   virtual size_t getpagesize();
   virtual YO_NEW_REF ExtendedAttributes* openxattrs() = 0;
-  virtual ssize_t pread( void*, size_t, uint64_t offset ) = 0;
-  virtual ssize_t preadv( const iovec*, int, uint64_t offset ) = 0;
-  virtual ssize_t pwrite( const void*, size_t, uint64_t offset ) = 0;
-  virtual ssize_t pwritev( const iovec*, int, uint64_t offset ) = 0;
-  virtual uint64_t seek( int64_t offset, uint8_t whence = SEEK_SET ) = 0;
-  virtual bool setlk( const Lock& ) = 0;
-  virtual bool setlkw( const Lock& ) = 0;
+  virtual ssize_t pread(void*, size_t, uint64_t offset) = 0;
+  virtual ssize_t preadv(const iovec*, int, uint64_t offset) = 0;
+  virtual ssize_t pwrite(const void*, size_t, uint64_t offset) = 0;
+  virtual ssize_t pwritev(const iovec*, int, uint64_t offset) = 0;
+  virtual uint64_t seek(int64_t offset, uint8_t whence = SEEK_SET) = 0;
+  virtual bool setlk(const Lock&) = 0;
+  virtual bool setlkw(const Lock&) = 0;
   YO_NEW_REF Stat* stat() {
     return getattr();
   }
   virtual bool sync() = 0;
   virtual uint64_t tell() = 0;
-  virtual bool truncate( uint64_t new_size ) = 0;
-  virtual bool unlk( const Lock& ) = 0;
+  virtual bool truncate(uint64_t new_size) = 0;
+  virtual bool unlk(const Lock&) = 0;
 
   // Object
   File& inc_ref() {
-    return Object::inc_ref( *this );
+    return Object::inc_ref(*this);
   }
 
 protected:

@@ -45,12 +45,12 @@ public:
 public:
   ~SharedLibrary();
 
-  static YO_NEW_REF SharedLibrary* open( const yield::fs::Path& filename );
-  void* sym( const char* symbol );
+  static YO_NEW_REF SharedLibrary* open(const yield::fs::Path& filename);
+  void* sym(const char* symbol);
 
 protected:
-  SharedLibrary( void* handle )
-    : handle( handle )
+  SharedLibrary(void* handle)
+    : handle(handle)
   { }
 
 private:

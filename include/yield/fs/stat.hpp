@@ -43,7 +43,7 @@ namespace fs {
 class Stat : public Object {
 public:
   typedef uint8_t Type;
-  const static Type TYPE_ALL = static_cast<Type>( ~0 );
+  const static Type TYPE_ALL = static_cast<Type>(~0);
   const static Type TYPE_CHR = 1;
   const static Type TYPE_BLK = 2;
   const static Type TYPE_DIR = 4;
@@ -53,20 +53,20 @@ public:
   const static Type TYPE_SOCK = 64;
 
   const static DateTime INVALID_ATIME;
-  const static uint32_t INVALID_ATTRIBUTES = static_cast<uint32_t>( ~0 );
-  const static uint64_t INVALID_BLKSIZE = static_cast<uint64_t>( ~0 );
-  const static uint64_t INVALID_BLOCKS = static_cast<uint64_t>( ~0 );
+  const static uint32_t INVALID_ATTRIBUTES = static_cast<uint32_t>(~0);
+  const static uint64_t INVALID_BLKSIZE = static_cast<uint64_t>(~0);
+  const static uint64_t INVALID_BLOCKS = static_cast<uint64_t>(~0);
   const static DateTime INVALID_CTIME;
-  const static uint64_t INVALID_DEV = static_cast<uint64_t>( ~0 );
-  const static gid_t INVALID_GID = static_cast<gid_t>( -1 );
-  const static uint64_t INVALID_INO = static_cast<uint64_t>( ~0 );
-  const static mode_t INVALID_MODE = static_cast<mode_t>( -1 );
+  const static uint64_t INVALID_DEV = static_cast<uint64_t>(~0);
+  const static gid_t INVALID_GID = static_cast<gid_t>(-1);
+  const static uint64_t INVALID_INO = static_cast<uint64_t>(~0);
+  const static mode_t INVALID_MODE = static_cast<mode_t>(-1);
   const static DateTime INVALID_MTIME;
   const static int16_t INVALID_NLINK = 0;
-  const static uint64_t INVALID_RDEV = static_cast<uint64_t>( ~0 );
-  const static uint64_t INVALID_SIZE = static_cast<uint64_t>( ~0 );
+  const static uint64_t INVALID_RDEV = static_cast<uint64_t>(~0);
+  const static uint64_t INVALID_SIZE = static_cast<uint64_t>(~0);
   const static Type INVALID_TYPE = 0;
-  const static uid_t INVALID_UID = static_cast<uid_t>( -1 );
+  const static uid_t INVALID_UID = static_cast<uid_t>(-1);
 
 public:
   virtual const DateTime& get_atime() const {
@@ -178,7 +178,7 @@ public:
     return get_type() == TYPE_SOCK;
   }
 
-  virtual bool operator==( const Stat& other ) const;
+  virtual bool operator==(const Stat& other) const;
 };
 }
 }

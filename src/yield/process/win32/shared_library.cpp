@@ -40,20 +40,20 @@ using yield::fs::Path;
 
 
 SharedLibrary::~SharedLibrary() {
-  FreeLibrary( reinterpret_cast<HMODULE>( handle ) );
+  FreeLibrary(reinterpret_cast<HMODULE>(handle));
 }
 
-SharedLibrary* SharedLibrary::open( const Path& filename ) {
+SharedLibrary* SharedLibrary::open(const Path& filename) {
   HMODULE handle
-  = LoadLibraryEx( filename.c_str(), 0, LOAD_WITH_ALTERED_SEARCH_PATH );
-  if ( handle != NULL )
-    return new SharedLibrary( handle );
+  = LoadLibraryEx(filename.c_str(), 0, LOAD_WITH_ALTERED_SEARCH_PATH);
+  if (handle != NULL)
+    return new SharedLibrary(handle);
   else
     return NULL;
 }
 
-void* SharedLibrary::sym( const char* symbol ) {
-  return GetProcAddress( reinterpret_cast<HMODULE>( handle ), symbol );
+void* SharedLibrary::sym(const char* symbol) {
+  return GetProcAddress(reinterpret_cast<HMODULE>(handle), symbol);
 }
 }
 }

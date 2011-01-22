@@ -39,7 +39,7 @@ extern yunit::TestSuite& HTTPResponseParserTestSuite();
 extern yunit::TestSuite& HTTPServerTestSuite();
 
 
-int main( int, char** ) {
+int main(int, char**) {
   int failed_test_case_count = 0;
 
   // HTTPClient

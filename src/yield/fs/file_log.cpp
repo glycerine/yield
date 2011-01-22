@@ -35,30 +35,30 @@
 
 namespace yield {
 namespace fs {
-FileLog::FileLog( const Path& file_path, const Level& level )
-  : Log( level ), file( NULL ), file_path( file_path )
+FileLog::FileLog(const Path& file_path, const Level& level)
+  : Log(level), file(NULL), file_path(file_path)
 { }
 
 FileLog::~FileLog() {
-  File::dec_ref( file );
+  File::dec_ref(file);
 }
 
-void FileLog::write( const char* str, size_t str_len ) {
-  if ( file == NULL ) {
+void FileLog::write(const char* str, size_t str_len) {
+  if (file == NULL) {
     Volume* volume = Volume::create();
-    if ( volume != NULL ) {
-      file = volume->open( file_path, O_CREAT|O_WRONLY|O_APPEND );
-      if ( file != NULL )
-        Volume::dec_ref( *volume );
+    if (volume != NULL) {
+      file = volume->open(file_path, O_CREAT | O_WRONLY | O_APPEND);
+      if (file != NULL)
+        Volume::dec_ref(*volume);
       else {
-        Volume::dec_ref( *volume );
+        Volume::dec_ref(*volume);
         return;
       }
     } else
       return;
   }
 
-  file->write( str, str_len );
+  file->write(str, str_len);
 }
 }
 }

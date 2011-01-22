@@ -43,15 +43,15 @@ class ProcessorSet;
 
 class Thread : public yield::thread::posix::Thread {
 public:
-  Thread( Runnable& );
+  Thread(Runnable&);
 
   static Thread* self();
-  bool setaffinity( uint16_t logical_processor_i );
-  bool setaffinity( const ProcessorSet& logical_processor_set );
+  bool setaffinity(uint16_t logical_processor_i);
+  bool setaffinity(const ProcessorSet& logical_processor_set);
   void yield();
 
 private:
-  Thread( pthread_t, pid_t );
+  Thread(pthread_t, pid_t);
 
   // posix::Thread
   void* run();

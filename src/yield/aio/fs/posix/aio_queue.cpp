@@ -48,30 +48,30 @@ AIOQueue::AIOQueue() {
 }
 
 AIOQueue::~AIOQueue() {
-  SynchronizedEventQueue::dec_ref( *completed_event_queue );
+  SynchronizedEventQueue::dec_ref(*completed_event_queue);
 }
 
 YO_NEW_REF Event& AIOQueue::dequeue() {
   return completed_event_queue->dequeue();
 }
 
-YO_NEW_REF Event* AIOQueue::dequeue( const Time& timeout ) {
-  return completed_event_queue->dequeue( timeout );
+YO_NEW_REF Event* AIOQueue::dequeue(const Time& timeout) {
+  return completed_event_queue->dequeue(timeout);
 }
 
-bool AIOQueue::enqueue( YO_NEW_REF AIOCB& aiocb ) {
-  return aiocb.issue( *completed_event_queue );
+bool AIOQueue::enqueue(YO_NEW_REF AIOCB& aiocb) {
+  return aiocb.issue(*completed_event_queue);
 }
 
-bool AIOQueue::enqueue( YO_NEW_REF Event& event ) {
-  switch ( event.get_type_id() ) {
+bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
+  switch (event.get_type_id()) {
   case fsyncAIOCB::TYPE_ID:
   case preadAIOCB::TYPE_ID:
   case pwriteAIOCB::TYPE_ID:
-    return enqueue( static_cast<AIOCB&>( event ) );
+    return enqueue(static_cast<AIOCB&>(event));
 
   default:
-    return completed_event_queue->enqueue( event );
+    return completed_event_queue->enqueue(event);
   }
 }
 

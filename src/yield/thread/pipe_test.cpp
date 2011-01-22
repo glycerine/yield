@@ -46,10 +46,10 @@ public:
 class PipeTestSuite : public ChannelTestSuite {
 public:
   PipeTestSuite()
-    : ChannelTestSuite( *new PipeFactory )
+    : ChannelTestSuite(*new PipeFactory)
   { }
 };
 }
 }
 
-TEST_SUITE_EX( Pipe, yield::thread::PipeTestSuite );
+TEST_SUITE_EX(Pipe, yield::thread::PipeTestSuite);

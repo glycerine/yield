@@ -36,13 +36,13 @@
 namespace yield {
 namespace aio {
 namespace fs {
-bool unlkAIOCB::issue( yield::aio::win32::AIOQueue& ) {
+bool unlkAIOCB::issue(yield::aio::win32::AIOQueue&) {
   return UnlockFileEx
          (
            get_file(),
            0,
-           static_cast<DWORD>( flock_.get_len() ),
-           static_cast<DWORD>( flock_.get_len() >> 32 ),
+           static_cast<DWORD>(flock_.get_len()),
+           static_cast<DWORD>(flock_.get_len() >> 32),
            *this
          ) == TRUE
          ||

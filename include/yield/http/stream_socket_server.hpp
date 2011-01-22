@@ -58,7 +58,7 @@ protected:
       YO_NEW_REF yield::net::sockets::StreamSocket& socket_
     );
 
-    virtual void handle( YO_NEW_REF yield::aio::net::sockets::acceptAIOCB& accept_aiocb ) = 0;
+    virtual void handle(YO_NEW_REF yield::aio::net::sockets::acceptAIOCB& accept_aiocb) = 0;
   };
 
 protected:
@@ -79,14 +79,14 @@ protected:
     yield::net::sockets::StreamSocket& socket_
   ) = 0;
 
-  void enqueue( YO_NEW_REF yield::aio::net::sockets::acceptAIOCB& accept_aiocb );
+  void enqueue(YO_NEW_REF yield::aio::net::sockets::acceptAIOCB& accept_aiocb);
 
   yield::net::sockets::StreamSocket& get_socket() const {
     return socket_;
   }
 
   // Stage
-  virtual void service( YO_NEW_REF Event& event );
+  virtual void service(YO_NEW_REF Event& event);
 
 private:
   yield::net::sockets::StreamSocket& socket_;

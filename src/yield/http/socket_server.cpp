@@ -34,7 +34,7 @@
 namespace yield {
 namespace http {
 void SocketServer::serve_forever() {
-  for ( ;; )
+  for (;;)
     visit();
 }
 }

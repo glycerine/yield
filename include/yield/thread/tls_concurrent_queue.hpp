@@ -50,7 +50,7 @@ private:
   class Stack : private std::stack<ElementType*> {
   public:
     ElementType* pop() {
-      if ( !std::stack<ElementType*>::empty() ) {
+      if (!std::stack<ElementType*>::empty()) {
         ElementType* element = std::stack<ElementType*>::top();
         std::stack<ElementType*>::pop();
         return element;
@@ -58,8 +58,8 @@ private:
         return NULL;
     }
 
-    bool push( ElementType& element ) {
-      std::stack<ElementType*>::push( &element );
+    bool push(ElementType& element) {
+      std::stack<ElementType*>::push(&element);
       return true;
     }
   };
@@ -67,12 +67,12 @@ private:
 public:
   TLSConcurrentQueue() {
     tls_key = Thread::self()->key_create();
-    if ( tls_key == static_cast<uintptr_t>( -1 ) )
+    if (tls_key == static_cast<uintptr_t>(-1))
       throw Exception();
   }
 
   ~TLSConcurrentQueue() {
-    Thread::self()->key_delete( tls_key );
+    Thread::self()->key_delete(tls_key);
 
     for
     (
@@ -83,33 +83,33 @@ public:
       delete *stack_i;
   }
 
-  bool enqueue( ElementType& element ) {
+  bool enqueue(ElementType& element) {
     Stack* stack
-    = static_cast<Stack*>( Thread::self()->getspecific( tls_key ) );
+    = static_cast<Stack*>(Thread::self()->getspecific(tls_key));
 
-    if ( stack != NULL ) {
-      stack->push( element );
+    if (stack != NULL) {
+      stack->push(element);
       return true;
     } else
-      return BlockingConcurrentQueue<ElementType>::enqueue( element );
+      return BlockingConcurrentQueue<ElementType>::enqueue(element);
   }
 
   ElementType* trydequeue() {
     ElementType* element;
 
     Stack* stack
-    = static_cast<Stack*>( Thread::self()->getspecific( tls_key ) );
+    = static_cast<Stack*>(Thread::self()->getspecific(tls_key));
 
-    if ( stack != NULL )
+    if (stack != NULL)
       element = stack->pop();
     else {
       stack = new Stack;
-      Thread::self()->setspecific( tls_key, stack );
-      stacks.push_back( stack );
+      Thread::self()->setspecific(tls_key, stack);
+      stacks.push_back(stack);
       element = stack->pop();
     }
 
-    if ( element != NULL )
+    if (element != NULL)
       return element;
     else
       return BlockingConcurrentQueue<ElementType>::trydequeue();

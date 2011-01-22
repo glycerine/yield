@@ -67,19 +67,19 @@ namespace marshal {
 template <class ObjectType>
 class PrettyPrinterTest : public MarshallerTest<ObjectType> {
 public:
-  PrettyPrinterTest( YO_NEW_REF ObjectType* object )
-    : MarshallerTest<ObjectType>( object )
+  PrettyPrinterTest(YO_NEW_REF ObjectType* object)
+    : MarshallerTest<ObjectType>(object)
   { }
 
   // yunit::Test
   void run() {
     std::ostringstream oss;
-    PrettyPrinter pretty_printer( oss );
-    pretty_printer.write( Null(), *this->object );
-    throw_assert_false( oss.str().empty() );
+    PrettyPrinter pretty_printer(oss);
+    pretty_printer.write(Null(), *this->object);
+    throw_assert_false(oss.str().empty());
   }
 };
 }
 }
 
-TEST_SUITE_EX( PrettyPrinter, yield::marshal::MarshallerTestSuite<yield::marshal::PrettyPrinterTest> );
+TEST_SUITE_EX(PrettyPrinter, yield::marshal::MarshallerTestSuite<yield::marshal::PrettyPrinterTest>);

@@ -44,19 +44,19 @@ using yield::thread::Thread;
 
 class SEDAStageScheduler::SEDAStage : public yield::thread::Runnable {
 public:
-  SEDAStage( Stage& stage )
-    : stage( stage.inc_ref() ) {
+  SEDAStage(Stage& stage)
+    : stage(stage.inc_ref()) {
     should_run = true;
   }
 
   void stop() {
     should_run = false;
-    stage.handle( *new Stage::ShutdownEvent );
+    stage.handle(*new Stage::ShutdownEvent);
   }
 
   // yield::thread::Runnable
   void run() {
-    while ( should_run )
+    while (should_run)
       stage.visit();
   }
 
@@ -73,9 +73,9 @@ SEDAStageScheduler::~SEDAStageScheduler() {
     thread_i != threads.end();
     ++thread_i
   ) {
-    static_cast<SEDAStage*>( ( *thread_i )->get_runnable() )->stop();
-    ( *thread_i )->join();
-    Thread::dec_ref( **thread_i );
+    static_cast<SEDAStage*>((*thread_i)->get_runnable())->stop();
+    (*thread_i)->join();
+    Thread::dec_ref(**thread_i);
   }
 }
 
@@ -85,10 +85,10 @@ SEDAStageScheduler::schedule
   Stage& stage,
   ConcurrencyLevel concurrency_level
 ) {
-  SEDAStage* seda_stage = new SEDAStage( stage );
+  SEDAStage* seda_stage = new SEDAStage(stage);
 
-  for ( int16_t thread_i = 0; thread_i < concurrency_level; thread_i++ )
-    threads.push_back( new Thread( *seda_stage ) );
+  for (int16_t thread_i = 0; thread_i < concurrency_level; thread_i++)
+    threads.push_back(new Thread(*seda_stage));
 }
 }
 }

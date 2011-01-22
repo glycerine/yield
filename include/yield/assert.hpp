@@ -41,15 +41,15 @@
 
 #if defined(_WIN32)
 extern "C" {
-  __declspec( dllimport ) void __stdcall DebugBreak();
+  __declspec(dllimport) void __stdcall DebugBreak();
 }
 #elif defined(__GNUC__)
 static inline void DebugBreak() {
-  asm( "int $3" );
+  asm("int $3");
 }
 #else
 static inline void DebugBreak() {
-  *reinterpret_cast<int*>( 0 ) = 0xabadcafe;
+  *reinterpret_cast<int*>(0) = 0xabadcafe;
 }
 #endif
 
@@ -57,7 +57,7 @@ static inline void DebugBreak() {
 namespace yield {
 class AssertionException : public std::exception {
 public:
-  AssertionException( const char* file, int line, const char* message = "" ) {
+  AssertionException(const char* file, int line, const char* message = "") {
 #ifdef _WIN32
     _snprintf_s
 #else

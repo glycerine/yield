@@ -32,4 +32,4 @@
 #include "yield/stage/synchronized_event_queue.hpp"
 
 
-TEST_SUITE_EX( SynchronizedEventQueue, yield::EventQueueTestSuite<yield::stage::SynchronizedEventQueue> );
+TEST_SUITE_EX(SynchronizedEventQueue, yield::EventQueueTestSuite<yield::stage::SynchronizedEventQueue>);

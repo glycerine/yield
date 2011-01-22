@@ -42,21 +42,21 @@ class HTTPBodyChunk;
 
 class HTTPMessageParser {
 protected:
-  HTTPMessageParser( Buffer& buffer );
-  HTTPMessageParser( const string& buffer );
+  HTTPMessageParser(Buffer& buffer);
+  HTTPMessageParser(const string& buffer);
   ~HTTPMessageParser();
 
   Buffer& get_buffer() {
     return buffer;
   }
 
-  bool parse_body( size_t content_length, OUT void*& body );
+  bool parse_body(size_t content_length, OUT void*& body);
   Object* parse_body_chunk();
-  bool parse_fields( OUT uint16_t& fields_offset, OUT size_t& content_length );
+  bool parse_fields(OUT uint16_t& fields_offset, OUT size_t& content_length);
 
 protected:
   const char* eof;
-  char *p, *ps;
+  char* p, *ps;
 
 private:
   Buffer& buffer;

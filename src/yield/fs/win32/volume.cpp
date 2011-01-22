@@ -44,27 +44,27 @@
 namespace yield {
 namespace fs {
 namespace win32 {
-bool Volume::access( const Path&, int ) {
+bool Volume::access(const Path&, int) {
   return true;
 }
 
-yield::fs::Stat* Volume::getattr( const Path& path ) {
+yield::fs::Stat* Volume::getattr(const Path& path) {
   WIN32_FILE_ATTRIBUTE_DATA stbuf;
-  if ( GetFileAttributesEx( path.c_str(), GetFileExInfoStandard, &stbuf ) )
-    return new Stat( stbuf );
+  if (GetFileAttributesEx(path.c_str(), GetFileExInfoStandard, &stbuf))
+    return new Stat(stbuf);
   else
     return NULL;
 }
 
-bool Volume::isdir( const Path& path ) {
-  DWORD dwAttributes = GetFileAttributes( path.c_str() );
+bool Volume::isdir(const Path& path) {
+  DWORD dwAttributes = GetFileAttributes(path.c_str());
   return dwAttributes != INVALID_FILE_ATTRIBUTES
          &&
-         ( dwAttributes & FILE_ATTRIBUTE_DIRECTORY ) != 0;
+         (dwAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
 }
 
-bool Volume::isfile( const Path& path ) {
-  DWORD dwAttributes = GetFileAttributes( path.c_str() );
+bool Volume::isfile(const Path& path) {
+  DWORD dwAttributes = GetFileAttributes(path.c_str());
   return dwAttributes != INVALID_FILE_ATTRIBUTES
          &&
          (
@@ -74,7 +74,7 @@ bool Volume::isfile( const Path& path ) {
          );
 }
 
-bool Volume::link( const Path& old_path, const Path& new_path ) {
+bool Volume::link(const Path& old_path, const Path& new_path) {
   return CreateHardLink
          (
            new_path.c_str(),
@@ -83,8 +83,8 @@ bool Volume::link( const Path& old_path, const Path& new_path ) {
          ) == TRUE;
 }
 
-bool Volume::mkdir( const Path& path, mode_t mode ) {
-  return CreateDirectory( path.c_str(), NULL ) == TRUE;
+bool Volume::mkdir(const Path& path, mode_t mode) {
+  return CreateDirectory(path.c_str(), NULL) == TRUE;
 }
 
 yield::fs::File*
@@ -94,19 +94,19 @@ Volume::mkfifo
   uint32_t flags,
   mode_t
 ) {
-  if ( path.find_first_of( L"\\\\.\\pipe" ) != Path::npos ) {
+  if (path.find_first_of(L"\\\\.\\pipe") != Path::npos) {
     DWORD dwOpenMode = 0;
-    if ( ( flags & O_ASYNC ) == O_ASYNC )
+    if ((flags & O_ASYNC) == O_ASYNC)
       dwOpenMode |= FILE_FLAG_OVERLAPPED;
-    if ( ( flags & O_RDWR ) == O_RDWR )
+    if ((flags & O_RDWR) == O_RDWR)
       dwOpenMode |= PIPE_ACCESS_DUPLEX;
-    else if ( ( flags & O_WRONLY ) == O_WRONLY )
+    else if ((flags & O_WRONLY) == O_WRONLY)
       dwOpenMode |= PIPE_ACCESS_OUTBOUND;
     else
       dwOpenMode |= PIPE_ACCESS_INBOUND;
 
-    DWORD dwPipeMode = PIPE_TYPE_BYTE|PIPE_READMODE_BYTE;
-    if ( ( flags & O_NONBLOCK ) == O_NONBLOCK )
+    DWORD dwPipeMode = PIPE_TYPE_BYTE | PIPE_READMODE_BYTE;
+    if ((flags & O_NONBLOCK) == O_NONBLOCK)
       dwPipeMode |= PIPE_NOWAIT;
     else
       dwPipeMode |= PIPE_WAIT;
@@ -124,12 +124,12 @@ Volume::mkfifo
         NULL
       );
 
-    if ( hNamedPipe != INVALID_HANDLE_VALUE )
-      return new NamedPipe( hNamedPipe );
+    if (hNamedPipe != INVALID_HANDLE_VALUE)
+      return new NamedPipe(hNamedPipe);
     else
       return NULL;
   } else {
-    SetLastError( ERROR_INVALID_PARAMETER );
+    SetLastError(ERROR_INVALID_PARAMETER);
     return NULL;
   }
 }
@@ -146,16 +146,16 @@ Volume::mmap
 ) {
   DWORD flProtect;
   // The order of checks is important (= priority)
-  if ( ( prot & PROT_NONE ) == PROT_NONE )
+  if ((prot & PROT_NONE) == PROT_NONE)
     flProtect = PAGE_NOACCESS;
-  else if ( ( prot & PROT_EXEC ) == PROT_EXEC ) {
-    if ( ( prot & PROT_WRITE ) == PROT_WRITE )
+  else if ((prot & PROT_EXEC) == PROT_EXEC) {
+    if ((prot & PROT_WRITE) == PROT_WRITE)
       flProtect = PAGE_EXECUTE_READWRITE;
     else
       flProtect = PAGE_EXECUTE_READ;
-  } else if ( ( prot & PROT_WRITE ) == PROT_WRITE )
+  } else if ((prot & PROT_WRITE) == PROT_WRITE)
     flProtect = PAGE_READWRITE;
-  else if ( ( prot & PROT_READ ) == PROT_READ )
+  else if ((prot & PROT_READ) == PROT_READ)
     flProtect = PAGE_READONLY;
   else
     flProtect = PAGE_READWRITE;
@@ -174,18 +174,18 @@ Volume::mmap
       NULL
     );
 
-  if ( out_hFileMapping != NULL ) { // not INVALID_HANDLE_VALUE
+  if (out_hFileMapping != NULL) {   // not INVALID_HANDLE_VALUE
     DWORD dwDesiredAccess;
-    if ( ( flags & MAP_PRIVATE ) == MAP_SHARED )
+    if ((flags & MAP_PRIVATE) == MAP_SHARED)
       dwDesiredAccess = FILE_MAP_COPY;
     else {
-      if ( ( prot & PROT_WRITE ) == PROT_WRITE )
+      if ((prot & PROT_WRITE) == PROT_WRITE)
         dwDesiredAccess = FILE_MAP_WRITE;
       else
         dwDesiredAccess = FILE_MAP_READ;
     }
 
-    if ( ( prot & PROT_EXEC ) == PROT_EXEC )
+    if ((prot & PROT_EXEC) == PROT_EXEC)
       dwDesiredAccess |= FILE_MAP_EXECUTE;
 
     ULARGE_INTEGER uliOffset;
@@ -201,13 +201,13 @@ Volume::mmap
         length
       );
 
-    if ( lpMapAddress != NULL )
+    if (lpMapAddress != NULL)
       return lpMapAddress;
     else
-      CloseHandle( out_hFileMapping );
+      CloseHandle(out_hFileMapping);
   }
 
-  return reinterpret_cast<void*>( -1 );
+  return reinterpret_cast<void*>(-1);
 }
 
 yield::fs::MemoryMappedFile*
@@ -220,13 +220,13 @@ Volume::mmap
   int flags,
   uint64_t offset
 ) {
-  if ( addr == NULL ) {
-    if ( length == MMAP_LENGTH_WHOLE_FILE ) {
+  if (addr == NULL) {
+    if (length == MMAP_LENGTH_WHOLE_FILE) {
       ULARGE_INTEGER uliFileSize;
       uliFileSize.LowPart
-      = GetFileSize( static_cast<File&>( file ), &uliFileSize.HighPart );
-      if ( uliFileSize.LowPart != INVALID_FILE_SIZE )
-        length = static_cast<size_t>( uliFileSize.QuadPart );
+      = GetFileSize(static_cast<File&>(file), &uliFileSize.HighPart);
+      if (uliFileSize.LowPart != INVALID_FILE_SIZE)
+        length = static_cast<size_t>(uliFileSize.QuadPart);
       else
         length = 0;
     }
@@ -234,7 +234,7 @@ Volume::mmap
     HANDLE hFileMapping;
     LPVOID lpMapAddress;
 
-    if ( length > 0 ) { // Can't CreateFileMapping on an empty file
+    if (length > 0) {   // Can't CreateFileMapping on an empty file
       // just return an "empty" MemoryMappedFile (lpMapAddress=NULL)
       lpMapAddress    // that can be resized
       = mmap
@@ -242,30 +242,30 @@ Volume::mmap
           length,
           prot,
           flags,
-          static_cast<File&>( file ),
+          static_cast<File&>(file),
           offset,
           hFileMapping
         );
 
-      if ( lpMapAddress == reinterpret_cast<LPVOID>( -1 ) )
+      if (lpMapAddress == reinterpret_cast<LPVOID>(-1))
         return NULL;
     } else {
       hFileMapping = NULL;
-      lpMapAddress = reinterpret_cast<LPVOID>( -1 );
+      lpMapAddress = reinterpret_cast<LPVOID>(-1);
     }
 
     return new MemoryMappedFile
            (
              length,
              lpMapAddress,
-             static_cast<File&>( file ),
+             static_cast<File&>(file),
              flags,
              hFileMapping,
              offset,
              prot
            );
   } else {
-    SetLastError( ERROR_INVALID_PARAMETER );
+    SetLastError(ERROR_INVALID_PARAMETER);
     return NULL;
   }
 }
@@ -280,19 +280,19 @@ Volume::open
 ) {
   DWORD dwDesiredAccess = 0,
         dwCreationDisposition = 0,
-        dwFlagsAndAttributes = attributes|FILE_FLAG_SEQUENTIAL_SCAN;
+        dwFlagsAndAttributes = attributes | FILE_FLAG_SEQUENTIAL_SCAN;
 
-  if ( ( flags & O_APPEND ) == O_APPEND )
+  if ((flags & O_APPEND) == O_APPEND)
     dwDesiredAccess |= FILE_APPEND_DATA;
-  else if ( ( flags & O_RDWR ) == O_RDWR )
-    dwDesiredAccess |= GENERIC_READ|GENERIC_WRITE;
-  else if ( ( flags & O_WRONLY ) == O_WRONLY )
+  else if ((flags & O_RDWR) == O_RDWR)
+    dwDesiredAccess |= GENERIC_READ | GENERIC_WRITE;
+  else if ((flags & O_WRONLY) == O_WRONLY)
     dwDesiredAccess |= GENERIC_WRITE;
   else
     dwDesiredAccess |= GENERIC_READ;
 
-  if ( ( flags & O_CREAT ) == O_CREAT ) {
-    if ( ( flags & O_TRUNC ) == O_TRUNC )
+  if ((flags & O_CREAT) == O_CREAT) {
+    if ((flags & O_TRUNC) == O_TRUNC)
       dwCreationDisposition = CREATE_ALWAYS;
     else
       dwCreationDisposition = OPEN_ALWAYS;
@@ -302,16 +302,16 @@ Volume::open
   //  if ( ( flags & O_SPARSE ) == O_SPARSE )
   //    dwFlagsAndAttributes |= FILE_ATTRIBUTE_SPARSE_FILE;
 
-  if ( ( flags & O_SYNC ) == O_SYNC )
+  if ((flags & O_SYNC) == O_SYNC)
     dwFlagsAndAttributes |= FILE_FLAG_WRITE_THROUGH;
 
-  if ( ( flags & O_DIRECT ) == O_DIRECT )
+  if ((flags & O_DIRECT) == O_DIRECT)
     dwFlagsAndAttributes |= FILE_FLAG_NO_BUFFERING;
 
-  if ( ( flags & O_ASYNC ) == O_ASYNC )
+  if ((flags & O_ASYNC) == O_ASYNC)
     dwFlagsAndAttributes |= FILE_FLAG_OVERLAPPED;
 
-  if ( ( flags & O_HIDDEN ) == O_HIDDEN )
+  if ((flags & O_HIDDEN) == O_HIDDEN)
     dwFlagsAndAttributes = FILE_ATTRIBUTE_HIDDEN;
 
   HANDLE fd
@@ -319,68 +319,68 @@ Volume::open
     (
       path.c_str(),
       dwDesiredAccess,
-      FILE_SHARE_DELETE|FILE_SHARE_READ|FILE_SHARE_WRITE,
+      FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE,
       NULL,
       dwCreationDisposition,
       dwFlagsAndAttributes,
       NULL
     );
 
-  if ( fd != INVALID_HANDLE_VALUE ) {
-    if ( ( flags & O_TRUNC ) == O_TRUNC && ( flags & O_CREAT ) != O_CREAT ) {
-      SetFilePointer( fd, 0, NULL, FILE_BEGIN );
-      SetEndOfFile( fd );
+  if (fd != INVALID_HANDLE_VALUE) {
+    if ((flags & O_TRUNC) == O_TRUNC && (flags & O_CREAT) != O_CREAT) {
+      SetFilePointer(fd, 0, NULL, FILE_BEGIN);
+      SetEndOfFile(fd);
     }
 
-    return new File( fd );
+    return new File(fd);
   }
 
   return NULL;
 }
 
-yield::fs::Directory* Volume::opendir( const Path& path ) {
+yield::fs::Directory* Volume::opendir(const Path& path) {
   HANDLE hDirectory
   = CreateFile
     (
       path.c_str(),
       FILE_LIST_DIRECTORY,
-      FILE_SHARE_READ|FILE_SHARE_WRITE|FILE_SHARE_DELETE,
+      FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
       NULL,
       OPEN_EXISTING,
-      FILE_FLAG_OVERLAPPED|FILE_FLAG_BACKUP_SEMANTICS,
+      FILE_FLAG_OVERLAPPED | FILE_FLAG_BACKUP_SEMANTICS,
       NULL
     );
 
-  if ( hDirectory != INVALID_HANDLE_VALUE )
-    return new Directory( hDirectory );
+  if (hDirectory != INVALID_HANDLE_VALUE)
+    return new Directory(hDirectory);
   else
     return NULL;
 }
 
-YO_NEW_REF ExtendedAttributes* Volume::openxattrs( const Path& ) {
-  SetLastError( ERROR_NOT_SUPPORTED );
+YO_NEW_REF ExtendedAttributes* Volume::openxattrs(const Path&) {
+  SetLastError(ERROR_NOT_SUPPORTED);
   return NULL;
 }
 
-bool Volume::readlink( const Path&, Path& ) {
-  SetLastError( ERROR_NOT_SUPPORTED );
+bool Volume::readlink(const Path&, Path&) {
+  SetLastError(ERROR_NOT_SUPPORTED);
   return false;
 }
 
-bool Volume::realpath( const Path& path, OUT Path& realpath ) {
+bool Volume::realpath(const Path& path, OUT Path& realpath) {
   wchar_t full_path_name[MAX_PATH];
 
   DWORD full_path_name_len
-  = GetFullPathName( path.c_str(), MAX_PATH, full_path_name, NULL );
+  = GetFullPathName(path.c_str(), MAX_PATH, full_path_name, NULL);
 
-  if ( full_path_name_len > 0 ) {
-    realpath.assign( full_path_name, full_path_name_len );
+  if (full_path_name_len > 0) {
+    realpath.assign(full_path_name, full_path_name_len);
     return true;
   } else
     return false;
 }
 
-bool Volume::rename( const Path& from_path, const Path& to_path ) {
+bool Volume::rename(const Path& from_path, const Path& to_path) {
   return MoveFileEx
          (
            from_path.c_str(),
@@ -389,11 +389,11 @@ bool Volume::rename( const Path& from_path, const Path& to_path ) {
          ) == TRUE;
 }
 
-bool Volume::rmdir( const Path& path ) {
-  return RemoveDirectory( path.c_str() ) == TRUE;
+bool Volume::rmdir(const Path& path) {
+  return RemoveDirectory(path.c_str()) == TRUE;
 }
 
-bool Volume::setattr( const Path& path, const yield::fs::Stat& stbuf ) {
+bool Volume::setattr(const Path& path, const yield::fs::Stat& stbuf) {
   if
   (
     stbuf.has_blksize()
@@ -416,13 +416,13 @@ bool Volume::setattr( const Path& path, const yield::fs::Stat& stbuf ) {
     ||
     stbuf.has_uid()
   ) {
-    SetLastError( ERROR_NOT_SUPPORTED );
+    SetLastError(ERROR_NOT_SUPPORTED);
     return false;
   }
 
   bool have_setattr = false;
 
-  if ( stbuf.has_atime() || stbuf.has_ctime() || stbuf.has_mtime() ) {
+  if (stbuf.has_atime() || stbuf.has_ctime() || stbuf.has_mtime()) {
     File* file
     = static_cast<File*>
       (
@@ -435,7 +435,7 @@ bool Volume::setattr( const Path& path, const yield::fs::Stat& stbuf ) {
         )
       );
 
-    if ( file != NULL ) {
+    if (file != NULL) {
       FILETIME ftCreationTime = stbuf.get_ctime(),
                ftLastAccessTime = stbuf.get_atime(),
                ftLastWriteTime = stbuf.get_mtime();
@@ -451,18 +451,18 @@ bool Volume::setattr( const Path& path, const yield::fs::Stat& stbuf ) {
         )
       ) {
         have_setattr = true;
-        File::dec_ref( *file );
+        File::dec_ref(*file);
       } else {
-        debug_assert_false( have_setattr );
-        File::dec_ref( *file );
+        debug_assert_false(have_setattr);
+        File::dec_ref(*file);
       }
     } else {
-      debug_assert_false( have_setattr );
+      debug_assert_false(have_setattr);
       return false;
     }
   }
 
-  if ( stbuf.has_attributes() ) {
+  if (stbuf.has_attributes()) {
     if
     (
       SetFileAttributes
@@ -473,7 +473,7 @@ bool Volume::setattr( const Path& path, const yield::fs::Stat& stbuf ) {
     )
       have_setattr = true;
     else {
-      debug_assert_false( have_setattr );
+      debug_assert_false(have_setattr);
       return false;
     }
   }
@@ -481,7 +481,7 @@ bool Volume::setattr( const Path& path, const yield::fs::Stat& stbuf ) {
   return true;
 }
 
-bool Volume::statvfs( const Path& path, struct statvfs& stbuf ) {
+bool Volume::statvfs(const Path& path, struct statvfs& stbuf) {
   ULARGE_INTEGER uFreeBytesAvailableToCaller,
                  uTotalNumberOfBytes,
                  uTotalNumberOfFreeBytes;
@@ -497,7 +497,7 @@ bool Volume::statvfs( const Path& path, struct statvfs& stbuf ) {
     )
   ) {
     SYSTEM_INFO system_info;
-    GetSystemInfo( &system_info );
+    GetSystemInfo(&system_info);
     stbuf.f_bsize = system_info.dwPageSize;
     stbuf.f_frsize = stbuf.f_bsize;
     stbuf.f_blocks = uTotalNumberOfBytes.QuadPart / stbuf.f_bsize;
@@ -509,35 +509,35 @@ bool Volume::statvfs( const Path& path, struct statvfs& stbuf ) {
     return false;
 }
 
-bool Volume::symlink( const Path&, const Path& ) {
-  SetLastError( ERROR_NOT_SUPPORTED );
+bool Volume::symlink(const Path&, const Path&) {
+  SetLastError(ERROR_NOT_SUPPORTED);
   return false;
 }
 
-bool Volume::unlink( const Path& path ) {
-  return DeleteFileW( path.c_str() ) == TRUE;
+bool Volume::unlink(const Path& path) {
+  return DeleteFileW(path.c_str()) == TRUE;
 }
 
-bool Volume::truncate( const Path& path, uint64_t new_size ) {
+bool Volume::truncate(const Path& path, uint64_t new_size) {
   yield::fs::File* file
-  = open( path, O_CREAT|O_WRONLY, FILE_MODE_DEFAULT, 0 );
-  if ( file!= NULL ) {
-    file->truncate( new_size );
-    File::dec_ref( *file );
+  = open(path, O_CREAT | O_WRONLY, FILE_MODE_DEFAULT, 0);
+  if (file != NULL) {
+    file->truncate(new_size);
+    File::dec_ref(*file);
     return true;
   } else
     return false;
 }
 
-bool Volume::volname( const Path& path, OUT Path& volname ) {
+bool Volume::volname(const Path& path, OUT Path& volname) {
   wchar_t file_system_name[MAX_PATH],
           volume_name[MAX_PATH];
 
   Path realpath;
-  if ( this->realpath( path, realpath ) ) {
-    Path::size_type colon_i = realpath.find_first_of( L":\\" );
-    debug_assert_ne( colon_i, Path::npos );
-    volname.assign( realpath.data(), colon_i+2 );
+  if (this->realpath(path, realpath)) {
+    Path::size_type colon_i = realpath.find_first_of(L":\\");
+    debug_assert_ne(colon_i, Path::npos);
+    volname.assign(realpath.data(), colon_i + 2);
 
     if
     (
@@ -553,7 +553,7 @@ bool Volume::volname( const Path& path, OUT Path& volname ) {
         MAX_PATH
       )
     ) {
-      if ( wcsnlen( volume_name, MAX_PATH ) > 0 )
+      if (wcsnlen(volume_name, MAX_PATH) > 0)
         volname = volume_name;
     }
 

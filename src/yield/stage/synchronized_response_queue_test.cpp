@@ -36,37 +36,37 @@
 #include "yunit.hpp"
 
 
-TEST_SUITE( SynchronizedResponseQueue );
+TEST_SUITE(SynchronizedResponseQueue);
 
 namespace yield {
 namespace stage {
-TEST( SynchronizedResponseQueue, create ) {
+TEST(SynchronizedResponseQueue, create) {
   auto_Object< SynchronizedResponseQueue<Response> > response_queue
   = new SynchronizedResponseQueue<Response>;
 }
 
-TEST( SynchronizedResponseQueue, dequeue ) {
+TEST(SynchronizedResponseQueue, dequeue) {
   auto_Object< SynchronizedResponseQueue<Response> > response_queue
   = new SynchronizedResponseQueue<Response>;
 
   {
-    response_queue->enqueue( *new Response );
+    response_queue->enqueue(*new Response);
     auto_Object<Response> response = response_queue->dequeue();
   }
 
   {
-    response_queue->enqueue( *new Response );
-    auto_Object<Response> response = response_queue->dequeue( 1.0 );
+    response_queue->enqueue(*new Response);
+    auto_Object<Response> response = response_queue->dequeue(1.0);
   }
 }
 
-TEST( SynchronizedResponseQueue, enqueue ) {
+TEST(SynchronizedResponseQueue, enqueue) {
   auto_Object< SynchronizedResponseQueue<Response> > response_queue
   = new SynchronizedResponseQueue<Response>;
 
-  bool enqueue_ret = response_queue->enqueue( *new Response );
-  throw_assert( enqueue_ret );
-  enqueue_ret = response_queue->enqueue( *new Response );
+  bool enqueue_ret = response_queue->enqueue(*new Response);
+  throw_assert(enqueue_ret);
+  enqueue_ret = response_queue->enqueue(*new Response);
 }
 }
 }

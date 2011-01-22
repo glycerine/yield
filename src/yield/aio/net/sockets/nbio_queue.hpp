@@ -47,7 +47,7 @@ class AIOCB;
 
 class NBIOQueue : public EventQueue {
 public:
-  bool associate( socket_t ) {
+  bool associate(socket_t) {
     return true;
   }
 
@@ -55,8 +55,8 @@ public:
   YO_NEW_REF Event& dequeue() {
     return EventQueue::dequeue();
   }
-  YO_NEW_REF Event* dequeue( const Time& timeout );
-  bool enqueue( YO_NEW_REF Event& );
+  YO_NEW_REF Event* dequeue(const Time& timeout);
+  bool enqueue(YO_NEW_REF Event&);
   YO_NEW_REF Event* trydequeue() {
     return EventQueue::trydequeue();
   }

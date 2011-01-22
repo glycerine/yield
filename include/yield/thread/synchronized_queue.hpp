@@ -46,7 +46,7 @@ public:
   ElementType& dequeue() {
     cond.lock_mutex();
 
-    while ( std::queue<ElementType*>::empty() )
+    while (std::queue<ElementType*>::empty())
       cond.wait();
 
     ElementType* element = std::queue<ElementType*>::front();
@@ -57,30 +57,30 @@ public:
     return *element;
   }
 
-  ElementType* dequeue( const Time& timeout ) {
-    Time timeout_left( timeout );
+  ElementType* dequeue(const Time& timeout) {
+    Time timeout_left(timeout);
 
     cond.lock_mutex();
 
-    if ( !std::queue<ElementType*>::empty() ) {
+    if (!std::queue<ElementType*>::empty()) {
       ElementType* element = std::queue<ElementType*>::front();
       std::queue<ElementType*>::pop();
       cond.unlock_mutex();
       return element;
     } else {
-      for ( ;; ) {
+      for (;;) {
         Time start_time = Time::now();
 
-        cond.wait( timeout_left );
+        cond.wait(timeout_left);
 
-        if ( !std::queue<ElementType*>::empty() ) {
+        if (!std::queue<ElementType*>::empty()) {
           ElementType* element = std::queue<ElementType*>::front();
           std::queue<ElementType*>::pop();
           cond.unlock_mutex();
           return element;
         } else {
-          Time elapsed_time( Time::now() - start_time );
-          if ( elapsed_time < timeout_left )
+          Time elapsed_time(Time::now() - start_time);
+          if (elapsed_time < timeout_left)
             timeout_left -= elapsed_time;
           else {
             cond.unlock_mutex();
@@ -91,17 +91,17 @@ public:
     }
   }
 
-  bool enqueue( ElementType& element ) {
+  bool enqueue(ElementType& element) {
     cond.lock_mutex();
-    std::queue<ElementType*>::push( &element );
+    std::queue<ElementType*>::push(&element);
     cond.signal();
     cond.unlock_mutex();
     return true;
   }
 
   ElementType* trydequeue() {
-    if ( cond.trylock_mutex() ) {
-      if ( !std::queue<ElementType*>::empty() ) {
+    if (cond.trylock_mutex()) {
+      if (!std::queue<ElementType*>::empty()) {
         ElementType* element = std::queue<ElementType*>::front();
         std::queue<ElementType*>::pop();
         cond.unlock_mutex();

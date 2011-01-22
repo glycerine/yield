@@ -47,12 +47,12 @@ public:
     int type = SocketPair::TYPE_DEFAULT,
     int protocol = SocketPair::PROTOCOL_DEFAULT
   )
-    : domain( domain ), type( type ), protocol( protocol )
+    : domain(domain), type(type), protocol(protocol)
   { }
 
   // yield::ChannelPairFactory
   ChannelPair& createChannelPair() {
-    return *new SocketPair( domain, type, protocol );
+    return *new SocketPair(domain, type, protocol);
   }
 
 private:

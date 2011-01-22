@@ -59,8 +59,8 @@ public:
   };
 
 public:
-  Stage( YO_NEW_REF EventHandler& );
-  Stage( YO_NEW_REF EventHandler&, YO_NEW_REF EventQueue& );
+  Stage(YO_NEW_REF EventHandler&);
+  Stage(YO_NEW_REF EventHandler&, YO_NEW_REF EventQueue&);
   ~Stage();
 
   double get_arrival_rate_s() const {
@@ -74,29 +74,29 @@ public:
   }
 
   void visit(); // Blocking
-  bool visit( const Time& timeout );
+  bool visit(const Time& timeout);
 
   // Object
   Stage& inc_ref() {
-    return Object::inc_ref( *this );
+    return Object::inc_ref(*this);
   }
 
   // EventHandler
-  void handle( YO_NEW_REF Event& event ) {
-    enqueue( event );
+  void handle(YO_NEW_REF Event& event) {
+    enqueue(event);
   }
 
 protected:
-  Stage( YO_NEW_REF EventQueue& );
+  Stage(YO_NEW_REF EventQueue&);
 
   EventQueue& get_event_queue() {
     return event_queue;
   }
 
 private:
-  void enqueue( YO_NEW_REF Event& event );
+  void enqueue(YO_NEW_REF Event& event);
   void init();
-  virtual void service( YO_NEW_REF Event& event );
+  virtual void service(YO_NEW_REF Event& event);
 
 private:
   double arrival_rate_s;

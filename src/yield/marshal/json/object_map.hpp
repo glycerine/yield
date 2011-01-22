@@ -47,9 +47,9 @@ public:
 
 public:
   ~ObjectMap() {
-    for ( iterator object_i = begin(); object_i != end(); ++object_i ) {
-      Object::dec_ref( *object_i->first );
-      Object::dec_ref( *object_i->second );
+    for (iterator object_i = begin(); object_i != end(); ++object_i) {
+      Object::dec_ref(*object_i->first);
+      Object::dec_ref(*object_i->second);
     }
   }
 
@@ -61,9 +61,9 @@ public:
     return "yield::marshal::ObjectMap";
   }
 
-  void marshal( Marshaller& marshaller ) const {
-    for ( const_iterator object_i = begin(); object_i != end(); ++object_i )
-      marshaller.write( *object_i->first, *object_i->second );
+  void marshal(Marshaller& marshaller) const {
+    for (const_iterator object_i = begin(); object_i != end(); ++object_i)
+      marshaller.write(*object_i->first, *object_i->second);
   }
 
   // Map

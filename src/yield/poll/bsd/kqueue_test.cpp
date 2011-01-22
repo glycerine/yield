@@ -32,4 +32,4 @@
 #include "yield/poll/bsd/kqueue.hpp"
 
 
-TEST_SUITE_EX( Kqueue, yield::poll::PollerTestSuite<yield::poll::bsd::Kqueue> );
+TEST_SUITE_EX(Kqueue, yield::poll::PollerTestSuite<yield::poll::bsd::Kqueue>);

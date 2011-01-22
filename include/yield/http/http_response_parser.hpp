@@ -40,18 +40,18 @@ namespace yield {
 namespace http {
 class HTTPResponseParser : public HTTPMessageParser {
 public:
-  HTTPResponseParser( Buffer& buffer )
-    : HTTPMessageParser( buffer )
+  HTTPResponseParser(Buffer& buffer)
+    : HTTPMessageParser(buffer)
   { }
 
-  HTTPResponseParser( const string& buffer )
-    : HTTPMessageParser( buffer )
+  HTTPResponseParser(const string& buffer)
+    : HTTPMessageParser(buffer)
   { }
 
   Object& parse();
 
 private:
-  bool parse_status_line( float& http_version, uint16_t& status_code );
+  bool parse_status_line(float& http_version, uint16_t& status_code);
 };
 };
 };

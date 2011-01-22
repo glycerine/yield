@@ -54,16 +54,16 @@ WSASendTo
 ) {
   const sockaddr* lpTo = NULL;
   socklen_t iToLen = 0;
-  if ( peername != NULL ) {
-    peername = peername->filter( socket_.get_domain() );
-    if ( peername != NULL ) {
+  if (peername != NULL) {
+    peername = peername->filter(socket_.get_domain());
+    if (peername != NULL) {
       lpTo = *peername;
       iToLen = peername->len();
     } else
       return false;
   }
 
-  if ( buffer.get_next_buffer() == NULL ) {
+  if (buffer.get_next_buffer() == NULL) {
     WSABUF wsabuf;
     wsabuf.buf = buffer;
     wsabuf.len = buffer.size();
@@ -85,11 +85,11 @@ WSASendTo
     Buffer* next_buffer = &buffer;
     do {
       WSABUF wsabuf;
-      wsabuf.buf = static_cast<char*>( *next_buffer );
+      wsabuf.buf = static_cast<char*>(*next_buffer);
       wsabuf.len = next_buffer->size();
-      wsabufs.push_back( wsabuf );
+      wsabufs.push_back(wsabuf);
       next_buffer = next_buffer->get_next_buffer();
-    } while ( next_buffer != NULL );
+    } while (next_buffer != NULL);
 
     return WSASendTo
            (
@@ -107,8 +107,8 @@ WSASendTo
 }
 
 
-bool sendAIOCB::issue( EventHandler& completion_handler ) {
-  set_completion_handler( completion_handler );
+bool sendAIOCB::issue(EventHandler& completion_handler) {
+  set_completion_handler(completion_handler);
 
   return WSASendTo
          (
@@ -123,7 +123,7 @@ bool sendAIOCB::issue( EventHandler& completion_handler ) {
          WSAGetLastError() == WSA_IO_PENDING;
 }
 
-bool sendAIOCB::issue( yield::aio::win32::AIOQueue& ) {
+bool sendAIOCB::issue(yield::aio::win32::AIOQueue&) {
   return WSASendTo
          (
            get_socket(),

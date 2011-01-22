@@ -32,4 +32,4 @@
 #include "volume.hpp"
 
 
-TEST_SUITE_EX( DarwinFile, yield::fs::FileTestSuite<yield::fs::darwin::Volume> );
+TEST_SUITE_EX(DarwinFile, yield::fs::FileTestSuite<yield::fs::darwin::Volume>);

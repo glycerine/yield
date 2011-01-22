@@ -43,36 +43,36 @@
 #include <sstream>
 
 
-TEST_SUITE( Stat )
+TEST_SUITE(Stat)
 
 namespace yield {
 namespace fs {
 class StatTest : public yunit::Test {
 public:
-  StatTest( Volume& volume )
-    : test_dir_name( "stat_test" ),
-      test_file_name( "stat_test.txt" ),
-      volume( volume.inc_ref() )
+  StatTest(Volume& volume)
+    : test_dir_name("stat_test"),
+      test_file_name("stat_test.txt"),
+      volume(volume.inc_ref())
   { }
 
   virtual ~StatTest() {
-    Volume::dec_ref( volume );
+    Volume::dec_ref(volume);
   }
 
   // Test
   void setup() {
     teardown();
 
-    if ( !volume.touch( get_test_file_name() ) )
+    if (!volume.touch(get_test_file_name()))
       throw Exception();
 
-    if ( !volume.mkdir( get_test_dir_name() ) )
+    if (!volume.mkdir(get_test_dir_name()))
       throw Exception();
   }
 
   void teardown() {
-    volume.unlink( get_test_file_name() );
-    volume.rmdir( get_test_dir_name() );
+    volume.unlink(get_test_file_name());
+    volume.rmdir(get_test_dir_name());
   }
 
 protected:
@@ -94,64 +94,64 @@ private:
 
 class StatComparisonTest : public StatTest {
 public:
-  StatComparisonTest( Volume& volume )
-    : StatTest( volume )
+  StatComparisonTest(Volume& volume)
+    : StatTest(volume)
   { }
 
   // yunit::Test
   void run() {
-    auto_Object<Stat> stbuf1 = get_volume().stat( get_test_file_name() );
-    auto_Object<Stat> stbuf2 = get_volume().stat( get_test_file_name() );
-    throw_assert_eq( *stbuf1, *stbuf2 );
+    auto_Object<Stat> stbuf1 = get_volume().stat(get_test_file_name());
+    auto_Object<Stat> stbuf2 = get_volume().stat(get_test_file_name());
+    throw_assert_eq(*stbuf1, *stbuf2);
   }
 };
 
 
 class StatDirTest : public StatTest {
 public:
-  StatDirTest( Volume& volume )
-    : StatTest( volume )
+  StatDirTest(Volume& volume)
+    : StatTest(volume)
   { }
 
   // yunit::Test
   void run() {
-    auto_Object<Stat> stbuf = get_volume().stat( get_test_dir_name() );
-    throw_assert( stbuf->has_atime() );
-    throw_assert( stbuf->has_ctime() );
-    throw_assert( stbuf->has_mtime() );
-    throw_assert( stbuf->has_nlink() );
-    throw_assert_false( stbuf->ISBLK() );
-    throw_assert_false( stbuf->ISCHR() );
-    throw_assert( stbuf->ISDIR() );
-    throw_assert_false( stbuf->ISFIFO() );
-    throw_assert_false( stbuf->ISLNK() );
-    throw_assert_false( stbuf->ISREG() );
-    throw_assert_false( stbuf->ISSOCK() );
+    auto_Object<Stat> stbuf = get_volume().stat(get_test_dir_name());
+    throw_assert(stbuf->has_atime());
+    throw_assert(stbuf->has_ctime());
+    throw_assert(stbuf->has_mtime());
+    throw_assert(stbuf->has_nlink());
+    throw_assert_false(stbuf->ISBLK());
+    throw_assert_false(stbuf->ISCHR());
+    throw_assert(stbuf->ISDIR());
+    throw_assert_false(stbuf->ISFIFO());
+    throw_assert_false(stbuf->ISLNK());
+    throw_assert_false(stbuf->ISREG());
+    throw_assert_false(stbuf->ISSOCK());
   }
 };
 
 
 class StatFileTest : public StatTest {
 public:
-  StatFileTest( Volume& volume )
-    : StatTest( volume )
+  StatFileTest(Volume& volume)
+    : StatTest(volume)
   { }
 
   // yunit::Test
   void run() {
-    auto_Object<Stat> stbuf = get_volume().stat( get_test_file_name() );
-    throw_assert_eq( stbuf->get_size(), 0 );
-    throw_assert_false( stbuf->ISBLK() );
-    throw_assert_false( stbuf->ISCHR() );
-    throw_assert_false( stbuf->ISDIR() );
-    throw_assert_false( stbuf->ISFIFO() );
-    throw_assert_false( stbuf->ISLNK() );
-    throw_assert( stbuf->ISREG() );
-    throw_assert_false( stbuf->ISSOCK() );
-    throw_assert( stbuf->has_atime() );
-    throw_assert( stbuf->has_ctime() );
-    throw_assert( stbuf->has_mtime() );
-    throw_assert( stbuf->has_nlink() );
+    auto_Object<Stat> stbuf = get_volume().stat(get_test_file_name());
+    throw_assert_eq(stbuf->get_size(), 0);
+    throw_assert_false(stbuf->ISBLK());
+    throw_assert_false(stbuf->ISCHR());
+    throw_assert_false(stbuf->ISDIR());
+    throw_assert_false(stbuf->ISFIFO());
+    throw_assert_false(stbuf->ISLNK());
+    throw_assert(stbuf->ISREG());
+    throw_assert_false(stbuf->ISSOCK());
+    throw_assert(stbuf->has_atime());
+    throw_assert(stbuf->has_ctime());
+    throw_assert(stbuf->has_mtime());
+    throw_assert(stbuf->has_nlink());
   }
 };
 
@@ -168,15 +168,15 @@ public:
 template <class VolumeType>
 class StatTestSuite : public yunit::TestSuite {
 public:
-  StatTestSuite( YO_NEW_REF Volume* volume = NULL )
-    : volume( volume != NULL ? *volume : *new VolumeType ) {
-    add( "Stat::operator==", new StatComparisonTest( this->volume ) );
-    add( "Stat( dir )", new StatDirTest( this->volume ) );
-    add( "Stat( file )", new StatFileTest( this->volume ) );
+  StatTestSuite(YO_NEW_REF Volume* volume = NULL)
+    : volume(volume != NULL ? *volume : *new VolumeType) {
+    add("Stat::operator==", new StatComparisonTest(this->volume));
+    add("Stat( dir )", new StatDirTest(this->volume));
+    add("Stat( file )", new StatFileTest(this->volume));
   }
 
   virtual ~StatTestSuite() {
-    Volume::dec_ref( volume );
+    Volume::dec_ref(volume);
   }
 
   Volume& get_volume() {

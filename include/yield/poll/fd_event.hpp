@@ -67,8 +67,8 @@ public:
     fd = INVALID_FD;
   }
 
-  FDEvent( uint16_t events, fd_t fd )
-    : events( events ), fd( fd )
+  FDEvent(uint16_t events, fd_t fd)
+    : events(events), fd(fd)
   { }
 
   uint16_t get_events() const {
@@ -80,10 +80,10 @@ public:
   operator uint16_t() const {
     return get_events();
   }
-  void set_events( uint16_t events ) {
+  void set_events(uint16_t events) {
     this->events = events;
   }
-  void set_fd( fd_t fd ) {
+  void set_fd(fd_t fd) {
     this->fd = fd;
   }
 

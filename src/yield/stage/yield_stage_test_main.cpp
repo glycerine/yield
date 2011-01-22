@@ -40,7 +40,7 @@ extern yunit::TestSuite& SynchronizedResponseQueueTestSuite();
 extern yunit::TestSuite& WavefrontStageSchedulerTestSuite();
 
 
-int main( int, char** ) {
+int main(int, char**) {
   int failed_test_case_count = 0;
 
   // SEDAStageScheduler

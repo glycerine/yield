@@ -40,23 +40,23 @@ namespace xdr {
 template <class ObjectType>
 class XDRMarshallerTest : public MarshallerTest<ObjectType> {
 public:
-  XDRMarshallerTest( YO_NEW_REF ObjectType* object )
-    : MarshallerTest<ObjectType>( object )
+  XDRMarshallerTest(YO_NEW_REF ObjectType* object)
+    : MarshallerTest<ObjectType>(object)
   { }
 
   // yunit::Test
   void run() {
     XDRMarshaller xdr_marshaller;
-    xdr_marshaller.write( Null(), *this->object );
+    xdr_marshaller.write(Null(), *this->object);
 
-    XDRUnmarshaller xdr_unmarshaller( xdr_marshaller.get_buffer() );
-    xdr_unmarshaller.read_object( Null(), *this->empty_object );
+    XDRUnmarshaller xdr_unmarshaller(xdr_marshaller.get_buffer());
+    xdr_unmarshaller.read_object(Null(), *this->empty_object);
 
-    throw_assert_eq( *this->object, *this->empty_object );
+    throw_assert_eq(*this->object, *this->empty_object);
   }
 };
 }
 }
 }
 
-TEST_SUITE_EX( XDRMarshaller, yield::marshal::MarshallerTestSuite<yield::marshal::xdr::XDRMarshallerTest> );
+TEST_SUITE_EX(XDRMarshaller, yield::marshal::MarshallerTestSuite<yield::marshal::xdr::XDRMarshallerTest>);

@@ -55,7 +55,7 @@ public:
     return "yield::Event";
   }
   Event& inc_ref() {
-    return Object::inc_ref( *this );
+    return Object::inc_ref(*this);
   }
 };
 };

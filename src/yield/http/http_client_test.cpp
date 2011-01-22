@@ -30,4 +30,4 @@
 
 #include "http_client_test.hpp"
 
-TEST_SUITE_EX( HTTPClient, yield::http::HTTPClientTestSuite );
+TEST_SUITE_EX(HTTPClient, yield::http::HTTPClientTestSuite);

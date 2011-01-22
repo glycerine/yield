@@ -32,4 +32,4 @@
 #include "bio_queue.hpp"
 
 
-TEST_SUITE_EX( SocketBIOQueue, yield::aio::net::sockets::AIOQueueTestSuite<yield::aio::net::sockets::BIOQueue> );
+TEST_SUITE_EX(SocketBIOQueue, yield::aio::net::sockets::AIOQueueTestSuite<yield::aio::net::sockets::BIOQueue>);

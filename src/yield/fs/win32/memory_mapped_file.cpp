@@ -49,15 +49,15 @@ MemoryMappedFile::MemoryMappedFile
   uint64_t offset,
   int prot
 )
-  : yield::fs::MemoryMappedFile( capacity, file, flags, offset, prot ),
-    data_( data ),
-    hFileMapping( hFileMapping ) {
-  if ( data_ == reinterpret_cast<void*>( -1 ) ) {
-    debug_assert_eq( hFileMapping, NULL );
+  : yield::fs::MemoryMappedFile(capacity, file, flags, offset, prot),
+    data_(data),
+    hFileMapping(hFileMapping) {
+  if (data_ == reinterpret_cast<void*>(-1)) {
+    debug_assert_eq(hFileMapping, NULL);
   } else {
-    debug_assert_ne( data_, NULL );
-    debug_assert_ne( hFileMapping, NULL );
-    debug_assert_ne( hFileMapping, INVALID_HANDLE_VALUE );
+    debug_assert_ne(data_, NULL);
+    debug_assert_ne(hFileMapping, NULL);
+    debug_assert_ne(hFileMapping, INVALID_HANDLE_VALUE);
   }
 }
 
@@ -65,32 +65,32 @@ MemoryMappedFile::~MemoryMappedFile() {
   close();
 }
 
-void MemoryMappedFile::reserve( size_t capacity ) {
-  if ( data_ != reinterpret_cast<void*>( -1 ) ) {
-    if ( !yield::fs::MemoryMappedFile::sync() )
+void MemoryMappedFile::reserve(size_t capacity) {
+  if (data_ != reinterpret_cast<void*>(-1)) {
+    if (!yield::fs::MemoryMappedFile::sync())
       throw Exception();
 
-    if ( !unmap() )
+    if (!unmap())
       throw Exception();
   }
 
-  debug_assert_eq( data_, reinterpret_cast<void*>( -1 ) );
-  debug_assert_eq( capacity_, 0 );
-  debug_assert_eq( hFileMapping, NULL );
+  debug_assert_eq(data_, reinterpret_cast<void*>(-1));
+  debug_assert_eq(capacity_, 0);
+  debug_assert_eq(hFileMapping, NULL);
 
-  if ( get_file().truncate( capacity ) ) {
+  if (get_file().truncate(capacity)) {
     data_
     = Volume::mmap
       (
         capacity,
         get_prot(),
         get_flags(),
-        static_cast<File&>( get_file() ),
+        static_cast<File&>(get_file()),
         get_offset(),
         hFileMapping
       );
 
-    if ( data_ != reinterpret_cast<void*>( -1 ) )
+    if (data_ != reinterpret_cast<void*>(-1))
       capacity_ = capacity;
     else
       throw Exception();
@@ -98,27 +98,27 @@ void MemoryMappedFile::reserve( size_t capacity ) {
     throw Exception();
 }
 
-bool MemoryMappedFile::sync( void* ptr, size_t length ) {
-  if ( data_ != reinterpret_cast<void*>( -1 ) )
-    return FlushViewOfFile( ptr, length ) == TRUE;
+bool MemoryMappedFile::sync(void* ptr, size_t length) {
+  if (data_ != reinterpret_cast<void*>(-1))
+    return FlushViewOfFile(ptr, length) == TRUE;
   else {
-    SetLastError( ERROR_INVALID_PARAMETER );
+    SetLastError(ERROR_INVALID_PARAMETER);
     return false;
   }
 }
 
 bool MemoryMappedFile::unmap() {
-  if ( data_ != reinterpret_cast<void*>( -1 ) ) {
-    debug_assert_ne( hFileMapping, NULL );
+  if (data_ != reinterpret_cast<void*>(-1)) {
+    debug_assert_ne(hFileMapping, NULL);
 
     if
     (
-      UnmapViewOfFile( data_ )
+      UnmapViewOfFile(data_)
       &&
-      CloseHandle( hFileMapping )
+      CloseHandle(hFileMapping)
     ) {
       capacity_ = 0;
-      data_ = reinterpret_cast<void*>( -1 );
+      data_ = reinterpret_cast<void*>(-1);
       hFileMapping = NULL;
       return true;
     } else {
@@ -126,7 +126,7 @@ bool MemoryMappedFile::unmap() {
       return false;
     }
   } else {
-    SetLastError( ERROR_INVALID_PARAMETER );
+    SetLastError(ERROR_INVALID_PARAMETER);
     return false;
   }
 }

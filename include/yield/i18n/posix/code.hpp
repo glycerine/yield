@@ -42,11 +42,11 @@ public:
   const static Code UTF8;
 
 public:
-  Code( const char* iconv_code )
-    : iconv_code( iconv_code )
+  Code(const char* iconv_code)
+    : iconv_code(iconv_code)
   { }
 
-  operator const char*() const {
+  operator const char* () const {
     return iconv_code;
   }
 

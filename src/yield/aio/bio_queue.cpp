@@ -44,25 +44,25 @@ BIOQueue::BIOQueue() {
 }
 
 BIOQueue::~BIOQueue() {
-  SynchronizedEventQueue::dec_ref( *completed_event_queue );
+  SynchronizedEventQueue::dec_ref(*completed_event_queue);
 }
 
 YO_NEW_REF Event& BIOQueue::dequeue() {
   return completed_event_queue->dequeue();
 }
 
-YO_NEW_REF Event* BIOQueue::dequeue( const Time& timeout ) {
-  return completed_event_queue->dequeue( timeout );
+YO_NEW_REF Event* BIOQueue::dequeue(const Time& timeout) {
+  return completed_event_queue->dequeue(timeout);
 }
 
-bool BIOQueue::enqueue( YO_NEW_REF AIOCB& aiocb ) {
-  bool issue_ret = aiocb.issue( *completed_event_queue );
-  debug_assert( issue_ret );
+bool BIOQueue::enqueue(YO_NEW_REF AIOCB& aiocb) {
+  bool issue_ret = aiocb.issue(*completed_event_queue);
+  debug_assert(issue_ret);
   return issue_ret;
 }
 
-bool BIOQueue::enqueue( YO_NEW_REF Event& event ) {
-  return completed_event_queue->enqueue( event );
+bool BIOQueue::enqueue(YO_NEW_REF Event& event) {
+  return completed_event_queue->enqueue(event);
 }
 
 YO_NEW_REF Event* BIOQueue::trydequeue() {

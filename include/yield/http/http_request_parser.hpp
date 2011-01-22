@@ -46,12 +46,12 @@ class URI;
 namespace http {
 class HTTPRequestParser : public HTTPMessageParser {
 public:
-  HTTPRequestParser( Buffer& buffer )
-    : HTTPMessageParser( buffer )
+  HTTPRequestParser(Buffer& buffer)
+    : HTTPMessageParser(buffer)
   { }
 
-  HTTPRequestParser( const string& buffer ) // For testing
-    : HTTPMessageParser( buffer )
+  HTTPRequestParser(const string& buffer)   // For testing
+    : HTTPMessageParser(buffer)
   { }
 
   YO_NEW_REF Object& parse();

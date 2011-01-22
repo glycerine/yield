@@ -42,7 +42,7 @@ bool Stat::has_attributes() const {
   return get_attributes() != INVALID_ATTRIBUTES;
 }
 
-bool Stat::operator==( const Stat& other ) const {
+bool Stat::operator==(const Stat& other) const {
   return get_attributes() == other.get_attributes() &&
          get_dev() == other.get_dev() &&
          get_ino() == other.get_ino() &&

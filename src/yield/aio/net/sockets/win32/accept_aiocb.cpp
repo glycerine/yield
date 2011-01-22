@@ -53,15 +53,15 @@ acceptAIOCB::acceptAIOCB
   StreamSocket& socket_,
   YO_NEW_REF Buffer* recv_buffer
 )
-  : AIOCB( socket_, NULL, 0 ),
-    peername( *new SocketAddress ),
-    recv_buffer( recv_buffer ) {
+  : AIOCB(socket_, NULL, 0),
+    peername(*new SocketAddress),
+    recv_buffer(recv_buffer) {
   accepted_socket = NULL;
 
-  if ( this->recv_buffer == NULL ) {
+  if (this->recv_buffer == NULL) {
     size_t recv_buffer_size
     = get_sockname_length() + get_peername_length();
-    this->recv_buffer = new Page( recv_buffer_size );
+    this->recv_buffer = new Page(recv_buffer_size);
   } else {
     debug_assert_ge
     (
@@ -71,15 +71,15 @@ acceptAIOCB::acceptAIOCB
   }
 }
 
-void acceptAIOCB::set_return( ssize_t return_ ) {
+void acceptAIOCB::set_return(ssize_t return_) {
   int optval = get_socket();
   setsockopt
   (
     *get_accepted_socket(),
     SOL_SOCKET,
     SO_UPDATE_ACCEPT_CONTEXT,
-    reinterpret_cast<char*>( &optval ),
-    sizeof( optval )
+    reinterpret_cast<char*>(&optval),
+    sizeof(optval)
   );
 
   sockaddr* peername = NULL;
@@ -99,7 +99,7 @@ void acceptAIOCB::set_return( ssize_t return_ ) {
     &peernamelen
   );
 
-  if ( peername != NULL ) {
+  if (peername != NULL) {
     get_peername().assign
     (
       *peername,
@@ -107,14 +107,14 @@ void acceptAIOCB::set_return( ssize_t return_ ) {
     );
   }
 
-  if ( return_ > 0 )
-    recv_buffer->resize( recv_buffer->size() + return_ );
+  if (return_ > 0)
+    recv_buffer->resize(recv_buffer->size() + return_);
 
-  AIOCB::set_return( return_ );
+  AIOCB::set_return(return_);
 }
 
 void* acceptAIOCB::get_output_buffer() const {
-  return static_cast<char*>( *recv_buffer ) + recv_buffer->size();
+  return static_cast<char*>(*recv_buffer) + recv_buffer->size();
 }
 
 uint32_t acceptAIOCB::get_peername_length() const {
@@ -132,8 +132,8 @@ uint32_t acceptAIOCB::get_sockname_length() const {
   return get_peername().len() + 16;
 }
 
-bool acceptAIOCB::issue( yield::aio::win32::AIOQueue& ) {
-  if ( lpfnAcceptEx == NULL ) {
+bool acceptAIOCB::issue(yield::aio::win32::AIOQueue&) {
+  if (lpfnAcceptEx == NULL) {
     GUID GuidAcceptEx = WSAID_ACCEPTEX;
     DWORD dwBytes;
     WSAIoctl
@@ -141,15 +141,15 @@ bool acceptAIOCB::issue( yield::aio::win32::AIOQueue& ) {
       get_socket(),
       SIO_GET_EXTENSION_FUNCTION_POINTER,
       &GuidAcceptEx,
-      sizeof( GuidAcceptEx ),
+      sizeof(GuidAcceptEx),
       &lpfnAcceptEx,
-      sizeof( lpfnAcceptEx ),
+      sizeof(lpfnAcceptEx),
       &dwBytes,
       NULL,
       NULL
     );
 
-    if ( lpfnAcceptEx == NULL )
+    if (lpfnAcceptEx == NULL)
       return false;
 
     GUID GuidGetAcceptExSockAddrs = WSAID_GETACCEPTEXSOCKADDRS;
@@ -158,21 +158,21 @@ bool acceptAIOCB::issue( yield::aio::win32::AIOQueue& ) {
       get_socket(),
       SIO_GET_EXTENSION_FUNCTION_POINTER,
       &GuidGetAcceptExSockAddrs,
-      sizeof( GuidGetAcceptExSockAddrs ),
+      sizeof(GuidGetAcceptExSockAddrs),
       &lpfnGetAcceptExSockaddrs,
-      sizeof( lpfnGetAcceptExSockaddrs ),
+      sizeof(lpfnGetAcceptExSockaddrs),
       &dwBytes,
       NULL,
       NULL
     );
 
-    if ( lpfnGetAcceptExSockaddrs == NULL )
+    if (lpfnGetAcceptExSockaddrs == NULL)
       return false;
   }
 
-  accepted_socket = static_cast<StreamSocket&>( get_socket() ).dup();
+  accepted_socket = static_cast<StreamSocket&>(get_socket()).dup();
 
-  if ( accepted_socket != NULL ) {
+  if (accepted_socket != NULL) {
     DWORD dwBytesReceived;
 
     return lpfnAcceptEx

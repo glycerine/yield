@@ -55,36 +55,36 @@ public:
   JSONDecoder();
   ~JSONDecoder();
 
-  YO_NEW_REF Object* decode( const Buffer& json );
-  YO_NEW_REF Object* decode( const char* json, size_t json_len );
+  YO_NEW_REF Object* decode(const Buffer& json);
+  YO_NEW_REF Object* decode(const char* json, size_t json_len);
 
 private:
-  void handle( Object& );
+  void handle(Object&);
 
   // yajl callbacks
-  static int yajl_boolean( void*, int value );
-  int yajl_boolean( int value );
-  static int yajl_double( void*, double value );
-  int yajl_double( double value );
-  static int yajl_end_array( void* );
+  static int yajl_boolean(void*, int value);
+  int yajl_boolean(int value);
+  static int yajl_double(void*, double value);
+  int yajl_double(double value);
+  static int yajl_end_array(void*);
   int yajl_end_array();
-  static int yajl_end_map( void* );
+  static int yajl_end_map(void*);
   int yajl_end_map();
-  static int yajl_integer( void*, long value );
-  int yajl_integer( long value );
-  static int yajl_map_key( void*, const uint8_t*, unsigned int );
-  int yajl_map_key( const uint8_t*, unsigned int );
-  static int yajl_null( void* );
+  static int yajl_integer(void*, long value);
+  int yajl_integer(long value);
+  static int yajl_map_key(void*, const uint8_t*, unsigned int);
+  int yajl_map_key(const uint8_t*, unsigned int);
+  static int yajl_null(void*);
   int yajl_null();
-  static int yajl_start_array( void* );
+  static int yajl_start_array(void*);
   int yajl_start_array();
-  static int yajl_start_map( void* );
+  static int yajl_start_map(void*);
   int yajl_start_map();
-  static int yajl_string( void*, const uint8_t*, unsigned int );
-  int yajl_string( const uint8_t*, unsigned int );
+  static int yajl_string(void*, const uint8_t*, unsigned int);
+  int yajl_string(const uint8_t*, unsigned int);
 
 private:
-  Object *JSONfalse, *JSONnull, *JSONtrue;
+  Object* JSONfalse, *JSONnull, *JSONtrue;
   std::stack<Object*> object_stack;
   String* next_map_key;
   yajl_handle reader;

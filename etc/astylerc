@@ -1,2 +1,9 @@
 style=java
+align-pointer=type
 indent=spaces=2
+lineend=linux
+pad-header
+pad-oper
+preserve-date
+recursive
+unpad-paren

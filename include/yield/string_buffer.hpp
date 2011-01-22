@@ -39,12 +39,12 @@ namespace yield {
 class StringBuffer : public Buffer {
 public:
   StringBuffer();
-  StringBuffer( size_t capacity );
-  StringBuffer( const string& data );
-  StringBuffer( const void* data, size_t size );
-  StringBuffer( size_t capacity, const void* data, size_t size );
-  StringBuffer( const Buffer& );
-  StringBuffer( const StringBuffer& );
+  StringBuffer(size_t capacity);
+  StringBuffer(const string& data);
+  StringBuffer(const void* data, size_t size);
+  StringBuffer(size_t capacity, const void* data, size_t size);
+  StringBuffer(const Buffer&);
+  StringBuffer(const StringBuffer&);
   virtual ~StringBuffer();
 
   // Buffer
@@ -54,7 +54,7 @@ public:
   const void* data() const {
     return data_;
   }
-  void reserve( size_t new_capacity );
+  void reserve(size_t new_capacity);
 
 private:
   uint8_t* data_;

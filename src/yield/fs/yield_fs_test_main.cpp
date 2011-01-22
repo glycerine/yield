@@ -89,7 +89,7 @@ extern yunit::TestSuite& Win32VolumeTestSuite();
 #endif
 
 
-int main( int, char** ) {
+int main(int, char**) {
   int failed_test_case_count = 0;
 
   // MemoryMappedFile

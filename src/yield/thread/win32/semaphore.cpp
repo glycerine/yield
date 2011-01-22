@@ -39,32 +39,32 @@ namespace yield {
 namespace thread {
 namespace win32 {
 Semaphore::Semaphore() {
-  hSemaphore = CreateSemaphore( NULL, 0, LONG_MAX, NULL );
-  if ( hSemaphore == NULL )
+  hSemaphore = CreateSemaphore(NULL, 0, LONG_MAX, NULL);
+  if (hSemaphore == NULL)
     throw Exception();
 }
 
 Semaphore::~Semaphore() {
-  CloseHandle( hSemaphore );
+  CloseHandle(hSemaphore);
 }
 
 void Semaphore::post() {
-  ReleaseSemaphore( hSemaphore, 1, NULL );
+  ReleaseSemaphore(hSemaphore, 1, NULL);
 }
 
-bool Semaphore::timedwait( const Time& timeout ) {
-  DWORD timeout_ms = static_cast<DWORD>( timeout.ms() );
-  DWORD dwRet = WaitForSingleObjectEx( hSemaphore, timeout_ms, TRUE );
+bool Semaphore::timedwait(const Time& timeout) {
+  DWORD timeout_ms = static_cast<DWORD>(timeout.ms());
+  DWORD dwRet = WaitForSingleObjectEx(hSemaphore, timeout_ms, TRUE);
   return dwRet == WAIT_OBJECT_0 || dwRet == WAIT_ABANDONED;
 }
 
 bool Semaphore::trywait() {
-  DWORD dwRet = WaitForSingleObjectEx( hSemaphore, 0, TRUE );
+  DWORD dwRet = WaitForSingleObjectEx(hSemaphore, 0, TRUE);
   return dwRet == WAIT_OBJECT_0 || dwRet == WAIT_ABANDONED;
 }
 
 bool Semaphore::wait() {
-  DWORD dwRet = WaitForSingleObjectEx( hSemaphore, INFINITE, TRUE );
+  DWORD dwRet = WaitForSingleObjectEx(hSemaphore, INFINITE, TRUE);
   return dwRet == WAIT_OBJECT_0 || dwRet == WAIT_ABANDONED;
 }
 }

@@ -43,9 +43,9 @@ Path Process::get_current_executable_file_path() {
   Path current_executable_file_path;
 
   Volume* volume = Volume::create();
-  if ( volume != NULL ) {
-    volume->readlink( Path( "/proc/self/exe" ), current_executable_file_path );
-    Volume::dec_ref( *volume );
+  if (volume != NULL) {
+    volume->readlink(Path("/proc/self/exe"), current_executable_file_path);
+    Volume::dec_ref(*volume);
   }
 
   return current_executable_file_path;

@@ -41,49 +41,49 @@
 namespace yield {
 namespace marshal {
 namespace xdr {
-XDRUnmarshaller::XDRUnmarshaller( const Buffer& xdr )
-  : XDRDecoder( xdr )
+XDRUnmarshaller::XDRUnmarshaller(const Buffer& xdr)
+  : XDRDecoder(xdr)
 { }
 
-XDRUnmarshaller::XDRUnmarshaller( const uint8_t* xdr, size_t xdr_len )
-  : XDRDecoder( xdr, xdr_len )
+XDRUnmarshaller::XDRUnmarshaller(const uint8_t* xdr, size_t xdr_len)
+  : XDRDecoder(xdr, xdr_len)
 { }
 
-bool XDRUnmarshaller::read_bool( const Object& key ) {
+bool XDRUnmarshaller::read_bool(const Object& key) {
   return XDRDecoder::read_bool();
 }
 
-double XDRUnmarshaller::read_double( const Object& key ) {
+double XDRUnmarshaller::read_double(const Object& key) {
   return XDRDecoder::read_double();
 }
 
-float XDRUnmarshaller::read_float( const Object& key ) {
+float XDRUnmarshaller::read_float(const Object& key) {
   return XDRDecoder::read_float();
 }
 
-int32_t XDRUnmarshaller::read_int32( const Object& key ) {
+int32_t XDRUnmarshaller::read_int32(const Object& key) {
   return XDRDecoder::read_int32();
 }
 
-int64_t XDRUnmarshaller::read_int64( const Object& key ) {
+int64_t XDRUnmarshaller::read_int64(const Object& key) {
   return XDRDecoder::read_int64();
 }
 
-void XDRUnmarshaller::read_key( Object& key ) {
-  switch ( key.get_type_id() ) {
+void XDRUnmarshaller::read_key(Object& key) {
+  switch (key.get_type_id()) {
   case Double::TYPE_ID: {
-    static_cast<Double&>( key ) = read_double( Null() );
+    static_cast<Double&>(key) = read_double(Null());
   }
   break;
 
   case Integer::TYPE_ID: {
     DebugBreak(); // int32 or int64?
-    static_cast<Integer&>( key ) = read_int64( Null() );
+    static_cast<Integer&>(key) = read_int64(Null());
   }
   break;
 
   case String::TYPE_ID: {
-    read_string( Null(), static_cast<String&>( key ) );
+    read_string(Null(), static_cast<String&>(key));
   }
   break;
 
@@ -93,35 +93,35 @@ void XDRUnmarshaller::read_key( Object& key ) {
   }
 }
 
-void XDRUnmarshaller::read_map( const Object& key, Map& value ) {
+void XDRUnmarshaller::read_map(const Object& key, Map& value) {
   size_t size = XDRDecoder::read_uint32();
-  if ( size < UINT16_MAX ) {
-    for ( size_t i = 0; i < size; i++ )
-      value.unmarshal( *this );
+  if (size < UINT16_MAX) {
+    for (size_t i = 0; i < size; i++)
+      value.unmarshal(*this);
   }
 }
 
-void XDRUnmarshaller::read_object( const Object& key, Object& value ) {
-  value.unmarshal( *this );
+void XDRUnmarshaller::read_object(const Object& key, Object& value) {
+  value.unmarshal(*this);
 }
 
-void XDRUnmarshaller::read_sequence( const Object& key, Sequence& value ) {
+void XDRUnmarshaller::read_sequence(const Object& key, Sequence& value) {
   size_t size = XDRDecoder::read_uint32();
-  if ( size <= UINT16_MAX ) {
-    for ( size_t i = 0; i < size; i++ )
-      value.unmarshal( *this );
+  if (size <= UINT16_MAX) {
+    for (size_t i = 0; i < size; i++)
+      value.unmarshal(*this);
   }
 }
 
-void XDRUnmarshaller::read_string( const Object& key, string& value ) {
-  XDRDecoder::read_string( value );
+void XDRUnmarshaller::read_string(const Object& key, string& value) {
+  XDRDecoder::read_string(value);
 }
 
-uint32_t XDRUnmarshaller::read_uint32( const Object& key ) {
+uint32_t XDRUnmarshaller::read_uint32(const Object& key) {
   return XDRDecoder::read_uint32();
 }
 
-uint64_t XDRUnmarshaller::read_uint64( const Object& key ) {
+uint64_t XDRUnmarshaller::read_uint64(const Object& key) {
   return XDRDecoder::read_uint64();
 }
 }

@@ -36,8 +36,8 @@
 namespace yield {
 namespace i18n {
 namespace win32 {
-iconv::iconv( Code tocode, Code fromcode )
-  : fromcode( fromcode ), tocode( tocode )
+iconv::iconv(Code tocode, Code fromcode)
+  : fromcode(fromcode), tocode(tocode)
 { }
 
 size_t
@@ -54,12 +54,12 @@ iconv::operator()
       fromcode,
       0,
       *inbuf,
-      static_cast<int>( *inbytesleft ),
+      static_cast<int>(*inbytesleft),
       NULL,
       0
     );
 
-  if ( inbuf_w_len > 0 ) {
+  if (inbuf_w_len > 0) {
     wchar_t* inbuf_w = new wchar_t[inbuf_w_len];
 
     inbuf_w_len
@@ -68,12 +68,12 @@ iconv::operator()
         fromcode,
         0,
         *inbuf,
-        static_cast<int>( *inbytesleft ),
+        static_cast<int>(*inbytesleft),
         inbuf_w,
         inbuf_w_len
       );
 
-    if ( inbuf_w_len > 0 ) {
+    if (inbuf_w_len > 0) {
       int outbyteswritten
       = WideCharToMultiByte
         (
@@ -89,7 +89,7 @@ iconv::operator()
 
       delete [] inbuf_w;
 
-      if ( outbyteswritten > 0 ) {
+      if (outbyteswritten > 0) {
         *inbuf += *inbytesleft;
         *inbytesleft = 0;
         *outbuf += outbyteswritten;
@@ -100,10 +100,10 @@ iconv::operator()
       delete [] inbuf_w;
   }
 
-  return static_cast<size_t>( -1 );
+  return static_cast<size_t>(-1);
 }
 
-bool iconv::operator()( const string& inbuf, string& outbuf ) {
+bool iconv::operator()(const string& inbuf, string& outbuf) {
   int inbuf_w_len
   = MultiByteToWideChar
     (
@@ -115,7 +115,7 @@ bool iconv::operator()( const string& inbuf, string& outbuf ) {
       0
     );
 
-  if ( inbuf_w_len > 0 ) {
+  if (inbuf_w_len > 0) {
     wchar_t* inbuf_w = new wchar_t[inbuf_w_len];
 
     inbuf_w_len
@@ -129,7 +129,7 @@ bool iconv::operator()( const string& inbuf, string& outbuf ) {
         inbuf_w_len
       );
 
-    if ( inbuf_w_len > 0 ) {
+    if (inbuf_w_len > 0) {
       int outbuf_c_len
       = WideCharToMultiByte
         (
@@ -143,7 +143,7 @@ bool iconv::operator()( const string& inbuf, string& outbuf ) {
           0
         );
 
-      if ( outbuf_c_len > 0 ) {
+      if (outbuf_c_len > 0) {
         char* outbuf_c = new char[outbuf_c_len];
 
         outbuf_c_len
@@ -159,8 +159,8 @@ bool iconv::operator()( const string& inbuf, string& outbuf ) {
             0
           );
 
-        if ( outbuf_c_len > 0 ) {
-          outbuf.append( outbuf_c, outbuf_c_len );
+        if (outbuf_c_len > 0) {
+          outbuf.append(outbuf_c, outbuf_c_len);
           delete [] outbuf_c;
           return true;
         } else
@@ -174,7 +174,7 @@ bool iconv::operator()( const string& inbuf, string& outbuf ) {
   return false;
 }
 
-bool iconv::operator()( const string& inbuf, wstring& outbuf ) {
+bool iconv::operator()(const string& inbuf, wstring& outbuf) {
   int outbuf_w_len
   = MultiByteToWideChar
     (
@@ -186,7 +186,7 @@ bool iconv::operator()( const string& inbuf, wstring& outbuf ) {
       0
     );
 
-  if ( outbuf_w_len > 0 ) {
+  if (outbuf_w_len > 0) {
     wchar_t* outbuf_w = new wchar_t[outbuf_w_len];
 
     outbuf_w_len
@@ -200,8 +200,8 @@ bool iconv::operator()( const string& inbuf, wstring& outbuf ) {
         outbuf_w_len
       );
 
-    if ( outbuf_w_len > 0 ) {
-      outbuf.append( outbuf_w, outbuf_w_len );
+    if (outbuf_w_len > 0) {
+      outbuf.append(outbuf_w, outbuf_w_len);
       delete [] outbuf_w;
       return true;
     } else
@@ -211,7 +211,7 @@ bool iconv::operator()( const string& inbuf, wstring& outbuf ) {
   return false;
 }
 
-bool iconv::operator()( const wstring& inbuf, string& outbuf ) {
+bool iconv::operator()(const wstring& inbuf, string& outbuf) {
   int outbuf_c_len
   = WideCharToMultiByte
     (
@@ -225,7 +225,7 @@ bool iconv::operator()( const wstring& inbuf, string& outbuf ) {
       0
     );
 
-  if ( outbuf_c_len > 0 ) {
+  if (outbuf_c_len > 0) {
     char* outbuf_c = new char[outbuf_c_len];
 
     outbuf_c_len
@@ -241,8 +241,8 @@ bool iconv::operator()( const wstring& inbuf, string& outbuf ) {
         0
       );
 
-    if ( outbuf_c_len > 0 ) {
-      outbuf.append( outbuf_c, outbuf_c_len );
+    if (outbuf_c_len > 0) {
+      outbuf.append(outbuf_c, outbuf_c_len);
       delete [] outbuf_c;
       return true;
     } else

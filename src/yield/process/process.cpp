@@ -47,14 +47,14 @@ using yield::fs::Path;
 using yield::i18n::tstring;
 
 
-Process::Process( Channel* stderr_, Channel* stdin_, Channel* stdout_ )
-  : stderr_( stderr_ ), stdin_( stdin_ ), stdout_( stdout_ )
+Process::Process(Channel* stderr_, Channel* stdin_, Channel* stdout_)
+  : stderr_(stderr_), stdin_(stdin_), stdout_(stdout_)
 { }
 
 Process::~Process() {
-  Channel::dec_ref( stderr_ );
-  Channel::dec_ref( stdin_ );
-  Channel::dec_ref( stdout_ );
+  Channel::dec_ref(stderr_);
+  Channel::dec_ref(stdin_);
+  Channel::dec_ref(stdout_);
 }
 
 Process*
@@ -89,13 +89,13 @@ Process::create
   Channel* stdout_
 ) {
   vector<tstring::value_type*> argv_copy;
-  for ( int arg_i = 1; arg_i < argc; arg_i++ )
-    argv_copy.push_back( argv[arg_i] );
-  argv_copy.push_back( NULL );
+  for (int arg_i = 1; arg_i < argc; arg_i++)
+    argv_copy.push_back(argv[arg_i]);
+  argv_copy.push_back(NULL);
   return create
          (
-           Path( argv[0] ),
-           const_cast<const tstring::value_type**>( &argv_copy[0] ),
+           Path(argv[0]),
+           const_cast<const tstring::value_type**>(&argv_copy[0]),
            stderr_,
            stdin_,
            stdout_
@@ -110,12 +110,12 @@ Process::create
   Channel* stdin_,
   Channel* stdout_
 ) {
-  vector<tstring::value_type*> argv_copy( argv );
-  argv_copy.push_back( NULL );
+  vector<tstring::value_type*> argv_copy(argv);
+  argv_copy.push_back(NULL);
   return create
          (
-           Path( argv[0] ),
-           const_cast<const tstring::value_type**>( &argv_copy[0] ),
+           Path(argv[0]),
+           const_cast<const tstring::value_type**>(&argv_copy[0]),
            stderr_,
            stdin_,
            stdout_
@@ -155,11 +155,11 @@ Path Process::get_current_executable_file_path() {
 #endif
 }
 
-Process* Process::open( pid_t pid ) {
+Process* Process::open(pid_t pid) {
 #ifdef _WIN32
-  return win32::Process::open( pid );
+  return win32::Process::open(pid);
 #else
-  return posix::Process::open( pid );
+  return posix::Process::open(pid);
 #endif
 }
 

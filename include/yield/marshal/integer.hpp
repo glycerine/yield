@@ -42,13 +42,13 @@ public:
   const static uint32_t TYPE_ID = 3977102428UL;
 
 public:
-  Integer() : value( 0 ) { }
-  Integer( int64_t value ) : value( value ) { }
+  Integer() : value(0) { }
+  Integer(int64_t value) : value(value) { }
 
   operator int64_t() const {
     return value;
   }
-  Integer& operator=( int64_t value );
+  Integer& operator=(int64_t value);
 
   // Object
   uint32_t get_type_id() const {
@@ -57,7 +57,7 @@ public:
   const char* get_type_name() const {
     return "yield::marshal::Integer";
   }
-  bool operator==( const Object& other ) const;
+  bool operator==(const Object& other) const;
 
 private:
   int64_t value;

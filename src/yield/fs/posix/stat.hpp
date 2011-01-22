@@ -43,10 +43,10 @@ namespace posix {
 class Stat : public yield::fs::Stat, private stat {
 public:
   Stat();
-  Stat( const struct stat& );
+  Stat(const struct stat&);
 
   operator struct stat() const;
-  Stat& operator=( const struct stat& );
+  Stat& operator=(const struct stat&);
 
   // Stat
   const DateTime& get_atime() const {

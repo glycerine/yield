@@ -32,4 +32,4 @@
 #include "handle_event_queue.hpp"
 
 
-TEST_SUITE_EX( HandleEventQueue, yield::poll::FDEventQueueTestSuite<yield::poll::win32::HandleEventQueue> );
+TEST_SUITE_EX(HandleEventQueue, yield::poll::FDEventQueueTestSuite<yield::poll::win32::HandleEventQueue>);

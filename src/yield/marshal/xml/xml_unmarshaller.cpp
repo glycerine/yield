@@ -50,7 +50,7 @@ using rapidxml::xml_attribute;
 using rapidxml::xml_node;
 
 
-static void debug_assert_valid_node( const xml_node<>* node ) {
+static void debug_assert_valid_node(const xml_node<>* node) {
   // node should have attributes or child nodes or neither, but not both
 
   debug_assert
@@ -78,18 +78,18 @@ static void debug_assert_valid_node( const xml_node<>* node ) {
 }
 
 
-XMLUnmarshaller::XMLUnmarshaller( const Buffer& xml )
-  : xml( xml, xml.size() ) {
+XMLUnmarshaller::XMLUnmarshaller(const Buffer& xml)
+  : xml(xml, xml.size()) {
   init();
 }
 
-XMLUnmarshaller::XMLUnmarshaller( const char* xml, size_t xml_len )
-  : xml( xml, xml_len ) {
+XMLUnmarshaller::XMLUnmarshaller(const char* xml, size_t xml_len)
+  : xml(xml, xml_len) {
   init();
 }
 
-XMLUnmarshaller::XMLUnmarshaller( const xml_node<>& root_node )
-  : root_node( &root_node ) {
+XMLUnmarshaller::XMLUnmarshaller(const xml_node<>& root_node)
+  : root_node(&root_node) {
   doc = NULL;
   next_attribute = root_node.first_attribute();
   next_node = root_node.first_node();
@@ -101,9 +101,9 @@ XMLUnmarshaller::~XMLUnmarshaller() {
 
 void XMLUnmarshaller::init() {
   doc = new rapidxml::xml_document<>;
-  doc->parse<0>( const_cast<char*>( xml.c_str() ) );
+  doc->parse<0>(const_cast<char*>(xml.c_str()));
   root_node = doc;
-  debug_assert_valid_node( root_node );
+  debug_assert_valid_node(root_node);
   next_attribute = root_node->first_attribute();
   next_node = root_node->first_node();
 }
@@ -113,14 +113,14 @@ XMLUnmarshaller::read_attribute
 (
   const Object& key
 ) {
-  debug_assert_ne( root_node, NULL );
+  debug_assert_ne(root_node, NULL);
 
   const xml_attribute<>* attribute;
 
-  switch ( key.get_type_id() ) {
+  switch (key.get_type_id()) {
   case Double::TYPE_ID: {
     std::ostringstream attribute_name;
-    attribute_name << "_" << static_cast<const Double&>( key );
+    attribute_name << "_" << static_cast<const Double&>(key);
     attribute
     = root_node->first_attribute
       (
@@ -131,7 +131,7 @@ XMLUnmarshaller::read_attribute
   break;
 
   case Null::TYPE_ID: {
-    if ( this->next_attribute != NULL )
+    if (this->next_attribute != NULL)
       attribute = this->next_attribute;
   }
   break;
@@ -140,8 +140,8 @@ XMLUnmarshaller::read_attribute
     attribute
     = root_node->first_attribute
       (
-        static_cast<const String&>( key ).c_str(),
-        static_cast<const String&>( key ).size()
+        static_cast<const String&>(key).c_str(),
+        static_cast<const String&>(key).size()
       );
   }
   break;
@@ -150,8 +150,8 @@ XMLUnmarshaller::read_attribute
     attribute
     = root_node->first_attribute
       (
-        static_cast<const StringLiteral&>( key ),
-        strlen( static_cast<const StringLiteral&>( key ) )
+        static_cast<const StringLiteral&>(key),
+        strlen(static_cast<const StringLiteral&>(key))
       );
   }
   break;
@@ -161,68 +161,68 @@ XMLUnmarshaller::read_attribute
     return NULL;
   }
 
-  if ( next_attribute != NULL )
+  if (next_attribute != NULL)
     next_attribute = next_attribute->next_attribute();
 
   return attribute;
 }
 
-bool XMLUnmarshaller::read_bool( const Object& key ) {
-  const xml_attribute<>* attr = read_attribute( key );
-  if ( attr != NULL )
-    return strcmp( attr->value(), "true" ) == 0 ||
-           strcmp( attr->value(), "1" ) == 0;
+bool XMLUnmarshaller::read_bool(const Object& key) {
+  const xml_attribute<>* attr = read_attribute(key);
+  if (attr != NULL)
+    return strcmp(attr->value(), "true") == 0 ||
+           strcmp(attr->value(), "1") == 0;
   else
     return false;
 }
 
-double XMLUnmarshaller::read_double( const Object& key ) {
-  const xml_attribute<>* attr = read_attribute( key );
-  if ( attr != NULL )
-    return atof( attr->value() );
+double XMLUnmarshaller::read_double(const Object& key) {
+  const xml_attribute<>* attr = read_attribute(key);
+  if (attr != NULL)
+    return atof(attr->value());
   else
     return 0.0;
 }
 
-int64_t XMLUnmarshaller::read_int64( const Object& key ) {
-  const xml_attribute<>* attr = read_attribute( key );
-  if ( attr != NULL ) {
+int64_t XMLUnmarshaller::read_int64(const Object& key) {
+  const xml_attribute<>* attr = read_attribute(key);
+  if (attr != NULL) {
     int64_t value;
-    sscanf( attr->value(), "%lld", &value );
+    sscanf(attr->value(), "%lld", &value);
     return value;
   } else
     return 0;
 }
 
-void XMLUnmarshaller::read_key( Object& key ) {
+void XMLUnmarshaller::read_key(Object& key) {
   const char* next_name;
   size_t next_name_size;
 
-  if ( next_attribute != NULL ) {
+  if (next_attribute != NULL) {
     next_name = next_attribute->name();
     next_name_size = next_attribute->name_size();
   } else {
-    debug_assert_ne( next_node, NULL );
+    debug_assert_ne(next_node, NULL);
     next_name = next_node->name();
     next_name_size = next_node->name_size();
   }
 
-  switch ( key.get_type_id() ) {
+  switch (key.get_type_id()) {
   case Double::TYPE_ID: {
-    debug_assert_eq( next_name[0], '_' );
-    static_cast<Double&>( key ) = atof( next_name+1 );
+    debug_assert_eq(next_name[0], '_');
+    static_cast<Double&>(key) = atof(next_name + 1);
   }
   break;
 
   case Integer::TYPE_ID: {
     int64_t int64_key;
-    sscanf( next_name, "%lld", &int64_key );
-    static_cast<Integer&>( key ) = int64_key;
+    sscanf(next_name, "%lld", &int64_key);
+    static_cast<Integer&>(key) = int64_key;
   }
   break;
 
   case String::TYPE_ID: {
-    static_cast<String&>( key ).assign( next_name, next_name_size );
+    static_cast<String&>(key).assign(next_name, next_name_size);
   }
   break;
 
@@ -232,10 +232,10 @@ void XMLUnmarshaller::read_key( Object& key ) {
   }
 }
 
-void XMLUnmarshaller::read_map( const Object& key, Map& value ) {
-  const xml_node<>* node = read_node( key );
-  if ( node != NULL ) {
-    XMLUnmarshaller child_xml_unmarshaller( *node );
+void XMLUnmarshaller::read_map(const Object& key, Map& value) {
+  const xml_node<>* node = read_node(key);
+  if (node != NULL) {
+    XMLUnmarshaller child_xml_unmarshaller(*node);
 
     while
     (
@@ -243,16 +243,16 @@ void XMLUnmarshaller::read_map( const Object& key, Map& value ) {
       ||
       child_xml_unmarshaller.next_node != NULL
     )
-      value.unmarshal( child_xml_unmarshaller );
+      value.unmarshal(child_xml_unmarshaller);
   }
 }
 
-const xml_node<>* XMLUnmarshaller::read_node( const Object& key ) {
-  debug_assert_ne( root_node, NULL );
+const xml_node<>* XMLUnmarshaller::read_node(const Object& key) {
+  debug_assert_ne(root_node, NULL);
 
   const xml_node<>* node;
 
-  switch ( key.get_type_id() ) {
+  switch (key.get_type_id()) {
   case Null::TYPE_ID:
     node = next_node;
     break;
@@ -260,8 +260,8 @@ const xml_node<>* XMLUnmarshaller::read_node( const Object& key ) {
   case String::TYPE_ID: {
     node = root_node->first_node
            (
-             static_cast<const String&>( key ).c_str(),
-             static_cast<const String&>( key ).size()
+             static_cast<const String&>(key).c_str(),
+             static_cast<const String&>(key).size()
            );
   }
   break;
@@ -269,8 +269,8 @@ const xml_node<>* XMLUnmarshaller::read_node( const Object& key ) {
   case StringLiteral::TYPE_ID: {
     node = root_node->first_node
            (
-             static_cast<const StringLiteral&>( key ),
-             strlen( static_cast<const StringLiteral&>( key ) )
+             static_cast<const StringLiteral&>(key),
+             strlen(static_cast<const StringLiteral&>(key))
            );
   }
   break;
@@ -280,26 +280,26 @@ const xml_node<>* XMLUnmarshaller::read_node( const Object& key ) {
     return NULL;
   }
 
-  debug_assert_valid_node( node );
+  debug_assert_valid_node(node);
 
-  if ( next_node != NULL )
+  if (next_node != NULL)
     next_node = next_node->next_sibling();
 
   return node;
 }
 
-void XMLUnmarshaller::read_object( const Object& key, Object& value ) {
-  const xml_node<>* node = read_node( key );
-  if ( node != NULL ) {
-    XMLUnmarshaller child_xml_unmarshaller( *node );
-    value.unmarshal( child_xml_unmarshaller );
+void XMLUnmarshaller::read_object(const Object& key, Object& value) {
+  const xml_node<>* node = read_node(key);
+  if (node != NULL) {
+    XMLUnmarshaller child_xml_unmarshaller(*node);
+    value.unmarshal(child_xml_unmarshaller);
   }
 }
 
-void XMLUnmarshaller::read_sequence( const Object& key, Sequence& value ) {
-  const xml_node<>* node = read_node( key );
-  if ( node != NULL ) {
-    XMLUnmarshaller child_xml_unmarshaller( *node );
+void XMLUnmarshaller::read_sequence(const Object& key, Sequence& value) {
+  const xml_node<>* node = read_node(key);
+  if (node != NULL) {
+    XMLUnmarshaller child_xml_unmarshaller(*node);
 
     while
     (
@@ -307,21 +307,21 @@ void XMLUnmarshaller::read_sequence( const Object& key, Sequence& value ) {
       ||
       child_xml_unmarshaller.next_node != NULL
     )
-      value.unmarshal( child_xml_unmarshaller );
+      value.unmarshal(child_xml_unmarshaller);
   }
 }
 
-void XMLUnmarshaller::read_string( const Object& key, string& value ) {
-  const xml_attribute<>* attr = read_attribute( key );
-  if ( attr != NULL )
+void XMLUnmarshaller::read_string(const Object& key, string& value) {
+  const xml_attribute<>* attr = read_attribute(key);
+  if (attr != NULL)
     value = attr->value();
 }
 
-uint64_t XMLUnmarshaller::read_uint64( const Object& key ) {
-  const xml_attribute<>* attr = read_attribute( key );
-  if ( attr != NULL ) {
+uint64_t XMLUnmarshaller::read_uint64(const Object& key) {
+  const xml_attribute<>* attr = read_attribute(key);
+  if (attr != NULL) {
     uint64_t value;
-    sscanf( attr->value(), "%llu", &value );
+    sscanf(attr->value(), "%llu", &value);
     return value;
   } else
     return 0;

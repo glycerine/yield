@@ -35,24 +35,24 @@ namespace yield {
 namespace thread {
 namespace win32 {
 LightweightMutex::LightweightMutex() {
-  InitializeCriticalSection( &critical_section );
+  InitializeCriticalSection(&critical_section);
 }
 
 LightweightMutex::~LightweightMutex() {
-  DeleteCriticalSection( &critical_section );
+  DeleteCriticalSection(&critical_section);
 }
 
 bool LightweightMutex::lock() {
-  EnterCriticalSection( &critical_section );
+  EnterCriticalSection(&critical_section);
   return true;
 }
 
 bool LightweightMutex::trylock() {
-  return TryEnterCriticalSection( &critical_section ) == TRUE;
+  return TryEnterCriticalSection(&critical_section) == TRUE;
 }
 
 void LightweightMutex::unlock() {
-  LeaveCriticalSection( &critical_section );
+  LeaveCriticalSection(&critical_section);
 }
 }
 }

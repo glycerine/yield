@@ -47,22 +47,22 @@ namespace yield {
 template <class ObjectType = Object>
 class auto_Object {
 public:
-  auto_Object( YO_NEW_REF ObjectType* object )
-    : object( *object ) {
-    if ( object == NULL )
+  auto_Object(YO_NEW_REF ObjectType* object)
+    : object(*object) {
+    if (object == NULL)
       throw Exception();
   }
 
-  auto_Object( YO_NEW_REF ObjectType& object )
-    : object( object )
+  auto_Object(YO_NEW_REF ObjectType& object)
+    : object(object)
   { }
 
   ~auto_Object() {
-    Object::dec_ref( object );
+    Object::dec_ref(object);
   }
 
-  auto_Object( const auto_Object<ObjectType>& other )
-    : object( Object::inc_ref( other.object ) )
+  auto_Object(const auto_Object<ObjectType>& other)
+    : object(Object::inc_ref(other.object))
   { }
 
   inline ObjectType& get() const {
@@ -75,11 +75,11 @@ public:
     return get();
   }
 
-  inline bool operator==( const auto_Object<ObjectType>& other ) const {
+  inline bool operator==(const auto_Object<ObjectType>& other) const {
     return &get() == &other.get();
   }
 
-  inline bool operator!=( const auto_Object<ObjectType>& other ) const {
+  inline bool operator!=(const auto_Object<ObjectType>& other) const {
     return &get() != &other.get();
   }
 

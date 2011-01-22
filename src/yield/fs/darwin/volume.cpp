@@ -46,9 +46,9 @@ Volume::open
   mode_t mode,
   uint32_t attributes
 ) {
-  fd_t fd = ::open( path.c_str(), flags, mode );
-  if ( fd != -1 )
-    return new File( fd );
+  fd_t fd = ::open(path.c_str(), flags, mode);
+  if (fd != -1)
+    return new File(fd);
   else
     return NULL;
 }
@@ -58,7 +58,7 @@ Volume::openxattrs
 (
   const Path& path
 ) {
-  return new ExtendedAttributes( path );
+  return new ExtendedAttributes(path);
 }
 }
 }

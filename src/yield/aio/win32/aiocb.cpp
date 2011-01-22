@@ -39,67 +39,67 @@
 namespace yield {
 namespace aio {
 namespace win32 {
-AIOCB::AIOCB( Channel& channel, void*, size_t nbytes, uint64_t offset )
-  : channel( channel.inc_ref() ), nbytes( nbytes ) {
-  static_assert( sizeof( OVERLAPPED ) == sizeof( ::OVERLAPPED ), "" );
-  debug_assert_ne( static_cast<fd_t>( channel ), INVALID_FD );
+AIOCB::AIOCB(Channel& channel, void*, size_t nbytes, uint64_t offset)
+  : channel(channel.inc_ref()), nbytes(nbytes) {
+  static_assert(sizeof(OVERLAPPED) == sizeof(::OVERLAPPED), "");
+  debug_assert_ne(static_cast<fd_t>(channel), INVALID_FD);
 
   completion_handler = NULL;
   error = 0;
-  memset( &overlapped, 0, sizeof( overlapped ) );
-  overlapped.Offset = static_cast<uint32_t>( offset );
-  overlapped.OffsetHigh = static_cast<uint32_t>( offset >> 32 );
+  memset(&overlapped, 0, sizeof(overlapped));
+  overlapped.Offset = static_cast<uint32_t>(offset);
+  overlapped.OffsetHigh = static_cast<uint32_t>(offset >> 32);
   return_ = -1;
   this_aiocb = this;
 }
 
 AIOCB::~AIOCB() {
-  Channel::dec_ref( channel );
-  EventHandler::dec_ref( completion_handler );
+  Channel::dec_ref(channel);
+  EventHandler::dec_ref(completion_handler);
 }
 
 bool AIOCB::cancel() {
-  return CancelIoEx( get_channel(), *this ) == TRUE;
+  return CancelIoEx(get_channel(), *this) == TRUE;
 }
 
-AIOCB& AIOCB::cast( ::OVERLAPPED& lpOverlapped ) {
+AIOCB& AIOCB::cast(::OVERLAPPED& lpOverlapped) {
   AIOCB* aiocb;
 
   memcpy_s
   (
     &aiocb,
-    sizeof( aiocb ),
-    reinterpret_cast<char*>( &lpOverlapped ) + sizeof( ::OVERLAPPED ),
-    sizeof( aiocb )
+    sizeof(aiocb),
+    reinterpret_cast<char*>(&lpOverlapped) + sizeof(::OVERLAPPED),
+    sizeof(aiocb)
   );
 
   return *aiocb;
 }
 
 uint64_t AIOCB::get_offset() const {
-  return static_cast<uint64_t>( overlapped.OffsetHigh << 32 )
+  return static_cast<uint64_t>(overlapped.OffsetHigh << 32)
          |
          overlapped.Offset;
 }
 
-bool AIOCB::issue( EventHandler& completion_handler ) {
+bool AIOCB::issue(EventHandler& completion_handler) {
   retry();
-  completion_handler.handle( *this );
+  completion_handler.handle(*this);
   return true;
 }
 
-bool AIOCB::issue( win32::AIOQueue& ) {
+bool AIOCB::issue(win32::AIOQueue&) {
   DebugBreak();
-  SetLastError( ERROR_NOT_SUPPORTED );
+  SetLastError(ERROR_NOT_SUPPORTED);
   return false;
 }
 
-AIOCB::operator ::OVERLAPPED*() {
-  return reinterpret_cast<::OVERLAPPED*>( &overlapped );
+AIOCB::operator ::OVERLAPPED* () {
+  return reinterpret_cast<::OVERLAPPED*>(&overlapped);
 }
 
-void AIOCB::set_completion_handler( EventHandler& completion_handler ) {
-  EventHandler::dec_ref( this->completion_handler );
+void AIOCB::set_completion_handler(EventHandler& completion_handler) {
+  EventHandler::dec_ref(this->completion_handler);
   this->completion_handler = &completion_handler.inc_ref();
 }
 }

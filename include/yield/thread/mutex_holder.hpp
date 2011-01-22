@@ -36,7 +36,7 @@ namespace yield {
 namespace thread {
 class MutexHolder {
 public:
-  MutexHolder( Mutex& mutex ) : mutex( mutex ) {
+  MutexHolder(Mutex& mutex) : mutex(mutex) {
     mutex.lock();
   }
   ~MutexHolder() {

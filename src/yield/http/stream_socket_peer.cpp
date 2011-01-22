@@ -53,64 +53,64 @@ StreamSocketPeer<SocketPeerType>::StreamSocketPeer
   Log* error_log,
   Log* trace_log
 )
-  : SocketPeerType( error_log, trace_log )
+  : SocketPeerType(error_log, trace_log)
 { }
 
 template <class SocketPeerType>
-void StreamSocketPeer<SocketPeerType>::service( YO_NEW_REF Event& event ) {
-  switch ( event.get_type_id() ) {
+void StreamSocketPeer<SocketPeerType>::service(YO_NEW_REF Event& event) {
+  switch (event.get_type_id()) {
   case recvAIOCB::TYPE_ID: {
-    recvAIOCB& recv_aiocb = static_cast<recvAIOCB&>( event );
+    recvAIOCB& recv_aiocb = static_cast<recvAIOCB&>(event);
     StreamSocketPeer<SocketPeerType>::Connection& connection
-    = static_cast<Connection&>( recv_aiocb.get_connection() );
+    = static_cast<Connection&>(recv_aiocb.get_connection());
 
-    if ( recv_aiocb.get_error() == 0 ) {
-      if ( this->get_trace_log() != NULL ) {
-        this->get_trace_log()->get_stream( Log::INFO ) <<
+    if (recv_aiocb.get_error() == 0) {
+      if (this->get_trace_log() != NULL) {
+        this->get_trace_log()->get_stream(Log::INFO) <<
             connection.get_log_prefix() << ": received ";
-        this->get_trace_log()->write( recv_aiocb.get_buffer(), Log::INFO );
+        this->get_trace_log()->write(recv_aiocb.get_buffer(), Log::INFO);
       }
 
-      connection.handle( recv_aiocb );
+      connection.handle(recv_aiocb);
     } else {
-      if ( this->get_error_log() != NULL ) {
-        this->get_error_log()->get_stream( Log::ERR ) <<
+      if (this->get_error_log() != NULL) {
+        this->get_error_log()->get_stream(Log::ERR) <<
             connection.get_log_prefix() << ": " <<
             "error in " << recv_aiocb.get_type_name() << ": " <<
-            Exception( recv_aiocb.get_error() );
+            Exception(recv_aiocb.get_error());
       }
 
-      connection.handle( recv_aiocb );
+      connection.handle(recv_aiocb);
 
-      Connection::dec_ref( connection );
+      Connection::dec_ref(connection);
     }
   }
   break;
 
   case sendAIOCB::TYPE_ID: {
-    sendAIOCB& send_aiocb = static_cast<sendAIOCB&>( event );
+    sendAIOCB& send_aiocb = static_cast<sendAIOCB&>(event);
     StreamSocketPeer<SocketPeerType>::Connection& connection
     = send_aiocb.get_connection();
 
-    if ( send_aiocb.get_error() == 0 ) {
-      if ( this->get_trace_log() != NULL ) {
-        this->get_trace_log()->get_stream( Log::INFO ) <<
+    if (send_aiocb.get_error() == 0) {
+      if (this->get_trace_log() != NULL) {
+        this->get_trace_log()->get_stream(Log::INFO) <<
             connection.get_log_prefix() << ": sent ";
-        this->get_trace_log()->write( send_aiocb.get_buffer(), Log::INFO );
+        this->get_trace_log()->write(send_aiocb.get_buffer(), Log::INFO);
       }
 
-      connection.handle( send_aiocb );
+      connection.handle(send_aiocb);
     } else {
-      if ( this->get_error_log() != NULL ) {
-        this->get_error_log()->get_stream( Log::ERR ) <<
+      if (this->get_error_log() != NULL) {
+        this->get_error_log()->get_stream(Log::ERR) <<
             connection.get_log_prefix() << ": " <<
             "error in " << send_aiocb.get_type_name() << ":" <<
-            Exception( send_aiocb.get_error() );
+            Exception(send_aiocb.get_error());
       }
 
-      connection.handle( send_aiocb );
+      connection.handle(send_aiocb);
 
-      Connection::dec_ref( connection );
+      Connection::dec_ref(connection);
     }
   }
   break;
@@ -125,19 +125,19 @@ StreamSocketPeer<SocketPeerType>::Connection::Connection
   SocketAddress& peername,
   YO_NEW_REF StreamSocket& socket_
 )
-  : aio_queue( peer.get_aio_queue().inc_ref() ),
-    error_log( Object::inc_ref( peer.get_error_log() ) ),
-    peername( peername ),
-    socket_( &socket_ ),
-    trace_log( Object::inc_ref( peer.get_trace_log() ) )
+  : aio_queue(peer.get_aio_queue().inc_ref()),
+    error_log(Object::inc_ref(peer.get_error_log())),
+    peername(peername),
+    socket_(&socket_),
+    trace_log(Object::inc_ref(peer.get_trace_log()))
 { }
 
 template <class SocketPeerType>
 StreamSocketPeer<SocketPeerType>::Connection::~Connection() {
   close();
-  Log::dec_ref( error_log );
-  StreamSocket::dec_ref( socket_ );
-  Log::dec_ref( trace_log );
+  Log::dec_ref(error_log);
+  StreamSocket::dec_ref(socket_);
+  Log::dec_ref(trace_log);
 }
 
 template <class SocketPeerType>
@@ -147,26 +147,26 @@ void StreamSocketPeer<SocketPeerType>::Connection::close() {
 }
 
 template <class SocketPeerType>
-void StreamSocketPeer<SocketPeerType>::Connection::enqueue( YO_NEW_REF recvAIOCB& recv_aiocb ) {
-  if ( !get_aio_queue().enqueue( recv_aiocb ) ) {
-    recvAIOCB::dec_ref( recv_aiocb );
-    Connection::dec_ref( *this );
+void StreamSocketPeer<SocketPeerType>::Connection::enqueue(YO_NEW_REF recvAIOCB& recv_aiocb) {
+  if (!get_aio_queue().enqueue(recv_aiocb)) {
+    recvAIOCB::dec_ref(recv_aiocb);
+    Connection::dec_ref(*this);
   }
 }
 
 template <class SocketPeerType>
-void StreamSocketPeer<SocketPeerType>::Connection::enqueue( YO_NEW_REF sendAIOCB& send_aiocb ) {
-  if ( !get_aio_queue().enqueue( send_aiocb ) ) {
-    sendAIOCB::dec_ref( send_aiocb );
-    Connection::dec_ref( *this );
+void StreamSocketPeer<SocketPeerType>::Connection::enqueue(YO_NEW_REF sendAIOCB& send_aiocb) {
+  if (!get_aio_queue().enqueue(send_aiocb)) {
+    sendAIOCB::dec_ref(send_aiocb);
+    Connection::dec_ref(*this);
   }
 }
 
 template <class SocketPeerType>
 const string& StreamSocketPeer<SocketPeerType>::Connection::get_log_prefix() {
-  if ( log_prefix.empty() ) {
+  if (log_prefix.empty()) {
     SocketAddress sockname;
-    get_socket().getsockname( sockname );
+    get_socket().getsockname(sockname);
 
     std::ostringstream log_prefix_oss;
     log_prefix_oss << get_type_name() << "(";

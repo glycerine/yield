@@ -50,20 +50,20 @@ public:
   virtual ~PollingStageScheduler();
 
   // StageScheduler
-  void schedule( Stage&, ConcurrencyLevel );
+  void schedule(Stage&, ConcurrencyLevel);
 
 protected:
   class StagePoller : public yield::thread::Runnable {
   public:
     virtual ~StagePoller();
 
-    void schedule( Stage& );
+    void schedule(Stage&);
     void stop() {
       _should_run = false;
     }
 
   protected:
-    StagePoller( Stage& );
+    StagePoller(Stage&);
 
     vector<Stage*>& get_stages();
     inline bool should_run() const {
@@ -79,7 +79,7 @@ protected:
 protected:
   PollingStageScheduler() { }
 
-  virtual YO_NEW_REF StagePoller& createStagePoller( Stage& ) = 0;
+  virtual YO_NEW_REF StagePoller& createStagePoller(Stage&) = 0;
 
 private:
   vector<yield::thread::Thread*> threads;

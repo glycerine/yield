@@ -45,11 +45,11 @@ AIOCB::CompletionRoutine
   ::OVERLAPPED* lpOverlapped,
   unsigned long dwFlags
 ) {
-  yield::aio::AIOCB& aiocb = AIOCB::cast( *lpOverlapped );
-  aiocb.set_error( dwErrorCode );
-  aiocb.set_return( dwNumberOfBytesTransfered );
-  debug_assert_ne( aiocb.get_completion_handler(), NULL );
-  aiocb.get_completion_handler()->handle( aiocb );
+  yield::aio::AIOCB& aiocb = AIOCB::cast(*lpOverlapped);
+  aiocb.set_error(dwErrorCode);
+  aiocb.set_return(dwNumberOfBytesTransfered);
+  debug_assert_ne(aiocb.get_completion_handler(), NULL);
+  aiocb.get_completion_handler()->handle(aiocb);
 }
 }
 }

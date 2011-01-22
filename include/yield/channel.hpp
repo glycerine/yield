@@ -42,15 +42,15 @@ public:
 
   virtual bool close() = 0;
   virtual operator fd_t() const = 0;
-  virtual ssize_t read( void* buf, size_t buflen ) = 0;
-  virtual ssize_t readv( const iovec* iov, int iovlen ) = 0;
-  virtual bool set_blocking_mode( bool blocking_mode ) = 0;
-  virtual ssize_t write( const void* buf, size_t buflen ) = 0;
-  virtual ssize_t writev( const iovec* iov, int iovlen ) = 0;
+  virtual ssize_t read(void* buf, size_t buflen) = 0;
+  virtual ssize_t readv(const iovec* iov, int iovlen) = 0;
+  virtual bool set_blocking_mode(bool blocking_mode) = 0;
+  virtual ssize_t write(const void* buf, size_t buflen) = 0;
+  virtual ssize_t writev(const iovec* iov, int iovlen) = 0;
 
   // Object
   Channel& inc_ref() {
-    return Object::inc_ref( *this );
+    return Object::inc_ref(*this);
   }
 };
 }

@@ -38,7 +38,7 @@ using yield::thread::SystemConfiguration;
 
 
 const StageScheduler::ConcurrencyLevel
-StageScheduler::ConcurrencyLevel::DEFAULT( 1 );
+StageScheduler::ConcurrencyLevel::DEFAULT(1);
 
 const StageScheduler::ConcurrencyLevel
 StageScheduler::ConcurrencyLevel::PER_PROCESSOR

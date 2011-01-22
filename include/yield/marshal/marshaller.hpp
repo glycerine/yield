@@ -46,25 +46,25 @@ class Marshaller {
 public:
   virtual ~Marshaller() { }
 
-  virtual void write( const Object& key, bool value ) = 0;
-  virtual void write( const Object& key, Buffer& value );
-  virtual void write( const Object& key, float value );
-  virtual void write( const Object& key, double value ) = 0;
-  virtual void write( const Object& key, int8_t value );
-  virtual void write( const Object& key, int16_t value );
-  virtual void write( const Object& key, int32_t value );
-  virtual void write( const Object& key, int64_t value ) = 0;
-  virtual void write( const Object& key, const Map& value );
-  virtual void write( const Object& key, const Null& value ) = 0;
-  virtual void write( const Object& key, const Object& value ) = 0;
-  virtual void write( const Object& key, const Sequence& value ) = 0;
-  void write( const Object& key, const char* value );
-  void write( const Object& key, const string& value );
-  virtual void write( const Object& key, const char*, size_t ) = 0;
-  virtual void write( const Object& key, uint8_t value );
-  virtual void write( const Object& key, uint16_t value );
-  virtual void write( const Object& key, uint32_t value );
-  virtual void write( const Object& key, uint64_t value ) = 0;
+  virtual void write(const Object& key, bool value) = 0;
+  virtual void write(const Object& key, Buffer& value);
+  virtual void write(const Object& key, float value);
+  virtual void write(const Object& key, double value) = 0;
+  virtual void write(const Object& key, int8_t value);
+  virtual void write(const Object& key, int16_t value);
+  virtual void write(const Object& key, int32_t value);
+  virtual void write(const Object& key, int64_t value) = 0;
+  virtual void write(const Object& key, const Map& value);
+  virtual void write(const Object& key, const Null& value) = 0;
+  virtual void write(const Object& key, const Object& value) = 0;
+  virtual void write(const Object& key, const Sequence& value) = 0;
+  void write(const Object& key, const char* value);
+  void write(const Object& key, const string& value);
+  virtual void write(const Object& key, const char*, size_t) = 0;
+  virtual void write(const Object& key, uint8_t value);
+  virtual void write(const Object& key, uint16_t value);
+  virtual void write(const Object& key, uint32_t value);
+  virtual void write(const Object& key, uint64_t value) = 0;
 };
 }
 }

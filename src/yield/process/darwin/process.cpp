@@ -38,8 +38,8 @@ namespace process {
 namespace darwin {
 Path Process::get_current_executable_file_path() {
   char path[PATH_MAX], path_len = PATH_MAX;
-  if ( _NSGetExecutablePath( path, &path_len ) == 0 )
-    return Path( path, path_len );
+  if (_NSGetExecutablePath(path, &path_len) == 0)
+    return Path(path, path_len);
   else
     return Path();
 }

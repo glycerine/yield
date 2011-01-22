@@ -55,10 +55,10 @@ public:
   }
   yield::net::sockets::Socket& get_socket();
 
-  void set_next_aiocb( AIOCB* next_aiocb );
+  void set_next_aiocb(AIOCB* next_aiocb);
 
 protected:
-  AIOCB( yield::net::sockets::Socket&, void* buf, size_t nbytes );
+  AIOCB(yield::net::sockets::Socket&, void* buf, size_t nbytes);
 
 #ifdef _WIN32
   static void __stdcall

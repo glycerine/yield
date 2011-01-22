@@ -45,15 +45,15 @@ public:
   ~Kqueue();
   static Kqueue* create();
 
-  bool associate( fd_t fd, uint16_t events );
-  bool dissociate( fd_t fd );
+  bool associate(fd_t fd, uint16_t events);
+  bool dissociate(fd_t fd);
 
   // FDEventQueue
-  int16_t dequeue( FDEvent* fd_events, int16_t fd_events_len, const Time& timeout );
+  int16_t dequeue(FDEvent* fd_events, int16_t fd_events_len, const Time& timeout);
   void wake();
 
 private:
-  Kqueue( int kq, int* wake_pipe );
+  Kqueue(int kq, int* wake_pipe);
 
 private:
   vector<kevent> kevents;

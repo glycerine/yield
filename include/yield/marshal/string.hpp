@@ -43,8 +43,8 @@ public:
 
 public:
   String() { }
-  String( const char* s ) : string( s ) { }
-  String( const char* s, size_t len ) : string( s, len ) { }
+  String(const char* s) : string(s) { }
+  String(const char* s, size_t len) : string(s, len) { }
 
   // Object
   uint32_t get_type_id() const {
@@ -53,7 +53,7 @@ public:
   const char* get_type_name() const {
     return "yield::marshal::String";
   }
-  bool operator==( const Object& other ) const;
+  bool operator==(const Object& other) const;
 };
 }
 }

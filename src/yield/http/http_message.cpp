@@ -87,11 +87,11 @@ HTTPMessage<HTTPMessageType>::HTTPMessage
   uint16_t fields_offset,
   float http_version
 )
-  : body( body ),
-    buffer( buffer.inc_ref() ),
-    content_length( content_length ),
-    fields_offset( fields_offset ),
-    http_version( http_version )
+  : body(body),
+    buffer(buffer.inc_ref()),
+    content_length(content_length),
+    fields_offset(fields_offset),
+    http_version(http_version)
 { }
 
 template <class HTTPMessageType>
@@ -100,11 +100,11 @@ HTTPMessage<HTTPMessageType>::HTTPMessage
   YO_NEW_REF Buffer* body,
   float http_version
 )
-  : buffer( *new Page ),
-    http_version( http_version ) {
-  if ( body != NULL ) {
+  : buffer(*new Page),
+    http_version(http_version) {
+  if (body != NULL) {
     this->body = *body;
-    buffer.set_next_buffer( body );
+    buffer.set_next_buffer(body);
     content_length = body->size();
   } else {
     this->body = NULL;
@@ -116,14 +116,14 @@ HTTPMessage<HTTPMessageType>::HTTPMessage
 
 template <class HTTPMessageType>
 HTTPMessage<HTTPMessageType>::~HTTPMessage() {
-  Buffer::dec_ref( buffer );
+  Buffer::dec_ref(buffer);
 }
 
 template <class HTTPMessageType>
 void HTTPMessage<HTTPMessageType>::finalize() {
-  if ( !is_finalized() ) {
-    set_field( "Content-Length", content_length );
-    buffer.put( "\r\n", 2 );
+  if (!is_finalized()) {
+    set_field("Content-Length", content_length);
+    buffer.put("\r\n", 2);
   }
 }
 
@@ -135,10 +135,10 @@ get_date_field
   const char* name
 ) const {
   iovec value;
-  if ( get_field( name, value ) ) {
+  if (get_field(name, value)) {
     int cs;
-    const char* eof = static_cast<char*>( value.iov_base ) + value.iov_len;
-    char* p = static_cast<char*>( value.iov_base );
+    const char* eof = static_cast<char*>(value.iov_base) + value.iov_len;
+    char* p = static_cast<char*>(value.iov_base);
 
     int hour = 0, minute = 0, second = 0;
     int day = 0, month = 0, year = 0;
@@ -379,29 +379,29 @@ get_date_field
     {
       int _klen;
       unsigned int _trans;
-      const char *_acts;
+      const char* _acts;
       unsigned int _nacts;
-      const unsigned char *_keys;
+      const unsigned char* _keys;
 
-      if ( cs == 0 )
+      if (cs == 0)
         goto _out;
 _resume:
       _keys = _date_parser_trans_keys + _date_parser_key_offsets[cs];
       _trans = _date_parser_index_offsets[cs];
 
       _klen = _date_parser_single_lengths[cs];
-      if ( _klen > 0 ) {
-        const unsigned char *_lower = _keys;
-        const unsigned char *_mid;
-        const unsigned char *_upper = _keys + _klen - 1;
+      if (_klen > 0) {
+        const unsigned char* _lower = _keys;
+        const unsigned char* _mid;
+        const unsigned char* _upper = _keys + _klen - 1;
         while (1) {
-          if ( _upper < _lower )
+          if (_upper < _lower)
             break;
 
-          _mid = _lower + ((_upper-_lower) >> 1);
-          if ( (*p) < *_mid )
+          _mid = _lower + ((_upper - _lower) >> 1);
+          if ((*p) < *_mid)
             _upper = _mid - 1;
-          else if ( (*p) > *_mid )
+          else if ((*p) > *_mid)
             _lower = _mid + 1;
           else {
             _trans += (_mid - _keys);
@@ -413,21 +413,21 @@ _resume:
       }
 
       _klen = _date_parser_range_lengths[cs];
-      if ( _klen > 0 ) {
-        const unsigned char *_lower = _keys;
-        const unsigned char *_mid;
-        const unsigned char *_upper = _keys + (_klen<<1) - 2;
+      if (_klen > 0) {
+        const unsigned char* _lower = _keys;
+        const unsigned char* _mid;
+        const unsigned char* _upper = _keys + (_klen << 1) - 2;
         while (1) {
-          if ( _upper < _lower )
+          if (_upper < _lower)
             break;
 
-          _mid = _lower + (((_upper-_lower) >> 1) & ~1);
-          if ( (*p) < _mid[0] )
+          _mid = _lower + (((_upper - _lower) >> 1) & ~1);
+          if ((*p) < _mid[0])
             _upper = _mid - 2;
-          else if ( (*p) > _mid[1] )
+          else if ((*p) > _mid[1])
             _lower = _mid + 2;
           else {
-            _trans += ((_mid - _keys)>>1);
+            _trans += ((_mid - _keys) >> 1);
             goto _match;
           }
         }
@@ -438,47 +438,47 @@ _match:
       _trans = _date_parser_indicies[_trans];
       cs = _date_parser_trans_targs[_trans];
 
-      if ( _date_parser_trans_actions[_trans] == 0 )
+      if (_date_parser_trans_actions[_trans] == 0)
         goto _again;
 
       _acts = _date_parser_actions + _date_parser_trans_actions[_trans];
-      _nacts = (unsigned int) *_acts++;
-      while ( _nacts-- > 0 ) {
-        switch ( *_acts++ ) {
+      _nacts = (unsigned int) * _acts++;
+      while (_nacts-- > 0) {
+        switch (*_acts++) {
         case 0:
           /* #line 36 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\date.rl" */
         {
-          hour = atoi( p );
+          hour = atoi(p);
         }
         break;
         case 1:
           /* #line 37 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\date.rl" */
         {
-          minute = atoi( p );
+          minute = atoi(p);
         }
         break;
         case 2:
           /* #line 38 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\date.rl" */
         {
-          second = atoi( p );
+          second = atoi(p);
         }
         break;
         case 3:
           /* #line 40 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\date.rl" */
         {
-          day = atoi( p );
+          day = atoi(p);
         }
         break;
         case 4:
           /* #line 41 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\date.rl" */
         {
-          day = atoi( p );
+          day = atoi(p);
         }
         break;
         case 5:
           /* #line 48 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\date.rl" */
         {
-          switch ( *( p - 1 ) ) {
+          switch (*(p - 1)) {
           case 'b':
             month = 2;
             break;
@@ -492,7 +492,7 @@ _match:
             month = 8;
             break;
           case 'n': {
-            switch ( ( *p - 2 ) ) {
+            switch ((*p - 2)) {
             case 'a':
               month = 1;
               break;
@@ -506,7 +506,7 @@ _match:
             month = 9;
             break;
           case 'r': {
-            switch ( *( p - 2 ) ) {
+            switch (*(p - 2)) {
             case 'a':
               month = 3;
               break;
@@ -531,14 +531,14 @@ _match:
         case 6:
           /* #line 79 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\date.rl" */
         {
-          year = atoi( p );
-          year += ( year < 50 ? 2000 : 1900 );
+          year = atoi(p);
+          year += (year < 50 ? 2000 : 1900);
         }
         break;
         case 7:
           /* #line 80 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\date.rl" */
         {
-          year = atoi( p );
+          year = atoi(p);
         }
         break;
         case 8:
@@ -552,15 +552,15 @@ _match:
       }
 
 _again:
-      if ( cs == 0 )
+      if (cs == 0)
         goto _out;
       p += 1;
       goto _resume;
-      if ( p == eof ) {
-        const char *__acts = _date_parser_actions + _date_parser_eof_actions[cs];
-        unsigned int __nacts = (unsigned int) *__acts++;
-        while ( __nacts-- > 0 ) {
-          switch ( *__acts++ ) {
+      if (p == eof) {
+        const char* __acts = _date_parser_actions + _date_parser_eof_actions[cs];
+        unsigned int __nacts = (unsigned int) * __acts++;
+        while (__nacts-- > 0) {
+          switch (*__acts++) {
           case 8:
             /* #line 133 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message.rl" */
           {
@@ -579,10 +579,10 @@ _out:
     /* #line 138 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message.rl" */
 
 
-    if ( cs != date_parser_error ) {
-      if ( year < 100 ) year += 2000;
+    if (cs != date_parser_error) {
+      if (year < 100) year += 2000;
       year -= 1900;
-      return DateTime( second, minute, hour, day, month - 1, year, false );
+      return DateTime(second, minute, hour, day, month - 1, year, false);
     } else
       return DateTime::INVALID_DATE_TIME;
   } else
@@ -597,11 +597,11 @@ HTTPMessage<HTTPMessageType>::get_field
   OUT iovec& value
 ) const {
   int cs;
-  const char* eof = static_cast<char*>( buffer ) + buffer.size();
-  char* p = static_cast<char*>( buffer ) + fields_offset;
+  const char* eof = static_cast<char*>(buffer) + buffer.size();
+  char* p = static_cast<char*>(buffer) + fields_offset;
 
   iovec field_name = { 0 }, field_value = { 0 };
-  size_t name_len = strlen( name );
+  size_t name_len = strlen(name);
 
 
   /* #line 380 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message.cpp" */
@@ -681,29 +681,29 @@ HTTPMessage<HTTPMessageType>::get_field
   {
     int _klen;
     unsigned int _trans;
-    const char *_acts;
+    const char* _acts;
     unsigned int _nacts;
-    const unsigned char *_keys;
+    const unsigned char* _keys;
 
-    if ( cs == 0 )
+    if (cs == 0)
       goto _out;
 _resume:
     _keys = _field_parser_trans_keys + _field_parser_key_offsets[cs];
     _trans = _field_parser_index_offsets[cs];
 
     _klen = _field_parser_single_lengths[cs];
-    if ( _klen > 0 ) {
-      const unsigned char *_lower = _keys;
-      const unsigned char *_mid;
-      const unsigned char *_upper = _keys + _klen - 1;
+    if (_klen > 0) {
+      const unsigned char* _lower = _keys;
+      const unsigned char* _mid;
+      const unsigned char* _upper = _keys + _klen - 1;
       while (1) {
-        if ( _upper < _lower )
+        if (_upper < _lower)
           break;
 
-        _mid = _lower + ((_upper-_lower) >> 1);
-        if ( (*p) < *_mid )
+        _mid = _lower + ((_upper - _lower) >> 1);
+        if ((*p) < *_mid)
           _upper = _mid - 1;
-        else if ( (*p) > *_mid )
+        else if ((*p) > *_mid)
           _lower = _mid + 1;
         else {
           _trans += (_mid - _keys);
@@ -715,21 +715,21 @@ _resume:
     }
 
     _klen = _field_parser_range_lengths[cs];
-    if ( _klen > 0 ) {
-      const unsigned char *_lower = _keys;
-      const unsigned char *_mid;
-      const unsigned char *_upper = _keys + (_klen<<1) - 2;
+    if (_klen > 0) {
+      const unsigned char* _lower = _keys;
+      const unsigned char* _mid;
+      const unsigned char* _upper = _keys + (_klen << 1) - 2;
       while (1) {
-        if ( _upper < _lower )
+        if (_upper < _lower)
           break;
 
-        _mid = _lower + (((_upper-_lower) >> 1) & ~1);
-        if ( (*p) < _mid[0] )
+        _mid = _lower + (((_upper - _lower) >> 1) & ~1);
+        if ((*p) < _mid[0])
           _upper = _mid - 2;
-        else if ( (*p) > _mid[1] )
+        else if ((*p) > _mid[1])
           _lower = _mid + 2;
         else {
-          _trans += ((_mid - _keys)>>1);
+          _trans += ((_mid - _keys) >> 1);
           goto _match;
         }
       }
@@ -740,13 +740,13 @@ _match:
     _trans = _field_parser_indicies[_trans];
     cs = _field_parser_trans_targs[_trans];
 
-    if ( _field_parser_trans_actions[_trans] == 0 )
+    if (_field_parser_trans_actions[_trans] == 0)
       goto _again;
 
     _acts = _field_parser_actions + _field_parser_trans_actions[_trans];
-    _nacts = (unsigned int) *_acts++;
-    while ( _nacts-- > 0 ) {
-      switch ( *_acts++ ) {
+    _nacts = (unsigned int) * _acts++;
+    while (_nacts-- > 0) {
+      switch (*_acts++) {
       case 0:
         /* #line 31 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\field.rl" */
       {
@@ -756,7 +756,7 @@ _match:
       case 1:
         /* #line 31 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\field.rl" */
       {
-        field_name.iov_len = p - static_cast<char*>( field_name.iov_base );
+        field_name.iov_len = p - static_cast<char*>(field_name.iov_base);
       }
       break;
       case 2:
@@ -768,7 +768,7 @@ _match:
       case 3:
         /* #line 31 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\field.rl" */
       {
-        field_value.iov_len = p - static_cast<char*>( field_value.iov_base );
+        field_value.iov_len = p - static_cast<char*>(field_value.iov_base);
       }
       break;
       case 4:
@@ -778,7 +778,7 @@ _match:
         (
           field_name.iov_len == name_len
           &&
-          memcmp( field_name.iov_base, name, name_len ) == 0
+          memcmp(field_name.iov_base, name, name_len) == 0
         ) {
           value = field_value;
           return true;
@@ -804,15 +804,15 @@ _match:
     }
 
 _again:
-    if ( cs == 0 )
+    if (cs == 0)
       goto _out;
     p += 1;
     goto _resume;
-    if ( p == eof ) {
-      const char *__acts = _field_parser_actions + _field_parser_eof_actions[cs];
-      unsigned int __nacts = (unsigned int) *__acts++;
-      while ( __nacts-- > 0 ) {
-        switch ( *__acts++ ) {
+    if (p == eof) {
+      const char* __acts = _field_parser_actions + _field_parser_eof_actions[cs];
+      unsigned int __nacts = (unsigned int) * __acts++;
+      while (__nacts-- > 0) {
+        switch (*__acts++) {
         case 6:
           /* #line 190 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message.rl" */
         {
@@ -842,10 +842,10 @@ HTTPMessage<HTTPMessageType>::get_field
   const char* default_value
 ) const {
   iovec value_iov;
-  if ( get_field( name, value_iov ) ) {
+  if (get_field(name, value_iov)) {
     return string
            (
-             static_cast<char*>( value_iov.iov_base ),
+             static_cast<char*>(value_iov.iov_base),
              value_iov.iov_len
            );
   } else
@@ -853,18 +853,18 @@ HTTPMessage<HTTPMessageType>::get_field
 }
 
 template <class HTTPMessageType>
-bool HTTPMessage<HTTPMessageType>::has_field( const char* name ) const {
+bool HTTPMessage<HTTPMessageType>::has_field(const char* name) const {
   iovec value;
-  return get_field( name, value );
+  return get_field(name, value);
 }
 
 template <class HTTPMessageType>
 bool HTTPMessage<HTTPMessageType>::is_finalized() const {
-  debug_assert_gt( buffer.size(), 4 );
+  debug_assert_gt(buffer.size(), 4);
 
   return strncmp
          (
-           static_cast<char*>( buffer ) + buffer.size() - 4,
+           static_cast<char*>(buffer) + buffer.size() - 4,
            "\r\n\r\n",
            4
          )
@@ -873,11 +873,11 @@ bool HTTPMessage<HTTPMessageType>::is_finalized() const {
 
 template <class HTTPMessageType>
 void HTTPMessage<HTTPMessageType>::mark_fields_offset() {
-  fields_offset = static_cast<uint16_t>( buffer.size() );
+  fields_offset = static_cast<uint16_t>(buffer.size());
 }
 
 template <class HTTPMessageType>
-HTTPMessage<HTTPMessageType>::operator Buffer&() {
+HTTPMessage<HTTPMessageType>::operator Buffer& () {
   finalize();
   return buffer;
 }
@@ -890,7 +890,7 @@ set_field
   const char* name,
   const char* value
 ) {
-  return set_field( name, strlen( name ), value, strlen( value ) );
+  return set_field(name, strlen(name), value, strlen(value));
 }
 
 
@@ -905,8 +905,8 @@ set_field
   return set_field
          (
            name,
-           strlen( name ),
-           static_cast<char*>( value.iov_base ),
+           strlen(name),
+           static_cast<char*>(value.iov_base),
            value.iov_len
          );
 }
@@ -919,7 +919,7 @@ set_field
   const string& name,
   const string& value
 ) {
-  return set_field( name.data(), name.size(), value.data(), value.size() );
+  return set_field(name.data(), name.size(), value.data(), value.size());
 }
 
 template <class HTTPMessageType>
@@ -930,7 +930,7 @@ HTTPMessage<HTTPMessageType>::set_field
   const char* value,
   size_t value_len
 ) {
-  return set_field( name, strlen( name ), value, value_len );
+  return set_field(name, strlen(name), value, value_len);
 }
 
 template <class HTTPMessageType>
@@ -942,18 +942,18 @@ HTTPMessage<HTTPMessageType>::set_field
   const char* value,
   size_t value_len
 ) {
-  debug_assert_gt( fields_offset, 0 );
-  debug_assert_gt( name_len, 0 );
-  debug_assert_gt( value_len, 0 );
+  debug_assert_gt(fields_offset, 0);
+  debug_assert_gt(name_len, 0);
+  debug_assert_gt(value_len, 0);
 
-  if ( !is_finalized() ) {
-    buffer.put( name, name_len );
-    buffer.put( ": ", 2 );
-    buffer.put( value, value_len );
-    buffer.put( "\r\n" );
+  if (!is_finalized()) {
+    buffer.put(name, name_len);
+    buffer.put(": ", 2);
+    buffer.put(value, value_len);
+    buffer.put("\r\n");
   }
 
-  return static_cast<HTTPMessageType&>( *this );
+  return static_cast<HTTPMessageType&>(*this);
 }
 
 template <class HTTPMessageType>
@@ -987,7 +987,7 @@ HTTPMessage<HTTPMessageType>::set_field
       "%s, %02d %s %04d %02d:%02d:%02d GMT",
       HTTPWeekDays[utc_system_time.wDayOfWeek],
       utc_system_time.wDay,
-      HTTPMonths[utc_system_time.wMonth-1],
+      HTTPMonths[utc_system_time.wMonth - 1],
       utc_system_time.wYear,
       utc_system_time.wHour,
       utc_system_time.wMinute,
@@ -1012,7 +1012,7 @@ HTTPMessage<HTTPMessageType>::set_field
     );
 #endif
 
-  return set_field( name, date, date_len );
+  return set_field(name, date, date_len);
 }
 
 template <class HTTPMessageType>
@@ -1027,12 +1027,12 @@ set_field
   int value_str_len;
 
 #ifdef _WIN32
-  value_str_len = sprintf_s( value_str, 64, "%u", value );
+  value_str_len = sprintf_s(value_str, 64, "%u", value);
 #else
-  value_str_len = snprintf( value_str, 64, "%zu", value );
+  value_str_len = snprintf(value_str, 64, "%zu", value);
 #endif
 
-  return set_field( name, value_str, value_str_len );
+  return set_field(name, value_str, value_str_len);
 }
 
 template class HTTPMessage<HTTPRequest>;

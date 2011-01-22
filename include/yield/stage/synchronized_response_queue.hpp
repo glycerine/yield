@@ -47,60 +47,60 @@ class SynchronizedResponseQueue
 public:
   YO_NEW_REF ResponseType& dequeue() {
     Event& event = yield::thread::SynchronizedQueue<Event>::dequeue();
-    return response_cast( event );
+    return response_cast(event);
   }
 
-  YO_NEW_REF ResponseType* dequeue( const Time& timeout ) {
+  YO_NEW_REF ResponseType* dequeue(const Time& timeout) {
     Event* event
-    = yield::thread::SynchronizedQueue<Event>::dequeue( timeout );
-    if ( event != NULL )
-      return &response_cast( *event );
+    = yield::thread::SynchronizedQueue<Event>::dequeue(timeout);
+    if (event != NULL)
+      return &response_cast(*event);
     else
       return NULL;
   }
 
-  bool enqueue( YO_NEW_REF Event& event ) {
-    return yield::thread::SynchronizedQueue<Event>::enqueue( event );
+  bool enqueue(YO_NEW_REF Event& event) {
+    return yield::thread::SynchronizedQueue<Event>::enqueue(event);
   }
 
   YO_NEW_REF ResponseType* trydequeue() {
     Event* event
     = yield::thread::SynchronizedQueue<Event>::trydequeue();
-    if ( event != NULL )
-      return &response_cast( *event );
+    if (event != NULL)
+      return &response_cast(*event);
     else
       return NULL;
   }
 
   // EventHandler
-  void handle( YO_NEW_REF Event& event ) {
-    enqueue( event );
+  void handle(YO_NEW_REF Event& event) {
+    enqueue(event);
   }
 
 private:
-  YO_NEW_REF ResponseType& response_cast( YO_NEW_REF Event& event ) {
-    if ( event.is_message() ) {
-      Message& message = static_cast<Message&>( event );
+  YO_NEW_REF ResponseType& response_cast(YO_NEW_REF Event& event) {
+    if (event.is_message()) {
+      Message& message = static_cast<Message&>(event);
 
-      if ( !message.is_request() ) {
-        Response& response = static_cast<Response&>( message );
+      if (!message.is_request()) {
+        Response& response = static_cast<Response&>(message);
 
-        if ( response.get_type_id() == ResponseType::TYPE_ID )
-          return static_cast<ResponseType&>( response );
-        else if ( response.is_exception() ) {
+        if (response.get_type_id() == ResponseType::TYPE_ID)
+          return static_cast<ResponseType&>(response);
+        else if (response.is_exception()) {
           try {
-            static_cast<Exception&>( response ).rethrow();
+            static_cast<Exception&>(response).rethrow();
             // Eliminate compiler warnings about control paths
-            return static_cast<ResponseType&>( response );
-          } catch ( Exception& ) {
-            Response::dec_ref( response );
+            return static_cast<ResponseType&>(response);
+          } catch (Exception&) {
+            Response::dec_ref(response);
             throw;
           }
         }
       }
     }
 
-    throw Exception( "SynchronizedResponseQueue: dequeued unexpected response type" );
+    throw Exception("SynchronizedResponseQueue: dequeued unexpected response type");
   }
 };
 };

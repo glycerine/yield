@@ -40,14 +40,14 @@ namespace fs {
 namespace win32 {
 class NamedPipe : public File {
 public:
-  NamedPipe( fd_t hNamedPipe );
+  NamedPipe(fd_t hNamedPipe);
 
   // Channel
-  ssize_t read( void* buf, size_t buflen );
-  ssize_t readv( const iovec* iov, int iovlen );
-  bool set_blocking_mode( bool blocking_mode );
-  ssize_t write( const void* buf, size_t buflen );
-  ssize_t writev( const iovec* iov, int iovlen );
+  ssize_t read(void* buf, size_t buflen);
+  ssize_t readv(const iovec* iov, int iovlen);
+  bool set_blocking_mode(bool blocking_mode);
+  ssize_t write(const void* buf, size_t buflen);
+  ssize_t writev(const iovec* iov, int iovlen);
 
   // File
   bool datasync();

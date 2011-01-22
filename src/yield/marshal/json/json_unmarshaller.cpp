@@ -45,33 +45,33 @@
 namespace yield {
 namespace marshal {
 namespace json {
-JSONUnmarshaller::JSONUnmarshaller( const Buffer& buffer ) {
+JSONUnmarshaller::JSONUnmarshaller(const Buffer& buffer) {
   next_object_i = 0;
-  root_object = JSONDecoder().decode( buffer );
+  root_object = JSONDecoder().decode(buffer);
 }
 
-JSONUnmarshaller::JSONUnmarshaller( const char* json, size_t json_len ) {
+JSONUnmarshaller::JSONUnmarshaller(const char* json, size_t json_len) {
   next_object_i = 0;
-  root_object = JSONDecoder().decode( json, json_len );
+  root_object = JSONDecoder().decode(json, json_len);
 }
 
-JSONUnmarshaller::JSONUnmarshaller( Object& root_object )
-  : root_object( &root_object.inc_ref() ) {
+JSONUnmarshaller::JSONUnmarshaller(Object& root_object)
+  : root_object(&root_object.inc_ref()) {
   next_object_i = 0;
 }
 
 JSONUnmarshaller::~JSONUnmarshaller() {
-  Object::dec_ref( root_object );
+  Object::dec_ref(root_object);
 }
 
-Object* JSONUnmarshaller::read( const Object& key ) {
-  if ( root_object != NULL ) {
-    switch ( root_object->get_type_id() ) {
+Object* JSONUnmarshaller::read(const Object& key) {
+  if (root_object != NULL) {
+    switch (root_object->get_type_id()) {
     case ObjectMap::TYPE_ID: {
-      if ( key.get_type_id() == Null::TYPE_ID )
+      if (key.get_type_id() == Null::TYPE_ID)
         return root_object;
       else {
-        ObjectMap& json_object = static_cast<ObjectMap&>( *root_object );
+        ObjectMap& json_object = static_cast<ObjectMap&>(*root_object);
 
         for
         (
@@ -79,7 +79,7 @@ Object* JSONUnmarshaller::read( const Object& key ) {
           object_i != json_object.end();
           ++object_i
         ) {
-          if ( key == *object_i->first ) {
+          if (key == *object_i->first) {
             next_object_i++;
             return object_i->second;
           }
@@ -89,12 +89,12 @@ Object* JSONUnmarshaller::read( const Object& key ) {
     break;
 
     case ObjectVector::TYPE_ID: {
-      debug_assert_eq( key.get_type_id(), Null::TYPE_ID );
+      debug_assert_eq(key.get_type_id(), Null::TYPE_ID);
 
       ObjectVector& json_array
-      = static_cast<ObjectVector&>( *root_object );
+      = static_cast<ObjectVector&>(*root_object);
 
-      if ( next_object_i < json_array.size() )
+      if (next_object_i < json_array.size())
         return json_array[next_object_i++];
       else
         return NULL;
@@ -109,71 +109,71 @@ Object* JSONUnmarshaller::read( const Object& key ) {
   return NULL;
 }
 
-bool JSONUnmarshaller::read_bool( const Object& key ) {
-  Object* object = read( key );
-  if ( object != NULL && object->get_type_id() == Boolean::TYPE_ID )
-    return *static_cast<const Boolean*>( object );
+bool JSONUnmarshaller::read_bool(const Object& key) {
+  Object* object = read(key);
+  if (object != NULL && object->get_type_id() == Boolean::TYPE_ID)
+    return *static_cast<const Boolean*>(object);
   else
     return false;
 }
 
-double JSONUnmarshaller::read_double( const Object& key ) {
-  const Object* object = read( key );
-  if ( object != NULL ) {
-    if ( object->get_type_id() == Double::TYPE_ID )
-      return *static_cast<const Double*>( object );
-    else if ( object->get_type_id() == Integer::TYPE_ID )
-      return static_cast<double>( *static_cast<const Integer*>( object ) );
+double JSONUnmarshaller::read_double(const Object& key) {
+  const Object* object = read(key);
+  if (object != NULL) {
+    if (object->get_type_id() == Double::TYPE_ID)
+      return *static_cast<const Double*>(object);
+    else if (object->get_type_id() == Integer::TYPE_ID)
+      return static_cast<double>(*static_cast<const Integer*>(object));
   }
 
   return 0;
 }
 
-int64_t JSONUnmarshaller::read_int64( const Object& key ) {
-  const Object* object = read( key );
-  if ( object != NULL ) {
-    if ( object->get_type_id() == Double::TYPE_ID )
-      return static_cast<int64_t>( *static_cast<const Double*>( object ) );
-    else if ( object->get_type_id() == Integer::TYPE_ID )
-      return *static_cast<const Integer*>( object );
+int64_t JSONUnmarshaller::read_int64(const Object& key) {
+  const Object* object = read(key);
+  if (object != NULL) {
+    if (object->get_type_id() == Double::TYPE_ID)
+      return static_cast<int64_t>(*static_cast<const Double*>(object));
+    else if (object->get_type_id() == Integer::TYPE_ID)
+      return *static_cast<const Integer*>(object);
   }
 
   return 0;
 }
 
-void JSONUnmarshaller::read_key( Object& key ) {
-  if ( root_object != NULL ) {
-    debug_assert_eq( root_object->get_type_id(), ObjectMap::TYPE_ID );
-    ObjectMap& json_object = static_cast<ObjectMap&>( *root_object );
-    debug_assert_lt( next_object_i, json_object.size() );
+void JSONUnmarshaller::read_key(Object& key) {
+  if (root_object != NULL) {
+    debug_assert_eq(root_object->get_type_id(), ObjectMap::TYPE_ID);
+    ObjectMap& json_object = static_cast<ObjectMap&>(*root_object);
+    debug_assert_lt(next_object_i, json_object.size());
     ObjectMap::const_iterator json_object_i = json_object.begin();
-    for ( size_t object_i = 0; object_i < next_object_i; object_i++ )
+    for (size_t object_i = 0; object_i < next_object_i; object_i++)
       ++json_object_i;
-    debug_assert_ne( json_object_i, json_object.end() );
-    debug_assert_ne( json_object_i->first, NULL );
+    debug_assert_ne(json_object_i, json_object.end());
+    debug_assert_ne(json_object_i->first, NULL);
     debug_assert_eq
     (
       json_object_i->first->get_type_id(),
       String::TYPE_ID
     );
     const String& json_key
-    = static_cast<const String&>( *json_object_i->first );
+    = static_cast<const String&>(*json_object_i->first);
 
-    switch ( key.get_type_id() ) {
+    switch (key.get_type_id()) {
     case Double::TYPE_ID: {
-      static_cast<Double&>( key ) = atof( json_key.c_str() );
+      static_cast<Double&>(key) = atof(json_key.c_str());
     }
     break;
 
     case Integer::TYPE_ID: {
       int64_t int64_key;
-      sscanf( json_key.c_str(), "%lld", &int64_key );
-      static_cast<Integer&>( key ) = int64_key;
+      sscanf(json_key.c_str(), "%lld", &int64_key);
+      static_cast<Integer&>(key) = int64_key;
     }
     break;
 
     case String::TYPE_ID: {
-      static_cast<String&>( key ) = json_key;
+      static_cast<String&>(key) = json_key;
     }
     break;
 
@@ -184,47 +184,47 @@ void JSONUnmarshaller::read_key( Object& key ) {
   }
 }
 
-void JSONUnmarshaller::read_map( const Object& key, Map& value ) {
-  Object* object = read( key );
-  if ( object != NULL && object->get_type_id() == ObjectMap::TYPE_ID ) {
-    JSONUnmarshaller child_json_unmarshaller( *object );
-    size_t size = static_cast<ObjectMap&>( *object ).size();
-    while ( child_json_unmarshaller.next_object_i < size )
-      value.unmarshal( child_json_unmarshaller );
+void JSONUnmarshaller::read_map(const Object& key, Map& value) {
+  Object* object = read(key);
+  if (object != NULL && object->get_type_id() == ObjectMap::TYPE_ID) {
+    JSONUnmarshaller child_json_unmarshaller(*object);
+    size_t size = static_cast<ObjectMap&>(*object).size();
+    while (child_json_unmarshaller.next_object_i < size)
+      value.unmarshal(child_json_unmarshaller);
   }
 }
 
-void JSONUnmarshaller::read_object( const Object& key, Object& value ) {
-  Object* object = read( key );
-  if ( object != NULL && object->get_type_id() == ObjectMap::TYPE_ID ) {
-    JSONUnmarshaller child_json_unmarshaller( *object );
-    value.unmarshal( child_json_unmarshaller );
+void JSONUnmarshaller::read_object(const Object& key, Object& value) {
+  Object* object = read(key);
+  if (object != NULL && object->get_type_id() == ObjectMap::TYPE_ID) {
+    JSONUnmarshaller child_json_unmarshaller(*object);
+    value.unmarshal(child_json_unmarshaller);
   }
 }
 
-void JSONUnmarshaller::read_sequence( const Object& key, Sequence& value ) {
-  Object* object = read( key );
-  if ( object != NULL && object->get_type_id() == ObjectVector::TYPE_ID ) {
-    JSONUnmarshaller child_json_unmarshaller( *object );
-    size_t size = static_cast<ObjectVector&>( *object ).size();
-    while ( child_json_unmarshaller.next_object_i < size )
-      value.unmarshal( child_json_unmarshaller );
+void JSONUnmarshaller::read_sequence(const Object& key, Sequence& value) {
+  Object* object = read(key);
+  if (object != NULL && object->get_type_id() == ObjectVector::TYPE_ID) {
+    JSONUnmarshaller child_json_unmarshaller(*object);
+    size_t size = static_cast<ObjectVector&>(*object).size();
+    while (child_json_unmarshaller.next_object_i < size)
+      value.unmarshal(child_json_unmarshaller);
   }
 }
 
-void JSONUnmarshaller::read_string( const Object& key, string& value ) {
-  Object* object = read( key );
-  if ( object != NULL && object->get_type_id() == String::TYPE_ID )
-    value.assign( *static_cast<String*>( object ) );
+void JSONUnmarshaller::read_string(const Object& key, string& value) {
+  Object* object = read(key);
+  if (object != NULL && object->get_type_id() == String::TYPE_ID)
+    value.assign(*static_cast<String*>(object));
 }
 
-uint64_t JSONUnmarshaller::read_uint64( const Object& key ) {
-  const Object* object = read( key );
-  if ( object != NULL ) {
-    if ( object->get_type_id() == Double::TYPE_ID )
-      return static_cast<uint64_t>( *static_cast<const Double*>( object ) );
-    else if ( object->get_type_id() == Integer::TYPE_ID )
-      return *static_cast<const Integer*>( object );
+uint64_t JSONUnmarshaller::read_uint64(const Object& key) {
+  const Object* object = read(key);
+  if (object != NULL) {
+    if (object->get_type_id() == Double::TYPE_ID)
+      return static_cast<uint64_t>(*static_cast<const Double*>(object));
+    else if (object->get_type_id() == Integer::TYPE_ID)
+      return *static_cast<const Integer*>(object);
   }
 
   return 0;

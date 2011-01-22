@@ -37,21 +37,21 @@
 
 namespace yield {
 namespace fs {
-bool ExtendedAttributes::get( const char* name, string& out_value ) {
-  ssize_t estimated_value_len = get( name, NULL, 0 );
-  if ( estimated_value_len != -1 ) {
+bool ExtendedAttributes::get(const char* name, string& out_value) {
+  ssize_t estimated_value_len = get(name, NULL, 0);
+  if (estimated_value_len != -1) {
     char* value = new char[estimated_value_len];
-    ssize_t value_len = get( name, value, estimated_value_len );
-    debug_assert_eq( value_len, estimated_value_len );
-    out_value.assign( value, value_len );
+    ssize_t value_len = get(name, value, estimated_value_len);
+    debug_assert_eq(value_len, estimated_value_len);
+    out_value.assign(value, value_len);
     delete [] value;
     return true;
   } else
     return false;
 }
 
-bool ExtendedAttributes::set( const char* name, const char* value, int flags ) {
-  return set( name, value, strlen( value ), flags );
+bool ExtendedAttributes::set(const char* name, const char* value, int flags) {
+  return set(name, value, strlen(value), flags);
 }
 
 bool
@@ -61,7 +61,7 @@ ExtendedAttributes::set
   const string& value,
   int flags
 ) {
-  return set( name, value.c_str(), value.size(), flags );
+  return set(name, value.c_str(), value.size(), flags);
 }
 
 //ssize_t

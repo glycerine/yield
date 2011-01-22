@@ -42,10 +42,10 @@ namespace sockets {
 namespace win32 {
 class AIOQueue : public yield::aio::win32::AIOQueue {
 public:
-  bool associate( socket_t socket_ );
+  bool associate(socket_t socket_);
 
   // yield::EventQueue
-  bool enqueue( YO_NEW_REF Event& event );
+  bool enqueue(YO_NEW_REF Event& event);
 };
 }
 }

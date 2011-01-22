@@ -33,4 +33,4 @@
 #include "yield/types.hpp"
 
 
-TEST_SUITE_EX( BlockingConcurrentQueue, yield::thread::QueueTestSuite< yield::thread::BlockingConcurrentQueue<uint32_t> > );
+TEST_SUITE_EX(BlockingConcurrentQueue, yield::thread::QueueTestSuite< yield::thread::BlockingConcurrentQueue<uint32_t> >);

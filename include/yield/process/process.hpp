@@ -97,8 +97,8 @@ public:
     return stdout_;
   }
   virtual bool kill() = 0; // SIGKILL
-  static YO_NEW_REF Process* open( pid_t pid );
-  virtual bool poll( int* out_return_code = 0 ) = 0; // waitpid() with WNOHANG
+  static YO_NEW_REF Process* open(pid_t pid);
+  virtual bool poll(int* out_return_code = 0) = 0;   // waitpid() with WNOHANG
   static pid_t self();
   virtual bool terminate() = 0; // SIGTERM
   virtual int wait() = 0; // waitpid(), blocking
@@ -112,7 +112,7 @@ protected:
   );
 
 private:
-  Channel *stderr_, *stdin_, *stdout_;
+  Channel* stderr_, *stdin_, *stdout_;
 };
 }
 }

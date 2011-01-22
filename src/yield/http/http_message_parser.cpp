@@ -76,27 +76,27 @@
 
 namespace yield {
 namespace http {
-HTTPMessageParser::HTTPMessageParser( Buffer& buffer )
-  : buffer( buffer.inc_ref() ) {
-  debug_assert_false( buffer.empty() );
+HTTPMessageParser::HTTPMessageParser(Buffer& buffer)
+  : buffer(buffer.inc_ref()) {
+  debug_assert_false(buffer.empty());
 
   ps = p = buffer;
   eof = ps + buffer.size();
 }
 
-HTTPMessageParser::HTTPMessageParser( const string& buffer )
-  : buffer( *new Page( buffer ) ) {
-  debug_assert_false( buffer.empty() );
+HTTPMessageParser::HTTPMessageParser(const string& buffer)
+  : buffer(*new Page(buffer)) {
+  debug_assert_false(buffer.empty());
 
   ps = p = this->buffer;
   eof = ps + this->buffer.size();
 }
 
 HTTPMessageParser::~HTTPMessageParser() {
-  Buffer::dec_ref( buffer );
+  Buffer::dec_ref(buffer);
 }
 
-bool HTTPMessageParser::parse_body( size_t content_length, void*& body ) {
+bool HTTPMessageParser::parse_body(size_t content_length, void*& body) {
   if
   (
     content_length == 0
@@ -105,7 +105,7 @@ bool HTTPMessageParser::parse_body( size_t content_length, void*& body ) {
   ) {
     body = NULL;
     return true;
-  } else if ( static_cast<size_t>( eof - p ) >= content_length ) {
+  } else if (static_cast<size_t>(eof - p) >= content_length) {
     body = p;
     p += content_length;
     return true;
@@ -368,36 +368,36 @@ Object* HTTPMessageParser::parse_body_chunk() {
     int _klen;
     unsigned int _trans;
     short _widec;
-    const char *_acts;
+    const char* _acts;
     unsigned int _nacts;
-    const short *_keys;
+    const short* _keys;
 
-    if ( cs == 0 )
+    if (cs == 0)
       goto _out;
 _resume:
     _widec = (*p);
     _klen = _chunk_parser_cond_lengths[cs];
-    _keys = _chunk_parser_cond_keys + (_chunk_parser_cond_offsets[cs]*2);
-    if ( _klen > 0 ) {
-      const short *_lower = _keys;
-      const short *_mid;
-      const short *_upper = _keys + (_klen<<1) - 2;
+    _keys = _chunk_parser_cond_keys + (_chunk_parser_cond_offsets[cs] * 2);
+    if (_klen > 0) {
+      const short* _lower = _keys;
+      const short* _mid;
+      const short* _upper = _keys + (_klen << 1) - 2;
       while (1) {
-        if ( _upper < _lower )
+        if (_upper < _lower)
           break;
 
-        _mid = _lower + (((_upper-_lower) >> 1) & ~1);
-        if ( _widec < _mid[0] )
+        _mid = _lower + (((_upper - _lower) >> 1) & ~1);
+        if (_widec < _mid[0])
           _upper = _mid - 2;
-        else if ( _widec > _mid[1] )
+        else if (_widec > _mid[1])
           _lower = _mid + 2;
         else {
-          switch ( _chunk_parser_cond_spaces[_chunk_parser_cond_offsets[cs] + ((_mid - _keys)>>1)] ) {
+          switch (_chunk_parser_cond_spaces[_chunk_parser_cond_offsets[cs] + ((_mid - _keys) >> 1)]) {
           case 0: {
             _widec = (short)(256u + ((*p) - 0u));
             if (
               /* #line 56 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\chunk.rl" */
-              seen_chunk_size++ < chunk_size  ) _widec += 256;
+              seen_chunk_size++ < chunk_size) _widec += 256;
             break;
           }
           }
@@ -410,18 +410,18 @@ _resume:
     _trans = _chunk_parser_index_offsets[cs];
 
     _klen = _chunk_parser_single_lengths[cs];
-    if ( _klen > 0 ) {
-      const short *_lower = _keys;
-      const short *_mid;
-      const short *_upper = _keys + _klen - 1;
+    if (_klen > 0) {
+      const short* _lower = _keys;
+      const short* _mid;
+      const short* _upper = _keys + _klen - 1;
       while (1) {
-        if ( _upper < _lower )
+        if (_upper < _lower)
           break;
 
-        _mid = _lower + ((_upper-_lower) >> 1);
-        if ( _widec < *_mid )
+        _mid = _lower + ((_upper - _lower) >> 1);
+        if (_widec < *_mid)
           _upper = _mid - 1;
-        else if ( _widec > *_mid )
+        else if (_widec > *_mid)
           _lower = _mid + 1;
         else {
           _trans += (_mid - _keys);
@@ -433,21 +433,21 @@ _resume:
     }
 
     _klen = _chunk_parser_range_lengths[cs];
-    if ( _klen > 0 ) {
-      const short *_lower = _keys;
-      const short *_mid;
-      const short *_upper = _keys + (_klen<<1) - 2;
+    if (_klen > 0) {
+      const short* _lower = _keys;
+      const short* _mid;
+      const short* _upper = _keys + (_klen << 1) - 2;
       while (1) {
-        if ( _upper < _lower )
+        if (_upper < _lower)
           break;
 
-        _mid = _lower + (((_upper-_lower) >> 1) & ~1);
-        if ( _widec < _mid[0] )
+        _mid = _lower + (((_upper - _lower) >> 1) & ~1);
+        if (_widec < _mid[0])
           _upper = _mid - 2;
-        else if ( _widec > _mid[1] )
+        else if (_widec > _mid[1])
           _lower = _mid + 2;
         else {
-          _trans += ((_mid - _keys)>>1);
+          _trans += ((_mid - _keys) >> 1);
           goto _match;
         }
       }
@@ -458,13 +458,13 @@ _match:
     _trans = _chunk_parser_indicies[_trans];
     cs = _chunk_parser_trans_targs[_trans];
 
-    if ( _chunk_parser_trans_actions[_trans] == 0 )
+    if (_chunk_parser_trans_actions[_trans] == 0)
       goto _again;
 
     _acts = _chunk_parser_actions + _chunk_parser_trans_actions[_trans];
-    _nacts = (unsigned int) *_acts++;
-    while ( _nacts-- > 0 ) {
-      switch ( *_acts++ ) {
+    _nacts = (unsigned int) * _acts++;
+    while (_nacts-- > 0) {
+      switch (*_acts++) {
       case 0:
         /* #line 31 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\field.rl" */
       {
@@ -474,7 +474,7 @@ _match:
       case 1:
         /* #line 31 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\field.rl" */
       {
-        field_name.iov_len = p - static_cast<char*>( field_name.iov_base );
+        field_name.iov_len = p - static_cast<char*>(field_name.iov_base);
       }
       break;
       case 2:
@@ -486,7 +486,7 @@ _match:
       case 3:
         /* #line 31 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\field.rl" */
       {
-        field_value.iov_len = p - static_cast<char*>( field_value.iov_base );
+        field_value.iov_len = p - static_cast<char*>(field_value.iov_base);
       }
       break;
       case 4:
@@ -502,7 +502,7 @@ _match:
         chunk_size
         = static_cast<size_t>
           (
-            strtol( chunk_size_p, &chunk_size_pe, 16 )
+            strtol(chunk_size_p, &chunk_size_pe, 16)
           );
       }
       break;
@@ -537,15 +537,15 @@ _match:
     }
 
 _again:
-    if ( cs == 0 )
+    if (cs == 0)
       goto _out;
     p += 1;
     goto _resume;
-    if ( p == eof ) {
-      const char *__acts = _chunk_parser_actions + _chunk_parser_eof_actions[cs];
-      unsigned int __nacts = (unsigned int) *__acts++;
-      while ( __nacts-- > 0 ) {
-        switch ( *__acts++ ) {
+    if (p == eof) {
+      const char* __acts = _chunk_parser_actions + _chunk_parser_eof_actions[cs];
+      unsigned int __nacts = (unsigned int) * __acts++;
+      while (__nacts-- > 0) {
+        switch (*__acts++) {
         case 9:
           /* #line 114 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
         {
@@ -564,15 +564,15 @@ _out:
   /* #line 119 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
 
 
-  if ( cs != chunk_parser_error ) {
-    if ( chunk_size > 0 ) {
+  if (cs != chunk_parser_error) {
+    if (chunk_size > 0) {
       // Cut off the chunk size + extension + CRLF before
       // the chunk data and the CRLF after
-      return new HTTPBodyChunk( chunk_data_p, p - chunk_data_p - 2 );
+      return new HTTPBodyChunk(chunk_data_p, p - chunk_data_p - 2);
     } else // Last chunk
       return new HTTPBodyChunk;
-  } else if ( p == eof && chunk_size != 0 )
-    return new Page( chunk_size + 2 ); // Assumes no trailers..
+  } else if (p == eof && chunk_size != 0)
+    return new Page(chunk_size + 2);   // Assumes no trailers..
   else
     return NULL;
 }
@@ -583,7 +583,7 @@ HTTPMessageParser::parse_fields
   OUT uint16_t& fields_offset,
   OUT size_t& content_length
 ) {
-  fields_offset = static_cast<uint16_t>( p - ps );
+  fields_offset = static_cast<uint16_t>(p - ps);
 
   content_length = 0;
 
@@ -668,29 +668,29 @@ HTTPMessageParser::parse_fields
   {
     int _klen;
     unsigned int _trans;
-    const char *_acts;
+    const char* _acts;
     unsigned int _nacts;
-    const unsigned char *_keys;
+    const unsigned char* _keys;
 
-    if ( cs == 0 )
+    if (cs == 0)
       goto _out;
 _resume:
     _keys = _fields_parser_trans_keys + _fields_parser_key_offsets[cs];
     _trans = _fields_parser_index_offsets[cs];
 
     _klen = _fields_parser_single_lengths[cs];
-    if ( _klen > 0 ) {
-      const unsigned char *_lower = _keys;
-      const unsigned char *_mid;
-      const unsigned char *_upper = _keys + _klen - 1;
+    if (_klen > 0) {
+      const unsigned char* _lower = _keys;
+      const unsigned char* _mid;
+      const unsigned char* _upper = _keys + _klen - 1;
       while (1) {
-        if ( _upper < _lower )
+        if (_upper < _lower)
           break;
 
-        _mid = _lower + ((_upper-_lower) >> 1);
-        if ( (*p) < *_mid )
+        _mid = _lower + ((_upper - _lower) >> 1);
+        if ((*p) < *_mid)
           _upper = _mid - 1;
-        else if ( (*p) > *_mid )
+        else if ((*p) > *_mid)
           _lower = _mid + 1;
         else {
           _trans += (_mid - _keys);
@@ -702,21 +702,21 @@ _resume:
     }
 
     _klen = _fields_parser_range_lengths[cs];
-    if ( _klen > 0 ) {
-      const unsigned char *_lower = _keys;
-      const unsigned char *_mid;
-      const unsigned char *_upper = _keys + (_klen<<1) - 2;
+    if (_klen > 0) {
+      const unsigned char* _lower = _keys;
+      const unsigned char* _mid;
+      const unsigned char* _upper = _keys + (_klen << 1) - 2;
       while (1) {
-        if ( _upper < _lower )
+        if (_upper < _lower)
           break;
 
-        _mid = _lower + (((_upper-_lower) >> 1) & ~1);
-        if ( (*p) < _mid[0] )
+        _mid = _lower + (((_upper - _lower) >> 1) & ~1);
+        if ((*p) < _mid[0])
           _upper = _mid - 2;
-        else if ( (*p) > _mid[1] )
+        else if ((*p) > _mid[1])
           _lower = _mid + 2;
         else {
-          _trans += ((_mid - _keys)>>1);
+          _trans += ((_mid - _keys) >> 1);
           goto _match;
         }
       }
@@ -727,13 +727,13 @@ _match:
     _trans = _fields_parser_indicies[_trans];
     cs = _fields_parser_trans_targs[_trans];
 
-    if ( _fields_parser_trans_actions[_trans] == 0 )
+    if (_fields_parser_trans_actions[_trans] == 0)
       goto _again;
 
     _acts = _fields_parser_actions + _fields_parser_trans_actions[_trans];
-    _nacts = (unsigned int) *_acts++;
-    while ( _nacts-- > 0 ) {
-      switch ( *_acts++ ) {
+    _nacts = (unsigned int) * _acts++;
+    while (_nacts-- > 0) {
+      switch (*_acts++) {
       case 0:
         /* #line 31 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\field.rl" */
       {
@@ -743,7 +743,7 @@ _match:
       case 1:
         /* #line 31 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\field.rl" */
       {
-        field_name.iov_len = p - static_cast<char*>( field_name.iov_base );
+        field_name.iov_len = p - static_cast<char*>(field_name.iov_base);
       }
       break;
       case 2:
@@ -755,7 +755,7 @@ _match:
       case 3:
         /* #line 31 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\field.rl" */
       {
-        field_value.iov_len = p - static_cast<char*>( field_value.iov_base );
+        field_value.iov_len = p - static_cast<char*>(field_value.iov_base);
       }
       break;
       case 4:
@@ -766,25 +766,25 @@ _match:
           field_name.iov_len == 14
           &&
           (
-            memcmp( field_name.iov_base, "Content-Length", 14 ) == 0
+            memcmp(field_name.iov_base, "Content-Length", 14) == 0
             ||
-            memcmp( field_name.iov_base, "Content-length", 14 ) == 0
+            memcmp(field_name.iov_base, "Content-length", 14) == 0
           )
         ) {
-          char* nptr = static_cast<char*>( field_value.iov_base );
+          char* nptr = static_cast<char*>(field_value.iov_base);
           char* endptr = nptr + field_value.iov_len;
-          content_length = static_cast<size_t>( strtol( nptr, &endptr, 10 ) );
+          content_length = static_cast<size_t>(strtol(nptr, &endptr, 10));
         } else if
         (
           field_name.iov_len == 17
           &&
           (
-            memcmp( field_name.iov_base, "Transfer-Encoding", 17 ) == 0
+            memcmp(field_name.iov_base, "Transfer-Encoding", 17) == 0
             ||
-            memcmp( field_name.iov_base, "Transfer-encoding", 17 ) == 0
+            memcmp(field_name.iov_base, "Transfer-encoding", 17) == 0
           )
           &&
-          memcmp( field_value.iov_base, "chunked", 7 ) == 0
+          memcmp(field_value.iov_base, "chunked", 7) == 0
         )
           content_length = HTTPRequest::CONTENT_LENGTH_CHUNKED;
       }
@@ -808,15 +808,15 @@ _match:
     }
 
 _again:
-    if ( cs == 0 )
+    if (cs == 0)
       goto _out;
     p += 1;
     goto _resume;
-    if ( p == eof ) {
-      const char *__acts = _fields_parser_actions + _fields_parser_eof_actions[cs];
-      unsigned int __nacts = (unsigned int) *__acts++;
-      while ( __nacts-- > 0 ) {
-        switch ( *__acts++ ) {
+    if (p == eof) {
+      const char* __acts = _fields_parser_actions + _fields_parser_eof_actions[cs];
+      unsigned int __nacts = (unsigned int) * __acts++;
+      while (__nacts-- > 0) {
+        switch (*__acts++) {
         case 6:
           /* #line 194 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
         {

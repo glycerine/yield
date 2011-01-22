@@ -32,4 +32,4 @@
 #include "yield/stage/seda_stage_scheduler.hpp"
 
 
-TEST_SUITE_EX( SEDAStageScheduler, yield::stage::StageSchedulerTestSuite<yield::stage::SEDAStageScheduler> );
+TEST_SUITE_EX(SEDAStageScheduler, yield::stage::StageSchedulerTestSuite<yield::stage::SEDAStageScheduler>);

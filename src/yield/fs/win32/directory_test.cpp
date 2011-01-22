@@ -32,4 +32,4 @@
 #include "volume.hpp"
 
 
-TEST_SUITE_EX( Win32Directory, yield::fs::DirectoryTestSuite<yield::fs::win32::Volume> );
+TEST_SUITE_EX(Win32Directory, yield::fs::DirectoryTestSuite<yield::fs::win32::Volume>);

@@ -58,8 +58,8 @@ void Semaphore::post() {
   pimpl->post();
 }
 
-bool Semaphore::timedwait( const Time& timeout ) {
-  return pimpl->timedwait( timeout );
+bool Semaphore::timedwait(const Time& timeout) {
+  return pimpl->timedwait(timeout);
 }
 
 bool Semaphore::trywait() {

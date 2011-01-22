@@ -45,22 +45,22 @@ class Unmarshaller {
 public:
   virtual ~Unmarshaller() { }
 
-  virtual bool read_bool( const Object& key ) = 0;
-  virtual float read_float( const Object& key );
-  virtual double read_double( const Object& key ) = 0;
-  virtual int8_t read_int8( const Object& key );
-  virtual int16_t read_int16( const Object& key );
-  virtual int32_t read_int32( const Object& key );
-  virtual int64_t read_int64( const Object& key ) = 0;
-  virtual void read_key( Object& key ) = 0;
-  virtual void read_map( const Object& key, Map& value ) = 0;
-  virtual void read_object( const Object& key, Object& value ) = 0;
-  virtual void read_sequence( const Object& key, Sequence& value ) = 0;
-  virtual void read_string( const Object& key, string& value ) = 0;
-  virtual uint8_t read_uint8( const Object& key );
-  virtual uint16_t read_uint16( const Object& key );
-  virtual uint32_t read_uint32( const Object& key );
-  virtual uint64_t read_uint64( const Object& key ) = 0;
+  virtual bool read_bool(const Object& key) = 0;
+  virtual float read_float(const Object& key);
+  virtual double read_double(const Object& key) = 0;
+  virtual int8_t read_int8(const Object& key);
+  virtual int16_t read_int16(const Object& key);
+  virtual int32_t read_int32(const Object& key);
+  virtual int64_t read_int64(const Object& key) = 0;
+  virtual void read_key(Object& key) = 0;
+  virtual void read_map(const Object& key, Map& value) = 0;
+  virtual void read_object(const Object& key, Object& value) = 0;
+  virtual void read_sequence(const Object& key, Sequence& value) = 0;
+  virtual void read_string(const Object& key, string& value) = 0;
+  virtual uint8_t read_uint8(const Object& key);
+  virtual uint16_t read_uint16(const Object& key);
+  virtual uint32_t read_uint32(const Object& key);
+  virtual uint64_t read_uint64(const Object& key) = 0;
 };
 }
 }

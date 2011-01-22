@@ -46,8 +46,8 @@ public:
   const static Code WCHAR_T;
 
 public:
-  Code( uint32_t code_page )
-    : code_page( code_page )
+  Code(uint32_t code_page)
+    : code_page(code_page)
   { }
 
   operator uint32_t() const {

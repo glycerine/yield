@@ -32,4 +32,4 @@
 #include "epoller.hpp"
 
 
-TEST_SUITE_EX( EPoller, yield::poll::FDEventQueueTestSuite<yield::poll::linux::EPoller> );
+TEST_SUITE_EX(EPoller, yield::poll::FDEventQueueTestSuite<yield::poll::linux::EPoller>);

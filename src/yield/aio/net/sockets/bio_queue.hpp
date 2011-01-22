@@ -41,12 +41,12 @@ namespace net {
 namespace sockets {
 class BIOQueue : public yield::aio::BIOQueue {
 public:
-  bool associate( socket_t ) {
+  bool associate(socket_t) {
     return true;
   }
 
   // yield::EventQueue
-  bool enqueue( YO_NEW_REF Event& event );
+  bool enqueue(YO_NEW_REF Event& event);
 };
 }
 }

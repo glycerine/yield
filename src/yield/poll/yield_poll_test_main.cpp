@@ -56,7 +56,7 @@ extern yunit::TestSuite& WSAPollerTestSuite();
 #endif
 
 
-int main( int, char** ) {
+int main(int, char**) {
   int failed_test_case_count = 0;
 
 #if defined(__MACH__) || defined(__FreeBSD__)

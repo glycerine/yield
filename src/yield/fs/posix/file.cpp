@@ -40,8 +40,8 @@
 namespace yield {
 namespace fs {
 namespace posix {
-File::File( fd_t fd )
-  : fd( fd )
+File::File(fd_t fd)
+  : fd(fd)
 { }
 
 File::~File() {
@@ -49,8 +49,8 @@ File::~File() {
 }
 
 bool File::close() {
-  if ( fd != -1 ) {
-    if ( ::close( fd ) != -1 ) {
+  if (fd != -1) {
+    if (::close(fd) != -1) {
       fd = -1;
       return true;
     } else
@@ -61,8 +61,8 @@ bool File::close() {
 
 yield::fs::Stat* File::getattr() {
   struct stat stbuf;
-  if ( fstat( *this, &stbuf ) != -1 )
-    return new Stat( stbuf );
+  if (fstat(*this, &stbuf) != -1)
+    return new Stat(stbuf);
   else
     return NULL;
 }
@@ -72,12 +72,12 @@ File::getlk
 (
   const yield::fs::File::Lock& lock
 ) {
-  struct flock flock_ = Lock( lock );
-  if ( fcntl( *this, F_GETLK, &flock_ ) != -1 ) {
-    if ( flock_.l_type == F_UNLCK ) // No lock blocking lock
+  struct flock flock_ = Lock(lock);
+  if (fcntl(*this, F_GETLK, &flock_) != -1) {
+    if (flock_.l_type == F_UNLCK)   // No lock blocking lock
       return NULL;
     else
-      return new File::Lock( flock_ );
+      return new File::Lock(flock_);
   } else
     return NULL;
 }
@@ -87,83 +87,83 @@ YO_NEW_REF ExtendedAttributes* File::openxattrs() {
   return NULL;
 }
 
-ssize_t File::pread( void* buf, size_t buflen, uint64_t offset ) {
-  return ::pread( *this, buf, buflen, offset );
+ssize_t File::pread(void* buf, size_t buflen, uint64_t offset) {
+  return ::pread(*this, buf, buflen, offset);
 }
 
-ssize_t File::preadv( const iovec* iov, int iovlen, uint64_t offset ) {
-  return ::preadv( *this, iov, iovlen, offset );
+ssize_t File::preadv(const iovec* iov, int iovlen, uint64_t offset) {
+  return ::preadv(*this, iov, iovlen, offset);
 }
 
-ssize_t File::pwrite( const void* buf, size_t buflen, uint64_t offset ) {
-  return ::pwrite( *this, buf, buflen, offset );
+ssize_t File::pwrite(const void* buf, size_t buflen, uint64_t offset) {
+  return ::pwrite(*this, buf, buflen, offset);
 }
 
-ssize_t File::pwritev( const iovec* iov, int iovlen, uint64_t offset ) {
-  return ::pwritev( *this, iov, iovlen, offset );
+ssize_t File::pwritev(const iovec* iov, int iovlen, uint64_t offset) {
+  return ::pwritev(*this, iov, iovlen, offset);
 }
 
-ssize_t File::read( void* buf, size_t buflen ) {
-  return ::read( *this, buf, buflen );
+ssize_t File::read(void* buf, size_t buflen) {
+  return ::read(*this, buf, buflen);
 }
 
-ssize_t File::readv( const iovec* iov, int iovlen ) {
-  return ::readv( *this, iov, iovlen );
+ssize_t File::readv(const iovec* iov, int iovlen) {
+  return ::readv(*this, iov, iovlen);
 }
 
-uint64_t File::seek( int64_t offset, uint8_t whence ) {
-  return lseek( *this, offset, whence );
+uint64_t File::seek(int64_t offset, uint8_t whence) {
+  return lseek(*this, offset, whence);
 }
 
-bool File::set_blocking_mode( bool blocking_mode ) {
-  int current_fcntl_flags = fcntl( *this, F_GETFL, 0 );
-  if ( blocking_mode ) {
-    if ( ( current_fcntl_flags & O_NONBLOCK ) == O_NONBLOCK )
-      return fcntl( *this, F_SETFL, current_fcntl_flags ^ O_NONBLOCK ) != -1;
+bool File::set_blocking_mode(bool blocking_mode) {
+  int current_fcntl_flags = fcntl(*this, F_GETFL, 0);
+  if (blocking_mode) {
+    if ((current_fcntl_flags & O_NONBLOCK) == O_NONBLOCK)
+      return fcntl(*this, F_SETFL, current_fcntl_flags ^ O_NONBLOCK) != -1;
     else
       return true;
   } else
-    return fcntl( *this, F_SETFL, current_fcntl_flags | O_NONBLOCK ) != -1;
+    return fcntl(*this, F_SETFL, current_fcntl_flags | O_NONBLOCK) != -1;
 }
 
-bool File::setlk( const yield::fs::File::Lock& lock ) {
-  flock flock_ = Lock( lock );
-  return fcntl( *this, F_SETLK, &flock_ ) != -1;
+bool File::setlk(const yield::fs::File::Lock& lock) {
+  flock flock_ = Lock(lock);
+  return fcntl(*this, F_SETLK, &flock_) != -1;
 }
 
-bool File::setlkw( const yield::fs::File::Lock& lock ) {
-  flock flock_ = File::Lock( lock );
-  return fcntl( *this, F_SETLKW, &flock_ ) != -1;
+bool File::setlkw(const yield::fs::File::Lock& lock) {
+  flock flock_ = File::Lock(lock);
+  return fcntl(*this, F_SETLKW, &flock_) != -1;
 }
 
 bool File::sync() {
-  return fsync( *this ) != -1;
+  return fsync(*this) != -1;
 }
 
 uint64_t File::tell() {
-  return lseek( *this, 0, SEEK_CUR );
+  return lseek(*this, 0, SEEK_CUR);
 }
 
-bool File::truncate( uint64_t new_size ) {
-  return ::ftruncate( *this, new_size ) != -1;
+bool File::truncate(uint64_t new_size) {
+  return ::ftruncate(*this, new_size) != -1;
 }
 
-bool File::unlk( const yield::fs::File::Lock& lock ) {
-  flock flock_ = File::Lock( lock );
+bool File::unlk(const yield::fs::File::Lock& lock) {
+  flock flock_ = File::Lock(lock);
   flock_.l_type = F_UNLCK;
-  return fcntl( *this, F_SETLK, &flock_ ) != -1;
+  return fcntl(*this, F_SETLK, &flock_) != -1;
 }
 
-ssize_t File::write( const void* buf, size_t buflen ) {
-  return ::write( *this, buf, buflen );
+ssize_t File::write(const void* buf, size_t buflen) {
+  return ::write(*this, buf, buflen);
 }
 
-ssize_t File::writev( const iovec* iov, int iovlen ) {
-  return ::writev( *this, iov, iovlen );
+ssize_t File::writev(const iovec* iov, int iovlen) {
+  return ::writev(*this, iov, iovlen);
 }
 
 
-File::Lock::Lock( const flock& flock_ )
+File::Lock::Lock(const flock& flock_)
   : yield::fs::File::Lock
   (
     flock_.l_start,
@@ -174,8 +174,8 @@ File::Lock::Lock( const flock& flock_ )
   )
 { }
 
-File::Lock::Lock( const yield::fs::File::Lock& lock )
-  : yield::fs::File::Lock( lock )
+File::Lock::Lock(const yield::fs::File::Lock& lock)
+  : yield::fs::File::Lock(lock)
 { }
 
 File::Lock::operator struct flock() const {

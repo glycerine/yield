@@ -36,20 +36,20 @@
 
 namespace yield {
 namespace marshal {
-bool Boolean::operator==( const Object& other ) const {
-  switch ( other.get_type_id() ) {
+bool Boolean::operator==(const Object& other) const {
+  switch (other.get_type_id()) {
   case Boolean::TYPE_ID: {
-    return value == static_cast<const Boolean&>( other ).value;
+    return value == static_cast<const Boolean&>(other).value;
   }
   break;
 
   case Double::TYPE_ID: {
-    return value == ( static_cast<const Double&>( other ) != 0.0 );
+    return value == (static_cast<const Double&>(other) != 0.0);
   }
   break;
 
   case Integer::TYPE_ID: {
-    return value == ( static_cast<const Integer&>( other ) != 0 );
+    return value == (static_cast<const Integer&>(other) != 0);
   }
   break;
 

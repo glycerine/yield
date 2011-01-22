@@ -52,13 +52,13 @@ UUID::UUID() {
 #endif
 }
 
-UUID::UUID( const string& uuid ) {
+UUID::UUID(const string& uuid) {
 #if defined(__sun)
-  pimpl = new sunos::UUID( uuid );
+  pimpl = new sunos::UUID(uuid);
 #elif defined(_WIN32)
-  pimpl = new win32::UUID( uuid );
+  pimpl = new win32::UUID(uuid);
 #elif defined(YIELD_HAVE_LINUX_LIBUUID)
-  pimpl = new linux::UUID( uuid );
+  pimpl = new linux::UUID(uuid);
 #endif
 }
 
@@ -66,12 +66,12 @@ UUID::~UUID() {
   delete pimpl;
 }
 
-bool UUID::operator!=( const UUID& other ) const {
-  return !operator==( other );
+bool UUID::operator!=(const UUID& other) const {
+  return !operator==(other);
 }
 
-bool UUID::operator==( const UUID& other ) const {
-  return pimpl->operator==( *other.pimpl );
+bool UUID::operator==(const UUID& other) const {
+  return pimpl->operator==(*other.pimpl);
 }
 
 UUID::operator string() const {

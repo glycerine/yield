@@ -58,13 +58,13 @@ public:
   ~ProcessorSet();
 
   void clear();
-  void clear( uint16_t processor_i );
+  void clear(uint16_t processor_i);
   uint16_t count() const;
   bool empty() const {
     return count() == 0;
   }
-  bool isset( uint16_t processor_i ) const;
-  bool set( uint16_t processor_i );
+  bool isset(uint16_t processor_i) const;
+  bool set(uint16_t processor_i);
 
 private:
   friend class Thread;

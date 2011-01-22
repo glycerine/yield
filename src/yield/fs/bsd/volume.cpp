@@ -35,10 +35,10 @@
 namespace yield {
 namespace fs {
 namespace bsd {
-YO_NEW_REF yield::fs::Directory* Volume::opendir( const Path& path ) {
-  DIR* dirp = ::opendir( path.c_str() );
-  if ( dirp != NULL )
-    return new Directory( dirp, path );
+YO_NEW_REF yield::fs::Directory* Volume::opendir(const Path& path) {
+  DIR* dirp = ::opendir(path.c_str());
+  if (dirp != NULL)
+    return new Directory(dirp, path);
   else
     return NULL;
 }

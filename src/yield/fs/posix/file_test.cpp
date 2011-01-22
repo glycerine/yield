@@ -32,4 +32,4 @@
 #include "volume.hpp"
 
 
-TEST_SUITE_EX( POSIXFile, yield::fs::FileTestSuite<yield::fs::posix::Volume> );
+TEST_SUITE_EX(POSIXFile, yield::fs::FileTestSuite<yield::fs::posix::Volume>);

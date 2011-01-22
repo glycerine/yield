@@ -50,8 +50,8 @@ public:
     uint32_t attributes
   );
 
-  YO_NEW_REF yield::fs::Directory* opendir( const Path& );
-  yield::fs::ExtendedAttributes* openxattrs( const Path& );
+  YO_NEW_REF yield::fs::Directory* opendir(const Path&);
+  yield::fs::ExtendedAttributes* openxattrs(const Path&);
 };
 }
 }

@@ -104,7 +104,7 @@ typedef intptr_t atomic_t;
 
 #ifdef _WIN32
 typedef void* fd_t;
-const static fd_t INVALID_FD = reinterpret_cast<fd_t>( -1 );
+const static fd_t INVALID_FD = reinterpret_cast<fd_t>(-1);
 #else
 typedef int fd_t;
 const static fd_t INVALID_FD = -1;
@@ -148,17 +148,17 @@ typedef int16_t uid_t; // The st_uid in struct stat is a short.
 #endif
 
 
-inline socket_t fd_to_socket( fd_t fd ) {
+inline socket_t fd_to_socket(fd_t fd) {
 #ifdef _WIN32
-  return reinterpret_cast<socket_t>( fd );
+  return reinterpret_cast<socket_t>(fd);
 #else
   return fd;
 #endif
 }
 
-inline fd_t socket_to_fd( socket_t socket_ ) {
+inline fd_t socket_to_fd(socket_t socket_) {
 #ifdef _WIN32
-  return reinterpret_cast<fd_t>( socket_ );
+  return reinterpret_cast<fd_t>(socket_);
 #else
   return socket_;
 #endif
@@ -173,7 +173,7 @@ memcpy_s
   const void* src,
   size_t src_len
 ) {
-  memcpy( dest, src, src_len );
+  memcpy(dest, src, src_len);
 }
 #endif
 }

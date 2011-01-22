@@ -43,7 +43,7 @@ class iconv {
 public:
 
 public:
-  iconv( Code tocode, Code fromcode );
+  iconv(Code tocode, Code fromcode);
   ~iconv();
 
   // iconv.3
@@ -57,7 +57,7 @@ public:
   );
 
   // Other operator()'s return false on failure
-  bool operator()( const string& inbuf, string& outbuf );
+  bool operator()(const string& inbuf, string& outbuf);
 
 private:
   size_t

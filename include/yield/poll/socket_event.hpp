@@ -42,15 +42,15 @@ public:
   const static uint32_t TYPE_ID = 858162022UL;
 
 public:
-  SocketEvent( uint16_t events, socket_t socket_ )
-    : FDEvent( events, socket_to_fd( socket_ ) )
+  SocketEvent(uint16_t events, socket_t socket_)
+    : FDEvent(events, socket_to_fd(socket_))
   { }
 
   socket_t get_socket() const {
-    return fd_to_socket( get_fd() );
+    return fd_to_socket(get_fd());
   }
-  void set_socket( socket_t s ) {
-    set_fd( socket_to_fd( s ) );
+  void set_socket(socket_t s) {
+    set_fd(socket_to_fd(s));
   }
 
   // Object

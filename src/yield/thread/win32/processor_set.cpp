@@ -42,20 +42,20 @@ void ProcessorSet::clear() {
   mask = 0;
 }
 
-void ProcessorSet::clear( uint16_t processor_i ) {
-  mask &= ~( 1L << processor_i );
+void ProcessorSet::clear(uint16_t processor_i) {
+  mask &= ~(1L << processor_i);
 }
 
-bool ProcessorSet::isset( uint16_t processor_i ) const {
-  if ( processor_i < sizeof( uintptr_t ) * 8 ) {
-    uintptr_t bit = ( 1UL << processor_i );
-    return ( bit & mask ) == bit;
+bool ProcessorSet::isset(uint16_t processor_i) const {
+  if (processor_i < sizeof(uintptr_t) * 8) {
+    uintptr_t bit = (1UL << processor_i);
+    return (bit & mask) == bit;
   } else
     return false;
 }
 
-bool ProcessorSet::set( uint16_t processor_i ) {
-  mask |= ( 1UL << processor_i );
+bool ProcessorSet::set(uint16_t processor_i) {
+  mask |= (1UL << processor_i);
   return true;
 }
 }

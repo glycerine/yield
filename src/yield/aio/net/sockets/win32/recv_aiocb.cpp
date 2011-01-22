@@ -51,13 +51,13 @@ WSARecvFrom
   LPWSAOVERLAPPED lpOverlapped,
   LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
 ) {
-  DWORD dwFlags = static_cast<DWORD>( flags );
+  DWORD dwFlags = static_cast<DWORD>(flags);
   sockaddr* lpFrom = peername;
   socklen_t lpFromlen = peername.len();
 
-  if ( buffer.get_next_buffer() == NULL ) {
+  if (buffer.get_next_buffer() == NULL) {
     WSABUF wsabuf;
-    wsabuf.buf = static_cast<char*>( buffer )
+    wsabuf.buf = static_cast<char*>(buffer)
                  + buffer.size();
     wsabuf.len = buffer.capacity() - buffer.size();
 
@@ -78,12 +78,12 @@ WSARecvFrom
     Buffer* next_buffer = &buffer;
     do {
       WSABUF wsabuf;
-      wsabuf.buf = static_cast<char*>( *next_buffer )
+      wsabuf.buf = static_cast<char*>(*next_buffer)
                    + next_buffer->size();
       wsabuf.len = next_buffer->capacity() - next_buffer->size();
-      wsabufs.push_back( wsabuf );
+      wsabufs.push_back(wsabuf);
       next_buffer = next_buffer->get_next_buffer();
-    } while ( next_buffer != NULL );
+    } while (next_buffer != NULL);
 
     return WSARecvFrom
            (
@@ -101,8 +101,8 @@ WSARecvFrom
 }
 
 
-bool recvAIOCB::issue( EventHandler& completion_handler ) {
-  set_completion_handler( completion_handler );
+bool recvAIOCB::issue(EventHandler& completion_handler) {
+  set_completion_handler(completion_handler);
 
   return WSARecvFrom
          (
@@ -117,7 +117,7 @@ bool recvAIOCB::issue( EventHandler& completion_handler ) {
          WSAGetLastError() == WSA_IO_PENDING;
 }
 
-bool recvAIOCB::issue( yield::aio::win32::AIOQueue& ) {
+bool recvAIOCB::issue(yield::aio::win32::AIOQueue&) {
   return WSARecvFrom
          (
            get_socket(),

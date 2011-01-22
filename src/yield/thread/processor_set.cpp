@@ -60,8 +60,8 @@ void ProcessorSet::clear() {
   return pimpl->clear();
 }
 
-void ProcessorSet::clear( uint16_t processor_i ) {
-  return pimpl->clear( processor_i );
+void ProcessorSet::clear(uint16_t processor_i) {
+  return pimpl->clear(processor_i);
 }
 
 uint16_t ProcessorSet::count() const {
@@ -70,22 +70,22 @@ uint16_t ProcessorSet::count() const {
   for
   (
     uint16_t processor_i = 0;
-    processor_i < static_cast<uint16_t>( -1 );
+    processor_i < static_cast<uint16_t>(-1);
     processor_i++
   ) {
-    if ( isset( processor_i ) )
+    if (isset(processor_i))
       count++;
   }
 
   return count;
 }
 
-bool ProcessorSet::isset( uint16_t processor_i ) const {
-  return pimpl->isset( processor_i );
+bool ProcessorSet::isset(uint16_t processor_i) const {
+  return pimpl->isset(processor_i);
 }
 
-bool ProcessorSet::set( uint16_t processor_i ) {
-  return pimpl->set( processor_i );
+bool ProcessorSet::set(uint16_t processor_i) {
+  return pimpl->set(processor_i);
 }
 }
 }

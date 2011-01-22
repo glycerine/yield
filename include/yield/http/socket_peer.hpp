@@ -51,7 +51,7 @@ class AIOQueue;
 namespace http {
 class SocketPeer : public yield::stage::Stage {
 protected:
-  SocketPeer( Log* error_log = NULL, Log* trace_log = NULL );
+  SocketPeer(Log* error_log = NULL, Log* trace_log = NULL);
   virtual ~SocketPeer();
 
   yield::aio::net::sockets::AIOQueue& get_aio_queue();

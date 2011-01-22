@@ -34,43 +34,43 @@
 #include "yunit.hpp"
 
 
-TEST_SUITE( auto_Object );
+TEST_SUITE(auto_Object);
 
 namespace yield {
-TEST( auto_Object, null ) {
+TEST(auto_Object, null) {
   try {
-    auto_Object<TestObject>( NULL );
-  } catch ( Exception& ) {
+    auto_Object<TestObject>(NULL);
+  } catch (Exception&) {
     return;
   }
 
-  throw_assert( false );
+  throw_assert(false);
 }
 
-TEST( auto_Object, out_of_scope ) {
+TEST(auto_Object, out_of_scope) {
   {
-    auto_Object<TestObject>( new TestObject );
+    auto_Object<TestObject>(new TestObject);
   }
-  throw_assert( TestObject::deleted );
+  throw_assert(TestObject::deleted);
 }
 
-TEST( auto_Object, copy_out_of_scope ) {
+TEST(auto_Object, copy_out_of_scope) {
   {
-    auto_Object<TestObject> auto_so( new TestObject );
+    auto_Object<TestObject> auto_so(new TestObject);
     {
-      auto_Object<TestObject> auto_so2( auto_so );
+      auto_Object<TestObject> auto_so2(auto_so);
     }
-    throw_assert_false( TestObject::deleted );
+    throw_assert_false(TestObject::deleted);
   }
-  throw_assert( TestObject::deleted );
+  throw_assert(TestObject::deleted);
 }
 
-TEST( auto_Object, get ) {
+TEST(auto_Object, get) {
   {
     TestObject* so = new TestObject;
-    auto_Object<TestObject> auto_so( *so );
-    throw_assert_eq( &auto_so.get(), so );
+    auto_Object<TestObject> auto_so(*so);
+    throw_assert_eq(&auto_so.get(), so);
   }
-  throw_assert( TestObject::deleted );
+  throw_assert(TestObject::deleted);
 }
 }

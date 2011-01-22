@@ -35,15 +35,15 @@
 #include "yunit.hpp"
 
 
-TEST_SUITE( HTTPServer );
+TEST_SUITE(HTTPServer);
 
 namespace yield {
 namespace http {
 using yield::net::sockets::SocketAddress;
 
 
-TEST( HTTPServer, create ) {
-  HTTPServer( *new TestHTTPRequestHandler, 8000 ).serve_forever();
+TEST(HTTPServer, create) {
+  HTTPServer(*new TestHTTPRequestHandler, 8000).serve_forever();
 }
 }
 }

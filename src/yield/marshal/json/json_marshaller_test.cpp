@@ -43,26 +43,26 @@ namespace json {
 template <class ObjectType>
 class JSONMarshallerTest : public MarshallerTest<ObjectType> {
 public:
-  JSONMarshallerTest( YO_NEW_REF ObjectType* object )
-    : MarshallerTest<ObjectType>( object )
+  JSONMarshallerTest(YO_NEW_REF ObjectType* object)
+    : MarshallerTest<ObjectType>(object)
   { }
 
   // yunit::Test
   void run() {
     JSONMarshaller json_marshaller;
-    json_marshaller.write( Null(), *this->object );
+    json_marshaller.write(Null(), *this->object);
     Buffer& buffer = json_marshaller.get_buffer();
 
-    std::cout << string( buffer, buffer.size() ) << std::endl;
+    std::cout << string(buffer, buffer.size()) << std::endl;
 
-    JSONUnmarshaller json_unmarshaller( buffer );
-    json_unmarshaller.read_object( Null(), *this->empty_object );
+    JSONUnmarshaller json_unmarshaller(buffer);
+    json_unmarshaller.read_object(Null(), *this->empty_object);
 
-    if ( !( *this->object == *this->empty_object ) ) {
-      PrettyPrinter pretty_printer( std::cout );
-      this->empty_object->marshal( pretty_printer );
-      std::cout << string( buffer, buffer.size() ) << std::endl;
-      throw_assert_eq( *this->object, *this->empty_object );
+    if (!(*this->object == *this->empty_object)) {
+      PrettyPrinter pretty_printer(std::cout);
+      this->empty_object->marshal(pretty_printer);
+      std::cout << string(buffer, buffer.size()) << std::endl;
+      throw_assert_eq(*this->object, *this->empty_object);
     }
   }
 };
@@ -70,4 +70,4 @@ public:
 }
 }
 
-TEST_SUITE_EX( JSONMarshaller, yield::marshal::MarshallerTestSuite<yield::marshal::json::JSONMarshallerTest> );
+TEST_SUITE_EX(JSONMarshaller, yield::marshal::MarshallerTestSuite<yield::marshal::json::JSONMarshallerTest>);

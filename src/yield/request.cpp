@@ -41,14 +41,14 @@ Request::Request() {
 
 Request::~Request() {
   // MarshallableObject::dec_ref( credentials );
-  EventHandler::dec_ref( response_handler );
+  EventHandler::dec_ref(response_handler);
 }
 
-void Request::respond( Response& response ) {
-  if ( response_handler != NULL )
-    response_handler->handle( response );
+void Request::respond(Response& response) {
+  if (response_handler != NULL)
+    response_handler->handle(response);
   else
-    Response::dec_ref( response );
+    Response::dec_ref(response);
 }
 
 //void Request::set_credentials( MarshallableObject* credentials )
@@ -57,13 +57,13 @@ void Request::respond( Response& response ) {
 //  this->credentials = credentials;
 //}
 
-void Request::set_response_handler( EventHandler* response_handler ) {
-  EventHandler::dec_ref( this->response_handler );
+void Request::set_response_handler(EventHandler* response_handler) {
+  EventHandler::dec_ref(this->response_handler);
   this->response_handler = response_handler;
 }
 
-void Request::set_response_handler( EventHandler& response_handler ) {
-  EventHandler::dec_ref( this->response_handler );
+void Request::set_response_handler(EventHandler& response_handler) {
+  EventHandler::dec_ref(this->response_handler);
   this->response_handler = &response_handler.inc_ref();
 }
 }

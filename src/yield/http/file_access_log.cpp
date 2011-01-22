@@ -43,13 +43,13 @@ using yield::fs::Path;
 using yield::fs::Volume;
 
 
-FileAccessLog::FileAccessLog( const Path& file_path, Format& format )
-  : AccessLog( format ),
-    file_path( file_path )
+FileAccessLog::FileAccessLog(const Path& file_path, Format& format)
+  : AccessLog(format),
+    file_path(file_path)
 { }
 
 FileAccessLog::~FileAccessLog() {
-  File::dec_ref( file );
+  File::dec_ref(file);
 }
 
 void
@@ -58,16 +58,16 @@ FileAccessLog::write
   const HTTPRequest& http_request,
   const HTTPResponse& http_response
 ) {
-  if ( file == NULL ) {
+  if (file == NULL) {
     auto_Object<Volume> volume = Volume::create();
-    file = volume->open( file_path, O_CREAT|O_WRONLY|O_APPEND );
-    if ( file == NULL )
+    file = volume->open(file_path, O_CREAT | O_WRONLY | O_APPEND);
+    if (file == NULL)
       return;
   }
 
-  string entry = get_format()( http_request, http_response );
+  string entry = get_format()(http_request, http_response);
 
-  file->write( entry.c_str(), entry.size() );
+  file->write(entry.c_str(), entry.size());
 }
 }
 }

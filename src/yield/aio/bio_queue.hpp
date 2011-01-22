@@ -45,12 +45,12 @@ class SynchronizedEventQueue;
 namespace aio {
 class BIOQueue : public EventQueue {
 public:
-  bool enqueue( YO_NEW_REF AIOCB& aiocb );
+  bool enqueue(YO_NEW_REF AIOCB& aiocb);
 
   // yield::EventQueue
   YO_NEW_REF Event& dequeue();
-  YO_NEW_REF Event* dequeue( const Time& timeout );
-  virtual bool enqueue( YO_NEW_REF Event& event );
+  YO_NEW_REF Event* dequeue(const Time& timeout);
+  virtual bool enqueue(YO_NEW_REF Event& event);
   YO_NEW_REF Event* trydequeue();
 
 protected:

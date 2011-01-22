@@ -51,7 +51,7 @@ public:
   void broadcast();
   bool lock_mutex();
   void signal();
-  bool timedwait( const Time& timeout );
+  bool timedwait(const Time& timeout);
   bool trylock_mutex();
   void unlock_mutex();
   bool wait();

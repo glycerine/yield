@@ -42,8 +42,8 @@ namespace win32 {
 using yield::i18n::tstring;
 
 
-Directory::Directory( HANDLE hDirectory )
-  : hDirectory( hDirectory ), hFindFile( INVALID_HANDLE_VALUE )
+Directory::Directory(HANDLE hDirectory)
+  : hDirectory(hDirectory), hFindFile(INVALID_HANDLE_VALUE)
 { }
 
 Directory::~Directory() {
@@ -51,12 +51,12 @@ Directory::~Directory() {
 }
 
 bool Directory::close() {
-  if ( hDirectory != INVALID_HANDLE_VALUE ) {
-    CloseHandle( hDirectory );
+  if (hDirectory != INVALID_HANDLE_VALUE) {
+    CloseHandle(hDirectory);
     hDirectory = INVALID_HANDLE_VALUE;
 
-    if ( hFindFile != INVALID_HANDLE_VALUE ) {
-      FindClose( hFindFile );
+    if (hFindFile != INVALID_HANDLE_VALUE) {
+      FindClose(hFindFile);
       hFindFile = INVALID_HANDLE_VALUE;
     }
 
@@ -65,9 +65,9 @@ bool Directory::close() {
     return false;
 }
 
-yield::fs::Directory::Entry* Directory::read( Entry::Type types ) {
+yield::fs::Directory::Entry* Directory::read(Entry::Type types) {
   Entry* dentry = new yield::fs::win32::Directory::Entry;
-  if ( read( *dentry, types ) )
+  if (read(*dentry, types))
     return dentry;
   else {
     delete dentry;
@@ -81,12 +81,12 @@ Directory::read
   OUT yield::fs::Directory::Entry& dentry,
   Entry::Type types
 ) {
-  if ( hFindFile == INVALID_HANDLE_VALUE ) {
+  if (hFindFile == INVALID_HANDLE_VALUE) {
     const size_t file_name_info_size
-    = sizeof( FILE_NAME_INFO ) + sizeof( WCHAR ) * MAX_PATH;
+    = sizeof(FILE_NAME_INFO) + sizeof(WCHAR) * MAX_PATH;
     char file_name_info_buffer[file_name_info_size];
     FILE_NAME_INFO* file_name_info
-    = new ( file_name_info_buffer ) FILE_NAME_INFO;
+    = new(file_name_info_buffer) FILE_NAME_INFO;
 
     if
     (
@@ -99,15 +99,15 @@ Directory::read
       )
     ) {
       DWORD FileNameLength = file_name_info->FileNameLength;
-      FileNameLength /= sizeof( wchar_t );
+      FileNameLength /= sizeof(wchar_t);
       wchar_t* FileName = file_name_info->FileName;
-      Path search_pattern = Path( FileName, FileNameLength ) / L'*';
+      Path search_pattern = Path(FileName, FileNameLength) / L'*';
 
       WIN32_FIND_DATA find_data;
-      hFindFile = FindFirstFile( search_pattern.c_str(), &find_data );
-      if ( hFindFile != INVALID_HANDLE_VALUE ) {
-        static_cast<Entry&>( dentry ) = find_data;
-        if ( ( dentry.get_type() & types ) == dentry.get_type() )
+      hFindFile = FindFirstFile(search_pattern.c_str(), &find_data);
+      if (hFindFile != INVALID_HANDLE_VALUE) {
+        static_cast<Entry&>(dentry) = find_data;
+        if ((dentry.get_type() & types) == dentry.get_type())
           return true;
       } else
         return false;
@@ -116,28 +116,28 @@ Directory::read
   }
 
   WIN32_FIND_DATA find_data;
-  while ( FindNextFile( hFindFile, &find_data ) ) {
-    static_cast<Entry&>( dentry ) = find_data;
-    if ( ( dentry.get_type() & types ) == dentry.get_type() )
+  while (FindNextFile(hFindFile, &find_data)) {
+    static_cast<Entry&>(dentry) = find_data;
+    if ((dentry.get_type() & types) == dentry.get_type())
       return true;
   }
 
-  FindClose( hFindFile );
+  FindClose(hFindFile);
   hFindFile = INVALID_HANDLE_VALUE;
 
   return false;
 }
 
 void Directory::rewind() {
-  if ( hFindFile != INVALID_HANDLE_VALUE ) {
-    FindClose( hFindFile );
+  if (hFindFile != INVALID_HANDLE_VALUE) {
+    FindClose(hFindFile);
     hFindFile = INVALID_HANDLE_VALUE;
   }
 }
 
 
 bool Directory::Entry::is_hidden() const {
-  return ( get_attributes() & FILE_ATTRIBUTE_HIDDEN ) != 0;
+  return (get_attributes() & FILE_ATTRIBUTE_HIDDEN) != 0;
 }
 
 bool Directory::Entry::is_special() const {

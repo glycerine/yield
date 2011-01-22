@@ -40,13 +40,13 @@ namespace thread {
 namespace darwin {
 class Thread : public yield::thread::posix::Thread {
 public:
-  Thread( Runnable& );
+  Thread(Runnable&);
 
   static Thread* self();
   void yield();
 
 private:
-  Thread( pthread_t );
+  Thread(pthread_t);
 };
 }
 }

@@ -48,30 +48,30 @@ class Runnable;
 namespace posix {
 class Thread {
 public:
-  Thread( Runnable& );
+  Thread(Runnable&);
   ~Thread();
 
   bool cancel();
   Runnable* get_runnable() {
     return runnable;
   }
-  void* getspecific( uintptr_t key );
+  void* getspecific(uintptr_t key);
   bool is_running() const {
     return state == STATE_RUNNING;
   }
   bool join();
   uintptr_t key_create();
-  bool key_delete( uintptr_t key );
-  void nanosleep( const Time& );
-  bool setspecific( uintptr_t key, void* value );
+  bool key_delete(uintptr_t key);
+  void nanosleep(const Time&);
+  bool setspecific(uintptr_t key, void* value);
 
 protected:
-  Thread( pthread_t );
+  Thread(pthread_t);
 
   virtual void* run();
 
 private:
-  static void* run( void* );
+  static void* run(void*);
 
 private:
   pthread_t pthread;

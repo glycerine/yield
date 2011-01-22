@@ -44,18 +44,18 @@ public:
     element = 0;
   }
 
-  bool enqueue( ElementType& element ) {
-    atomic_t atomic_element = reinterpret_cast<atomic_t>( &element );
-    return atomic_cas( &this->element, atomic_element, 0 ) == 0;
+  bool enqueue(ElementType& element) {
+    atomic_t atomic_element = reinterpret_cast<atomic_t>(&element);
+    return atomic_cas(&this->element, atomic_element, 0) == 0;
   }
 
   ElementType* trydequeue() {
-    atomic_t element = static_cast<atomic_t>( this->element );
-    while ( element != 0 ) {
-      if ( atomic_cas( &this->element, 0, element ) == element )
-        return reinterpret_cast<ElementType*>( element );
+    atomic_t element = static_cast<atomic_t>(this->element);
+    while (element != 0) {
+      if (atomic_cas(&this->element, 0, element) == element)
+        return reinterpret_cast<ElementType*>(element);
       else
-        element = static_cast<atomic_t>( this->element );
+        element = static_cast<atomic_t>(this->element);
     }
 
     return NULL;

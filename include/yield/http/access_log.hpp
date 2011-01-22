@@ -73,19 +73,19 @@ public:
 
   class CombinedFormat : public CommonFormat {
   public:
-    string operator()( const HTTPRequest&, const HTTPResponse& ) const;
+    string operator()(const HTTPRequest&, const HTTPResponse&) const;
   };
 
 public:
   virtual ~AccessLog();
 
-  static AccessLog& open( const yield::fs::Path& file_path, Format* = NULL );
-  static AccessLog& open( std::ostream&, Format* = NULL );
+  static AccessLog& open(const yield::fs::Path& file_path, Format* = NULL);
+  static AccessLog& open(std::ostream&, Format* = NULL);
 
-  virtual void write( const HTTPRequest&, const HTTPResponse& ) = 0;
+  virtual void write(const HTTPRequest&, const HTTPResponse&) = 0;
 
 protected:
-  AccessLog( Format& format );
+  AccessLog(Format& format);
 
   Format& get_format() {
     return format;

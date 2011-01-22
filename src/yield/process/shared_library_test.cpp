@@ -34,18 +34,18 @@
 #include "yunit.hpp"
 
 
-TEST_SUITE( SharedLibrary )
+TEST_SUITE(SharedLibrary)
 
 namespace yield {
 namespace process {
 using yield::fs::Path;
 
 
-TEST( SharedLibrary, open ) {
+TEST(SharedLibrary, open) {
 #ifdef _WIN32
   auto_Object<SharedLibrary> winsock
-  = SharedLibrary::open( Path( L"ws2_32.dll" ) );
-  throw_assert_ne( winsock->sym( "gethostbyname" ), NULL );
+  = SharedLibrary::open(Path(L"ws2_32.dll"));
+  throw_assert_ne(winsock->sym("gethostbyname"), NULL);
 #endif
 }
 }

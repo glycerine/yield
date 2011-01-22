@@ -46,15 +46,15 @@ public:
   HandleEventQueue();
   ~HandleEventQueue();
 
-  bool associate( fd_t fd, uint16_t events );
-  bool dissociate( fd_t fd );
+  bool associate(fd_t fd, uint16_t events);
+  bool dissociate(fd_t fd);
 
   // EventQueue
-  bool enqueue( YO_NEW_REF Event& event );
-  YO_NEW_REF Event* dequeue( const Time& timeout );
+  bool enqueue(YO_NEW_REF Event& event);
+  YO_NEW_REF Event* dequeue(const Time& timeout);
 
 private:
-  HandleEventQueue( void* hWakeEvent );
+  HandleEventQueue(void* hWakeEvent);
 
 private:
   vector<fd_t> fds;

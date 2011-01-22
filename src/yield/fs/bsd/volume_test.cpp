@@ -32,4 +32,4 @@
 #include "volume.hpp"
 
 
-TEST_SUITE_EX( BSDVolume, yield::fs::VolumeTestSuite<yield::fs::bsd::Volume> );
+TEST_SUITE_EX(BSDVolume, yield::fs::VolumeTestSuite<yield::fs::bsd::Volume>);

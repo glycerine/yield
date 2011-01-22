@@ -32,4 +32,4 @@
 #include "../aio_queue_test.hpp"
 
 
-TEST_SUITE_EX( Win32SocketAIOQueue, yield::aio::net::sockets::AIOQueueTestSuite<yield::aio::net::sockets::win32::AIOQueue> );
+TEST_SUITE_EX(Win32SocketAIOQueue, yield::aio::net::sockets::AIOQueueTestSuite<yield::aio::net::sockets::win32::AIOQueue>);

@@ -47,15 +47,15 @@ acceptAIOCB::acceptAIOCB
   StreamSocket& socket_,
   YO_NEW_REF Buffer* recv_buffer
 )
-  : AIOCB( socket_, NULL, 0 ),
-    peername( *new SocketAddress ),
-    recv_buffer( recv_buffer ) {
+  : AIOCB(socket_, NULL, 0),
+    peername(*new SocketAddress),
+    recv_buffer(recv_buffer) {
   accepted_socket = NULL;
 }
 
-void acceptAIOCB::set_return( ssize_t return_ ) {
-  if ( return_ > 0 )
-    recv_buffer->resize( recv_buffer->size() + return_ );
+void acceptAIOCB::set_return(ssize_t return_) {
+  if (return_ > 0)
+    recv_buffer->resize(recv_buffer->size() + return_);
 }
 }
 }

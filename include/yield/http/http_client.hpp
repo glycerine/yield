@@ -66,7 +66,7 @@ public:
 
   ~HTTPClient();
 
-  static YO_NEW_REF HTTPResponse& GET( const yield::net::URI& uri );
+  static YO_NEW_REF HTTPResponse& GET(const yield::net::URI& uri);
 
   //static
   //YO_NEW_REF HTTPResponse&
@@ -78,7 +78,7 @@ public:
 
   // Object
   HTTPClient& inc_ref() {
-    return Object::inc_ref( *this );
+    return Object::inc_ref(*this);
   }
 
 private:
@@ -88,7 +88,7 @@ private:
   void init();
 
   // Stage
-  void service( YO_NEW_REF Event& event );
+  void service(YO_NEW_REF Event& event);
 
 private:
   vector<Connection*> connections;

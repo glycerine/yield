@@ -33,54 +33,54 @@
 
 namespace yield {
 StringBuffer::StringBuffer()
-  : Buffer( 0 ) {
+  : Buffer(0) {
   data_ = new uint8_t[0];
 }
 
-StringBuffer::StringBuffer( size_t capacity )
-  : Buffer( capacity ) {
+StringBuffer::StringBuffer(size_t capacity)
+  : Buffer(capacity) {
   data_ = new uint8_t[capacity];
 }
 
-StringBuffer::StringBuffer( const string& data )
-  : Buffer( 0 ) {
+StringBuffer::StringBuffer(const string& data)
+  : Buffer(0) {
   data_ = NULL;
-  put( data );
+  put(data);
 }
 
-StringBuffer::StringBuffer( const void* data, size_t size )
-  : Buffer( 0 ) {
+StringBuffer::StringBuffer(const void* data, size_t size)
+  : Buffer(0) {
   data_ = NULL;
-  put( data, size );
+  put(data, size);
 }
 
-StringBuffer::StringBuffer( size_t capacity, const void* data, size_t size )
-  : Buffer( 0 ) {
+StringBuffer::StringBuffer(size_t capacity, const void* data, size_t size)
+  : Buffer(0) {
   data_ = NULL;
-  reserve( capacity );
-  put( data, size );
+  reserve(capacity);
+  put(data, size);
 }
 
-StringBuffer::StringBuffer( const Buffer& buffer )
-  : Buffer( 0 ) {
+StringBuffer::StringBuffer(const Buffer& buffer)
+  : Buffer(0) {
   data_ = NULL;
-  put( buffer );
+  put(buffer);
 }
 
-StringBuffer::StringBuffer( const StringBuffer& buffer )
-  : Buffer( 0 ) {
+StringBuffer::StringBuffer(const StringBuffer& buffer)
+  : Buffer(0) {
   data_ = NULL;
-  put( buffer );
+  put(buffer);
 }
 
 StringBuffer::~StringBuffer() {
   delete [] data_;
 }
 
-void StringBuffer::reserve( size_t new_capacity ) {
-  if ( new_capacity > capacity() ) {
+void StringBuffer::reserve(size_t new_capacity) {
+  if (new_capacity > capacity()) {
     uint8_t* new_data = new uint8_t[new_capacity];
-    memcpy_s( new_data, new_capacity, data_, size() );
+    memcpy_s(new_data, new_capacity, data_, size());
     delete [] data_;
     capacity_ = new_capacity;
     data_ = new_data;

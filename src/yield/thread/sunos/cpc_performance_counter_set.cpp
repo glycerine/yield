@@ -36,45 +36,45 @@ namespace yield {
 namespace thread {
 namespace sunos {
 PerformanceCounterSet::PerformanceCounterSet() {
-  cpc = cpc_open( CPC_VER_CURRENT );
-  if ( cpc == NULL )
+  cpc = cpc_open(CPC_VER_CURRENT);
+  if (cpc == NULL)
     throw Exception();
 
-  cpc_set = cpc_set_create( cpc );
-  if ( cpc_set == NULL ) {
+  cpc_set = cpc_set_create(cpc);
+  if (cpc_set == NULL) {
     int errno_temp = errno;
-    cpc_close( cpc );
-    throw Exception( errno_temp );
+    cpc_close(cpc);
+    throw Exception(errno_temp);
   }
 
   cpc_start_buf = NULL;
 }
 
 PerformanceCounterSet::~PerformanceCounterSet() {
-  cpc_set_destroy( cpc, cpc_set );
-  cpc_close( cpc );
+  cpc_set_destroy(cpc, cpc_set);
+  cpc_close(cpc);
 }
 
-bool PerformanceCounterSet::add( Event event ) {
-  switch ( event ) {
+bool PerformanceCounterSet::add(Event event) {
+  switch (event) {
   case EVENT_L1_DCM:
-    return add( "DC_miss" );
+    return add("DC_miss");
   case EVENT_L2_DCM:
-    return add( "DC_refill_from_system" );
+    return add("DC_refill_from_system");
   case EVENT_L2_ICM:
-    return add( "IC_refill_from_system" );
+    return add("IC_refill_from_system");
   default:
     DebugBreak();
     return false;
   }
 }
 
-bool PerformanceCounterSet::add( const char* event ) {
+bool PerformanceCounterSet::add(const char* event) {
   int event_index
-  = cpc_set_add_request( cpc, cpc_set, event, 0, CPC_COUNT_USER, 0, NULL );
+  = cpc_set_add_request(cpc, cpc_set, event, 0, CPC_COUNT_USER, 0, NULL);
 
-  if ( event_index != -1 ) {
-    event_indices.push_back( event_index );
+  if (event_index != -1) {
+    event_indices.push_back(event_index);
     return true;
   }
 
@@ -82,18 +82,18 @@ bool PerformanceCounterSet::add( const char* event ) {
 }
 
 void PerformanceCounterSet::start_counting() {
-  if ( start_cpc_buf == NULL )
-    start_cpc_buf = cpc_buf_create( cpc, cpc_set );
-  cpc_bind_curlwp( cpc, cpc_set, 0 );
-  cpc_set_sample( cpc, cpc_set, start_cpc_buf );
+  if (start_cpc_buf == NULL)
+    start_cpc_buf = cpc_buf_create(cpc, cpc_set);
+  cpc_bind_curlwp(cpc, cpc_set, 0);
+  cpc_set_sample(cpc, cpc_set, start_cpc_buf);
 }
 
-void PerformanceCounterSet::stop_counting( uint64_t* counts ) {
-  cpc_buf_t* stop_cpc_buf = cpc_buf_create( cpc, cpc_set );
-  cpc_set_sample( cpc, cpc_set, stop_cpc_buf );
+void PerformanceCounterSet::stop_counting(uint64_t* counts) {
+  cpc_buf_t* stop_cpc_buf = cpc_buf_create(cpc, cpc_set);
+  cpc_set_sample(cpc, cpc_set, stop_cpc_buf);
 
-  cpc_buf_t* diff_cpc_buf = cpc_buf_create( cpc, cpc_set );
-  cpc_buf_sub( cpc, diff_cpc_buf, stop_cpc_buf, start_cpc_buf );
+  cpc_buf_t* diff_cpc_buf = cpc_buf_create(cpc, cpc_set);
+  cpc_buf_sub(cpc, diff_cpc_buf, stop_cpc_buf, start_cpc_buf);
 
   for
   (
@@ -110,7 +110,7 @@ void PerformanceCounterSet::stop_counting( uint64_t* counts ) {
     );
   }
 
-  cpc_unbind( cpc, cpc_set );
+  cpc_unbind(cpc, cpc_set);
 }
 }
 }

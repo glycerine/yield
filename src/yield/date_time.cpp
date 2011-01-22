@@ -40,34 +40,34 @@
 
 
 namespace yield {
-const DateTime DateTime::INVALID_DATE_TIME = static_cast<uint64_t>( ~0 );
+const DateTime DateTime::INVALID_DATE_TIME = static_cast<uint64_t>(~0);
 
 
 #ifdef _WIN32
-DateTime::DateTime( const FILETIME& file_time ) {
-  init( file_time );
+DateTime::DateTime(const FILETIME& file_time) {
+  init(file_time);
 }
 
-DateTime::DateTime( const FILETIME* file_time ) {
-  if ( file_time != NULL )
-    init( *file_time );
+DateTime::DateTime(const FILETIME* file_time) {
+  if (file_time != NULL)
+    init(*file_time);
   else
     unix_date_time_ns = 0;
 }
 
-DateTime::DateTime( const SYSTEMTIME& system_time, bool local ) {
-  init( system_time, local );
+DateTime::DateTime(const SYSTEMTIME& system_time, bool local) {
+  init(system_time, local);
 }
 #else
-DateTime::DateTime( const timeval& tv ) {
+DateTime::DateTime(const timeval& tv) {
   unix_date_time_ns = tv.tv_sec * Time::NS_IN_S
                       +
-                      static_cast<uint64_t>( tv.tv_usec * Time::NS_IN_US );
+                      static_cast<uint64_t>(tv.tv_usec * Time::NS_IN_US);
 }
 
-DateTime::DateTime( const tm& tm_, bool local ) {
-  tm tm_copy( tm_ );
-  init( tm_copy, local );
+DateTime::DateTime(const tm& tm_, bool local) {
+  tm tm_copy(tm_);
+  init(tm_copy, local);
 }
 #endif
 
@@ -84,14 +84,14 @@ DateTime::DateTime
 #ifdef _WIN32
   SYSTEMTIME system_time;
   system_time.wMilliseconds = 0;
-  system_time.wSecond = static_cast<WORD>( tm_sec );
-  system_time.wMinute = static_cast<WORD>( tm_min );
-  system_time.wHour = static_cast<WORD>( tm_hour );
-  system_time.wDay = static_cast<WORD>( tm_mday );
+  system_time.wSecond = static_cast<WORD>(tm_sec);
+  system_time.wMinute = static_cast<WORD>(tm_min);
+  system_time.wHour = static_cast<WORD>(tm_hour);
+  system_time.wDay = static_cast<WORD>(tm_mday);
   system_time.wDayOfWeek = 0;
-  system_time.wMonth = static_cast<WORD>( tm_mon + 1 );
-  system_time.wYear = static_cast<WORD>( 1900 + tm_year );
-  init( system_time, local );
+  system_time.wMonth = static_cast<WORD>(tm_mon + 1);
+  system_time.wYear = static_cast<WORD>(1900 + tm_year);
+  init(system_time, local);
 #else
   tm tm_;
   tm_.tm_sec = tm_sec;
@@ -102,8 +102,8 @@ DateTime::DateTime
   tm_.tm_year = tm_year;
   tm_.tm_wday = 0; // Will be filled in by mktime
   tm_.tm_yday = 0; // Will be filled in by mktime
-  mktime( &tm_ );
-  init( tm_, local );
+  mktime(&tm_);
+  init(tm_, local);
 #endif
 }
 
@@ -112,7 +112,7 @@ SYSTEMTIME DateTime::as_local_SYSTEMTIME() const {
   SYSTEMTIME utc_system_time = this->as_utc_SYSTEMTIME();
 
   TIME_ZONE_INFORMATION time_zone_information;
-  GetTimeZoneInformation( &time_zone_information );
+  GetTimeZoneInformation(&time_zone_information);
   SYSTEMTIME local_system_time;
   SystemTimeToTzSpecificLocalTime
   (
@@ -126,14 +126,14 @@ SYSTEMTIME DateTime::as_local_SYSTEMTIME() const {
 SYSTEMTIME DateTime::as_utc_SYSTEMTIME() const {
   FILETIME file_time = *this;
   SYSTEMTIME utc_system_time;
-  FileTimeToSystemTime( &file_time, &utc_system_time );
+  FileTimeToSystemTime(&file_time, &utc_system_time);
   return utc_system_time;
 }
 #else
 tm DateTime::as_local_tm() const {
   time_t unix_date_time_s = *this;
   tm tm_;
-  localtime_r( &unix_date_time_s, &tm_ );
+  localtime_r(&unix_date_time_s, &tm_);
   return tm_;
 }
 
@@ -144,13 +144,13 @@ DateTime::operator tm() const {
 tm DateTime::as_utc_tm() const {
   time_t unix_date_time_s = *this;
   tm tm_;
-  gmtime_r( &unix_date_time_s, &tm_ );
+  gmtime_r(&unix_date_time_s, &tm_);
   return tm_;
 }
 #endif
 
 #ifdef _WIN32
-void DateTime::init( const FILETIME& file_time ) {
+void DateTime::init(const FILETIME& file_time) {
   ULARGE_INTEGER file_time_combined;
   file_time_combined.LowPart = file_time.dwLowDateTime;
   file_time_combined.HighPart = file_time.dwHighDateTime;
@@ -161,12 +161,12 @@ void DateTime::init( const FILETIME& file_time ) {
   unix_date_time_ns = file_time_combined.QuadPart;
 }
 
-void DateTime::init( const SYSTEMTIME& system_time, bool local ) {
+void DateTime::init(const SYSTEMTIME& system_time, bool local) {
   FILETIME file_time;
 
-  if ( local ) {
+  if (local) {
     TIME_ZONE_INFORMATION time_zone_information;
-    GetTimeZoneInformation( &time_zone_information );
+    GetTimeZoneInformation(&time_zone_information);
     SYSTEMTIME utc_system_time;
     TzSpecificLocalTimeToSystemTime
     (
@@ -174,11 +174,11 @@ void DateTime::init( const SYSTEMTIME& system_time, bool local ) {
       &system_time,
       &utc_system_time
     );
-    SystemTimeToFileTime( &utc_system_time, &file_time );
+    SystemTimeToFileTime(&utc_system_time, &file_time);
   } else
-    SystemTimeToFileTime( &system_time, &file_time );
+    SystemTimeToFileTime(&system_time, &file_time);
 
-  init( file_time );
+  init(file_time);
 }
 
 DateTime::operator FILETIME() const {
@@ -190,7 +190,7 @@ DateTime::operator FILETIME() const {
   uint64_t unix_time_100_ns_intervals = unix_date_time_ns / 100;
   FILETIME file_time;
   file_time.dwLowDateTime
-  = static_cast<DWORD>( unix_time_100_ns_intervals );
+  = static_cast<DWORD>(unix_time_100_ns_intervals);
   file_time.dwHighDateTime = unix_time_100_ns_intervals >> 32;
   return file_time;
 }
@@ -199,15 +199,15 @@ DateTime::operator SYSTEMTIME() const {
   return as_local_SYSTEMTIME();
 }
 #else
-void DateTime::init( tm& tm_, bool local ) {
+void DateTime::init(tm& tm_, bool local) {
   time_t unix_date_time_s;
 
-  if ( local )
-    unix_date_time_s = mktime( &tm_ );
+  if (local)
+    unix_date_time_s = mktime(&tm_);
   else
-    unix_date_time_s = timegm( &tm_ );
+    unix_date_time_s = timegm(&tm_);
 
-  if ( unix_date_time_s != static_cast<time_t>( -1 ) )
+  if (unix_date_time_s != static_cast<time_t>(-1))
     unix_date_time_ns = unix_date_time_s * Time::NS_IN_S;
   else
     *this = INVALID_DATE_TIME;
@@ -215,8 +215,8 @@ void DateTime::init( tm& tm_, bool local ) {
 
 DateTime::operator timeval() const {
   timeval tv;
-  tv.tv_sec = static_cast<time_t>( unix_date_time_ns / Time::NS_IN_S );
-  tv.tv_usec = ( unix_date_time_ns % Time::NS_IN_S ) / Time::NS_IN_US;
+  tv.tv_sec = static_cast<time_t>(unix_date_time_ns / Time::NS_IN_S);
+  tv.tv_usec = (unix_date_time_ns % Time::NS_IN_S) / Time::NS_IN_US;
   return tv;
 }
 #endif
@@ -224,12 +224,12 @@ DateTime::operator timeval() const {
 DateTime DateTime::now() {
 #if defined(_WIN32)
   FILETIME file_time;
-  GetSystemTimeAsFileTime( &file_time );
-  return DateTime( file_time );
+  GetSystemTimeAsFileTime(&file_time);
+  return DateTime(file_time);
 #else
   timeval tv;
-  gettimeofday( &tv, NULL );
-  return DateTime( tv );
+  gettimeofday(&tv, NULL);
+  return DateTime(tv);
 #endif
 }
 
@@ -272,8 +272,8 @@ DateTime::operator string() const {
   return iso_date_time;
 }
 
-std::ostream& operator<<( std::ostream& os, const DateTime& date_time ) {
-  os << static_cast<string>( date_time );
+std::ostream& operator<<(std::ostream& os, const DateTime& date_time) {
+  os << static_cast<string>(date_time);
   return os;
 }
 }

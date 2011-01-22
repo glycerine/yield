@@ -32,4 +32,4 @@
 #include "yield/thread/synchronized_queue.hpp"
 
 
-TEST_SUITE_EX( SynchronizedQueue, yield::thread::QueueTestSuite< yield::thread::SynchronizedQueue<uint32_t> > );
+TEST_SUITE_EX(SynchronizedQueue, yield::thread::QueueTestSuite< yield::thread::SynchronizedQueue<uint32_t> >);

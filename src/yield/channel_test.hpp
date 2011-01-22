@@ -48,7 +48,7 @@ public:
 
   // yield::Object
   ChannelPairFactory& inc_ref() {
-    return Object::inc_ref( *this );
+    return Object::inc_ref(*this);
   }
 };
 
@@ -56,7 +56,7 @@ public:
 class ChannelTest : public yunit::Test {
 public:
   virtual ~ChannelTest() {
-    ChannelPairFactory::dec_ref( channel_pair_factory );
+    ChannelPairFactory::dec_ref(channel_pair_factory);
   }
 
   virtual void setup() {
@@ -64,14 +64,14 @@ public:
   }
 
   virtual void teardown() {
-    ChannelPair::dec_ref( channel_pair );
+    ChannelPair::dec_ref(channel_pair);
     channel_pair = NULL;
   }
 
 protected:
-  ChannelTest( ChannelPairFactory& channel_pair_factory )
-    : channel_pair_factory( channel_pair_factory.inc_ref() ),
-      test_string( "test string" )
+  ChannelTest(ChannelPairFactory& channel_pair_factory)
+    : channel_pair_factory(channel_pair_factory.inc_ref()),
+      test_string("test string")
   { }
 
   Channel& get_read_channel() {
@@ -86,22 +86,22 @@ protected:
 
   void read() {
     string test_string;
-    test_string.resize( get_test_string().size() );
+    test_string.resize(get_test_string().size());
     ssize_t read_ret
     = get_read_channel().read
       (
-        const_cast<char*>( test_string.data() ),
+        const_cast<char*>(test_string.data()),
         test_string.capacity()
       );
 
-    if ( read_ret >= 0 ) {
+    if (read_ret >= 0) {
       throw_assert_eq
       (
-        static_cast<size_t>( read_ret ),
+        static_cast<size_t>(read_ret),
         get_test_string().size()
       );
 
-      throw_assert_eq( test_string, get_test_string() );
+      throw_assert_eq(test_string, get_test_string());
     } else
       throw Exception();
   }
@@ -114,10 +114,10 @@ protected:
         get_test_string().size()
       );
 
-    if ( write_ret >= 0 ) {
+    if (write_ret >= 0) {
       throw_assert_eq
       (
-        static_cast<size_t>( write_ret ),
+        static_cast<size_t>(write_ret),
         get_test_string().size()
       );
     } else
@@ -133,13 +133,13 @@ private:
 
 class ChannelCloseTest : public ChannelTest {
 public:
-  ChannelCloseTest( ChannelPairFactory& channel_pair_factory )
-    : ChannelTest( channel_pair_factory )
+  ChannelCloseTest(ChannelPairFactory& channel_pair_factory)
+    : ChannelTest(channel_pair_factory)
   { }
 
   // Test
   void run() {
-    if ( !get_read_channel().close() )
+    if (!get_read_channel().close())
       throw Exception();
   }
 };
@@ -147,22 +147,22 @@ public:
 
 class ChannelOperatorFDTest : public ChannelTest {
 public:
-  ChannelOperatorFDTest( ChannelPairFactory& channel_pair_factory )
-    : ChannelTest( channel_pair_factory )
+  ChannelOperatorFDTest(ChannelPairFactory& channel_pair_factory)
+    : ChannelTest(channel_pair_factory)
   { }
 
   // Test
   virtual void run() {
-    debug_assert_ne( static_cast<fd_t>( get_read_channel() ), INVALID_FD );
-    debug_assert_ne( static_cast<fd_t>( get_write_channel() ), INVALID_FD );
+    debug_assert_ne(static_cast<fd_t>(get_read_channel()), INVALID_FD);
+    debug_assert_ne(static_cast<fd_t>(get_write_channel()), INVALID_FD);
   }
 };
 
 
 class ChannelReadTest : public ChannelTest {
 public:
-  ChannelReadTest( ChannelPairFactory& channel_pair_factory )
-    : ChannelTest( channel_pair_factory )
+  ChannelReadTest(ChannelPairFactory& channel_pair_factory)
+    : ChannelTest(channel_pair_factory)
   { }
 
   // Test
@@ -175,8 +175,8 @@ public:
 
 class ChannelReadVOneTest : public ChannelTest {
 public:
-  ChannelReadVOneTest( ChannelPairFactory& channel_pair_factory )
-    : ChannelTest( channel_pair_factory )
+  ChannelReadVOneTest(ChannelPairFactory& channel_pair_factory)
+    : ChannelTest(channel_pair_factory)
   { }
 
   // Test
@@ -184,20 +184,20 @@ public:
     this->write();
 
     string test_string;
-    test_string.resize( get_test_string().size() );
+    test_string.resize(get_test_string().size());
     iovec iov;
-    iov.iov_base = const_cast<char*>( test_string.data() );
+    iov.iov_base = const_cast<char*>(test_string.data());
     iov.iov_len = test_string.size();
 
-    ssize_t readv_ret = get_read_channel().readv( &iov, 1 );
-    if ( readv_ret >= 0 ) {
+    ssize_t readv_ret = get_read_channel().readv(&iov, 1);
+    if (readv_ret >= 0) {
       throw_assert_eq
       (
-        static_cast<size_t>( readv_ret ),
+        static_cast<size_t>(readv_ret),
         get_test_string().size()
       );
 
-      throw_assert_eq( test_string, get_test_string() );
+      throw_assert_eq(test_string, get_test_string());
     } else
       throw Exception();
   }
@@ -206,8 +206,8 @@ public:
 
 class ChannelReadVTwoTest : public ChannelTest {
 public:
-  ChannelReadVTwoTest( ChannelPairFactory& channel_pair_factory )
-    : ChannelTest( channel_pair_factory )
+  ChannelReadVTwoTest(ChannelPairFactory& channel_pair_factory)
+    : ChannelTest(channel_pair_factory)
   { }
 
   // Test
@@ -217,24 +217,24 @@ public:
     iovec iov[2];
 
     string test;
-    test.resize( 4 );
-    iov[0].iov_base = const_cast<char*>( test.data() );
+    test.resize(4);
+    iov[0].iov_base = const_cast<char*>(test.data());
     iov[0].iov_len = 4;
 
     string _string;
-    _string.resize( 7 );
-    iov[1].iov_base = const_cast<char*>( _string.data() );
+    _string.resize(7);
+    iov[1].iov_base = const_cast<char*>(_string.data());
     iov[1].iov_len = 7;
 
-    ssize_t readv_ret = get_read_channel().readv( iov, 2 );
-    if ( readv_ret >= 0 ) {
+    ssize_t readv_ret = get_read_channel().readv(iov, 2);
+    if (readv_ret >= 0) {
       throw_assert_eq
       (
-        static_cast<size_t>( readv_ret ),
+        static_cast<size_t>(readv_ret),
         get_test_string().size()
       );
-      throw_assert_eq( test, "test" );
-      throw_assert_eq( _string, " string" );
+      throw_assert_eq(test, "test");
+      throw_assert_eq(_string, " string");
     } else
       throw Exception();
   }
@@ -243,15 +243,15 @@ public:
 
 class ChannelSetBlockingModeTest : public ChannelTest {
 public:
-  ChannelSetBlockingModeTest( ChannelPairFactory& channel_pair_factory )
-    : ChannelTest( channel_pair_factory )
+  ChannelSetBlockingModeTest(ChannelPairFactory& channel_pair_factory)
+    : ChannelTest(channel_pair_factory)
   { }
 
   // Test
   void run() {
     if
     (
-      !get_read_channel().set_blocking_mode( true )
+      !get_read_channel().set_blocking_mode(true)
       &&
       Exception::get_last_error_code() != ENOTSUP
     )
@@ -259,7 +259,7 @@ public:
 
     if
     (
-      !get_write_channel().set_blocking_mode( false )
+      !get_write_channel().set_blocking_mode(false)
       &&
       Exception::get_last_error_code() != ENOTSUP
     )
@@ -270,8 +270,8 @@ public:
 
 class ChannelWriteTest : public ChannelTest {
 public:
-  ChannelWriteTest( ChannelPairFactory& channel_pair_factory )
-    : ChannelTest( channel_pair_factory )
+  ChannelWriteTest(ChannelPairFactory& channel_pair_factory)
+    : ChannelTest(channel_pair_factory)
   { }
 
   // Test
@@ -284,22 +284,22 @@ public:
 
 class ChannelWriteVOneTest : public ChannelTest {
 public:
-  ChannelWriteVOneTest( ChannelPairFactory& channel_pair_factory )
-    : ChannelTest( channel_pair_factory )
+  ChannelWriteVOneTest(ChannelPairFactory& channel_pair_factory)
+    : ChannelTest(channel_pair_factory)
   { }
 
   // Test
   virtual void run() {
     iovec iov;
-    iov.iov_base = const_cast<char*>( get_test_string().data() );
+    iov.iov_base = const_cast<char*>(get_test_string().data());
     iov.iov_len = get_test_string().size();
     ssize_t writev_ret
-    = get_write_channel().writev( &iov, 1 );
+    = get_write_channel().writev(&iov, 1);
 
-    if ( writev_ret >= 0 ) {
+    if (writev_ret >= 0) {
       throw_assert_eq
       (
-        static_cast<size_t>( writev_ret ),
+        static_cast<size_t>(writev_ret),
         get_test_string().size()
       );
     } else
@@ -312,28 +312,28 @@ public:
 
 class ChannelWriteVTwoTest : public ChannelTest {
 public:
-  ChannelWriteVTwoTest( ChannelPairFactory& channel_pair_factory )
-    : ChannelTest( channel_pair_factory )
+  ChannelWriteVTwoTest(ChannelPairFactory& channel_pair_factory)
+    : ChannelTest(channel_pair_factory)
   { }
 
   // Test
   virtual void run() {
     iovec iov[2];
 
-    iov[0].iov_base = const_cast<char*>( get_test_string().data() );
+    iov[0].iov_base = const_cast<char*>(get_test_string().data());
     iov[0].iov_len = 4;
 
     iov[1].iov_base
-    = const_cast<char*>( get_test_string().data() ) + 4;
+    = const_cast<char*>(get_test_string().data()) + 4;
     iov[1].iov_len = get_test_string().size() - 4;
 
     ssize_t writev_ret
-    = get_write_channel().writev( iov, 2 );
+    = get_write_channel().writev(iov, 2);
 
-    if ( writev_ret >= 0 ) {
+    if (writev_ret >= 0) {
       throw_assert_eq
       (
-        static_cast<size_t>( writev_ret ),
+        static_cast<size_t>(writev_ret),
         get_test_string().size()
       );
     } else
@@ -346,61 +346,61 @@ public:
 
 class ChannelTestSuite : public yunit::TestSuite {
 public:
-  ChannelTestSuite( YO_NEW_REF ChannelPairFactory& channel_pair_factory )
-    : channel_pair_factory( channel_pair_factory ) {
+  ChannelTestSuite(YO_NEW_REF ChannelPairFactory& channel_pair_factory)
+    : channel_pair_factory(channel_pair_factory) {
     add
     (
       "Channel::close",
-      new ChannelCloseTest( channel_pair_factory )
+      new ChannelCloseTest(channel_pair_factory)
     );
 
     add
     (
       "Channel::operator fd_t()",
-      new ChannelOperatorFDTest( channel_pair_factory )
+      new ChannelOperatorFDTest(channel_pair_factory)
     );
 
-    add( "Channel::read", new ChannelReadTest( channel_pair_factory ) );
+    add("Channel::read", new ChannelReadTest(channel_pair_factory));
 
     add
     (
       "Channel::readv( iov, 1 )",
-      new ChannelReadVOneTest( channel_pair_factory )
+      new ChannelReadVOneTest(channel_pair_factory)
     );
 
     add
     (
       "Channel::readv( iov, 2 )",
-      new ChannelReadVTwoTest( channel_pair_factory )
+      new ChannelReadVTwoTest(channel_pair_factory)
     );
 
     add
     (
       "Channel::set_blocking_mode",
-      new ChannelSetBlockingModeTest( channel_pair_factory )
+      new ChannelSetBlockingModeTest(channel_pair_factory)
     );
 
     add
     (
       "Channel::write",
-      new ChannelWriteTest( channel_pair_factory )
+      new ChannelWriteTest(channel_pair_factory)
     );
 
     add
     (
       "Channel::writev( iov, 1 )",
-      new ChannelWriteVOneTest( channel_pair_factory )
+      new ChannelWriteVOneTest(channel_pair_factory)
     );
 
     add
     (
       "Channel::writev( iov, 2 )",
-      new ChannelWriteVTwoTest( channel_pair_factory )
+      new ChannelWriteVTwoTest(channel_pair_factory)
     );
   }
 
   ~ChannelTestSuite() {
-    ChannelPairFactory::dec_ref( channel_pair_factory );
+    ChannelPairFactory::dec_ref(channel_pair_factory);
   }
 
   ChannelPairFactory& get_channel_pair_factory() {

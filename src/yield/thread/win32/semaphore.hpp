@@ -43,16 +43,16 @@ public:
   Semaphore();
   ~Semaphore();
 
-  operator void*() const {
+  operator void* () const {
     return hSemaphore;
   }
   void post();
-  bool timedwait( const Time& timeout );
+  bool timedwait(const Time& timeout);
   bool trywait();
   bool wait();
 
 private:
-  Semaphore( void* hSemaphore );
+  Semaphore(void* hSemaphore);
 
 private:
   void* hSemaphore;

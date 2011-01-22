@@ -49,9 +49,9 @@ public:
   }
 
   // EventHandler
-  void handle( Event& event ) {
+  void handle(Event& event) {
     seen_events_count++;
-    Event::dec_ref( event );
+    Event::dec_ref(event);
   }
 
 private:

@@ -51,7 +51,7 @@ HTTPResponse::HTTPResponse
     fields_offset,
     http_version
   ),
-  status_code( status_code )
+  status_code(status_code)
 { }
 
 HTTPResponse::HTTPResponse
@@ -60,12 +60,12 @@ HTTPResponse::HTTPResponse
   float http_version,
   uint16_t status_code
 )
-  : HTTPMessage<HTTPResponse>( body, http_version ),
-    status_code( status_code ) {
+  : HTTPMessage<HTTPResponse>(body, http_version),
+    status_code(status_code) {
   const char* status_line;
   size_t status_line_len;
 
-  switch ( status_code ) {
+  switch (status_code) {
   case 100:
     status_line = "HTTP/1.1 100 Continue\r\n";
     status_line_len = 23;
@@ -244,11 +244,11 @@ HTTPResponse::HTTPResponse
     break;
   }
 
-  get_buffer().put( status_line, status_line_len );
+  get_buffer().put(status_line, status_line_len);
 
   mark_fields_offset();
 
-  set_field( "Date", DateTime::now() );
+  set_field("Date", DateTime::now());
 }
 }
 }

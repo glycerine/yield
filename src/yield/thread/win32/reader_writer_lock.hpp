@@ -54,7 +54,7 @@ public:
 private:
   uint32_t active_writer_readers;
   LightweightMutex cs;
-  void *hReadyToRead, *hReadyToWrite;
+  void* hReadyToRead, *hReadyToWrite;
   int32_t waiting_readers_count, waiting_writers_count;
 };
 }

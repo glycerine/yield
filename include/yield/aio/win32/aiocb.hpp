@@ -63,7 +63,7 @@ public:
 
   bool cancel();
 
-  static AIOCB& cast( ::OVERLAPPED& );
+  static AIOCB& cast(::OVERLAPPED&);
 
   Channel& get_channel() {
     return channel;
@@ -82,14 +82,14 @@ public:
     return return_;
   }
 
-  virtual bool issue( EventHandler& completion_handler );
-  virtual bool issue( win32::AIOQueue& );
+  virtual bool issue(EventHandler& completion_handler);
+  virtual bool issue(win32::AIOQueue&);
   virtual RetryStatus retry() = 0;
 
-  void set_error( uint32_t error ) {
+  void set_error(uint32_t error) {
     this->error = error;
   }
-  virtual void set_return( ssize_t return_ ) {
+  virtual void set_return(ssize_t return_) {
     this->return_ = return_;
   }
 
@@ -97,15 +97,15 @@ public:
   virtual uint32_t get_type_id() const = 0;
   virtual const char* get_type_name() const = 0;
   AIOCB& inc_ref() {
-    return Object::inc_ref( *this );
+    return Object::inc_ref(*this);
   }
 
 protected:
-  AIOCB( Channel&, void* buf, size_t nbytes, uint64_t offset );
+  AIOCB(Channel&, void* buf, size_t nbytes, uint64_t offset);
 
-  operator ::OVERLAPPED*();
+  operator ::OVERLAPPED* ();
 
-  void set_completion_handler( EventHandler& completion_handler );
+  void set_completion_handler(EventHandler& completion_handler);
 
 private:
   typedef struct {

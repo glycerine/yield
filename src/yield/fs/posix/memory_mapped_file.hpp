@@ -60,10 +60,10 @@ public:
   const void* data() const {
     return data_;
   }
-  void reserve( size_t capacity );
+  void reserve(size_t capacity);
 
   // MemoryMappedFile
-  bool sync( void* ptr, size_t length );
+  bool sync(void* ptr, size_t length);
   bool unmap();
 
 private:

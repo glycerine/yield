@@ -41,21 +41,21 @@ using yield::fs::Path;
 
 SharedLibrary::~SharedLibrary() {
 #ifndef _DEBUG
-  dlclose( handle ); // Don't dlclose when debugging,
+  dlclose(handle);   // Don't dlclose when debugging,
   // because that causes valgrind to lose symbols
 #endif
 }
 
-SharedLibrary* SharedLibrary::open( const Path& filename ) {
-  void* handle = dlopen( filename.c_str(), RTLD_NOW|RTLD_GLOBAL );
-  if ( handle != NULL )
-    return new SharedLibrary( handle );
+SharedLibrary* SharedLibrary::open(const Path& filename) {
+  void* handle = dlopen(filename.c_str(), RTLD_NOW | RTLD_GLOBAL);
+  if (handle != NULL)
+    return new SharedLibrary(handle);
   else
     return NULL;
 }
 
-void* SharedLibrary::sym( const char* symbol ) {
-  return dlsym( handle, symbol );
+void* SharedLibrary::sym(const char* symbol) {
+  return dlsym(handle, symbol);
 }
 }
 }

@@ -70,7 +70,7 @@ public:
     ) {
       onAcceptCompletion
       (
-        static_cast<SSLSocket&>( accepted_stream_socket ),
+        static_cast<SSLSocket&>(accepted_stream_socket),
         context,
         peername,
         recv_buffer
@@ -81,30 +81,30 @@ public:
 public:
   virtual ~SSLSocket();
 
-  static YO_NEW_REF SSLSocket* create( SSLContext& );
-  static YO_NEW_REF SSLSocket* create( int domain, SSLContext& );
-  operator SSL*() const {
+  static YO_NEW_REF SSLSocket* create(SSLContext&);
+  static YO_NEW_REF SSLSocket* create(int domain, SSLContext&);
+  operator SSL* () const {
     return ssl;
   }
 
   // Socket
-  virtual bool connect( const SocketAddress& peername );
-  virtual ssize_t recv( void* buf, size_t buflen, int );
-  virtual ssize_t send( const void* buf, size_t buflen, int );
-  virtual ssize_t sendmsg( const iovec* iov, int iovlen, int );
+  virtual bool connect(const SocketAddress& peername);
+  virtual ssize_t recv(void* buf, size_t buflen, int);
+  virtual ssize_t send(const void* buf, size_t buflen, int);
+  virtual ssize_t sendmsg(const iovec* iov, int iovlen, int);
   virtual bool want_recv() const;
   virtual bool want_send() const;
 
   // StreamSocket
   YO_NEW_REF StreamSocket* dup() {
-    return dup( get_domain() );
+    return dup(get_domain());
   }
-  virtual YO_NEW_REF StreamSocket* dup( int domain );
+  virtual YO_NEW_REF StreamSocket* dup(int domain);
   virtual bool listen();
   virtual bool shutdown();
 
 protected:
-  SSLSocket( int domain, socket_t, SSL*, SSLContext& );
+  SSLSocket(int domain, socket_t, SSL*, SSLContext&);
 
   SSLContext& get_ssl_context() const {
     return ssl_context;
@@ -112,7 +112,7 @@ protected:
 
 private:
   // StreamSocket
-  virtual YO_NEW_REF StreamSocket* dup2( socket_t );
+  virtual YO_NEW_REF StreamSocket* dup2(socket_t);
 
 private:
   SSL* ssl;

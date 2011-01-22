@@ -53,16 +53,16 @@ namespace fs {
 using std::pair;
 
 
-mode_t Volume::FILE_MODE_DEFAULT = S_IREAD|S_IWRITE;
-mode_t Volume::DIRECTORY_MODE_DEFAULT = S_IREAD|S_IWRITE|S_IEXEC;
+mode_t Volume::FILE_MODE_DEFAULT = S_IREAD | S_IWRITE;
+mode_t Volume::DIRECTORY_MODE_DEFAULT = S_IREAD | S_IWRITE | S_IEXEC;
 int Volume::MMAP_FLAGS_DEFAULT = MAP_SHARED;
-int Volume::MMAP_PROT_DEFAULT = PROT_READ|PROT_WRITE;
+int Volume::MMAP_PROT_DEFAULT = PROT_READ | PROT_WRITE;
 uint32_t Volume::OPEN_FLAGS_DEFAULT = O_RDONLY;
 
 
 class Volume::chmodStat : public Stat {
 public:
-  chmodStat( mode_t mode ) : mode( mode ) { }
+  chmodStat(mode_t mode) : mode(mode) { }
 
   // Stat
   mode_t get_mode() const {
@@ -75,7 +75,7 @@ private:
 
 class Volume::chownStat : public Stat {
 public:
-  chownStat( uid_t uid, gid_t gid ) : uid( uid ), gid( gid ) { }
+  chownStat(uid_t uid, gid_t gid) : uid(uid), gid(gid) { }
 
   // Stat
   gid_t get_gid() const {
@@ -98,9 +98,9 @@ public:
     const DateTime& mtime,
     const DateTime& ctime
   )
-    : atime( atime ),
-      mtime( mtime ),
-      ctime( ctime )
+    : atime(atime),
+      mtime(mtime),
+      ctime(ctime)
   { }
 
   // Stat
@@ -119,20 +119,20 @@ private:
 };
 
 
-bool Volume::chmod( const Path& path, mode_t mode ) {
-  return setattr( path, chmodStat( mode ) );
+bool Volume::chmod(const Path& path, mode_t mode) {
+  return setattr(path, chmodStat(mode));
 }
 
-bool Volume::chown( const Path& path, uid_t uid, gid_t gid ) {
-  return setattr( path, chownStat( uid, gid ) );
+bool Volume::chown(const Path& path, uid_t uid, gid_t gid) {
+  return setattr(path, chownStat(uid, gid));
 }
 
-File* Volume::creat( const Path& path ) {
-  return creat( path, FILE_MODE_DEFAULT );
+File* Volume::creat(const Path& path) {
+  return creat(path, FILE_MODE_DEFAULT);
 }
 
-File* Volume::creat( const Path& path, mode_t mode ) {
-  return open( path, O_CREAT|O_WRONLY|O_TRUNC, mode );
+File* Volume::creat(const Path& path, mode_t mode) {
+  return open(path, O_CREAT | O_WRONLY | O_TRUNC, mode);
 }
 
 Volume* Volume::create() {
@@ -145,96 +145,96 @@ Volume* Volume::create() {
 #endif
 }
 
-bool Volume::exists( const Path& path ) {
-  Stat* stbuf = getattr( path );
-  if ( stbuf != NULL ) {
-    Stat::dec_ref( *stbuf );
+bool Volume::exists(const Path& path) {
+  Stat* stbuf = getattr(path);
+  if (stbuf != NULL) {
+    Stat::dec_ref(*stbuf);
     return true;
   } else
     return false;
 }
 
-bool Volume::isdir( const Path& path ) {
-  Stat* stbuf = getattr( path );
-  if ( stbuf != NULL ) {
+bool Volume::isdir(const Path& path) {
+  Stat* stbuf = getattr(path);
+  if (stbuf != NULL) {
     bool isdir = stbuf->ISDIR();
-    Stat::dec_ref( *stbuf );
+    Stat::dec_ref(*stbuf);
     return isdir;
   } else
     return false;
 }
 
-bool Volume::isfile( const Path& path ) {
-  Stat* stbuf = getattr( path );
-  if ( stbuf != NULL ) {
+bool Volume::isfile(const Path& path) {
+  Stat* stbuf = getattr(path);
+  if (stbuf != NULL) {
     bool isfile = stbuf->ISREG();
-    Stat::dec_ref( *stbuf );
+    Stat::dec_ref(*stbuf);
     return isfile;
   } else
     return false;
 }
 
-bool Volume::mkdir( const Path& path ) {
-  return mkdir( path, DIRECTORY_MODE_DEFAULT );
+bool Volume::mkdir(const Path& path) {
+  return mkdir(path, DIRECTORY_MODE_DEFAULT);
 }
 
-bool Volume::mktree( const Path& path ) {
-  return mktree( path, DIRECTORY_MODE_DEFAULT );
+bool Volume::mktree(const Path& path) {
+  return mktree(path, DIRECTORY_MODE_DEFAULT);
 }
 
-bool Volume::mktree( const Path& path, mode_t mode ) {
+bool Volume::mktree(const Path& path, mode_t mode) {
   bool ret = true;
 
   pair<Path, Path> path_parts = path.split();
-  if ( !path_parts.first.empty() )
-    ret &= mktree( path_parts.first, mode );
+  if (!path_parts.first.empty())
+    ret &= mktree(path_parts.first, mode);
 
-  if ( !exists( path ) && !mkdir( path, mode ) )
+  if (!exists(path) && !mkdir(path, mode))
     return false;
 
   return ret;
 }
 
-bool Volume::rmtree( const Path& path ) {
-  Directory* test_dir = opendir( path );
-  if ( test_dir != NULL ) {
-    auto_Object<Directory> dir( test_dir );
+bool Volume::rmtree(const Path& path) {
+  Directory* test_dir = opendir(path);
+  if (test_dir != NULL) {
+    auto_Object<Directory> dir(test_dir);
     Directory::Entry* test_dentry = dir->read();
-    if ( test_dentry != NULL ) {
-      auto_Object<Directory::Entry> dentry( *test_dentry );
+    if (test_dentry != NULL) {
+      auto_Object<Directory::Entry> dentry(*test_dentry);
 
       do {
-        if ( dentry->is_special() )
+        if (dentry->is_special())
           continue;
 
-        Path dentry_path( path / dentry->get_name() );
+        Path dentry_path(path / dentry->get_name());
 
-        if ( dentry->ISDIR() ) {
-          if ( rmtree( dentry_path ) )
+        if (dentry->ISDIR()) {
+          if (rmtree(dentry_path))
             continue;
           else
             return false;
-        } else if ( unlink( dentry_path ) )
+        } else if (unlink(dentry_path))
           continue;
         else
           return false;
-      } while ( dir->read( *dentry ) );
+      } while (dir->read(*dentry));
 
-      return rmdir( path );
+      return rmdir(path);
     }
   }
 
   return false;
 }
 
-bool Volume::touch( const Path& path ) {
-  return touch( path, FILE_MODE_DEFAULT );
+bool Volume::touch(const Path& path) {
+  return touch(path, FILE_MODE_DEFAULT);
 }
 
-bool Volume::touch( const Path& path, mode_t mode ) {
-  File* file = creat( path, mode );
-  if ( file != NULL ) {
-    File::dec_ref( *file );
+bool Volume::touch(const Path& path, mode_t mode) {
+  File* file = creat(path, mode);
+  if (file != NULL) {
+    File::dec_ref(*file);
     return true;
   } else
     return false;
@@ -406,7 +406,7 @@ Volume::utime
   const DateTime& atime,
   const DateTime& mtime
 ) {
-  return setattr( path, utimeStat( atime, mtime, Stat::INVALID_CTIME ) );
+  return setattr(path, utimeStat(atime, mtime, Stat::INVALID_CTIME));
 }
 
 bool
@@ -417,7 +417,7 @@ Volume::utime
   const DateTime& mtime,
   const DateTime& ctime
 ) {
-  return setattr( path, utimeStat( atime, mtime, ctime ) );
+  return setattr(path, utimeStat(atime, mtime, ctime));
 }
 }
 }

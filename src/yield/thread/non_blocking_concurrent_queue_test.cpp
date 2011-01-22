@@ -48,4 +48,4 @@ public:
 }
 }
 
-TEST_SUITE_EX( NonBlockingConcurrentQueue, yield::thread::NonBlockingConcurrentQueueTestSuite );
+TEST_SUITE_EX(NonBlockingConcurrentQueue, yield::thread::NonBlockingConcurrentQueueTestSuite);

@@ -39,8 +39,8 @@ namespace yield {
 namespace http {
 class SocketClient : public SocketPeer {
 protected:
-  SocketClient( Log* error_log, Log* trace_log )
-    : SocketPeer( error_log, trace_log )
+  SocketClient(Log* error_log, Log* trace_log)
+    : SocketPeer(error_log, trace_log)
   { }
 
   virtual ~SocketClient() { }

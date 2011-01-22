@@ -44,14 +44,14 @@
 namespace yield {
 namespace i18n {
 namespace posix {
-iconv::iconv( Code tocode, Code fromcode ) {
-  cd = ::iconv_open( tocode, fromcode );
-  if ( cd == reinterpret_cast<iconv_t>( -1 ) )
+iconv::iconv(Code tocode, Code fromcode) {
+  cd = ::iconv_open(tocode, fromcode);
+  if (cd == reinterpret_cast<iconv_t>(-1))
     throw Exception();
 }
 
 iconv::~iconv() {
-  iconv_close( cd );
+  iconv_close(cd);
 }
 
 size_t
@@ -72,7 +72,7 @@ iconv::iconv_to_char
 #if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__sun)
            inbuf,
 #else
-           const_cast<char**>( inbuf ),
+           const_cast<char**>(inbuf),
 #endif
            inbytesleft,
            outbuf,
@@ -90,7 +90,7 @@ iconv::iconv_to_string
 ) {
   size_t outbuf_c_len = inbytesleft;
 
-  for ( ;; ) {
+  for (;;) {
     typename outbufStringType::value_type* outbuf_c
     = new typename outbufStringType::value_type[outbuf_c_len];
     void* outbuf_c_dummy = outbuf_c;
@@ -101,16 +101,16 @@ iconv::iconv_to_string
       (
         &inbuf,
         &inbytesleft,
-        reinterpret_cast<char**>( &outbuf_c_dummy ),
+        reinterpret_cast<char**>(&outbuf_c_dummy),
         &outbytesleft
       );
 
-    if ( iconv_ret != static_cast<size_t>( -1 ) ) {
-      outbuf.append( outbuf_c, outbuf_c_len - outbytesleft );
+    if (iconv_ret != static_cast<size_t>(-1)) {
+      outbuf.append(outbuf_c, outbuf_c_len - outbytesleft);
       delete [] outbuf_c;
       return true;
-    } else if ( errno == E2BIG ) {
-      outbuf.append( outbuf_c, outbuf_c_len - outbytesleft );
+    } else if (errno == E2BIG) {
+      outbuf.append(outbuf_c, outbuf_c_len - outbytesleft);
       delete [] outbuf_c;
       outbuf_c_len *= 2;
       continue;
@@ -129,21 +129,21 @@ iconv::operator()
   char** outbuf,
   size_t* outbytesleft
 ) {
-  if ( reset() )
-    return iconv_to_char( inbuf, inbytesleft, outbuf, outbytesleft );
+  if (reset())
+    return iconv_to_char(inbuf, inbytesleft, outbuf, outbytesleft);
   else
-    return static_cast<size_t>( -1 );
+    return static_cast<size_t>(-1);
 }
 
-bool iconv::operator()( const string& inbuf, string& outbuf ) {
-  if ( reset() )
-    return iconv_to_string( inbuf.data(), inbuf.size(), outbuf );
+bool iconv::operator()(const string& inbuf, string& outbuf) {
+  if (reset())
+    return iconv_to_string(inbuf.data(), inbuf.size(), outbuf);
   else
     return false;
 }
 
 bool iconv::reset() {
-  return iconv_to_char( NULL, 0, NULL, 0 ) != static_cast<size_t>( -1 );
+  return iconv_to_char(NULL, 0, NULL, 0) != static_cast<size_t>(-1);
 }
 }
 }

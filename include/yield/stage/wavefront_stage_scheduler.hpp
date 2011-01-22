@@ -43,7 +43,7 @@ private:
 
 private:
   // PollingStageScheduler
-  PollingStageScheduler::StagePoller& createStagePoller( Stage& );
+  PollingStageScheduler::StagePoller& createStagePoller(Stage&);
 };
 }
 }

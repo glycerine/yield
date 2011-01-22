@@ -56,12 +56,12 @@ public:
   void broadcast();
   bool lock_mutex();
   void signal();
-  bool timedwait( const Time& timeout );
+  bool timedwait(const Time& timeout);
   bool trylock_mutex();
   void unlock_mutex();
   bool wait();
-  bool wait( const Time& timeout ) {
-    return timedwait( timeout );
+  bool wait(const Time& timeout) {
+    return timedwait(timeout);
   }
 
 private:

@@ -41,22 +41,22 @@ namespace marshal {
 namespace xdr {
 class XDRUnmarshaller : public Unmarshaller, private XDRDecoder {
 public:
-  XDRUnmarshaller( const Buffer& xdr );
-  XDRUnmarshaller( const uint8_t* xdr, size_t xdr_len );
+  XDRUnmarshaller(const Buffer& xdr);
+  XDRUnmarshaller(const uint8_t* xdr, size_t xdr_len);
 
   // Unmarshaller
-  bool read_bool( const Object& key );
-  double read_double( const Object& key );
-  float read_float( const Object& key );
-  int32_t read_int32( const Object& key );
-  int64_t read_int64( const Object& key );
-  void read_key( Object& key );
-  void read_map( const Object& key, Map& value );
-  void read_object( const Object& key, Object& value );
-  void read_sequence( const Object& key, Sequence& value );
-  void read_string( const Object& key, string& value );
-  uint32_t read_uint32( const Object& key );
-  uint64_t read_uint64( const Object& key );
+  bool read_bool(const Object& key);
+  double read_double(const Object& key);
+  float read_float(const Object& key);
+  int32_t read_int32(const Object& key);
+  int64_t read_int64(const Object& key);
+  void read_key(Object& key);
+  void read_map(const Object& key, Map& value);
+  void read_object(const Object& key, Object& value);
+  void read_sequence(const Object& key, Sequence& value);
+  void read_string(const Object& key, string& value);
+  uint32_t read_uint32(const Object& key);
+  uint64_t read_uint64(const Object& key);
 };
 };
 };

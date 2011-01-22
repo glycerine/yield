@@ -52,10 +52,10 @@ public:
   );
 
   // Volume
-  bool access( const Path&, int amode );
-  yield::fs::Stat* getattr( const Path& );
-  bool link( const Path& old_path, const Path& new_path );
-  bool mkdir( const Path&, mode_t mode );
+  bool access(const Path&, int amode);
+  yield::fs::Stat* getattr(const Path&);
+  bool link(const Path& old_path, const Path& new_path);
+  bool mkdir(const Path&, mode_t mode);
 
   YO_NEW_REF yield::fs::File*
   mkfifo
@@ -69,7 +69,7 @@ public:
   mmap
   (
     yield::fs::File& file,
-    void *start,
+    void* start,
     size_t length,
     int prot,
     int flags,
@@ -85,18 +85,18 @@ public:
     uint32_t attributes
   );
 
-  virtual YO_NEW_REF yield::fs::Directory* opendir( const Path& );
-  virtual YO_NEW_REF ExtendedAttributes* openxattrs( const Path& );
-  bool readlink( const Path&, OUT Path& );
-  bool realpath( const Path&, OUT Path& );
-  bool rename( const Path& from_path, const Path& to_path );
-  bool rmdir( const Path& );
-  bool setattr( const Path&, const yield::fs::Stat& );
-  bool statvfs( const Path&, struct statvfs& );
-  bool symlink( const Path& old_path, const Path& new_path );
-  bool truncate( const Path&, uint64_t new_size );
-  bool unlink( const Path& );
-  bool volname( const Path&, OUT Path& );
+  virtual YO_NEW_REF yield::fs::Directory* opendir(const Path&);
+  virtual YO_NEW_REF ExtendedAttributes* openxattrs(const Path&);
+  bool readlink(const Path&, OUT Path&);
+  bool realpath(const Path&, OUT Path&);
+  bool rename(const Path& from_path, const Path& to_path);
+  bool rmdir(const Path&);
+  bool setattr(const Path&, const yield::fs::Stat&);
+  bool statvfs(const Path&, struct statvfs&);
+  bool symlink(const Path& old_path, const Path& new_path);
+  bool truncate(const Path&, uint64_t new_size);
+  bool unlink(const Path&);
+  bool volname(const Path&, OUT Path&);
 };
 }
 }

@@ -33,10 +33,10 @@
 #include "yunit.hpp"
 
 
-TEST_SUITE( Message );
+TEST_SUITE(Message);
 
 namespace yield {
-TEST( Message, is_message ) {
-  throw_assert( Request().is_message() );
+TEST(Message, is_message) {
+  throw_assert(Request().is_message());
 }
 }

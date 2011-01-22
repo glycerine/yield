@@ -40,12 +40,12 @@ Event& SynchronizedEventQueue::dequeue() {
   return SynchronizedQueue<Event>::dequeue();
 }
 
-Event* SynchronizedEventQueue::dequeue( const Time& timeout ) {
-  return SynchronizedQueue<Event>::dequeue( timeout );
+Event* SynchronizedEventQueue::dequeue(const Time& timeout) {
+  return SynchronizedQueue<Event>::dequeue(timeout);
 }
 
-bool SynchronizedEventQueue::enqueue( Event& event ) {
-  return SynchronizedQueue<Event>::enqueue( event );
+bool SynchronizedEventQueue::enqueue(Event& event) {
+  return SynchronizedQueue<Event>::enqueue(event);
 }
 
 Event* SynchronizedEventQueue::trydequeue() {

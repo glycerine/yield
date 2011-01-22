@@ -37,61 +37,61 @@
 namespace yield {
 namespace fs {
 namespace linux {
-ExtendedAttributes::ExtendedAttributes( fd_t fd )
-  : fd( fd )
+ExtendedAttributes::ExtendedAttributes(fd_t fd)
+  : fd(fd)
 { }
 
-ExtendedAttributes::ExtendedAttributes( const Path& path )
-  : fd( -1 ), path( path )
+ExtendedAttributes::ExtendedAttributes(const Path& path)
+  : fd(-1), path(path)
 { }
 
 ExtendedAttributes::~ExtendedAttributes() {
-  if ( fd != -1 )
-    close( fd );
+  if (fd != -1)
+    close(fd);
 }
 
-ssize_t ExtendedAttributes::get( const char* name, void* value, size_t size ) {
-  if ( fd != -1 )
-    return fgetxattr( fd, name, value, size );
+ssize_t ExtendedAttributes::get(const char* name, void* value, size_t size) {
+  if (fd != -1)
+    return fgetxattr(fd, name, value, size);
   else
-    return getxattr( path.c_str(), name, value, size );
+    return getxattr(path.c_str(), name, value, size);
 }
 
-bool ExtendedAttributes::list( vector<string>& out_names ) {
+bool ExtendedAttributes::list(vector<string>& out_names) {
   ssize_t estimated_names_len;
-  if ( fd != -1 )
-    estimated_names_len = flistxattr( fd, NULL, 0 );
+  if (fd != -1)
+    estimated_names_len = flistxattr(fd, NULL, 0);
   else
-    estimated_names_len = listxattr( path.c_str(), NULL, 0 );
+    estimated_names_len = listxattr(path.c_str(), NULL, 0);
 
-  if ( estimated_names_len > 0 ) {
+  if (estimated_names_len > 0) {
     char* names = new char[estimated_names_len];
     ssize_t names_len;
 
-    if ( fd != -1 )
-      names_len = flistxattr( fd, names, estimated_names_len );
+    if (fd != -1)
+      names_len = flistxattr(fd, names, estimated_names_len);
     else
-      names_len = listxattr( path.c_str(), names, estimated_names_len );
+      names_len = listxattr(path.c_str(), names, estimated_names_len);
 
-    debug_assert_eq( names_len, estimated_names_len );
+    debug_assert_eq(names_len, estimated_names_len);
 
     char* name = names;
     do {
-      size_t name_len = strlen( name );
-      out_names.push_back( string( name, name_len ) );
+      size_t name_len = strlen(name);
+      out_names.push_back(string(name, name_len));
       name += name_len + 1;
-    } while ( static_cast<ssize_t>( name - names ) < names_len );
+    } while (static_cast<ssize_t>(name - names) < names_len);
     delete [] names;
   }
 
   return true;
 }
 
-bool ExtendedAttributes::remove( const char* name ) {
-  if ( fd != -1 )
-    return fremovexattr( fd, name ) != -1;
+bool ExtendedAttributes::remove(const char* name) {
+  if (fd != -1)
+    return fremovexattr(fd, name) != -1;
   else
-    return removexattr( path.c_str(), name ) != -1;
+    return removexattr(path.c_str(), name) != -1;
 }
 
 bool
@@ -102,10 +102,10 @@ ExtendedAttributes::set
   size_t size,
   int flags
 ) {
-  if ( fd != -1 )
-    return fsetxattr( fd, name, value, size, flags ) != -1;
+  if (fd != -1)
+    return fsetxattr(fd, name, value, size, flags) != -1;
   else
-    return setxattr( path.c_str(), name, value, size, flags ) != -1;
+    return setxattr(path.c_str(), name, value, size, flags) != -1;
 }
 }
 }

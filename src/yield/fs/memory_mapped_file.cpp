@@ -42,15 +42,15 @@ MemoryMappedFile::MemoryMappedFile
   uint64_t offset,
   int prot
 )
-  : Buffer( capacity ),
-    file( file ),
-    flags( flags ),
-    offset( offset ),
-    prot( prot )
+  : Buffer(capacity),
+    file(file),
+    flags(flags),
+    offset(offset),
+    prot(prot)
 { }
 
 MemoryMappedFile::~MemoryMappedFile() {
-  File::dec_ref( file );
+  File::dec_ref(file);
 }
 
 bool MemoryMappedFile::close() {
@@ -58,11 +58,11 @@ bool MemoryMappedFile::close() {
 }
 
 bool MemoryMappedFile::sync() {
-  return sync( data(), capacity() );
+  return sync(data(), capacity());
 }
 
-bool MemoryMappedFile::sync( size_t offset, size_t length ) {
-  return sync( static_cast<char*>( data() ) + offset, length );
+bool MemoryMappedFile::sync(size_t offset, size_t length) {
+  return sync(static_cast<char*>(data()) + offset, length);
 }
 }
 }

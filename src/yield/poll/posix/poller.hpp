@@ -48,12 +48,12 @@ public:
   Poller();
   ~Poller();
 
-  bool associate( fd_t fd, uint16_t events );
-  bool dissociate( fd_t fd );
+  bool associate(fd_t fd, uint16_t events);
+  bool dissociate(fd_t fd);
 
   // EventQueue
-  YO_NEW_REF Event* dequeue( const Time& timeout );
-  bool enqueue( YO_NEW_REF Event& event );
+  YO_NEW_REF Event* dequeue(const Time& timeout);
+  bool enqueue(YO_NEW_REF Event& event);
 
 private:
   vector<pollfd> pollfds;

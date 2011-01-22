@@ -69,8 +69,8 @@ public:
     return prot;
   }
   bool sync();
-  bool sync( size_t offset, size_t length );
-  virtual bool sync( void* ptr, size_t length ) = 0;
+  bool sync(size_t offset, size_t length);
+  virtual bool sync(void* ptr, size_t length) = 0;
   virtual bool unmap() = 0;
 
 protected:

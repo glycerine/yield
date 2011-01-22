@@ -54,13 +54,13 @@ public:
   virtual ~Directory() { }
 
   virtual bool close() = 0;
-  virtual YO_NEW_REF Entry* read( Entry::Type = Entry::TYPE_ALL ) = 0;
-  virtual bool read( Entry&, Entry::Type = Entry::TYPE_ALL ) = 0;
+  virtual YO_NEW_REF Entry* read(Entry::Type = Entry::TYPE_ALL) = 0;
+  virtual bool read(Entry&, Entry::Type = Entry::TYPE_ALL) = 0;
   virtual void rewind() = 0;
 
   // Object
   Directory& inc_ref() {
-    return Object::inc_ref( *this );
+    return Object::inc_ref(*this);
   }
 };
 }

@@ -41,7 +41,7 @@ public:
   ~Mutex();
 
   bool lock();
-  operator void*() const {
+  operator void* () const {
     return hMutex;
   }
   bool trylock();

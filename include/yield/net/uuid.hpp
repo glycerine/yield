@@ -56,11 +56,11 @@ class UUID;
 class UUID : public Object {
 public:
   UUID();
-  UUID( const string& uuid );
+  UUID(const string& uuid);
   ~UUID();
 
-  bool operator!=( const UUID& ) const;
-  bool operator==( const UUID& ) const;
+  bool operator!=(const UUID&) const;
+  bool operator==(const UUID&) const;
   operator string() const;
 
 private:

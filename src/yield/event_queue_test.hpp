@@ -48,12 +48,12 @@ public:
     auto_Object<Event> event = new Event;
     auto_Object<EventQueue> event_queue = new EventQueueType;
 
-    event_queue->enqueue( event->inc_ref() );
+    event_queue->enqueue(event->inc_ref());
     auto_Object<Event> dequeued_event = event_queue->dequeue();
-    throw_assert_eq( event, dequeued_event );
+    throw_assert_eq(event, dequeued_event);
 
     Event* null_event = event_queue->trydequeue();
-    throw_assert_eq( null_event, NULL );
+    throw_assert_eq(null_event, NULL);
   }
 };
 
@@ -66,12 +66,12 @@ public:
     auto_Object<Event> event = new Event;
     auto_Object<EventQueue> event_queue = new EventQueueType;
 
-    event_queue->enqueue( event->inc_ref() );
-    auto_Object<Event> dequeued_event = event_queue->dequeue( 1.0 );
-    throw_assert_eq( event, dequeued_event );
+    event_queue->enqueue(event->inc_ref());
+    auto_Object<Event> dequeued_event = event_queue->dequeue(1.0);
+    throw_assert_eq(event, dequeued_event);
 
-    Event* null_event = event_queue->dequeue( 1.0 );
-    throw_assert_eq( null_event, NULL );
+    Event* null_event = event_queue->dequeue(1.0);
+    throw_assert_eq(null_event, NULL);
   }
 };
 
@@ -85,12 +85,12 @@ public:
     auto_Object<EventQueue> event_queue = new EventQueueType;
 
     {
-      event_queue->enqueue( event->inc_ref() );
+      event_queue->enqueue(event->inc_ref());
       auto_Object<Event> dequeued_event = event_queue->trydequeue();
-      throw_assert_eq( event, dequeued_event );
+      throw_assert_eq(event, dequeued_event);
 
       Event* null_event = event_queue->trydequeue();
-      throw_assert_eq( null_event, NULL );
+      throw_assert_eq(null_event, NULL);
     }
   }
 };
@@ -101,8 +101,8 @@ class EventQueueTestSuite : public yunit::TestSuite {
 public:
   // yunit::TestSuite
   virtual int run() {
-    if ( this->empty() ) {
-      add( "EventQueue::dequeue", new EventQueueDequeueTest<EventQueueType> );
+    if (this->empty()) {
+      add("EventQueue::dequeue", new EventQueueDequeueTest<EventQueueType>);
 
       add
       (

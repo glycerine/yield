@@ -33,21 +33,21 @@
 
 namespace yield {
 namespace fs {
-const Path Path::CURRENT_DIRECTORY( L'.' );
-const Path Path::PARENT_DIRECTORY( L".." );
+const Path Path::CURRENT_DIRECTORY(L'.');
+const Path Path::PARENT_DIRECTORY(L"..");
 const wchar_t Path::SEPARATOR = L'\\';
 
 
 std::pair<Path, Path> Path::splitext() const {
-  size_type last_dot = find_last_of( L"." );
-  if ( last_dot == 0 || last_dot == npos )
-    return std::make_pair( *this, Path() );
+  size_type last_dot = find_last_of(L".");
+  if (last_dot == 0 || last_dot == npos)
+    return std::make_pair(*this, Path());
   else
-    return std::make_pair( substr( 0, last_dot ), substr( last_dot ) );
+    return std::make_pair(substr(0, last_dot), substr(last_dot));
 }
 
-std::ostream& operator<<( std::ostream& os, const Path& path ) {
-  os << path.encode( yield::i18n::Code::CHAR );
+std::ostream& operator<<(std::ostream& os, const Path& path) {
+  os << path.encode(yield::i18n::Code::CHAR);
   return os;
 }
 }

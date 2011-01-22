@@ -34,16 +34,16 @@
 namespace yield {
 namespace poll {
 namespace sunos {
-EventPort::EventPort( int port )
-  : port( port )
+EventPort::EventPort(int port)
+  : port(port)
 { }
 
 EventPort::~EventPort() {
-  close( port );
+  close(port);
 }
 
-bool EventPort::associate( fd_t fd, uint16_t events ) {
-  if ( events > 0 ) {
+bool EventPort::associate(fd_t fd, uint16_t events) {
+  if (events > 0) {
     return port_associate
            (
              port,
@@ -53,21 +53,21 @@ bool EventPort::associate( fd_t fd, uint16_t events ) {
              NULL
            ) != -1;
   } else {
-    dissociate( fd );
+    dissociate(fd);
     return true;
   }
 }
 
 EventPort* EventPort::create() {
   int port = port_create();
-  if ( port != -1 )
-    return new EventPort( port );
+  if (port != -1)
+    return new EventPort(port);
   else
     return NULL;
 }
 
-bool EventPort::dissociate( fd_t fd ) {
-  return port_dissociate( port, PORT_SOURCE_FD, fd ) != -1;
+bool EventPort::dissociate(fd_t fd) {
+  return port_dissociate(port, PORT_SOURCE_FD, fd) != -1;
 }
 
 int16_t
@@ -77,35 +77,35 @@ EventPort::poll
   int16_t fd_events_len,
   const Time& timeout
 ) {
-  if ( fd_events_len > port_events.size() )
-    port_events.resize( fd_events_len );
+  if (fd_events_len > port_events.size())
+    port_events.resize(fd_events_len);
 
   uint_t max = fd_events_len, nget;
   timespec timeout_ts = timeout;
 
-  int ret = port_getn( port, port_events, max, &nget, &timeout_ts );
+  int ret = port_getn(port, port_events, max, &nget, &timeout_ts);
 
-  if ( ret == 0 ) {
+  if (ret == 0) {
     int16_t event_i = 0;
 
-    for ( uint_t port_event_i = 0; port_event_i < nget; port_event_i++ ) {
+    for (uint_t port_event_i = 0; port_event_i < nget; port_event_i++) {
       const port_event_t& port_event = port_fd_events[port_event_i];
 
-      if ( port_event.portev_source != PORT_SOURCE_USER ) {
-        fd_events[event_i].set_events( port_event.portev_events );
-        fd_events[event_i].set_fd( port_event.portev_object );
-        if ( ++event_i == fd_events_len ) break;
+      if (port_event.portev_source != PORT_SOURCE_USER) {
+        fd_events[event_i].set_events(port_event.portev_events);
+        fd_events[event_i].set_fd(port_event.portev_object);
+        if (++event_i == fd_events_len) break;
       }
     }
 
     return event_i;
   } else
-    return static_cast<int16_t>( ret );
+    return static_cast<int16_t>(ret);
 }
 }
 
 void EventPort::wake() {
-  port_send( port, 0, NULL );
+  port_send(port, 0, NULL);
 }
 }
 }

@@ -46,7 +46,7 @@ public:
   public:
     Entry() { }
 
-    Entry& operator=( const WIN32_FIND_DATA& );
+    Entry& operator=(const WIN32_FIND_DATA&);
 
     // Directory::Entry
     const Path& get_name() const {
@@ -84,7 +84,7 @@ public:
   };
 
 public:
-  Directory( fd_t hDirectory );
+  Directory(fd_t hDirectory);
   virtual ~Directory();
 
   operator fd_t() const {
@@ -93,13 +93,13 @@ public:
 
   // Object
   Directory& inc_ref() {
-    return Object::inc_ref( *this );
+    return Object::inc_ref(*this);
   }
 
   // Directory
   bool close();
-  yield::fs::Directory::Entry* read( Entry::Type types );
-  bool read( yield::fs::Directory::Entry&, Entry::Type types );
+  yield::fs::Directory::Entry* read(Entry::Type types);
+  bool read(yield::fs::Directory::Entry&, Entry::Type types);
   void rewind();
 
 private:

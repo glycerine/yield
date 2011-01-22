@@ -61,12 +61,12 @@ public:
     QueueType queue;
 
     uint32_t in_value = 1;
-    throw_assert( queue.enqueue( in_value ) );
+    throw_assert(queue.enqueue(in_value));
     uint32_t* out_value = queue.trydequeue();
-    throw_assert_ne( out_value, NULL );
-    throw_assert_eq( *out_value, in_value );
-    throw_assert_eq( *out_value, 1 );
-    throw_assert_eq( queue.trydequeue(), NULL );
+    throw_assert_ne(out_value, NULL);
+    throw_assert_eq(*out_value, in_value);
+    throw_assert_eq(*out_value, 1);
+    throw_assert_eq(queue.trydequeue(), NULL);
   }
 };
 
@@ -79,7 +79,7 @@ public:
     QueueType queue;
 
     uint32_t in_value = 1;
-    throw_assert( queue.enqueue( in_value ) );
+    throw_assert(queue.enqueue(in_value));
   }
 };
 
@@ -93,15 +93,15 @@ public:
 
     uint32_t in_values[] = { 0, 1, 2, 3, 4, 5, 6, 7 };
 
-    for ( unsigned char i = 0; i < 8; i++ ) {
-      throw_assert( queue.enqueue( in_values[i] ) );
+    for (unsigned char i = 0; i < 8; i++) {
+      throw_assert(queue.enqueue(in_values[i]));
     }
 
-    throw_assert_false( queue.enqueue( in_values[0] ) );
+    throw_assert_false(queue.enqueue(in_values[0]));
 
-    for ( unsigned char i = 0; i < 8; i++ ) {
+    for (unsigned char i = 0; i < 8; i++) {
       uint32_t* out_value = queue.trydequeue();
-      throw_assert( *out_value == in_values[i] );
+      throw_assert(*out_value == in_values[i]);
     }
   }
 };
@@ -111,9 +111,9 @@ template <class QueueType>
 class QueueTestSuite : public yunit::TestSuite {
 public:
   QueueTestSuite() {
-    add( "queue::create", new QueueCreateTest<QueueType> );
-    add( "queue::dequeue", new QueueDequeueTest<QueueType> );
-    add( "queue::enqueue", new QueueEnqueueTest<QueueType> );
+    add("queue::create", new QueueCreateTest<QueueType>);
+    add("queue::dequeue", new QueueDequeueTest<QueueType>);
+    add("queue::enqueue", new QueueEnqueueTest<QueueType>);
   }
 };
 }

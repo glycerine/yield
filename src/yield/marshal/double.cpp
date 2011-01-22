@@ -38,25 +38,25 @@
 
 namespace yield {
 namespace marshal {
-bool Double::operator==( const Object& other ) const {
-  switch ( other.get_type_id() ) {
+bool Double::operator==(const Object& other) const {
+  switch (other.get_type_id()) {
   case Double::TYPE_ID: {
-    return value == static_cast<const Double&>( other ).value;
+    return value == static_cast<const Double&>(other).value;
   }
   break;
 
   case Integer::TYPE_ID: {
-    return value == static_cast<const Integer&>( other );
+    return value == static_cast<const Integer&>(other);
   }
   break;
 
   case String::TYPE_ID: {
-    return value == atof( static_cast<const String&>( other ).c_str() );
+    return value == atof(static_cast<const String&>(other).c_str());
   }
   break;
 
   case StringLiteral::TYPE_ID: {
-    return value == atof( static_cast<const StringLiteral&>( other ) );
+    return value == atof(static_cast<const StringLiteral&>(other));
   }
   break;
 

@@ -41,20 +41,20 @@
 #endif
 
 
-TEST_SUITE( MemoryMappedFile );
+TEST_SUITE(MemoryMappedFile);
 
 namespace yield {
 namespace fs {
 class MemoryMappedFileTest : public yunit::Test {
 public:
   virtual ~MemoryMappedFileTest() {
-    Volume::dec_ref( volume );
+    Volume::dec_ref(volume);
   }
 
 protected:
   MemoryMappedFileTest()
-    : test_file_name( "mmf_test.bin" ),
-      test_string( "test string" ) {
+    : test_file_name("mmf_test.bin"),
+      test_string("test string") {
     volume = NULL;
   }
 
@@ -71,30 +71,30 @@ protected:
   // yunit::Test
   void setup() {
     volume = Volume::create();
-    if ( volume != NULL ) {
-      volume->unlink( get_test_file_name() );
+    if (volume != NULL) {
+      volume->unlink(get_test_file_name());
 
       test_file
       = volume->open
         (
           get_test_file_name(),
-          O_CREAT|O_TRUNC|O_RDWR|O_SYNC
+          O_CREAT | O_TRUNC | O_RDWR | O_SYNC
         );
 
-      if ( test_file != NULL )
+      if (test_file != NULL)
         return;
       else
-        Volume::dec_ref( *volume );
+        Volume::dec_ref(*volume);
     }
 
     throw Exception();
   }
 
   void teardown() {
-    if ( volume != NULL ) {
+    if (volume != NULL) {
       test_file->close();
-      File::dec_ref( *test_file );
-      volume->unlink( get_test_file_name() );
+      File::dec_ref(*test_file);
+      volume->unlink(get_test_file_name());
     }
   }
 
@@ -111,17 +111,17 @@ private:
 };
 
 
-TEST_EX( MemoryMappedFile, mmap, MemoryMappedFileTest ) {
+TEST_EX(MemoryMappedFile, mmap, MemoryMappedFileTest) {
   auto_Object<MemoryMappedFile> mmf
-  = get_volume().mmap( get_test_file().inc_ref() );
+  = get_volume().mmap(get_test_file().inc_ref());
 }
 
-TEST_EX( MemoryMappedFile, read, MemoryMappedFileTest ) {
+TEST_EX(MemoryMappedFile, read, MemoryMappedFileTest) {
   {
     auto_Object<MemoryMappedFile> mmf
-    = get_volume().mmap( get_test_file().inc_ref() );
+    = get_volume().mmap(get_test_file().inc_ref());
 
-    mmf->reserve( get_test_string().size() );
+    mmf->reserve(get_test_string().size());
 
     memcpy_s
     (
@@ -131,14 +131,14 @@ TEST_EX( MemoryMappedFile, read, MemoryMappedFileTest ) {
       get_test_string().size()
     );
 
-    if ( mmf->sync() )
+    if (mmf->sync())
       mmf->close();
     else
       throw Exception();
   }
 
   {
-    auto_Object<File> test_file = get_volume().open( get_test_file_name() );
+    auto_Object<File> test_file = get_volume().open(get_test_file_name());
 
     auto_Object<MemoryMappedFile> mmf
     = get_volume().mmap
@@ -150,20 +150,20 @@ TEST_EX( MemoryMappedFile, read, MemoryMappedFileTest ) {
         MAP_PRIVATE
       );
 
-    throw_assert_eq( mmf->capacity(), get_test_string().size() );
+    throw_assert_eq(mmf->capacity(), get_test_string().size());
     throw_assert_eq
     (
-      strncmp( *mmf, get_test_string().data(), get_test_string().size() ),
+      strncmp(*mmf, get_test_string().data(), get_test_string().size()),
       0
     );
   }
 }
 
-TEST_EX( MemoryMappedFile, write, MemoryMappedFileTest ) {
+TEST_EX(MemoryMappedFile, write, MemoryMappedFileTest) {
   auto_Object<MemoryMappedFile> mmf
-  = get_volume().mmap( get_test_file().inc_ref() );
+  = get_volume().mmap(get_test_file().inc_ref());
 
-  mmf->reserve( get_test_string().size() );
+  mmf->reserve(get_test_string().size());
 
   memcpy_s
   (
@@ -173,7 +173,7 @@ TEST_EX( MemoryMappedFile, write, MemoryMappedFileTest ) {
     get_test_string().size()
   );
 
-  if ( !mmf->sync( static_cast<size_t>( 0 ), get_test_string().size() ) )
+  if (!mmf->sync(static_cast<size_t>(0), get_test_string().size()))
     throw Exception();
 }
 }

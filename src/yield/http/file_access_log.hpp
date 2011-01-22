@@ -40,11 +40,11 @@ namespace yield {
 namespace http {
 class FileAccessLog : public AccessLog {
 public:
-  FileAccessLog( const yield::fs::Path& file_path, Format& format );
+  FileAccessLog(const yield::fs::Path& file_path, Format& format);
   ~FileAccessLog();
 
   // AccessLog
-  void write( const HTTPRequest&, const HTTPResponse& );
+  void write(const HTTPRequest&, const HTTPResponse&);
 
 private:
   yield::fs::File* file;

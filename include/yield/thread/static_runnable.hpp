@@ -39,18 +39,18 @@ namespace yield {
 namespace thread {
 class StaticRunnable : public Runnable {
 public:
-  StaticRunnable( void ( *run )( void* ), void* context = NULL )
-    : context( context ), _run( run )
+  StaticRunnable(void (*run)(void*), void* context = NULL)
+    : context(context), _run(run)
   { }
 
   // Runnable
   void run() {
-    _run( context );
+    _run(context);
   }
 
 private:
   void* context;
-  void ( *_run )( void* );
+  void (*_run)(void*);
 };
 }
 }

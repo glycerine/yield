@@ -206,7 +206,7 @@ public:
     /*! arg string to search for, e.g.  "open", "-", "-f", "--file"
         Note that on Windows the slash option marker will be converted
         to a hyphen so that "-f" will also match "/f". */
-    const SOCHAR * pszArg;
+    const SOCHAR* pszArg;
 
     /*! type of argument accepted by this option */
     ESOArgType nArgType;
@@ -221,8 +221,8 @@ public:
   /*! @brief Initialize the class in preparation for use. */
   CSimpleOptTempl(
     int             argc,
-    SOCHAR *        argv[],
-    const SOption * a_rgOptions,
+    SOCHAR*         argv[],
+    const SOption* a_rgOptions,
     int             a_nFlags = 0
   )
     : m_rgShuffleBuf(NULL) {
@@ -259,8 +259,8 @@ public:
   */
   bool Init(
     int             a_argc,
-    SOCHAR *        a_argv[],
-    const SOption * a_rgOptions,
+    SOCHAR*         a_argv[],
+    const SOption* a_rgOptions,
     int             a_nFlags = 0
   );
 
@@ -268,7 +268,7 @@ public:
 
       @param a_rgOptions  Valid option array
    */
-  inline void SetOptions(const SOption * a_rgOptions) {
+  inline void SetOptions(const SOption* a_rgOptions) {
     m_rgOptions = a_rgOptions;
   }
 
@@ -334,7 +334,7 @@ public:
 
       This function is available only when Next() has returned true.
    */
-  inline const SOCHAR * OptionText() const {
+  inline const SOCHAR* OptionText() const {
     return m_pszOptionText;
   }
 
@@ -343,7 +343,7 @@ public:
       If there is no argument for the option, this will return NULL.
       This function is available only when Next() has returned true.
    */
-  inline SOCHAR * OptionArg() const {
+  inline SOCHAR* OptionArg() const {
     return m_pszOptionArg;
   }
 
@@ -359,7 +359,7 @@ public:
 
       @param n    Number of arguments to return.
    */
-  SOCHAR ** MultiArg(int n);
+  SOCHAR** MultiArg(int n);
 
   /*! @brief Returned the number of entries in the Files() array.
 
@@ -375,34 +375,34 @@ public:
       @param n    Index of the file to return. This must be between 0
                   and FileCount() - 1;
    */
-  inline SOCHAR * File(int n) const {
+  inline SOCHAR* File(int n) const {
     SO_ASSERT(n >= 0 && n < FileCount());
     return m_argv[m_nLastArg + n];
   }
 
   /*! @brief Return the array of files. */
-  inline SOCHAR ** Files() const {
+  inline SOCHAR** Files() const {
     return &m_argv[m_nLastArg];
   }
 
 private:
-  CSimpleOptTempl(const CSimpleOptTempl &); // disabled
-  CSimpleOptTempl & operator=(const CSimpleOptTempl &); // disabled
+  CSimpleOptTempl(const CSimpleOptTempl&);  // disabled
+  CSimpleOptTempl& operator=(const CSimpleOptTempl&);   // disabled
 
-  SOCHAR PrepareArg(SOCHAR * a_pszString) const;
+  SOCHAR PrepareArg(SOCHAR* a_pszString) const;
   bool NextClumped();
   void ShuffleArg(int a_nStartIdx, int a_nCount);
-  int LookupOption(const SOCHAR * a_pszOption) const;
-  int CalcMatch(const SOCHAR *a_pszSource, const SOCHAR *a_pszTest) const;
+  int LookupOption(const SOCHAR* a_pszOption) const;
+  int CalcMatch(const SOCHAR* a_pszSource, const SOCHAR* a_pszTest) const;
 
   // Find the '=' character within a string.
-  inline SOCHAR * FindEquals(SOCHAR *s) const {
+  inline SOCHAR* FindEquals(SOCHAR* s) const {
     while (*s && *s != (SOCHAR)'=') ++s;
     return *s ? s : NULL;
   }
   bool IsEqual(SOCHAR a_cLeft, SOCHAR a_cRight, int a_nArgType) const;
 
-  inline void Copy(SOCHAR ** ppDst, SOCHAR ** ppSrc, int nCount) const {
+  inline void Copy(SOCHAR** ppDst, SOCHAR** ppSrc, int nCount) const {
 #ifdef SO_MAX_ARGS
     // keep our promise of no CLIB usage
     while (nCount-- > 0) *ppDst++ = *ppSrc++;
@@ -412,20 +412,20 @@ private:
   }
 
 private:
-  const SOption * m_rgOptions;     //!< pointer to options table
+  const SOption* m_rgOptions;      //!< pointer to options table
   int             m_nFlags;        //!< flags
   int             m_nOptionIdx;    //!< current argv option index
   int             m_nOptionId;     //!< id of current option (-1 = invalid)
   int             m_nNextOption;   //!< index of next option
   int             m_nLastArg;      //!< last argument, after this are files
   int             m_argc;          //!< argc to process
-  SOCHAR **       m_argv;          //!< argv
-  const SOCHAR *  m_pszOptionText; //!< curr option text, e.g. "-f"
-  SOCHAR *        m_pszOptionArg;  //!< curr option arg, e.g. "c:\file.txt"
-  SOCHAR *        m_pszClump;      //!< clumped single character options
+  SOCHAR**        m_argv;          //!< argv
+  const SOCHAR*   m_pszOptionText; //!< curr option text, e.g. "-f"
+  SOCHAR*         m_pszOptionArg;  //!< curr option arg, e.g. "c:\file.txt"
+  SOCHAR*         m_pszClump;      //!< clumped single character options
   SOCHAR          m_szShort[3];    //!< temp for clump and combined args
   ESOError        m_nLastError;    //!< error status from the last call
-  SOCHAR **       m_rgShuffleBuf;  //!< shuffle buffer for large argc
+  SOCHAR**        m_rgShuffleBuf;  //!< shuffle buffer for large argc
 };
 
 // ---------------------------------------------------------------------------
@@ -436,8 +436,8 @@ template<class SOCHAR>
 bool
 CSimpleOptTempl<SOCHAR>::Init(
   int             a_argc,
-  SOCHAR *        a_argv[],
-  const SOption * a_rgOptions,
+  SOCHAR*         a_argv[],
+  const SOption* a_rgOptions,
   int             a_nFlags
 ) {
   m_argc           = a_argc;
@@ -514,7 +514,7 @@ CSimpleOptTempl<SOCHAR>::Next() {
   int nTableIdx = -1;
   int nOptIdx = m_nOptionIdx;
   while (nTableIdx < 0 && nOptIdx < m_nLastArg) {
-    SOCHAR * pszArg = m_argv[nOptIdx];
+    SOCHAR* pszArg = m_argv[nOptIdx];
     m_pszOptionArg  = NULL;
 
     // find this option in the options table
@@ -639,10 +639,10 @@ CSimpleOptTempl<SOCHAR>::Next() {
 
   // we need to return the separate arg if required, just re-use the
   // multi-arg code because it all does the same thing
-  if (   nArgType == SO_REQ_SEP
-         && !m_pszOptionArg
-         && m_nLastError == SO_SUCCESS) {
-    SOCHAR ** ppArgs = MultiArg(1);
+  if (nArgType == SO_REQ_SEP
+      && !m_pszOptionArg
+      && m_nLastError == SO_SUCCESS) {
+    SOCHAR** ppArgs = MultiArg(1);
     if (ppArgs) {
       m_pszOptionArg = *ppArgs;
     }
@@ -662,7 +662,7 @@ CSimpleOptTempl<SOCHAR>::Stop() {
 template<class SOCHAR>
 SOCHAR
 CSimpleOptTempl<SOCHAR>::PrepareArg(
-  SOCHAR * a_pszString
+  SOCHAR* a_pszString
 ) const {
 #ifdef _WIN32
   // On Windows we can accept the forward slash as a single character
@@ -736,8 +736,8 @@ CSimpleOptTempl<SOCHAR>::ShuffleArg(
   int a_nStartIdx,
   int a_nCount
 ) {
-  SOCHAR * staticBuf[SO_STATICBUF];
-  SOCHAR ** buf = m_rgShuffleBuf ? m_rgShuffleBuf : staticBuf;
+  SOCHAR* staticBuf[SO_STATICBUF];
+  SOCHAR** buf = m_rgShuffleBuf ? m_rgShuffleBuf : staticBuf;
   int nTail = m_argc - a_nStartIdx - a_nCount;
 
   // make a copy of the elements to be moved
@@ -758,7 +758,7 @@ CSimpleOptTempl<SOCHAR>::ShuffleArg(
 template<class SOCHAR>
 int
 CSimpleOptTempl<SOCHAR>::LookupOption(
-  const SOCHAR * a_pszOption
+  const SOCHAR* a_pszOption
 ) const {
   int nBestMatch = -1;    // index of best match so far
   int nBestMatchLen = 0;  // matching characters of best match
@@ -793,8 +793,8 @@ CSimpleOptTempl<SOCHAR>::LookupOption(
 template<class SOCHAR>
 int
 CSimpleOptTempl<SOCHAR>::CalcMatch(
-  const SOCHAR *  a_pszSource,
-  const SOCHAR *  a_pszTest
+  const SOCHAR*   a_pszSource,
+  const SOCHAR*   a_pszTest
 ) const {
   if (!a_pszSource || !a_pszTest) {
     return 0;
@@ -865,7 +865,7 @@ CSimpleOptTempl<SOCHAR>::IsEqual(
 // calculate the number of characters that match (case-sensitive)
 // 0 = no match, > 0 == number of characters, -1 == perfect match
 template<class SOCHAR>
-SOCHAR **
+SOCHAR**
 CSimpleOptTempl<SOCHAR>::MultiArg(
   int a_nCount
 ) {
@@ -876,7 +876,7 @@ CSimpleOptTempl<SOCHAR>::MultiArg(
   }
 
   // our argument array
-  SOCHAR ** rgpszArg = &m_argv[m_nNextOption];
+  SOCHAR** rgpszArg = &m_argv[m_nNextOption];
 
   // Ensure that each of the following don't start with an switch character.
   // Only make this check if we are returning errors for unknown arguments.
@@ -933,19 +933,19 @@ OptionParser::add_option
   const string& help,
   bool require_argument
 ) {
-  options.add( option, help, require_argument );
+  options.add(option, help, require_argument);
 }
 
-void OptionParser::add_option( const string& option, bool require_argument ) {
-  options.add( option, string(), require_argument );
+void OptionParser::add_option(const string& option, bool require_argument) {
+  options.add(option, string(), require_argument);
 }
 
-void OptionParser::add_option( const Option& option ) {
-  options.add( option );
+void OptionParser::add_option(const Option& option) {
+  options.add(option);
 }
 
-void OptionParser::add_options( const Options& options ) {
-  this->options.add( options );
+void OptionParser::add_options(const Options& options) {
+  this->options.add(options);
 }
 
 void
@@ -971,25 +971,25 @@ OptionParser::parse_args
       options[option_i].get_require_argument() ? SO_REQ_SEP : SO_NONE
     };
 
-    simpleopt_options.push_back( simpleopt_option );
+    simpleopt_options.push_back(simpleopt_option);
   }
 
   CSimpleOpt::SOption sentinel_simpleopt_option = SO_END_OF_OPTIONS;
-  simpleopt_options.push_back( sentinel_simpleopt_option );
+  simpleopt_options.push_back(sentinel_simpleopt_option);
 
   // Make copies of the strings in argv so that
   // SimpleOpt can punch holes in them
-  vector<char*> argvv( argc );
-  for ( int arg_i = 0; arg_i < argc; arg_i++ ) {
-    size_t arg_len = strnlen( argv[arg_i], SIZE_MAX ) + 1;
+  vector<char*> argvv(argc);
+  for (int arg_i = 0; arg_i < argc; arg_i++) {
+    size_t arg_len = strnlen(argv[arg_i], SIZE_MAX) + 1;
     argvv[arg_i] = new char[arg_len];
-    memcpy_s( argvv[arg_i], arg_len, argv[arg_i], arg_len );
+    memcpy_s(argvv[arg_i], arg_len, argv[arg_i], arg_len);
   }
 
-  CSimpleOpt args( argc, &argvv[0], &simpleopt_options[0] );
+  CSimpleOpt args(argc, &argvv[0], &simpleopt_options[0]);
 
-  while ( args.Next() ) {
-    switch ( args.LastError() ) {
+  while (args.Next()) {
+    switch (args.LastError()) {
     case SO_SUCCESS: {
       for
       (
@@ -999,44 +999,44 @@ OptionParser::parse_args
       ) {
         Option& option = *option_i;
 
-        if ( option == args.OptionText() ) {
-          if ( option.get_require_argument() ) {
+        if (option == args.OptionText()) {
+          if (option.get_require_argument()) {
             out_parsed_options.push_back
             (
-              ParsedOption( option, args.OptionArg() )
+              ParsedOption(option, args.OptionArg())
             );
           } else
-            out_parsed_options.push_back( ParsedOption( option ) );
+            out_parsed_options.push_back(ParsedOption(option));
         }
       }
     }
     break;
 
     case SO_OPT_INVALID: {
-      string error_message( "unregistered option: " );
-      error_message.append( args.OptionText() );
-      throw Exception( error_message );
+      string error_message("unregistered option: ");
+      error_message.append(args.OptionText());
+      throw Exception(error_message);
     }
     break;
 
     case SO_OPT_MULTIPLE: {
-      string error_message( "duplicate option: " );
-      error_message.append( args.OptionText() );
-      throw Exception( error_message );
+      string error_message("duplicate option: ");
+      error_message.append(args.OptionText());
+      throw Exception(error_message);
     }
     break;
 
     case SO_ARG_INVALID: {
-      string error_message( "unexpected value to option " );
-      error_message.append( args.OptionText() );
-      throw Exception( error_message );
+      string error_message("unexpected value to option ");
+      error_message.append(args.OptionText());
+      throw Exception(error_message);
     }
     break;
 
     case SO_ARG_MISSING: {
-      string error_message( "missing value to option " );
-      error_message.append( args.OptionText() );
-      throw Exception( error_message );
+      string error_message("missing value to option ");
+      error_message.append(args.OptionText());
+      throw Exception(error_message);
     }
     break;
 
@@ -1044,7 +1044,7 @@ OptionParser::parse_args
       ostringstream error_message;
       error_message << args.OptionText() <<
                     "requires a value, but you appear to have passed another option.";
-      throw Exception( error_message.str() );
+      throw Exception(error_message.str());
     }
     break;
 
@@ -1054,8 +1054,8 @@ OptionParser::parse_args
     }
   }
 
-  for ( int arg_i = argc - args.FileCount(); arg_i < argc; arg_i++ )
-    out_positional_arguments.push_back( argv[arg_i] );
+  for (int arg_i = argc - args.FileCount(); arg_i < argc; arg_i++)
+    out_positional_arguments.push_back(argv[arg_i]);
 
   for
   (
@@ -1072,7 +1072,7 @@ string OptionParser::usage() {
 
   usage << "Options:" << endl;
 
-  sort( options.begin(), options.end() );
+  sort(options.begin(), options.end());
   for
   (
     vector<Option>::const_iterator option_i = options.begin();
@@ -1081,7 +1081,7 @@ string OptionParser::usage() {
   ) {
     const Option& option = *option_i;
     usage << "  " << option;
-    if ( !option.get_help().empty() )
+    if (!option.get_help().empty())
       usage << "\t" << option.get_help();
     usage << endl;
   }
@@ -1092,8 +1092,8 @@ string OptionParser::usage() {
 }
 
 
-OptionParser::Option::Option( const string& option, bool require_argument )
-  : option( option ), require_argument( require_argument )
+OptionParser::Option::Option(const string& option, bool require_argument)
+  : option(option), require_argument(require_argument)
 { }
 
 OptionParser::Option::Option
@@ -1102,23 +1102,23 @@ OptionParser::Option::Option
   const string& help,
   bool require_argument
 )
-  : help( help ), option( option ), require_argument( require_argument )
+  : help(help), option(option), require_argument(require_argument)
 { }
 
-bool OptionParser::Option::operator==( const string& option ) const {
+bool OptionParser::Option::operator==(const string& option) const {
   return this->option == option;
 }
 
-bool OptionParser::Option::operator==( const char* option ) const {
+bool OptionParser::Option::operator==(const char* option) const {
   return this->option == option;
 }
 
-bool OptionParser::Option::operator==( const Option& other ) const {
+bool OptionParser::Option::operator==(const Option& other) const {
   return this->option == other.option;
 }
 
-bool OptionParser::Option::operator<( const Option& other ) const {
-  return option.compare( other.option ) < 0;
+bool OptionParser::Option::operator<(const Option& other) const {
+  return option.compare(other.option) < 0;
 }
 
 
@@ -1129,34 +1129,34 @@ OptionParser::Options::add
   const string& help,
   bool require_argument
 ) {
-  add( Option( option, help, require_argument ) );
+  add(Option(option, help, require_argument));
 }
 
-void OptionParser::Options::add( const string& option, bool require_argument ) {
-  add( Option( option, string(), require_argument ) );
+void OptionParser::Options::add(const string& option, bool require_argument) {
+  add(Option(option, string(), require_argument));
 }
 
-void OptionParser::Options::add( const Option& option ) {
-  for ( const_iterator i = begin(); i != end(); ++i ) {
-    if ( *i == option )
+void OptionParser::Options::add(const Option& option) {
+  for (const_iterator i = begin(); i != end(); ++i) {
+    if (*i == option)
       return;
   }
 
-  push_back( option );
+  push_back(option);
 }
 
-void OptionParser::Options::add( const Options& options ) {
-  for ( const_iterator i = options.begin(); i != options.end(); ++i )
-    add( *i );
+void OptionParser::Options::add(const Options& options) {
+  for (const_iterator i = options.begin(); i != options.end(); ++i)
+    add(*i);
 }
 
 
-OptionParser::ParsedOption::ParsedOption( Option& option )
-  : Option( option )
+OptionParser::ParsedOption::ParsedOption(Option& option)
+  : Option(option)
 { }
 
-OptionParser::ParsedOption::ParsedOption( Option& option, const string& arg )
-  : Option( option ), argument( arg )
+OptionParser::ParsedOption::ParsedOption(Option& option, const string& arg)
+  : Option(option), argument(arg)
 { }
 }
 }

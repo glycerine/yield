@@ -32,4 +32,4 @@
 #include "yield/thread/unit_concurrent_queue.hpp"
 
 
-TEST_SUITE_EX( UnitConcurrentQueue, yield::thread::QueueTestSuite< yield::thread::UnitConcurrentQueue<uint32_t> > );
+TEST_SUITE_EX(UnitConcurrentQueue, yield::thread::QueueTestSuite< yield::thread::UnitConcurrentQueue<uint32_t> >);

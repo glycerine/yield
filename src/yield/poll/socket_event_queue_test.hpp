@@ -84,7 +84,7 @@ class SocketEventQueueAssociateOneTest
     : public SocketEventQueueTest<SocketEventQueueType> {
 public:
   void run() {
-    if ( !this->get_socket_event_queue().associate( get_read_socket(), POLLIN ) )
+    if (!this->get_socket_event_queue().associate(get_read_socket(), POLLIN))
       throw Exception();
   }
 };
@@ -95,10 +95,10 @@ class SocketEventQueueAssociateTwoTest
     : public SocketEventQueueTest<SocketEventQueueType> {
 public:
   void run() {
-    if ( !get_socket_event_queue().associate( get_read_socket(), POLLIN ) )
+    if (!get_socket_event_queue().associate(get_read_socket(), POLLIN))
       throw Exception();
 
-    if ( !get_socket_event_queue().associate( get_write_socket(), POLLOUT ) )
+    if (!get_socket_event_queue().associate(get_write_socket(), POLLOUT))
       throw Exception();
   }
 };
@@ -109,18 +109,18 @@ class SocketEventQueueDissociateOneTest
     : public SocketEventQueueTest<SocketEventQueueType> {
 public:
   void run() {
-    if ( !get_socket_event_queue().associate( get_read_socket(), POLLIN ) )
+    if (!get_socket_event_queue().associate(get_read_socket(), POLLIN))
       throw Exception();
 
-    if ( !get_socket_event_queue().dissociate( get_read_socket() ) )
+    if (!get_socket_event_queue().dissociate(get_read_socket()))
       throw Exception();
 
-    send( get_read_socket(), "m", 1, 0 );
+    send(get_read_socket(), "m", 1, 0);
 
     Event* event = get_socket_event_queue().trydequeue();
-    throw_assert_eq( event, NULL );
+    throw_assert_eq(event, NULL);
 
-    if ( !get_socket_event_queue().associate( get_read_socket(), POLLIN ) )
+    if (!get_socket_event_queue().associate(get_read_socket(), POLLIN))
       throw Exception(); // associate after dissociate should succeed
   }
 };
@@ -131,24 +131,24 @@ class SocketEventQueueDissociateTwoTest
     : public SocketEventQueueTest<SocketEventQueueType> {
 public:
   void run() {
-    if ( !get_socket_event_queue().associate( get_read_socket(), POLLIN ) )
+    if (!get_socket_event_queue().associate(get_read_socket(), POLLIN))
       throw Exception();
-    if ( !get_socket_event_queue().associate( get_write_socket(), POLLIN ) )
-      throw Exception();
-
-    if ( !get_socket_event_queue().dissociate( get_read_socket() ) )
+    if (!get_socket_event_queue().associate(get_write_socket(), POLLIN))
       throw Exception();
 
-    send( get_read_socket(), "m", 1, 0 );
-    send( get_write_socket(), "m", 1, 0 );
+    if (!get_socket_event_queue().dissociate(get_read_socket()))
+      throw Exception();
+
+    send(get_read_socket(), "m", 1, 0);
+    send(get_write_socket(), "m", 1, 0);
 
     auto_Object<SocketEvent> socket_event
-    = object_cast<SocketEvent>( get_socket_event_queue().dequeue() );
-    throw_assert_eq( socket_event->get_socket(), get_write_socket() );
-    throw_assert_ne( *socket_event & POLLIN, 0 );
+    = object_cast<SocketEvent>(get_socket_event_queue().dequeue());
+    throw_assert_eq(socket_event->get_socket(), get_write_socket());
+    throw_assert_ne(*socket_event & POLLIN, 0);
 
     Event* event = get_socket_event_queue().trydequeue();
-    throw_assert_eq( event, NULL );
+    throw_assert_eq(event, NULL);
   }
 };
 
@@ -158,13 +158,13 @@ class SocketEventQueuePollOneBlockingTest
     : public SocketEventQueueTest<SocketEventQueueType> {
 public:
   void run() {
-    if ( !get_socket_event_queue().associate( get_read_socket(), POLLIN ) )
+    if (!get_socket_event_queue().associate(get_read_socket(), POLLIN))
       throw Exception();
 
-    send( get_write_socket(), "m", 1, 0 );
+    send(get_write_socket(), "m", 1, 0);
 
     auto_Object<SocketEvent> socket_event
-    = object_cast<SocketEvent>( get_socket_event_queue().dequeue() );
+    = object_cast<SocketEvent>(get_socket_event_queue().dequeue());
   }
 };
 
@@ -174,16 +174,16 @@ class SocketEventQueuePollOneTimedTest
     : public SocketEventQueueTest<SocketEventQueueType> {
 public:
   void run() {
-    if ( !get_socket_event_queue().associate( get_read_socket(), POLLIN ) )
+    if (!get_socket_event_queue().associate(get_read_socket(), POLLIN))
       throw Exception();
 
-    send( get_write_socket(), "m", 1, 0 );
+    send(get_write_socket(), "m", 1, 0);
 
-    Time start_time( Time::now() );
+    Time start_time(Time::now());
     auto_Object<SocketEvent> socket_event
-    = object_cast<SocketEvent>( get_socket_event_queue().dequeue( 10.0 ) );
-    Time elapsed_time( Time::now() - start_time );
-    throw_assert_le( elapsed_time, Time( 10.0 ) );
+    = object_cast<SocketEvent>(get_socket_event_queue().dequeue(10.0));
+    Time elapsed_time(Time::now() - start_time);
+    throw_assert_le(elapsed_time, Time(10.0));
   }
 };
 
@@ -193,17 +193,17 @@ class SocketEventQueuePollTwoTest
     : public SocketEventQueueTest<SocketEventQueueType> {
 public:
   void run() {
-    if ( !get_socket_event_queue().associate( get_read_socket(), POLLIN ) )
+    if (!get_socket_event_queue().associate(get_read_socket(), POLLIN))
       throw Exception();
-    if ( !get_socket_event_queue().associate( get_write_socket(), POLLIN ) )
+    if (!get_socket_event_queue().associate(get_write_socket(), POLLIN))
       throw Exception();
 
-    send( get_read_socket(), "m", 1, 0 );
-    send( get_write_socket(), "m", 1, 0 );
+    send(get_read_socket(), "m", 1, 0);
+    send(get_write_socket(), "m", 1, 0);
 
-    for ( uint8_t socket_i = 0; socket_i < 2; socket_i++ ) {
+    for (uint8_t socket_i = 0; socket_i < 2; socket_i++) {
       auto_Object<SocketEvent> socket_event
-      = object_cast<SocketEvent>( get_socket_event_queue().dequeue() );
+      = object_cast<SocketEvent>(get_socket_event_queue().dequeue());
 
       throw_assert
       (
@@ -211,7 +211,7 @@ public:
         ||
         socket_event->get_socket() == get_write_socket()
       );
-      throw_assert_ne( *socket_event & POLLIN, 0 );
+      throw_assert_ne(*socket_event & POLLIN, 0);
     }
   }
 };
@@ -222,16 +222,16 @@ class SocketEventQueueToggleOneTest
     : public SocketEventQueueTest<SocketEventQueueType> {
 public:
   void run() {
-    if ( !get_socket_event_queue().associate( get_read_socket(), POLLIN|POLLOUT ) )
+    if (!get_socket_event_queue().associate(get_read_socket(), POLLIN | POLLOUT))
       throw Exception();
 
-    if ( !get_socket_event_queue().associate( get_read_socket(), POLLIN ) )
+    if (!get_socket_event_queue().associate(get_read_socket(), POLLIN))
       throw Exception();
 
-    send( get_write_socket(), "m", 1, 0 );
+    send(get_write_socket(), "m", 1, 0);
 
     auto_Object<SocketEvent> socket_event
-    = object_cast<SocketEvent>( get_socket_event_queue().dequeue() );
+    = object_cast<SocketEvent>(get_socket_event_queue().dequeue());
   }
 };
 
@@ -241,13 +241,13 @@ class SocketEventQueueWantSendTest
     : public SocketEventQueueTest<SocketEventQueueType> {
 public:
   void run() {
-    if ( !get_socket_event_queue().associate( get_read_socket(), POLLOUT ) )
+    if (!get_socket_event_queue().associate(get_read_socket(), POLLOUT))
       throw Exception();
 
     auto_Object<SocketEvent> socket_event
-    = object_cast<SocketEvent>( get_socket_event_queue().dequeue() );
-    throw_assert_eq( socket_event->get_socket(), get_read_socket() );
-    throw_assert_ne( *socket_event & POLLOUT, 0 );
+    = object_cast<SocketEvent>(get_socket_event_queue().dequeue());
+    throw_assert_eq(socket_event->get_socket(), get_read_socket());
+    throw_assert_ne(*socket_event & POLLOUT, 0);
   }
 };
 

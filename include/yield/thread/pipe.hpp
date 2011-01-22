@@ -43,7 +43,7 @@ class Pipe : public ChannelPair {
 public:
   class End : public Channel {
   public:
-    End( fd_t fd ) : fd( fd ) { }
+    End(fd_t fd) : fd(fd) { }
     ~End() {
       close();
     }
@@ -53,11 +53,11 @@ public:
     operator fd_t() const {
       return fd;
     }
-    ssize_t read( void* buf, size_t buflen );
-    ssize_t readv( const iovec* iov, int iovlen );
-    bool set_blocking_mode( bool blocking_mode );
-    ssize_t write( const void* buf, size_t buflen );
-    ssize_t writev( const iovec* iov, int iovlen );
+    ssize_t read(void* buf, size_t buflen);
+    ssize_t readv(const iovec* iov, int iovlen);
+    bool set_blocking_mode(bool blocking_mode);
+    ssize_t write(const void* buf, size_t buflen);
+    ssize_t writev(const iovec* iov, int iovlen);
 
   private:
     fd_t fd;
@@ -66,22 +66,22 @@ public:
 public:
   Pipe() {
     fd_t ends[2];
-    if ( Pipe::pipe( ends ) ) {
-      this->ends[0] = new End( ends[0] );
-      this->ends[1] = new End( ends[1] );
+    if (Pipe::pipe(ends)) {
+      this->ends[0] = new End(ends[0]);
+      this->ends[1] = new End(ends[1]);
     } else
       throw Exception();
   }
 
   ~Pipe() {
-    Channel::dec_ref( *ends[0] );
-    Channel::dec_ref( *ends[1] );
+    Channel::dec_ref(*ends[0]);
+    Channel::dec_ref(*ends[1]);
   }
 
   static YO_NEW_REF Pipe* create() {
     fd_t ends[2];
-    if ( Pipe::pipe( ends ) )
-      return new Pipe( ends );
+    if (Pipe::pipe(ends))
+      return new Pipe(ends);
     else
       return NULL;
   }
@@ -92,7 +92,7 @@ public:
   End& get_write_end() {
     return *ends[1];
   }
-  End& operator[]( size_t n ) {
+  End& operator[](size_t n) {
     return *ends[n];
   }
 
@@ -105,12 +105,12 @@ public:
   }
 
 private:
-  Pipe( fd_t ends[2] ) {
-    this->ends[0] = new End( ends[0] );
-    this->ends[1] = new End( ends[1] );
+  Pipe(fd_t ends[2]) {
+    this->ends[0] = new End(ends[0]);
+    this->ends[1] = new End(ends[1]);
   }
 
-  static bool pipe( fd_t ends[2] );
+  static bool pipe(fd_t ends[2]);
 
 private:
   End* ends[2];

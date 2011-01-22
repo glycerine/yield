@@ -40,12 +40,12 @@ namespace aio {
 namespace fs {
 class BIOQueue : public yield::aio::BIOQueue {
 public:
-  bool associate( fd_t ) {
+  bool associate(fd_t) {
     return true;
   }
 
   // yield::EventQueue
-  bool enqueue( YO_NEW_REF Event& event );
+  bool enqueue(YO_NEW_REF Event& event);
 };
 }
 }

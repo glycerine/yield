@@ -32,4 +32,4 @@
 #include "yield/poll/sunos/event_port.hpp"
 
 
-TEST_SUITE_EX( EventPort, yield::poll::PollerTestSuite<yield::poll::sunos::EventPort> );
+TEST_SUITE_EX(EventPort, yield::poll::PollerTestSuite<yield::poll::sunos::EventPort>);

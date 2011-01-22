@@ -35,8 +35,8 @@
 namespace yield {
 namespace fs {
 namespace bsd {
-Directory::Directory( DIR* dirp, const Path& path )
-  : yield::fs::posix::Directory( dirp, path )
+Directory::Directory(DIR* dirp, const Path& path)
+  : yield::fs::posix::Directory(dirp, path)
 { }
 
 bool Directory::read
@@ -45,9 +45,9 @@ bool Directory::read
   Entry::Type types
 ) {
   dirent* dirent_;
-  while ( ( dirent_ = readdir( *this ) ) != NULL ) {
+  while ((dirent_ = readdir(*this)) != NULL) {
     Entry::Type entry_type;
-    switch ( dirent_->d_type ) {
+    switch (dirent_->d_type) {
     case DT_FIFO:
       entry_type = Entry::TYPE_FIFO;
       break;
@@ -75,13 +75,13 @@ bool Directory::read
       break;
     }
 
-    if ( ( entry_type & types ) == entry_type ) {
-      static_cast<Entry&>( entry ) = *dirent_; // To set entry.name
-      Path entry_path( get_path() / entry.get_name() );
+    if ((entry_type & types) == entry_type) {
+      static_cast<Entry&>(entry) = *dirent_;   // To set entry.name
+      Path entry_path(get_path() / entry.get_name());
 
       struct stat stbuf;
-      if ( stat( entry_path.c_str(), &stbuf ) != -1 ) {
-        static_cast<Entry&>( entry ) = stbuf;
+      if (stat(entry_path.c_str(), &stbuf) != -1) {
+        static_cast<Entry&>(entry) = stbuf;
         return true;
       }
     }

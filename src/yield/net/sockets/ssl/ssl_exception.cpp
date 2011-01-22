@@ -41,12 +41,12 @@ namespace net {
 namespace sockets {
 namespace ssl {
 SSLException::SSLException()
-  : Exception( ERR_peek_error() ) {
+  : Exception(ERR_peek_error()) {
   SSL_load_error_strings();
 
   char error_message[256];
-  ERR_error_string_n( ERR_peek_error(), error_message, 256 );
-  set_error_message( error_message );
+  ERR_error_string_n(ERR_peek_error(), error_message, 256);
+  set_error_message(error_message);
 }
 }
 }

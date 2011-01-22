@@ -53,8 +53,8 @@ using yield::stage::SynchronizedResponseQueue;
 
 class HTTPClientTest : public yunit::Test {
 protected:
-  HTTPClientTest( const URI& uri )
-    : uri( uri )
+  HTTPClientTest(const URI& uri)
+    : uri(uri)
   { }
 
   const URI& get_uri() const {
@@ -68,63 +68,63 @@ private:
 
 class HTTPClientGET200Test : public HTTPClientTest {
 public:
-  HTTPClientGET200Test( const URI& uri )
-    : HTTPClientTest( uri )
+  HTTPClientGET200Test(const URI& uri)
+    : HTTPClientTest(uri)
   { }
 
   // Test
   void run() {
-    auto_Object<HTTPResponse> http_response = HTTPClient::GET( get_uri() );
+    auto_Object<HTTPResponse> http_response = HTTPClient::GET(get_uri());
 
-    throw_assert_eq( http_response->get_status_code(), 200 );
-    throw_assert_ne( http_response->get_body(), NULL );
-    throw_assert_gt( http_response->get_content_length(), 0 );
+    throw_assert_eq(http_response->get_status_code(), 200);
+    throw_assert_ne(http_response->get_body(), NULL);
+    throw_assert_gt(http_response->get_content_length(), 0);
   }
 };
 
 
 class HTTPClientGET404Test : public HTTPClientTest {
 public:
-  HTTPClientGET404Test( const URI& uri )
-    : HTTPClientTest( uri )
+  HTTPClientGET404Test(const URI& uri)
+    : HTTPClientTest(uri)
   { }
 
   // Test
   void run() {
     auto_Object<HTTPResponse> http_response
-    = HTTPClient::GET( get_uri() + "nowhere" );
+    = HTTPClient::GET(get_uri() + "nowhere");
 
-    throw_assert_eq( http_response->get_status_code(), 404 );
+    throw_assert_eq(http_response->get_status_code(), 404);
   }
 };
 
 
 class HTTPClientGETRepeatedTest : public HTTPClientTest {
 public:
-  HTTPClientGETRepeatedTest( const URI& uri )
-    : HTTPClientTest( uri )
+  HTTPClientGETRepeatedTest(const URI& uri)
+    : HTTPClientTest(uri)
   { }
 
   // Test
   void run() {
-    auto_Object<HTTPClient> http_client = new HTTPClient( get_uri() );
+    auto_Object<HTTPClient> http_client = new HTTPClient(get_uri());
 
     auto_Object<HTTPRequest> http_request
-    = new HTTPRequest( HTTPRequest::METHOD_GET, get_uri() );
+    = new HTTPRequest(HTTPRequest::METHOD_GET, get_uri());
 
     auto_Object< SynchronizedResponseQueue<HTTPResponse> >
     http_response_queue = new SynchronizedResponseQueue<HTTPResponse>;
-    http_request->set_response_handler( *http_response_queue );
+    http_request->set_response_handler(*http_response_queue);
 
-    for ( uint8_t i = 0; i < UINT8_MAX; i++ ) {
-      http_client->handle( http_request->inc_ref() );
+    for (uint8_t i = 0; i < UINT8_MAX; i++) {
+      http_client->handle(http_request->inc_ref());
 
-      for ( ;; ) {
+      for (;;) {
         http_client->visit();
         HTTPResponse* http_response = http_response_queue->trydequeue();
-        if ( http_response != NULL ) {
-          auto_Object<HTTPResponse> http_response_( http_response );
-          throw_assert_eq( http_response->get_status_code(), 200 );
+        if (http_response != NULL) {
+          auto_Object<HTTPResponse> http_response_(http_response);
+          throw_assert_eq(http_response->get_status_code(), 200);
           break;
         }
       }
@@ -135,57 +135,57 @@ public:
 
 class HTTPClientGETTimeoutTest : public HTTPClientTest {
 public:
-  HTTPClientGETTimeoutTest( const URI& uri )
-    : HTTPClientTest( uri )
+  HTTPClientGETTimeoutTest(const URI& uri)
+    : HTTPClientTest(uri)
   { }
 
   // Test
   void run() {
     try {
-      HTTPClient::GET( get_uri() + "drop" );
-    } catch ( Exception& ) {
+      HTTPClient::GET(get_uri() + "drop");
+    } catch (Exception&) {
       return;
     }
 
-    throw_assert( false );
+    throw_assert(false);
   }
 };
 
 
 class HTTPClientGETWrongHostTest : public HTTPClientTest {
 public:
-  HTTPClientGETWrongHostTest( const URI& uri )
-    : HTTPClientTest( uri )
+  HTTPClientGETWrongHostTest(const URI& uri)
+    : HTTPClientTest(uri)
   { }
 
   // Test
   void run() {
     try {
-      HTTPClient::GET( "http://localhostx:27095" );
-    } catch ( Exception& ) {
+      HTTPClient::GET("http://localhostx:27095");
+    } catch (Exception&) {
       return;
     }
 
-    throw_assert( false );
+    throw_assert(false);
   }
 };
 
 
 class HTTPClientGETWrongPortTest : public HTTPClientTest {
 public:
-  HTTPClientGETWrongPortTest( const URI& uri )
-    : HTTPClientTest( uri )
+  HTTPClientGETWrongPortTest(const URI& uri)
+    : HTTPClientTest(uri)
   { }
 
   // Test
   void run() {
     try {
-      HTTPClient::GET( "http://localhost:26095" );
-    } catch ( Exception& ) {
+      HTTPClient::GET("http://localhost:26095");
+    } catch (Exception&) {
       return;
     }
 
-    throw_assert( false );
+    throw_assert(false);
   }
 };
 
@@ -212,7 +212,7 @@ class HTTPClientTestSuite : public yunit::TestSuite {
 public:
   // yunit::TestSuite
   virtual int run() {
-    auto_Object<Log> trace_log = Log::open( std::cout, Log::DEBUG );
+    auto_Object<Log> trace_log = Log::open(std::cout, Log::DEBUG);
 
     auto_Object<HTTPServer> http_server
     = new HTTPServer
@@ -226,9 +226,9 @@ public:
     auto_Object<SEDAStageScheduler> stage_scheduler
     = new SEDAStageScheduler;
 
-    stage_scheduler->schedule( http_server->inc_ref(), 1 );
+    stage_scheduler->schedule(http_server->inc_ref(), 1);
 
-    addTests( "http://localhost:27095/" );
+    addTests("http://localhost:27095/");
 
     int ret = yunit::TestSuite::run();
 
@@ -236,25 +236,25 @@ public:
   }
 
 protected:
-  void addTests( const URI& uri ) {
-    debug_assert_eq( uri.get_port(), 27095 );
+  void addTests(const URI& uri) {
+    debug_assert_eq(uri.get_port(), 27095);
 
     add
     (
       "HTTPClient::GET -> 200",
-      new HTTPClientGET200Test( uri )
+      new HTTPClientGET200Test(uri)
     );
 
     add
     (
       "HTTPClient::GET -> 404",
-      new HTTPClientGET404Test( uri )
+      new HTTPClientGET404Test(uri)
     );
 
     add
     (
       "HTTPClient::GET repeated",
-      new HTTPClientGETRepeatedTest( uri )
+      new HTTPClientGETRepeatedTest(uri)
     );
 
     //add
@@ -266,13 +266,13 @@ protected:
     add
     (
       "HTTPClient::GET( wrong host )",
-      new HTTPClientGETWrongHostTest( uri )
+      new HTTPClientGETWrongHostTest(uri)
     );
 
     add
     (
       "HTTPClient::GET( wrong port )",
-      new HTTPClientGETWrongPortTest( uri )
+      new HTTPClientGETWrongPortTest(uri)
     );
 
     //add( "HTTPClient::PUT", new HTTPClientPUTTest( uri ) );

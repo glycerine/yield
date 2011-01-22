@@ -39,17 +39,17 @@
 namespace yield {
 class Object {
 public:
-  Object() : refcnt( 1 )
+  Object() : refcnt(1)
   { }
 
-  static inline void dec_ref( Object& object ) {
-    if ( atomic_dec( &object.refcnt ) == 0 )
+  static inline void dec_ref(Object& object) {
+    if (atomic_dec(&object.refcnt) == 0)
       delete &object;
   }
 
-  static inline void dec_ref( Object* object ) {
-    if ( object != 0 )
-      Object::dec_ref( *object );
+  static inline void dec_ref(Object* object) {
+    if (object != 0)
+      Object::dec_ref(*object);
   }
 
   virtual uint32_t get_type_id() const {
@@ -60,21 +60,21 @@ public:
   }
 
   template <class ObjectType>
-  static inline ObjectType& inc_ref( ObjectType& object ) {
-    atomic_inc( &object.refcnt );
+  static inline ObjectType& inc_ref(ObjectType& object) {
+    atomic_inc(&object.refcnt);
     return object;
   }
 
   template <class ObjectType>
-  static inline ObjectType* inc_ref( ObjectType* object ) {
-    if ( object != 0 )
-      inc_ref( *object );
+  static inline ObjectType* inc_ref(ObjectType* object) {
+    if (object != 0)
+      inc_ref(*object);
 
     return object;
   }
 
   inline Object& inc_ref() {
-    inc_ref( *this );
+    inc_ref(*this);
     return *this;
   }
 
@@ -88,17 +88,17 @@ private:
 
 
 template <class ObjectType>
-ObjectType* object_cast( Object* object ) {
-  if ( object != NULL && object->get_type_id() == ObjectType::TYPE_ID )
-    return static_cast<ObjectType*>( object );
+ObjectType* object_cast(Object* object) {
+  if (object != NULL && object->get_type_id() == ObjectType::TYPE_ID)
+    return static_cast<ObjectType*>(object);
   else
     return NULL;
 }
 
 template <class ObjectType>
-ObjectType* object_cast( Object& object ) {
-  if ( object.get_type_id() == ObjectType::TYPE_ID )
-    return static_cast<ObjectType*>( &object );
+ObjectType* object_cast(Object& object) {
+  if (object.get_type_id() == ObjectType::TYPE_ID)
+    return static_cast<ObjectType*>(&object);
   else
     return NULL;
 }

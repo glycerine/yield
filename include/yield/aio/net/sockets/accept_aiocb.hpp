@@ -78,13 +78,13 @@ public:
 
   // yield::aio::AIOCB
 #ifdef _WIN32
-  bool issue( yield::aio::win32::AIOQueue& );
+  bool issue(yield::aio::win32::AIOQueue&);
 #endif
   RetryStatus retry();
-  void set_return( ssize_t return_ );
+  void set_return(ssize_t return_);
 
 private:
-  acceptAIOCB( acceptAIOCB& other );
+  acceptAIOCB(acceptAIOCB& other);
 
 #ifdef _WIN32
   void* get_output_buffer() const;

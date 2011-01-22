@@ -37,45 +37,45 @@ namespace yield {
 namespace thread {
 namespace posix {
 ConditionVariable::ConditionVariable() {
-  if ( pthread_cond_init( &cond, NULL ) != 0 )
+  if (pthread_cond_init(&cond, NULL) != 0)
     throw Exception();
 
-  if ( pthread_mutex_init( &mutex, NULL ) != 0 )
+  if (pthread_mutex_init(&mutex, NULL) != 0)
     throw Exception();
 }
 
 ConditionVariable::~ConditionVariable() {
-  pthread_cond_destroy( &cond );
-  pthread_mutex_destroy( &mutex );
+  pthread_cond_destroy(&cond);
+  pthread_mutex_destroy(&mutex);
 }
 
 void ConditionVariable::broadcast() {
-  pthread_cond_broadcast( &cond );
+  pthread_cond_broadcast(&cond);
 }
 
 bool ConditionVariable::lock_mutex() {
-  return pthread_mutex_lock( &mutex ) == 0;
+  return pthread_mutex_lock(&mutex) == 0;
 }
 
 void ConditionVariable::signal() {
-  pthread_cond_signal( &cond );
+  pthread_cond_signal(&cond);
 }
 
-bool ConditionVariable::timedwait( const Time& timeout ) {
+bool ConditionVariable::timedwait(const Time& timeout) {
   timespec timeout_ts = Time::now() + timeout;
-  return pthread_cond_timedwait( &cond, &mutex, &timeout_ts ) == 0;
+  return pthread_cond_timedwait(&cond, &mutex, &timeout_ts) == 0;
 }
 
 bool ConditionVariable::trylock_mutex() {
-  return pthread_mutex_trylock( &mutex ) == 0;
+  return pthread_mutex_trylock(&mutex) == 0;
 }
 
 void ConditionVariable::unlock_mutex() {
-  pthread_mutex_unlock( &mutex );
+  pthread_mutex_unlock(&mutex);
 }
 
 bool ConditionVariable::wait() {
-  return pthread_cond_wait( &cond, &mutex ) == 0;
+  return pthread_cond_wait(&cond, &mutex) == 0;
 }
 }
 }

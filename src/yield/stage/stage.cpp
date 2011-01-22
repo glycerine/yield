@@ -37,9 +37,9 @@
 
 namespace yield {
 namespace stage {
-Stage::Stage( YO_NEW_REF EventHandler& event_handler )
-  : event_handler( &event_handler ),
-    event_queue( *new SynchronizedEventQueue ) {
+Stage::Stage(YO_NEW_REF EventHandler& event_handler)
+  : event_handler(&event_handler),
+    event_queue(*new SynchronizedEventQueue) {
   init();
 }
 
@@ -48,26 +48,26 @@ Stage::Stage
   YO_NEW_REF EventHandler& event_handler,
   YO_NEW_REF EventQueue& event_queue
 )
-  : event_handler( &event_handler ),
-    event_queue( event_queue ) {
+  : event_handler(&event_handler),
+    event_queue(event_queue) {
   init();
 }
 
-Stage::Stage( YO_NEW_REF EventQueue& event_queue )
-  : event_handler( NULL ), event_queue( event_queue ) {
+Stage::Stage(YO_NEW_REF EventQueue& event_queue)
+  : event_handler(NULL), event_queue(event_queue) {
   init();
 }
 
 Stage::~Stage() {
-  EventQueue::dec_ref( event_queue );
-  EventHandler::dec_ref( event_handler );
+  EventQueue::dec_ref(event_queue);
+  EventHandler::dec_ref(event_handler);
 }
 
-void Stage::enqueue( YO_NEW_REF Event& event ) {
+void Stage::enqueue(YO_NEW_REF Event& event) {
   event_queue_length++;
   event_queue_arrival_count++;
 
-  if ( event_queue.enqueue( event ) )
+  if (event_queue.enqueue(event))
     return;
   else {
     //cerr << event_handler.get_type_name() <<
@@ -81,32 +81,32 @@ void Stage::init() {
   event_queue_length = 0;
 }
 
-void Stage::service( YO_NEW_REF Event& event ) {
-  event_handler->handle( event );
+void Stage::service(YO_NEW_REF Event& event) {
+  event_handler->handle(event);
 }
 
 void Stage::visit() {
   Event& event = event_queue.dequeue();
   event_queue_length--;
 
-  Time service_time_start( Time::now() );
+  Time service_time_start(Time::now());
 
-  service( event );
+  service(event);
 
-  Time service_time( Time::now() - service_time_start );
+  Time service_time(Time::now() - service_time_start);
 }
 
-bool Stage::visit( const Time& timeout ) {
-  Event* event = event_queue.dequeue( timeout );
+bool Stage::visit(const Time& timeout) {
+  Event* event = event_queue.dequeue(timeout);
 
-  if ( event != NULL ) {
+  if (event != NULL) {
     event_queue_length--;
 
-    Time service_time_start( Time::now() );
+    Time service_time_start(Time::now());
 
-    service( *event );
+    service(*event);
 
-    Time service_time( Time::now() - service_time_start );
+    Time service_time(Time::now() - service_time_start);
 
     return true;
   } else

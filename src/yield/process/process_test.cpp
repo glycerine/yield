@@ -34,28 +34,28 @@
 #include "yunit.hpp"
 
 
-TEST_SUITE( Process )
+TEST_SUITE(Process)
 
 namespace yield {
 namespace process {
 using yield::fs::Path;
 
 
-TEST( Process, create ) {
+TEST(Process, create) {
   auto_Object<Process> process
 #ifdef _WIN32
-  = Process::create( Path( L"\\windows\\system32\\net.exe" ) );
+  = Process::create(Path(L"\\windows\\system32\\net.exe"));
   int ret = process->wait();
-  throw_assert_eq( ret, 1 );
+  throw_assert_eq(ret, 1);
 #else
-  = Process::create( Path( "/bin/uname" ) );
+  = Process::create(Path("/bin/uname"));
   int ret = process->wait();
-  throw_assert_eq( ret, 0 );
+  throw_assert_eq(ret, 0);
 #endif
 }
 
-TEST( Process, getpid ) {
-  throw_assert_gt( Process::getpid(), 0 );
+TEST(Process, getpid) {
+  throw_assert_gt(Process::getpid(), 0);
 }
 }
 }

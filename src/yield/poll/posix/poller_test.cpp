@@ -32,4 +32,4 @@
 #include "poller.hpp"
 
 
-TEST_SUITE_EX( Poller, yield::poll::FDEventQueueTestSuite<yield::poll::posix::Poller> );
+TEST_SUITE_EX(Poller, yield::poll::FDEventQueueTestSuite<yield::poll::posix::Poller>);

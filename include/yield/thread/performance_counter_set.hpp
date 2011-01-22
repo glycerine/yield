@@ -61,10 +61,10 @@ public:
   PerformanceCounterSet();
   ~PerformanceCounterSet();
 
-  bool add( Event event );
-  bool add( const char* event );
+  bool add(Event event);
+  bool add(const char* event);
   void start_counting();
-  void stop_counting( uint64_t* counts );
+  void stop_counting(uint64_t* counts);
 
 private:
 #if defined(__sun)

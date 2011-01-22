@@ -45,53 +45,53 @@ using yield::thread::NonBlockingConcurrentQueue;
 
 
 EPoller::EPoller() {
-  epfd = epoll_create( 32768 );
-  if ( epfd == -1 )
+  epfd = epoll_create(32768);
+  if (epfd == -1)
     throw Exception();
 
-  wake_fd = eventfd( 0, 0 );
-  if ( wake_fd == -1 ) {
-    uint32_t error_code = static_cast<uint32_t>( errno );
-    close( epfd );
-    throw Exception( error_code );
+  wake_fd = eventfd(0, 0);
+  if (wake_fd == -1) {
+    uint32_t error_code = static_cast<uint32_t>(errno);
+    close(epfd);
+    throw Exception(error_code);
   }
 
-  if ( !associate( wake_fd, POLLIN ) ) {
-    uint32_t error_code = static_cast<uint32_t>( errno );
-    close( epfd );
-    close( wake_fd );
-    throw Exception( error_code );
+  if (!associate(wake_fd, POLLIN)) {
+    uint32_t error_code = static_cast<uint32_t>(errno);
+    close(epfd);
+    close(wake_fd);
+    throw Exception(error_code);
   }
 }
 
 EPoller::~EPoller() {
-  close( epfd );
-  close( wake_fd );
+  close(epfd);
+  close(wake_fd);
 }
 
-bool EPoller::associate( fd_t fd, uint16_t events ) {
-  if ( events > 0 ) {
+bool EPoller::associate(fd_t fd, uint16_t events) {
+  if (events > 0) {
     epoll_event epoll_event_;
-    memset( &epoll_event_, 0, sizeof( epoll_event_ ) );
+    memset(&epoll_event_, 0, sizeof(epoll_event_));
     epoll_event_.data.fd = fd;
     epoll_event_.events = events;
 
-    if ( epoll_ctl( epfd, EPOLL_CTL_ADD, fd, &epoll_event_ ) != -1 )
+    if (epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &epoll_event_) != -1)
       return true;
     else if
     (
       errno == EEXIST
       &&
-      epoll_ctl( epfd, EPOLL_CTL_MOD, fd, &epoll_event_ ) != -1
+      epoll_ctl(epfd, EPOLL_CTL_MOD, fd, &epoll_event_) != -1
     )
       return true;
     else
       return false;
   } else
-    return dissociate( fd );
+    return dissociate(fd);
 }
 
-YO_NEW_REF Event* EPoller::dequeue( const Time& timeout ) {
+YO_NEW_REF Event* EPoller::dequeue(const Time& timeout) {
   epoll_event epoll_event_;
 
   int ret = epoll_wait
@@ -99,37 +99,37 @@ YO_NEW_REF Event* EPoller::dequeue( const Time& timeout ) {
               epfd,
               &epoll_event_,
               1,
-              static_cast<int>( timeout.ms() )
+              static_cast<int>(timeout.ms())
             );
 
-  if ( ret > 0 ) {
-    debug_assert_eq( ret, 1 );
+  if (ret > 0) {
+    debug_assert_eq(ret, 1);
 
-    if ( epoll_event_.data.fd == wake_fd ) {
+    if (epoll_event_.data.fd == wake_fd) {
       uint64_t data;
-      read( wake_fd, &data, sizeof( data ) );
+      read(wake_fd, &data, sizeof(data));
       return NonBlockingConcurrentQueue<Event, 32>::trydequeue();
     } else
-      return new FDEvent( epoll_event_.events, epoll_event_.data.fd );
+      return new FDEvent(epoll_event_.events, epoll_event_.data.fd);
   } else
     return NULL;
 }
 
-bool EPoller::dissociate( fd_t fd ) {
+bool EPoller::dissociate(fd_t fd) {
   // From the man page: In kernel versions before 2.6.9,
   // the EPOLL_CTL_DEL operation required a non-NULL pointer in event,
   // even though this argument is ignored. Since kernel 2.6.9,
   // event can be specified as NULL when using EPOLL_CTL_DEL.
   epoll_event epoll_event_;
-  memset( &epoll_event_, 0, sizeof( epoll_event_ ) );
-  return epoll_ctl( epfd, EPOLL_CTL_DEL, fd, &epoll_event_ ) != -1;
+  memset(&epoll_event_, 0, sizeof(epoll_event_));
+  return epoll_ctl(epfd, EPOLL_CTL_DEL, fd, &epoll_event_) != -1;
 }
 
-bool EPoller::enqueue( Event& event ) {
-  bool ret = NonBlockingConcurrentQueue<Event, 32>::enqueue( event );
-  debug_assert( ret );
+bool EPoller::enqueue(Event& event) {
+  bool ret = NonBlockingConcurrentQueue<Event, 32>::enqueue(event);
+  debug_assert(ret);
   uint64_t data = 1;
-  write( wake_fd, &data, sizeof( data ) );
+  write(wake_fd, &data, sizeof(data));
   return ret;
 }
 }

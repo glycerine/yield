@@ -62,8 +62,8 @@ void ConditionVariable::signal() {
   return pimpl->signal();
 }
 
-bool ConditionVariable::timedwait( const Time& timeout ) {
-  return pimpl->timedwait( timeout );
+bool ConditionVariable::timedwait(const Time& timeout) {
+  return pimpl->timedwait(timeout);
 }
 
 bool ConditionVariable::trylock_mutex() {

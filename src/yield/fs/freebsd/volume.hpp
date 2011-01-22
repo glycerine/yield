@@ -50,7 +50,7 @@ public:
     uint32_t attributes
   );
 
-  yield::fs::ExtendedAttributes* openxattrs( const Path& );
+  yield::fs::ExtendedAttributes* openxattrs(const Path&);
 };
 }
 }

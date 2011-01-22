@@ -52,16 +52,16 @@ AIOQueue::~AIOQueue() {
   delete pimpl;
 }
 
-bool AIOQueue::associate( socket_t socket_ ) {
-  return pimpl->associate( socket_ );
+bool AIOQueue::associate(socket_t socket_) {
+  return pimpl->associate(socket_);
 }
 
-YO_NEW_REF Event* AIOQueue::dequeue( const Time& timeout ) {
-  return pimpl->dequeue( timeout );
+YO_NEW_REF Event* AIOQueue::dequeue(const Time& timeout) {
+  return pimpl->dequeue(timeout);
 }
 
-bool AIOQueue::enqueue( YO_NEW_REF Event& event ) {
-  return pimpl->enqueue( event );
+bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
+  return pimpl->enqueue(event);
 }
 }
 }

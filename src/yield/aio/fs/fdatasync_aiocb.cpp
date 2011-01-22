@@ -37,11 +37,11 @@ namespace yield {
 namespace aio {
 namespace fs {
 fdatasyncAIOCB::RetryStatus fdatasyncAIOCB::retry() {
-  if ( get_file().datasync() ) {
-    set_return( 0 );
+  if (get_file().datasync()) {
+    set_return(0);
     return RETRY_STATUS_COMPLETE;
   } else {
-    set_error( Exception::get_last_error_code() );
+    set_error(Exception::get_last_error_code());
     return RETRY_STATUS_ERROR;
   }
 }

@@ -48,7 +48,7 @@ public:
   // Test
   void run() {
     auto_Object<SocketType> socket_ = SocketType::create();
-    if ( !socket_->bind( SocketAddress( SocketAddress::IN_ANY, 31000 ) ) )
+    if (!socket_->bind(SocketAddress(SocketAddress::IN_ANY, 31000)))
       throw Exception();
   }
 };
@@ -60,9 +60,9 @@ public:
   void run() {
     string hostname = Socket::gethostname();
     string fqdn = Socket::getfqdn();
-    throw_assert_false( fqdn.empty() );
-    throw_assert_eq( fqdn.find( hostname ), 0 );
-    throw_assert_ge( fqdn.size(), hostname.size() );
+    throw_assert_false(fqdn.empty());
+    throw_assert_eq(fqdn.find(hostname), 0);
+    throw_assert_ge(fqdn.size(), hostname.size());
   }
 };
 
@@ -72,8 +72,8 @@ public:
   // Test
   void run() {
     string hostname = Socket::gethostname();
-    throw_assert_false( hostname.empty() );
-    throw_assert_ne( hostname, "localhost" );
+    throw_assert_false(hostname.empty());
+    throw_assert_ne(hostname, "localhost");
   }
 };
 
@@ -86,17 +86,17 @@ public:
     {
       auto_Object<SocketType> socket_ = SocketType::create();
 
-      if ( !socket_->shutdown( true, false ) )
+      if (!socket_->shutdown(true, false))
         throw Exception();
 
-      if ( !socket_->shutdown( false, true ) )
+      if (!socket_->shutdown(false, true))
         throw Exception();
     }
 
     {
       auto_Object<SocketType> socket_ = SocketType::create();
 
-      if ( !socket_->shutdown( true, true ) )
+      if (!socket_->shutdown(true, true))
         throw Exception();
     }
   }
@@ -116,10 +116,10 @@ public:
         SocketType::PROTOCOL
       )
     ) {
-    add( "Socket::bind", new SocketBindTest<SocketType> );
-    add( "Socket::getfqdn()", new SocketGetFQDNTest );
-    add( "Socket::gethostname", new SocketGetHostNameTest );
-    add( "Socket::shutdown", new SocketShutdownTest<SocketType> );
+    add("Socket::bind", new SocketBindTest<SocketType>);
+    add("Socket::getfqdn()", new SocketGetFQDNTest);
+    add("Socket::gethostname", new SocketGetHostNameTest);
+    add("Socket::shutdown", new SocketShutdownTest<SocketType>);
   }
 };
 }

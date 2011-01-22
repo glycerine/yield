@@ -48,22 +48,22 @@ sendAIOCB::sendAIOCB
   const Socket::MessageFlags& flags,
   SocketAddress* peername
 )
-  : AIOCB( socket_, buffer, buffer.size() ),
-    buffer( buffer ),
-    flags( flags ),
-    peername( Object::inc_ref( peername ) )
+  : AIOCB(socket_, buffer, buffer.size()),
+    buffer(buffer),
+    flags(flags),
+    peername(Object::inc_ref(peername))
 { }
 
-sendAIOCB::sendAIOCB( sendAIOCB& other )
-  : AIOCB( other.get_socket(), other.buffer, other.buffer.size() ),
-    buffer( other.buffer.inc_ref() ),
-    flags( other.flags ),
-    peername( Object::inc_ref( other.peername ) )
+sendAIOCB::sendAIOCB(sendAIOCB& other)
+  : AIOCB(other.get_socket(), other.buffer, other.buffer.size()),
+    buffer(other.buffer.inc_ref()),
+    flags(other.flags),
+    peername(Object::inc_ref(other.peername))
 { }
 
 sendAIOCB::~sendAIOCB() {
-  Buffer::dec_ref( buffer );
-  SocketAddress::dec_ref( peername );
+  Buffer::dec_ref(buffer);
+  SocketAddress::dec_ref(peername);
 }
 
 const Socket::MessageFlags& sendAIOCB::get_flags() const {
@@ -78,8 +78,8 @@ const SocketAddress* sendAIOCB::get_peername() const {
 sendAIOCB::RetryStatus sendAIOCB::retry() {
   ssize_t send_ret;
 
-  if ( get_buffer().get_next_buffer() == NULL ) {
-    if ( get_peername() == NULL ) {
+  if (get_buffer().get_next_buffer() == NULL) {
+    if (get_peername() == NULL) {
       send_ret
       = get_socket().send
         (
@@ -105,7 +105,7 @@ sendAIOCB::RetryStatus sendAIOCB::retry() {
       iov.iov_base = *next_buffer;
       iov.iov_len = next_buffer->size();
       next_buffer = next_buffer->get_next_buffer();
-    } while ( next_buffer != NULL );
+    } while (next_buffer != NULL);
 
     send_ret
     = get_socket().sendmsg
@@ -117,15 +117,15 @@ sendAIOCB::RetryStatus sendAIOCB::retry() {
       );
   }
 
-  if ( send_ret >= 0 ) {
-    set_return( send_ret );
+  if (send_ret >= 0) {
+    set_return(send_ret);
     return RETRY_STATUS_COMPLETE;
-  } else if ( get_socket().want_send() )
+  } else if (get_socket().want_send())
     return RETRY_STATUS_WANT_WRITE;
-  else if ( get_socket().want_recv() )
+  else if (get_socket().want_recv())
     return RETRY_STATUS_WANT_READ;
   else {
-    set_error( Exception::get_last_error_code() );
+    set_error(Exception::get_last_error_code());
     return RETRY_STATUS_ERROR;
   }
 }

@@ -42,69 +42,69 @@ size_t Page::pagesize = 0;
 
 
 Page::Page()
-  : Buffer( 0 ) {
+  : Buffer(0) {
   data_ = NULL;
-  reserve( getpagesize() );
+  reserve(getpagesize());
 }
 
-Page::Page( size_t capacity )
-  : Buffer( 0 ) {
+Page::Page(size_t capacity)
+  : Buffer(0) {
   data_ = NULL;
-  reserve( capacity );
+  reserve(capacity);
 }
 
-Page::Page( const string& data )
-  : Buffer( 0 ) {
+Page::Page(const string& data)
+  : Buffer(0) {
   data_ = NULL;
-  put( data );
+  put(data);
 }
 
-Page::Page( const void* data, size_t size )
-  : Buffer( 0 ) {
+Page::Page(const void* data, size_t size)
+  : Buffer(0) {
   data_ = NULL;
-  put( data, size );
+  put(data, size);
 }
 
-Page::Page( size_t capacity, const void* data, size_t size )
-  : Buffer( 0 ) {
+Page::Page(size_t capacity, const void* data, size_t size)
+  : Buffer(0) {
   data_ = NULL;
-  reserve( capacity );
-  put( data, size );
+  reserve(capacity);
+  put(data, size);
 }
 
-Page::Page( const Buffer& buffer )
-  : Buffer( 0 ) {
+Page::Page(const Buffer& buffer)
+  : Buffer(0) {
   data_ = NULL;
-  reserve( buffer.capacity() );
-  put( buffer );
+  reserve(buffer.capacity());
+  put(buffer);
 }
 
-Page::Page( const Page& page )
-  : Buffer( 0 ) {
+Page::Page(const Page& page)
+  : Buffer(0) {
   data_ = NULL;
-  reserve( page.capacity() );
-  put( page );
+  reserve(page.capacity());
+  put(page);
 }
 
 Page::~Page() {
 #ifdef _WIN32
-  _aligned_free( data_ );
+  _aligned_free(data_);
 #else
-  free( data_ );
+  free(data_);
 #endif
 }
 
 Page* Page::get_next_page() const {
-  return static_cast<Page*>( get_next_buffer() );
+  return static_cast<Page*>(get_next_buffer());
 }
 
 size_t Page::getpagesize() {
-  if ( pagesize != 0 )
+  if (pagesize != 0)
     return pagesize;
   else {
 #ifdef _WIN32
     SYSTEM_INFO system_info;
-    GetSystemInfo( &system_info );
+    GetSystemInfo(&system_info);
     pagesize = system_info.dwPageSize;
 #else
     pagesize = ::getpagesize();
@@ -113,37 +113,37 @@ size_t Page::getpagesize() {
   }
 }
 
-bool Page::is_page_aligned( const void* ptr ) {
+bool Page::is_page_aligned(const void* ptr) {
   return (
-           reinterpret_cast<const uintptr_t>( ptr )
+           reinterpret_cast<const uintptr_t>(ptr)
            &
-           ( getpagesize() - 1 )
+           (getpagesize() - 1)
          ) == 0;
 }
 
-bool Page::is_page_aligned( const iovec& iov ) {
-  return is_page_aligned( iov.iov_base )
+bool Page::is_page_aligned(const iovec& iov) {
+  return is_page_aligned(iov.iov_base)
          &&
-         ( iov.iov_len & ( getpagesize() - 1 ) ) == 0;
+         (iov.iov_len & (getpagesize() - 1)) == 0;
 }
 
-void Page::reserve( size_t new_capacity ) {
-  if ( new_capacity > capacity() ) {
+void Page::reserve(size_t new_capacity) {
+  if (new_capacity > capacity()) {
     size_t pagesize = getpagesize();
-    new_capacity = ( new_capacity + pagesize - 1 ) / pagesize * pagesize;
+    new_capacity = (new_capacity + pagesize - 1) / pagesize * pagesize;
 
     void* new_data;
 #ifdef _WIN32
-    if ( ( new_data = _aligned_malloc( new_capacity, pagesize ) ) != NULL )
+    if ((new_data = _aligned_malloc(new_capacity, pagesize)) != NULL)
 #else
-    if ( posix_memalign( &new_data, pagesize, new_capacity ) == 0 )
+    if (posix_memalign(&new_data, pagesize, new_capacity) == 0)
 #endif
     {
-      memcpy_s( new_data, new_capacity, data_, size() );
+      memcpy_s(new_data, new_capacity, data_, size());
 #ifdef WIN32
-      _aligned_free( data_ );
+      _aligned_free(data_);
 #else
-      free( data_ );
+      free(data_);
 #endif
       capacity_ = new_capacity;
       data_ = new_data;
@@ -152,11 +152,11 @@ void Page::reserve( size_t new_capacity ) {
   }
 }
 
-void Page::set_next_page( YO_NEW_REF Page* page ) {
-  Buffer::set_next_buffer( page );
+void Page::set_next_page(YO_NEW_REF Page* page) {
+  Buffer::set_next_buffer(page);
 }
 
-void Page::set_next_page( YO_NEW_REF Page& page ) {
-  Buffer::set_next_buffer( page );
+void Page::set_next_page(YO_NEW_REF Page& page) {
+  Buffer::set_next_buffer(page);
 }
 }

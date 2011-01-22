@@ -39,8 +39,8 @@ namespace yield {
 namespace http {
 class ostreamAccessLog : public AccessLog {
 public:
-  ostreamAccessLog( std::ostream& os, Format& format )
-    : AccessLog( format ), os( os )
+  ostreamAccessLog(std::ostream& os, Format& format)
+    : AccessLog(format), os(os)
   { }
 
   // AccessLog
@@ -50,7 +50,7 @@ public:
     const HTTPRequest& http_request,
     const HTTPResponse& http_response
   ) {
-    string entry = get_format()( http_request, http_response );
+    string entry = get_format()(http_request, http_response);
     os << entry;
   }
 

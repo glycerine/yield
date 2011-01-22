@@ -42,9 +42,9 @@ public:
   const static uint32_t TYPE_ID = 1235871896UL;
 
 public:
-  StringLiteral( const char* value );
+  StringLiteral(const char* value);
 
-  operator const char*() const {
+  operator const char* () const {
     return value;
   }
 
@@ -55,7 +55,7 @@ public:
   const char* get_type_name() const {
     return "yield::marshal::StringLiteral";
   }
-  bool operator==( const Object& other ) const;
+  bool operator==(const Object& other) const;
 
 private:
   const char* value;

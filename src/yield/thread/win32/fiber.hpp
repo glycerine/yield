@@ -44,30 +44,30 @@ class Runnable;
 namespace win32 {
 class Fiber {
 public:
-  Fiber( Runnable& runnable );
+  Fiber(Runnable& runnable);
   ~Fiber();
 
   Runnable* get_runnable() const {
     return runnable;
   }
-  void* getspecific( uintptr_t key );
+  void* getspecific(uintptr_t key);
   uintptr_t key_create();
-  bool key_delete( uintptr_t key );
+  bool key_delete(uintptr_t key);
   bool is_running() const {
     return state == STATE_RUNNING;
   }
-  operator void*() const {
+  operator void* () const {
     return handle;
   }
   static Fiber* self();
-  bool setspecific( uintptr_t key, void* value );
+  bool setspecific(uintptr_t key, void* value);
   void yield();
-  void yield( Fiber& to_fiber );
+  void yield(Fiber& to_fiber);
 
 private:
-  Fiber( void* handle );
+  Fiber(void* handle);
 
-  static void __stdcall run( void* );
+  static void __stdcall run(void*);
 
 private:
   static void* first_fiber_handle;

@@ -45,12 +45,12 @@ public:
   ProcessorSet();
 
   void clear();
-  void clear( uint16_t processor_i );
-  bool isset( uint16_t processor_i ) const;
-  operator const cpu_set_t*() const {
+  void clear(uint16_t processor_i);
+  bool isset(uint16_t processor_i) const;
+  operator const cpu_set_t* () const {
     return &cpu_set;
   }
-  bool set( uint16_t processor_i );
+  bool set(uint16_t processor_i);
 
 private:
   cpu_set_t cpu_set;

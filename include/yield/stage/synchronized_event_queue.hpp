@@ -44,8 +44,8 @@ class SynchronizedEventQueue
 public:
   // EventQueue
   YO_NEW_REF Event& dequeue();
-  YO_NEW_REF Event* dequeue( const Time& timeout );
-  bool enqueue( YO_NEW_REF Event& event );
+  YO_NEW_REF Event* dequeue(const Time& timeout);
+  bool enqueue(YO_NEW_REF Event& event);
   YO_NEW_REF Event* trydequeue();
 };
 };

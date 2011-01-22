@@ -33,48 +33,48 @@
 
 namespace yield {
 namespace marshal {
-void Marshaller::write( const Object& key, Buffer& value ) {
-  write( key, static_cast<char*>( value ), value.size() );
+void Marshaller::write(const Object& key, Buffer& value) {
+  write(key, static_cast<char*>(value), value.size());
 }
 
-void Marshaller::write( const Object& key, float value ) {
-  write( key, static_cast<double>( value ) );
+void Marshaller::write(const Object& key, float value) {
+  write(key, static_cast<double>(value));
 }
 
-void Marshaller::write( const Object& key, int8_t value ) {
-  write( key, static_cast<int16_t>( value ) );
+void Marshaller::write(const Object& key, int8_t value) {
+  write(key, static_cast<int16_t>(value));
 }
 
-void Marshaller::write( const Object& key, int16_t value ) {
-  write( key, static_cast<int32_t>( value ) );
+void Marshaller::write(const Object& key, int16_t value) {
+  write(key, static_cast<int32_t>(value));
 }
 
-void Marshaller::write( const Object& key, int32_t value ) {
-  write( key, static_cast<int64_t>( value ) );
+void Marshaller::write(const Object& key, int32_t value) {
+  write(key, static_cast<int64_t>(value));
 }
 
-void Marshaller::write( const Object& key, const Map& value ) {
-  write( key, static_cast<const Object&>( value ) );
+void Marshaller::write(const Object& key, const Map& value) {
+  write(key, static_cast<const Object&>(value));
 }
 
-void Marshaller::write( const Object& key, const char* value ) {
-  write( key, value, strnlen( value, UINT16_MAX ) );
+void Marshaller::write(const Object& key, const char* value) {
+  write(key, value, strnlen(value, UINT16_MAX));
 }
 
-void Marshaller::write( const Object& key, const string& value ) {
-  write( key, const_cast<char*>( value.data() ), value.size() );
+void Marshaller::write(const Object& key, const string& value) {
+  write(key, const_cast<char*>(value.data()), value.size());
 }
 
-void Marshaller::write( const Object& key, uint8_t value ) {
-  write( key, static_cast<uint16_t>( value ) );
+void Marshaller::write(const Object& key, uint8_t value) {
+  write(key, static_cast<uint16_t>(value));
 }
 
-void Marshaller::write( const Object& key, uint16_t value ) {
-  write( key, static_cast<uint32_t>( value ) );
+void Marshaller::write(const Object& key, uint16_t value) {
+  write(key, static_cast<uint32_t>(value));
 }
 
-void Marshaller::write( const Object& key, uint32_t value ) {
-  write( key, static_cast<uint64_t>( value ) );
+void Marshaller::write(const Object& key, uint32_t value) {
+  write(key, static_cast<uint64_t>(value));
 }
 }
 }

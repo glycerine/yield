@@ -50,26 +50,26 @@ namespace marshal {
 namespace xml {
 class XMLUnmarshaller : public Unmarshaller {
 public:
-  XMLUnmarshaller( const Buffer& buffer );
-  XMLUnmarshaller( const char* xml, size_t xml_len );
+  XMLUnmarshaller(const Buffer& buffer);
+  XMLUnmarshaller(const char* xml, size_t xml_len);
   ~XMLUnmarshaller();
 
   // Unmarshaller
-  bool read_bool( const Object& key );
-  double read_double( const Object& key );
-  int64_t read_int64( const Object& key );
-  void read_key( Object& key );
-  void read_map( const Object& key, Map& value );
-  void read_object( const Object& key, Object& value );
-  void read_sequence( const Object& key, Sequence& value );
-  void read_string( const Object& key, string& value );
-  uint64_t read_uint64( const Object& key );
+  bool read_bool(const Object& key);
+  double read_double(const Object& key);
+  int64_t read_int64(const Object& key);
+  void read_key(Object& key);
+  void read_map(const Object& key, Map& value);
+  void read_object(const Object& key, Object& value);
+  void read_sequence(const Object& key, Sequence& value);
+  void read_string(const Object& key, string& value);
+  uint64_t read_uint64(const Object& key);
 
 private:
-  XMLUnmarshaller( const rapidxml::xml_node<char>& root_node );
+  XMLUnmarshaller(const rapidxml::xml_node<char>& root_node);
   void init();
-  const rapidxml::xml_attribute<char>* read_attribute( const Object& k );
-  const rapidxml::xml_node<char>* read_node( const Object& key );
+  const rapidxml::xml_attribute<char>* read_attribute(const Object& k);
+  const rapidxml::xml_node<char>* read_node(const Object& key);
 
 private:
   rapidxml::xml_document<char>* doc;

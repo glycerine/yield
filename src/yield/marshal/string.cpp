@@ -34,12 +34,12 @@
 
 namespace yield {
 namespace marshal {
-bool String::operator==( const Object& other ) const {
-  switch ( other.get_type_id() ) {
+bool String::operator==(const Object& other) const {
+  switch (other.get_type_id()) {
   case String::TYPE_ID: {
-    return static_cast<const string>( *this )
+    return static_cast<const string>(*this)
            ==
-           static_cast<const string&>( static_cast<const String&>( other ) );
+           static_cast<const string&>(static_cast<const String&>(other));
   }
   break;
 
@@ -48,7 +48,7 @@ bool String::operator==( const Object& other ) const {
            ==
            static_cast<const char*>
            (
-             static_cast<const StringLiteral&>( other )
+             static_cast<const StringLiteral&>(other)
            );
   }
   break;

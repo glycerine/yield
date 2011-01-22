@@ -77,7 +77,7 @@ using yield::net::URI;
 
 
 Object& HTTPRequestParser::parse() {
-  if ( p < eof ) {
+  if (p < eof) {
     ps = p;
 
     int cs;
@@ -86,13 +86,13 @@ Object& HTTPRequestParser::parse() {
     // URI variables
     iovec fragment = { 0 };
     iovec host;
-    host.iov_base = const_cast<char*>( "localhost" );
+    host.iov_base = const_cast<char*>("localhost");
     host.iov_len = 9;
     iovec path = { 0 };
     uint16_t port = 80;
     iovec query = { 0 };
     iovec scheme;
-    scheme.iov_base = const_cast<char*>( "http" );
+    scheme.iov_base = const_cast<char*>("http");
     scheme.iov_len = 4;
     iovec userinfo = { 0 };
 
@@ -3089,29 +3089,29 @@ Object& HTTPRequestParser::parse() {
     {
       int _klen;
       unsigned int _trans;
-      const char *_acts;
+      const char* _acts;
       unsigned int _nacts;
-      const unsigned char *_keys;
+      const unsigned char* _keys;
 
-      if ( cs == 0 )
+      if (cs == 0)
         goto _out;
 _resume:
       _keys = _request_line_parser_trans_keys + _request_line_parser_key_offsets[cs];
       _trans = _request_line_parser_index_offsets[cs];
 
       _klen = _request_line_parser_single_lengths[cs];
-      if ( _klen > 0 ) {
-        const unsigned char *_lower = _keys;
-        const unsigned char *_mid;
-        const unsigned char *_upper = _keys + _klen - 1;
+      if (_klen > 0) {
+        const unsigned char* _lower = _keys;
+        const unsigned char* _mid;
+        const unsigned char* _upper = _keys + _klen - 1;
         while (1) {
-          if ( _upper < _lower )
+          if (_upper < _lower)
             break;
 
-          _mid = _lower + ((_upper-_lower) >> 1);
-          if ( (*p) < *_mid )
+          _mid = _lower + ((_upper - _lower) >> 1);
+          if ((*p) < *_mid)
             _upper = _mid - 1;
-          else if ( (*p) > *_mid )
+          else if ((*p) > *_mid)
             _lower = _mid + 1;
           else {
             _trans += (_mid - _keys);
@@ -3123,21 +3123,21 @@ _resume:
       }
 
       _klen = _request_line_parser_range_lengths[cs];
-      if ( _klen > 0 ) {
-        const unsigned char *_lower = _keys;
-        const unsigned char *_mid;
-        const unsigned char *_upper = _keys + (_klen<<1) - 2;
+      if (_klen > 0) {
+        const unsigned char* _lower = _keys;
+        const unsigned char* _mid;
+        const unsigned char* _upper = _keys + (_klen << 1) - 2;
         while (1) {
-          if ( _upper < _lower )
+          if (_upper < _lower)
             break;
 
-          _mid = _lower + (((_upper-_lower) >> 1) & ~1);
-          if ( (*p) < _mid[0] )
+          _mid = _lower + (((_upper - _lower) >> 1) & ~1);
+          if ((*p) < _mid[0])
             _upper = _mid - 2;
-          else if ( (*p) > _mid[1] )
+          else if ((*p) > _mid[1])
             _lower = _mid + 2;
           else {
-            _trans += ((_mid - _keys)>>1);
+            _trans += ((_mid - _keys) >> 1);
             goto _match;
           }
         }
@@ -3148,17 +3148,17 @@ _match:
       _trans = _request_line_parser_indicies[_trans];
       cs = _request_line_parser_trans_targs[_trans];
 
-      if ( _request_line_parser_trans_actions[_trans] == 0 )
+      if (_request_line_parser_trans_actions[_trans] == 0)
         goto _again;
 
       _acts = _request_line_parser_actions + _request_line_parser_trans_actions[_trans];
-      _nacts = (unsigned int) *_acts++;
-      while ( _nacts-- > 0 ) {
-        switch ( *_acts++ ) {
+      _nacts = (unsigned int) * _acts++;
+      while (_nacts-- > 0) {
+        switch (*_acts++) {
         case 0:
           /* #line 90 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\basic_rules.rl" */
         {
-          http_version = static_cast<float>( atof( p ) );
+          http_version = static_cast<float>(atof(p));
         }
         break;
         case 1:
@@ -3170,7 +3170,7 @@ _match:
         case 2:
           /* #line 85 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
         {
-          scheme.iov_len =  p - static_cast<char*>( scheme.iov_base );
+          scheme.iov_len =  p - static_cast<char*>(scheme.iov_base);
         }
         break;
         case 3:
@@ -3182,7 +3182,7 @@ _match:
         case 4:
           /* #line 90 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
         {
-          userinfo.iov_len = p - static_cast<char*>( userinfo.iov_base );
+          userinfo.iov_len = p - static_cast<char*>(userinfo.iov_base);
         }
         break;
         case 5:
@@ -3194,13 +3194,13 @@ _match:
         case 6:
           /* #line 95 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
         {
-          host.iov_len = p - static_cast<char*>( host.iov_base );
+          host.iov_len = p - static_cast<char*>(host.iov_base);
         }
         break;
         case 7:
           /* #line 98 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
         {
-          port = static_cast<uint16_t>( atoi( p ) );
+          port = static_cast<uint16_t>(atoi(p));
         }
         break;
         case 8:
@@ -3212,7 +3212,7 @@ _match:
         case 9:
           /* #line 104 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
         {
-          path.iov_len = p - static_cast<char*>( path.iov_base );
+          path.iov_len = p - static_cast<char*>(path.iov_base);
         }
         break;
         case 10:
@@ -3224,7 +3224,7 @@ _match:
         case 11:
           /* #line 123 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\../net/uri.rl" */
         {
-          query.iov_len = p - static_cast<char*>( query.iov_base );
+          query.iov_len = p - static_cast<char*>(query.iov_base);
         }
         break;
         case 12:
@@ -3332,7 +3332,7 @@ _match:
         case 29:
           /* #line 102 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
         {
-          path.iov_len = p - static_cast<char*>( path.iov_base );
+          path.iov_len = p - static_cast<char*>(path.iov_base);
         }
         break;
         case 30:
@@ -3348,7 +3348,7 @@ _match:
       }
 
 _again:
-      if ( cs == 0 )
+      if (cs == 0)
         goto _out;
       p += 1;
       goto _resume;
@@ -3359,7 +3359,7 @@ _out:
     /* #line 117 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
 
 
-    if ( cs != request_line_parser_error ) {
+    if (cs != request_line_parser_error) {
       URI uri
       (
         get_buffer(),
@@ -3375,10 +3375,10 @@ _out:
       uint16_t fields_offset;
       size_t content_length;
 
-      if ( parse_fields( fields_offset, content_length ) ) {
+      if (parse_fields(fields_offset, content_length)) {
         void* body;
 
-        if ( parse_body( content_length, body ) ) {
+        if (parse_body(content_length, body)) {
           return *new HTTPRequest
                  (
                    body,
@@ -3391,24 +3391,24 @@ _out:
                  );
         } else {
           Buffer* next_buffer
-          = new Page( p - ps + content_length, ps, eof - ps );
+          = new Page(p - ps + content_length, ps, eof - ps);
           ps = p;
           return *next_buffer;
         }
       }
     } else { // cs == request_line_parser_error
       Object* object = parse_body_chunk();
-      if ( object != NULL )
+      if (object != NULL)
         return *object;
     }
 
-    if ( p == eof ) { // EOF parsing
+    if (p == eof) {   // EOF parsing
       Buffer* next_buffer
-      = new Page( eof - ps + Page::getpagesize(), ps, eof - ps );
+      = new Page(eof - ps + Page::getpagesize(), ps, eof - ps);
       p = ps;
       return *next_buffer;
     } else // Error parsing
-      return *new HTTPResponse( NULL, http_version, 400 );
+      return *new HTTPResponse(NULL, http_version, 400);
   } else // p == eof
     return *new Page;
 }

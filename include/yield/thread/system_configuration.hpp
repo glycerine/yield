@@ -42,7 +42,7 @@ public:
   };
 
 public:
-  long operator()( Variable );
+  long operator()(Variable);
 };
 }
 }

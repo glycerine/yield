@@ -43,8 +43,8 @@ public:
   void serve_forever();
 
 protected:
-  SocketServer( Log* error_log, Log* trace_log )
-    : SocketPeer( error_log, trace_log )
+  SocketServer(Log* error_log, Log* trace_log)
+    : SocketPeer(error_log, trace_log)
   { }
 
   virtual ~SocketServer() { }

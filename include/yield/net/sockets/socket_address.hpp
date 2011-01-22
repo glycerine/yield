@@ -68,98 +68,98 @@ public:
 
 public:
   SocketAddress() {
-    memset( &addr, 0, sizeof( addr ) );
+    memset(&addr, 0, sizeof(addr));
     next_socket_address = NULL;
   }
 
-  SocketAddress( const addrinfo& addrinfo_ ) {
+  SocketAddress(const addrinfo& addrinfo_) {
     next_socket_address = NULL;
-    assign( addrinfo_ );
+    assign(addrinfo_);
   }
 
-  SocketAddress( const sockaddr_in& sockaddr_in_ ) {
-    assign( sockaddr_in_ );
-    next_socket_address = NULL;
-  }
-
-  SocketAddress( const sockaddr_in6& sockaddr_in6_ ) {
-    assign( sockaddr_in6_ );
+  SocketAddress(const sockaddr_in& sockaddr_in_) {
+    assign(sockaddr_in_);
     next_socket_address = NULL;
   }
 
-  SocketAddress( const sockaddr& sockaddr_, int family ) {
-    assign( sockaddr_, family );
+  SocketAddress(const sockaddr_in6& sockaddr_in6_) {
+    assign(sockaddr_in6_);
     next_socket_address = NULL;
   }
 
-  SocketAddress( const in_addr& in_addr_, uint16_t port ) {
-    assign( in_addr_, port );
+  SocketAddress(const sockaddr& sockaddr_, int family) {
+    assign(sockaddr_, family);
     next_socket_address = NULL;
   }
 
-  SocketAddress( uint32_t in_addr_, uint16_t port ) {
-    assign( in_addr_, port );
+  SocketAddress(const in_addr& in_addr_, uint16_t port) {
+    assign(in_addr_, port);
     next_socket_address = NULL;
   }
 
-  SocketAddress( const in6_addr& in6_addr_, uint16_t port ) {
-    assign( in6_addr_, port );
+  SocketAddress(uint32_t in_addr_, uint16_t port) {
+    assign(in_addr_, port);
     next_socket_address = NULL;
   }
 
-  SocketAddress( uint16_t port ) {
-    init( NULL, port );
+  SocketAddress(const in6_addr& in6_addr_, uint16_t port) {
+    assign(in6_addr_, port);
+    next_socket_address = NULL;
+  }
+
+  SocketAddress(uint16_t port) {
+    init(NULL, port);
   }
 
   SocketAddress
   (
     const char* nodename,
     const char* servname
-  ) throw( Exception ) {
-    init( nodename, servname );
+  ) throw(Exception) {
+    init(nodename, servname);
   }
 
-  SocketAddress( const char* nodename, uint16_t port ) throw( Exception ) {
-    init( nodename, port );
+  SocketAddress(const char* nodename, uint16_t port) throw(Exception) {
+    init(nodename, port);
   }
 
-  SocketAddress( const URI& uri ) throw( Exception ) {
-    init( uri.get_host().c_str(), uri.get_port() );
+  SocketAddress(const URI& uri) throw(Exception) {
+    init(uri.get_host().c_str(), uri.get_port());
   }
 
-  SocketAddress( SocketAddress& other ) {
-    memcpy_s( &addr, sizeof( addr ), &other.addr, sizeof( other.addr ) );
-    next_socket_address = Object::inc_ref( other.next_socket_address );
+  SocketAddress(SocketAddress& other) {
+    memcpy_s(&addr, sizeof(addr), &other.addr, sizeof(other.addr));
+    next_socket_address = Object::inc_ref(other.next_socket_address);
   }
 
-  SocketAddress( const SocketAddress& other ) {
-    memcpy_s( &addr, sizeof( addr ), &other.addr, sizeof( other.addr ) );
-    if ( other.next_socket_address != NULL )
-      next_socket_address = new SocketAddress( *other.next_socket_address );
+  SocketAddress(const SocketAddress& other) {
+    memcpy_s(&addr, sizeof(addr), &other.addr, sizeof(other.addr));
+    if (other.next_socket_address != NULL)
+      next_socket_address = new SocketAddress(*other.next_socket_address);
     else
       next_socket_address = NULL;
   }
 
-  SocketAddress( const SocketAddress&, uint16_t port );
+  SocketAddress(const SocketAddress&, uint16_t port);
 
   ~SocketAddress() {
-    dec_ref( next_socket_address );
+    dec_ref(next_socket_address);
   }
 
-  void assign( const addrinfo& );
-  void assign( const sockaddr_in& );
-  void assign( const sockaddr_in6& );
+  void assign(const addrinfo&);
+  void assign(const sockaddr_in&);
+  void assign(const sockaddr_in6&);
 
-  void assign( const sockaddr& sockaddr_, int family ) {
-    memcpy_s( &this->addr, sizeof( this->addr ), &sockaddr_, len( family ) );
-    this->addr.ss_family = static_cast<uint16_t>( family );
+  void assign(const sockaddr& sockaddr_, int family) {
+    memcpy_s(&this->addr, sizeof(this->addr), &sockaddr_, len(family));
+    this->addr.ss_family = static_cast<uint16_t>(family);
   }
 
-  void assign( uint32_t in_addr_, uint16_t port );
-  void assign( const in_addr&, uint16_t port );
-  void assign( const in6_addr&, uint16_t port );
+  void assign(uint32_t in_addr_, uint16_t port);
+  void assign(const in_addr&, uint16_t port);
+  void assign(const in6_addr&, uint16_t port);
 
-  const SocketAddress* filter( int family ) const;
+  const SocketAddress* filter(int family) const;
 
   static YO_NEW_REF SocketAddress*
   getaddrinfo
@@ -176,26 +176,26 @@ public:
   ) {
     std::ostringstream servname;
     servname << port;
-    return getaddrinfo( nodename, servname.str().c_str() );
+    return getaddrinfo(nodename, servname.str().c_str());
   }
 
   int get_family() const {
     return addr.ss_family;
   }
 
-  bool getnameinfo( OUT string& nodename, bool numeric ) const {
+  bool getnameinfo(OUT string& nodename, bool numeric) const {
     char nameinfo[256];
-    if ( this->getnameinfo( nameinfo, 256, numeric ) ) {
-      nodename.assign( nameinfo );
+    if (this->getnameinfo(nameinfo, 256, numeric)) {
+      nodename.assign(nameinfo);
       return true;
     } else
       return false;
   }
 
-  bool getnameinfo( OUT char* nodename, size_t, bool numeric ) const;
+  bool getnameinfo(OUT char* nodename, size_t, bool numeric) const;
 
   socklen_t len() const {
-    return len( get_family() );
+    return len(get_family());
   }
 
   operator string() const {
@@ -204,32 +204,32 @@ public:
     return repr.str();
   }
 
-  operator sockaddr*() {
-    return reinterpret_cast<sockaddr*>( &addr );
+  operator sockaddr* () {
+    return reinterpret_cast<sockaddr*>(&addr);
   }
 
-  operator const sockaddr*() const {
-    return reinterpret_cast<const sockaddr*>( &addr );
+  operator const sockaddr* () const {
+    return reinterpret_cast<const sockaddr*>(&addr);
   }
 
-  bool operator==( const SocketAddress& other ) const {
-    if ( memcmp( &addr, &other.addr, sizeof( addr ) ) == 0 ) {
-      if ( next_socket_address == NULL )
+  bool operator==(const SocketAddress& other) const {
+    if (memcmp(&addr, &other.addr, sizeof(addr)) == 0) {
+      if (next_socket_address == NULL)
         return true;
-      else if ( other.next_socket_address != NULL )
+      else if (other.next_socket_address != NULL)
         return *next_socket_address == *other.next_socket_address;
     }
 
     return false;
   }
 
-  bool operator!=( const SocketAddress& other ) const {
-    return !operator==( other );
+  bool operator!=(const SocketAddress& other) const {
+    return !operator==(other);
   }
 
   // Object
   SocketAddress& inc_ref() {
-    return Object::inc_ref( *this );
+    return Object::inc_ref(*this);
   }
 
 private:
@@ -239,16 +239,16 @@ private:
     const struct in6_addr& in6_addr_,
     uint16_t port
   ) {
-    assign( in_addr_, port );
-    next_socket_address = new SocketAddress( in6_addr_, port );
+    assign(in_addr_, port);
+    next_socket_address = new SocketAddress(in6_addr_, port);
   }
 
-  static addrinfo* _getaddrinfo( const char*, const char* );
+  static addrinfo* _getaddrinfo(const char*, const char*);
 
-  void init( const char* nodename, uint16_t port ) throw( Exception ) {
+  void init(const char* nodename, uint16_t port) throw(Exception) {
     std::ostringstream servname;
     servname << port;
-    init( nodename, servname.str().c_str() );
+    init(nodename, servname.str().c_str());
   }
 
   void
@@ -256,9 +256,9 @@ private:
   (
     const char* nodename,
     const char* servname
-  ) throw( Exception );
+  ) throw(Exception);
 
-  socklen_t len( int family ) const;
+  socklen_t len(int family) const;
 
 private:
   struct {
@@ -279,7 +279,7 @@ operator<<
   const SocketAddress& sockaddr_
 ) {
   string nodename;
-  if ( sockaddr_.getnameinfo( nodename, true ) )
+  if (sockaddr_.getnameinfo(nodename, true))
     os << nodename;
   else os << "(unknown)";
   return os;

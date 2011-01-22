@@ -33,24 +33,24 @@
 #include "yunit.hpp"
 
 
-TEST_SUITE( atomic );
+TEST_SUITE(atomic);
 
 namespace yield {
-TEST( atomic, cas ) {
+TEST(atomic, cas) {
   volatile atomic_t current_value = 0;
-  atomic_t old_value = atomic_cas( &current_value, 1, 0 );
-  throw_assert_eq( old_value, 0 );
+  atomic_t old_value = atomic_cas(&current_value, 1, 0);
+  throw_assert_eq(old_value, 0);
 }
 
-TEST( atomic, dec ) {
+TEST(atomic, dec) {
   volatile atomic_t current_value = 1;
-  atomic_t new_current_value = atomic_dec( &current_value );
-  throw_assert_eq( new_current_value, 0 );
+  atomic_t new_current_value = atomic_dec(&current_value);
+  throw_assert_eq(new_current_value, 0);
 }
 
-TEST( atomic, inc ) {
+TEST(atomic, inc) {
   volatile atomic_t current_value = 0;
-  atomic_t new_current_value = atomic_inc( &current_value );
-  throw_assert_eq( new_current_value, 1 );
+  atomic_t new_current_value = atomic_inc(&current_value);
+  throw_assert_eq(new_current_value, 1);
 }
 }

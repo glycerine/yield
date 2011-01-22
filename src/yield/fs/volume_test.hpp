@@ -52,11 +52,11 @@ public:
   virtual ~VolumeTest() { }
 
 protected:
-  VolumeTest( Volume& volume )
-    : test_dir_name( "volume_test" ),
-      test_file_name( "volume_test.txt" ),
-      test_link_name( "volume_test_link.txt" ),
-      volume( volume.inc_ref() )
+  VolumeTest(Volume& volume)
+    : test_dir_name("volume_test"),
+      test_file_name("volume_test.txt"),
+      test_link_name("volume_test_link.txt"),
+      volume(volume.inc_ref())
   { }
 
   const Path& get_test_dir_name() const {
@@ -75,13 +75,13 @@ protected:
   // yunit::Test
   void setup() {
     teardown();
-    volume.touch( get_test_file_name() );
+    volume.touch(get_test_file_name());
   }
 
   void teardown() {
-    volume.rmtree( get_test_dir_name() );
-    volume.unlink( get_test_file_name() );
-    volume.unlink( get_test_link_name() );
+    volume.rmtree(get_test_dir_name());
+    volume.unlink(get_test_file_name());
+    volume.unlink(get_test_link_name());
   }
 
 private:
@@ -92,29 +92,29 @@ private:
 
 class VolumeAccessTest : public VolumeTest {
 public:
-  VolumeAccessTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeAccessTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // Test
   void run() {
-    throw_assert( get_volume().access( get_test_file_name(), O_RDONLY ) );
+    throw_assert(get_volume().access(get_test_file_name(), O_RDONLY));
   }
 };
 
 
 class VolumeChmodTest : public VolumeTest {
 public:
-  VolumeChmodTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeChmodTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // Test
   void run() {
     mode_t mode = Volume::FILE_MODE_DEFAULT;
-    if ( get_volume().chmod( get_test_file_name(), mode ) )
+    if (get_volume().chmod(get_test_file_name(), mode))
       return;
-    else if ( Exception::get_last_error_code() != ENOTSUP )
+    else if (Exception::get_last_error_code() != ENOTSUP)
       throw Exception();
   }
 };
@@ -122,8 +122,8 @@ public:
 
 class VolumeChownTest : public VolumeTest {
 public:
-  VolumeChownTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeChownTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // Test
@@ -138,9 +138,9 @@ public:
     gid = getgid();
 #endif
 
-    if ( get_volume().chown( get_test_file_name(), uid, gid ) )
+    if (get_volume().chown(get_test_file_name(), uid, gid))
       return;
-    else if ( Exception::get_last_error_code() != ENOTSUP )
+    else if (Exception::get_last_error_code() != ENOTSUP)
       throw Exception();
   }
 };
@@ -148,15 +148,15 @@ public:
 
 class VolumeCreatTest : public VolumeTest {
 public:
-  VolumeCreatTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeCreatTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // Test
   void run() {
-    File* file = get_volume().creat( get_test_file_name() );
-    if ( file != NULL )
-      File::dec_ref( *file );
+    File* file = get_volume().creat(get_test_file_name());
+    if (file != NULL)
+      File::dec_ref(*file);
     else
       throw Exception();
   }
@@ -165,16 +165,16 @@ public:
 
 class VolumeExistsTest : public VolumeTest {
 public:
-  VolumeExistsTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeExistsTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // Test
   void run() {
-    if ( !get_volume().exists( get_test_file_name() ) )
+    if (!get_volume().exists(get_test_file_name()))
       throw Exception();
 
-    throw_assert_false( get_volume().exists( Path( "some other file.txt" ) ) );
+    throw_assert_false(get_volume().exists(Path("some other file.txt")));
   }
 };
 
@@ -183,15 +183,15 @@ class VolumeExtendedAttributesGetTest
   : public VolumeTest,
     private ExtendedAttributesGetTest {
 public:
-  VolumeExtendedAttributesGetTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeExtendedAttributesGetTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // Test
   void run() {
     ExtendedAttributesGetTest::run
     (
-      get_volume().openxattrs( get_test_file_name() )
+      get_volume().openxattrs(get_test_file_name())
     );
   }
 };
@@ -201,15 +201,15 @@ class VolumeExtendedAttributesListTest
   : public VolumeTest,
     private ExtendedAttributesListTest {
 public:
-  VolumeExtendedAttributesListTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeExtendedAttributesListTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // Test
   void run() {
     ExtendedAttributesListTest::run
     (
-      get_volume().openxattrs( get_test_file_name() )
+      get_volume().openxattrs(get_test_file_name())
     );
   }
 };
@@ -219,15 +219,15 @@ class VolumeExtendedAttributesRemoveTest
   : public VolumeTest,
     private ExtendedAttributesRemoveTest {
 public:
-  VolumeExtendedAttributesRemoveTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeExtendedAttributesRemoveTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // Test
   void run() {
     ExtendedAttributesRemoveTest::run
     (
-      get_volume().openxattrs( get_test_file_name() )
+      get_volume().openxattrs(get_test_file_name())
     );
   }
 };
@@ -237,15 +237,15 @@ class VolumeExtendedAttributesSetTest
   : public VolumeTest,
     private ExtendedAttributesSetTest {
 public:
-  VolumeExtendedAttributesSetTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeExtendedAttributesSetTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // Test
   void run() {
     ExtendedAttributesSetTest::run
     (
-      get_volume().openxattrs( get_test_file_name() )
+      get_volume().openxattrs(get_test_file_name())
     );
   }
 };
@@ -253,60 +253,60 @@ public:
 
 class VolumeGetattrTest : public VolumeTest {
 public:
-  VolumeGetattrTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeGetattrTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // Test
   void run() {
-    auto_Object<Stat> stbuf = get_volume().getattr( get_test_file_name() );
+    auto_Object<Stat> stbuf = get_volume().getattr(get_test_file_name());
   }
 };
 
 
 class VolumeIsDirTest : public VolumeTest {
 public:
-  VolumeIsDirTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeIsDirTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // Test
   void run() {
-    get_volume().mkdir( get_test_dir_name() );
-    throw_assert( get_volume().isdir( get_test_dir_name() ) );
-    throw_assert_false( get_volume().isdir( get_test_file_name() ) );
-    throw_assert_false( get_volume().isdir( Path( "nodir" ) ) );
+    get_volume().mkdir(get_test_dir_name());
+    throw_assert(get_volume().isdir(get_test_dir_name()));
+    throw_assert_false(get_volume().isdir(get_test_file_name()));
+    throw_assert_false(get_volume().isdir(Path("nodir")));
   }
 };
 
 
 class VolumeIsFileTest : public VolumeTest {
 public:
-  VolumeIsFileTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeIsFileTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // Test
   void run() {
-    throw_assert( get_volume().isfile( get_test_file_name() ) );
-    get_volume().mkdir( get_test_dir_name() );
-    throw_assert_false( get_volume().isfile( get_test_dir_name() ) );
-    throw_assert_false( get_volume().isfile( Path( "nofile.txt" ) ) );
+    throw_assert(get_volume().isfile(get_test_file_name()));
+    get_volume().mkdir(get_test_dir_name());
+    throw_assert_false(get_volume().isfile(get_test_dir_name()));
+    throw_assert_false(get_volume().isfile(Path("nofile.txt")));
   }
 };
 
 
 class VolumeLinkTest : public VolumeTest {
 public:
-  VolumeLinkTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeLinkTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // Test
   void run() {
-    if ( get_volume().link( get_test_file_name(), get_test_link_name() ) )
+    if (get_volume().link(get_test_file_name(), get_test_link_name()))
       return;
-    else if ( Exception::get_last_error_code() != ENOTSUP )
+    else if (Exception::get_last_error_code() != ENOTSUP)
       throw Exception();
   }
 };
@@ -314,13 +314,13 @@ public:
 
 class VolumeMkdirTest : public VolumeTest {
 public:
-  VolumeMkdirTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeMkdirTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // Test
   void run() {
-    if ( !get_volume().mkdir( get_test_dir_name() ) )
+    if (!get_volume().mkdir(get_test_dir_name()))
       throw Exception();
   }
 };
@@ -328,33 +328,33 @@ public:
 
 class VolumeMktreeTest : public VolumeTest {
 public:
-  VolumeMktreeTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeMktreeTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // Test
   void run() {
-    Path subdir_path( Path( "volume_test" ) + Path( "subdir" ) );
-    if ( !get_volume().mktree( subdir_path ) ) throw Exception();
-    throw_assert( get_volume().exists( subdir_path ) );
+    Path subdir_path(Path("volume_test") + Path("subdir"));
+    if (!get_volume().mktree(subdir_path)) throw Exception();
+    throw_assert(get_volume().exists(subdir_path));
   }
 };
 
 
 class VolumeOpenTest : public VolumeTest {
 public:
-  VolumeOpenTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeOpenTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // Test
   void run() {
-    auto_Object<File> file = get_volume().open( get_test_file_name() );
+    auto_Object<File> file = get_volume().open(get_test_file_name());
 
-    File* no_file = get_volume().open( Path( "nofile.txt" ), O_RDONLY );
-    if ( no_file != NULL ) {
-      File::dec_ref( *no_file );
-      throw_assert( false );
+    File* no_file = get_volume().open(Path("nofile.txt"), O_RDONLY);
+    if (no_file != NULL) {
+      File::dec_ref(*no_file);
+      throw_assert(false);
     }
   }
 };
@@ -362,19 +362,19 @@ public:
 
 class VolumeReadLinkTest : public VolumeTest {
 public:
-  VolumeReadLinkTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeReadLinkTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // Test
   void run() {
-    if ( get_volume().symlink( get_test_file_name(), get_test_link_name() )) {
+    if (get_volume().symlink(get_test_file_name(), get_test_link_name())) {
       Path target_path;
-      if ( get_volume().readlink( get_test_link_name(), target_path ) ) {
-        throw_assert_eq( target_path, get_test_file_name() );
-      } else if ( Exception::get_last_error_code() != ENOTSUP )
+      if (get_volume().readlink(get_test_link_name(), target_path)) {
+        throw_assert_eq(target_path, get_test_file_name());
+      } else if (Exception::get_last_error_code() != ENOTSUP)
         throw Exception();
-    } else if ( Exception::get_last_error_code() != ENOTSUP )
+    } else if (Exception::get_last_error_code() != ENOTSUP)
       throw Exception();
   }
 };
@@ -382,47 +382,47 @@ public:
 
 class VolumeRealPathTest : public VolumeTest {
 public:
-  VolumeRealPathTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeRealPathTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // yunit::Test
   void run() {
     Path realpath;
-    if ( !get_volume().realpath( get_test_file_name(), realpath ) )
+    if (!get_volume().realpath(get_test_file_name(), realpath))
       throw Exception();
-    throw_assert_false( realpath.empty() );
-    throw_assert_ne( get_test_file_name(), realpath );
-    throw_assert_lt( get_test_file_name().size(), realpath.size() );
+    throw_assert_false(realpath.empty());
+    throw_assert_ne(get_test_file_name(), realpath);
+    throw_assert_lt(get_test_file_name().size(), realpath.size());
   }
 };
 
 
 class VolumeRenameTest : public VolumeTest {
 public:
-  VolumeRenameTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeRenameTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // Test
   void run() {
-    if ( !get_volume().rename( get_test_file_name(), Path( "volume_test2.txt" ) ) )
+    if (!get_volume().rename(get_test_file_name(), Path("volume_test2.txt")))
       throw Exception();
-    get_volume().unlink( Path( "volume_test2.txt" ) );
+    get_volume().unlink(Path("volume_test2.txt"));
   }
 };
 
 
 class VolumeRmDirTest : public VolumeTest {
 public:
-  VolumeRmDirTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeRmDirTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // Test
   void run() {
-    get_volume().mkdir( get_test_dir_name() );
-    if ( !get_volume().rmdir( get_test_dir_name() ) )
+    get_volume().mkdir(get_test_dir_name());
+    if (!get_volume().rmdir(get_test_dir_name()))
       throw Exception();
   }
 };
@@ -430,60 +430,60 @@ public:
 
 class VolumeRmTreeTest : public VolumeTest {
 public:
-  VolumeRmTreeTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeRmTreeTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // Test
   void run() {
-    if ( !get_volume().mkdir( get_test_dir_name() ) )
+    if (!get_volume().mkdir(get_test_dir_name()))
       throw Exception();
 
-    if ( !get_volume().touch ( get_test_dir_name() / get_test_file_name() ) )
+    if (!get_volume().touch(get_test_dir_name() / get_test_file_name()))
       throw Exception();
 
-    if ( !get_volume().rmtree( get_test_dir_name() ) )
+    if (!get_volume().rmtree(get_test_dir_name()))
       throw Exception();
 
-    throw_assert_false( get_volume().exists( get_test_dir_name() ) );
+    throw_assert_false(get_volume().exists(get_test_dir_name()));
   }
 };
 
 
 class VolumeStatVFSTest : public VolumeTest {
 public:
-  VolumeStatVFSTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeStatVFSTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // Test
   void run() {
-    get_volume().mkdir( get_test_dir_name() );
+    get_volume().mkdir(get_test_dir_name());
     struct statvfs stbuf;
-    if ( !get_volume().statvfs( get_test_dir_name(), stbuf ) )
+    if (!get_volume().statvfs(get_test_dir_name(), stbuf))
       throw Exception();
-    throw_assert_gt( stbuf.f_bsize, 0 );
-    throw_assert_gt( stbuf.f_blocks, 0 );
-    throw_assert_gt( stbuf.f_bfree, 0 );
-    throw_assert_ge( stbuf.f_blocks, stbuf.f_bfree );
-    throw_assert_ge( stbuf.f_namemax, 0 );
+    throw_assert_gt(stbuf.f_bsize, 0);
+    throw_assert_gt(stbuf.f_blocks, 0);
+    throw_assert_gt(stbuf.f_bfree, 0);
+    throw_assert_ge(stbuf.f_blocks, stbuf.f_bfree);
+    throw_assert_ge(stbuf.f_namemax, 0);
   }
 };
 
 
 class VolumeTouchTest : public VolumeTest {
 public:
-  VolumeTouchTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeTouchTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // Test
   void run() {
-    if ( !get_volume().touch( get_test_file_name() ) )
+    if (!get_volume().touch(get_test_file_name()))
       throw Exception();
 
-    if ( get_volume().touch( get_test_dir_name() / get_test_file_name() ) ) {
-      throw_assert( false );
+    if (get_volume().touch(get_test_dir_name() / get_test_file_name())) {
+      throw_assert(false);
     }
   }
 };
@@ -491,15 +491,15 @@ public:
 
 class VolumeSymlinkTest : public VolumeTest {
 public:
-  VolumeSymlinkTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeSymlinkTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // Test
   void run() {
-    if ( get_volume().symlink( get_test_file_name(), get_test_link_name() ))
+    if (get_volume().symlink(get_test_file_name(), get_test_link_name()))
       return;
-    else if ( Exception::get_last_error_code() != ENOTSUP )
+    else if (Exception::get_last_error_code() != ENOTSUP)
       throw Exception();
   }
 };
@@ -507,25 +507,25 @@ public:
 
 class VolumeTruncateTest : public VolumeTest {
 public:
-  VolumeTruncateTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeTruncateTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // Test
   void run() {
     {
       auto_Object<File> file
-      = get_volume().open( get_test_file_name(), O_WRONLY );
-      ssize_t write_ret = file->write( "test", 4 );
-      if ( write_ret != 4 ) throw Exception();
-      if ( !file->sync() ) throw Exception();
-      auto_Object<Stat> stbuf = get_volume().getattr( get_test_file_name() );
-      throw_assert_eq( stbuf->get_size(), 4 );
+      = get_volume().open(get_test_file_name(), O_WRONLY);
+      ssize_t write_ret = file->write("test", 4);
+      if (write_ret != 4) throw Exception();
+      if (!file->sync()) throw Exception();
+      auto_Object<Stat> stbuf = get_volume().getattr(get_test_file_name());
+      throw_assert_eq(stbuf->get_size(), 4);
     }
 
-    if ( get_volume().truncate( get_test_file_name(), 0 ) ) {
-      auto_Object<Stat> stbuf = get_volume().getattr( get_test_file_name() );
-      throw_assert_eq( stbuf->get_size(), 0 );
+    if (get_volume().truncate(get_test_file_name(), 0)) {
+      auto_Object<Stat> stbuf = get_volume().getattr(get_test_file_name());
+      throw_assert_eq(stbuf->get_size(), 0);
     } else
       throw Exception();
   }
@@ -534,13 +534,13 @@ public:
 
 class VolumeUnlinkTest : public VolumeTest {
 public:
-  VolumeUnlinkTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeUnlinkTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // Test
   void run() {
-    if ( !get_volume().unlink( get_test_file_name() ) )
+    if (!get_volume().unlink(get_test_file_name()))
       throw Exception();
   }
 };
@@ -548,8 +548,8 @@ public:
 
 class VolumeUtimeTest : public VolumeTest {
 public:
-  VolumeUtimeTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeUtimeTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // Test
@@ -557,10 +557,10 @@ public:
     DateTime atime = DateTime::now(),
              mtime = DateTime::now();
 
-    if ( get_volume().utime( get_test_file_name(), atime, mtime ) ) {
-      auto_Object<Stat> stbuf = get_volume().getattr( get_test_file_name() );
-      throw_assert_le( stbuf->get_atime() - atime, Time::NS_IN_S );
-      throw_assert_le( stbuf->get_mtime() - mtime, Time::NS_IN_S );
+    if (get_volume().utime(get_test_file_name(), atime, mtime)) {
+      auto_Object<Stat> stbuf = get_volume().getattr(get_test_file_name());
+      throw_assert_le(stbuf->get_atime() - atime, Time::NS_IN_S);
+      throw_assert_le(stbuf->get_mtime() - mtime, Time::NS_IN_S);
     } else
       throw Exception();
 
@@ -568,12 +568,12 @@ public:
     mtime = DateTime::now();
     DateTime ctime = DateTime::now();
 
-    if ( get_volume().utime( get_test_file_name(), atime, mtime, ctime ) ) {
-      auto_Object<Stat> stbuf = get_volume().getattr( get_test_file_name() );
-      throw_assert_le( stbuf->get_atime() - atime, Time::NS_IN_S );
-      throw_assert_le( stbuf->get_mtime() - mtime, Time::NS_IN_S );
-      throw_assert_le( stbuf->get_ctime() - ctime, Time::NS_IN_S );
-    } else if ( Exception::get_last_error_code() != ENOTSUP )
+    if (get_volume().utime(get_test_file_name(), atime, mtime, ctime)) {
+      auto_Object<Stat> stbuf = get_volume().getattr(get_test_file_name());
+      throw_assert_le(stbuf->get_atime() - atime, Time::NS_IN_S);
+      throw_assert_le(stbuf->get_mtime() - mtime, Time::NS_IN_S);
+      throw_assert_le(stbuf->get_ctime() - ctime, Time::NS_IN_S);
+    } else if (Exception::get_last_error_code() != ENOTSUP)
       throw Exception();
   }
 };
@@ -581,16 +581,16 @@ public:
 
 class VolumeVolnameTest : public VolumeTest {
 public:
-  VolumeVolnameTest( Volume& volume )
-    : VolumeTest( volume )
+  VolumeVolnameTest(Volume& volume)
+    : VolumeTest(volume)
   { }
 
   // Test
   void run() {
     Path volname;
-    if ( get_volume().volname( get_test_file_name(), volname ) ) {
-      throw_assert_false( volname.empty() );
-    } else if ( Exception::get_last_error_code() != ENOTSUP )
+    if (get_volume().volname(get_test_file_name(), volname)) {
+      throw_assert_false(volname.empty());
+    } else if (Exception::get_last_error_code() != ENOTSUP)
       throw Exception();
   }
 };
@@ -599,78 +599,78 @@ public:
 template <class VolumeType>
 class VolumeTestSuite : public yunit::TestSuite {
 public:
-  VolumeTestSuite( YO_NEW_REF VolumeType* volume = NULL ) {
-    if ( volume == NULL )
+  VolumeTestSuite(YO_NEW_REF VolumeType* volume = NULL) {
+    if (volume == NULL)
       volume = new VolumeType;
 
-    add( "Volume::access", new VolumeAccessTest( *volume ) );
-    add( "Volume::chmod", new VolumeChmodTest( *volume ) );
-    add( "Volume::chown", new VolumeChownTest( *volume ) );
+    add("Volume::access", new VolumeAccessTest(*volume));
+    add("Volume::chmod", new VolumeChmodTest(*volume));
+    add("Volume::chown", new VolumeChownTest(*volume));
 
-    add( "Volume::creat", new VolumeCreatTest( *volume ) );
+    add("Volume::creat", new VolumeCreatTest(*volume));
 
-    add( "Volume::exists", new VolumeExistsTest( *volume ) );
+    add("Volume::exists", new VolumeExistsTest(*volume));
 
-    add( "Volume::getattr", new VolumeGetattrTest( *volume ) );
+    add("Volume::getattr", new VolumeGetattrTest(*volume));
 
     add
     (
       "Volume::getxattr",
-      new VolumeExtendedAttributesGetTest( *volume )
+      new VolumeExtendedAttributesGetTest(*volume)
     );
 
-    add( "Volume::isdir", new VolumeIsDirTest( *volume ) );
-    add( "Volume::isfile", new VolumeIsFileTest( *volume ) );
+    add("Volume::isdir", new VolumeIsDirTest(*volume));
+    add("Volume::isfile", new VolumeIsFileTest(*volume));
 
     add
     (
       "Volume::listxattr",
-      new VolumeExtendedAttributesListTest( *volume )
+      new VolumeExtendedAttributesListTest(*volume)
     );
 
-    add( "Volume::link", new VolumeLinkTest( *volume ) );
+    add("Volume::link", new VolumeLinkTest(*volume));
 
-    add( "Volume::mkdir", new VolumeMkdirTest( *volume ) );
-    add( "Volume::mktree", new VolumeMktreeTest( *volume ) );
+    add("Volume::mkdir", new VolumeMkdirTest(*volume));
+    add("Volume::mktree", new VolumeMktreeTest(*volume));
 
-    add( "Volume::open", new VolumeOpenTest( *volume ) );
+    add("Volume::open", new VolumeOpenTest(*volume));
 
-    add( "Volume::readlink", new VolumeReadLinkTest( *volume ) );
+    add("Volume::readlink", new VolumeReadLinkTest(*volume));
 
-    add( "Volume::realpath", new VolumeRealPathTest( *volume ) );
+    add("Volume::realpath", new VolumeRealPathTest(*volume));
 
     add
     (
       "Volume::removexattr",
-      new VolumeExtendedAttributesRemoveTest( *volume )
+      new VolumeExtendedAttributesRemoveTest(*volume)
     );
 
-    add( "Volume::rename", new VolumeRenameTest( *volume ) );
+    add("Volume::rename", new VolumeRenameTest(*volume));
 
-    add( "Volume::rmdir", new VolumeRmDirTest( *volume ) );
-    add( "Volume::rmtree", new VolumeRmTreeTest( *volume ) );
+    add("Volume::rmdir", new VolumeRmDirTest(*volume));
+    add("Volume::rmtree", new VolumeRmTreeTest(*volume));
 
     add
     (
       "Volume::setxattr",
-      new VolumeExtendedAttributesSetTest( *volume )
+      new VolumeExtendedAttributesSetTest(*volume)
     );
 
-    add( "Volume::statvfs", new VolumeStatVFSTest( *volume ) );
+    add("Volume::statvfs", new VolumeStatVFSTest(*volume));
 
-    add( "Volume::symlink", new VolumeSymlinkTest( *volume ) );
+    add("Volume::symlink", new VolumeSymlinkTest(*volume));
 
-    add( "Volume::touch", new VolumeTouchTest( *volume ) );
+    add("Volume::touch", new VolumeTouchTest(*volume));
 
-    add( "Volume::truncate", new VolumeTruncateTest( *volume ) );
+    add("Volume::truncate", new VolumeTruncateTest(*volume));
 
-    add( "Volume::unlink", new VolumeUnlinkTest( *volume ) );
+    add("Volume::unlink", new VolumeUnlinkTest(*volume));
 
-    add( "Volume::utime", new VolumeUtimeTest( *volume ) );
+    add("Volume::utime", new VolumeUtimeTest(*volume));
 
-    add( "Volume::volname", new VolumeVolnameTest( *volume ) );
+    add("Volume::volname", new VolumeVolnameTest(*volume));
 
-    Volume::dec_ref( *volume );
+    Volume::dec_ref(*volume);
   }
 };
 }

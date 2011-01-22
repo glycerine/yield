@@ -52,25 +52,25 @@ public:
   size_t get_content_length() const {
     return content_length;
   }
-  DateTime get_date_field( const char* name = "Date" ) const;
-  bool get_field( const char* name, OUT iovec& value ) const;
-  string get_field( const char* name, const char* default_val = "" ) const;
+  DateTime get_date_field(const char* name = "Date") const;
+  bool get_field(const char* name, OUT iovec& value) const;
+  string get_field(const char* name, const char* default_val = "") const;
   float get_http_version() const {
     return http_version;
   }
-  bool has_field( const char* name ) const;
+  bool has_field(const char* name) const;
 
-  operator Buffer&();
+  operator Buffer& ();
 
-  string operator[]( const char* name ) {
-    return get_field( name );
+  string operator[](const char* name) {
+    return get_field(name);
   }
 
-  HTTPMessageType& set_field( const char* name, const char* value );
-  HTTPMessageType& set_field( const string& name, const string& value );
-  HTTPMessageType& set_field( const char* name, const iovec& value );
-  HTTPMessageType& set_field( const char* name, const DateTime& value );
-  HTTPMessageType& set_field( const char* name, size_t value );
+  HTTPMessageType& set_field(const char* name, const char* value);
+  HTTPMessageType& set_field(const string& name, const string& value);
+  HTTPMessageType& set_field(const char* name, const iovec& value);
+  HTTPMessageType& set_field(const char* name, const DateTime& value);
+  HTTPMessageType& set_field(const char* name, size_t value);
 
   HTTPMessageType&
   set_field

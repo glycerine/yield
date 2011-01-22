@@ -42,7 +42,7 @@ namespace win32 {
 class AIOQueue : public yield::aio::win32::AIOQueue {
 public:
   // yield::EventQueue
-  bool enqueue( YO_NEW_REF Event& event );
+  bool enqueue(YO_NEW_REF Event& event);
 };
 }
 }

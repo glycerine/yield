@@ -41,18 +41,18 @@ namespace yield {
 namespace marshal {
 class PrettyPrinter : public Marshaller {
 public:
-  PrettyPrinter( std::ostream& os );
+  PrettyPrinter(std::ostream& os);
 
   // Marshaller
-  void write( const Object& key, bool value );
-  void write( const Object& key, double value );
-  void write( const Object& key, int64_t value );
-  void write( const Object& key, const Map& value );
-  void write( const Object& key, const Null& value );
-  void write( const Object& key, const Object& value );
-  void write( const Object& key, const Sequence& value );
-  void write( const Object& key, const char* value, size_t value_len );
-  void write( const Object& key, uint64_t value );
+  void write(const Object& key, bool value);
+  void write(const Object& key, double value);
+  void write(const Object& key, int64_t value);
+  void write(const Object& key, const Map& value);
+  void write(const Object& key, const Null& value);
+  void write(const Object& key, const Object& value);
+  void write(const Object& key, const Sequence& value);
+  void write(const Object& key, const char* value, size_t value_len);
+  void write(const Object& key, uint64_t value);
 
 private:
   std::ostream& os;

@@ -51,9 +51,9 @@ public:
   yield::fs::File& get_file();
 
 protected:
-  AIOCB( yield::fs::File& file );
-  AIOCB( yield::fs::File& file, size_t nbytes, uint64_t offset );
-  AIOCB( yield::fs::File& file, Page& page, size_t nbytes, uint64_t offset );
+  AIOCB(yield::fs::File& file);
+  AIOCB(yield::fs::File& file, size_t nbytes, uint64_t offset);
+  AIOCB(yield::fs::File& file, Page& page, size_t nbytes, uint64_t offset);
 
 #ifdef _WIN32
   static void __stdcall

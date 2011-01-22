@@ -38,8 +38,8 @@
 namespace yield {
 namespace fs {
 namespace win32 {
-File::File( fd_t fd )
-  : fd( fd )
+File::File(fd_t fd)
+  : fd(fd)
 { }
 
 File::~File() {
@@ -47,8 +47,8 @@ File::~File() {
 }
 
 bool File::close() {
-  if ( fd != INVALID_HANDLE_VALUE ) {
-    if ( CloseHandle( fd ) ) {
+  if (fd != INVALID_HANDLE_VALUE) {
+    if (CloseHandle(fd)) {
       fd = INVALID_HANDLE_VALUE;
       return true;
     } else {
@@ -60,42 +60,42 @@ bool File::close() {
 }
 
 bool File::datasync() {
-  return FlushFileBuffers( *this ) != 0;
+  return FlushFileBuffers(*this) != 0;
 }
 
 YO_NEW_REF yield::fs::Stat* File::getattr() {
   BY_HANDLE_FILE_INFORMATION by_handle_file_information;
-  if ( GetFileInformationByHandle( *this, &by_handle_file_information ) != 0 )
-    return new Stat( by_handle_file_information );
+  if (GetFileInformationByHandle(*this, &by_handle_file_information) != 0)
+    return new Stat(by_handle_file_information);
   else
     return NULL;
 }
 
-YO_NEW_REF File::Lock* File::getlk( const Lock& ) {
-  SetLastError( ERROR_NOT_SUPPORTED );
+YO_NEW_REF File::Lock* File::getlk(const Lock&) {
+  SetLastError(ERROR_NOT_SUPPORTED);
   return NULL;
 }
 
 YO_NEW_REF ExtendedAttributes* File::openxattrs() {
-  SetLastError( ERROR_NOT_SUPPORTED );
+  SetLastError(ERROR_NOT_SUPPORTED);
   return NULL;
 }
 
-ssize_t File::pread( void* buf, size_t buflen, uint64_t offset ) {
+ssize_t File::pread(void* buf, size_t buflen, uint64_t offset) {
   OVERLAPPED overlapped;
-  ZeroMemory( &overlapped, sizeof( overlapped ) );
+  ZeroMemory(&overlapped, sizeof(overlapped));
 
-  overlapped.hEvent = CreateEvent( NULL, TRUE, FALSE, NULL );
+  overlapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 
-  if ( overlapped.hEvent != INVALID_HANDLE_VALUE ) {
-    overlapped.Offset = static_cast<DWORD>( offset );
-    overlapped.OffsetHigh = static_cast<DWORD>( offset >> 32 );
+  if (overlapped.hEvent != INVALID_HANDLE_VALUE) {
+    overlapped.Offset = static_cast<DWORD>(offset);
+    overlapped.OffsetHigh = static_cast<DWORD>(offset >> 32);
 
     DWORD dwNumberOfBytesRead;
-    if ( ReadFile( *this, buf, buflen, &dwNumberOfBytesRead, &overlapped ) ) {
-      CloseHandle( overlapped.hEvent );
-      return static_cast<ssize_t>( dwNumberOfBytesRead );
-    } else if ( GetLastError() == ERROR_IO_PENDING ) {
+    if (ReadFile(*this, buf, buflen, &dwNumberOfBytesRead, &overlapped)) {
+      CloseHandle(overlapped.hEvent);
+      return static_cast<ssize_t>(dwNumberOfBytesRead);
+    } else if (GetLastError() == ERROR_IO_PENDING) {
       DWORD dwNumberOfBytesTransferred;
       if
       (
@@ -107,42 +107,42 @@ ssize_t File::pread( void* buf, size_t buflen, uint64_t offset ) {
           TRUE
         )
       ) {
-        CloseHandle( overlapped.hEvent );
-        return static_cast<ssize_t>( dwNumberOfBytesTransferred );
+        CloseHandle(overlapped.hEvent);
+        return static_cast<ssize_t>(dwNumberOfBytesTransferred);
       }
     }
 
-    CloseHandle( overlapped.hEvent );
+    CloseHandle(overlapped.hEvent);
   }
 
   return -1;
 }
 
-ssize_t File::preadv( const iovec* iov, int iovlen, uint64_t offset ) {
-  for ( int iov_i = 0; iov_i < iovlen; iov_i++ ) {
-    if ( !Page::is_page_aligned( iov[iov_i] ) ) {
-      if ( iovlen == 1 )
-        return pread( iov[0].iov_base, iov[0].iov_len, offset );
+ssize_t File::preadv(const iovec* iov, int iovlen, uint64_t offset) {
+  for (int iov_i = 0; iov_i < iovlen; iov_i++) {
+    if (!Page::is_page_aligned(iov[iov_i])) {
+      if (iovlen == 1)
+        return pread(iov[0].iov_base, iov[0].iov_len, offset);
       else {
-        SetLastError( ERROR_INVALID_PARAMETER );
+        SetLastError(ERROR_INVALID_PARAMETER);
         return -1;
       }
     }
   }
 
   OVERLAPPED overlapped;
-  ZeroMemory( &overlapped, sizeof( overlapped ) );
+  ZeroMemory(&overlapped, sizeof(overlapped));
 
-  overlapped.hEvent = CreateEvent( NULL, TRUE, FALSE, NULL );
+  overlapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 
-  if ( overlapped.hEvent != INVALID_HANDLE_VALUE ) {
-    overlapped.Offset = static_cast<DWORD>( offset );
-    overlapped.OffsetHigh = static_cast<DWORD>( offset >> 32 );
+  if (overlapped.hEvent != INVALID_HANDLE_VALUE) {
+    overlapped.Offset = static_cast<DWORD>(offset);
+    overlapped.OffsetHigh = static_cast<DWORD>(offset >> 32);
 
     FILE_SEGMENT_ELEMENT* aSegmentArray = new FILE_SEGMENT_ELEMENT[iovlen];
     DWORD dwNumberOfBytesToRead = 0;
 
-    for ( int iov_i = 0; iov_i < iovlen; iov_i++ ) {
+    for (int iov_i = 0; iov_i < iovlen; iov_i++) {
       aSegmentArray[iov_i].Buffer = iov[iov_i].iov_base;
       dwNumberOfBytesToRead += iov[iov_i].iov_len;
     }
@@ -173,34 +173,34 @@ ssize_t File::preadv( const iovec* iov, int iovlen, uint64_t offset ) {
         )
       ) {
         delete [] aSegmentArray;
-        CloseHandle( overlapped.hEvent );
-        return static_cast<ssize_t>( dwNumberOfBytesTransferred );
+        CloseHandle(overlapped.hEvent);
+        return static_cast<ssize_t>(dwNumberOfBytesTransferred);
       }
     }
 
     delete [] aSegmentArray;
   }
 
-  CloseHandle( overlapped.hEvent );
+  CloseHandle(overlapped.hEvent);
 
   return -1;
 }
 
-ssize_t File::pwrite( const void* buf, size_t buflen, uint64_t offset ) {
+ssize_t File::pwrite(const void* buf, size_t buflen, uint64_t offset) {
   OVERLAPPED overlapped;
-  ZeroMemory( &overlapped, sizeof( overlapped ) );
+  ZeroMemory(&overlapped, sizeof(overlapped));
 
-  overlapped.hEvent = CreateEvent( NULL, TRUE, FALSE, NULL );
+  overlapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 
-  if ( overlapped.hEvent != INVALID_HANDLE_VALUE ) {
-    overlapped.Offset = static_cast<DWORD>( offset );
-    overlapped.OffsetHigh = static_cast<DWORD>( offset >> 32 );
+  if (overlapped.hEvent != INVALID_HANDLE_VALUE) {
+    overlapped.Offset = static_cast<DWORD>(offset);
+    overlapped.OffsetHigh = static_cast<DWORD>(offset >> 32);
 
     DWORD dwNumberOfBytesWritten;
-    if ( WriteFile( *this, buf, buflen, &dwNumberOfBytesWritten, &overlapped ) ) {
-      CloseHandle( overlapped.hEvent );
-      return static_cast<ssize_t>( dwNumberOfBytesWritten );
-    } else if ( GetLastError() == ERROR_IO_PENDING ) {
+    if (WriteFile(*this, buf, buflen, &dwNumberOfBytesWritten, &overlapped)) {
+      CloseHandle(overlapped.hEvent);
+      return static_cast<ssize_t>(dwNumberOfBytesWritten);
+    } else if (GetLastError() == ERROR_IO_PENDING) {
       DWORD dwNumberOfBytesTransferred;
       if
       (
@@ -212,50 +212,50 @@ ssize_t File::pwrite( const void* buf, size_t buflen, uint64_t offset ) {
           TRUE
         )
       ) {
-        CloseHandle( overlapped.hEvent );
-        return static_cast<ssize_t>( dwNumberOfBytesTransferred );
+        CloseHandle(overlapped.hEvent);
+        return static_cast<ssize_t>(dwNumberOfBytesTransferred);
       }
     }
 
-    CloseHandle( overlapped.hEvent );
+    CloseHandle(overlapped.hEvent);
   }
 
   return -1;
 }
 
-ssize_t File::pwritev( const iovec* iov, int iovlen, uint64_t offset ) {
-  for ( int iov_i = 0; iov_i < iovlen; iov_i++ ) {
-    if ( !Page::is_page_aligned( iov[iov_i] ) ) {
-      if ( iovlen == 1 )
-        return pwrite( iov[0].iov_base, iov[0].iov_len, offset );
+ssize_t File::pwritev(const iovec* iov, int iovlen, uint64_t offset) {
+  for (int iov_i = 0; iov_i < iovlen; iov_i++) {
+    if (!Page::is_page_aligned(iov[iov_i])) {
+      if (iovlen == 1)
+        return pwrite(iov[0].iov_base, iov[0].iov_len, offset);
       else {
         string buffer;
-        for ( int iov_i = 0; iov_i < iovlen; iov_i++ ) {
+        for (int iov_i = 0; iov_i < iovlen; iov_i++) {
           buffer.append
           (
-            static_cast<const char*>( iov[iov_i].iov_base ),
+            static_cast<const char*>(iov[iov_i].iov_base),
             iov[iov_i].iov_len
           );
         }
 
-        return pwrite( buffer.c_str(), buffer.size(), offset );
+        return pwrite(buffer.c_str(), buffer.size(), offset);
       }
     }
   }
 
   OVERLAPPED overlapped;
-  ZeroMemory( &overlapped, sizeof( overlapped ) );
+  ZeroMemory(&overlapped, sizeof(overlapped));
 
-  overlapped.hEvent = CreateEvent( NULL, TRUE, FALSE, NULL );
+  overlapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 
-  if ( overlapped.hEvent != INVALID_HANDLE_VALUE ) {
-    overlapped.Offset = static_cast<DWORD>( offset );
-    overlapped.OffsetHigh = static_cast<DWORD>( offset >> 32 );
+  if (overlapped.hEvent != INVALID_HANDLE_VALUE) {
+    overlapped.Offset = static_cast<DWORD>(offset);
+    overlapped.OffsetHigh = static_cast<DWORD>(offset >> 32);
 
     FILE_SEGMENT_ELEMENT* aSegmentArray = new FILE_SEGMENT_ELEMENT[iovlen];
     DWORD dwNumberOfBytesToWrite = 0;
 
-    for ( int iov_i = 0; iov_i < iovlen; iov_i++ ) {
+    for (int iov_i = 0; iov_i < iovlen; iov_i++) {
       aSegmentArray[iov_i].Buffer = iov[iov_i].iov_base;
       dwNumberOfBytesToWrite += iov[iov_i].iov_len;
     }
@@ -271,10 +271,10 @@ ssize_t File::pwritev( const iovec* iov, int iovlen, uint64_t offset ) {
         &overlapped
       )
     ) {
-      CloseHandle( overlapped.hEvent );
+      CloseHandle(overlapped.hEvent);
       delete [] aSegmentArray;
-      return static_cast<ssize_t>( dwNumberOfBytesToWrite );
-    } else if ( GetLastError() == ERROR_IO_PENDING ) {
+      return static_cast<ssize_t>(dwNumberOfBytesToWrite);
+    } else if (GetLastError() == ERROR_IO_PENDING) {
       DWORD dwNumberOfBytesTransferred;
       if
       (
@@ -286,67 +286,67 @@ ssize_t File::pwritev( const iovec* iov, int iovlen, uint64_t offset ) {
           TRUE
         )
       ) {
-        CloseHandle( overlapped.hEvent );
+        CloseHandle(overlapped.hEvent);
         delete [] aSegmentArray;
-        return static_cast<ssize_t>( dwNumberOfBytesTransferred );
+        return static_cast<ssize_t>(dwNumberOfBytesTransferred);
       }
     }
 
     delete [] aSegmentArray;
   }
 
-  CloseHandle( overlapped.hEvent );
+  CloseHandle(overlapped.hEvent);
 
   return -1;
 }
 
-ssize_t File::read( void* buf, size_t buflen ) {
-  return pread( buf, buflen, tell() );
+ssize_t File::read(void* buf, size_t buflen) {
+  return pread(buf, buflen, tell());
 }
 
-ssize_t File::readv( const iovec* iov, int iovlen ) {
-  return preadv( iov, iovlen, tell() );
+ssize_t File::readv(const iovec* iov, int iovlen) {
+  return preadv(iov, iovlen, tell());
 }
 
-uint64_t File::seek( int64_t offset, uint8_t whence ) {
+uint64_t File::seek(int64_t offset, uint8_t whence) {
   LARGE_INTEGER liOffset;
   liOffset.QuadPart = offset;
 
   liOffset.LowPart
-  = SetFilePointer( *this, liOffset.LowPart, &liOffset.HighPart, whence );
+  = SetFilePointer(*this, liOffset.LowPart, &liOffset.HighPart, whence);
 
-  if ( liOffset.LowPart != INVALID_SET_FILE_POINTER )
+  if (liOffset.LowPart != INVALID_SET_FILE_POINTER)
     return liOffset.QuadPart;
   else
-    return static_cast<uint64_t>( -1 );
+    return static_cast<uint64_t>(-1);
 }
 
-bool File::set_blocking_mode( bool ) {
-  SetLastError( ERROR_NOT_SUPPORTED );
+bool File::set_blocking_mode(bool) {
+  SetLastError(ERROR_NOT_SUPPORTED);
   return false;
 }
 
-bool File::setlk( const Lock& lock ) {
-  return setlk( lock, false );
+bool File::setlk(const Lock& lock) {
+  return setlk(lock, false);
 }
 
-bool File::setlkw( const Lock& lock ) {
-  return setlk( lock, true );
+bool File::setlkw(const Lock& lock) {
+  return setlk(lock, true);
 }
 
-bool File::setlk( const Lock& lock, bool wait ) {
+bool File::setlk(const Lock& lock, bool wait) {
   DWORD dwFlags = 0;
-  if ( lock.is_exclusive() ) dwFlags |= LOCKFILE_EXCLUSIVE_LOCK;
-  if ( !wait ) dwFlags |= LOCKFILE_FAIL_IMMEDIATELY;
+  if (lock.is_exclusive()) dwFlags |= LOCKFILE_EXCLUSIVE_LOCK;
+  if (!wait) dwFlags |= LOCKFILE_FAIL_IMMEDIATELY;
 
   OVERLAPPED overlapped;
-  ZeroMemory( &overlapped, sizeof( overlapped ) );
+  ZeroMemory(&overlapped, sizeof(overlapped));
 
-  overlapped.hEvent = CreateEvent( NULL, TRUE, FALSE, NULL );
+  overlapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 
-  if ( overlapped.hEvent != INVALID_HANDLE_VALUE ) {
-    overlapped.Offset = static_cast<DWORD>( lock.get_start() );
-    overlapped.OffsetHigh = static_cast<DWORD>( lock.get_start() >> 32 );
+  if (overlapped.hEvent != INVALID_HANDLE_VALUE) {
+    overlapped.Offset = static_cast<DWORD>(lock.get_start());
+    overlapped.OffsetHigh = static_cast<DWORD>(lock.get_start() >> 32);
 
     if
     (
@@ -355,8 +355,8 @@ bool File::setlk( const Lock& lock, bool wait ) {
         *this,
         dwFlags,
         0,
-        static_cast<DWORD>( lock.get_len() ),
-        static_cast<DWORD>( lock.get_len() >> 32 ),
+        static_cast<DWORD>(lock.get_len()),
+        static_cast<DWORD>(lock.get_len() >> 32),
         &overlapped
       )
     ) {
@@ -376,42 +376,42 @@ bool File::setlk( const Lock& lock, bool wait ) {
 }
 
 bool File::sync() {
-  return FlushFileBuffers( *this ) != 0;
+  return FlushFileBuffers(*this) != 0;
 }
 
 uint64_t File::tell() {
   ULARGE_INTEGER uliFilePointer;
   LONG lFilePointerHigh = 0;
   uliFilePointer.LowPart
-  = SetFilePointer( *this, 0, &lFilePointerHigh, FILE_CURRENT );
+  = SetFilePointer(*this, 0, &lFilePointerHigh, FILE_CURRENT);
   uliFilePointer.HighPart = lFilePointerHigh;
-  return static_cast<uint64_t>( uliFilePointer.QuadPart );
+  return static_cast<uint64_t>(uliFilePointer.QuadPart);
 }
 
-bool File::truncate( uint64_t new_size ) {
-  if ( seek( new_size, SEEK_SET ) == new_size )
-    return SetEndOfFile( *this ) != 0;
+bool File::truncate(uint64_t new_size) {
+  if (seek(new_size, SEEK_SET) == new_size)
+    return SetEndOfFile(*this) != 0;
   else
     return false;
 }
 
-bool File::unlk( const Lock& lock ) {
+bool File::unlk(const Lock& lock) {
   return UnlockFile
          (
            *this,
-           static_cast<DWORD>( lock.get_start() ),
-           static_cast<DWORD>( lock.get_start() >> 32 ),
-           static_cast<DWORD>( lock.get_len() ),
-           static_cast<DWORD>( lock.get_len() >> 32 )
+           static_cast<DWORD>(lock.get_start()),
+           static_cast<DWORD>(lock.get_start() >> 32),
+           static_cast<DWORD>(lock.get_len()),
+           static_cast<DWORD>(lock.get_len() >> 32)
          ) == TRUE;
 }
 
-ssize_t File::write( const void* buf, size_t buflen ) {
-  return pwrite( buf, buflen, tell() );
+ssize_t File::write(const void* buf, size_t buflen) {
+  return pwrite(buf, buflen, tell());
 }
 
-ssize_t File::writev( const iovec* iov, int iovlen ) {
-  return pwritev( iov, iovlen, tell() );
+ssize_t File::writev(const iovec* iov, int iovlen) {
+  return pwritev(iov, iovlen, tell());
 }
 }
 }

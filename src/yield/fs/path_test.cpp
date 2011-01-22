@@ -39,21 +39,21 @@
 #endif
 
 
-TEST_SUITE( Path );
+TEST_SUITE(Path);
 
 namespace yield {
 namespace fs {
 using std::pair;
 
 
-const static Path TEST_DIR_NAME( "path_test" );
-const static Path TEST_FILE_NAME( "path_test.txt" );
+const static Path TEST_DIR_NAME("path_test");
+const static Path TEST_FILE_NAME("path_test.txt");
 
 
-TEST( Path, copy ) {
-  Path path_copy( TEST_FILE_NAME );
-  throw_assert_eq( path_copy, TEST_FILE_NAME );
-  throw_assert_eq( TEST_FILE_NAME, path_copy );
+TEST(Path, copy) {
+  Path path_copy(TEST_FILE_NAME);
+  throw_assert_eq(path_copy, TEST_FILE_NAME);
+  throw_assert_eq(TEST_FILE_NAME, path_copy);
 }
 
 //TEST( Path, cast )
@@ -67,10 +67,10 @@ TEST( Path, copy ) {
 //#endif
 //}
 
-TEST( Path, empty ) {
-  throw_assert_false( TEST_FILE_NAME.empty() );
+TEST(Path, empty) {
+  throw_assert_false(TEST_FILE_NAME.empty());
   Path empty_path;
-  throw_assert( empty_path.empty() );
+  throw_assert(empty_path.empty());
 }
 
 //TEST( Path, ends_with_separator )
@@ -105,88 +105,88 @@ TEST( Path, empty ) {
 //  }
 //}
 
-TEST( Path, equals ) {
-  Path path( TEST_FILE_NAME );
-  throw_assert_eq( path, TEST_FILE_NAME );
+TEST(Path, equals) {
+  Path path(TEST_FILE_NAME);
+  throw_assert_eq(path, TEST_FILE_NAME);
 }
 
-TEST( Path, join ) {
+TEST(Path, join) {
   // Empty left, non-empty right
   {
     Path joined = Path() / TEST_FILE_NAME;
-    throw_assert_eq( joined, TEST_FILE_NAME );
+    throw_assert_eq(joined, TEST_FILE_NAME);
   }
 
   // Non-empty left, empty right
   {
     Path joined = TEST_DIR_NAME / Path();
-    throw_assert_eq( joined, TEST_DIR_NAME );
+    throw_assert_eq(joined, TEST_DIR_NAME);
   }
 
   // Non-empty left, non-empty right
   {
     Path joined = TEST_DIR_NAME / TEST_FILE_NAME;
 #ifdef _WIN32
-    throw_assert_eq( joined, L"path_test\\path_test.txt" );
+    throw_assert_eq(joined, L"path_test\\path_test.txt");
 #else
-    throw_assert_eq( joined, "path_test/path_test.txt" );
+    throw_assert_eq(joined, "path_test/path_test.txt");
 #endif
   }
 }
 
-TEST( Path, split_head_tail ) {
+TEST(Path, split_head_tail) {
   {
-    Path path( "head" );
+    Path path("head");
     pair<Path, Path> split_path = path.split();
-    throw_assert( split_path.first.empty() );
-    throw_assert_eq( split_path.second, Path( "head" ) );
+    throw_assert(split_path.first.empty());
+    throw_assert_eq(split_path.second, Path("head"));
   }
 
   {
-    Path path = Path( "head" ) / Path( "tail" );
+    Path path = Path("head") / Path("tail");
     pair<Path, Path> split_path = path.split();
-    throw_assert_eq( split_path.first, Path( "head" ) );
-    throw_assert_eq( split_path.second, Path( "tail" ) );
+    throw_assert_eq(split_path.first, Path("head"));
+    throw_assert_eq(split_path.second, Path("tail"));
   }
 
   {
-    Path path = Path( "head1" ) / Path( "head2" ) / Path( "tail" );
+    Path path = Path("head1") / Path("head2") / Path("tail");
     pair<Path, Path> split_path = path.split();
-    throw_assert_eq( split_path.first, ( Path( "head1" ) / Path( "head2" ) ) );
-    throw_assert_eq( split_path.second, Path( "tail" ) );
+    throw_assert_eq(split_path.first, (Path("head1") / Path("head2")));
+    throw_assert_eq(split_path.second, Path("tail"));
   }
 }
 
-TEST( Path, split_parts ) {
-  Path path = Path( "path1" ) / Path( "path2" ) / Path( "path3" );
+TEST(Path, split_parts) {
+  Path path = Path("path1") / Path("path2") / Path("path3");
   vector<Path> path_parts;
-  path.split( path_parts );
-  throw_assert_eq( path_parts.size(), 3 );
-  throw_assert_eq( path_parts[0], Path( "path1" ) );
-  throw_assert_eq( path_parts[1], Path( "path2" ) );
-  throw_assert_eq( path_parts[2], Path( "path3" ) );
+  path.split(path_parts);
+  throw_assert_eq(path_parts.size(), 3);
+  throw_assert_eq(path_parts[0], Path("path1"));
+  throw_assert_eq(path_parts[1], Path("path2"));
+  throw_assert_eq(path_parts[2], Path("path3"));
 }
 
-TEST( Path, splitext ) {
+TEST(Path, splitext) {
   {
-    Path path( "test" );
+    Path path("test");
     pair<Path, Path> splitext_path = path.splitext();
-    throw_assert_eq( splitext_path.first, Path( "test" ) );
-    throw_assert( splitext_path.second.empty() );
+    throw_assert_eq(splitext_path.first, Path("test"));
+    throw_assert(splitext_path.second.empty());
   }
 
   {
-    Path path( "test.txt" );
+    Path path("test.txt");
     pair<Path, Path> splitext_path = path.splitext();
-    throw_assert_eq( splitext_path.first, Path( "test" ) );
-    throw_assert_eq( splitext_path.second, Path( ".txt" ) );
+    throw_assert_eq(splitext_path.first, Path("test"));
+    throw_assert_eq(splitext_path.second, Path(".txt"));
   }
 
   {
-    Path path( "test.txt.txt" );
+    Path path("test.txt.txt");
     pair<Path, Path> splitext_path = path.splitext();
-    throw_assert_eq( splitext_path.first, Path( "test.txt" ) );
-    throw_assert_eq( splitext_path.second, Path( ".txt" ) );
+    throw_assert_eq(splitext_path.first, Path("test.txt"));
+    throw_assert_eq(splitext_path.second, Path(".txt"));
   }
 }
 }

@@ -47,7 +47,7 @@ namespace yield {
 namespace net {
 namespace sockets {
 namespace ssl {
-const char* SSLContext::TEST_PEM_CERTIFICATE =\
+const char* SSLContext::TEST_PEM_CERTIFICATE = \
     "-----BEGIN CERTIFICATE-----\n"
     "MIICmTCCAgICAQYwDQYJKoZIhvcNAQEFBQAwgZAxCzAJBgNVBAYTAkVVMREwDwYD\n"
     "VQQIEwhYdHJlZW1GUzERMA8GA1UEBxMIWHRyZWVtRlMxETAPBgNVBAoTCFh0cmVl\n"
@@ -65,7 +65,7 @@ const char* SSLContext::TEST_PEM_CERTIFICATE =\
     "FVHbqso+oavB+jOgu8fWMQ6jNsT4Ql0BgIzf5Lc08m/kIodnES92qNHOdixg\n"
     "-----END CERTIFICATE-----\n";
 
-const char* SSLContext::TEST_PEM_PRIVATE_KEY =\
+const char* SSLContext::TEST_PEM_PRIVATE_KEY = \
     "-----BEGIN RSA PRIVATE KEY-----\n"
     "MIICXAIBAAKBgQDCjEmDQzzp4+FtNw31mJM6D85EDW8mhrX1xWBRKd4Tr3fibYjY\n"
     "VgkoXX03QmIqmtA4Rbbu7cqkq8grOdX7a2LcZ3tNaByS9C1wFc5QVqXd2ZyKj7O7\n"
@@ -85,12 +85,12 @@ const char* SSLContext::TEST_PEM_PRIVATE_KEY =\
 const char* SSLContext::TEST_PEM_PRIVATE_KEY_PASSPHRASE = "passphrase";
 
 
-SSLContext::SSLContext( SSL_CTX& ctx )
-  : ctx( ctx )
+SSLContext::SSLContext(SSL_CTX& ctx)
+  : ctx(ctx)
 { }
 
-SSLContext& SSLContext::create( const SSL_METHOD* method ) {
-  return *new SSLContext( createSSL_CTX( method ) );
+SSLContext& SSLContext::create(const SSL_METHOD* method) {
+  return *new SSLContext(createSSL_CTX(method));
 }
 
 SSLContext&
@@ -101,17 +101,17 @@ SSLContext::create
   const Path& pem_private_key_file_path,
   const string& pem_private_key_passphrase
 ) {
-  SSL_CTX& ctx = createSSL_CTX( method );
+  SSL_CTX& ctx = createSSL_CTX(method);
 
   try {
-    use_pem_certificate( ctx, pem_certificate_file_path );
-    use_pem_private_key( ctx, pem_private_key_file_path, pem_private_key_passphrase );
-  } catch ( ... ) {
-    SSL_CTX_free( &ctx );
+    use_pem_certificate(ctx, pem_certificate_file_path);
+    use_pem_private_key(ctx, pem_private_key_file_path, pem_private_key_passphrase);
+  } catch (...) {
+    SSL_CTX_free(&ctx);
     throw;
   }
 
-  return *new SSLContext( ctx );
+  return *new SSLContext(ctx);
 }
 
 SSLContext&
@@ -125,9 +125,9 @@ SSLContext::create
   return create
          (
            method,
-           string( pem_certificate ),
-           string( pem_private_key ),
-           string( pem_private_key_passphrase )
+           string(pem_certificate),
+           string(pem_private_key),
+           string(pem_private_key_passphrase)
          );
 }
 
@@ -139,17 +139,17 @@ SSLContext::create
   const string& pem_private_key,
   const string& pem_private_key_passphrase
 ) {
-  SSL_CTX& ctx = createSSL_CTX( method );
+  SSL_CTX& ctx = createSSL_CTX(method);
 
   try {
-    use_pem_certificate( ctx, pem_certificate );
-    use_pem_private_key( ctx, pem_private_key, pem_private_key_passphrase );
-  } catch ( ... ) {
-    SSL_CTX_free( &ctx );
+    use_pem_certificate(ctx, pem_certificate);
+    use_pem_private_key(ctx, pem_private_key, pem_private_key_passphrase);
+  } catch (...) {
+    SSL_CTX_free(&ctx);
     throw;
   }
 
-  return *new SSLContext( ctx );
+  return *new SSLContext(ctx);
 }
 
 SSLContext& SSLContext::create
@@ -158,51 +158,51 @@ SSLContext& SSLContext::create
   const Path& pkcs12_file_path,
   const string& pkcs12_passphrase
 ) {
-  SSL_CTX& ctx = createSSL_CTX( method );
+  SSL_CTX& ctx = createSSL_CTX(method);
 
   try {
-    use_pkcs12( ctx, pkcs12_file_path, pkcs12_passphrase );
-  } catch ( ... ) {
-    SSL_CTX_free( &ctx );
+    use_pkcs12(ctx, pkcs12_file_path, pkcs12_passphrase);
+  } catch (...) {
+    SSL_CTX_free(&ctx);
     throw;
   }
 
-  return *new SSLContext( ctx );
+  return *new SSLContext(ctx);
 }
 
 SSLContext::~SSLContext() {
-  SSL_CTX_free( &ctx );
+  SSL_CTX_free(&ctx);
 }
 
-SSL_CTX& SSLContext::createSSL_CTX( const SSL_METHOD* method ) {
+SSL_CTX& SSLContext::createSSL_CTX(const SSL_METHOD* method) {
   SSL_library_init();
   OpenSSL_add_all_algorithms();
 
   SSL_CTX* ctx;
 #if OPENSSL_VERSION_NUMBER >= 0x10000000L
-  ctx = SSL_CTX_new( method );
+  ctx = SSL_CTX_new(method);
 #else
-  ctx = SSL_CTX_new( const_cast<SSL_METHOD*>( method ) );
+  ctx = SSL_CTX_new(const_cast<SSL_METHOD*>(method));
 #endif
 
-  if ( ctx != NULL ) {
+  if (ctx != NULL) {
 #ifdef SSL_OP_NO_TICKET
-    SSL_CTX_set_options( ctx, SSL_OP_ALL|SSL_OP_NO_TICKET );
+    SSL_CTX_set_options(ctx, SSL_OP_ALL | SSL_OP_NO_TICKET);
 #else
-    SSL_CTX_set_options( ctx, SSL_OP_ALL );
+    SSL_CTX_set_options(ctx, SSL_OP_ALL);
 #endif
-    SSL_CTX_set_verify( ctx, SSL_VERIFY_NONE, NULL );
+    SSL_CTX_set_verify(ctx, SSL_VERIFY_NONE, NULL);
     return *ctx;
   } else
     throw SSLException();
 }
 
-int SSLContext::pem_password_callback( char* buf, int size, int, void* userdata ) {
+int SSLContext::pem_password_callback(char* buf, int size, int, void* userdata) {
   const string* pem_password
-  = static_cast<const string*>( userdata );
-  if ( size > static_cast<int>( pem_password->size() ) )
-    size = static_cast<int>( pem_password->size() );
-  memcpy_s( buf, size, pem_password->c_str(), size );
+  = static_cast<const string*>(userdata);
+  if (size > static_cast<int>(pem_password->size()))
+    size = static_cast<int>(pem_password->size());
+  memcpy_s(buf, size, pem_password->c_str(), size);
   return size;
 }
 
@@ -215,21 +215,21 @@ SSLContext::use_pem_certificate
   BIO* bio
   = BIO_new_mem_buf
     (
-      const_cast<char*>( certificate.c_str() ),
-      static_cast<int>( certificate.size() )
+      const_cast<char*>(certificate.c_str()),
+      static_cast<int>(certificate.size())
     );
 
-  if ( bio != NULL ) {
-    X509* cert = PEM_read_bio_X509( bio, NULL, NULL, NULL );
-    if ( cert != NULL ) {
-      if ( SSL_CTX_use_certificate( &ctx, cert ) == 1 ) {
-        BIO_free( bio );
+  if (bio != NULL) {
+    X509* cert = PEM_read_bio_X509(bio, NULL, NULL, NULL);
+    if (cert != NULL) {
+      if (SSL_CTX_use_certificate(&ctx, cert) == 1) {
+        BIO_free(bio);
         return;
       } else
-        X509_free( cert );
+        X509_free(cert);
     }
 
-    BIO_free( bio );
+    BIO_free(bio);
   }
 
   throw SSLException();
@@ -243,7 +243,7 @@ SSLContext::use_pem_certificate
 ) {
 #ifdef _WIN32
   // Need to get a string on Windows, because SSL doesn't support wide paths
-  string file_path( _file_path );
+  string file_path(_file_path);
 #else
   const string& file_path = _file_path;
 #endif
@@ -272,29 +272,29 @@ SSLContext::use_pem_private_key
   BIO* bio
   = BIO_new_mem_buf
     (
-      const_cast<char*>( key.c_str() ),
-      static_cast<int>( key.size() )
+      const_cast<char*>(key.c_str()),
+      static_cast<int>(key.size())
     );
 
-  if ( bio != NULL ) {
+  if (bio != NULL) {
     EVP_PKEY* pkey
     = PEM_read_bio_PrivateKey
       (
         bio,
         NULL,
         pem_password_callback,
-        const_cast<string*>( &passphrase )
+        const_cast<string*>(&passphrase)
       );
 
-    if ( pkey != NULL ) {
-      if ( SSL_CTX_use_PrivateKey( &ctx, pkey ) == 1 ) {
-        BIO_free( bio );
+    if (pkey != NULL) {
+      if (SSL_CTX_use_PrivateKey(&ctx, pkey) == 1) {
+        BIO_free(bio);
         return;
       }
 
     }
 
-    BIO_free( bio );
+    BIO_free(bio);
   }
 
   throw SSLException();
@@ -308,16 +308,16 @@ SSLContext::use_pem_private_key
   const string& passphrase
 ) {
 #ifdef _WIN32
-  string file_path( _file_path );
+  string file_path(_file_path);
 #else
   const string& file_path = _file_path;
 #endif
 
-  SSL_CTX_set_default_passwd_cb( &ctx, pem_password_callback );
-  SSL_CTX_set_default_passwd_cb_userdata( &ctx, const_cast<string*>( &passphrase ) );
-  if ( SSL_CTX_use_PrivateKey_file( &ctx, file_path.c_str(), SSL_FILETYPE_PEM ) ) {
-    SSL_CTX_set_default_passwd_cb( &ctx, NULL );
-    SSL_CTX_set_default_passwd_cb_userdata( &ctx, NULL );
+  SSL_CTX_set_default_passwd_cb(&ctx, pem_password_callback);
+  SSL_CTX_set_default_passwd_cb_userdata(&ctx, const_cast<string*>(&passphrase));
+  if (SSL_CTX_use_PrivateKey_file(&ctx, file_path.c_str(), SSL_FILETYPE_PEM)) {
+    SSL_CTX_set_default_passwd_cb(&ctx, NULL);
+    SSL_CTX_set_default_passwd_cb_userdata(&ctx, NULL);
   } else
     throw SSLException();
 }
@@ -330,37 +330,37 @@ SSLContext::use_pkcs12
   const string& passphrase
 ) {
 #ifdef _WIN32
-  string file_path( _file_path );
+  string file_path(_file_path);
 #else
   const string& file_path = _file_path;
 #endif
 
-  BIO* bio = BIO_new_file( file_path.c_str(), "rb" );
-  if ( bio != NULL ) {
-    PKCS12* p12 = d2i_PKCS12_bio( bio, NULL );
-    if ( p12 != NULL ) {
+  BIO* bio = BIO_new_file(file_path.c_str(), "rb");
+  if (bio != NULL) {
+    PKCS12* p12 = d2i_PKCS12_bio(bio, NULL);
+    if (p12 != NULL) {
       EVP_PKEY* pkey = NULL;
       X509* cert = NULL;
-      STACK_OF( X509 )* ca = NULL;
-      if ( PKCS12_parse( p12, passphrase.c_str(), &pkey, &cert, &ca ) ) {
-        if ( pkey != NULL && cert != NULL && ca != NULL ) {
-          SSL_CTX_use_certificate( &ctx, cert );
-          SSL_CTX_use_PrivateKey( &ctx, pkey );
+      STACK_OF(X509)* ca = NULL;
+      if (PKCS12_parse(p12, passphrase.c_str(), &pkey, &cert, &ca)) {
+        if (pkey != NULL && cert != NULL && ca != NULL) {
+          SSL_CTX_use_certificate(&ctx, cert);
+          SSL_CTX_use_PrivateKey(&ctx, pkey);
 
-          X509_STORE* store = SSL_CTX_get_cert_store( &ctx );
-          for ( int i = 0; i < sk_X509_num( ca ); i++ ) {
-            X509* store_cert = sk_X509_value( ca, i );
-            X509_STORE_add_cert( store, store_cert );
+          X509_STORE* store = SSL_CTX_get_cert_store(&ctx);
+          for (int i = 0; i < sk_X509_num(ca); i++) {
+            X509* store_cert = sk_X509_value(ca, i);
+            X509_STORE_add_cert(store, store_cert);
           }
 
-          BIO_free( bio );
+          BIO_free(bio);
 
           return;
         }
       }
     }
 
-    BIO_free( bio );
+    BIO_free(bio);
   }
 
   throw SSLException();

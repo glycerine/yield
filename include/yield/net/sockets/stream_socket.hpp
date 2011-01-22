@@ -44,20 +44,20 @@ public:
   static int TYPE; // SOCK_STREAM
 
 public:
-  StreamSocket( int domain, int protocol = PROTOCOL_DEFAULT )
-    : Socket( domain, TYPE, protocol )
+  StreamSocket(int domain, int protocol = PROTOCOL_DEFAULT)
+    : Socket(domain, TYPE, protocol)
   { }
 
-  StreamSocket( int domain, int protocol, socket_t socket_ )
-    : Socket( domain, TYPE, protocol, socket_ )
+  StreamSocket(int domain, int protocol, socket_t socket_)
+    : Socket(domain, TYPE, protocol, socket_)
   { }
 
   YO_NEW_REF StreamSocket* accept() {
     SocketAddress peername;
-    return accept( peername );
+    return accept(peername);
   }
 
-  virtual YO_NEW_REF StreamSocket* accept( SocketAddress& peername );
+  virtual YO_NEW_REF StreamSocket* accept(SocketAddress& peername);
 
   static YO_NEW_REF StreamSocket*
   create
@@ -65,15 +65,15 @@ public:
     int domain,
     int protocol = PROTOCOL_DEFAULT
   ) {
-    socket_t socket_ = Socket::create( domain, TYPE, protocol );
-    if ( socket_ != static_cast<socket_t>( -1 ) )
-      return new StreamSocket( domain, protocol, socket_ );
+    socket_t socket_ = Socket::create(domain, TYPE, protocol);
+    if (socket_ != static_cast<socket_t>(-1))
+      return new StreamSocket(domain, protocol, socket_);
     else
       return NULL;
   }
 
   virtual YO_NEW_REF StreamSocket* dup() {
-    return create( get_domain(), get_protocol() );
+    return create(get_domain(), get_protocol());
   }
 
   virtual bool listen();
@@ -82,12 +82,12 @@ public:
 
   // Object
   StreamSocket& inc_ref() {
-    return Object::inc_ref( *this );
+    return Object::inc_ref(*this);
   }
 
 protected:
-  virtual YO_NEW_REF StreamSocket* dup2( socket_t socket_ ) {
-    return new StreamSocket( get_domain(), get_protocol(), socket_ );
+  virtual YO_NEW_REF StreamSocket* dup2(socket_t socket_) {
+    return new StreamSocket(get_domain(), get_protocol(), socket_);
   }
 };
 }

@@ -47,7 +47,7 @@ public:
   ~SEDAStageScheduler();
 
   // StageScheduler
-  void schedule( Stage&, ConcurrencyLevel );
+  void schedule(Stage&, ConcurrencyLevel);
 
 private:
   class SEDAStage;

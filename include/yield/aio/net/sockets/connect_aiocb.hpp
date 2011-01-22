@@ -76,12 +76,12 @@ public:
 
   // yield::aio::AIOCB
 #ifdef _WIN32
-  bool issue( yield::aio::win32::AIOQueue& );
+  bool issue(yield::aio::win32::AIOQueue&);
 #endif
   RetryStatus retry();
 
 private:
-  connectAIOCB( connectAIOCB& other );
+  connectAIOCB(connectAIOCB& other);
 
 private:
   yield::net::sockets::SocketAddress& peername;

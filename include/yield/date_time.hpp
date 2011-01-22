@@ -53,35 +53,35 @@ public:
   const static DateTime INVALID_DATE_TIME;
 
 public:
-  DateTime( uint64_t unix_date_time_ns )
-    : unix_date_time_ns( unix_date_time_ns )
+  DateTime(uint64_t unix_date_time_ns)
+    : unix_date_time_ns(unix_date_time_ns)
   { }
 
-  DateTime( double unix_date_time_s )
+  DateTime(double unix_date_time_s)
     : unix_date_time_ns
     (
       static_cast<uint64_t>
       (
-        unix_date_time_s * static_cast<double>( Time::NS_IN_S )
+        unix_date_time_s* static_cast<double>(Time::NS_IN_S)
       )
     )
   { }
 
-  explicit DateTime( time_t unix_date_time_s )
-    : unix_date_time_ns( unix_date_time_s * Time::NS_IN_S )
+  explicit DateTime(time_t unix_date_time_s)
+    : unix_date_time_ns(unix_date_time_s* Time::NS_IN_S)
   { }
 
-  DateTime( const DateTime& other )
-    : unix_date_time_ns( other.unix_date_time_ns )
+  DateTime(const DateTime& other)
+    : unix_date_time_ns(other.unix_date_time_ns)
   { }
 
 #ifdef _WIN32
-  DateTime( const FILETIME& );
-  DateTime( const FILETIME* );
-  DateTime( const SYSTEMTIME&, bool local = true );
+  DateTime(const FILETIME&);
+  DateTime(const FILETIME*);
+  DateTime(const SYSTEMTIME&, bool local = true);
 #else
-  DateTime( const timeval& );
-  DateTime( const tm&, bool local = true );
+  DateTime(const timeval&);
+  DateTime(const tm&, bool local = true);
 #endif
 
   DateTime
@@ -104,8 +104,8 @@ public:
 #endif
 
   double as_unix_date_time_ms() const {
-    return static_cast<double>( unix_date_time_ns ) /
-           static_cast<double>( Time::NS_IN_MS );
+    return static_cast<double>(unix_date_time_ns) /
+           static_cast<double>(Time::NS_IN_MS);
   }
 
   uint64_t as_unix_date_time_ns() const {
@@ -113,13 +113,13 @@ public:
   }
 
   double as_unix_date_time_s() const {
-    return static_cast<double>( unix_date_time_ns ) /
-           static_cast<double>( Time::NS_IN_S );
+    return static_cast<double>(unix_date_time_ns) /
+           static_cast<double>(Time::NS_IN_S);
   }
 
   double as_unix_date_time_us() const {
-    return static_cast<double>( unix_date_time_ns ) /
-           static_cast<double>( Time::NS_IN_US );
+    return static_cast<double>(unix_date_time_ns) /
+           static_cast<double>(Time::NS_IN_US);
   }
 
   static DateTime now();
@@ -133,52 +133,52 @@ public:
 #endif
 
   operator time_t() const {
-    return static_cast<time_t>( as_unix_date_time_s() );
+    return static_cast<time_t>(as_unix_date_time_s());
   }
 
   operator string() const;
 
-  DateTime operator+( const DateTime& other ) const {
-    return DateTime( unix_date_time_ns + other.unix_date_time_ns );
+  DateTime operator+(const DateTime& other) const {
+    return DateTime(unix_date_time_ns + other.unix_date_time_ns);
   }
 
-  Time operator-( const DateTime& other ) const {
-    if ( unix_date_time_ns >= other.unix_date_time_ns )
-      return Time( unix_date_time_ns - other.unix_date_time_ns );
+  Time operator-(const DateTime& other) const {
+    if (unix_date_time_ns >= other.unix_date_time_ns)
+      return Time(unix_date_time_ns - other.unix_date_time_ns);
     else
-      return Time( static_cast<uint64_t>( 0 ) );
+      return Time(static_cast<uint64_t>(0));
   }
 
-  bool operator==( const DateTime& other ) const {
+  bool operator==(const DateTime& other) const {
     return unix_date_time_ns == other.unix_date_time_ns;
   }
 
-  bool operator!=( const DateTime& other ) const {
+  bool operator!=(const DateTime& other) const {
     return unix_date_time_ns != other.unix_date_time_ns;
   }
 
-  bool operator<( const DateTime& other ) const {
+  bool operator<(const DateTime& other) const {
     return unix_date_time_ns < other.unix_date_time_ns;
   }
 
-  bool operator<=( const DateTime& other ) const {
+  bool operator<=(const DateTime& other) const {
     return unix_date_time_ns <= other.unix_date_time_ns;
   }
 
-  bool operator>( const DateTime& other ) const {
+  bool operator>(const DateTime& other) const {
     return unix_date_time_ns > other.unix_date_time_ns;
   }
 
-  bool operator>=( const DateTime& other ) const {
+  bool operator>=(const DateTime& other) const {
     return unix_date_time_ns >= other.unix_date_time_ns;
   }
 
 private:
 #ifdef _WIN32
-  void init( const FILETIME& );
-  void init( const SYSTEMTIME&, bool local );
+  void init(const FILETIME&);
+  void init(const SYSTEMTIME&, bool local);
 #else
-  void init( tm&, bool local );
+  void init(tm&, bool local);
 #endif
 
 private:
@@ -187,7 +187,7 @@ private:
   uint64_t unix_date_time_ns;
 };
 
-std::ostream& operator<<( std::ostream&, const DateTime& );
+std::ostream& operator<<(std::ostream&, const DateTime&);
 }
 
 

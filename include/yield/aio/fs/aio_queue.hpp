@@ -54,15 +54,15 @@ public:
   AIOQueue();
   ~AIOQueue();
 
-  bool associate( fd_t fd );
+  bool associate(fd_t fd);
 
   // yield::Object
   AIOQueue& inc_ref() {
-    return Object::inc_ref( *this );
+    return Object::inc_ref(*this);
   }
   // yield::EventQueue
-  YO_NEW_REF Event* dequeue( const Time& timeout );
-  bool enqueue( YO_NEW_REF Event& event );
+  YO_NEW_REF Event* dequeue(const Time& timeout);
+  bool enqueue(YO_NEW_REF Event& event);
 
 private:
 #if defined(_WIN32)

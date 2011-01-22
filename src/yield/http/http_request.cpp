@@ -55,9 +55,9 @@ HTTPRequest::HTTPRequest
     fields_offset,
     http_version
   ),
-  creation_date_time( DateTime::now() ),
-  method( method ),
-  uri( uri )
+  creation_date_time(DateTime::now()),
+  method(method),
+  uri(uri)
 { }
 
 HTTPRequest::HTTPRequest
@@ -66,79 +66,79 @@ HTTPRequest::HTTPRequest
   const yield::net::URI& uri,
   YO_NEW_REF Buffer* body
 )
-  : HTTPMessage<HTTPRequest>( body, 1.1f ),
-    creation_date_time( DateTime::now() ),
-    method( method ),
-    uri( uri ) {
-  switch ( method ) {
+  : HTTPMessage<HTTPRequest>(body, 1.1f),
+    creation_date_time(DateTime::now()),
+    method(method),
+    uri(uri) {
+  switch (method) {
   case METHOD_CONNECT:
-    get_buffer().put( "CONNECT ", 8 );
+    get_buffer().put("CONNECT ", 8);
     break;
   case METHOD_COPY:
-    get_buffer().put( "COPY ", 5 );
+    get_buffer().put("COPY ", 5);
     break;
   case METHOD_DELETE:
-    get_buffer().put( "DELETE ", 7 );
+    get_buffer().put("DELETE ", 7);
     break;
   case METHOD_GET:
-    get_buffer().put( "GET ", 4 );
+    get_buffer().put("GET ", 4);
     break;
   case METHOD_HEAD:
-    get_buffer().put( "HEAD ", 5 );
+    get_buffer().put("HEAD ", 5);
     break;
   case METHOD_LOCK:
-    get_buffer().put( "LOCK ", 5 );
+    get_buffer().put("LOCK ", 5);
     break;
   case METHOD_MKCOL:
-    get_buffer().put( "MKCOL ", 6 );
+    get_buffer().put("MKCOL ", 6);
     break;
   case METHOD_MOVE:
-    get_buffer().put( "MOVE ", 5 );
+    get_buffer().put("MOVE ", 5);
     break;
   case METHOD_OPTIONS:
-    get_buffer().put( "OPTIONS ", 8 );
+    get_buffer().put("OPTIONS ", 8);
     break;
   case METHOD_PATCH:
-    get_buffer().put( "PATCH ", 6 );
+    get_buffer().put("PATCH ", 6);
     break;
   case METHOD_POST:
-    get_buffer().put( "POST ", 5 );
+    get_buffer().put("POST ", 5);
     break;
   case METHOD_PROPFIND:
-    get_buffer().put( "PROPFIND ", 9 );
+    get_buffer().put("PROPFIND ", 9);
     break;
   case METHOD_PROPPATCH:
-    get_buffer().put( "PROPPATCH ", 10 );
+    get_buffer().put("PROPPATCH ", 10);
     break;
   case METHOD_PUT:
-    get_buffer().put( "PUT ", 4 );
+    get_buffer().put("PUT ", 4);
     break;
   case METHOD_TRACE:
-    get_buffer().put( "TRACE ", 6 );
+    get_buffer().put("TRACE ", 6);
     break;
   case METHOD_UNLOCK:
-    get_buffer().put( "UNLOCK ", 7 );
+    get_buffer().put("UNLOCK ", 7);
     break;
   }
 
   iovec uri_path;
-  uri.get_path( uri_path );
-  get_buffer().put( uri_path );
+  uri.get_path(uri_path);
+  get_buffer().put(uri_path);
 
-  get_buffer().put( " HTTP/1.1\r\n", 11 );
+  get_buffer().put(" HTTP/1.1\r\n", 11);
 
   mark_fields_offset();
 
   iovec uri_host;
-  uri.get_host( uri_host );
-  if ( uri.get_port() == 80 )
-    set_field( "Host", uri_host );
+  uri.get_host(uri_host);
+  if (uri.get_port() == 80)
+    set_field("Host", uri_host);
   else {
     const char* uri_port_p
-    = static_cast<char*>( uri_host.iov_base ) + uri_host.iov_len;
+    = static_cast<char*>(uri_host.iov_base) + uri_host.iov_len;
     if
     (
-      uri_port_p >= static_cast<char*>( uri_path.iov_base ) - 6
+      uri_port_p >= static_cast<char*>(uri_path.iov_base) - 6
       &&
       uri_port_p < uri_path.iov_base
       &&
@@ -146,22 +146,22 @@ HTTPRequest::HTTPRequest
     ) {
       const char* uri_port_ps = uri_port_p;
       uri_port_p++;
-      while ( uri_port_p < uri_path.iov_base && isdigit( *uri_port_p ) )
+      while (uri_port_p < uri_path.iov_base && isdigit(*uri_port_p))
         uri_port_p++;
       uri_host.iov_len += uri_port_p - uri_port_ps;
 
-      set_field( "Host", uri_host );
+      set_field("Host", uri_host);
     } else {
       std::ostringstream host;
       host.write
       (
-        static_cast<char*>( uri_host.iov_base ),
+        static_cast<char*>(uri_host.iov_base),
         uri_host.iov_len
       );
       host << ':';
       host << uri.get_port();
 
-      set_field( "Host", host.str() );
+      set_field("Host", host.str());
     }
   }
 }
@@ -170,24 +170,24 @@ const DateTime& HTTPRequest::get_creation_date_time() const {
   return creation_date_time;
 }
 
-void HTTPRequest::respond( HTTPResponse& http_response ) {
-  Request::respond( http_response );
+void HTTPRequest::respond(HTTPResponse& http_response) {
+  Request::respond(http_response);
 }
 
-void HTTPRequest::respond( uint16_t status_code ) {
-  respond( *new HTTPResponse( NULL, get_http_version(), status_code ) );
+void HTTPRequest::respond(uint16_t status_code) {
+  respond(*new HTTPResponse(NULL, get_http_version(), status_code));
 }
 
-void HTTPRequest::respond( uint16_t status_code, const char* body ) {
-  respond( status_code, *new StringBuffer( body ) );
+void HTTPRequest::respond(uint16_t status_code, const char* body) {
+  respond(status_code, *new StringBuffer(body));
 }
 
-void HTTPRequest::respond( uint16_t status_code, Buffer& body ) {
-  respond( *new HTTPResponse( &body, get_http_version(), status_code ) );
+void HTTPRequest::respond(uint16_t status_code, Buffer& body) {
+  respond(*new HTTPResponse(&body, get_http_version(), status_code));
 }
 
-void HTTPRequest::respond( Exception& exception ) {
-  Request::respond( exception );
+void HTTPRequest::respond(Exception& exception) {
+  Request::respond(exception);
 }
 }
 }

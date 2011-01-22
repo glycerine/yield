@@ -33,44 +33,44 @@
 
 namespace yield {
 namespace marshal {
-PrettyPrinter::PrettyPrinter( std::ostream& os )
-  : os( os )
+PrettyPrinter::PrettyPrinter(std::ostream& os)
+  : os(os)
 { }
 
-void PrettyPrinter::write( const Object& key, bool value ) {
-  if ( value )
+void PrettyPrinter::write(const Object& key, bool value) {
+  if (value)
     os << "true, ";
   else
     os << "false, ";
 }
 
-void PrettyPrinter::write( const Object& key, double value ) {
+void PrettyPrinter::write(const Object& key, double value) {
   os << value << ", ";
 }
 
-void PrettyPrinter::write( const Object& key, int64_t value ) {
+void PrettyPrinter::write(const Object& key, int64_t value) {
   os << value << ", ";
 }
 
-void PrettyPrinter::write( const Object& key, const Map& value ) {
+void PrettyPrinter::write(const Object& key, const Map& value) {
   os << value.get_type_name() << "{ ";
-  value.marshal( *this );
+  value.marshal(*this);
   os << " }, ";
 }
 
-void PrettyPrinter::write( const Object& key, const Null& value ) {
+void PrettyPrinter::write(const Object& key, const Null& value) {
   os << "null, ";
 }
 
-void PrettyPrinter::write( const Object& key, const Object& value ) {
+void PrettyPrinter::write(const Object& key, const Object& value) {
   os << value.get_type_name() << "( ";
-  value.marshal( *this );
+  value.marshal(*this);
   os << " ), ";
 }
 
-void PrettyPrinter::write( const Object& key, const Sequence& value ) {
+void PrettyPrinter::write(const Object& key, const Sequence& value) {
   os << value.get_type_name() << "[ ";
-  value.marshal( *this );
+  value.marshal(*this);
   os << " ], ";
 }
 
@@ -81,11 +81,11 @@ PrettyPrinter::write
   const char* value,
   size_t value_len
 ) {
-  os.write( value, value_len );
+  os.write(value, value_len);
   os << ", ";
 }
 
-void PrettyPrinter::write( const Object& key, uint64_t value ) {
+void PrettyPrinter::write(const Object& key, uint64_t value) {
   os << value << ", ";
 }
 }

@@ -73,8 +73,8 @@ protected:
       return *socket_;
     }
 
-    virtual void handle( YO_NEW_REF recvAIOCB& recv_aiocb ) = 0;
-    virtual void handle( YO_NEW_REF sendAIOCB& send_aiocb ) = 0;
+    virtual void handle(YO_NEW_REF recvAIOCB& recv_aiocb) = 0;
+    virtual void handle(YO_NEW_REF sendAIOCB& send_aiocb) = 0;
 
     // Object
     virtual const char* get_type_name() const {
@@ -82,12 +82,12 @@ protected:
     }
 
     Connection& inc_ref() {
-      return Object::inc_ref( *this );
+      return Object::inc_ref(*this);
     }
 
   protected:
-    void enqueue( YO_NEW_REF recvAIOCB& recv_aiocb );
-    void enqueue( YO_NEW_REF sendAIOCB& send_aiocb );
+    void enqueue(YO_NEW_REF recvAIOCB& recv_aiocb);
+    void enqueue(YO_NEW_REF sendAIOCB& send_aiocb);
 
     yield::aio::net::sockets::AIOQueue& get_aio_queue() const {
       return aio_queue;
@@ -116,8 +116,8 @@ protected:
     }
 
   protected:
-    AIOCB( Connection& connection )
-      : connection( connection.inc_ref() )
+    AIOCB(Connection& connection)
+      : connection(connection.inc_ref())
     { }
 
   private:
@@ -129,9 +129,9 @@ protected:
     : public yield::aio::net::sockets::recvAIOCB,
       public StreamSocketPeer::AIOCB {
   public:
-    recvAIOCB( Connection& connection, YO_NEW_REF Buffer& buffer )
-      : yield::aio::net::sockets::recvAIOCB( connection.get_socket(), buffer, 0 ),
-        StreamSocketPeer::AIOCB( connection )
+    recvAIOCB(Connection& connection, YO_NEW_REF Buffer& buffer)
+      : yield::aio::net::sockets::recvAIOCB(connection.get_socket(), buffer, 0),
+        StreamSocketPeer::AIOCB(connection)
     { }
   };
 
@@ -140,18 +140,18 @@ protected:
     : public yield::aio::net::sockets::sendAIOCB,
       public StreamSocketPeer::AIOCB {
   public:
-    sendAIOCB( Connection& connection, YO_NEW_REF Buffer& buffer )
-      : yield::aio::net::sockets::sendAIOCB( connection.get_socket(), buffer, 0 ),
-        StreamSocketPeer::AIOCB( connection )
+    sendAIOCB(Connection& connection, YO_NEW_REF Buffer& buffer)
+      : yield::aio::net::sockets::sendAIOCB(connection.get_socket(), buffer, 0),
+        StreamSocketPeer::AIOCB(connection)
     { }
   };
 
 protected:
-  StreamSocketPeer( Log* error_log, Log* trace_log );
+  StreamSocketPeer(Log* error_log, Log* trace_log);
   virtual ~StreamSocketPeer() { }
 
   // Stage
-  virtual void service( YO_NEW_REF Event& event );
+  virtual void service(YO_NEW_REF Event& event);
 };
 }
 }

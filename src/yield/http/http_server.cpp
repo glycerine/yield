@@ -55,8 +55,8 @@ public:
     SocketAddress& peername,
     YO_NEW_REF StreamSocket& socket_
   )
-    : StreamSocketServer::Connection( http_server, peername, socket_ ),
-      http_request_handler( http_server.http_request_handler.inc_ref() )
+    : StreamSocketServer::Connection(http_server, peername, socket_),
+      http_request_handler(http_server.http_request_handler.inc_ref())
   { }
 
   // Object
@@ -65,76 +65,76 @@ public:
   }
 
   // EventHandler
-  void handle( YO_NEW_REF Event& event ) {
-    debug_assert_eq( event.get_type_id(), HTTPResponse::TYPE_ID );
+  void handle(YO_NEW_REF Event& event) {
+    debug_assert_eq(event.get_type_id(), HTTPResponse::TYPE_ID);
 
-    handle( static_cast<HTTPResponse&>( event ) );
+    handle(static_cast<HTTPResponse&>(event));
   }
 
   // StreamSocketPeer::Connection
-  void handle( YO_NEW_REF recvAIOCB& recv_aiocb ) {
-    if ( recv_aiocb.get_return() > 0 )
-      parse( recv_aiocb.get_buffer() );
+  void handle(YO_NEW_REF recvAIOCB& recv_aiocb) {
+    if (recv_aiocb.get_return() > 0)
+      parse(recv_aiocb.get_buffer());
 
-    recvAIOCB::dec_ref( recv_aiocb );
+    recvAIOCB::dec_ref(recv_aiocb);
   }
 
-  void handle( YO_NEW_REF sendAIOCB& send_aiocb ) {
-    sendAIOCB::dec_ref( send_aiocb );
+  void handle(YO_NEW_REF sendAIOCB& send_aiocb) {
+    sendAIOCB::dec_ref(send_aiocb);
   }
 
   // StreamSocketServer::Connection
-  void handle( YO_NEW_REF acceptAIOCB& accept_aiocb ) {
+  void handle(YO_NEW_REF acceptAIOCB& accept_aiocb) {
     if
     (
       accept_aiocb.get_recv_buffer() != NULL
       &&
       accept_aiocb.get_return() > 0
     )
-      parse( *accept_aiocb.get_recv_buffer() );
+      parse(*accept_aiocb.get_recv_buffer());
 
-    acceptAIOCB::dec_ref( accept_aiocb );
+    acceptAIOCB::dec_ref(accept_aiocb);
   }
 
 private:
-  void handle( YO_NEW_REF HTTPResponse& http_response ) {
+  void handle(YO_NEW_REF HTTPResponse& http_response) {
     sendAIOCB* send_aiocb
     = new sendAIOCB
     (
       *this,
-      static_cast<Buffer&>( http_response ).inc_ref()
+      static_cast<Buffer&>(http_response).inc_ref()
     );
 
-    enqueue( *send_aiocb );
+    enqueue(*send_aiocb);
 
-    HTTPResponse::dec_ref( http_response );
+    HTTPResponse::dec_ref(http_response);
   }
 
-  void parse( Buffer& recv_buffer ) {
-    debug_assert_false( recv_buffer.empty() );
+  void parse(Buffer& recv_buffer) {
+    debug_assert_false(recv_buffer.empty());
 
-    HTTPRequestParser http_request_parser( recv_buffer );
+    HTTPRequestParser http_request_parser(recv_buffer);
 
-    for ( ;; ) {
+    for (;;) {
       Object& object = http_request_parser.parse();
 
-      switch ( object.get_type_id() ) {
+      switch (object.get_type_id()) {
       case Buffer::TYPE_ID: {
-        Buffer& next_recv_buffer = static_cast<Buffer&>( object );
-        enqueue( *new recvAIOCB( *this, next_recv_buffer ) );
+        Buffer& next_recv_buffer = static_cast<Buffer&>(object);
+        enqueue(*new recvAIOCB(*this, next_recv_buffer));
         return;
       }
       break;
 
       case HTTPRequest::TYPE_ID: {
-        HTTPRequest& http_request = static_cast<HTTPRequest&>( object );
-        http_request.set_response_handler( *this );
-        http_request_handler.handle( http_request );
+        HTTPRequest& http_request = static_cast<HTTPRequest&>(object);
+        http_request.set_response_handler(*this);
+        http_request_handler.handle(http_request);
       }
       break;
 
       case HTTPResponse::TYPE_ID: {
-        handle( static_cast<HTTPResponse&>( object ) );
+        handle(static_cast<HTTPResponse&>(object));
       }
       break;
 
@@ -160,20 +160,20 @@ HTTPServer::HTTPServer
   : StreamSocketServer
   (
     error_log,
-    *new TCPSocket( sockname.get_family() ),
+    *new TCPSocket(sockname.get_family()),
     sockname,
     trace_log
   ),
-  http_request_handler( http_request_handler )
+  http_request_handler(http_request_handler)
 { }
 
 HTTPServer::~HTTPServer() {
-  EventHandler::dec_ref( http_request_handler );
+  EventHandler::dec_ref(http_request_handler);
 }
 
 StreamSocketServer::Connection&
-HTTPServer::create_connection( SocketAddress& peername, StreamSocket& socket_ ) {
-  return *new Connection( *this, peername, socket_ );
+HTTPServer::create_connection(SocketAddress& peername, StreamSocket& socket_) {
+  return *new Connection(*this, peername, socket_);
 }
 }
 }

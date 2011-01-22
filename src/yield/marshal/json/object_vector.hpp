@@ -46,8 +46,8 @@ public:
 
 public:
   ~ObjectVector() {
-    for ( iterator object_i = begin(); object_i != end(); ++object_i )
-      Object::dec_ref( **object_i );
+    for (iterator object_i = begin(); object_i != end(); ++object_i)
+      Object::dec_ref(**object_i);
   }
 
   // Object
@@ -58,21 +58,21 @@ public:
     return "yield::marshal::ObjectVector";
   }
 
-  void marshal( Marshaller& marshaller ) const {
-    for ( const_iterator object_i = begin(); object_i != end(); ++object_i )
-      marshaller.write( Null(), **object_i );
+  void marshal(Marshaller& marshaller) const {
+    for (const_iterator object_i = begin(); object_i != end(); ++object_i)
+      marshaller.write(Null(), **object_i);
   }
 
-  bool operator==( const Object& other ) const {
-    if ( other.get_type_id() == TYPE_ID ) {
-      if ( static_cast<const ObjectVector&>( other ).size() == size() ) {
-        for ( size_t object_i = 0; object_i < size(); object_i++ ) {
+  bool operator==(const Object& other) const {
+    if (other.get_type_id() == TYPE_ID) {
+      if (static_cast<const ObjectVector&>(other).size() == size()) {
+        for (size_t object_i = 0; object_i < size(); object_i++) {
           if
           (
             !(
-              *( *this )[object_i]
+              *(*this)[object_i]
               ==
-              *static_cast<const ObjectVector&>( other )[object_i]
+              *static_cast<const ObjectVector&>(other)[object_i]
             )
           )
             return false;

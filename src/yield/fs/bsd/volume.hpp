@@ -41,7 +41,7 @@ namespace bsd {
 class Volume : public yield::fs::posix::Volume {
 public:
   // yield::fs::Volume
-  YO_NEW_REF yield::fs::Directory* opendir( const Path& );
+  YO_NEW_REF yield::fs::Directory* opendir(const Path&);
 };
 }
 }

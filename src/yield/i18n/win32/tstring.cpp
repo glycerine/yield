@@ -37,46 +37,46 @@
 namespace yield {
 namespace i18n {
 namespace win32 {
-tstring::tstring( char s, Code code ) {
-  init( &s, 1, code );
+tstring::tstring(char s, Code code) {
+  init(&s, 1, code);
 }
 
-tstring::tstring( const char* s, Code code ) {
-  init( s, strlen( s ), code );
+tstring::tstring(const char* s, Code code) {
+  init(s, strlen(s), code);
 }
 
-tstring::tstring( const string& s, Code code ) {
-  init( s.data(), s.size(), code );
+tstring::tstring(const string& s, Code code) {
+  init(s.data(), s.size(), code);
 }
 
-tstring::tstring( const char* s, size_t len, Code code ) {
-  init( s, len, code );
+tstring::tstring(const char* s, size_t len, Code code) {
+  init(s, len, code);
 }
 
-tstring::tstring( wchar_t s )
-  : wstring( &s, 1 )
+tstring::tstring(wchar_t s)
+  : wstring(&s, 1)
 { }
 
-tstring::tstring( const wchar_t* s )
-  : wstring( s )
+tstring::tstring(const wchar_t* s)
+  : wstring(s)
 { }
 
-tstring::tstring( const wchar_t* s, size_t len )
-  : wstring( s, len )
+tstring::tstring(const wchar_t* s, size_t len)
+  : wstring(s, len)
 { }
 
-tstring::tstring( const wstring& s )
-  : wstring( s )
+tstring::tstring(const wstring& s)
+  : wstring(s)
 { }
 
-string tstring::encode( Code tocode ) const {
+string tstring::encode(Code tocode) const {
   string outbuf;
-  iconv( tocode, Code::CHAR )( *this, outbuf );
+  iconv(tocode, Code::CHAR)(*this, outbuf);
   return outbuf;
 }
 
-void tstring::init( const char* s, size_t len, Code code ) {
-  iconv( Code::CHAR, code )( string( s, len ), *this );
+void tstring::init(const char* s, size_t len, Code code) {
+  iconv(Code::CHAR, code)(string(s, len), *this);
 }
 }
 }

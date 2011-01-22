@@ -46,8 +46,8 @@ public:
     is_last_ = true;
   }
 
-  HTTPBodyChunk( const void* data, size_t size )
-    : Page( data, size ) {
+  HTTPBodyChunk(const void* data, size_t size)
+    : Page(data, size) {
     is_last_ = false;
   }
 

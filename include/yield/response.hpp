@@ -56,7 +56,7 @@ public:
     return "yield::Response";
   }
   Response& inc_ref() {
-    return Object::inc_ref( *this );
+    return Object::inc_ref(*this);
   }
 
   // Message

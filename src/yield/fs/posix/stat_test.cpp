@@ -38,23 +38,23 @@ namespace fs {
 namespace posix {
 class StatStructStatTest : public StatTest {
 public:
-  StatStructStatTest( yield::fs::Volume& volume )
-    : StatTest( volume )
+  StatStructStatTest(yield::fs::Volume& volume)
+    : StatTest(volume)
   { }
 
   // yunit::Test
   void run() {
     auto_Object<Stat> stbuf1
-    = static_cast<Stat*>( get_volume().stat( get_test_file_name() ) );
+    = static_cast<Stat*>(get_volume().stat(get_test_file_name()));
     DateTime current_date_time = DateTime::now();
     struct stat stbuf2 = stbuf1->operator struct stat();
-    throw_assert_ne( stbuf2.st_mode, 0 );
-    throw_assert_le( stbuf2.st_atime, current_date_time );
-    throw_assert_le( stbuf2.st_mtime, current_date_time );
-    throw_assert_le( stbuf2.st_ctime, current_date_time );
+    throw_assert_ne(stbuf2.st_mode, 0);
+    throw_assert_le(stbuf2.st_atime, current_date_time);
+    throw_assert_le(stbuf2.st_mtime, current_date_time);
+    throw_assert_le(stbuf2.st_ctime, current_date_time);
 
-    Stat stbuf3( stbuf2 );
-    throw_assert_eq( stbuf3, *stbuf1 );
+    Stat stbuf3(stbuf2);
+    throw_assert_eq(stbuf3, *stbuf1);
   }
 };
 
@@ -62,7 +62,7 @@ public:
 class StatTestSuite : public yield::fs::StatTestSuite<Volume> {
 public:
   StatTestSuite() {
-    add( "Stat+struct stat", new StatStructStatTest( get_volume() ) );
+    add("Stat+struct stat", new StatStructStatTest(get_volume()));
   }
 };
 }
@@ -70,4 +70,4 @@ public:
 }
 
 
-TEST_SUITE_EX( POSIXStat, yield::fs::posix::StatTestSuite );
+TEST_SUITE_EX(POSIXStat, yield::fs::posix::StatTestSuite);

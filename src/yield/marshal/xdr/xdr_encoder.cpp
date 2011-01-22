@@ -36,113 +36,113 @@ namespace yield {
 namespace marshal {
 namespace xdr {
 #if !defined( htonl ) && !defined( _WINSOCKAPI_) && !defined(_WINSOCK2API_)
-static inline uint32_t htonl( uint32_t x ) {
+static inline uint32_t htonl(uint32_t x) {
 #ifdef __BIG_ENDIAN__
   return x;
 #else
-  return ( x >> 24 ) |
-         ( ( x << 8 ) & 0x00FF0000 ) |
-         ( ( x >> 8 ) & 0x0000FF00 ) |
-         ( x << 24 );
+  return (x >> 24) |
+         ((x << 8) & 0x00FF0000) |
+         ((x >> 8) & 0x0000FF00) |
+         (x << 24);
 #endif
 }
 #endif
 
-static inline uint64_t htonll( uint64_t x ) {
+static inline uint64_t htonll(uint64_t x) {
 #ifdef __BIG_ENDIAN__
   return x;
 #else
-  return ( x >> 56 ) |
-         ( ( x << 40 ) & 0x00FF000000000000ULL ) |
-         ( ( x << 24 ) & 0x0000FF0000000000ULL ) |
-         ( ( x << 8 )  & 0x000000FF00000000ULL ) |
-         ( ( x >> 8)  & 0x00000000FF000000ULL ) |
-         ( ( x >> 24) & 0x0000000000FF0000ULL ) |
-         ( ( x >> 40 ) & 0x000000000000FF00ULL ) |
-         ( x << 56 );
+  return (x >> 56) |
+         ((x << 40) & 0x00FF000000000000ULL) |
+         ((x << 24) & 0x0000FF0000000000ULL) |
+         ((x << 8)  & 0x000000FF00000000ULL) |
+         ((x >> 8)  & 0x00000000FF000000ULL) |
+         ((x >> 24) & 0x0000000000FF0000ULL) |
+         ((x >> 40) & 0x000000000000FF00ULL) |
+         (x << 56);
 #endif
 }
 
 
 XDREncoder::XDREncoder()
-  : buffer( *new StringBuffer )
+  : buffer(*new StringBuffer)
 { }
 
-XDREncoder::XDREncoder( Buffer& buffer )
-  : buffer( buffer.inc_ref() )
+XDREncoder::XDREncoder(Buffer& buffer)
+  : buffer(buffer.inc_ref())
 { }
 
 XDREncoder::~XDREncoder() {
-  Buffer::dec_ref( buffer );
+  Buffer::dec_ref(buffer);
 }
 
-void XDREncoder::write( bool value ) {
-  write( value ? 1 : 0 );
+void XDREncoder::write(bool value) {
+  write(value ? 1 : 0);
 }
 
-void XDREncoder::write( double value ) {
+void XDREncoder::write(double value) {
   uint64_t uint64_value;
 
   memcpy_s
   (
     &uint64_value,
-    sizeof( uint64_value ),
+    sizeof(uint64_value),
     &value,
-    sizeof( value )
+    sizeof(value)
   );
 
-  write( uint64_value );
+  write(uint64_value);
 }
 
-void XDREncoder::write( float value ) {
+void XDREncoder::write(float value) {
   uint32_t uint32_value;
 
   memcpy_s
   (
     &uint32_value,
-    sizeof( uint32_value ),
+    sizeof(uint32_value),
     &value,
-    sizeof( value )
+    sizeof(value)
   );
 
-  write( uint32_value );
+  write(uint32_value);
 }
 
-void XDREncoder::write( int32_t value ) {
-  write( static_cast<uint32_t>( value ) );
+void XDREncoder::write(int32_t value) {
+  write(static_cast<uint32_t>(value));
 }
 
-void XDREncoder::write( int64_t value ) {
-  write( static_cast<uint64_t>( value ) );
+void XDREncoder::write(int64_t value) {
+  write(static_cast<uint64_t>(value));
 }
 
-void XDREncoder::write( const char* value, size_t value_len ) {
-  write( static_cast<int32_t>( value_len ) );
+void XDREncoder::write(const char* value, size_t value_len) {
+  write(static_cast<int32_t>(value_len));
 
-  write( static_cast<const void*>( value ), value_len );
+  write(static_cast<const void*>(value), value_len);
 
-  if ( value_len % 4 != 0 ) {
+  if (value_len % 4 != 0) {
     static char zeros[] = { 0, 0, 0 };
     write
     (
-      static_cast<const void*>( zeros ),
-      4 - ( value_len % 4 )
+      static_cast<const void*>(zeros),
+      4 - (value_len % 4)
     );
   }
 }
 
-void XDREncoder::write( uint32_t value ) {
-  value = htonl( value );
-  write( &value, sizeof( value ) );
+void XDREncoder::write(uint32_t value) {
+  value = htonl(value);
+  write(&value, sizeof(value));
 }
 
-void XDREncoder::write( uint64_t value ) {
-  value = htonll( value );
-  write( &value, sizeof( value ) );
+void XDREncoder::write(uint64_t value) {
+  value = htonll(value);
+  write(&value, sizeof(value));
 }
 
-void XDREncoder::write( const void* value, size_t value_len ) {
-  buffer.put( value, value_len );
+void XDREncoder::write(const void* value, size_t value_len) {
+  buffer.put(value, value_len);
 }
 }
 }

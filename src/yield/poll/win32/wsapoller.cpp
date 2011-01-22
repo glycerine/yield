@@ -42,7 +42,7 @@ using yield::thread::NonBlockingConcurrentQueue;
 
 #if _WIN32_WINNT >= 0x0600
 WSAPoller::WSAPoller() {
-  associate( wake_socket_pair.first(), POLLIN );
+  associate(wake_socket_pair.first(), POLLIN);
 }
 
 bool
@@ -51,65 +51,65 @@ WSAPoller::associate
   socket_t socket_,
   int16_t events
 ) {
-  if ( events > 0 ) {
+  if (events > 0) {
     for
     (
       vector<pollfd>::iterator pollfd_i = pollfds.begin();
       pollfd_i != pollfds.end();
       ++pollfd_i
     ) {
-      if ( ( *pollfd_i ).fd == socket_ ) {
-        ( *pollfd_i ).events = events;
+      if ((*pollfd_i).fd == socket_) {
+        (*pollfd_i).events = events;
         return true;
       }
     }
 
     pollfd pollfd_;
-    memset( &pollfd_, 0, sizeof( pollfd_ ) );
+    memset(&pollfd_, 0, sizeof(pollfd_));
     pollfd_.fd = socket_;
     pollfd_.events = events;
-    pollfds.push_back( pollfd_ );
+    pollfds.push_back(pollfd_);
     return true;
   } else
-    return dissociate( socket_ );
+    return dissociate(socket_);
 }
 
-Event* WSAPoller::dequeue( const Time& timeout ) {
+Event* WSAPoller::dequeue(const Time& timeout) {
   int ret
   = WSAPoll
     (
       &pollfds[0],
       pollfds.size(),
-      static_cast<int>( timeout.ms() )
+      static_cast<int>(timeout.ms())
     );
 
-  if ( ret > 0 ) {
+  if (ret > 0) {
     vector<pollfd>::const_iterator pollfd_i = pollfds.begin();
 
     do {
       const pollfd& pollfd_ = *pollfd_i;
 
-      if ( pollfd_.revents != 0 ) {
-        if ( pollfd_.fd == wake_socket_pair.first() )
+      if (pollfd_.revents != 0) {
+        if (pollfd_.fd == wake_socket_pair.first())
           return NonBlockingConcurrentQueue<Event, 32>::trydequeue();
         else
-          return new SocketEvent( pollfd_.revents, pollfd_.fd );
+          return new SocketEvent(pollfd_.revents, pollfd_.fd);
       }
-    } while ( ++pollfd_i < pollfds.end() );
+    } while (++pollfd_i < pollfds.end());
   }
 
   return NULL;
 }
 
-bool WSAPoller::dissociate( socket_t socket_ ) {
+bool WSAPoller::dissociate(socket_t socket_) {
   for
   (
     vector<pollfd>::iterator pollfd_i = pollfds.begin();
     pollfd_i != pollfds.end();
     ++pollfd_i
   ) {
-    if ( ( *pollfd_i ).fd == socket_ ) {
-      pollfds.erase( pollfd_i );
+    if ((*pollfd_i).fd == socket_) {
+      pollfds.erase(pollfd_i);
       return true;
     }
   }
@@ -117,10 +117,10 @@ bool WSAPoller::dissociate( socket_t socket_ ) {
   return false;
 }
 
-bool WSAPoller::enqueue( Event& event ) {
-  bool ret = NonBlockingConcurrentQueue<Event, 32>::enqueue( event );
-  debug_assert( ret );
-  wake_socket_pair.second().write( "m", 1 );
+bool WSAPoller::enqueue(Event& event) {
+  bool ret = NonBlockingConcurrentQueue<Event, 32>::enqueue(event);
+  debug_assert(ret);
+  wake_socket_pair.second().write("m", 1);
   return ret;
 }
 #endif

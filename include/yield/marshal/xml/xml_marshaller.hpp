@@ -42,27 +42,27 @@ namespace xml {
 class XMLMarshaller : public Marshaller, private XMLEncoder {
 public:
   XMLMarshaller();
-  XMLMarshaller( Buffer& buffer );
+  XMLMarshaller(Buffer& buffer);
 
   Buffer& get_buffer() {
     return XMLEncoder::get_buffer();
   }
 
   // Marshaller
-  void write( const Object& key, bool value );
-  void write( const Object& key, double value  );
-  void write( const Object& key, int64_t value );
-  void write( const Object& key, const Null& value );
-  void write( const Object& key, const Object& value );
-  void write( const Object& key, const Sequence& value );
-  void write( const Object& key, const char* value, size_t );
-  void write( const Object& key, uint64_t value );
+  void write(const Object& key, bool value);
+  void write(const Object& key, double value);
+  void write(const Object& key, int64_t value);
+  void write(const Object& key, const Null& value);
+  void write(const Object& key, const Object& value);
+  void write(const Object& key, const Sequence& value);
+  void write(const Object& key, const char* value, size_t);
+  void write(const Object& key, uint64_t value);
 
 private:
   template <typename ValueType>
-  void add_attribute( const Object& key, ValueType value );
-  void end_element( const Object& key );
-  void start_element( const Object& key );
+  void add_attribute(const Object& key, ValueType value);
+  void end_element(const Object& key);
+  void start_element(const Object& key);
 
 private:
   uint64_t next_anonymous_key_i;

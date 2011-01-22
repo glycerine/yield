@@ -32,141 +32,141 @@
 #include "yield/page.hpp"
 
 
-TEST_SUITE( Page );
+TEST_SUITE(Page);
 
 namespace yield {
-TEST_EX( Page, capacity, BufferCapacityTest<Page> ) {
+TEST_EX(Page, capacity, BufferCapacityTest<Page>) {
   BufferCapacityTest<Page>::run();
 }
 
-TEST_EX( Page, copy, BufferCopyTest<Page> ) {
+TEST_EX(Page, copy, BufferCopyTest<Page>) {
   BufferCopyTest<Page>::run();
 }
 
-TEST_EX( Page, data, BufferDataTest<Page> ) {
+TEST_EX(Page, data, BufferDataTest<Page>) {
   BufferDataTest<Page>::run();
 }
 
-TEST_EX( Page, empty, BufferEmptyTest<Page> ) {
+TEST_EX(Page, empty, BufferEmptyTest<Page>) {
   BufferEmptyTest<Page>::run();
 }
 
-TEST_EX( Page, get_next_buffer, BufferGetNextBufferTest<Page> ) {
+TEST_EX(Page, get_next_buffer, BufferGetNextBufferTest<Page>) {
   BufferGetNextBufferTest<Page>::run();
 }
 
-TEST( Page, getpagesize ) {
+TEST(Page, getpagesize) {
   size_t pagesize = Page::getpagesize();
-  throw_assert_gt( pagesize, 0 );
-  throw_assert_eq( pagesize % 4096, 0 );
+  throw_assert_gt(pagesize, 0);
+  throw_assert_eq(pagesize % 4096, 0);
 }
 
-TEST( Page, init_capacity ) {
+TEST(Page, init_capacity) {
   size_t pagesize = Page::getpagesize();
 
   {
-    auto_Object<Page> page = new Page( 1 );
-    throw_assert_eq( page->capacity(), pagesize );
+    auto_Object<Page> page = new Page(1);
+    throw_assert_eq(page->capacity(), pagesize);
   }
 
   {
-    auto_Object<Page> page = new Page( pagesize );
-    throw_assert_eq( page->capacity(), pagesize );
+    auto_Object<Page> page = new Page(pagesize);
+    throw_assert_eq(page->capacity(), pagesize);
   }
 
   {
-    auto_Object<Page> page = new Page( 0 );
-    throw_assert_eq( page->capacity(), 0 );
+    auto_Object<Page> page = new Page(0);
+    throw_assert_eq(page->capacity(), 0);
   }
 }
 
-TEST( Page, init_capacity_data_size ) {
+TEST(Page, init_capacity_data_size) {
   auto_Object<Page> page
-  = new Page( Page::getpagesize()*2, "test", 4 );
-  throw_assert_eq( page->capacity(), Page::getpagesize()*2 );
-  throw_assert_eq( strncmp( *page, "test", 4 ), 0 );
-  throw_assert_eq( page->size(), 4 );
+  = new Page(Page::getpagesize() * 2, "test", 4);
+  throw_assert_eq(page->capacity(), Page::getpagesize() * 2);
+  throw_assert_eq(strncmp(*page, "test", 4), 0);
+  throw_assert_eq(page->size(), 4);
 }
 
-TEST_EX( Page, init_c_string, BufferInitCStringTest<Page> ) {
+TEST_EX(Page, init_c_string, BufferInitCStringTest<Page>) {
   BufferInitCStringTest<Page>::run();
 }
 
-TEST_EX( Page, init_string, BufferInitStringTest<Page> ) {
+TEST_EX(Page, init_string, BufferInitStringTest<Page>) {
   BufferInitStringTest<Page>::run();
 }
 
-TEST( Page, is_page_aligned ) {
-  auto_Object<Page> page = new Page( Page::getpagesize() );
-  throw_assert( Page::is_page_aligned( page->data() ) );
+TEST(Page, is_page_aligned) {
+  auto_Object<Page> page = new Page(Page::getpagesize());
+  throw_assert(Page::is_page_aligned(page->data()));
   iovec iov;
   iov.iov_base = page->data();
   iov.iov_len = page->capacity();
-  throw_assert( Page::is_page_aligned( iov ) );
+  throw_assert(Page::is_page_aligned(iov));
 }
 
-TEST_EX( Page, operator_array, BufferOperatorArrayTest<Page> ) {
+TEST_EX(Page, operator_array, BufferOperatorArrayTest<Page>) {
   BufferOperatorArrayTest<Page>::run();
 }
 
-TEST_EX( Page, operator_cast, BufferOperatorCastTest<Page> ) {
+TEST_EX(Page, operator_cast, BufferOperatorCastTest<Page>) {
   BufferOperatorCastTest<Page>::run();
 }
 
-TEST_EX( Page, operator_equals, BufferOperatorEqualsTest<Page> ) {
+TEST_EX(Page, operator_equals, BufferOperatorEqualsTest<Page>) {
   BufferOperatorEqualsTest<Page>::run();
 }
 
-TEST_EX( Page, put_page, BufferPutBufferTest<Page> ) {
+TEST_EX(Page, put_page, BufferPutBufferTest<Page>) {
   BufferPutBufferTest<Page>::run();
 }
 
-TEST_EX( Page, put_char, BufferPutCharTest<Page> ) {
+TEST_EX(Page, put_char, BufferPutCharTest<Page>) {
   BufferPutCharTest<Page>::run();
 }
 
-TEST_EX( Page, put_c_string, BufferPutCStringTest<Page> ) {
+TEST_EX(Page, put_c_string, BufferPutCStringTest<Page>) {
   BufferPutCStringTest<Page>::run();
 }
 
-TEST_EX( Page, put_c_string_size, BufferPutCStringSizeTest<Page> ) {
+TEST_EX(Page, put_c_string_size, BufferPutCStringSizeTest<Page>) {
   BufferPutCStringSizeTest<Page>::run();
 }
 
-TEST_EX( Page, put_iovec, BufferPutIOVecTest<Page> ) {
+TEST_EX(Page, put_iovec, BufferPutIOVecTest<Page>) {
   BufferPutIOVecTest<Page>::run();
 }
 
-TEST_EX( Page, put_string, BufferPutStringTest<Page> ) {
+TEST_EX(Page, put_string, BufferPutStringTest<Page>) {
   BufferPutStringTest<Page>::run();
 }
 
-TEST( Page, reserve ) {
-  auto_Object<Page> page = new Page( 0 );
-  throw_assert_eq( page->capacity(), 0 );
+TEST(Page, reserve) {
+  auto_Object<Page> page = new Page(0);
+  throw_assert_eq(page->capacity(), 0);
 
-  page->reserve( 0 );
-  throw_assert_eq( page->capacity(), 0 );
+  page->reserve(0);
+  throw_assert_eq(page->capacity(), 0);
 
-  page->reserve( 1 );
-  throw_assert_eq( page->capacity(), Page::getpagesize() );
+  page->reserve(1);
+  throw_assert_eq(page->capacity(), Page::getpagesize());
 
-  page->reserve( page->capacity() + 1 );
-  throw_assert_eq( page->capacity(), Page::getpagesize()*2 );
+  page->reserve(page->capacity() + 1);
+  throw_assert_eq(page->capacity(), Page::getpagesize() * 2);
 
-  page->reserve( Page::getpagesize() );
-  throw_assert_eq( page->capacity(), Page::getpagesize()*2 );
+  page->reserve(Page::getpagesize());
+  throw_assert_eq(page->capacity(), Page::getpagesize() * 2);
 }
 
-TEST_EX( Page, resize, BufferResizeTest<Page> ) {
+TEST_EX(Page, resize, BufferResizeTest<Page>) {
   BufferResizeTest<Page>::run();
 }
 
-TEST_EX( Page, set_next_buffer, BufferSetNextBufferTest<Page> ) {
+TEST_EX(Page, set_next_buffer, BufferSetNextBufferTest<Page>) {
   BufferSetNextBufferTest<Page>::run();
 }
 
-TEST_EX( Page, size, BufferSizeTest<Page> ) {
+TEST_EX(Page, size, BufferSizeTest<Page>) {
   BufferSizeTest<Page>::run();
 }
 }

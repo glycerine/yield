@@ -79,9 +79,9 @@ public:
   }
 
 private:
-  SocketPair( YO_NEW_REF Socket** );
+  SocketPair(YO_NEW_REF Socket**);
 
-  static bool socketpair( int domain, int type, int protocol, Socket** );
+  static bool socketpair(int domain, int type, int protocol, Socket**);
 
 private:
   Socket* sockets[2];

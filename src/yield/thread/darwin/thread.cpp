@@ -34,16 +34,16 @@
 namespace yield {
 namespace thread {
 namespace darwin {
-Thread::Thread( Runnable& runnable )
-  : yield::thread::posix::Thread( runnable )
+Thread::Thread(Runnable& runnable)
+  : yield::thread::posix::Thread(runnable)
 { }
 
-Thread::Thread( pthread_t pthread )
-  : yield::thread::posix::Thread( handle )
+Thread::Thread(pthread_t pthread)
+  : yield::thread::posix::Thread(handle)
 { }
 
 Thread* Thread::self() {
-  return new Thread( pthread_self() );
+  return new Thread(pthread_self());
 }
 
 void Thread::yield() {

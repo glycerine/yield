@@ -43,16 +43,16 @@ class Unmarshaller;
 
 class Object : public yield::Object {
 public:
-  virtual void marshal( Marshaller& ) const { }
-  virtual void unmarshal( Unmarshaller& ) { }
+  virtual void marshal(Marshaller&) const { }
+  virtual void unmarshal(Unmarshaller&) { }
 
   // yield::Object
   virtual uint32_t get_type_id() const = 0;
   virtual const char* get_type_name() const = 0;
   Object& inc_ref() {
-    return yield::Object::inc_ref( *this );
+    return yield::Object::inc_ref(*this);
   }
-  virtual bool operator==( const Object& ) const {
+  virtual bool operator==(const Object&) const {
     return false;
   }
 };

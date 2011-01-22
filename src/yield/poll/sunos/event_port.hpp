@@ -46,13 +46,13 @@ public:
   static EventPort* create();
 
   // FDEventQueue
-  bool associate( fd_t fd, uint16_t events );
-  int16_t dequeue( FDEvent* fd_events, int16_t fd_events_len, const Time& timeout );
-  bool dissociate( fd_t fd );
+  bool associate(fd_t fd, uint16_t events);
+  int16_t dequeue(FDEvent* fd_events, int16_t fd_events_len, const Time& timeout);
+  bool dissociate(fd_t fd);
   void wake();
 
 private:
-  EventPort( int port );
+  EventPort(int port);
 
 private:
   int port;

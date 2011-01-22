@@ -39,59 +39,59 @@
 namespace yield {
 namespace i18n {
 namespace posix {
-tstring::tstring( char s, Code code ) {
-  init( &s, 1, code );
+tstring::tstring(char s, Code code) {
+  init(&s, 1, code);
 }
 
-tstring::tstring( const char* s, Code code ) {
-  init( s, strlen( s ), code );
+tstring::tstring(const char* s, Code code) {
+  init(s, strlen(s), code);
 }
 
-tstring::tstring( const string& s, Code code ) {
-  init( s.data(), s.size(), code );
+tstring::tstring(const string& s, Code code) {
+  init(s.data(), s.size(), code);
 }
 
-tstring::tstring( const char* s, size_t len, Code code ) {
-  init( s, len, code );
+tstring::tstring(const char* s, size_t len, Code code) {
+  init(s, len, code);
 }
 
-tstring::tstring( wchar_t s ) {
-  init( &s, 1 );
+tstring::tstring(wchar_t s) {
+  init(&s, 1);
 }
 
-tstring::tstring( const wchar_t* s ) {
-  init( s, wcslen( s ) );
+tstring::tstring(const wchar_t* s) {
+  init(s, wcslen(s));
 }
 
-tstring::tstring( const wchar_t* s, size_t len ) {
-  init( s, len );
+tstring::tstring(const wchar_t* s, size_t len) {
+  init(s, len);
 }
 
-tstring::tstring( const wstring& s ) {
-  init( s.data(), s.size() );
+tstring::tstring(const wstring& s) {
+  init(s.data(), s.size());
 }
 
-string tstring::encode( Code tocode ) const {
-  if ( tocode == Code::CHAR )
+string tstring::encode(Code tocode) const {
+  if (tocode == Code::CHAR)
     return *this;
   else {
     string outbuf;
-    iconv( tocode, Code::CHAR )( *this, outbuf );
+    iconv(tocode, Code::CHAR)(*this, outbuf);
     return outbuf;
   }
 }
 
-void tstring::init( const char* s, size_t len, Code code ) {
-  if ( code == Code::CHAR )
-    assign( s, len );
+void tstring::init(const char* s, size_t len, Code code) {
+  if (code == Code::CHAR)
+    assign(s, len);
   else {
-    if ( !iconv( Code::CHAR, code )( string( s, len ), *this ) )
+    if (!iconv(Code::CHAR, code)(string(s, len), *this))
       throw Exception();
   }
 }
 
-void tstring::init( const wchar_t* s, size_t len ) {
-  throw Exception( ENOTSUP );
+void tstring::init(const wchar_t* s, size_t len) {
+  throw Exception(ENOTSUP);
 }
 }
 }

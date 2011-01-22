@@ -37,11 +37,11 @@ namespace sockets {
 class SocketPairTestSuite : public ChannelTestSuite {
 public:
   SocketPairTestSuite()
-    : ChannelTestSuite( *new SocketPairFactory )
+    : ChannelTestSuite(*new SocketPairFactory)
   { }
 };
 }
 }
 }
 
-TEST_SUITE_EX( SocketPair, yield::net::sockets::SocketPairTestSuite );
+TEST_SUITE_EX(SocketPair, yield::net::sockets::SocketPairTestSuite);

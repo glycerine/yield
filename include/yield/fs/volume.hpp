@@ -76,7 +76,7 @@ public:
   static mode_t FILE_MODE_DEFAULT;
   static mode_t DIRECTORY_MODE_DEFAULT;
   static int MMAP_FLAGS_DEFAULT; // MAP_SHARED
-  const static size_t MMAP_LENGTH_WHOLE_FILE = static_cast<size_t>( -1 );
+  const static size_t MMAP_LENGTH_WHOLE_FILE = static_cast<size_t>(-1);
   static int MMAP_PROT_DEFAULT; // PROT_READ|PROT_WRITE
   const static uint32_t OPEN_ATTRIBUTES_DEFAULT = 0;
   static uint32_t OPEN_FLAGS_DEFAULT; // O_RDONLY
@@ -86,18 +86,18 @@ public:
 
   virtual ~Volume() { }
 
-  virtual bool access( const Path&, int amode ) = 0;
-  bool chmod( const Path&, mode_t );
-  bool chown( const Path&, uid_t, gid_t );
-  YO_NEW_REF File* creat( const Path& );
-  YO_NEW_REF File* creat( const Path&, mode_t );
-  bool exists( const Path& path );
-  virtual YO_NEW_REF Stat* getattr( const Path& ) = 0;
-  virtual bool isdir( const Path& );
-  virtual bool isfile( const Path& );
-  virtual bool link( const Path& old_path, const Path& new_path ) = 0;
-  bool mkdir( const Path& );
-  virtual bool mkdir( const Path&, mode_t ) = 0;
+  virtual bool access(const Path&, int amode) = 0;
+  bool chmod(const Path&, mode_t);
+  bool chown(const Path&, uid_t, gid_t);
+  YO_NEW_REF File* creat(const Path&);
+  YO_NEW_REF File* creat(const Path&, mode_t);
+  bool exists(const Path& path);
+  virtual YO_NEW_REF Stat* getattr(const Path&) = 0;
+  virtual bool isdir(const Path&);
+  virtual bool isfile(const Path&);
+  virtual bool link(const Path& old_path, const Path& new_path) = 0;
+  bool mkdir(const Path&);
+  virtual bool mkdir(const Path&, mode_t) = 0;
 
   virtual YO_NEW_REF File*
   mkfifo
@@ -107,14 +107,14 @@ public:
     mode_t mode = FILE_MODE_DEFAULT
   ) = 0;
 
-  bool mktree( const Path& );
-  bool mktree( const Path&, mode_t );
+  bool mktree(const Path&);
+  bool mktree(const Path&, mode_t);
 
   virtual YO_NEW_REF MemoryMappedFile*
   mmap
   (
     YO_NEW_REF File& file,
-    void *start = NULL,
+    void* start = NULL,
     size_t length = MMAP_LENGTH_WHOLE_FILE,
     int prot = MMAP_PROT_DEFAULT,
     int flags = MMAP_FLAGS_DEFAULT,
@@ -130,23 +130,23 @@ public:
     uint32_t attributes = OPEN_ATTRIBUTES_DEFAULT
   ) = 0;
 
-  virtual YO_NEW_REF Directory* opendir( const Path& ) = 0;
-  virtual YO_NEW_REF ExtendedAttributes* openxattrs( const Path& ) = 0;
-  virtual bool readlink( const Path&, OUT Path& ) = 0;
-  virtual bool realpath( const Path&, OUT Path& ) = 0;
-  virtual bool rename( const Path& from_path, const Path& to_path ) = 0;
-  virtual bool rmdir( const Path& path ) = 0;
-  bool rmtree( const Path& );
-  virtual bool setattr( const Path&, const Stat& stbuf ) = 0;
-  YO_NEW_REF Stat* stat( const Path& p ) {
-    return getattr( p );
+  virtual YO_NEW_REF Directory* opendir(const Path&) = 0;
+  virtual YO_NEW_REF ExtendedAttributes* openxattrs(const Path&) = 0;
+  virtual bool readlink(const Path&, OUT Path&) = 0;
+  virtual bool realpath(const Path&, OUT Path&) = 0;
+  virtual bool rename(const Path& from_path, const Path& to_path) = 0;
+  virtual bool rmdir(const Path& path) = 0;
+  bool rmtree(const Path&);
+  virtual bool setattr(const Path&, const Stat& stbuf) = 0;
+  YO_NEW_REF Stat* stat(const Path& p) {
+    return getattr(p);
   }
-  virtual bool statvfs( const Path&, struct statvfs& ) = 0;
-  virtual bool symlink( const Path& old_path, const Path& new_path ) = 0;
-  bool touch( const Path& );
-  bool touch( const Path&, mode_t );
-  virtual bool truncate( const Path&, uint64_t new_size ) = 0;
-  virtual bool unlink( const Path& path ) = 0;
+  virtual bool statvfs(const Path&, struct statvfs&) = 0;
+  virtual bool symlink(const Path& old_path, const Path& new_path) = 0;
+  bool touch(const Path&);
+  bool touch(const Path&, mode_t);
+  virtual bool truncate(const Path&, uint64_t new_size) = 0;
+  virtual bool unlink(const Path& path) = 0;
 
   bool
   utime
@@ -165,11 +165,11 @@ public:
     const DateTime& ctime
   );
 
-  virtual bool volname( const Path&, OUT Path& ) = 0;
+  virtual bool volname(const Path&, OUT Path&) = 0;
 
   // Object
   Volume& inc_ref() {
-    return Object::inc_ref( *this );
+    return Object::inc_ref(*this);
   }
 
 private:

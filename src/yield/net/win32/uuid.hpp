@@ -47,9 +47,9 @@ namespace win32 {
 class UUID {
 public:
   UUID();
-  UUID( const string& uuid );
+  UUID(const string& uuid);
 
-  bool operator==( const UUID& ) const;
+  bool operator==(const UUID&) const;
   operator string() const;
 
 private:

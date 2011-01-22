@@ -51,15 +51,15 @@ class WSAPoller
 public:
   WSAPoller();
 
-  bool associate( socket_t socket_, int16_t events );
-  bool dissociate( socket_t socket_ );
+  bool associate(socket_t socket_, int16_t events);
+  bool dissociate(socket_t socket_);
 
   // EventQueue
   YO_NEW_REF Event& dequeue() {
     return EventQueue::dequeue();
   }
-  YO_NEW_REF Event* dequeue( const Time& timeout );
-  bool enqueue( YO_NEW_REF Event& event );
+  YO_NEW_REF Event* dequeue(const Time& timeout);
+  bool enqueue(YO_NEW_REF Event& event);
   YO_NEW_REF Event* trydequeue() {
     return EventQueue::trydequeue();
   }

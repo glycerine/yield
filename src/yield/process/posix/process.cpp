@@ -49,8 +49,8 @@ Process::Process
   Channel* stdin_,
   Channel* stdout_
 )
-  : yield::process::Process( stderr_, stdin_, stdout_ ),
-    pid( pid )
+  : yield::process::Process(stderr_, stdin_, stdout_),
+    pid(pid)
 { }
 
 Process*
@@ -61,8 +61,8 @@ Process::create
   Channel* stdin_,
   Channel* stdout_
 ) {
-  const char* argv[] = { static_cast<const char*>( NULL ) };
-  return create( command_line, argv, stderr_, stdin_, stdout_ );
+  const char* argv[] = { static_cast<const char*>(NULL) };
+  return create(command_line, argv, stderr_, stdin_, stdout_);
 }
 
 Process*
@@ -75,9 +75,9 @@ Process::create
   Channel* stdout_
 ) {
   pid_t pid = fork();
-  if ( pid == -1 )
+  if (pid == -1)
     return NULL;
-  else if ( pid == 0 ) { // Child
+  else if (pid == 0) {   // Child
     //close( STDIN_FILENO );
     // Set stdin to read end of stdin pipe
     //dup2( *child_stdin->get_input_stream()->get_file(), STDIN_FILENO );
@@ -93,24 +93,24 @@ Process::create
     vector<char*> argv_with_executable_file_path;
     argv_with_executable_file_path.push_back
     (
-      const_cast<char*>( executable_file_path.c_str() )
+      const_cast<char*>(executable_file_path.c_str())
     );
     size_t arg_i = 0;
-    while ( null_terminated_argv[arg_i] != NULL ) {
+    while (null_terminated_argv[arg_i] != NULL) {
       argv_with_executable_file_path.push_back
       (
-        const_cast<char*>( null_terminated_argv[arg_i] )
+        const_cast<char*>(null_terminated_argv[arg_i])
       );
       arg_i++;
     }
-    argv_with_executable_file_path.push_back( NULL );
+    argv_with_executable_file_path.push_back(NULL);
 
-    execv( executable_file_path.c_str(), &argv_with_executable_file_path[0] );
+    execv(executable_file_path.c_str(), &argv_with_executable_file_path[0]);
 
     DebugBreak();
     return NULL;
   } else // Parent
-    return new Process( pid, stderr_, stdin_, stdout_ );
+    return new Process(pid, stderr_, stdin_, stdout_);
 }
 
 pid_t Process::self() {
@@ -118,24 +118,24 @@ pid_t Process::self() {
 }
 
 bool Process::kill() {
-  return ::kill( pid, SIGKILL ) == 0;
+  return ::kill(pid, SIGKILL) == 0;
 }
 
-YO_NEW_REF Process* Process::open( pid_t pid ) {
-  return new Process( pid );
+YO_NEW_REF Process* Process::open(pid_t pid) {
+  return new Process(pid);
 }
 
-bool Process::poll( int* out_return_code ) {
-  if ( waitpid( pid, out_return_code, WNOHANG ) > 0 ) {
+bool Process::poll(int* out_return_code) {
+  if (waitpid(pid, out_return_code, WNOHANG) > 0) {
     // "waitpid() was successful. The value returned indicates the process ID
     // of the child process whose status information was recorded in the
     // storage pointed to by stat_loc."
 #if defined(__FreeBSD__) || defined(__sun)
-    if ( WIFEXITED( *out_return_code ) ) { // Child exited normally
-      *out_return_code = WEXITSTATUS( *out_return_code );
+    if (WIFEXITED(*out_return_code)) {     // Child exited normally
+      *out_return_code = WEXITSTATUS(*out_return_code);
 #else
-    if ( WIFEXITED( out_return_code ) ) { // Child exited normally
-      *out_return_code = WEXITSTATUS( out_return_code );
+    if (WIFEXITED(out_return_code)) {     // Child exited normally
+      *out_return_code = WEXITSTATUS(out_return_code);
 #endif
       return true;
     } else
@@ -150,12 +150,12 @@ bool Process::poll( int* out_return_code ) {
 }
 
 bool Process::terminate() {
-  return ::kill( pid, SIGTERM ) == 0;
+  return ::kill(pid, SIGTERM) == 0;
 }
 
 int Process::wait() {
   int stat_loc;
-  if ( waitpid( pid, &stat_loc, 0 ) >= 0 )
+  if (waitpid(pid, &stat_loc, 0) >= 0)
     return stat_loc;
   else
     return -1;

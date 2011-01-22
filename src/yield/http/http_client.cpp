@@ -57,74 +57,74 @@ typedef SynchronizedResponseQueue<HTTPResponse> HTTPResponseQueue;
 
 class HTTPClient::Connection : public StreamSocketClient::Connection {
 public:
-  Connection( HTTPClient& client )
-    : StreamSocketClient::Connection( client, *new TCPSocket ) {
+  Connection(HTTPClient& client)
+    : StreamSocketClient::Connection(client, *new TCPSocket) {
     connected = false;
   }
 
-  void handle( YO_NEW_REF connectAIOCB& connect_aiocb ) {
-    debug_assert_false( http_request_queue.empty() );
+  void handle(YO_NEW_REF connectAIOCB& connect_aiocb) {
+    debug_assert_false(http_request_queue.empty());
 
-    if ( connect_aiocb.get_error() == 0 ) {
+    if (connect_aiocb.get_error() == 0) {
       connected = true;
 
-      recvAIOCB* recv_aiocb = new recvAIOCB( *this, *new Page );
-      StreamSocketPeer<SocketClient>::Connection::enqueue( *recv_aiocb );
+      recvAIOCB* recv_aiocb = new recvAIOCB(*this, *new Page);
+      StreamSocketPeer<SocketClient>::Connection::enqueue(*recv_aiocb);
     } else {
-      Exception* exception = new Exception( connect_aiocb.get_error() );
-      debug_assert_false( http_request_queue.empty() );
+      Exception* exception = new Exception(connect_aiocb.get_error());
+      debug_assert_false(http_request_queue.empty());
       HTTPRequestState* http_request_state = http_request_queue.front();
       http_request_queue.pop();
-      http_request_state->get_request().respond( *exception );
+      http_request_state->get_request().respond(*exception);
       delete http_request_state;
     }
 
-    connectAIOCB::dec_ref( connect_aiocb );
+    connectAIOCB::dec_ref(connect_aiocb);
   }
 
-  void handle( YO_NEW_REF HTTPRequest& http_request ) {
+  void handle(YO_NEW_REF HTTPRequest& http_request) {
     Buffer& http_request_buffer = http_request;
 
     HTTPRequestState* http_request_state
-    = new HTTPRequestState( http_request, http_request_buffer.inc_ref() );
+    = new HTTPRequestState(http_request, http_request_buffer.inc_ref());
 
-    http_request_queue.push( http_request_state );
+    http_request_queue.push(http_request_state);
 
-    if ( !connected ) {
+    if (!connected) {
       connectAIOCB* connect_aiocb
-      = new connectAIOCB( *this, &http_request_buffer.inc_ref() );
-      enqueue( *connect_aiocb );
+      = new connectAIOCB(*this, &http_request_buffer.inc_ref());
+      enqueue(*connect_aiocb);
     } else {
       sendAIOCB* send_aiocb
-      = new sendAIOCB( *this, http_request_buffer.inc_ref() );
-      StreamSocketPeer<SocketClient>::Connection::enqueue( *send_aiocb );
+      = new sendAIOCB(*this, http_request_buffer.inc_ref());
+      StreamSocketPeer<SocketClient>::Connection::enqueue(*send_aiocb);
     }
   }
 
-  void handle( YO_NEW_REF recvAIOCB& recv_aiocb ) {
-    debug_assert_false( http_request_queue.empty() );
+  void handle(YO_NEW_REF recvAIOCB& recv_aiocb) {
+    debug_assert_false(http_request_queue.empty());
 
-    if ( recv_aiocb.get_return() > 0 ) {
-      HTTPResponseParser http_response_parser( recv_aiocb.get_buffer() );
+    if (recv_aiocb.get_return() > 0) {
+      HTTPResponseParser http_response_parser(recv_aiocb.get_buffer());
 
-      for ( ;; ) {
+      for (;;) {
         Object& object = http_response_parser.parse();
 
-        switch ( object.get_type_id() ) {
+        switch (object.get_type_id()) {
         case Buffer::TYPE_ID: {
-          Buffer& next_recv_buffer = static_cast<Buffer&>( object );
-          recvAIOCB* next_recv_aiocb = new recvAIOCB( *this, next_recv_buffer );
-          StreamSocketPeer<SocketClient>::Connection::enqueue( *next_recv_aiocb );
+          Buffer& next_recv_buffer = static_cast<Buffer&>(object);
+          recvAIOCB* next_recv_aiocb = new recvAIOCB(*this, next_recv_buffer);
+          StreamSocketPeer<SocketClient>::Connection::enqueue(*next_recv_aiocb);
           return;
         }
         break;
 
         case HTTPResponse::TYPE_ID: {
-          HTTPResponse& http_response = static_cast<HTTPResponse&>( object );
-          debug_assert_false( http_request_queue.empty() );
+          HTTPResponse& http_response = static_cast<HTTPResponse&>(object);
+          debug_assert_false(http_request_queue.empty());
           HTTPRequestState* http_request_state = http_request_queue.front();
           http_request_queue.pop();
-          http_request_state->get_request().respond( http_response );
+          http_request_state->get_request().respond(http_response);
           delete http_request_state;
         }
         break;
@@ -138,17 +138,17 @@ public:
       DebugBreak();
   }
 
-  void handle( YO_NEW_REF sendAIOCB& send_aiocb ) {
-    debug_assert_false( http_request_queue.empty() );
+  void handle(YO_NEW_REF sendAIOCB& send_aiocb) {
+    debug_assert_false(http_request_queue.empty());
 
-    if ( send_aiocb.get_error() != 0 )
+    if (send_aiocb.get_error() != 0)
       DebugBreak();
 
-    sendAIOCB::dec_ref( send_aiocb );
+    sendAIOCB::dec_ref(send_aiocb);
   }
 
   // EventHandler
-  void handle( YO_NEW_REF Event& ) {
+  void handle(YO_NEW_REF Event&) {
     DebugBreak();
   }
 
@@ -199,27 +199,27 @@ HTTPClient::~HTTPClient() {
     connection_i != connections.end();
     ++connection_i
   )
-    Connection::dec_ref( **connection_i );
+    Connection::dec_ref(**connection_i);
 }
 
-YO_NEW_REF HTTPResponse& HTTPClient::GET( const URI& uri ) {
-  auto_Object<Log> trace_log = Log::open( std::cout, Log::DEBUG );
+YO_NEW_REF HTTPResponse& HTTPClient::GET(const URI& uri) {
+  auto_Object<Log> trace_log = Log::open(std::cout, Log::DEBUG);
 
   auto_Object<HTTPClient> http_client
-  = new HTTPClient( uri, NULL, &trace_log.get() );
+  = new HTTPClient(uri, NULL, &trace_log.get());
 
   auto_Object<HTTPResponseQueue> http_response_queue
   = new HTTPResponseQueue;
 
-  HTTPRequest* http_request = new HTTPRequest( HTTPRequest::METHOD_GET, uri );
-  http_request->set_response_handler( *http_response_queue );
+  HTTPRequest* http_request = new HTTPRequest(HTTPRequest::METHOD_GET, uri);
+  http_request->set_response_handler(*http_response_queue);
 
-  http_client->handle( *http_request );
+  http_client->handle(*http_request);
 
-  for ( ;; ) {
+  for (;;) {
     http_client->visit();
     HTTPResponse* http_response = http_response_queue->trydequeue();
-    if ( http_response != NULL )
+    if (http_response != NULL)
       return *http_response;
   }
 }
@@ -231,18 +231,18 @@ void HTTPClient::init() {
     connection_i < get_configuration().get_concurrency_level();
     connection_i++
   )
-    connections.push_back( new Connection( *this ) );
+    connections.push_back(new Connection(*this));
 }
 
-void HTTPClient::service( YO_NEW_REF Event& event ) {
-  switch ( event.get_type_id() ) {
+void HTTPClient::service(YO_NEW_REF Event& event) {
+  switch (event.get_type_id()) {
   case HTTPRequest::TYPE_ID: {
-    connections[0]->handle( static_cast<HTTPRequest&>( event ) );
+    connections[0]->handle(static_cast<HTTPRequest&>(event));
   }
   break;
 
   default:
-    StreamSocketClient::service( event );
+    StreamSocketClient::service(event);
     break;
   }
 }

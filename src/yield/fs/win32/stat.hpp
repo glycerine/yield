@@ -50,17 +50,17 @@ namespace win32 {
 class Stat : public yield::fs::Stat {
 public:
   Stat();
-  Stat( const BY_HANDLE_FILE_INFORMATION& );
-  Stat( const WIN32_FILE_ATTRIBUTE_DATA& );
-  Stat( const WIN32_FIND_DATA& );
+  Stat(const BY_HANDLE_FILE_INFORMATION&);
+  Stat(const WIN32_FILE_ATTRIBUTE_DATA&);
+  Stat(const WIN32_FIND_DATA&);
 
   operator BY_HANDLE_FILE_INFORMATION() const;
   operator WIN32_FILE_ATTRIBUTE_DATA() const;
   operator WIN32_FIND_DATA() const;
 
-  Stat& operator=( const BY_HANDLE_FILE_INFORMATION& );
-  Stat& operator=( const WIN32_FILE_ATTRIBUTE_DATA& );
-  Stat& operator=( const WIN32_FIND_DATA& );
+  Stat& operator=(const BY_HANDLE_FILE_INFORMATION&);
+  Stat& operator=(const WIN32_FILE_ATTRIBUTE_DATA&);
+  Stat& operator=(const WIN32_FIND_DATA&);
 
   // Stat
   const DateTime& get_atime() const {
@@ -84,7 +84,7 @@ public:
   Type get_type() const;
 
 private:
-  void set_size( uint32_t nFileSizeLow, uint32_t nFileSizeHigh );
+  void set_size(uint32_t nFileSizeLow, uint32_t nFileSizeHigh);
 
 private:
   DateTime atime;

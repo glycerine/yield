@@ -44,24 +44,24 @@ namespace json {
 class JSONMarshaller : public Marshaller, private JSONEncoder {
 public:
   JSONMarshaller() { }
-  JSONMarshaller( Buffer& buffer ) : JSONEncoder( buffer ) { }
+  JSONMarshaller(Buffer& buffer) : JSONEncoder(buffer) { }
 
   Buffer& get_buffer() const {
     return JSONEncoder::get_buffer();
   }
 
   // Marshaller
-  void write( const Object& key, bool value );
-  void write( const Object& key, double value  );
-  void write( const Object& key, int64_t value );
-  void write( const Object& key, const Null& value );
-  void write( const Object& key, const Object& value );
-  void write( const Object& key, const Sequence& value );
-  void write( const Object& key, const char* value, size_t value_len );
-  void write( const Object& key, uint64_t value );
+  void write(const Object& key, bool value);
+  void write(const Object& key, double value);
+  void write(const Object& key, int64_t value);
+  void write(const Object& key, const Null& value);
+  void write(const Object& key, const Object& value);
+  void write(const Object& key, const Sequence& value);
+  void write(const Object& key, const char* value, size_t value_len);
+  void write(const Object& key, uint64_t value);
 
 private:
-  void write_key( const Object& key );
+  void write_key(const Object& key);
 
 private:
   std::stack<bool> in_object_stack;

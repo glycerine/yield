@@ -63,21 +63,21 @@ class MutexLockTest : public MutexTest<MutexType> {
 public:
   // Test
   void run() {
-    auto_Object<Thread> thread = new Thread( thread_run, this );
+    auto_Object<Thread> thread = new Thread(thread_run, this);
 
     bool lock_ret = this->mutex->lock();
-    throw_assert( lock_ret );
-    Thread::self()->nanosleep( 0.1 );
+    throw_assert(lock_ret);
+    Thread::self()->nanosleep(0.1);
     this->mutex->unlock();
 
     thread->join();
   }
 
 private:
-  static void thread_run( void* this_ ) {
-    static_cast<MutexLockTest<MutexType>*>( this_ )->mutex->lock();
-    Thread::self()->nanosleep( 0.1 );
-    static_cast<MutexLockTest<MutexType>*>( this_ )->mutex->unlock();
+  static void thread_run(void* this_) {
+    static_cast<MutexLockTest<MutexType>*>(this_)->mutex->lock();
+    Thread::self()->nanosleep(0.1);
+    static_cast<MutexLockTest<MutexType>*>(this_)->mutex->unlock();
   }
 };
 
@@ -87,21 +87,21 @@ class MutexTryLockTest : public MutexTest<MutexType> {
 public:
   // Test
   void run() {
-    auto_Object<Thread> thread = new Thread( thread_run, this );
+    auto_Object<Thread> thread = new Thread(thread_run, this);
 
     bool lock_ret = this->mutex->trylock();
-    throw_assert( lock_ret );
-    Thread::self()->nanosleep( 0.1 );
+    throw_assert(lock_ret);
+    Thread::self()->nanosleep(0.1);
     this->mutex->unlock();
 
     thread->join();
   }
 
 private:
-  static void thread_run( void* this_ ) {
-    static_cast<MutexTryLockTest<MutexType>*>( this_ )->mutex->lock();
-    Thread::self()->nanosleep( 0.1 );
-    static_cast<MutexTryLockTest<MutexType>*>( this_ )->mutex->unlock();
+  static void thread_run(void* this_) {
+    static_cast<MutexTryLockTest<MutexType>*>(this_)->mutex->lock();
+    Thread::self()->nanosleep(0.1);
+    static_cast<MutexTryLockTest<MutexType>*>(this_)->mutex->unlock();
   }
 };
 
@@ -110,8 +110,8 @@ template <class MutexType>
 class MutexTestSuite : public yunit::TestSuite {
 public:
   MutexTestSuite() {
-    add( "Mutex::lock", new MutexLockTest<MutexType> );
-    add( "Mutex::trylock", new MutexTryLockTest<MutexType> );
+    add("Mutex::lock", new MutexLockTest<MutexType>);
+    add("Mutex::trylock", new MutexTryLockTest<MutexType>);
   }
 };
 }

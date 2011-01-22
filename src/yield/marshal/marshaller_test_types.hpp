@@ -57,15 +57,15 @@ public:
 
 public:
   BooleanStruct()
-    : value( false )
+    : value(false)
   { }
 
-  BooleanStruct( bool value )
-    : value( value )
+  BooleanStruct(bool value)
+    : value(value)
   { }
 
-  BooleanStruct( const BooleanStruct& other )
-    : value( other.get_value() )
+  BooleanStruct(const BooleanStruct& other)
+    : value(other.get_value())
   { }
 
   virtual ~BooleanStruct() {  }
@@ -73,11 +73,11 @@ public:
   bool get_value() const {
     return value;
   }
-  void set_value( bool value ) {
+  void set_value(bool value) {
     this->value = value;
   }
 
-  bool operator==( const BooleanStruct& other ) const {
+  bool operator==(const BooleanStruct& other) const {
     return get_value() == other.get_value();
   }
 
@@ -89,15 +89,15 @@ public:
     return "BooleanStruct";
   }
   BooleanStruct& inc_ref() {
-    return ::yield::Object::inc_ref( *this );
+    return ::yield::Object::inc_ref(*this);
   }
 
-  void marshal( ::yield::marshal::Marshaller& marshaller ) const {
-    marshaller.write( ::yield::marshal::StringLiteral( "value" ), get_value() );
+  void marshal(::yield::marshal::Marshaller& marshaller) const {
+    marshaller.write(::yield::marshal::StringLiteral("value"), get_value());
   }
 
-  void unmarshal( ::yield::marshal::Unmarshaller& unmarshaller ) {
-    value = unmarshaller.read_bool( ::yield::marshal::StringLiteral( "value" ) );
+  void unmarshal(::yield::marshal::Unmarshaller& unmarshaller) {
+    value = unmarshaller.read_bool(::yield::marshal::StringLiteral("value"));
   }
 
 protected:
@@ -109,15 +109,15 @@ class DoubleMap : public ::yield::marshal::Map, public std::map< ::yield::marsha
 public:
   virtual ~DoubleMap() { }
 
-  virtual bool operator==( const DoubleMap& other ) const {
-    if ( size() == other.size() ) {
+  virtual bool operator==(const DoubleMap& other) const {
+    if (size() == other.size()) {
       return true;
     } else
       return false;
   }
 
   // yield::marshal::Object
-  const static uint32_t TYPE_ID = static_cast<uint32_t>( 7 );
+  const static uint32_t TYPE_ID = static_cast<uint32_t>(7);
   uint32_t get_type_id() const {
     return TYPE_ID;
   }
@@ -125,21 +125,21 @@ public:
     return "DoubleMap";
   }
   DoubleMap& inc_ref() {
-    return ::yield::Object::inc_ref( *this );
+    return ::yield::Object::inc_ref(*this);
   }
 
-  void marshal( ::yield::marshal::Marshaller& marshaller ) const {
-    for ( const_iterator i = begin(); i != end(); i++ ) {
-      marshaller.write( i->first, i->second );
+  void marshal(::yield::marshal::Marshaller& marshaller) const {
+    for (const_iterator i = begin(); i != end(); i++) {
+      marshaller.write(i->first, i->second);
     }
   }
 
-  void unmarshal( ::yield::marshal::Unmarshaller& unmarshaller ) {
+  void unmarshal(::yield::marshal::Unmarshaller& unmarshaller) {
     ::yield::marshal::Double key;
-    unmarshaller.read_key( key );
+    unmarshaller.read_key(key);
     std::string value;
-    unmarshaller.read_string( key, value );
-    ( *this )[key] = value;
+    unmarshaller.read_string(key, value);
+    (*this)[key] = value;
   }
 
   // yield::marshal::Map
@@ -156,12 +156,12 @@ public:
 public:
   DoubleMapStruct() { }
 
-  DoubleMapStruct( const yield::marshal::DoubleMap& value )
-    : value( value )
+  DoubleMapStruct(const yield::marshal::DoubleMap& value)
+    : value(value)
   { }
 
-  DoubleMapStruct( const DoubleMapStruct& other )
-    : value( other.get_value() )
+  DoubleMapStruct(const DoubleMapStruct& other)
+    : value(other.get_value())
   { }
 
   virtual ~DoubleMapStruct() {  }
@@ -169,11 +169,11 @@ public:
   const yield::marshal::DoubleMap& get_value() const {
     return value;
   }
-  void set_value( const yield::marshal::DoubleMap&  value ) {
+  void set_value(const yield::marshal::DoubleMap&  value) {
     this->value = value;
   }
 
-  bool operator==( const DoubleMapStruct& other ) const {
+  bool operator==(const DoubleMapStruct& other) const {
     return get_value() == other.get_value();
   }
 
@@ -185,15 +185,15 @@ public:
     return "DoubleMapStruct";
   }
   DoubleMapStruct& inc_ref() {
-    return ::yield::Object::inc_ref( *this );
+    return ::yield::Object::inc_ref(*this);
   }
 
-  void marshal( ::yield::marshal::Marshaller& marshaller ) const {
-    marshaller.write( ::yield::marshal::StringLiteral( "value" ), get_value() );
+  void marshal(::yield::marshal::Marshaller& marshaller) const {
+    marshaller.write(::yield::marshal::StringLiteral("value"), get_value());
   }
 
-  void unmarshal( ::yield::marshal::Unmarshaller& unmarshaller ) {
-    unmarshaller.read_map( ::yield::marshal::StringLiteral( "value" ), value );
+  void unmarshal(::yield::marshal::Unmarshaller& unmarshaller) {
+    unmarshaller.read_map(::yield::marshal::StringLiteral("value"), value);
   }
 
 protected:
@@ -205,21 +205,21 @@ class DoubleSet : public ::yield::marshal::Sequence, public std::vector< double 
 public:
   DoubleSet() { }
 
-  DoubleSet( double first_value ) {
-    vector<double>::push_back( first_value );
+  DoubleSet(double first_value) {
+    vector<double>::push_back(first_value);
   }
 
-  DoubleSet( size_type size )
-    : vector<double>( size )
+  DoubleSet(size_type size)
+    : vector<double>(size)
   { }
 
   virtual ~DoubleSet() { }
 
-  virtual bool operator==( const DoubleSet& other ) const {
-    if ( size() == other.size() ) {
+  virtual bool operator==(const DoubleSet& other) const {
+    if (size() == other.size()) {
       size_t i_max = size();
-      for ( size_t i = 0; i < i_max; i++ ) {
-        if ( !( ( *this )[i] == other[i] ) )
+      for (size_t i = 0; i < i_max; i++) {
+        if (!((*this)[i] == other[i]))
           return false;
       }
 
@@ -229,7 +229,7 @@ public:
   }
 
   // yield::Object
-  const static uint32_t TYPE_ID = static_cast<uint32_t>( 9 );
+  const static uint32_t TYPE_ID = static_cast<uint32_t>(9);
   uint32_t get_type_id() const {
     return TYPE_ID;
   }
@@ -237,21 +237,21 @@ public:
     return "DoubleSet";
   }
   DoubleSet& inc_ref() {
-    return ::yield::Object::inc_ref( *this );
+    return ::yield::Object::inc_ref(*this);
   }
 
   // yield::marshal::Object
-  void marshal( ::yield::marshal::Marshaller& marshaller ) const {
+  void marshal(::yield::marshal::Marshaller& marshaller) const {
     size_type value_i_max = size();
-    for ( size_type value_i = 0; value_i < value_i_max; value_i++ ) {
-      marshaller.write( ::yield::marshal::Null(), ( *this )[value_i] );
+    for (size_type value_i = 0; value_i < value_i_max; value_i++) {
+      marshaller.write(::yield::marshal::Null(), (*this)[value_i]);
     }
   }
 
-  void unmarshal( ::yield::marshal::Unmarshaller& unmarshaller ) {
+  void unmarshal(::yield::marshal::Unmarshaller& unmarshaller) {
     double value;
-    value = unmarshaller.read_double( ::yield::marshal::Null() );
-    push_back( value );
+    value = unmarshaller.read_double(::yield::marshal::Null());
+    push_back(value);
   }
 
   // yield::marshal::Sequence
@@ -268,12 +268,12 @@ public:
 public:
   DoubleSetStruct() { }
 
-  DoubleSetStruct( const yield::marshal::DoubleSet& value )
-    : value( value )
+  DoubleSetStruct(const yield::marshal::DoubleSet& value)
+    : value(value)
   { }
 
-  DoubleSetStruct( const DoubleSetStruct& other )
-    : value( other.get_value() )
+  DoubleSetStruct(const DoubleSetStruct& other)
+    : value(other.get_value())
   { }
 
   virtual ~DoubleSetStruct() {  }
@@ -281,11 +281,11 @@ public:
   const yield::marshal::DoubleSet& get_value() const {
     return value;
   }
-  void set_value( const yield::marshal::DoubleSet&  value ) {
+  void set_value(const yield::marshal::DoubleSet&  value) {
     this->value = value;
   }
 
-  bool operator==( const DoubleSetStruct& other ) const {
+  bool operator==(const DoubleSetStruct& other) const {
     return get_value() == other.get_value();
   }
 
@@ -297,15 +297,15 @@ public:
     return "DoubleSetStruct";
   }
   DoubleSetStruct& inc_ref() {
-    return ::yield::Object::inc_ref( *this );
+    return ::yield::Object::inc_ref(*this);
   }
 
-  void marshal( ::yield::marshal::Marshaller& marshaller ) const {
-    marshaller.write( ::yield::marshal::StringLiteral( "value" ), get_value() );
+  void marshal(::yield::marshal::Marshaller& marshaller) const {
+    marshaller.write(::yield::marshal::StringLiteral("value"), get_value());
   }
 
-  void unmarshal( ::yield::marshal::Unmarshaller& unmarshaller ) {
-    unmarshaller.read_sequence( ::yield::marshal::StringLiteral( "value" ), value );
+  void unmarshal(::yield::marshal::Unmarshaller& unmarshaller) {
+    unmarshaller.read_sequence(::yield::marshal::StringLiteral("value"), value);
   }
 
 protected:
@@ -319,15 +319,15 @@ public:
 
 public:
   DoubleStruct()
-    : value( 0 )
+    : value(0)
   { }
 
-  DoubleStruct( double value )
-    : value( value )
+  DoubleStruct(double value)
+    : value(value)
   { }
 
-  DoubleStruct( const DoubleStruct& other )
-    : value( other.get_value() )
+  DoubleStruct(const DoubleStruct& other)
+    : value(other.get_value())
   { }
 
   virtual ~DoubleStruct() {  }
@@ -335,11 +335,11 @@ public:
   double get_value() const {
     return value;
   }
-  void set_value( double value ) {
+  void set_value(double value) {
     this->value = value;
   }
 
-  bool operator==( const DoubleStruct& other ) const {
+  bool operator==(const DoubleStruct& other) const {
     return get_value() == other.get_value();
   }
 
@@ -351,15 +351,15 @@ public:
     return "DoubleStruct";
   }
   DoubleStruct& inc_ref() {
-    return ::yield::Object::inc_ref( *this );
+    return ::yield::Object::inc_ref(*this);
   }
 
-  void marshal( ::yield::marshal::Marshaller& marshaller ) const {
-    marshaller.write( ::yield::marshal::StringLiteral( "value" ), get_value() );
+  void marshal(::yield::marshal::Marshaller& marshaller) const {
+    marshaller.write(::yield::marshal::StringLiteral("value"), get_value());
   }
 
-  void unmarshal( ::yield::marshal::Unmarshaller& unmarshaller ) {
-    value = unmarshaller.read_double( ::yield::marshal::StringLiteral( "value" ) );
+  void unmarshal(::yield::marshal::Unmarshaller& unmarshaller) {
+    value = unmarshaller.read_double(::yield::marshal::StringLiteral("value"));
   }
 
 protected:
@@ -374,7 +374,7 @@ public:
 public:
   virtual ~EmptyStruct() {  }
 
-  bool operator==( const EmptyStruct& ) const {
+  bool operator==(const EmptyStruct&) const {
     return true;
   }
 
@@ -386,11 +386,11 @@ public:
     return "EmptyStruct";
   }
   EmptyStruct& inc_ref() {
-    return ::yield::Object::inc_ref( *this );
+    return ::yield::Object::inc_ref(*this);
   }
 
-  void marshal( ::yield::marshal::Marshaller& ) const { }
-  void unmarshal( ::yield::marshal::Unmarshaller& ) { }
+  void marshal(::yield::marshal::Marshaller&) const { }
+  void unmarshal(::yield::marshal::Unmarshaller&) { }
 };
 
 
@@ -400,15 +400,15 @@ public:
 
 public:
   FloatStruct()
-    : value( 0 )
+    : value(0)
   { }
 
-  FloatStruct( float value )
-    : value( value )
+  FloatStruct(float value)
+    : value(value)
   { }
 
-  FloatStruct( const FloatStruct& other )
-    : value( other.get_value() )
+  FloatStruct(const FloatStruct& other)
+    : value(other.get_value())
   { }
 
   virtual ~FloatStruct() {  }
@@ -416,11 +416,11 @@ public:
   float get_value() const {
     return value;
   }
-  void set_value( float value ) {
+  void set_value(float value) {
     this->value = value;
   }
 
-  bool operator==( const FloatStruct& other ) const {
+  bool operator==(const FloatStruct& other) const {
     return get_value() == other.get_value();
   }
 
@@ -432,15 +432,15 @@ public:
     return "FloatStruct";
   }
   FloatStruct& inc_ref() {
-    return ::yield::Object::inc_ref( *this );
+    return ::yield::Object::inc_ref(*this);
   }
 
-  void marshal( ::yield::marshal::Marshaller& marshaller ) const {
-    marshaller.write( ::yield::marshal::StringLiteral( "value" ), get_value() );
+  void marshal(::yield::marshal::Marshaller& marshaller) const {
+    marshaller.write(::yield::marshal::StringLiteral("value"), get_value());
   }
 
-  void unmarshal( ::yield::marshal::Unmarshaller& unmarshaller ) {
-    value = unmarshaller.read_float( ::yield::marshal::StringLiteral( "value" ) );
+  void unmarshal(::yield::marshal::Unmarshaller& unmarshaller) {
+    value = unmarshaller.read_float(::yield::marshal::StringLiteral("value"));
   }
 
 protected:
@@ -454,15 +454,15 @@ public:
 
 public:
   Int8Struct()
-    : value( 0 )
+    : value(0)
   { }
 
-  Int8Struct( int8_t value )
-    : value( value )
+  Int8Struct(int8_t value)
+    : value(value)
   { }
 
-  Int8Struct( const Int8Struct& other )
-    : value( other.get_value() )
+  Int8Struct(const Int8Struct& other)
+    : value(other.get_value())
   { }
 
   virtual ~Int8Struct() {  }
@@ -470,11 +470,11 @@ public:
   int8_t get_value() const {
     return value;
   }
-  void set_value( int8_t value ) {
+  void set_value(int8_t value) {
     this->value = value;
   }
 
-  bool operator==( const Int8Struct& other ) const {
+  bool operator==(const Int8Struct& other) const {
     return get_value() == other.get_value();
   }
 
@@ -486,15 +486,15 @@ public:
     return "Int8Struct";
   }
   Int8Struct& inc_ref() {
-    return ::yield::Object::inc_ref( *this );
+    return ::yield::Object::inc_ref(*this);
   }
 
-  void marshal( ::yield::marshal::Marshaller& marshaller ) const {
-    marshaller.write( ::yield::marshal::StringLiteral( "value" ), get_value() );
+  void marshal(::yield::marshal::Marshaller& marshaller) const {
+    marshaller.write(::yield::marshal::StringLiteral("value"), get_value());
   }
 
-  void unmarshal( ::yield::marshal::Unmarshaller& unmarshaller ) {
-    value = unmarshaller.read_int8( ::yield::marshal::StringLiteral( "value" ) );
+  void unmarshal(::yield::marshal::Unmarshaller& unmarshaller) {
+    value = unmarshaller.read_int8(::yield::marshal::StringLiteral("value"));
   }
 
 protected:
@@ -508,15 +508,15 @@ public:
 
 public:
   Int16Struct()
-    : value( 0 )
+    : value(0)
   { }
 
-  Int16Struct( int16_t value )
-    : value( value )
+  Int16Struct(int16_t value)
+    : value(value)
   { }
 
-  Int16Struct( const Int16Struct& other )
-    : value( other.get_value() )
+  Int16Struct(const Int16Struct& other)
+    : value(other.get_value())
   { }
 
   virtual ~Int16Struct() {  }
@@ -524,11 +524,11 @@ public:
   int16_t get_value() const {
     return value;
   }
-  void set_value( int16_t value ) {
+  void set_value(int16_t value) {
     this->value = value;
   }
 
-  bool operator==( const Int16Struct& other ) const {
+  bool operator==(const Int16Struct& other) const {
     return get_value() == other.get_value();
   }
 
@@ -540,15 +540,15 @@ public:
     return "Int16Struct";
   }
   Int16Struct& inc_ref() {
-    return ::yield::Object::inc_ref( *this );
+    return ::yield::Object::inc_ref(*this);
   }
 
-  void marshal( ::yield::marshal::Marshaller& marshaller ) const {
-    marshaller.write( ::yield::marshal::StringLiteral( "value" ), get_value() );
+  void marshal(::yield::marshal::Marshaller& marshaller) const {
+    marshaller.write(::yield::marshal::StringLiteral("value"), get_value());
   }
 
-  void unmarshal( ::yield::marshal::Unmarshaller& unmarshaller ) {
-    value = unmarshaller.read_int16( ::yield::marshal::StringLiteral( "value" ) );
+  void unmarshal(::yield::marshal::Unmarshaller& unmarshaller) {
+    value = unmarshaller.read_int16(::yield::marshal::StringLiteral("value"));
   }
 
 protected:
@@ -562,15 +562,15 @@ public:
 
 public:
   Int32Struct()
-    : value( 0 )
+    : value(0)
   { }
 
-  Int32Struct( int32_t value )
-    : value( value )
+  Int32Struct(int32_t value)
+    : value(value)
   { }
 
-  Int32Struct( const Int32Struct& other )
-    : value( other.get_value() )
+  Int32Struct(const Int32Struct& other)
+    : value(other.get_value())
   { }
 
   virtual ~Int32Struct() {  }
@@ -578,11 +578,11 @@ public:
   int32_t get_value() const {
     return value;
   }
-  void set_value( int32_t value ) {
+  void set_value(int32_t value) {
     this->value = value;
   }
 
-  bool operator==( const Int32Struct& other ) const {
+  bool operator==(const Int32Struct& other) const {
     return get_value() == other.get_value();
   }
 
@@ -594,15 +594,15 @@ public:
     return "Int32Struct";
   }
   Int32Struct& inc_ref() {
-    return ::yield::Object::inc_ref( *this );
+    return ::yield::Object::inc_ref(*this);
   }
 
-  void marshal( ::yield::marshal::Marshaller& marshaller ) const {
-    marshaller.write( ::yield::marshal::StringLiteral( "value" ), get_value() );
+  void marshal(::yield::marshal::Marshaller& marshaller) const {
+    marshaller.write(::yield::marshal::StringLiteral("value"), get_value());
   }
 
-  void unmarshal( ::yield::marshal::Unmarshaller& unmarshaller ) {
-    value = unmarshaller.read_int32( ::yield::marshal::StringLiteral( "value" ) );
+  void unmarshal(::yield::marshal::Unmarshaller& unmarshaller) {
+    value = unmarshaller.read_int32(::yield::marshal::StringLiteral("value"));
   }
 
 protected:
@@ -616,15 +616,15 @@ public:
 
 public:
   Int64Struct()
-    : value( 0 )
+    : value(0)
   { }
 
-  Int64Struct( int64_t value )
-    : value( value )
+  Int64Struct(int64_t value)
+    : value(value)
   { }
 
-  Int64Struct( const Int64Struct& other )
-    : value( other.get_value() )
+  Int64Struct(const Int64Struct& other)
+    : value(other.get_value())
   { }
 
   virtual ~Int64Struct() {  }
@@ -632,11 +632,11 @@ public:
   int64_t get_value() const {
     return value;
   }
-  void set_value( int64_t value ) {
+  void set_value(int64_t value) {
     this->value = value;
   }
 
-  bool operator==( const Int64Struct& other ) const {
+  bool operator==(const Int64Struct& other) const {
     return get_value() == other.get_value();
   }
 
@@ -648,15 +648,15 @@ public:
     return "Int64Struct";
   }
   Int64Struct& inc_ref() {
-    return ::yield::Object::inc_ref( *this );
+    return ::yield::Object::inc_ref(*this);
   }
 
-  void marshal( ::yield::marshal::Marshaller& marshaller ) const {
-    marshaller.write( ::yield::marshal::StringLiteral( "value" ), get_value() );
+  void marshal(::yield::marshal::Marshaller& marshaller) const {
+    marshaller.write(::yield::marshal::StringLiteral("value"), get_value());
   }
 
-  void unmarshal( ::yield::marshal::Unmarshaller& unmarshaller ) {
-    value = unmarshaller.read_int64( ::yield::marshal::StringLiteral( "value" ) );
+  void unmarshal(::yield::marshal::Unmarshaller& unmarshaller) {
+    value = unmarshaller.read_int64(::yield::marshal::StringLiteral("value"));
   }
 
 protected:
@@ -668,15 +668,15 @@ class StringMap : public ::yield::marshal::Map, public std::map< ::yield::marsha
 public:
   virtual ~StringMap() { }
 
-  virtual bool operator==( const StringMap& other ) const {
-    if ( size() == other.size() ) {
+  virtual bool operator==(const StringMap& other) const {
+    if (size() == other.size()) {
       return true;
     } else
       return false;
   }
 
   // yield::marshal::Object
-  const static uint32_t TYPE_ID = static_cast<uint32_t>( 18 );
+  const static uint32_t TYPE_ID = static_cast<uint32_t>(18);
   uint32_t get_type_id() const {
     return TYPE_ID;
   }
@@ -684,21 +684,21 @@ public:
     return "StringMap";
   }
   StringMap& inc_ref() {
-    return ::yield::Object::inc_ref( *this );
+    return ::yield::Object::inc_ref(*this);
   }
 
-  void marshal( ::yield::marshal::Marshaller& marshaller ) const {
-    for ( const_iterator i = begin(); i != end(); i++ ) {
-      marshaller.write( i->first, i->second );
+  void marshal(::yield::marshal::Marshaller& marshaller) const {
+    for (const_iterator i = begin(); i != end(); i++) {
+      marshaller.write(i->first, i->second);
     }
   }
 
-  void unmarshal( ::yield::marshal::Unmarshaller& unmarshaller ) {
+  void unmarshal(::yield::marshal::Unmarshaller& unmarshaller) {
     ::yield::marshal::String key;
-    unmarshaller.read_key( key );
+    unmarshaller.read_key(key);
     std::string value;
-    unmarshaller.read_string( key, value );
-    ( *this )[key] = value;
+    unmarshaller.read_string(key, value);
+    (*this)[key] = value;
   }
 
   // yield::marshal::Map
@@ -715,12 +715,12 @@ public:
 public:
   StringMapStruct() { }
 
-  StringMapStruct( const yield::marshal::StringMap& value )
-    : value( value )
+  StringMapStruct(const yield::marshal::StringMap& value)
+    : value(value)
   { }
 
-  StringMapStruct( const StringMapStruct& other )
-    : value( other.get_value() )
+  StringMapStruct(const StringMapStruct& other)
+    : value(other.get_value())
   { }
 
   virtual ~StringMapStruct() {  }
@@ -728,11 +728,11 @@ public:
   const yield::marshal::StringMap& get_value() const {
     return value;
   }
-  void set_value( const yield::marshal::StringMap&  value ) {
+  void set_value(const yield::marshal::StringMap&  value) {
     this->value = value;
   }
 
-  bool operator==( const StringMapStruct& other ) const {
+  bool operator==(const StringMapStruct& other) const {
     return get_value() == other.get_value();
   }
 
@@ -744,15 +744,15 @@ public:
     return "StringMapStruct";
   }
   StringMapStruct& inc_ref() {
-    return ::yield::Object::inc_ref( *this );
+    return ::yield::Object::inc_ref(*this);
   }
 
-  void marshal( ::yield::marshal::Marshaller& marshaller ) const {
-    marshaller.write( ::yield::marshal::StringLiteral( "value" ), get_value() );
+  void marshal(::yield::marshal::Marshaller& marshaller) const {
+    marshaller.write(::yield::marshal::StringLiteral("value"), get_value());
   }
 
-  void unmarshal( ::yield::marshal::Unmarshaller& unmarshaller ) {
-    unmarshaller.read_map( ::yield::marshal::StringLiteral( "value" ), value );
+  void unmarshal(::yield::marshal::Unmarshaller& unmarshaller) {
+    unmarshaller.read_map(::yield::marshal::StringLiteral("value"), value);
   }
 
 protected:
@@ -764,21 +764,21 @@ class StringSet : public ::yield::marshal::Sequence, public std::vector< std::st
 public:
   StringSet() { }
 
-  StringSet( const std::string& first_value ) {
-    vector<std::string>::push_back( first_value );
+  StringSet(const std::string& first_value) {
+    vector<std::string>::push_back(first_value);
   }
 
-  StringSet( size_type size )
-    : vector<std::string>( size )
+  StringSet(size_type size)
+    : vector<std::string>(size)
   { }
 
   virtual ~StringSet() { }
 
-  virtual bool operator==( const StringSet& other ) const {
-    if ( size() == other.size() ) {
+  virtual bool operator==(const StringSet& other) const {
+    if (size() == other.size()) {
       size_t i_max = size();
-      for ( size_t i = 0; i < i_max; i++ ) {
-        if ( !( ( *this )[i] == other[i] ) )
+      for (size_t i = 0; i < i_max; i++) {
+        if (!((*this)[i] == other[i]))
           return false;
       }
 
@@ -788,7 +788,7 @@ public:
   }
 
   // yield::Object
-  const static uint32_t TYPE_ID = static_cast<uint32_t>( 20 );
+  const static uint32_t TYPE_ID = static_cast<uint32_t>(20);
   uint32_t get_type_id() const {
     return TYPE_ID;
   }
@@ -796,21 +796,21 @@ public:
     return "StringSet";
   }
   StringSet& inc_ref() {
-    return ::yield::Object::inc_ref( *this );
+    return ::yield::Object::inc_ref(*this);
   }
 
   // yield::marshal::Object
-  void marshal( ::yield::marshal::Marshaller& marshaller ) const {
+  void marshal(::yield::marshal::Marshaller& marshaller) const {
     size_type value_i_max = size();
-    for ( size_type value_i = 0; value_i < value_i_max; value_i++ ) {
-      marshaller.write( ::yield::marshal::Null(), ( *this )[value_i] );
+    for (size_type value_i = 0; value_i < value_i_max; value_i++) {
+      marshaller.write(::yield::marshal::Null(), (*this)[value_i]);
     }
   }
 
-  void unmarshal( ::yield::marshal::Unmarshaller& unmarshaller ) {
+  void unmarshal(::yield::marshal::Unmarshaller& unmarshaller) {
     std::string value;
-    unmarshaller.read_string( ::yield::marshal::Null(), value );
-    push_back( value );
+    unmarshaller.read_string(::yield::marshal::Null(), value);
+    push_back(value);
   }
 
   // yield::marshal::Sequence
@@ -827,12 +827,12 @@ public:
 public:
   StringSetStruct() { }
 
-  StringSetStruct( const yield::marshal::StringSet& value )
-    : value( value )
+  StringSetStruct(const yield::marshal::StringSet& value)
+    : value(value)
   { }
 
-  StringSetStruct( const StringSetStruct& other )
-    : value( other.get_value() )
+  StringSetStruct(const StringSetStruct& other)
+    : value(other.get_value())
   { }
 
   virtual ~StringSetStruct() {  }
@@ -840,11 +840,11 @@ public:
   const yield::marshal::StringSet& get_value() const {
     return value;
   }
-  void set_value( const yield::marshal::StringSet&  value ) {
+  void set_value(const yield::marshal::StringSet&  value) {
     this->value = value;
   }
 
-  bool operator==( const StringSetStruct& other ) const {
+  bool operator==(const StringSetStruct& other) const {
     return get_value() == other.get_value();
   }
 
@@ -856,15 +856,15 @@ public:
     return "StringSetStruct";
   }
   StringSetStruct& inc_ref() {
-    return ::yield::Object::inc_ref( *this );
+    return ::yield::Object::inc_ref(*this);
   }
 
-  void marshal( ::yield::marshal::Marshaller& marshaller ) const {
-    marshaller.write( ::yield::marshal::StringLiteral( "value" ), get_value() );
+  void marshal(::yield::marshal::Marshaller& marshaller) const {
+    marshaller.write(::yield::marshal::StringLiteral("value"), get_value());
   }
 
-  void unmarshal( ::yield::marshal::Unmarshaller& unmarshaller ) {
-    unmarshaller.read_sequence( ::yield::marshal::StringLiteral( "value" ), value );
+  void unmarshal(::yield::marshal::Unmarshaller& unmarshaller) {
+    unmarshaller.read_sequence(::yield::marshal::StringLiteral("value"), value);
   }
 
 protected:
@@ -879,12 +879,12 @@ public:
 public:
   StringStruct() { }
 
-  StringStruct( const std::string& value )
-    : value( value )
+  StringStruct(const std::string& value)
+    : value(value)
   { }
 
-  StringStruct( const StringStruct& other )
-    : value( other.get_value() )
+  StringStruct(const StringStruct& other)
+    : value(other.get_value())
   { }
 
   virtual ~StringStruct() {  }
@@ -892,11 +892,11 @@ public:
   const std::string& get_value() const {
     return value;
   }
-  void set_value( const std::string& value ) {
+  void set_value(const std::string& value) {
     this->value = value;
   }
 
-  bool operator==( const StringStruct& other ) const {
+  bool operator==(const StringStruct& other) const {
     return get_value() == other.get_value();
   }
 
@@ -908,15 +908,15 @@ public:
     return "StringStruct";
   }
   StringStruct& inc_ref() {
-    return ::yield::Object::inc_ref( *this );
+    return ::yield::Object::inc_ref(*this);
   }
 
-  void marshal( ::yield::marshal::Marshaller& marshaller ) const {
-    marshaller.write( ::yield::marshal::StringLiteral( "value" ), get_value() );
+  void marshal(::yield::marshal::Marshaller& marshaller) const {
+    marshaller.write(::yield::marshal::StringLiteral("value"), get_value());
   }
 
-  void unmarshal( ::yield::marshal::Unmarshaller& unmarshaller ) {
-    unmarshaller.read_string( ::yield::marshal::StringLiteral( "value" ), value );
+  void unmarshal(::yield::marshal::Unmarshaller& unmarshaller) {
+    unmarshaller.read_string(::yield::marshal::StringLiteral("value"), value);
   }
 
 protected:
@@ -930,15 +930,15 @@ public:
 
 public:
   Uint8Struct()
-    : value( 0 )
+    : value(0)
   { }
 
-  Uint8Struct( uint8_t value )
-    : value( value )
+  Uint8Struct(uint8_t value)
+    : value(value)
   { }
 
-  Uint8Struct( const Uint8Struct& other )
-    : value( other.get_value() )
+  Uint8Struct(const Uint8Struct& other)
+    : value(other.get_value())
   { }
 
   virtual ~Uint8Struct() {  }
@@ -946,11 +946,11 @@ public:
   uint8_t get_value() const {
     return value;
   }
-  void set_value( uint8_t value ) {
+  void set_value(uint8_t value) {
     this->value = value;
   }
 
-  bool operator==( const Uint8Struct& other ) const {
+  bool operator==(const Uint8Struct& other) const {
     return get_value() == other.get_value();
   }
 
@@ -962,15 +962,15 @@ public:
     return "Uint8Struct";
   }
   Uint8Struct& inc_ref() {
-    return ::yield::Object::inc_ref( *this );
+    return ::yield::Object::inc_ref(*this);
   }
 
-  void marshal( ::yield::marshal::Marshaller& marshaller ) const {
-    marshaller.write( ::yield::marshal::StringLiteral( "value" ), get_value() );
+  void marshal(::yield::marshal::Marshaller& marshaller) const {
+    marshaller.write(::yield::marshal::StringLiteral("value"), get_value());
   }
 
-  void unmarshal( ::yield::marshal::Unmarshaller& unmarshaller ) {
-    value = unmarshaller.read_uint8( ::yield::marshal::StringLiteral( "value" ) );
+  void unmarshal(::yield::marshal::Unmarshaller& unmarshaller) {
+    value = unmarshaller.read_uint8(::yield::marshal::StringLiteral("value"));
   }
 
 protected:
@@ -984,15 +984,15 @@ public:
 
 public:
   Uint16Struct()
-    : value( 0 )
+    : value(0)
   { }
 
-  Uint16Struct( uint16_t value )
-    : value( value )
+  Uint16Struct(uint16_t value)
+    : value(value)
   { }
 
-  Uint16Struct( const Uint16Struct& other )
-    : value( other.get_value() )
+  Uint16Struct(const Uint16Struct& other)
+    : value(other.get_value())
   { }
 
   virtual ~Uint16Struct() {  }
@@ -1000,11 +1000,11 @@ public:
   uint16_t get_value() const {
     return value;
   }
-  void set_value( uint16_t value ) {
+  void set_value(uint16_t value) {
     this->value = value;
   }
 
-  bool operator==( const Uint16Struct& other ) const {
+  bool operator==(const Uint16Struct& other) const {
     return get_value() == other.get_value();
   }
 
@@ -1016,15 +1016,15 @@ public:
     return "Uint16Struct";
   }
   Uint16Struct& inc_ref() {
-    return ::yield::Object::inc_ref( *this );
+    return ::yield::Object::inc_ref(*this);
   }
 
-  void marshal( ::yield::marshal::Marshaller& marshaller ) const {
-    marshaller.write( ::yield::marshal::StringLiteral( "value" ), get_value() );
+  void marshal(::yield::marshal::Marshaller& marshaller) const {
+    marshaller.write(::yield::marshal::StringLiteral("value"), get_value());
   }
 
-  void unmarshal( ::yield::marshal::Unmarshaller& unmarshaller ) {
-    value = unmarshaller.read_uint16( ::yield::marshal::StringLiteral( "value" ) );
+  void unmarshal(::yield::marshal::Unmarshaller& unmarshaller) {
+    value = unmarshaller.read_uint16(::yield::marshal::StringLiteral("value"));
   }
 
 protected:
@@ -1038,15 +1038,15 @@ public:
 
 public:
   Uint32Struct()
-    : value( 0 )
+    : value(0)
   { }
 
-  Uint32Struct( uint32_t value )
-    : value( value )
+  Uint32Struct(uint32_t value)
+    : value(value)
   { }
 
-  Uint32Struct( const Uint32Struct& other )
-    : value( other.get_value() )
+  Uint32Struct(const Uint32Struct& other)
+    : value(other.get_value())
   { }
 
   virtual ~Uint32Struct() {  }
@@ -1054,11 +1054,11 @@ public:
   uint32_t get_value() const {
     return value;
   }
-  void set_value( uint32_t value ) {
+  void set_value(uint32_t value) {
     this->value = value;
   }
 
-  bool operator==( const Uint32Struct& other ) const {
+  bool operator==(const Uint32Struct& other) const {
     return get_value() == other.get_value();
   }
 
@@ -1070,15 +1070,15 @@ public:
     return "Uint32Struct";
   }
   Uint32Struct& inc_ref() {
-    return ::yield::Object::inc_ref( *this );
+    return ::yield::Object::inc_ref(*this);
   }
 
-  void marshal( ::yield::marshal::Marshaller& marshaller ) const {
-    marshaller.write( ::yield::marshal::StringLiteral( "value" ), get_value() );
+  void marshal(::yield::marshal::Marshaller& marshaller) const {
+    marshaller.write(::yield::marshal::StringLiteral("value"), get_value());
   }
 
-  void unmarshal( ::yield::marshal::Unmarshaller& unmarshaller ) {
-    value = unmarshaller.read_uint32( ::yield::marshal::StringLiteral( "value" ) );
+  void unmarshal(::yield::marshal::Unmarshaller& unmarshaller) {
+    value = unmarshaller.read_uint32(::yield::marshal::StringLiteral("value"));
   }
 
 protected:
@@ -1092,15 +1092,15 @@ public:
 
 public:
   Uint64Struct()
-    : value( 0 )
+    : value(0)
   { }
 
-  Uint64Struct( uint64_t value )
-    : value( value )
+  Uint64Struct(uint64_t value)
+    : value(value)
   { }
 
-  Uint64Struct( const Uint64Struct& other )
-    : value( other.get_value() )
+  Uint64Struct(const Uint64Struct& other)
+    : value(other.get_value())
   { }
 
   virtual ~Uint64Struct() {  }
@@ -1108,11 +1108,11 @@ public:
   uint64_t get_value() const {
     return value;
   }
-  void set_value( uint64_t value ) {
+  void set_value(uint64_t value) {
     this->value = value;
   }
 
-  bool operator==( const Uint64Struct& other ) const {
+  bool operator==(const Uint64Struct& other) const {
     return get_value() == other.get_value();
   }
 
@@ -1124,15 +1124,15 @@ public:
     return "Uint64Struct";
   }
   Uint64Struct& inc_ref() {
-    return ::yield::Object::inc_ref( *this );
+    return ::yield::Object::inc_ref(*this);
   }
 
-  void marshal( ::yield::marshal::Marshaller& marshaller ) const {
-    marshaller.write( ::yield::marshal::StringLiteral( "value" ), get_value() );
+  void marshal(::yield::marshal::Marshaller& marshaller) const {
+    marshaller.write(::yield::marshal::StringLiteral("value"), get_value());
   }
 
-  void unmarshal( ::yield::marshal::Unmarshaller& unmarshaller ) {
-    value = unmarshaller.read_uint64( ::yield::marshal::StringLiteral( "value" ) );
+  void unmarshal(::yield::marshal::Unmarshaller& unmarshaller) {
+    value = unmarshaller.read_uint64(::yield::marshal::StringLiteral("value"));
   }
 
 protected:

@@ -41,15 +41,15 @@ namespace fs {
 namespace darwin {
 class ExtendedAttributes : public yield::fs::ExtendedAttributes {
 public:
-  ExtendedAttributes( fd_t fd );
-  ExtendedAttributes( const Path& path );
+  ExtendedAttributes(fd_t fd);
+  ExtendedAttributes(const Path& path);
   ~ExtendedAttributes();
 
   // ExtendedAttributes
-  ssize_t get( const char* name, void* value, size_t size );
-  bool list( vector<string>& out_names );
-  bool remove( const char* name );
-  bool set( const char* name, const void* value, size_t size, int flags );
+  ssize_t get(const char* name, void* value, size_t size);
+  bool list(vector<string>& out_names);
+  bool remove(const char* name);
+  bool set(const char* name, const void* value, size_t size, int flags);
 
 private:
   fd_t fd;

@@ -49,7 +49,7 @@ public:
       bool require_argument = true
     );
 
-    Option( const string& option, bool require_argument = true );
+    Option(const string& option, bool require_argument = true);
 
     const string& get_help() const {
       return help;
@@ -58,16 +58,16 @@ public:
       return require_argument;
     }
 
-    operator const char*() const {
+    operator const char* () const {
       return option.c_str();
     }
-    operator const string&() const {
+    operator const string& () const {
       return option;
     }
-    bool operator==( const string& option ) const;
-    bool operator==( const char* option ) const;
-    bool operator==( const Option& other ) const;
-    bool operator<( const Option& other ) const; // For sorting
+    bool operator==(const string& option) const;
+    bool operator==(const char* option) const;
+    bool operator==(const Option& other) const;
+    bool operator<(const Option& other) const;   // For sorting
 
   private:
     string help, option;
@@ -83,15 +83,15 @@ public:
       bool require_argument = true
     );
 
-    void add( const string& option, bool require_argument = true );
-    void add( const Option& option );
-    void add( const Options& options );
+    void add(const string& option, bool require_argument = true);
+    void add(const Option& option);
+    void add(const Options& options);
   };
 
   class ParsedOption : public Option {
   public:
-    ParsedOption( Option& option );
-    ParsedOption( Option& option, const string& argument );
+    ParsedOption(Option& option);
+    ParsedOption(Option& option, const string& argument);
 
     const string& get_argument() const {
       return argument;
@@ -112,9 +112,9 @@ public:
     bool require_argument = true
   );
 
-  void add_option( const string& option, bool require_argument = true );
-  void add_option( const Option& option );
-  void add_options( const Options& options );
+  void add_option(const string& option, bool require_argument = true);
+  void add_option(const Option& option);
+  void add_options(const Options& options);
 
   void
   parse_args

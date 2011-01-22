@@ -55,10 +55,10 @@ public:
   EventHandler* get_response_handler() const {
     return response_handler;
   }
-  virtual void respond( Response& response );
+  virtual void respond(Response& response);
   // void set_credentials( YO_NEW_REF MarshallableObject* credentials );
-  void set_response_handler( YO_NEW_REF EventHandler* response_handler );
-  void set_response_handler( EventHandler& response_handler );
+  void set_response_handler(YO_NEW_REF EventHandler* response_handler);
+  void set_response_handler(EventHandler& response_handler);
 
   // Object
   virtual uint32_t get_type_id() const {
@@ -68,7 +68,7 @@ public:
     return "yield::Request";
   }
   Request& inc_ref() {
-    return Object::inc_ref( *this );
+    return Object::inc_ref(*this);
   }
 
   // Message

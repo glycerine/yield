@@ -47,8 +47,8 @@ namespace http {
 using yield::net::sockets::SocketAddress;
 
 
-AccessLog::AccessLog( Format& format )
-  : format( format )
+AccessLog::AccessLog(Format& format)
+  : format(format)
 { }
 
 AccessLog::~AccessLog() {
@@ -63,7 +63,7 @@ AccessLog::CombinedFormat::operator()
   const HTTPResponse& http_response
 ) const {
   string common_entry
-  = CommonFormat::operator()( http_request, http_response );
+  = CommonFormat::operator()(http_request, http_response);
 
   return common_entry;
 }
@@ -90,7 +90,7 @@ AccessLog::CommonFormat::operator()
 #ifdef _WIN32
     SYSTEMTIME local_system_time = http_request.get_creation_date_time();
     TIME_ZONE_INFORMATION time_zone_information;
-    GetTimeZoneInformation( &time_zone_information );
+    GetTimeZoneInformation(&time_zone_information);
 
     // 10/Oct/2000:13:55:36 -0700
     _snprintf_s
@@ -100,12 +100,12 @@ AccessLog::CommonFormat::operator()
       _TRUNCATE,
       "[%02d/%s/%04d:%02d:%02d:%02d %+0.4d]",
       local_system_time.wDay,
-      Months[local_system_time.wMonth-1],
+      Months[local_system_time.wMonth - 1],
       local_system_time.wYear,
       local_system_time.wHour,
       local_system_time.wMinute,
       local_system_time.wSecond,
-      ( time_zone_information.Bias / 60 ) * -100
+      (time_zone_information.Bias / 60) * -100
     );
 #else
     tm local_tm = DateTime::now();
@@ -127,9 +127,9 @@ AccessLog::CommonFormat::operator()
   }
 
   const char* request_http_version;
-  if ( http_request.get_http_version() == 1.0 )
+  if (http_request.get_http_version() == 1.0)
     request_http_version = "1.0";
-  else if ( http_request.get_http_version() == 1.1 )
+  else if (http_request.get_http_version() == 1.1)
     request_http_version = "1.1";
   else
     DebugBreak();
@@ -145,7 +145,7 @@ AccessLog::CommonFormat::operator()
   entry << "HTTP/" << request_http_version;
   entry << "\" ";
   entry << http_response.get_status_code() << " ";
-  if ( http_response.get_body() != NULL )
+  if (http_response.get_body() != NULL)
     entry << http_response.get_content_length();
   else
     entry << "-";

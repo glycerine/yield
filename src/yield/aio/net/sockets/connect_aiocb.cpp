@@ -49,20 +49,20 @@ connectAIOCB::connectAIOCB
   SocketAddress& peername,
   YO_NEW_REF Buffer* send_buffer
 )
-  : AIOCB( socket_, NULL, 0 ),
-    peername( peername.inc_ref() ),
-    send_buffer( send_buffer )
+  : AIOCB(socket_, NULL, 0),
+    peername(peername.inc_ref()),
+    send_buffer(send_buffer)
 { }
 
-connectAIOCB::connectAIOCB( connectAIOCB& other )
-  : AIOCB( other.get_socket(), NULL, 0 ),
-    peername( other.peername.inc_ref() ),
-    send_buffer( Object::inc_ref( other.send_buffer ) )
+connectAIOCB::connectAIOCB(connectAIOCB& other)
+  : AIOCB(other.get_socket(), NULL, 0),
+    peername(other.peername.inc_ref()),
+    send_buffer(Object::inc_ref(other.send_buffer))
 { }
 
 connectAIOCB::~connectAIOCB() {
-  SocketAddress::dec_ref( peername );
-  Buffer::dec_ref( send_buffer );
+  SocketAddress::dec_ref(peername);
+  Buffer::dec_ref(send_buffer);
 }
 
 const SocketAddress& connectAIOCB::get_peername() const {
@@ -70,17 +70,17 @@ const SocketAddress& connectAIOCB::get_peername() const {
 }
 
 connectAIOCB::RetryStatus connectAIOCB::retry() {
-  debug_assert_eq( get_send_buffer(), NULL ); // Not implemented yet
+  debug_assert_eq(get_send_buffer(), NULL);   // Not implemented yet
 
-  StreamSocket& socket_ = static_cast<StreamSocket&>( get_socket() );
+  StreamSocket& socket_ = static_cast<StreamSocket&>(get_socket());
 
-  if ( socket_.connect( get_peername() ) ) {
-    set_return( 0 );
+  if (socket_.connect(get_peername())) {
+    set_return(0);
     return RETRY_STATUS_COMPLETE;
-  } else if ( socket_.want_connect() )
+  } else if (socket_.want_connect())
     return RETRY_STATUS_WANT_WRITE;
   else {
-    set_error( Exception::get_last_error_code() );
+    set_error(Exception::get_last_error_code());
     return RETRY_STATUS_ERROR;
   }
 }

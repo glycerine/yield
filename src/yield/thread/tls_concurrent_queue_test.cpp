@@ -32,4 +32,4 @@
 #include "yield/thread/tls_concurrent_queue.hpp"
 
 
-TEST_SUITE_EX( TLSConcurrentQueue, yield::thread::QueueTestSuite< yield::thread::TLSConcurrentQueue<uint32_t> > );
+TEST_SUITE_EX(TLSConcurrentQueue, yield::thread::QueueTestSuite< yield::thread::TLSConcurrentQueue<uint32_t> >);

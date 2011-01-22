@@ -43,20 +43,20 @@ class tstring : public wstring {
 public:
   tstring() { }
 
-  tstring( char s, Code code = Code::CHAR );
-  tstring( const char* s, Code code = Code::CHAR );
-  tstring( const string& s, Code code = Code::CHAR );
-  tstring( const char* s, size_t len, Code code = Code::CHAR );
+  tstring(char s, Code code = Code::CHAR);
+  tstring(const char* s, Code code = Code::CHAR);
+  tstring(const string& s, Code code = Code::CHAR);
+  tstring(const char* s, size_t len, Code code = Code::CHAR);
 
-  tstring( wchar_t s );
-  tstring( const wchar_t* s );
-  tstring( const wchar_t* s, size_t len );
-  tstring( const wstring& s );
+  tstring(wchar_t s);
+  tstring(const wchar_t* s);
+  tstring(const wchar_t* s, size_t len);
+  tstring(const wstring& s);
 
-  string encode( Code tocode ) const;
+  string encode(Code tocode) const;
 
 private:
-  void init( const char*, size_t, Code );
+  void init(const char*, size_t, Code);
 };
 }
 }

@@ -34,8 +34,8 @@
 namespace yield {
 namespace fs {
 namespace posix {
-Directory::Directory( DIR* dirp, const Path& path )
-  : dirp( dirp ), path( path )
+Directory::Directory(DIR* dirp, const Path& path)
+  : dirp(dirp), path(path)
 { }
 
 Directory::~Directory() {
@@ -43,17 +43,17 @@ Directory::~Directory() {
 }
 
 bool Directory::close() {
-  if ( dirp != NULL ) {
-    closedir( dirp );
+  if (dirp != NULL) {
+    closedir(dirp);
     dirp = NULL;
     return true;
   } else
     return false;
 }
 
-yield::fs::Directory::Entry* Directory::read( Entry::Type types ) {
+yield::fs::Directory::Entry* Directory::read(Entry::Type types) {
   Entry* entry = new Entry;
-  if ( read( *entry, types ) )
+  if (read(*entry, types))
     return entry;
   else {
     delete entry;
@@ -67,13 +67,13 @@ bool Directory::read
   Entry::Type types
 ) {
   dirent* dirent_;
-  while ( ( dirent_ = readdir( dirp ) ) != NULL ) {
-    static_cast<Entry&>( entry ) = *dirent_; // To set entry.name
+  while ((dirent_ = readdir(dirp)) != NULL) {
+    static_cast<Entry&>(entry) = *dirent_;   // To set entry.name
 
     struct stat stbuf;
-    if ( stat( ( path / entry.get_name() ).c_str(), &stbuf ) != -1 ) {
-      static_cast<Entry&>( entry ) = stbuf;
-      if ( ( entry.get_type() & types ) == entry.get_type() )
+    if (stat((path / entry.get_name()).c_str(), &stbuf) != -1) {
+      static_cast<Entry&>(entry) = stbuf;
+      if ((entry.get_type() & types) == entry.get_type())
         return true;
     }
   }
@@ -82,7 +82,7 @@ bool Directory::read
 }
 
 void Directory::rewind() {
-  rewinddir( dirp );
+  rewinddir(dirp);
 }
 
 
@@ -96,12 +96,12 @@ bool Directory::Entry::is_special() const {
          get_name() == Path::PARENT_DIRECTORY;
 }
 
-Directory::Entry& Directory::Entry::operator=( const dirent& dirent_ ) {
-  this->name = Path( dirent_.d_name );
+Directory::Entry& Directory::Entry::operator=(const dirent& dirent_) {
+  this->name = Path(dirent_.d_name);
   return *this;
 }
 
-Directory::Entry& Directory::Entry::operator=( const struct stat& stbuf ) {
+Directory::Entry& Directory::Entry::operator=(const struct stat& stbuf) {
   this->stbuf = stbuf;
   return *this;
 }

@@ -52,15 +52,15 @@ public:
   AIOQueue();
   ~AIOQueue();
 
-  bool associate( fd_t ) {
+  bool associate(fd_t) {
     return true;
   }
-  bool enqueue( YO_NEW_REF AIOCB& aiocb );
+  bool enqueue(YO_NEW_REF AIOCB& aiocb);
 
   // yield::EventQueue
   YO_NEW_REF Event& dequeue();
-  YO_NEW_REF Event* dequeue( const Time& timeout );
-  bool enqueue( YO_NEW_REF Event& event );
+  YO_NEW_REF Event* dequeue(const Time& timeout);
+  bool enqueue(YO_NEW_REF Event& event);
   YO_NEW_REF Event* trydequeue();
 
 private:

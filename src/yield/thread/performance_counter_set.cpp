@@ -51,19 +51,19 @@ PerformanceCounterSet::~PerformanceCounterSet() {
   delete pimpl;
 }
 
-bool PerformanceCounterSet::add( Event event ) {
-  return pimpl->add( event );
+bool PerformanceCounterSet::add(Event event) {
+  return pimpl->add(event);
 }
 
-bool PerformanceCounterSet::add( const char* event ) {
-  return pimpl->add( event );
+bool PerformanceCounterSet::add(const char* event) {
+  return pimpl->add(event);
 }
 
 void PerformanceCounterSet::start_counting() {
   pimpl->start_counting();
 }
 
-void PerformanceCounterSet::stop_counting( uint64_t* counts ) {
+void PerformanceCounterSet::stop_counting(uint64_t* counts) {
   pimpl->stop_counting();
 }
 #endif

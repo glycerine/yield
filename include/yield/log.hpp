@@ -45,30 +45,30 @@ class Log : public Object {
 public:
   class Level {
   public:
-    Level( const char* level );
-    Level( const string& level );
-    Level( uint8_t level );
-    Level( const char* level_string, uint8_t level_uint8 );
-    Level( const Level& other );
+    Level(const char* level);
+    Level(const string& level);
+    Level(uint8_t level);
+    Level(const char* level_string, uint8_t level_uint8);
+    Level(const Level& other);
 
-    operator const string&() const {
+    operator const string& () const {
       return level_string;
     }
-    operator const char*() const {
+    operator const char* () const {
       return level_string.c_str();
     }
     inline operator uint8_t() const {
       return level_uint8;
     }
 
-    bool operator<( const Level& other ) const;
-    bool operator<=( const Level& other ) const;
-    bool operator==( const Level& other ) const;
-    bool operator>( const Level& other ) const;
-    bool operator>=( const Level& other ) const;
+    bool operator<(const Level& other) const;
+    bool operator<=(const Level& other) const;
+    bool operator==(const Level& other) const;
+    bool operator>(const Level& other) const;
+    bool operator>=(const Level& other) const;
 
   private:
-    void init( const char* level, size_t level_len );
+    void init(const char* level, size_t level_len);
 
   private:
     string level_string;
@@ -78,13 +78,13 @@ public:
 
   class Stream {
   public:
-    Stream( Log& log, Level );
-    Stream( const Stream& other );
+    Stream(Log& log, Level);
+    Stream(const Stream& other);
     ~Stream();
 
     template <typename T>
-    Stream& operator<<( T t ) {
-      if ( level <= log.get_level() )
+    Stream& operator<<(T t) {
+      if (level <= log.get_level())
         oss << t;
       return *this;
     }
@@ -113,34 +113,34 @@ public:
     return level;
   }
   Stream get_stream() {
-    return Stream( inc_ref(), level );
+    return Stream(inc_ref(), level);
   }
-  Stream get_stream( Level level ) {
-    return Stream( inc_ref(), level );
+  Stream get_stream(Level level) {
+    return Stream(inc_ref(), level);
   }
 
-  static YO_NEW_REF Log& open( std::ostream&, const Level& = ERR );
+  static YO_NEW_REF Log& open(std::ostream&, const Level& = ERR);
 
-  void write( const char*, const Level& );
-  void write( const string&, const Level& );
-  void write( const void*, size_t, const Level& );
-  void write( const uint8_t*, size_t, const Level& );
-  void write( const char*, size_t, const Level& );
-  void write( const Buffer&, const Level& );
+  void write(const char*, const Level&);
+  void write(const string&, const Level&);
+  void write(const void*, size_t, const Level&);
+  void write(const uint8_t*, size_t, const Level&);
+  void write(const char*, size_t, const Level&);
+  void write(const Buffer&, const Level&);
 
   // Object
   Log& inc_ref() {
-    return Object::inc_ref( *this );
+    return Object::inc_ref(*this);
   }
 
 protected:
-  Log( const Level& level );
+  Log(const Level& level);
 
-  virtual void write( const char*, size_t ) = 0;
+  virtual void write(const char*, size_t) = 0;
 
 private:
-  void write( const void*, size_t );
-  void write( const uint8_t*, size_t );
+  void write(const void*, size_t);
+  void write(const uint8_t*, size_t);
 
 private:
   Level level;

@@ -34,8 +34,8 @@
 
 namespace yield {
 namespace thread {
-long SystemConfiguration::operator()( Variable variable ) {
-  switch ( variable ) {
+long SystemConfiguration::operator()(Variable variable) {
+  switch (variable) {
   case ONLINE_LOGICAL_PROCESSOR_COUNT:
   case ONLINE_PHYSICAL_PROCESSOR_COUNT: {
     host_basic_info_data_t basic_info;
@@ -43,7 +43,7 @@ long SystemConfiguration::operator()( Variable variable ) {
     host_flavor_t flavor = HOST_BASIC_INFO;
     mach_msg_type_number_t count = HOST_BASIC_INFO_COUNT;
 
-    if ( host_info( mach_host_self(), flavor, info, &count ) == KERN_SUCCESS )
+    if (host_info(mach_host_self(), flavor, info, &count) == KERN_SUCCESS)
       return basic_info.avail_cpus;
     else
       return -1;

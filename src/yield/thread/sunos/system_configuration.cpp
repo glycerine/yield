@@ -36,14 +36,14 @@
 
 namespace yield {
 namespace thread {
-long SystemConfiguration::operator()( Variable variable ) {
-  switch ( variable ) {
+long SystemConfiguration::operator()(Variable variable) {
+  switch (variable) {
   case ONLINE_LOGICAL_PROCESSOR_COUNT: {
     long online_logical_processor_count = 0;
 
-    processorid_t cpuid_max = sysconf( _SC_CPUID_MAX );
-    for ( processorid_t cpuid_i = 0; cpuid_i <= cpuid_max; cpuid_i++) {
-      if ( p_online( cpuid_i, P_STATUS ) == P_ONLINE )
+    processorid_t cpuid_max = sysconf(_SC_CPUID_MAX);
+    for (processorid_t cpuid_i = 0; cpuid_i <= cpuid_max; cpuid_i++) {
+      if (p_online(cpuid_i, P_STATUS) == P_ONLINE)
         online_logical_processor_count++;
     }
 
@@ -54,18 +54,18 @@ long SystemConfiguration::operator()( Variable variable ) {
     kstat_ctl_t* kc;
 
     kc = kstat_open();
-    if ( kc ) {
+    if (kc) {
       long online_physical_processor_count = 1;
 
-      kstat* ksp = kstat_lookup( kc, "cpu_info", -1, NULL );
+      kstat* ksp = kstat_lookup(kc, "cpu_info", -1, NULL);
       int32_t last_core_id = 0;
-      while ( ksp ) {
-        kstat_read( kc, ksp, NULL );
+      while (ksp) {
+        kstat_read(kc, ksp, NULL);
         kstat_named_t* knp;
-        knp = ( kstat_named_t* )kstat_data_lookup( ksp, "core_id" );
-        if ( knp ) {
+        knp = (kstat_named_t*)kstat_data_lookup(ksp, "core_id");
+        if (knp) {
           int32_t this_core_id = knp->value.i32;
-          if ( this_core_id != last_core_id ) {
+          if (this_core_id != last_core_id) {
             online_physical_processor_count++;
             last_core_id = this_core_id;
           }
@@ -73,7 +73,7 @@ long SystemConfiguration::operator()( Variable variable ) {
         ksp = ksp->ks_next;
       }
 
-      kstat_close( kc );
+      kstat_close(kc);
 
       return online_physical_processor_count;
     } else

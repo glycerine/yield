@@ -54,7 +54,7 @@ public:
 public:
   ~SSLContext();
 
-  static YO_NEW_REF SSLContext& create( const SSL_METHOD* );
+  static YO_NEW_REF SSLContext& create(const SSL_METHOD*);
 
   static YO_NEW_REF SSLContext&
   create
@@ -91,25 +91,25 @@ public:
     const string& pkcs12_passphrase
   );
 
-  operator SSL_CTX*() const {
+  operator SSL_CTX* () const {
     return &ctx;
   }
 
   // Object
   SSLContext& inc_ref() {
-    return Object::inc_ref( *this );
+    return Object::inc_ref(*this);
   }
 
 private:
-  SSLContext( SSL_CTX& ctx );
+  SSLContext(SSL_CTX& ctx);
 
-  static SSL_CTX& createSSL_CTX( const SSL_METHOD* );
-  static int pem_password_callback( char*, int, int, void* );
-  static void use_pem_certificate( SSL_CTX&, const string& certificate );
-  static void use_pem_certificate( SSL_CTX&, const Path& file_path );
-  static void use_pem_private_key( SSL_CTX&, const string&, const string& );
-  static void use_pem_private_key( SSL_CTX&, const Path&, const string& );
-  static void use_pkcs12( SSL_CTX&, const Path& file_path, const string& );
+  static SSL_CTX& createSSL_CTX(const SSL_METHOD*);
+  static int pem_password_callback(char*, int, int, void*);
+  static void use_pem_certificate(SSL_CTX&, const string& certificate);
+  static void use_pem_certificate(SSL_CTX&, const Path& file_path);
+  static void use_pem_private_key(SSL_CTX&, const string&, const string&);
+  static void use_pem_private_key(SSL_CTX&, const Path&, const string&);
+  static void use_pkcs12(SSL_CTX&, const Path& file_path, const string&);
 
 private:
   SSL_CTX& ctx;

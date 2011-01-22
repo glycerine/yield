@@ -43,76 +43,76 @@ using yield::thread::NonBlockingConcurrentQueue;
 
 
 HandleEventQueue::HandleEventQueue() {
-  HANDLE hWakeEvent = CreateEvent( NULL, FALSE, FALSE, NULL );
-  if ( hWakeEvent != NULL )
-    fds.push_back( hWakeEvent );
+  HANDLE hWakeEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+  if (hWakeEvent != NULL)
+    fds.push_back(hWakeEvent);
   else
     throw Exception();
 }
 
 HandleEventQueue::~HandleEventQueue() {
-  CloseHandle( fds[0] );
+  CloseHandle(fds[0]);
 }
 
-bool HandleEventQueue::associate( fd_t fd, uint16_t events ) {
-  if ( fds.size() < MAXIMUM_WAIT_OBJECTS ) {
+bool HandleEventQueue::associate(fd_t fd, uint16_t events) {
+  if (fds.size() < MAXIMUM_WAIT_OBJECTS) {
     for
     (
       vector<fd_t>::const_iterator fd_i = fds.begin();
       fd_i != fds.end();
       ++fd_i
     ) {
-      if ( *fd_i == fd )
+      if (*fd_i == fd)
         return true;
     }
 
-    fds.push_back( fd );
+    fds.push_back(fd);
     return true;
   } else
     return false;
 }
 
-bool HandleEventQueue::dissociate( fd_t fd ) {
+bool HandleEventQueue::dissociate(fd_t fd) {
   for
   (
     vector<fd_t>::iterator fd_i = fds.begin();
     fd_i != fds.end();
     ++fd_i
   ) {
-    if ( *fd_i == fd ) {
-      fds.erase( fd_i );
+    if (*fd_i == fd) {
+      fds.erase(fd_i);
       return true;
     }
   }
 
-  SetLastError( ERROR_INVALID_HANDLE );
+  SetLastError(ERROR_INVALID_HANDLE);
 
   return false;
 }
 
-Event* HandleEventQueue::dequeue( const Time& timeout ) {
+Event* HandleEventQueue::dequeue(const Time& timeout) {
   DWORD dwRet
   = WaitForMultipleObjectsEx
     (
       fds.size(),
       &fds[0],
       FALSE,
-      static_cast<DWORD>( timeout.ms() ),
+      static_cast<DWORD>(timeout.ms()),
       TRUE
     );
 
-  if ( dwRet == WAIT_OBJECT_0 )
+  if (dwRet == WAIT_OBJECT_0)
     return NonBlockingConcurrentQueue<Event, 32>::trydequeue();
-  else if ( dwRet > WAIT_OBJECT_0 && dwRet < WAIT_OBJECT_0 + fds.size() )
-    return new FDEvent( POLLIN|POLLOUT, fds[dwRet - WAIT_OBJECT_0] );
+  else if (dwRet > WAIT_OBJECT_0 && dwRet < WAIT_OBJECT_0 + fds.size())
+    return new FDEvent(POLLIN | POLLOUT, fds[dwRet - WAIT_OBJECT_0]);
   else
     return NULL;
 }
 
-bool HandleEventQueue::enqueue( Event& event ) {
-  bool ret = NonBlockingConcurrentQueue<Event, 32>::enqueue( event );
-  debug_assert( ret );
-  SetEvent( fds[0] );
+bool HandleEventQueue::enqueue(Event& event) {
+  bool ret = NonBlockingConcurrentQueue<Event, 32>::enqueue(event);
+  debug_assert(ret);
+  SetEvent(fds[0]);
   return ret;
 }
 }

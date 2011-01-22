@@ -61,9 +61,9 @@ public:
   );
 
   static yield::fs::Path get_current_executable_file_path();
-  static YO_NEW_REF Process* open( pid_t pid );
+  static YO_NEW_REF Process* open(pid_t pid);
   bool kill();
-  bool poll( int* out_return_code );
+  bool poll(int* out_return_code);
   static pid_t self();
   bool terminate();
   int wait();

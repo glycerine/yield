@@ -44,18 +44,18 @@ pwriteAIOCB::pwriteAIOCB
   size_t nbytes,
   uint64_t offset
 )
-  : AIOCB( file, page, nbytes, offset),
-    page( page )
+  : AIOCB(file, page, nbytes, offset),
+    page(page)
 { }
 
 pwriteAIOCB::~pwriteAIOCB() {
-  Page::dec_ref( page );
+  Page::dec_ref(page);
 }
 
 pwriteAIOCB::RetryStatus pwriteAIOCB::retry() {
   ssize_t return_;
 
-  if ( get_page().get_next_page() == NULL ) { // pwrite
+  if (get_page().get_next_page() == NULL) {   // pwrite
     return_
     = get_file().pwrite
       (
@@ -70,9 +70,9 @@ pwriteAIOCB::RetryStatus pwriteAIOCB::retry() {
       iovec page_iov;
       page_iov.iov_base = *page;
       page_iov.iov_len = page->size();
-      iov.push_back( page_iov );
+      iov.push_back(page_iov);
       page = page->get_next_page();
-    } while ( page != NULL );
+    } while (page != NULL);
 
     return_
     = get_file().pwritev
@@ -83,11 +83,11 @@ pwriteAIOCB::RetryStatus pwriteAIOCB::retry() {
       );
   }
 
-  if ( return_ >= 0 ) {
-    set_return( return_ );
+  if (return_ >= 0) {
+    set_return(return_);
     return RETRY_STATUS_COMPLETE;
   } else {
-    set_error( Exception::get_last_error_code() );
+    set_error(Exception::get_last_error_code());
     return RETRY_STATUS_ERROR;
   }
 }

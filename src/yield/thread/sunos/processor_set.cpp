@@ -42,24 +42,24 @@ ProcessorSet::ProcessorSet() {
 }
 
 ProcessorSet::~ProcessorSet() {
-  if ( psetid != PS_NONE )
-    pset_destroy( psetid );
+  if (psetid != PS_NONE)
+    pset_destroy(psetid);
 }
 
 void ProcessorSet::clear() {
-  if ( psetid != PS_NONE ) {
-    pset_destroy( psetid );
+  if (psetid != PS_NONE) {
+    pset_destroy(psetid);
     psetid = PS_NONE;
   }
 }
 
-void ProcessorSet::clear( uint16_t processor_i ) {
-  if ( psetid != PS_NONE )
-    pset_assign( PS_NONE, processor_i, NULL );
+void ProcessorSet::clear(uint16_t processor_i) {
+  if (psetid != PS_NONE)
+    pset_assign(PS_NONE, processor_i, NULL);
 }
 
-bool ProcessorSet::isset( uint16_t processor_i ) const {
-  if ( psetid != PS_NONE ) {
+bool ProcessorSet::isset(uint16_t processor_i) const {
+  if (psetid != PS_NONE) {
     psetid_t check_psetid;
     return pset_assign
            (
@@ -72,13 +72,13 @@ bool ProcessorSet::isset( uint16_t processor_i ) const {
   }
 }
 
-bool ProcessorSet::set( uint16_t processor_i ) {
-  if ( psetid == PS_NONE ) {
-    if ( pset_create( &psetid ) != 0 )
+bool ProcessorSet::set(uint16_t processor_i) {
+  if (psetid == PS_NONE) {
+    if (pset_create(&psetid) != 0)
       return false;
   }
 
-  return pset_assign( psetid, processor_i, NULL ) == 0;
+  return pset_assign(psetid, processor_i, NULL) == 0;
 }
 }
 }

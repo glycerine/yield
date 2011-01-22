@@ -44,7 +44,7 @@ namespace rapidxml {
 //! </pre>
 //! \param what Human readable description of the error.
 //! \param where Pointer to character data where error was detected.
-void parse_error_handler(const char *what, void *where);
+void parse_error_handler(const char* what, void* where);
 }
 
 #else
@@ -71,14 +71,14 @@ class parse_error: public std::exception {
 public:
 
   //! Constructs parse error
-  parse_error(const char *what, void *where)
+  parse_error(const char* what, void* where)
     : m_what(what)
     , m_where(where) {
   }
 
   //! Gets human readable description of error.
   //! \return Pointer to null terminated description of the error.
-  virtual const char *what() const throw() {
+  virtual const char* what() const throw() {
     return m_what;
   }
 
@@ -86,14 +86,14 @@ public:
   //! Ch should be the same as char type of xml_document that produced the error.
   //! \return Pointer to location within the parsed string where error occured.
   template<class Ch>
-  Ch *where() const {
-    return reinterpret_cast<Ch *>(m_where);
+  Ch* where() const {
+    return reinterpret_cast<Ch*>(m_where);
   }
 
 private:
 
-  const char *m_what;
-  void *m_where;
+  const char* m_what;
+  void* m_where;
 
 };
 }
@@ -297,8 +297,8 @@ struct lookup_tables {
 
 // Find length of the string
 template<class Ch>
-inline std::size_t measure(const Ch *p) {
-  const Ch *tmp = p;
+inline std::size_t measure(const Ch* p) {
+  const Ch* tmp = p;
   while (*tmp)
     ++tmp;
   return tmp - p;
@@ -306,15 +306,15 @@ inline std::size_t measure(const Ch *p) {
 
 // Compare strings for equality
 template<class Ch>
-inline bool compare(const Ch *p1, std::size_t size1, const Ch *p2, std::size_t size2, bool case_sensitive) {
+inline bool compare(const Ch* p1, std::size_t size1, const Ch* p2, std::size_t size2, bool case_sensitive) {
   if (size1 != size2)
     return false;
   if (case_sensitive) {
-    for (const Ch *end = p1 + size1; p1 < end; ++p1, ++p2)
+    for (const Ch* end = p1 + size1; p1 < end; ++p1, ++p2)
       if (*p1 != *p2)
         return false;
   } else {
-    for (const Ch *end = p1 + size1; p1 < end; ++p1, ++p2)
+    for (const Ch* end = p1 + size1; p1 < end; ++p1, ++p2)
       if (lookup_tables<0>::lookup_upcase[static_cast<unsigned char>(*p1)] != lookup_tables<0>::lookup_upcase[static_cast<unsigned char>(*p2)])
         return false;
   }
@@ -366,8 +366,8 @@ class memory_pool {
 public:
 
   //! \cond internal
-  typedef void *(alloc_func)(std::size_t);       // Type of user-defined function used to allocate memory
-  typedef void (free_func)(void *);              // Type of user-defined function used to free memory
+  typedef void* (alloc_func)(std::size_t);       // Type of user-defined function used to allocate memory
+  typedef void (free_func)(void*);               // Type of user-defined function used to free memory
   //! \endcond
 
   //! Constructs empty pool with default allocator functions.
@@ -395,9 +395,9 @@ public:
   //! \param value_size Size of value to assign, or 0 to automatically calculate size from value string.
   //! \return Pointer to allocated node. This pointer will never be NULL.
   xml_node<Ch> *allocate_node(node_type type,
-                              const Ch *name = 0, const Ch *value = 0,
+                              const Ch* name = 0, const Ch* value = 0,
                               std::size_t name_size = 0, std::size_t value_size = 0) {
-    void *memory = allocate_aligned(sizeof(xml_node<Ch>));
+    void* memory = allocate_aligned(sizeof(xml_node<Ch>));
     xml_node<Ch> *node = new(memory) xml_node<Ch>(type);
     if (name) {
       if (name_size > 0)
@@ -423,9 +423,9 @@ public:
   //! \param name_size Size of name to assign, or 0 to automatically calculate size from name string.
   //! \param value_size Size of value to assign, or 0 to automatically calculate size from value string.
   //! \return Pointer to allocated attribute. This pointer will never be NULL.
-  xml_attribute<Ch> *allocate_attribute(const Ch *name = 0, const Ch *value = 0,
+  xml_attribute<Ch> *allocate_attribute(const Ch* name = 0, const Ch* value = 0,
                                         std::size_t name_size = 0, std::size_t value_size = 0) {
-    void *memory = allocate_aligned(sizeof(xml_attribute<Ch>));
+    void* memory = allocate_aligned(sizeof(xml_attribute<Ch>));
     xml_attribute<Ch> *attribute = new(memory) xml_attribute<Ch>;
     if (name) {
       if (name_size > 0)
@@ -449,11 +449,11 @@ public:
   //! \param source String to initialize the allocated memory with, or 0 to not initialize it.
   //! \param size Number of characters to allocate, or zero to calculate it automatically from source string length; if size is 0, source string must be specified and null terminated.
   //! \return Pointer to allocated char array. This pointer will never be NULL.
-  Ch *allocate_string(const Ch *source = 0, std::size_t size = 0) {
+  Ch* allocate_string(const Ch* source = 0, std::size_t size = 0) {
     assert(source || size);     // Either source or size (or both) must be specified
     if (size == 0)
       size = internal::measure(source) + 1;
-    Ch *result = static_cast<Ch *>(allocate_aligned(size * sizeof(Ch)));
+    Ch* result = static_cast<Ch*>(allocate_aligned(size * sizeof(Ch)));
     if (source)
       for (std::size_t i = 0; i < size; ++i)
         result[i] = source[i];
@@ -496,7 +496,7 @@ public:
   //! Any nodes or strings allocated from the pool will no longer be valid.
   void clear() {
     while (m_begin != m_static_memory) {
-      char *previous_begin = reinterpret_cast<header *>(align(m_begin))->previous_begin;
+      char* previous_begin = reinterpret_cast<header*>(align(m_begin))->previous_begin;
       if (m_free_func)
         m_free_func(m_begin);
       else
@@ -519,7 +519,7 @@ public:
   //! </code><br>
   //! \param af Allocation function, or 0 to restore default function
   //! \param ff Free function, or 0 to restore default function
-  void set_allocator(alloc_func *af, free_func *ff) {
+  void set_allocator(alloc_func* af, free_func* ff) {
     assert(m_begin == m_static_memory && m_ptr == align(m_begin));    // Verify that no memory is allocated yet
     m_alloc_func = af;
     m_free_func = ff;
@@ -528,7 +528,7 @@ public:
 private:
 
   struct header {
-    char *previous_begin;
+    char* previous_begin;
   };
 
   void init() {
@@ -537,14 +537,14 @@ private:
     m_end = m_static_memory + sizeof(m_static_memory);
   }
 
-  char *align(char *ptr) {
+  char* align(char* ptr) {
     std::size_t alignment = ((RAPIDXML_ALIGNMENT - (std::size_t(ptr) & (RAPIDXML_ALIGNMENT - 1))) & (RAPIDXML_ALIGNMENT - 1));
     return ptr + alignment;
   }
 
-  char *allocate_raw(std::size_t size) {
+  char* allocate_raw(std::size_t size) {
     // Allocate
-    void *memory;
+    void* memory;
     if (m_alloc_func) { // Allocate memory using either user-specified allocation function or global operator new[]
       memory = m_alloc_func(size);
       assert(memory); // Allocator is not allowed to return 0, on failure it must either throw, stop the program or use longjmp
@@ -555,12 +555,12 @@ private:
         RAPIDXML_PARSE_ERROR("out of memory", 0);
 #endif
     }
-    return static_cast<char *>(memory);
+    return static_cast<char*>(memory);
   }
 
-  void *allocate_aligned(std::size_t size) {
+  void* allocate_aligned(std::size_t size) {
     // Calculate aligned pointer
-    char *result = align(m_ptr);
+    char* result = align(m_ptr);
 
     // If not enough memory left in current pool, allocate a new pool
     if (result + size > m_end) {
@@ -571,11 +571,11 @@ private:
 
       // Allocate
       std::size_t alloc_size = sizeof(header) + (2 * RAPIDXML_ALIGNMENT - 2) + pool_size;     // 2 alignments required in worst case: one for header, one for actual allocation
-      char *raw_memory = allocate_raw(alloc_size);
+      char* raw_memory = allocate_raw(alloc_size);
 
       // Setup new pool in allocated memory
-      char *pool = align(raw_memory);
-      header *new_header = reinterpret_cast<header *>(pool);
+      char* pool = align(raw_memory);
+      header* new_header = reinterpret_cast<header*>(pool);
       new_header->previous_begin = m_begin;
       m_begin = raw_memory;
       m_ptr = pool + sizeof(header);
@@ -590,12 +590,12 @@ private:
     return result;
   }
 
-  char *m_begin;                                      // Start of raw memory making up current pool
-  char *m_ptr;                                        // First free byte in current pool
-  char *m_end;                                        // One past last available byte in current pool
+  char* m_begin;                                      // Start of raw memory making up current pool
+  char* m_ptr;                                        // First free byte in current pool
+  char* m_end;                                        // One past last available byte in current pool
   char m_static_memory[RAPIDXML_STATIC_POOL_SIZE];    // Static raw memory
-  alloc_func *m_alloc_func;                           // Allocator function, or 0 if default is to be used
-  free_func *m_free_func;                             // Free function, or 0 if default is to be used
+  alloc_func* m_alloc_func;                           // Allocator function, or 0 if default is to be used
+  free_func* m_free_func;                             // Free function, or 0 if default is to be used
 };
 
 ///////////////////////////////////////////////////////////////////////////
@@ -628,7 +628,7 @@ public:
   //! <br><br>
   //! Use name_size() function to determine length of the name.
   //! \return Name of node, or empty string if node has no name.
-  Ch *name() const {
+  Ch* name() const {
     return m_name ? m_name : nullstr();
   }
 
@@ -645,7 +645,7 @@ public:
   //! <br><br>
   //! Use value_size() function to determine length of the value.
   //! \return Value of node, or empty string if node has no value.
-  Ch *value() const {
+  Ch* value() const {
     return m_value ? m_value : nullstr();
   }
 
@@ -672,15 +672,15 @@ public:
   //! Use name(const Ch *) function to have the length automatically calculated (string must be zero terminated).
   //! \param name Name of node to set. Does not have to be zero terminated.
   //! \param size Size of name, in characters. This does not include zero terminator, if one is present.
-  void name(const Ch *name, std::size_t size) {
-    m_name = const_cast<Ch *>(name);
+  void name(const Ch* name, std::size_t size) {
+    m_name = const_cast<Ch*>(name);
     m_name_size = size;
   }
 
   //! Sets name of node to a zero-terminated string.
   //! See also \ref ownership_of_strings and xml_node::name(const Ch *, std::size_t).
   //! \param name Name of node to set. Must be zero terminated.
-  void name(const Ch *name) {
+  void name(const Ch* name) {
     this->name(name, internal::measure(name));
   }
 
@@ -700,15 +700,15 @@ public:
   //! If you want to manipulate data of elements using values, use parser flag rapidxml::parse_no_data_nodes to prevent creation of data nodes by the parser.
   //! \param value value of node to set. Does not have to be zero terminated.
   //! \param size Size of value, in characters. This does not include zero terminator, if one is present.
-  void value(const Ch *value, std::size_t size) {
-    m_value = const_cast<Ch *>(value);
+  void value(const Ch* value, std::size_t size) {
+    m_value = const_cast<Ch*>(value);
     m_value_size = size;
   }
 
   //! Sets value of node to a zero-terminated string.
   //! See also \ref ownership_of_strings and xml_node::value(const Ch *, std::size_t).
   //! \param value Vame of node to set. Must be zero terminated.
-  void value(const Ch *value) {
+  void value(const Ch* value) {
     this->value(value, internal::measure(value));
   }
 
@@ -724,13 +724,13 @@ public:
 protected:
 
   // Return empty string
-  static Ch *nullstr() {
+  static Ch* nullstr() {
     static Ch zero = Ch('\0');
     return &zero;
   }
 
-  Ch *m_name;                         // Name of node, or 0 if no name
-  Ch *m_value;                        // Value of node, or 0 if no value
+  Ch* m_name;                         // Name of node, or 0 if no name
+  Ch* m_value;                        // Value of node, or 0 if no value
   std::size_t m_name_size;            // Length of node name, or undefined of no name
   std::size_t m_value_size;           // Length of node value, or undefined if no value
   xml_node<Ch> *m_parent;             // Pointer to parent node, or 0 if none
@@ -776,7 +776,7 @@ public:
   //! \param name_size Size of name, in characters, or 0 to have size calculated automatically from string
   //! \param case_sensitive Should name comparison be case-sensitive; non case-sensitive comparison works properly only for ASCII characters
   //! \return Pointer to found attribute, or 0 if not found.
-  xml_attribute<Ch> *previous_attribute(const Ch *name = 0, std::size_t name_size = 0, bool case_sensitive = true) const {
+  xml_attribute<Ch> *previous_attribute(const Ch* name = 0, std::size_t name_size = 0, bool case_sensitive = true) const {
     if (name) {
       if (name_size == 0)
         name_size = internal::measure(name);
@@ -793,7 +793,7 @@ public:
   //! \param name_size Size of name, in characters, or 0 to have size calculated automatically from string
   //! \param case_sensitive Should name comparison be case-sensitive; non case-sensitive comparison works properly only for ASCII characters
   //! \return Pointer to found attribute, or 0 if not found.
-  xml_attribute<Ch> *next_attribute(const Ch *name = 0, std::size_t name_size = 0, bool case_sensitive = true) const {
+  xml_attribute<Ch> *next_attribute(const Ch* name = 0, std::size_t name_size = 0, bool case_sensitive = true) const {
     if (name) {
       if (name_size == 0)
         name_size = internal::measure(name);
@@ -866,7 +866,7 @@ public:
   //! \param name_size Size of name, in characters, or 0 to have size calculated automatically from string
   //! \param case_sensitive Should name comparison be case-sensitive; non case-sensitive comparison works properly only for ASCII characters
   //! \return Pointer to found child, or 0 if not found.
-  xml_node<Ch> *first_node(const Ch *name = 0, std::size_t name_size = 0, bool case_sensitive = true) const {
+  xml_node<Ch> *first_node(const Ch* name = 0, std::size_t name_size = 0, bool case_sensitive = true) const {
     if (name) {
       if (name_size == 0)
         name_size = internal::measure(name);
@@ -885,7 +885,7 @@ public:
   //! \param name_size Size of name, in characters, or 0 to have size calculated automatically from string
   //! \param case_sensitive Should name comparison be case-sensitive; non case-sensitive comparison works properly only for ASCII characters
   //! \return Pointer to found child, or 0 if not found.
-  xml_node<Ch> *last_node(const Ch *name = 0, std::size_t name_size = 0, bool case_sensitive = true) const {
+  xml_node<Ch> *last_node(const Ch* name = 0, std::size_t name_size = 0, bool case_sensitive = true) const {
     assert(m_first_node);  // Cannot query for last child if node has no children
     if (name) {
       if (name_size == 0)
@@ -905,7 +905,7 @@ public:
   //! \param name_size Size of name, in characters, or 0 to have size calculated automatically from string
   //! \param case_sensitive Should name comparison be case-sensitive; non case-sensitive comparison works properly only for ASCII characters
   //! \return Pointer to found sibling, or 0 if not found.
-  xml_node<Ch> *previous_sibling(const Ch *name = 0, std::size_t name_size = 0, bool case_sensitive = true) const {
+  xml_node<Ch> *previous_sibling(const Ch* name = 0, std::size_t name_size = 0, bool case_sensitive = true) const {
     assert(this->m_parent);     // Cannot query for siblings if node has no parent
     if (name) {
       if (name_size == 0)
@@ -925,7 +925,7 @@ public:
   //! \param name_size Size of name, in characters, or 0 to have size calculated automatically from string
   //! \param case_sensitive Should name comparison be case-sensitive; non case-sensitive comparison works properly only for ASCII characters
   //! \return Pointer to found sibling, or 0 if not found.
-  xml_node<Ch> *next_sibling(const Ch *name = 0, std::size_t name_size = 0, bool case_sensitive = true) const {
+  xml_node<Ch> *next_sibling(const Ch* name = 0, std::size_t name_size = 0, bool case_sensitive = true) const {
     assert(this->m_parent);     // Cannot query for siblings if node has no parent
     if (name) {
       if (name_size == 0)
@@ -943,7 +943,7 @@ public:
   //! \param name_size Size of name, in characters, or 0 to have size calculated automatically from string
   //! \param case_sensitive Should name comparison be case-sensitive; non case-sensitive comparison works properly only for ASCII characters
   //! \return Pointer to found attribute, or 0 if not found.
-  xml_attribute<Ch> *first_attribute(const Ch *name = 0, std::size_t name_size = 0, bool case_sensitive = true) const {
+  xml_attribute<Ch> *first_attribute(const Ch* name = 0, std::size_t name_size = 0, bool case_sensitive = true) const {
     if (name) {
       if (name_size == 0)
         name_size = internal::measure(name);
@@ -960,7 +960,7 @@ public:
   //! \param name_size Size of name, in characters, or 0 to have size calculated automatically from string
   //! \param case_sensitive Should name comparison be case-sensitive; non case-sensitive comparison works properly only for ASCII characters
   //! \return Pointer to found attribute, or 0 if not found.
-  xml_attribute<Ch> *last_attribute(const Ch *name = 0, std::size_t name_size = 0, bool case_sensitive = true) const {
+  xml_attribute<Ch> *last_attribute(const Ch* name = 0, std::size_t name_size = 0, bool case_sensitive = true) const {
     if (name) {
       if (name_size == 0)
         name_size = internal::measure(name);
@@ -1197,8 +1197,8 @@ private:
   // Restrictions
 
   // No copying
-  xml_node(const xml_node &);
-  void operator =(const xml_node &);
+  xml_node(const xml_node&);
+  void operator =(const xml_node&);
 
   ///////////////////////////////////////////////////////////////////////////
   // Data members
@@ -1254,7 +1254,7 @@ public:
   //! Each new call to parse removes previous nodes and attributes (if any), but does not clear memory pool.
   //! \param text XML data to parse; pointer is non-const to denote fact that this data may be modified by the parser.
   template<int Flags>
-  void parse(Ch *text) {
+  void parse(Ch* text) {
     assert(text);
 
     // Remove current contents
@@ -1404,7 +1404,7 @@ private:
   // Skip characters until predicate evaluates to true
   template<class StopPred, int Flags>
   static void skip(Ch *&text) {
-    Ch *tmp = text;
+    Ch* tmp = text;
     while (StopPred::test(*tmp))
       ++tmp;
     text = tmp;
@@ -1414,7 +1414,7 @@ private:
   // - replacing XML character entity references with proper characters (&apos; &amp; &quot; &lt; &gt; &#...;)
   // - condensing whitespace sequences to single space character
   template<class StopPred, class StopPredPure, int Flags>
-  static Ch *skip_and_expand_character_refs(Ch *&text) {
+  static Ch* skip_and_expand_character_refs(Ch *&text) {
     // If entity translation, whitespace condense and whitespace trimming is disabled, use plain skip
     if (Flags & parse_no_entity_translation &&
         !(Flags & parse_normalize_whitespace) &&
@@ -1427,8 +1427,8 @@ private:
     skip<StopPredPure, Flags>(text);
 
     // Use translation skip
-    Ch *src = text;
-    Ch *dest = src;
+    Ch* src = text;
+    Ch* dest = src;
     while (StopPred::test(*src)) {
       // If entity translation is enabled
       if (!(Flags & parse_no_entity_translation)) {
@@ -1609,7 +1609,7 @@ private:
     }
 
     // Remember value start
-    Ch *value = text;
+    Ch* value = text;
 
     // Skip until end of comment
     while (text[0] != Ch('-') || text[1] != Ch('-') || text[2] != Ch('>')) {
@@ -1634,7 +1634,7 @@ private:
   template<int Flags>
   xml_node<Ch> *parse_doctype(Ch *&text) {
     // Remember value start
-    Ch *value = text;
+    Ch* value = text;
 
     // Skip to >
     while (*text != Ch('>')) {
@@ -1701,7 +1701,7 @@ private:
       xml_node<Ch> *pi = this->allocate_node(node_pi);
 
       // Extract PI target name
-      Ch *name = text;
+      Ch* name = text;
       skip<node_name_pred, Flags>(text);
       if (text == name)
         RAPIDXML_PARSE_ERROR("expected PI target", text);
@@ -1711,7 +1711,7 @@ private:
       skip<whitespace_pred, Flags>(text);
 
       // Remember start of pi
-      Ch *value = text;
+      Ch* value = text;
 
       // Skip to '?>'
       while (text[0] != Ch('?') || text[1] != Ch('>')) {
@@ -1747,13 +1747,13 @@ private:
   // Return character that ends data.
   // This is necessary because this character might have been overwritten by a terminating 0
   template<int Flags>
-  Ch parse_and_append_data(xml_node<Ch> *node, Ch *&text, Ch *contents_start) {
+  Ch parse_and_append_data(xml_node<Ch> *node, Ch *&text, Ch* contents_start) {
     // Backup to contents start if whitespace trimming is disabled
     if (!(Flags & parse_trim_whitespace))
       text = contents_start;
 
     // Skip until end of data
-    Ch *value = text, *end;
+    Ch* value = text, *end;
     if (Flags & parse_normalize_whitespace)
       end = skip_and_expand_character_refs<text_pred, text_pure_with_ws_pred, Flags>(text);
     else
@@ -1812,7 +1812,7 @@ private:
     }
 
     // Skip until end of cdata
-    Ch *value = text;
+    Ch* value = text;
     while (text[0] != Ch(']') || text[1] != Ch(']') || text[2] != Ch('>')) {
       if (!text[0])
         RAPIDXML_PARSE_ERROR("unexpected end of data", text);
@@ -1838,7 +1838,7 @@ private:
     xml_node<Ch> *element = this->allocate_node(node_element);
 
     // Extract element name
-    Ch *name = text;
+    Ch* name = text;
     skip<node_name_pred, Flags>(text);
     if (text == name)
       RAPIDXML_PARSE_ERROR("expected element name", text);
@@ -1952,7 +1952,7 @@ private:
     // For all children and text
     while (1) {
       // Skip whitespace between > and node contents
-      Ch *contents_start = text;      // Store start of node contents before whitespace is skipped
+      Ch* contents_start = text;      // Store start of node contents before whitespace is skipped
       skip<whitespace_pred, Flags>(text);
       Ch next_char = *text;
 
@@ -1972,7 +1972,7 @@ after_data_node:
           text += 2;      // Skip '</'
           if (Flags & parse_validate_closing_tags) {
             // Skip and validate closing tag name
-            Ch *closing_name = text;
+            Ch* closing_name = text;
             skip<node_name_pred, Flags>(text);
             if (!internal::compare(node->name(), node->name_size(), closing_name, text - closing_name, true))
               RAPIDXML_PARSE_ERROR("invalid closing tag name", text);
@@ -2013,7 +2013,7 @@ after_data_node:
     // For all attributes
     while (attribute_name_pred::test(*text)) {
       // Extract attribute name
-      Ch *name = text;
+      Ch* name = text;
       ++text;     // Skip first character of attribute name
       skip<attribute_name_pred, Flags>(text);
       if (text == name)
@@ -2046,12 +2046,12 @@ after_data_node:
       ++text;
 
       // Extract attribute value and expand char refs in it
-      Ch *value = text, *end;
+      Ch* value = text, *end;
       const int AttFlags = Flags & ~parse_normalize_whitespace;   // No whitespace normalization in attributes
       if (quote == Ch('\''))
-        end = skip_and_expand_character_refs<attribute_value_pred<Ch('\'')>, attribute_value_pure_pred<Ch('\'')>, AttFlags>(text);
+        end = skip_and_expand_character_refs < attribute_value_pred < Ch('\'') > , attribute_value_pure_pred < Ch('\'') > , AttFlags > (text);
       else
-        end = skip_and_expand_character_refs<attribute_value_pred<Ch('"')>, attribute_value_pure_pred<Ch('"')>, AttFlags>(text);
+        end = skip_and_expand_character_refs < attribute_value_pred < Ch('"') > , attribute_value_pure_pred < Ch('"') > , AttFlags > (text);
 
       // Set attribute value
       attribute->value(value, end - value);
@@ -2301,22 +2301,22 @@ const unsigned char lookup_tables<Dummy>::lookup_attribute_data_2_pure[256] = {
 template<int Dummy>
 const unsigned char lookup_tables<Dummy>::lookup_digits[256] = {
   // 0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F
-  255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,  // 0
-  255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,  // 1
-  255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,  // 2
-  0,  1,  2,  3,  4,  5,  6,  7,  8,  9,255,255,255,255,255,255,  // 3
-  255, 10, 11, 12, 13, 14, 15,255,255,255,255,255,255,255,255,255,  // 4
-  255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,  // 5
-  255, 10, 11, 12, 13, 14, 15,255,255,255,255,255,255,255,255,255,  // 6
-  255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,  // 7
-  255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,  // 8
-  255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,  // 9
-  255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,  // A
-  255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,  // B
-  255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,  // C
-  255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,  // D
-  255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,  // E
-  255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255   // F
+  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, // 0
+  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, // 1
+  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, // 2
+  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 255, 255, 255, 255, 255, 255, // 3
+  255, 10, 11, 12, 13, 14, 15, 255, 255, 255, 255, 255, 255, 255, 255, 255, // 4
+  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, // 5
+  255, 10, 11, 12, 13, 14, 15, 255, 255, 255, 255, 255, 255, 255, 255, 255, // 6
+  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, // 7
+  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, // 8
+  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, // 9
+  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, // A
+  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, // B
+  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, // C
+  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, // D
+  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, // E
+  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255 // F
 };
 
 // Upper case conversion
@@ -2330,15 +2330,15 @@ const unsigned char lookup_tables<Dummy>::lookup_upcase[256] = {
   64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79,   // 4
   80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95,   // 5
   96, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79,   // 6
-  80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 123,124,125,126,127,  // 7
-  128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,  // 8
-  144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,  // 9
-  160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,  // A
-  176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,  // B
-  192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,  // C
-  208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,  // D
-  224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,  // E
-  240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255   // F
+  80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 123, 124, 125, 126, 127, // 7
+  128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, // 8
+  144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, // 9
+  160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, // A
+  176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, // B
+  192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, // C
+  208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, // D
+  224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, // E
+  240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255 // F
 };
 }
 //! \endcond

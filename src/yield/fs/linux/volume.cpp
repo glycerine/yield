@@ -47,17 +47,17 @@ Volume::open
   mode_t mode,
   uint32_t attributes
 ) {
-  fd_t fd = ::open( path.c_str(), flags, mode );
-  if ( fd != -1 )
-    return new File( fd );
+  fd_t fd = ::open(path.c_str(), flags, mode);
+  if (fd != -1)
+    return new File(fd);
   else
     return NULL;
 }
 
-YO_NEW_REF yield::fs::Directory* Volume::opendir( const Path& path ) {
-  DIR* dirp = ::opendir( path.c_str() );
-  if ( dirp != NULL )
-    return new Directory( dirp, path );
+YO_NEW_REF yield::fs::Directory* Volume::opendir(const Path& path) {
+  DIR* dirp = ::opendir(path.c_str());
+  if (dirp != NULL)
+    return new Directory(dirp, path);
   else
     return NULL;
 }
@@ -67,7 +67,7 @@ Volume::openxattrs
 (
   const Path& path
 ) {
-  return new ExtendedAttributes( path );
+  return new ExtendedAttributes(path);
 }
 }
 }

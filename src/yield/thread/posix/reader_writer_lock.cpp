@@ -36,36 +36,36 @@ namespace yield {
 namespace thread {
 namespace posix {
 ReaderWriterLock::ReaderWriterLock() {
-  if ( pthread_rwlock_init( &rwlock, NULL ) != 0 )
+  if (pthread_rwlock_init(&rwlock, NULL) != 0)
     throw Exception();
 }
 
 ReaderWriterLock::~ReaderWriterLock() {
-  pthread_rwlock_destroy( &rwlock );
+  pthread_rwlock_destroy(&rwlock);
 }
 
 bool ReaderWriterLock::rdlock() {
-  return pthread_rwlock_rdlock( &rwlock ) == 0;
+  return pthread_rwlock_rdlock(&rwlock) == 0;
 }
 
 void ReaderWriterLock::rdunlock() {
-  pthread_rwlock_unlock( &rwlock );
+  pthread_rwlock_unlock(&rwlock);
 }
 
 bool ReaderWriterLock::tryrdlock() {
-  return pthread_rwlock_tryrdlock( &rwlock ) == 0;
+  return pthread_rwlock_tryrdlock(&rwlock) == 0;
 }
 
 bool ReaderWriterLock::trywrlock() {
-  return pthread_rwlock_trywrlock( &rwlock ) == 0;
+  return pthread_rwlock_trywrlock(&rwlock) == 0;
 }
 
 bool ReaderWriterLock::wrlock() {
-  return pthread_rwlock_wrlock( &rwlock ) == 0;
+  return pthread_rwlock_wrlock(&rwlock) == 0;
 }
 
 void ReaderWriterLock::wrunlock() {
-  pthread_rwlock_unlock( &rwlock );
+  pthread_rwlock_unlock(&rwlock);
 }
 }
 }

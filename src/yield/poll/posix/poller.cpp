@@ -42,82 +42,82 @@ namespace posix {
 using yield::thread::NonBlockingConcurrentQueue;
 
 
-Poller::Poller( ) {
-  if ( pipe( wake_pipe ) == -1 )
+Poller::Poller() {
+  if (pipe(wake_pipe) == -1)
     throw Exception();
 
-  if ( !associate( wake_pipe[0], POLLIN ) ) {
-    uint32_t error_code = static_cast<uint32_t>( errno );
-    close( wake_pipe[0] );
-    close( wake_pipe[1] );
-    throw Exception( error_code );
+  if (!associate(wake_pipe[0], POLLIN)) {
+    uint32_t error_code = static_cast<uint32_t>(errno);
+    close(wake_pipe[0]);
+    close(wake_pipe[1]);
+    throw Exception(error_code);
   }
 }
 
 Poller::~Poller() {
-  close( wake_pipe[0] );
-  close( wake_pipe[1] );
+  close(wake_pipe[0]);
+  close(wake_pipe[1]);
 }
 
-bool Poller::associate( fd_t fd, uint16_t events ) {
-  if ( events > 0 ) {
+bool Poller::associate(fd_t fd, uint16_t events) {
+  if (events > 0) {
     for
     (
       vector<pollfd>::iterator pollfd_i = pollfds.begin();
       pollfd_i != pollfds.end();
       ++pollfd_i
     ) {
-      if ( ( *pollfd_i ).fd == fd ) {
-        ( *pollfd_i ).events = events;
+      if ((*pollfd_i).fd == fd) {
+        (*pollfd_i).events = events;
         return true;
       }
     }
 
     pollfd pollfd_;
-    memset( &pollfd_, 0, sizeof( pollfd_ ) );
+    memset(&pollfd_, 0, sizeof(pollfd_));
     pollfd_.fd = fd;
     pollfd_.events = events;
-    pollfds.push_back( pollfd_ );
+    pollfds.push_back(pollfd_);
     return true;
   } else
-    return dissociate( fd );
+    return dissociate(fd);
 }
 
-YO_NEW_REF Event* Poller::dequeue( const Time& timeout ) {
+YO_NEW_REF Event* Poller::dequeue(const Time& timeout) {
   int ret =
-    ::poll( &pollfds[0], pollfds.size(), static_cast<int>( timeout.ms() ) );
+    ::poll(&pollfds[0], pollfds.size(), static_cast<int>(timeout.ms()));
 
-  if ( ret > 0 ) {
+  if (ret > 0) {
     vector<pollfd>::const_iterator pollfd_i = pollfds.begin();
 
     do {
       const pollfd& pollfd_ = *pollfd_i;
 
-      if ( pollfd_.revents != 0 ) {
-        if ( pollfd_.fd == wake_pipe[0] ) {
+      if (pollfd_.revents != 0) {
+        if (pollfd_.fd == wake_pipe[0]) {
           char data;
-          read( wake_pipe[0], &data, sizeof( data ) );
+          read(wake_pipe[0], &data, sizeof(data));
           return NonBlockingConcurrentQueue<Event, 32>::trydequeue();
         } else
-          return new FDEvent( pollfd_.revents, pollfd_.fd );
+          return new FDEvent(pollfd_.revents, pollfd_.fd);
 
-        if ( --ret == 0 ) break;
+        if (--ret == 0) break;
       }
-    } while ( ++pollfd_i != pollfds.end() );
+    } while (++pollfd_i != pollfds.end());
   }
 
   return NULL;
 }
 
-bool Poller::dissociate( fd_t fd ) {
+bool Poller::dissociate(fd_t fd) {
   for
   (
     vector<pollfd>::iterator pollfd_i = pollfds.begin();
     pollfd_i != pollfds.end();
     ++pollfd_i
   ) {
-    if ( ( *pollfd_i ).fd == fd ) {
-      pollfds.erase( pollfd_i );
+    if ((*pollfd_i).fd == fd) {
+      pollfds.erase(pollfd_i);
       return true;
     }
   }
@@ -126,10 +126,10 @@ bool Poller::dissociate( fd_t fd ) {
   return false;
 }
 
-bool Poller::enqueue( YO_NEW_REF Event& event ) {
-  bool ret = NonBlockingConcurrentQueue<Event, 32>::enqueue( event );
-  debug_assert( ret );
-  write( wake_pipe[1], "m", 1 );
+bool Poller::enqueue(YO_NEW_REF Event& event) {
+  bool ret = NonBlockingConcurrentQueue<Event, 32>::enqueue(event);
+  debug_assert(ret);
+  write(wake_pipe[1], "m", 1);
   return ret;
 }
 }

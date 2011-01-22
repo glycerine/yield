@@ -51,7 +51,7 @@ public:
     return mutex.lock();
   }
   void signal();
-  bool timedwait( const Time& timeout );
+  bool timedwait(const Time& timeout);
   bool trylock_mutex() {
     return mutex.trylock();
   }

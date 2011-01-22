@@ -43,9 +43,9 @@ using yield::net::sockets::StreamSocket;
 
 
 acceptAIOCB::~acceptAIOCB() {
-  StreamSocket::dec_ref( accepted_socket );
-  SocketAddress::dec_ref( peername );
-  Buffer::dec_ref( recv_buffer );
+  StreamSocket::dec_ref(accepted_socket);
+  SocketAddress::dec_ref(peername);
+  Buffer::dec_ref(recv_buffer);
 }
 
 
@@ -59,16 +59,16 @@ SocketAddress& acceptAIOCB::get_peername() const {
 
 acceptAIOCB::RetryStatus acceptAIOCB::retry() {
   accepted_socket
-  = static_cast<StreamSocket&>( get_socket() )
-    .accept( get_peername() );
+  = static_cast<StreamSocket&>(get_socket())
+    .accept(get_peername());
 
-  if ( accepted_socket != NULL ) {
-    set_return( 0 );
+  if (accepted_socket != NULL) {
+    set_return(0);
     return RETRY_STATUS_COMPLETE;
-  } else if ( static_cast<StreamSocket&>( get_socket() ).want_accept() )
+  } else if (static_cast<StreamSocket&>(get_socket()).want_accept())
     return RETRY_STATUS_WANT_READ;
   else {
-    set_error( Exception::get_last_error_code() );
+    set_error(Exception::get_last_error_code());
     return RETRY_STATUS_ERROR;
   }
 }

@@ -35,26 +35,26 @@
 #include "yunit.hpp"
 
 
-TEST_SUITE( Stage );
+TEST_SUITE(Stage);
 
 namespace yield {
 namespace stage {
-TEST( Stage, create ) {
-  auto_Object<Stage> stage = new Stage( *new TestEventHandler );
+TEST(Stage, create) {
+  auto_Object<Stage> stage = new Stage(*new TestEventHandler);
 }
 
-TEST( Stage, handle ) {
-  auto_Object<Stage> stage = new Stage( *new TestEventHandler );
-  stage->handle( *new Event );
+TEST(Stage, handle) {
+  auto_Object<Stage> stage = new Stage(*new TestEventHandler);
+  stage->handle(*new Event);
 }
 
-TEST( Stage, visit ) {
+TEST(Stage, visit) {
   TestEventHandler* event_handler = new TestEventHandler;
-  auto_Object<Stage> stage = new Stage( *event_handler );
-  stage->handle( *new Event );
-  bool visit_ret = stage->visit( Time::FOREVER );
-  throw_assert( visit_ret );
-  throw_assert_eq( event_handler->get_seen_events_count(), 1 );
+  auto_Object<Stage> stage = new Stage(*event_handler);
+  stage->handle(*new Event);
+  bool visit_ret = stage->visit(Time::FOREVER);
+  throw_assert(visit_ret);
+  throw_assert_eq(event_handler->get_seen_events_count(), 1);
 }
 }
 }

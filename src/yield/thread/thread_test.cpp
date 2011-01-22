@@ -36,7 +36,7 @@
 #include "yunit.hpp"
 
 
-TEST_SUITE( Thread );
+TEST_SUITE(Thread);
 
 namespace yield {
 namespace thread {
@@ -54,8 +54,8 @@ public:
   }
 
 protected:
-  static void thread_run( void* this_ ) {
-    static_cast<ThreadTest*>( this_ )->mutex->lock();
+  static void thread_run(void* this_) {
+    static_cast<ThreadTest*>(this_)->mutex->lock();
   }
 
 protected:
@@ -63,53 +63,53 @@ protected:
 };
 
 
-TEST_EX( Thread, key_create, ThreadTest ) {
+TEST_EX(Thread, key_create, ThreadTest) {
   uintptr_t key = Thread::self()->key_create();
-  throw_assert_ne( key, 0 );
+  throw_assert_ne(key, 0);
 }
 
-TEST_EX( Thread, key_delete, ThreadTest ) {
+TEST_EX(Thread, key_delete, ThreadTest) {
   uintptr_t key = Thread::self()->key_create();
-  throw_assert_ne( key, 0 );
-  if ( !Thread::self()->key_delete( key ) )
+  throw_assert_ne(key, 0);
+  if (!Thread::self()->key_delete(key))
     throw Exception();
 }
 
-TEST_EX( Thread, getspecific, ThreadTest ) {
+TEST_EX(Thread, getspecific, ThreadTest) {
   uintptr_t key = Thread::self()->key_create();
-  if ( !Thread::self()->setspecific( key, reinterpret_cast<void*>( 42 ) ) )
+  if (!Thread::self()->setspecific(key, reinterpret_cast<void*>(42)))
     throw Exception();
-  void* ret_value = Thread::self()->getspecific( key );
-  throw_assert_eq( reinterpret_cast<uintptr_t>( ret_value ), 42 );
+  void* ret_value = Thread::self()->getspecific(key);
+  throw_assert_eq(reinterpret_cast<uintptr_t>(ret_value), 42);
 }
 
-TEST_EX( Thread, nanosleep, ThreadTest ) {
-  Time start_time( Time::now() );
-  Thread::self()->nanosleep( 0.05 );
-  Time slept_time( Time::now() - start_time );
-  throw_assert_ge( slept_time.ms(), 50 );
+TEST_EX(Thread, nanosleep, ThreadTest) {
+  Time start_time(Time::now());
+  Thread::self()->nanosleep(0.05);
+  Time slept_time(Time::now() - start_time);
+  throw_assert_ge(slept_time.ms(), 50);
 }
 
-TEST_EX( Thread, set_name, ThreadTest ) {
-  auto_Object<Thread> thread = new Thread( thread_run );
-  thread->set_name( "test thread" );
+TEST_EX(Thread, set_name, ThreadTest) {
+  auto_Object<Thread> thread = new Thread(thread_run);
+  thread->set_name("test thread");
 }
 
-TEST_EX( Thread, setaffinity, ThreadTest ) {
-  auto_Object<Thread> thread = new Thread( thread_run );
-  bool success = thread->setaffinity( 0 );
+TEST_EX(Thread, setaffinity, ThreadTest) {
+  auto_Object<Thread> thread = new Thread(thread_run);
+  bool success = thread->setaffinity(0);
   mutex->unlock();
   thread->join();
-  throw_assert( success );
+  throw_assert(success);
 }
 
-TEST_EX( Thread, setspecific, ThreadTest ) {
+TEST_EX(Thread, setspecific, ThreadTest) {
   uintptr_t key = Thread::self()->key_create();
-  if ( !Thread::self()->setspecific( key, reinterpret_cast<void*>( 42 ) ) )
+  if (!Thread::self()->setspecific(key, reinterpret_cast<void*>(42)))
     throw Exception();
 }
 
-TEST_EX( Thread, yield, ThreadTest ) {
+TEST_EX(Thread, yield, ThreadTest) {
   Thread::self()->yield();
 }
 }

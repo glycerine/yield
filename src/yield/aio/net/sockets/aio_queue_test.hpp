@@ -80,26 +80,26 @@ public:
   // yunit::Test
   void run() {
     SocketPair sockets;
-    if ( !this->get_aio_queue().associate( sockets.first() ) )
+    if (!this->get_aio_queue().associate(sockets.first()))
       throw Exception();
 
-    sockets.second().send( "m", 1, 0 );
+    sockets.second().send("m", 1, 0);
 
     auto_Object<Buffer> buffer = new Page;
 
     auto_Object<recvAIOCB> aiocb
-    = new recvAIOCB( sockets.first(), buffer->inc_ref(), 0 );
+    = new recvAIOCB(sockets.first(), buffer->inc_ref(), 0);
 
-    if ( !this->get_aio_queue().enqueue( aiocb->inc_ref() ) )
+    if (!this->get_aio_queue().enqueue(aiocb->inc_ref()))
       throw Exception();
 
     auto_Object<recvAIOCB> out_aiocb
-    = object_cast<recvAIOCB>( this->get_aio_queue().dequeue() );
-    throw_assert_eq( &out_aiocb.get(), &aiocb.get() );
-    throw_assert_eq( out_aiocb->get_error(), 0 );
-    throw_assert_eq( out_aiocb->get_return(), 1 );
-    throw_assert_eq( buffer->size(), 1 );
-    throw_assert_eq( ( *buffer )[0], 'm' );
+    = object_cast<recvAIOCB>(this->get_aio_queue().dequeue());
+    throw_assert_eq(&out_aiocb.get(), &aiocb.get());
+    throw_assert_eq(out_aiocb->get_error(), 0);
+    throw_assert_eq(out_aiocb->get_return(), 1);
+    throw_assert_eq(buffer->size(), 1);
+    throw_assert_eq((*buffer)[0], 'm');
   }
 };
 
@@ -110,23 +110,23 @@ public:
   // yunit::Test
   void run() {
     SocketPair sockets;
-    if ( !this->get_aio_queue().associate( sockets.first() ) )
+    if (!this->get_aio_queue().associate(sockets.first()))
       throw Exception();
 
     auto_Object<Buffer> buffer = new Page;
-    buffer->put( 'm', 512 );
+    buffer->put('m', 512);
 
     auto_Object<sendAIOCB> aiocb
-    = new sendAIOCB( sockets.first(), buffer->inc_ref(), 0 );
+    = new sendAIOCB(sockets.first(), buffer->inc_ref(), 0);
 
-    if ( !this->get_aio_queue().enqueue( aiocb->inc_ref() ) )
+    if (!this->get_aio_queue().enqueue(aiocb->inc_ref()))
       throw Exception();
 
     auto_Object<sendAIOCB> out_aiocb
-    = object_cast<sendAIOCB>( this->get_aio_queue().dequeue() );
-    throw_assert_eq( &out_aiocb.get(), &aiocb.get() );
-    throw_assert_eq( out_aiocb->get_error(), 0 );
-    throw_assert_eq( out_aiocb->get_return(), 512 );
+    = object_cast<sendAIOCB>(this->get_aio_queue().dequeue());
+    throw_assert_eq(&out_aiocb.get(), &aiocb.get());
+    throw_assert_eq(out_aiocb->get_error(), 0);
+    throw_assert_eq(out_aiocb->get_return(), 512);
   }
 };
 
@@ -135,9 +135,9 @@ template <class AIOQueueType>
 class AIOQueueTestSuite : public EventQueueTestSuite<AIOQueueType> {
 public:
   AIOQueueTestSuite() {
-    add( "AIOQueue::dequeue", new EventQueueDequeueTest<AIOQueueType> );
-    add( "AIOQueue + recv", new AIOQueueRecvTest<AIOQueueType> );
-    add( "AIOQueue + send", new AIOQueueSendTest<AIOQueueType> );
+    add("AIOQueue::dequeue", new EventQueueDequeueTest<AIOQueueType>);
+    add("AIOQueue + recv", new AIOQueueRecvTest<AIOQueueType>);
+    add("AIOQueue + send", new AIOQueueSendTest<AIOQueueType>);
 
     add
     (

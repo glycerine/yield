@@ -32,4 +32,4 @@
 #include "yield/stage/wavefront_stage_scheduler.hpp"
 
 
-TEST_SUITE_EX( WavefrontStageScheduler, yield::stage::StageSchedulerTestSuite<yield::stage::WavefrontStageScheduler> );
+TEST_SUITE_EX(WavefrontStageScheduler, yield::stage::StageSchedulerTestSuite<yield::stage::WavefrontStageScheduler>);

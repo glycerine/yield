@@ -32,4 +32,4 @@
 #include "selector.hpp"
 
 
-TEST_SUITE_EX( Selector, yield::poll::SocketEventQueueTestSuite<yield::poll::win32::Selector> );
+TEST_SUITE_EX(Selector, yield::poll::SocketEventQueueTestSuite<yield::poll::win32::Selector>);

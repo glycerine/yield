@@ -41,15 +41,15 @@ namespace aio {
 namespace win32 {
 class AIOQueue : public EventQueue {
 public:
-  bool associate( fd_t fd );
-  virtual bool enqueue( YO_NEW_REF AIOCB& aiocb );
+  bool associate(fd_t fd);
+  virtual bool enqueue(YO_NEW_REF AIOCB& aiocb);
 
   // yield::EventQueue
   YO_NEW_REF Event& dequeue() {
     return EventQueue::dequeue();
   }
-  virtual YO_NEW_REF Event* dequeue( const Time& timeout );
-  virtual bool enqueue( YO_NEW_REF Event& event );
+  virtual YO_NEW_REF Event* dequeue(const Time& timeout);
+  virtual bool enqueue(YO_NEW_REF Event& event);
 
 protected:
   AIOQueue();

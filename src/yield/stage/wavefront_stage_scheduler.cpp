@@ -37,31 +37,31 @@ namespace stage {
 class WavefrontStageScheduler::StagePoller
     : public PollingStageScheduler::StagePoller {
 public:
-  StagePoller( Stage& first_stage )
-    : PollingStageScheduler::StagePoller( first_stage )
+  StagePoller(Stage& first_stage)
+    : PollingStageScheduler::StagePoller(first_stage)
   { }
 
   // yield::thread::Runnable
   void run() {
-    Time visit_timeout( 0.5 );
+    Time visit_timeout(0.5);
 
-    while ( should_run() ) {
+    while (should_run()) {
       Stage** stages = &get_stages()[0];
       size_t stage_i_max = get_stages().size();
 
       // Forward
-      for ( size_t stage_i = 0; stage_i < stage_i_max; stage_i++ ) {
-        if ( stages[stage_i]->visit( visit_timeout ) )
-          visit_timeout = static_cast<uint64_t>( 0 );
-        else if ( visit_timeout < 1 * Time::NS_IN_S )
+      for (size_t stage_i = 0; stage_i < stage_i_max; stage_i++) {
+        if (stages[stage_i]->visit(visit_timeout))
+          visit_timeout = static_cast<uint64_t>(0);
+        else if (visit_timeout < 1 * Time::NS_IN_S)
           visit_timeout += 1 * Time::NS_IN_US;
       }
 
       // Back
-      for ( ssize_t stage_i = stage_i_max - 1; stage_i >= 0; stage_i-- ) {
-        if ( stages[stage_i]->visit( visit_timeout ) )
-          visit_timeout = static_cast<uint64_t>( 0 );
-        else if ( visit_timeout < 1 * Time::NS_IN_S )
+      for (ssize_t stage_i = stage_i_max - 1; stage_i >= 0; stage_i--) {
+        if (stages[stage_i]->visit(visit_timeout))
+          visit_timeout = static_cast<uint64_t>(0);
+        else if (visit_timeout < 1 * Time::NS_IN_S)
           visit_timeout += 1 * Time::NS_IN_US;
       }
     }
@@ -74,7 +74,7 @@ WavefrontStageScheduler::createStagePoller
 (
   Stage& first_stage
 ) {
-  return *new StagePoller( first_stage );
+  return *new StagePoller(first_stage);
 }
 }
 }

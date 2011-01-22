@@ -51,25 +51,25 @@ int SocketPair::DOMAIN_DEFAULT = AF_UNIX;
 int SocketPair::TYPE_DEFAULT = StreamSocket::TYPE;
 
 
-SocketPair::SocketPair( int domain, int type, int protocol ) {
-  if ( !socketpair( domain, type, protocol, sockets ) )
+SocketPair::SocketPair(int domain, int type, int protocol) {
+  if (!socketpair(domain, type, protocol, sockets))
     throw Exception();
 }
 
-SocketPair::SocketPair( YO_NEW_REF Socket** sockets ) {
+SocketPair::SocketPair(YO_NEW_REF Socket** sockets) {
   this->sockets[0] = sockets[0];
   this->sockets[1] = sockets[1];
 }
 
 SocketPair::~SocketPair() {
-  Socket::dec_ref( *sockets[0] );
-  Socket::dec_ref( *sockets[1] );
+  Socket::dec_ref(*sockets[0]);
+  Socket::dec_ref(*sockets[1]);
 }
 
-SocketPair* SocketPair::create( int domain, int type, int protocol ) {
+SocketPair* SocketPair::create(int domain, int type, int protocol) {
   Socket* sockets[2];
-  if ( socketpair( domain, type, protocol, sockets ) )
-    return new SocketPair( sockets );
+  if (socketpair(domain, type, protocol, sockets))
+    return new SocketPair(sockets);
   else
     return NULL;
 }
@@ -84,74 +84,74 @@ SocketPair::socketpair
 ) {
 #ifndef _WIN32
   socket_t sv[2];
-  if ( ::socketpair( domain, type, protocol, sv ) != -1 ) {
-    sockets[0] = new Socket( domain, type, protocol, sv[0] );
-    sockets[1] = new Socket( domain, type, protocol, sv[1] );
+  if (::socketpair(domain, type, protocol, sv) != -1) {
+    sockets[0] = new Socket(domain, type, protocol, sv[0]);
+    sockets[1] = new Socket(domain, type, protocol, sv[1]);
     return true;
-  } else if ( domain == AF_UNIX )
+  } else if (domain == AF_UNIX)
     return false;
 #endif
 
-  if ( type == StreamSocket::TYPE ) {
+  if (type == StreamSocket::TYPE) {
     StreamSocket* listen_stream_socket
-    = StreamSocket::create( domain, protocol );
+    = StreamSocket::create(domain, protocol);
 
     if
     (
       listen_stream_socket != NULL
       &&
-      listen_stream_socket->bind( SocketAddress::IN_LOOPBACK )
+      listen_stream_socket->bind(SocketAddress::IN_LOOPBACK)
       &&
       listen_stream_socket->listen()
     ) {
       SocketAddress sockname;
-      if ( listen_stream_socket->getsockname( sockname ) ) {
-        sockets[0] = StreamSocket::create( domain, protocol );
+      if (listen_stream_socket->getsockname(sockname)) {
+        sockets[0] = StreamSocket::create(domain, protocol);
 
-        if ( sockets[0] != NULL ) {
-          if ( sockets[0]->connect( sockname ) ) {
+        if (sockets[0] != NULL) {
+          if (sockets[0]->connect(sockname)) {
             sockets[1] = listen_stream_socket->accept();
-            if ( sockets[1] != NULL ) {
-              StreamSocket::dec_ref( *listen_stream_socket );
+            if (sockets[1] != NULL) {
+              StreamSocket::dec_ref(*listen_stream_socket);
               return true;
             }
           } else
-            StreamSocket::dec_ref( *sockets[0] );
+            StreamSocket::dec_ref(*sockets[0]);
         }
       }
     } else
-      StreamSocket::dec_ref( listen_stream_socket );
-  } else if ( type == DatagramSocket::TYPE ) {
+      StreamSocket::dec_ref(listen_stream_socket);
+  } else if (type == DatagramSocket::TYPE) {
     SocketAddress socknames[2];
 
-    for ( uint8_t i = 0; i < 2; i++ ) {
+    for (uint8_t i = 0; i < 2; i++) {
       if
       (
-        ( sockets[i] = DatagramSocket::create( domain, 0 ) ) != NULL
+        (sockets[i] = DatagramSocket::create(domain, 0)) != NULL
         &&
-        sockets[i]->bind( SocketAddress::IN_LOOPBACK )
+        sockets[i]->bind(SocketAddress::IN_LOOPBACK)
         &&
-        sockets[i]->getsockname( socknames[i] )
+        sockets[i]->getsockname(socknames[i])
       )
         continue;
       else {
-        Socket::dec_ref( sockets[0] );
-        Socket::dec_ref( sockets[1] );
+        Socket::dec_ref(sockets[0]);
+        Socket::dec_ref(sockets[1]);
         return false;
       }
     }
 
     if
     (
-      sockets[0]->connect( socknames[1] )
+      sockets[0]->connect(socknames[1])
       &&
-      sockets[1]->connect( socknames[0] )
+      sockets[1]->connect(socknames[0])
     )
       return true;
     else {
-      for ( uint8_t i = 0; i < 2; i++ ) {
-        Socket::dec_ref( sockets[i] );
-        SocketAddress::dec_ref( socknames[i] );
+      for (uint8_t i = 0; i < 2; i++) {
+        Socket::dec_ref(sockets[i]);
+        SocketAddress::dec_ref(socknames[i]);
       }
     }
   }

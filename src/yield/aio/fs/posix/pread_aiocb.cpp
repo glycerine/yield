@@ -34,9 +34,9 @@
 namespace yield {
 namespace aio {
 namespace fs {
-bool preadAIOCB::issue( EventHandler& completion_handler ) {
-  set_completion_handler( completion_handler );
-  return aio_read( *this ) == 0;
+bool preadAIOCB::issue(EventHandler& completion_handler) {
+  set_completion_handler(completion_handler);
+  return aio_read(*this) == 0;
 }
 }
 }

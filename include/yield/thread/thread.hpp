@@ -70,43 +70,43 @@ class Thread;
 
 class Thread : public Object {
 public:
-  Thread( void ( *run )( void* ), void* context = NULL );
-  Thread( Runnable& );
+  Thread(void (*run)(void*), void* context = NULL);
+  Thread(Runnable&);
   ~Thread();
 
   bool cancel();
   Runnable* get_runnable() const;
-  void* getspecific( uintptr_t key );
+  void* getspecific(uintptr_t key);
   bool is_running() const;
   bool join();
   uintptr_t key_create();
-  bool key_delete( uintptr_t key );
-  void nanosleep( const Time& );
+  bool key_delete(uintptr_t key);
+  void nanosleep(const Time&);
   static auto_Object<Thread> self();
-  void set_name( const char* name );
-  bool setaffinity( uint16_t logical_processor_i );
-  bool setaffinity( const ProcessorSet& logical_processor_set );
-  bool setspecific( uintptr_t key, intptr_t value );
-  bool setspecific( uintptr_t key, uintptr_t value );
-  bool setspecific( uintptr_t key, void* value );
+  void set_name(const char* name);
+  bool setaffinity(uint16_t logical_processor_i);
+  bool setaffinity(const ProcessorSet& logical_processor_set);
+  bool setspecific(uintptr_t key, intptr_t value);
+  bool setspecific(uintptr_t key, uintptr_t value);
+  bool setspecific(uintptr_t key, void* value);
   void yield();
 
 private:
 #if defined(__linux__)
-  Thread( linux::Thread* pimpl )
+  Thread(linux::Thread* pimpl)
 #elif defined(__MACH__)
-  Thread( darwin::Thread* pimpl )
+  Thread(darwin::Thread* pimpl)
 #elif defined(__sun)
-  Thread( sunos::Thread* pimpl )
+  Thread(sunos::Thread* pimpl)
 #elif defined(_WIN32)
-  Thread( win32::Thread* pimpl )
+  Thread(win32::Thread* pimpl)
 #else
-  Thread( posix::Thread* pimpl )
+  Thread(posix::Thread* pimpl)
 #endif
-    : pimpl( pimpl )
+    : pimpl(pimpl)
   { }
 
-  void init( Runnable& );
+  void init(Runnable&);
 
 private:
 #if defined(__linux__)

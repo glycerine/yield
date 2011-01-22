@@ -43,11 +43,11 @@ class EventHandler : public Object {
 public:
   virtual ~EventHandler() { }
 
-  virtual void handle( Event& event ) = 0;
+  virtual void handle(Event& event) = 0;
 
   // Object
   EventHandler& inc_ref() {
-    return Object::inc_ref( *this );
+    return Object::inc_ref(*this);
   }
 };
 };

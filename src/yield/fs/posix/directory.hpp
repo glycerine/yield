@@ -48,8 +48,8 @@ public:
   public:
     Entry() { }
 
-    Entry& operator=( const dirent& );
-    Entry& operator=( const struct stat& );
+    Entry& operator=(const dirent&);
+    Entry& operator=(const struct stat&);
 
     // yield::fs::Stat
     const DateTime& get_atime() const {
@@ -108,22 +108,22 @@ public:
   };
 
 public:
-  Directory( DIR* dirp, const Path& path );
+  Directory(DIR* dirp, const Path& path);
   virtual ~Directory();
 
   // Object
   Directory& inc_ref() {
-    return Object::inc_ref( *this );
+    return Object::inc_ref(*this);
   }
 
   // Directory
   bool close();
-  yield::fs::Directory::Entry* read( Entry::Type types );
-  virtual bool read( yield::fs::Directory::Entry&, Entry::Type types );
+  yield::fs::Directory::Entry* read(Entry::Type types);
+  virtual bool read(yield::fs::Directory::Entry&, Entry::Type types);
   void rewind();
 
 protected:
-  operator DIR*() {
+  operator DIR* () {
     return dirp;
   }
   const Path& get_path() const {

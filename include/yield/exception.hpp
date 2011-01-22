@@ -41,20 +41,20 @@ namespace yield {
 class Exception : public Response, public std::exception {
 public:
   const static uint32_t INVALID_ERROR_CODE = 0;
-  const static uint32_t LAST_ERROR_CODE = static_cast<uint32_t>( -1 );
+  const static uint32_t LAST_ERROR_CODE = static_cast<uint32_t>(-1);
 
 public:
   // error_message is always copied
-  Exception( uint32_t error_code = LAST_ERROR_CODE );
-  Exception( const char* error_message );
-  Exception( const string& error_message );
-  Exception( uint32_t error_code, const char* error_message );
-  Exception( uint32_t error_code, const string& error_message );
-  Exception( const Exception& other );
+  Exception(uint32_t error_code = LAST_ERROR_CODE);
+  Exception(const char* error_message);
+  Exception(const string& error_message);
+  Exception(uint32_t error_code, const char* error_message);
+  Exception(uint32_t error_code, const string& error_message);
+  Exception(const Exception& other);
   virtual ~Exception() throw();
 
   virtual Exception& clone() const {
-    return *new Exception( *this );
+    return *new Exception(*this);
   }
 
   virtual uint32_t get_error_code() const {
@@ -62,18 +62,18 @@ public:
   }
   virtual const char* get_error_message() const throw();
   static uint32_t get_last_error_code();
-  operator const char*() const throw() {
+  operator const char* () const throw() {
     return get_error_message();
   }
 
   virtual void rethrow() const {
-    throw Exception( *this );
+    throw Exception(*this);
   }
 
-  void set_error_code( uint32_t error_code );
-  void set_error_message( const char* error_message );
-  void set_error_message( const string& error_message );
-  static void set_last_error_code( uint32_t error_code );
+  void set_error_code(uint32_t error_code);
+  void set_error_message(const char* error_message);
+  void set_error_message(const string& error_message);
+  static void set_last_error_code(uint32_t error_code);
 
   // Response
   bool is_exception() const {

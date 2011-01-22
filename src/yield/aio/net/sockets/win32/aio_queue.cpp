@@ -40,20 +40,20 @@ namespace aio {
 namespace net {
 namespace sockets {
 namespace win32 {
-bool AIOQueue::associate( socket_t socket_ ) {
-  return yield::aio::win32::AIOQueue::associate( socket_to_fd( socket_ ) );
+bool AIOQueue::associate(socket_t socket_) {
+  return yield::aio::win32::AIOQueue::associate(socket_to_fd(socket_));
 }
 
-bool AIOQueue::enqueue( Event& event ) {
-  switch ( event.get_type_id() ) {
+bool AIOQueue::enqueue(Event& event) {
+  switch (event.get_type_id()) {
   case acceptAIOCB::TYPE_ID:
   case connectAIOCB::TYPE_ID:
   case recvAIOCB::TYPE_ID:
   case sendAIOCB::TYPE_ID:
-    return yield::aio::win32::AIOQueue::enqueue( static_cast<AIOCB&>( event ) );
+    return yield::aio::win32::AIOQueue::enqueue(static_cast<AIOCB&>(event));
 
   default:
-    return yield::aio::win32::AIOQueue::enqueue( event );
+    return yield::aio::win32::AIOQueue::enqueue(event);
   }
 }
 }

@@ -74,14 +74,14 @@ public:
 
   // yield::aio::AIOCB
 #ifdef _WIN32
-  bool issue( EventHandler& completion_handler );
-  bool issue( yield::aio::win32::AIOQueue& );
+  bool issue(EventHandler& completion_handler);
+  bool issue(yield::aio::win32::AIOQueue&);
 #endif
   RetryStatus retry();
-  void set_return( ssize_t return_ );
+  void set_return(ssize_t return_);
 
 private:
-  recvAIOCB( recvAIOCB& other );
+  recvAIOCB(recvAIOCB& other);
 
 private:
   Buffer& buffer;

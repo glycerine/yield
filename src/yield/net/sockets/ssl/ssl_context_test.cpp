@@ -38,10 +38,10 @@
 #endif
 
 
-TEST_SUITE( SSLContext );
+TEST_SUITE(SSLContext);
 
 #ifdef YIELD_HAVE_OPENSSL
-TEST( SSLContext, PEM ) {
+TEST(SSLContext, PEM) {
   auto_Object<SSLContext> ssl_context
   = SSLContext::create
     (
