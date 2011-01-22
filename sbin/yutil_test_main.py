@@ -46,11 +46,12 @@ assert __name__ == "__main__"
 
 
 suite = TestSuite()
-suite.addTests( file_test_suite )
-suite.addTests( platform_dict_test_suite )
-suite.addTests( sconscript_test_suite )
-suite.addTests( source_files_test_suite )
-suite.addTest( vcproj_test_suite )
-suite.addTests( vcxproj_test_suite )
+suite.addTests(file_test_suite)
+suite.addTests(platform_dict_test_suite)
+suite.addTests(sconscript_test_suite)
+suite.addTests(source_files_test_suite)
+suite.addTest(vcproj_test_suite)
+suite.addTests(vcxproj_test_suite)
 #suite.addTests( autoconf_test_suite )
-TextTestRunner().run( suite )
+TextTestRunner().run(suite)
+

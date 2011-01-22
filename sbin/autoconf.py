@@ -37,16 +37,16 @@ import sys
 try:
     from yutil.autoconf import *
 except ImportError:
-    MY_DIR_PATH = dirname( abspath( sys.modules[__name__].__file__ ) )
-    YIDL_DIR_PATH = abspath( join( MY_DIR_PATH, ".." ) )
-    sys.path.append( join( YIDL_DIR_PATH, "src", "py" ) )
+    MY_DIR_PATH = dirname(abspath(sys.modules[__name__].__file__))
+    YIDL_DIR_PATH = abspath(join(MY_DIR_PATH, ".."))
+    sys.path.append(join(YIDL_DIR_PATH, "src", "py"))
     from yutil.autoconf import *
 
 
 # Helper functions
-def __Check( check_function, description, *args, **kwds ):
+def __Check(check_function, description, *args, **kwds):
     print "Checking for", description, "..."
-    if check_function( *args, **kwds ):
+    if check_function(*args, **kwds):
         print "yes"
         return 0
     else:
@@ -54,9 +54,9 @@ def __Check( check_function, description, *args, **kwds ):
         return 1
 
 
-def __CheckHeader( language, check_function, header ):
+def __CheckHeader(language, check_function, header):
     print "Checking for", language, "header", header, "..."
-    if check_function( header ):
+    if check_function(header):
         print "yes"
         return 0
     else:
@@ -66,34 +66,34 @@ def __CheckHeader( language, check_function, header ):
 
 option_parser = OptionParser()
 
-option_parser.add_option( "--check-header" )
-option_parser.add_option( "--check-c-header" )
-option_parser.add_option( "--check-cxx-header" )
-option_parser.add_option( "--check-declaration" )
-option_parser.add_option( "--check-func" )
-option_parser.add_option( "--check-lib" )
-option_parser.add_option( "--check-lib-with-header" )
-option_parser.add_option( "--check-type" )
-option_parser.add_option( "--check-type-size" )
-option_parser.add_option( "--expect-type-size", type="int", default=0 )
-option_parser.add_option( "--include", action="append", dest="includes" )
-option_parser.add_option( "--language", default="C" )
+option_parser.add_option("--check-header")
+option_parser.add_option("--check-c-header")
+option_parser.add_option("--check-cxx-header")
+option_parser.add_option("--check-declaration")
+option_parser.add_option("--check-func")
+option_parser.add_option("--check-lib")
+option_parser.add_option("--check-lib-with-header")
+option_parser.add_option("--check-type")
+option_parser.add_option("--check-type-size")
+option_parser.add_option("--expect-type-size", type="int", default=0)
+option_parser.add_option("--include", action="append", dest="includes")
+option_parser.add_option("--language", default="C")
 
-if len( sys.argv ) > 1:
+if len(sys.argv) > 1:
     options, ignore = option_parser.parse_args()
 else:
     option_parser.print_help()
-    sys.exit( 0 )
+    sys.exit(0)
 
 
 ret = 0
 
 if options.check_c_header:
-    ret += __CheckHeader( "C", CheckCHeader, options.check_c_header )
+    ret += __CheckHeader("C", CheckCHeader, options.check_c_header)
 if options.check_cxx_header:
-    ret += __CheckCXXHeader( "C++", CheckCXXHeader, options.check_cxx_header )
+    ret += __CheckCXXHeader("C++", CheckCXXHeader, options.check_cxx_header)
 if options.check_header:
-    ret += __CheckHeader( options.language, CheckHeader, options.check_header )
+    ret += __CheckHeader(options.language, CheckHeader, options.check_header)
 
 if options.check_declaration:
     ret += __Check(
@@ -125,7 +125,7 @@ if options.check_lib:
 if options.check_lib_with_header:
     ret += __Check(
                 CheckLibWithHeader,
-                "library " + options.check_lib_with_header + " and header " + ' '.join( options.includes ),
+                "library " + options.check_lib_with_header + " and header " + ' '.join(options.includes),
                 options.check_lib_with_header,
                 includes=options.includes,
                 language=options.language
@@ -143,7 +143,7 @@ if options.check_type:
 if options.check_type_size:
     ret += __Check(
                CheckTypeSize,
-               "type " + options.check_type_size  + " with size " + str( options.expect_type_size ),
+               "type " + options.check_type_size + " with size " + str(options.expect_type_size),
                options.check_type_size,
                expect=options.expect_type_size,
                includes=options.includes

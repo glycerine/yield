@@ -43,7 +43,7 @@ assert __name__ == "__main__"
 
 
 suite = TestSuite()
-suite.addTests( compiler_test_suite )
-suite.addTests( cpp_target_test_suite )
-suite.addTests( py_target_test_suite )
-TextTestRunner().run( suite )
+suite.addTests(compiler_test_suite)
+suite.addTests(cpp_target_test_suite)
+suite.addTests(py_target_test_suite)
+TextTestRunner().run(suite)

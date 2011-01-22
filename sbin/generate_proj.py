@@ -39,33 +39,33 @@ from os.path import abspath, exists, join, split
 from optparse import OptionParser
 
 from config import *
-from yuild import Makefile, TopLevelMakefile,\
+from yuild import Makefile, TopLevelMakefile, \
                   VCXProj, VCXProjFilters, VCXProjUser, VCXSln
 from yutil import mirror_subdirectories, write_file
 
 
 # Parse options
 option_parser = OptionParser()
-option_parser.add_option( "-f", "--force", action="store_true" )
+option_parser.add_option("-f", "--force", action="store_true")
 options, ignore = option_parser.parse_args()
 
 
 # Generate project files
 for project_name in PROJECT_NAMES:
-    project =\
+    project = \
     {
-       "autoconf": AUTOCONF.get( project_name, None ),
-       "build_dir_path": join( YIELD_DIR_PATH, "build", "yield", project_name ),
+       "autoconf": AUTOCONF.get(project_name, None),
+       "build_dir_path": join(YIELD_DIR_PATH, "build", "yield", project_name),
        "cxxflags": CXXFLAGS,
        "cxxpath": CXXPATH,
        "exclude_file_paths": EXCLUDE_FILE_PATHS[project_name],
        "include_file_paths": INCLUDE_FILE_PATHS[project_name],
        "libpath": LIBPATH,
-       "libs": LIBS.get( project_name, {} ),
+       "libs": LIBS.get(project_name, {}),
        "ldflags": LDFLAGS,
        "name": project_name,
-       "output_file_path": join( YIELD_DIR_PATH, "lib", "yield_" + project_name ),
-       "project_dir_path": join( YIELD_DIR_PATH, "proj", "yield", project_name ),
+       "output_file_path": join(YIELD_DIR_PATH, "lib", "yield_" + project_name),
+       "project_dir_path": join(YIELD_DIR_PATH, "proj", "yield", project_name),
        "project_references":
             [
                 join(
@@ -82,31 +82,31 @@ for project_name in PROJECT_NAMES:
     }
 
     project_test = project.copy()
-    project_test["build_dir_path"] =\
-        join( YIELD_DIR_PATH, "build", "yield", project_name + "_test" )
+    project_test["build_dir_path"] = \
+        join(YIELD_DIR_PATH, "build", "yield", project_name + "_test")
     project_test["exclude_file_paths"] = EXCLUDE_FILE_PATHS[project_name + "_test"]
     project_test["include_file_paths"] = INCLUDE_FILE_PATHS[project_name + "_test"]
-    project_test["libs"] = deepcopy( project["libs"] )
-    project_test["libs"].setdefault( '*', [] ).insert( 0, "yield_" + project_name )
+    project_test["libs"] = deepcopy(project["libs"])
+    project_test["libs"].setdefault('*', []).insert(0, "yield_" + project_name)
 
     project_test["name"] = project_name + "_test"
-    project_test["output_file_path"] =\
-        join( YIELD_DIR_PATH, "bin", "yield_" + project_name + "_test" )
-    project_test["project_references"] =\
-        [join( YIELD_DIR_PATH, "proj", "yield", project_name, project_name )]
-    project_test["source_file_paths"] =\
+    project_test["output_file_path"] = \
+        join(YIELD_DIR_PATH, "bin", "yield_" + project_name + "_test")
+    project_test["project_references"] = \
+        [join(YIELD_DIR_PATH, "proj", "yield", project_name, project_name)]
+    project_test["source_file_paths"] = \
          SOURCE_FILE_PATHS[project_name + "_test"]
     project_test["type"] = "exe"
 
-    for project_dict in ( project, project_test ):
+    for project_dict in (project, project_test):
         if project_dict is not None:
-            for key in ( "build_dir_path", "project_dir_path" ):
-                if not exists( project_dict[key] ):
-                    makedirs( project_dict[key] )
+            for key in ("build_dir_path", "project_dir_path"):
+                if not exists(project_dict[key]):
+                    makedirs(project_dict[key])
 
             if project_name != "common":
-                project_source_dir_path =\
-                    join( YIELD_SRC_DIR_PATH, "yield", project_name )
+                project_source_dir_path = \
+                    join(YIELD_SRC_DIR_PATH, "yield", project_name)
 
                 mirror_subdirectories(
                     project_source_dir_path,
@@ -120,10 +120,10 @@ for project_name in PROJECT_NAMES:
 
             for project_class, file_ext in \
                 (
-                    ( Makefile, ".Makefile" ),
-                    ( VCXProj, ".vcxproj" ),
-                    ( VCXProjFilters, ".vcxproj.filters" ),
-                    ( VCXProjUser, ".vcxproj.user" ),
+                    (Makefile, ".Makefile"),
+                    (VCXProj, ".vcxproj"),
+                    (VCXProjFilters, ".vcxproj.filters"),
+                    (VCXProjUser, ".vcxproj.user"),
                 ):
 
                 write_file(
@@ -131,7 +131,7 @@ for project_name in PROJECT_NAMES:
                         project_dict["project_dir_path"],
                         project_dict["name"] + file_ext
                     ),
-                    repr( project_class( **project_dict ) ),
+                    repr(project_class(**project_dict)),
                     force=options.force
                 )
 
@@ -141,9 +141,9 @@ write_file(
     "yield.sln",
     repr(
         VCXSln(
-            [join( "proj", "yield", project_name, project_name )
-             for project_name in PROJECT_NAMES]+\
-            [join( "proj", "yield", project_name, project_name + "_test" )
+            [join("proj", "yield", project_name, project_name)
+             for project_name in PROJECT_NAMES] + \
+            [join("proj", "yield", project_name, project_name + "_test")
              for project_name in PROJECT_NAMES],
             "yield.sln"
         )
@@ -154,6 +154,6 @@ write_file(
 # Generate top-level Makefile
 write_file(
     "Makefile",
-    repr( TopLevelMakefile( PROJECT_REFERENCES ) ),
+    repr(TopLevelMakefile(PROJECT_REFERENCES)),
     force=options.force
 )

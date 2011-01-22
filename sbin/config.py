@@ -32,12 +32,12 @@ from os.path import abspath, dirname, exists, join
 from pprint import pprint
 import sys
 
-from yuild.constant import INCLUDE_FILE_FNMATCH_PATTERNS,\
+from yuild.constant import INCLUDE_FILE_FNMATCH_PATTERNS, \
                            SOURCE_FILE_FNMATCH_PATTERNS
 from yutil import deduplist, rglob
 
 
-__all__ =\
+__all__ = \
 [
     "AUTHOR",
     "AUTOCONF",
@@ -63,15 +63,15 @@ __all__ =\
 AUTHOR = "Minor Gordon"
 
 
-MY_DIR_PATH = dirname( abspath( sys.modules[__name__].__file__ ) )
-YIELD_DIR_PATH = abspath( join( MY_DIR_PATH, ".." ) )
-YIELD_INCLUDE_DIR_PATH = join( YIELD_DIR_PATH, "include" )
-YIELD_SRC_DIR_PATH = join( YIELD_DIR_PATH, "src" )
+MY_DIR_PATH = dirname(abspath(sys.modules[__name__].__file__))
+YIELD_DIR_PATH = abspath(join(MY_DIR_PATH, ".."))
+YIELD_INCLUDE_DIR_PATH = join(YIELD_DIR_PATH, "include")
+YIELD_SRC_DIR_PATH = join(YIELD_DIR_PATH, "src")
 
 
 AUTOCONF = {}
 
-AUTOCONF["net"] =\
+AUTOCONF["net"] = \
 {
 #    "linux": { "YIELD_HAVE_LINUX_LIBUUID": ( "uuid", "uuid/uuid.h" ), },
 #    "unix": { "YIELD_HAVE_OPENSSL": ( "crypto", "ssl", "ssl.h" ), },
@@ -86,7 +86,7 @@ AUTOCONF["thread"] = \
 #    "unix": { "YIELD_HAVE_ZLIB": ( "z", "zlib.h" ), },
 #    "win32":  { "YIELD_HAVE_ZLIB": ( "zdll", "zlib.h" ), },
 
-CXXFLAGS =\
+CXXFLAGS = \
 {
     "unix": ["-fno-rtti", "-Wall", "-Wold-style-cast", "-Wunused-macros"],
     "win32":
@@ -103,7 +103,7 @@ CXXFLAGS =\
     ]
 }
 
-CXXPATH =\
+CXXPATH = \
 {
     "*": \
     [
@@ -111,7 +111,7 @@ CXXPATH =\
     ]
 }
 
-LDFLAGS =\
+LDFLAGS = \
 {
     "win32":
     [
@@ -120,43 +120,43 @@ LDFLAGS =\
     ],
 }
 
-LIBPATH =\
+LIBPATH = \
 {
-    "*": [join( YIELD_DIR_PATH, "lib" )],
+    "*": [join(YIELD_DIR_PATH, "lib")],
     # "win32": [join( YIELD_DIR_PATH, "lib", "win32" )]
 }
 
 LIBS = {}
 
-LIBS["aio"] =\
+LIBS["aio"] = \
 {
     "linux": ["aio"],
 }
 
-LIBS["common"] =\
+LIBS["common"] = \
 {
     "linux": ["rt", "stdc++"],
     "sunos": ["m", "rt", "stdc++"],
 }
 
-LIBS["i18n"] =\
+LIBS["i18n"] = \
 {
     "darwin": ["iconv"],
     "freebsd": ["iconv", "intl"],
     "sunos": ["iconv"],
 }
 
-LIBS["net"] =\
+LIBS["net"] = \
 {
     "sunos": ["nsl", "socket", "uuid"],
 }
 
-LIBS["process"] =\
+LIBS["process"] = \
 {
     "linux": ["dl"],
 }
 
-LIBS["thread"] =\
+LIBS["thread"] = \
 {
     "freebsd": ["pthread"],
     "linux": ["pthread"],
@@ -165,35 +165,35 @@ LIBS["thread"] =\
 
 
 PROJECT_REFERENCES = {}
-PROJECT_REFERENCES["aio"] = ( "fs", "net", "poll", "stage" )
+PROJECT_REFERENCES["aio"] = ("fs", "net", "poll", "stage")
 PROJECT_REFERENCES["common"] = tuple()
-PROJECT_REFERENCES["fs"] = ( "i18n", )
-PROJECT_REFERENCES["http"] = ( "aio", "stage" )
-PROJECT_REFERENCES["i18n"] = ( "common", )
-PROJECT_REFERENCES["marshal"] = ( "common", )
-PROJECT_REFERENCES["net"] = ( "common", )
-PROJECT_REFERENCES["poll"] = ( "net", "thread", )
-PROJECT_REFERENCES["process"] = ( "fs", )
-PROJECT_REFERENCES["stage"] = ( "thread", )
-PROJECT_REFERENCES["thread"] = ( "common", )
+PROJECT_REFERENCES["fs"] = ("i18n",)
+PROJECT_REFERENCES["http"] = ("aio", "stage")
+PROJECT_REFERENCES["i18n"] = ("common",)
+PROJECT_REFERENCES["marshal"] = ("common",)
+PROJECT_REFERENCES["net"] = ("common",)
+PROJECT_REFERENCES["poll"] = ("net", "thread",)
+PROJECT_REFERENCES["process"] = ("fs",)
+PROJECT_REFERENCES["stage"] = ("thread",)
+PROJECT_REFERENCES["thread"] = ("common",)
 
 # Expand project references so that the list has dependencies going left -> right, e.g.
 # if project A depends on project B depends on project C, the order will be [A, B, C]
-def __expand_project_references( project_name ):
+def __expand_project_references(project_name):
     project_references = []
     for project_reference in PROJECT_REFERENCES[project_name]:
-        project_references.append( project_reference )
-        for project_reference in __expand_project_references( project_reference ):
+        project_references.append(project_reference)
+        for project_reference in __expand_project_references(project_reference):
             try:
-                del project_references[project_references.index( project_reference )]
+                del project_references[project_references.index(project_reference)]
             except ValueError:
                 pass
-            project_references.append( project_reference )
+            project_references.append(project_reference)
     return project_references
 PROJECT_REFERENCES_EXPANDED = {}
 for project_name in PROJECT_REFERENCES.iterkeys():
-    PROJECT_REFERENCES_EXPANDED[project_name] =\
-        deduplist( __expand_project_references( project_name ) )
+    PROJECT_REFERENCES_EXPANDED[project_name] = \
+        deduplist(__expand_project_references(project_name))
 
 # pprint( PROJECT_REFERENCES_EXPANDED )
 
@@ -204,20 +204,20 @@ for project_name, project_references in PROJECT_REFERENCES_EXPANDED.iteritems():
     for project_reference in project_references + [project_name]:
         try:
             for platform, platform_libs in LIBS[project_reference].iteritems():
-                LIBS_EXPANDED[project_name].setdefault( platform, [] ).extend( platform_libs )
+                LIBS_EXPANDED[project_name].setdefault(platform, []).extend(platform_libs)
         except KeyError:
             pass
 
     # Add the project references' outputs to the project's libs
     for project_reference in project_references:
         project_reference_lib = "yield_" + project_reference
-        LIBS_EXPANDED[project_name].setdefault( '*', [] )
+        LIBS_EXPANDED[project_name].setdefault('*', [])
         assert project_reference_lib not in LIBS_EXPANDED[project_name]['*'], LIBS_EXPANDED[project_name]['*']
-        LIBS_EXPANDED[project_name]['*'].append( project_reference_lib )
+        LIBS_EXPANDED[project_name]['*'].append(project_reference_lib)
 
     # dedup
     for platform in LIBS_EXPANDED[project_name].iterkeys():
-        LIBS_EXPANDED[project_name][platform] = deduplist( LIBS_EXPANDED[project_name][platform] )
+        LIBS_EXPANDED[project_name][platform] = deduplist(LIBS_EXPANDED[project_name][platform])
 LIBS = LIBS_EXPANDED
 
 # pprint( LIBS )
@@ -225,16 +225,16 @@ LIBS = LIBS_EXPANDED
 PROJECT_NAMES = PROJECT_REFERENCES.keys()
 
 PROJECT_BUILD_ORDER = []
-def __fill_project_build_order( project_name ):
+def __fill_project_build_order(project_name):
     for project_reference in PROJECT_REFERENCES[project_name]:
-        __fill_project_build_order( project_reference )
+        __fill_project_build_order(project_reference)
 
     if project_name not in PROJECT_BUILD_ORDER:
-        PROJECT_BUILD_ORDER.append( project_name )
-__fill_project_build_order( "http" )
-__fill_project_build_order( "marshal" )
-__fill_project_build_order( "process" )
-assert len( PROJECT_BUILD_ORDER ) == len( PROJECT_NAMES )
+        PROJECT_BUILD_ORDER.append(project_name)
+__fill_project_build_order("http")
+__fill_project_build_order("marshal")
+__fill_project_build_order("process")
+assert len(PROJECT_BUILD_ORDER) == len(PROJECT_NAMES)
 
 
 EXCLUDE_FILE_PATHS = {}
@@ -244,187 +244,187 @@ SOURCE_FILE_PATHS = {}
 
 for project_name in PROJECT_NAMES:
     if project_name != "common":
-        project_include_dir_path = join( YIELD_INCLUDE_DIR_PATH, "yield", project_name )
-        assert exists( project_include_dir_path ), project_include_dir_path
-        project_source_dir_path = join( YIELD_SRC_DIR_PATH, "yield", project_name )
-        assert exists( project_source_dir_path ), project_source_dir_path
+        project_include_dir_path = join(YIELD_INCLUDE_DIR_PATH, "yield", project_name)
+        assert exists(project_include_dir_path), project_include_dir_path
+        project_source_dir_path = join(YIELD_SRC_DIR_PATH, "yield", project_name)
+        assert exists(project_source_dir_path), project_source_dir_path
 
-        if not EXCLUDE_FILE_PATHS.has_key( project_name ):
-            EXCLUDE_FILE_PATHS[project_name] =\
+        if not EXCLUDE_FILE_PATHS.has_key(project_name):
+            EXCLUDE_FILE_PATHS[project_name] = \
             [
-                 join( project_source_dir_path, "**", "*_test" + fnmatch_pattern )
+                 join(project_source_dir_path, "**", "*_test" + fnmatch_pattern)
                  for fnmatch_pattern in SOURCE_FILE_FNMATCH_PATTERNS
             ]
 
-        EXCLUDE_FILE_PATHS.setdefault( project_name + "_test", [] )
+        EXCLUDE_FILE_PATHS.setdefault(project_name + "_test", [])
 
-        if not INCLUDE_FILE_PATHS.has_key( project_name ):
-            INCLUDE_FILE_PATHS[project_name] =\
+        if not INCLUDE_FILE_PATHS.has_key(project_name):
+            INCLUDE_FILE_PATHS[project_name] = \
             [
-                join( project_include_dir_path, "**", fnmatch_pattern )
+                join(project_include_dir_path, "**", fnmatch_pattern)
                 for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS
             ]
 
-        INCLUDE_FILE_PATHS.setdefault( project_name + "_test", [] )
+        INCLUDE_FILE_PATHS.setdefault(project_name + "_test", [])
 
-        if not SOURCE_FILE_PATHS.has_key( project_name ):
-            SOURCE_FILE_PATHS[project_name] =\
+        if not SOURCE_FILE_PATHS.has_key(project_name):
+            SOURCE_FILE_PATHS[project_name] = \
             [
-                 join( project_source_dir_path, "**", fnmatch_pattern )
-                 for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS +\
+                 join(project_source_dir_path, "**", fnmatch_pattern)
+                 for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
                                         SOURCE_FILE_FNMATCH_PATTERNS
             ]
 
-        if not SOURCE_FILE_PATHS.has_key( project_name + "_test" ):
-            SOURCE_FILE_PATHS[project_name + "_test"] =\
+        if not SOURCE_FILE_PATHS.has_key(project_name + "_test"):
+            SOURCE_FILE_PATHS[project_name + "_test"] = \
             [
-                join( project_source_dir_path, "**", "*_test" + fnmatch_pattern )
-                for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS +\
+                join(project_source_dir_path, "**", "*_test" + fnmatch_pattern)
+                for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
                                        SOURCE_FILE_FNMATCH_PATTERNS
             ]\
-            +\
+            + \
             [
-                join( project_source_dir_path, "**", "test_" + fnmatch_pattern )
-                for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS +\
+                join(project_source_dir_path, "**", "test_" + fnmatch_pattern)
+                for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
                                        SOURCE_FILE_FNMATCH_PATTERNS
             ]\
-            +\
-            [join( project_source_dir_path, "yield_" + project_name + "_test_main.cpp" )]
+            + \
+            [join(project_source_dir_path, "yield_" + project_name + "_test_main.cpp")]
 
-EXCLUDE_FILE_PATHS["common"] =\
+EXCLUDE_FILE_PATHS["common"] = \
 [
-    join( YIELD_SRC_DIR_PATH, "yield", "*_test" + fnmatch_pattern )
+    join(YIELD_SRC_DIR_PATH, "yield", "*_test" + fnmatch_pattern)
     for fnmatch_pattern in SOURCE_FILE_FNMATCH_PATTERNS
 ]
 
 EXCLUDE_FILE_PATHS["common_test"] = []
 
-INCLUDE_FILE_PATHS["aio"] =\
+INCLUDE_FILE_PATHS["aio"] = \
 [
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "aio", "posix", "aiocb.hpp" ),
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "aio", "win32", "aiocb.hpp" ),
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "aio", "aiocb.hpp" ),
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "aio", "net", "sockets", "aiocb.hpp" ), # before accept_aiocb
-]+\
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "aio", "posix", "aiocb.hpp"),
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "aio", "win32", "aiocb.hpp"),
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "aio", "aiocb.hpp"),
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "aio", "net", "sockets", "aiocb.hpp"), # before accept_aiocb
+] + \
 INCLUDE_FILE_PATHS["aio"]
 
-INCLUDE_FILE_PATHS["common"] =\
+INCLUDE_FILE_PATHS["common"] = \
 [
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "types.hpp" ), # before atomic
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "atomic.hpp" ), # before object
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "object.hpp" ), # before event
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "event.hpp" ), # before message
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "message.hpp" ), # before response
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "response.hpp" ), # before exception
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "time.hpp" ), # before event_queue
-]+\
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "types.hpp"), # before atomic
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "atomic.hpp"), # before object
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "object.hpp"), # before event
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "event.hpp"), # before message
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "message.hpp"), # before response
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "response.hpp"), # before exception
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "time.hpp"), # before event_queue
+] + \
 [
-    join( YIELD_INCLUDE_DIR_PATH, "yield", fnmatch_pattern )
+    join(YIELD_INCLUDE_DIR_PATH, "yield", fnmatch_pattern)
     for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS
 ]
 
 INCLUDE_FILE_PATHS["common_test"] = \
-[join( YIELD_INCLUDE_DIR_PATH, "yunit.hpp" )]
+[join(YIELD_INCLUDE_DIR_PATH, "yunit.hpp")]
 
-SOURCE_FILE_PATHS["common"] =\
+SOURCE_FILE_PATHS["common"] = \
 [
-    join( YIELD_SRC_DIR_PATH, "yield", fnmatch_pattern )
-    for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS +\
+    join(YIELD_SRC_DIR_PATH, "yield", fnmatch_pattern)
+    for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
                            SOURCE_FILE_FNMATCH_PATTERNS
 ]
 
-SOURCE_FILE_PATHS["common_test"] =\
+SOURCE_FILE_PATHS["common_test"] = \
 [
-    join( YIELD_SRC_DIR_PATH, "yield", "*_test" + fnmatch_pattern )
-    for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS +\
+    join(YIELD_SRC_DIR_PATH, "yield", "*_test" + fnmatch_pattern)
+    for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
                            SOURCE_FILE_FNMATCH_PATTERNS
 ]\
-+\
-[join( YIELD_SRC_DIR_PATH, "yield", "yield_common_test_main.cpp" )]
++ \
+[join(YIELD_SRC_DIR_PATH, "yield", "yield_common_test_main.cpp")]
 
-INCLUDE_FILE_PATHS["fs"] =\
+INCLUDE_FILE_PATHS["fs"] = \
 [
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "fs", "file.hpp" ), # before aiocb
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "fs", "path.hpp" ), # before file_log
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "fs", "stat.hpp" ), # before directory
-]+\
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "fs", "file.hpp"), # before aiocb
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "fs", "path.hpp"), # before file_log
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "fs", "stat.hpp"), # before directory
+] + \
 INCLUDE_FILE_PATHS["fs"]
 
-INCLUDE_FILE_PATHS["i18n"] =\
+INCLUDE_FILE_PATHS["i18n"] = \
 [
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "i18n", "posix", "code.hpp" ),
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "i18n", "posix", "iconv.hpp" ),
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "i18n", "posix", "tstring.hpp" ),
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "i18n", "win32", "code.hpp" ),
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "i18n", "win32", "iconv.hpp" ),
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "i18n", "win32", "tstring.hpp" ),
-]+\
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "i18n", "posix", "code.hpp"),
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "i18n", "posix", "iconv.hpp"),
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "i18n", "posix", "tstring.hpp"),
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "i18n", "win32", "code.hpp"),
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "i18n", "win32", "iconv.hpp"),
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "i18n", "win32", "tstring.hpp"),
+] + \
 INCLUDE_FILE_PATHS["i18n"]
 
-INCLUDE_FILE_PATHS["http"] =\
+INCLUDE_FILE_PATHS["http"] = \
 [
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "http", "socket_peer.hpp" ), # before socket_client
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "http", "socket_client.hpp" ), # before stream_socket_client
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "http", "socket_server.hpp" ), # before stream_socket_server
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "http", "stream_socket_peer.hpp" ), # before stream_socket_client
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "http", "stream_socket_client.hpp" ), # before http_client
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "http", "stream_socket_server.hpp" ), # before http_server
-]+\
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "http", "socket_peer.hpp"), # before socket_client
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "http", "socket_client.hpp"), # before stream_socket_client
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "http", "socket_server.hpp"), # before stream_socket_server
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "http", "stream_socket_peer.hpp"), # before stream_socket_client
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "http", "stream_socket_client.hpp"), # before http_client
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "http", "stream_socket_server.hpp"), # before http_server
+] + \
 INCLUDE_FILE_PATHS["http"]
 
-INCLUDE_FILE_PATHS["net"] =\
+INCLUDE_FILE_PATHS["net"] = \
 [
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "net", "uri.hpp" ), # before socket_address
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "net", "sockets", "socket.hpp" ), # before datagram_socket
-]+\
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "net", "uri.hpp"), # before socket_address
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "net", "sockets", "socket.hpp"), # before datagram_socket
+] + \
 INCLUDE_FILE_PATHS["net"]
 
-INCLUDE_FILE_PATHS["stage"] =\
+INCLUDE_FILE_PATHS["stage"] = \
 [
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "stage", "event.hpp" ),
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "stage", "message.hpp" ),
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "stage", "response.hpp" ),
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "stage", "stage_scheduler.hpp" ),
-]+\
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "stage", "event.hpp"),
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "stage", "message.hpp"),
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "stage", "response.hpp"),
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "stage", "stage_scheduler.hpp"),
+] + \
 INCLUDE_FILE_PATHS["stage"]
 
-INCLUDE_FILE_PATHS["thread"] =\
+INCLUDE_FILE_PATHS["thread"] = \
 [
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "thread", "mutex.hpp" ),
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "thread", "condition_variable.hpp" ), # before synchronized_queue
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "thread", "synchronized_queue.hpp" ), # Before synchronized_event_queue
-    join( YIELD_INCLUDE_DIR_PATH, "yield", "thread", "thread.hpp" ),
-]+\
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "thread", "mutex.hpp"),
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "thread", "condition_variable.hpp"), # before synchronized_queue
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "thread", "synchronized_queue.hpp"), # Before synchronized_event_queue
+    join(YIELD_INCLUDE_DIR_PATH, "yield", "thread", "thread.hpp"),
+] + \
 INCLUDE_FILE_PATHS["thread"]
 
-SOURCE_FILE_PATHS["fs"] =\
+SOURCE_FILE_PATHS["fs"] = \
 [
-    join( YIELD_SRC_DIR_PATH, "yield", "fs", "win32", "stat.hpp" ), # before directory
-]+\
+    join(YIELD_SRC_DIR_PATH, "yield", "fs", "win32", "stat.hpp"), # before directory
+] + \
 SOURCE_FILE_PATHS["fs"]
 
-SOURCE_FILE_PATHS["net"] =\
+SOURCE_FILE_PATHS["net"] = \
 [
-    join( YIELD_SRC_DIR_PATH, "yield", "net", "sockets", "win32", "winsock.hpp" ),
-]+\
+    join(YIELD_SRC_DIR_PATH, "yield", "net", "sockets", "win32", "winsock.hpp"),
+] + \
 SOURCE_FILE_PATHS["net"]
 
-SOURCE_FILE_PATHS["thread"] =\
+SOURCE_FILE_PATHS["thread"] = \
 [
-    join( YIELD_SRC_DIR_PATH, "yield", "thread", "win32", "mutex.hpp" ), # before condition_variable
-    join( YIELD_SRC_DIR_PATH, "yield", "thread", "win32", "lightweight_mutex.hpp" ), # before condition_variable
-    join( YIELD_SRC_DIR_PATH, "yield", "thread", "win32", "semaphore.hpp" ), # before condition_variable
-]+\
+    join(YIELD_SRC_DIR_PATH, "yield", "thread", "win32", "mutex.hpp"), # before condition_variable
+    join(YIELD_SRC_DIR_PATH, "yield", "thread", "win32", "lightweight_mutex.hpp"), # before condition_variable
+    join(YIELD_SRC_DIR_PATH, "yield", "thread", "win32", "semaphore.hpp"), # before condition_variable
+] + \
 SOURCE_FILE_PATHS["thread"]
 
-assert len( EXCLUDE_FILE_PATHS ) == len( INCLUDE_FILE_PATHS ) == len( SOURCE_FILE_PATHS )
+assert len(EXCLUDE_FILE_PATHS) == len(INCLUDE_FILE_PATHS) == len(SOURCE_FILE_PATHS)
 
 for __project_name in EXCLUDE_FILE_PATHS.iterkeys():
-    for file_paths in ( EXCLUDE_FILE_PATHS, INCLUDE_FILE_PATHS, SOURCE_FILE_PATHS ):
-        file_paths[__project_name] =\
-            deduplist( list( rglob( file_paths[__project_name] ) ) )
+    for file_paths in (EXCLUDE_FILE_PATHS, INCLUDE_FILE_PATHS, SOURCE_FILE_PATHS):
+        file_paths[__project_name] = \
+            deduplist(list(rglob(file_paths[__project_name])))
 
-THIRD_PARTY_SOURCE_FNMATCH_PATTERNS =\
+THIRD_PARTY_SOURCE_FNMATCH_PATTERNS = \
 (
     "charProps.c",
     "genx.*",
