@@ -1,6 +1,6 @@
 // yield/net/uri.rl
 
-// Copyright (c) 2010 Minor Gordon
+// Copyright (c) 2011 Minor Gordon
 // All rights reserved
 
 // This source file is part of the Yield project.
@@ -36,12 +36,10 @@
 #include <sstream> // or std::ostringstream
 #include <stdlib.h> // For atoi
 
-
 #ifdef _WIN32
-  #pragma warning( push )
-  #pragma warning( disable: 4702 )
+#pragma warning( push )
+#pragma warning( disable: 4702 )
 #endif
-
 
 %%{
   machine uri;
@@ -138,206 +136,179 @@
   uri_reference = uri | relative_ref;
 }%%
 
+namespace yield {
+namespace net {
+URI::URI
+(
+  Buffer& buffer,
+  const iovec& fragment,
+  const iovec& host,
+  const iovec& path,
+  uint16_t port,
+  const iovec& query,
+  const iovec& scheme,
+  const iovec& userinfo
+)
+  : buffer(&buffer.inc_ref()),
+    fragment(fragment),
+    host(host),
+    path(path),
+    port(port),
+    query(query),
+    scheme(scheme),
+    userinfo(userinfo) {
+  debug_assert_ne(host.iov_base, NULL);
+  debug_assert_gt(host.iov_len, 0);
+  debug_assert_ne(path.iov_base, NULL);
+  debug_assert_ne(scheme.iov_base, NULL);
+  debug_assert_gt(scheme.iov_len, 0);
+}
 
-namespace yield
-{
-  namespace net
-  {
-    URI::URI
-    (
-      Buffer& buffer,
-      const iovec& fragment,
-      const iovec& host,
-      const iovec& path,
-      uint16_t port,
-      const iovec& query,
-      const iovec& scheme,
-      const iovec& userinfo
-    )
-    : buffer( &buffer.inc_ref() ),
-      fragment( fragment ),
-      host( host ),
-      path( path ),
-      port( port ),
-      query( query ),
-      scheme( scheme ),
-      userinfo( userinfo )
-    {
-      debug_assert_ne( host.iov_base, NULL );
-      debug_assert_gt( host.iov_len, 0 );
-      debug_assert_ne( path.iov_base, NULL );
-      debug_assert_ne( scheme.iov_base, NULL );
-      debug_assert_gt( scheme.iov_len, 0 );
-    }
+URI::URI(const char* uri) throw(Exception)
+  : buffer(NULL) {
+  init(uri, strlen(uri));
+}
 
-    URI::URI( const char* uri ) throw( Exception )
-      : buffer( NULL )
-    {
-      init( uri, strlen( uri ) );
-    }
+URI::URI(const string& uri) throw(Exception)
+  : buffer(NULL) {
+  init(uri.data(), uri.size());
+}
 
-    URI::URI( const string& uri ) throw( Exception )
-      : buffer( NULL )
-    {
-      init( uri.data(), uri.size() );
-    }
+URI::URI(const char* uri, size_t uri_len) throw(Exception)
+  : buffer(NULL) {
+  init(uri, uri_len);
+}
 
-    URI::URI( const char* uri, size_t uri_len ) throw( Exception )
-      : buffer( NULL )
-    {
-      init( uri, uri_len );
-    }
+URI::URI(URI& other)
+  : buffer(&other.buffer->inc_ref()),
+    fragment(other.fragment),
+    host(other.host),
+    path(other.path),
+    port(other.port),
+    query(other.query),
+    scheme(other.scheme),
+    userinfo(other.userinfo)
+{ }
 
-    URI::URI( URI& other )
-    : buffer( &other.buffer->inc_ref() ),
-      fragment( other.fragment ),
-      host( other.host ),
-      path( other.path ),
-      port( other.port ),
-      query( other.query ),
-      scheme( other.scheme ),
-      userinfo( other.userinfo )
-    { }
+URI::URI(const URI& other)
+  : port(other.port) {
+  this->buffer = new StringBuffer(*other.buffer);
 
-    URI::URI( const URI& other )
-      : port( other.port )
-    {
-      this->buffer = new StringBuffer( *other.buffer );
+  char* old_base = static_cast<char*>(*other.buffer);
+  char* new_base = static_cast<char*>(*this->buffer);
+  rebase(old_base, other.fragment, new_base, fragment);
+  rebase(old_base, other.host, new_base, host);
+  rebase(old_base, other.path, new_base, path);
+  rebase(old_base, other.query, new_base, query);
+  rebase(old_base, other.scheme, new_base, scheme);
+  rebase(old_base, other.userinfo, new_base, userinfo);
+}
 
-      char* old_base = static_cast<char*>( *other.buffer );
-      char* new_base = static_cast<char*>( *this->buffer );
-      rebase( old_base, other.fragment, new_base, fragment );
-      rebase( old_base, other.host, new_base, host );
-      rebase( old_base, other.path, new_base, path );
-      rebase( old_base, other.query, new_base, query );
-      rebase( old_base, other.scheme, new_base, scheme );
-      rebase( old_base, other.userinfo, new_base, userinfo );
-    }
+URI::~URI() {
+  Buffer::dec_ref(*buffer);
+}
 
-    URI::~URI()
-    {
-      Buffer::dec_ref( *buffer );
-    }
+void URI::init(const char* uri, size_t uri_len) {
+  buffer = new StringBuffer(uri, uri_len);
 
-    void URI::init( const char* uri, size_t uri_len )
-    {
-      buffer = new StringBuffer( uri, uri_len );
+  memset(&fragment, 0, sizeof(fragment));
+  memset(&host, 0, sizeof(host));
+  memset(&path, 0, sizeof(path));
+  port = 0;
+  memset(&query, 0, sizeof(query));
+  memset(&scheme, 0, sizeof(scheme));
+  memset(&userinfo, 0, sizeof(userinfo));
 
-      memset( &fragment, 0, sizeof( fragment ) );
-      memset( &host, 0, sizeof( host ) );
-      memset( &path, 0, sizeof( path ) );
-      port = 0;
-      memset( &query, 0, sizeof( query ) );
-      memset( &scheme, 0, sizeof( scheme ) );
-      memset( &userinfo, 0, sizeof( userinfo ) );
+  %%{
+    machine init;
+    alphtype unsigned char;
 
-      int cs;
-      const char* eof = static_cast<char*>( *buffer ) + buffer->size();
-      char* p = static_cast<char*>( *buffer );
-      const char* pe = eof;
+    include uri;
 
-      %%{
-        machine init;
-        alphtype unsigned char;
+    main := uri;
 
-        include uri;
+    write data;
+    write init;
+    write exec;
+  }%%
 
-        main := uri;
+  if (cs == init_error)
+    throw Exception();
+}
 
-        write data;
-        write init;
-        write exec;
-      }%%
+string URI::iovec_to_string(const iovec& iovec_) {
+  return string(static_cast<char*>(iovec_.iov_base), iovec_.iov_len);
+}
 
-      if ( cs == init_error )
-        throw Exception();
-    }
+std::ostream& operator<<(std::ostream& os, const URI& uri) {
+  os.write(static_cast<char*>(uri.scheme.iov_base), uri.scheme.iov_len);
+  os.write("://", 3);
 
-    string URI::iovec_to_string( const iovec& iovec_ )
-    {
-      return string( static_cast<char*>( iovec_.iov_base ), iovec_.iov_len );
-    }
+  if (uri.has_userinfo())
+    os.write(static_cast<char*>(uri.userinfo.iov_base), uri.userinfo.iov_len);
 
-    std::ostream& operator<<( std::ostream& os, const URI& uri )
-    {
-      os.write( static_cast<char*>( uri.scheme.iov_base ), uri.scheme.iov_len );
-      os.write( "://", 3 );
+  os.write(static_cast<char*>(uri.host.iov_base), uri.host.iov_len);
 
-      if ( uri.has_userinfo() )
-        os.write( static_cast<char*>( uri.userinfo.iov_base ), uri.userinfo.iov_len );
+  if (uri.has_port())
+    os << ":" << uri.port;
 
-      os.write( static_cast<char*>( uri.host.iov_base ), uri.host.iov_len );
+  os.write(static_cast<char*>(uri.path.iov_base), uri.path.iov_len);
 
-      if ( uri.has_port() )
-        os << ":" << uri.port;
-
-      os.write( static_cast<char*>( uri.path.iov_base ), uri.path.iov_len );
-
-      if ( uri.has_query() )
-      {
-        os.write( "?", 1 );
-        os.write( static_cast<char*>( uri.query.iov_base ), uri.query.iov_len );
-      }
-
-      if ( uri.has_fragment() )
-      {
-        os.write( "#", 1 );
-        os.write( static_cast<char*>( uri.fragment.iov_base ), uri.fragment.iov_len );
-      }
-
-      return os;
-    }
-
-    URI::operator string() const
-    {
-      std::ostringstream uri;
-      uri << *this;
-      return uri.str();
-    }
-
-    URI URI::operator+( const char* s ) const
-    {
-      std::ostringstream uri;
-      uri << *this;
-      uri << s;
-      return URI( uri.str() );
-    }
-
-    URI URI::operator+( const string& s ) const
-    {
-      std::ostringstream uri;
-      uri << *this;
-      uri << s;
-      return URI( uri.str() );
-    }
-
-    void
-    URI::rebase
-    (
-      char* old_base,
-      const iovec& old_iov,
-      char* new_base,
-      OUT iovec& new_iov
-    )
-    {
-      if ( old_iov.iov_base != NULL )
-      {
-        if ( old_iov.iov_base >= old_base )
-        {
-          new_iov.iov_base
-            = new_base + ( static_cast<char*>( old_iov.iov_base ) - old_base );
-          new_iov.iov_len = old_iov.iov_len;
-        }
-        else // assume old_iov points to a literal
-          new_iov = old_iov;
-      }
-      else
-        memset( &new_iov, 0, sizeof( new_iov ) );
-    }
+  if (uri.has_query()) {
+    os.write("?", 1);
+    os.write(static_cast<char*>(uri.query.iov_base), uri.query.iov_len);
   }
+
+  if (uri.has_fragment()) {
+    os.write("#", 1);
+    os.write(static_cast<char*>(uri.fragment.iov_base), uri.fragment.iov_len);
+  }
+
+  return os;
+}
+
+URI::operator string() const {
+  std::ostringstream uri;
+  uri << *this;
+  return uri.str();
+}
+
+URI URI::operator+(const char* s) const {
+  std::ostringstream uri;
+  uri << *this;
+  uri << s;
+  return URI(uri.str());
+}
+
+URI URI::operator+(const string& s) const {
+  std::ostringstream uri;
+  uri << *this;
+  uri << s;
+  return URI(uri.str());
+}
+
+void
+URI::rebase
+(
+  char* old_base,
+  const iovec& old_iov,
+  char* new_base,
+  OUT iovec& new_iov
+) {
+  if (old_iov.iov_base != NULL) {
+    if (old_iov.iov_base >= old_base) {
+      new_iov.iov_base
+      = new_base + (static_cast<char*>(old_iov.iov_base) - old_base);
+      new_iov.iov_len = old_iov.iov_len;
+    } else // assume old_iov points to a literal
+      new_iov = old_iov;
+  } else
+    memset(&new_iov, 0, sizeof(new_iov));
+}
+}
 }
 
 #ifdef _WIN32
-  #pragma warning( pop )
+#pragma warning( pop )
 #endif
 //

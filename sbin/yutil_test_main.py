@@ -2,7 +2,7 @@
 
 # yutil_test_main.py
 
-# Copyright (c) 2010 Minor Gordon
+# Copyright (c) 2011 Minor Gordon
 # All rights reserved
 
 # This source file is part of the Yield project.
@@ -54,4 +54,3 @@ suite.addTest(vcproj_test_suite)
 suite.addTests(vcxproj_test_suite)
 #suite.addTests( autoconf_test_suite )
 TextTestRunner().run(suite)
-

@@ -1,6 +1,6 @@
 // yield/aio/fs/win32/aio_queue.hpp
 
-// Copyright (c) 2010 Minor Gordon
+// Copyright (c) 2011 Minor Gordon
 // All rights reserved
 
 // This source file is part of the Yield project.

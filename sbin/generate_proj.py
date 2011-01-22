@@ -2,7 +2,7 @@
 
 # generate_proj.py
 
-# Copyright (c) 2010 Minor Gordon
+# Copyright (c) 2011 Minor Gordon
 # All rights reserved
 
 # This source file is part of the Yield project.
@@ -136,7 +136,7 @@ for project_name in PROJECT_NAMES:
                 )
 
 
-# Generate Visual Studio solution files    
+# Generate Visual Studio solution files
 write_file(
     "yield.sln",
     repr(

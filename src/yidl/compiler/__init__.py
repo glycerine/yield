@@ -1,6 +1,6 @@
 # yidl/compiler/__init__.py
 
-# Copyright (c) 2010 Minor Gordon
+# Copyright (c) 2011 Minor Gordon
 # All rights reserved
 
 # This source file is part of the yidl project.

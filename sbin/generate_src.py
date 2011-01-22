@@ -2,7 +2,7 @@
 
 # generate_src.py
 
-# Copyright (c) 2010 Minor Gordon
+# Copyright (c) 2011 Minor Gordon
 # All rights reserved
 
 # This source file is part of the Yield project.
@@ -39,8 +39,6 @@ from optparse import OptionParser
 from subprocess import call
 import sys
 
-from yidl.compiler import compile
-from yidl.target.yield_cpp_target import YieldCXXTarget
 from yuild.constant import C_CXX_INCLUDE_FILE_FNMATCH_PATTERNS, \
                            C_CXX_FILE_FNMATCH_PATTERNS, \
                            INDENT_SPACES, \
@@ -67,6 +65,9 @@ options, ignore = option_parser.parse_args()
 
 
 if options.all or options.idl:
+    from yidl.compiler import compile
+    from yidl.target.yield_cpp_target import YieldCXXTarget
+
     # Generate source from IDL definitions
     for dir_path in\
         (
