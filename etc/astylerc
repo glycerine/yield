@@ -1,5 +1,6 @@
 style=java
 align-pointer=type
+formatted
 indent=spaces=2
 lineend=linux
 pad-header

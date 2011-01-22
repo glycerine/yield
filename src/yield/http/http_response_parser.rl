@@ -35,109 +35,94 @@
 #include <stdlib.h> // For atoi
 
 #ifdef _WIN32
-  #pragma warning( push )
-  #pragma warning( disable: 4702 )
+#pragma warning( push )
+#pragma warning( disable: 4702 )
 #endif
 
 
-namespace yield
-{
-  namespace http
-  {
-    Object& HTTPResponseParser::parse()
-    {
-      if ( p < eof )
-      {
-        ps = p;
+namespace yield {
+namespace http {
+Object& HTTPResponseParser::parse() {
+  if (p < eof) {
+    ps = p;
 
-        float http_version = 1.1F;
-        uint16_t status_code = 200;
+    float http_version = 1.1F;
+    uint16_t status_code = 200;
 
-        if ( parse_status_line( http_version, status_code ) )
-        {
-          uint16_t fields_offset;
-          size_t content_length;
+    if (parse_status_line(http_version, status_code)) {
+      uint16_t fields_offset;
+      size_t content_length;
 
-          if ( parse_fields( fields_offset, content_length ) )
-          {
-            void* body;
+      if (parse_fields(fields_offset, content_length)) {
+        void* body;
 
-            if ( parse_body( content_length, body ) )
-            {
-              return *new HTTPResponse
-                          (
-                            body,
-                            get_buffer(),
-                            content_length,
-                            fields_offset,
-                            http_version,
-                            status_code
-                          );
-            }
-            else
-            {
-              Buffer* next_buffer
-                = new Page( p - ps + content_length, ps, eof - ps );
-              ps = p;
-              return *next_buffer;
-            }
-          }
-        }
-        else
-        {
-          Object* object = parse_body_chunk();
-          if ( object != NULL )
-            return *object;
-        }
-
-        if ( p == eof ) // EOF parsing
-        {
+        if (parse_body(content_length, body)) {
+          return *new HTTPResponse
+                 (
+                   body,
+                   get_buffer(),
+                   content_length,
+                   fields_offset,
+                   http_version,
+                   status_code
+                 );
+        } else {
           Buffer* next_buffer
-            = new Page( eof - ps + Page::getpagesize(), ps, eof - ps );
-          p = ps;
+          = new Page(p - ps + content_length, ps, eof - ps);
+          ps = p;
           return *next_buffer;
         }
-        else // Error parsing
-          return *new HTTPResponse( NULL, http_version, 400 );
       }
-      else // p == eof
-        return *new Page;
+    } else {
+      Object* object = parse_body_chunk();
+      if (object != NULL)
+        return *object;
     }
 
-    bool
-    HTTPResponseParser::parse_status_line
-    (
-      float& http_version,
-      uint16_t& status_code
-    )
-    {
-      int cs;
+    if (p == eof) { // EOF parsing
+      Buffer* next_buffer
+      = new Page(eof - ps + Page::getpagesize(), ps, eof - ps);
+      p = ps;
+      return *next_buffer;
+    } else // Error parsing
+      return *new HTTPResponse(NULL, http_version, 400);
+  } else // p == eof
+    return *new Page;
+}
 
-      %%{
-        machine status_line_parser;
-        alphtype unsigned char;
+bool
+HTTPResponseParser::parse_status_line
+(
+  float& http_version,
+  uint16_t& status_code
+) {
+  int cs;
 
-        include basic_rules "basic_rules.rl";
+  %%{
+    machine status_line_parser;
+    alphtype unsigned char;
 
-        status_code = digit+
-                           >{ status_code = static_cast<uint16_t>( atoi( p ) ); };
+    include basic_rules "basic_rules.rl";
 
-        reason_phrase = ( alpha | ' ' )+;
+    status_code = digit+
+                        >{ status_code = static_cast<uint16_t>( atoi( p ) ); };
 
-        status_line = http_version ' ' status_code ' ' reason_phrase crlf;
+    reason_phrase = ( alpha | ' ' )+;
 
-        main := status_line
-                @{ fbreak; }
-                $err{ return false; };
+    status_line = http_version ' ' status_code ' ' reason_phrase crlf;
 
-        write data;
-        write init;
-        write exec noend;
-      }%%
+    main := status_line
+            @{ fbreak; }
+            $err{ return false; };
 
-      return cs != status_line_parser_error;
-    }
-  }
+    write data;
+    write init;
+    write exec noend;
+  }%%
+
+  return cs != status_line_parser_error;
+}
+}
 }
 
 #ifdef _WIN32

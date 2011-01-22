@@ -38,172 +38,155 @@
 
 
 #ifdef _WIN32
-  #pragma warning( push )
-  #pragma warning( disable: 4702 )
+#pragma warning( push )
+#pragma warning( disable: 4702 )
 #endif
 
 
-namespace yield
-{
-  namespace http
-  {
-    HTTPMessageParser::HTTPMessageParser( Buffer& buffer )
-      : buffer( buffer.inc_ref() )
-    {
-      debug_assert_false( buffer.empty() );
+namespace yield {
+namespace http {
+HTTPMessageParser::HTTPMessageParser(Buffer& buffer)
+  : buffer(buffer.inc_ref()) {
+  debug_assert_false(buffer.empty());
 
-      ps = p = buffer;
-      eof = ps + buffer.size();
-    }
+  ps = p = buffer;
+  eof = ps + buffer.size();
+}
 
-    HTTPMessageParser::HTTPMessageParser( const string& buffer )
-      : buffer( *new Page( buffer ) )
-    {
-      debug_assert_false( buffer.empty() );
+HTTPMessageParser::HTTPMessageParser(const string& buffer)
+  : buffer(*new Page(buffer)) {
+  debug_assert_false(buffer.empty());
 
-      ps = p = this->buffer;
-      eof = ps + this->buffer.size();
-    }
+  ps = p = this->buffer;
+  eof = ps + this->buffer.size();
+}
 
-    HTTPMessageParser::~HTTPMessageParser()
-    {
-      Buffer::dec_ref( buffer );
-    }
+HTTPMessageParser::~HTTPMessageParser() {
+  Buffer::dec_ref(buffer);
+}
 
-    bool HTTPMessageParser::parse_body( size_t content_length, void*& body )
-    {
-      if
-      (
-        content_length == 0
-        ||
-        content_length == HTTPRequest::CONTENT_LENGTH_CHUNKED
-      )
-      {
-        body = NULL;
-        return true;
-      }
-      else if ( static_cast<size_t>( eof - p ) >= content_length )
-      {
-        body = p;
-        p += content_length;
-        return true;
-      }
-      else
-        return false;
-    }
+bool HTTPMessageParser::parse_body(size_t content_length, void*& body) {
+  if
+  (
+    content_length == 0
+    ||
+    content_length == HTTPRequest::CONTENT_LENGTH_CHUNKED
+  ) {
+    body = NULL;
+    return true;
+  } else if (static_cast<size_t>(eof - p) >= content_length) {
+    body = p;
+    p += content_length;
+    return true;
+  } else
+    return false;
+}
 
-    Object* HTTPMessageParser::parse_body_chunk()
-    {
-      const char* chunk_data_p = NULL;
-      size_t chunk_size = 0;
-      const char* chunk_size_p = NULL;
-      int cs;
-      iovec field_name = { 0 }, field_value = { 0 };
-      size_t seen_chunk_size = 0;
+Object* HTTPMessageParser::parse_body_chunk() {
+  const char* chunk_data_p = NULL;
+  size_t chunk_size = 0;
+  const char* chunk_size_p = NULL;
+  int cs;
+  iovec field_name = { 0 }, field_value = { 0 };
+  size_t seen_chunk_size = 0;
 
-      ps = p;
+  ps = p;
 
-      %%{
-        machine chunk_parser;
-        alphtype unsigned char;
+  %%{
+    machine chunk_parser;
+    alphtype unsigned char;
 
-        include chunk "chunk.rl";
+    include chunk "chunk.rl";
 
-        main := chunk
-                @{ fbreak; }
-                $err{ return NULL; };
+    main := chunk
+            @{ fbreak; }
+            $err{ return NULL; };
 
-        write data;
-        write init;
-        write exec noend;
-      }%%
+    write data;
+    write init;
+    write exec noend;
+  }%%
 
-      if ( cs != chunk_parser_error )
-      {
-        if ( chunk_size > 0 )
-        {
-          // Cut off the chunk size + extension + CRLF before
-          // the chunk data and the CRLF after
-          return new HTTPBodyChunk( chunk_data_p, p - chunk_data_p - 2 );
-        }
-        else // Last chunk
-          return new HTTPBodyChunk;
-      }
-      else if ( p == eof && chunk_size != 0 )
-        return new Page( chunk_size + 2 ); // Assumes no trailers..
-      else
-        return NULL;
-    }
+  if (cs != chunk_parser_error) {
+    if (chunk_size > 0) {
+      // Cut off the chunk size + extension + CRLF before
+      // the chunk data and the CRLF after
+      return new HTTPBodyChunk(chunk_data_p, p - chunk_data_p - 2);
+    } else // Last chunk
+      return new HTTPBodyChunk;
+  } else if (p == eof && chunk_size != 0)
+    return new Page(chunk_size + 2);   // Assumes no trailers..
+  else
+    return NULL;
+}
 
-    bool
-    HTTPMessageParser::parse_fields
+bool
+HTTPMessageParser::parse_fields
+(
+  OUT uint16_t& fields_offset,
+  OUT size_t& content_length
+) {
+  fields_offset = static_cast<uint16_t>(p - ps);
+
+  content_length = 0;
+
+  int cs;
+  iovec field_name = { 0 }, field_value = { 0 };
+
+  %%{
+    machine fields_parser;
+    alphtype unsigned char;
+
+    include field "field.rl";
+
+    main :=
     (
-      OUT uint16_t& fields_offset,
-      OUT size_t& content_length
-    )
-    {
-      fields_offset = static_cast<uint16_t>( p - ps );
-
-      content_length = 0;
-
-      int cs;
-      iovec field_name = { 0 }, field_value = { 0 };
-
-      %%{
-        machine fields_parser;
-        alphtype unsigned char;
-
-        include field "field.rl";
-
-        main :=
+      field
+      %
+      {
+        if
         (
-          field
-          %
-          {
-            if
-            (
-              field_name.iov_len == 14
-              &&
-              (
-                memcmp( field_name.iov_base, "Content-Length", 14 ) == 0
-                ||
-                memcmp( field_name.iov_base, "Content-length", 14 ) == 0
-              )
-            )
-            {
-              char* nptr = static_cast<char*>( field_value.iov_base );
-              char* endptr = nptr + field_value.iov_len;
-              content_length = static_cast<size_t>( strtol( nptr, &endptr, 10 ) );
-            }
-            else if
-            (
-              field_name.iov_len == 17
-              &&
-              (
-                memcmp( field_name.iov_base, "Transfer-Encoding", 17 ) == 0
-                ||
-                memcmp( field_name.iov_base, "Transfer-encoding", 17 ) == 0
-              )
-              &&
-              memcmp( field_value.iov_base, "chunked", 7 ) == 0
-            )
-              content_length = HTTPRequest::CONTENT_LENGTH_CHUNKED;
-          }
-        )* crlf
-        @{ fbreak; }
-        $err{ return false; };
+          field_name.iov_len == 14
+          &&
+          (
+            memcmp( field_name.iov_base, "Content-Length", 14 ) == 0
+            ||
+            memcmp( field_name.iov_base, "Content-length", 14 ) == 0
+          )
+        ) {
+          char* nptr = static_cast<char*>( field_value.iov_base );
+          char* endptr = nptr + field_value.iov_len;
+          content_length = static_cast<size_t>( strtol( nptr, &endptr, 10 ) );
+        }
+        else if
+        (
+          field_name.iov_len == 17
+          &&
+          (
+            memcmp( field_name.iov_base, "Transfer-Encoding", 17 ) == 0
+            ||
+            memcmp( field_name.iov_base, "Transfer-encoding", 17 ) == 0
+          )
+          &&
+          memcmp( field_value.iov_base, "chunked", 7 ) == 0
+        )
+          content_length = HTTPRequest::CONTENT_LENGTH_CHUNKED;
+      }
+    )* crlf
+    @{ fbreak; }
+    $err{ return false; };
 
-        write data;
-        write init;
-        write exec noend;
-      }%%
+    write data;
+    write init;
+    write exec noend;
+  }%%
 
-      return cs != fields_parser_error;
-    }
-  }
+  return cs != fields_parser_error;
+}
+}
 }
 
 #ifdef _WIN32
-  #pragma warning( pop )
+#pragma warning( pop )
 #endif
 //
