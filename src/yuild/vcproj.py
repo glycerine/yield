@@ -36,8 +36,8 @@ from uuid import uuid4
 
 from yutil import fnmatch, indent, ntpath, ntpaths, relpath, treepaths
 
-from yuild.constant import C_CXX_INCLUDE_FILE_EXTENSIONS,\
-                           C_CXX_SOURCE_FILE_FNMATCH_PATTERNS,\
+from yuild.constant import C_CXX_INCLUDE_FILE_EXTENSIONS, \
+                           C_CXX_SOURCE_FILE_FNMATCH_PATTERNS, \
                            INCLUDE_FILE_EXTENSIONS
 from yuild.project import Project
 
@@ -46,7 +46,7 @@ __all__ = ["VCProj"]
 
 
 # Constants
-CONFIGURATION_TYPE =\
+CONFIGURATION_TYPE = \
 {
     "dll": 2,
     "exe": 1,
@@ -55,7 +55,7 @@ CONFIGURATION_TYPE =\
     "py_ext": 2
 }
 
-SUBSYSTEM =\
+SUBSYSTEM = \
 {
     "dll": 0,
     "exe": 0,
@@ -151,29 +151,29 @@ VC_LINKER_TOOL = """\
 
 
 class VCProj(Project):
-    def __init__( self, name, *args, **kwds ):
-        Project.__init__( self, *args, **kwds )
+    def __init__(self, name, *args, **kwds):
+        Project.__init__(self, *args, **kwds)
         self.__name = name
 
-    def get_AdditionalDependencies( self, sep=' ' ):
+    def get_AdditionalDependencies(self, sep=' '):
         AdditionalDependencies = []
-        for lib in self.get_libs().get( "win32", combine_platforms=True, default=[] ):
-            if len( splitext( lib )[1] ) == 0: lib += ".lib"
-            AdditionalDependencies.append( lib )
-        return sep.join( AdditionalDependencies )
+        for lib in self.get_libs().get("win32", combine_platforms=True, default=[]):
+            if len(splitext(lib)[1]) == 0: lib += ".lib"
+            AdditionalDependencies.append(lib)
+        return sep.join(AdditionalDependencies)
 
-    def get_AdditionalIncludeDirectories( self ):
-        cxxpath = self.get_cxxpath().get( "win32", combine_platforms=True )
-        cxxpath = ntpaths( cxxpath )
-        return ';'.join( ["$(ProjectDir)" + path for path in cxxpath] )
+    def get_AdditionalIncludeDirectories(self):
+        cxxpath = self.get_cxxpath().get("win32", combine_platforms=True)
+        cxxpath = ntpaths(cxxpath)
+        return ';'.join(["$(ProjectDir)" + path for path in cxxpath])
 
-    def get_AdditionalLibraryDirectories( self ):
-        libpath = self.get_libpath().get( "win32", combine_platforms=True )
-        libpath = ntpaths( libpath )
-        return ';'.join( ["$(ProjectDir)" + path for path in libpath] )
+    def get_AdditionalLibraryDirectories(self):
+        libpath = self.get_libpath().get("win32", combine_platforms=True)
+        libpath = ntpaths(libpath)
+        return ';'.join(["$(ProjectDir)" + path for path in libpath])
 
-    def get_IntermediateDirectory( self ):
-        build_dir_path =\
+    def get_IntermediateDirectory(self):
+        build_dir_path = \
             self.get_build_dir_path().get(
                 "win32",
                 combine_platforms=True,
@@ -183,50 +183,50 @@ class VCProj(Project):
         if build_dir_path is None:
             IntermediateDirectory = "$(SolutionDir)build\\$(Configuration)\\$(ProjectName)\\"
         else:
-            IntermediateDirectory = "$(ProjectDir)" + ntpath( build_dir_path )
-            if not IntermediateDirectory.endswith( '\\' ):
+            IntermediateDirectory = "$(ProjectDir)" + ntpath(build_dir_path)
+            if not IntermediateDirectory.endswith('\\'):
                 IntermediateDirectory += '\\'
         return IntermediateDirectory
 
-    def get_name( self ):
+    def get_name(self):
         return self.__name
 
-    def get_Name( self ):
+    def get_Name(self):
         return self.get_name()
 
-    def get_OutputDirectory( self ):
-        OutputDirectory = split( self.get_output_file_path()['*'] )[0]
-        if len( OutputDirectory ) == 0:
+    def get_OutputDirectory(self):
+        OutputDirectory = split(self.get_output_file_path()['*'])[0]
+        if len(OutputDirectory) == 0:
             OutputDirectory = "$(ProjectDir)"
         else:
-            OutputDirectory = "$(ProjectDir)" + ntpath( OutputDirectory )
+            OutputDirectory = "$(ProjectDir)" + ntpath(OutputDirectory)
             if OutputDirectory[-1] != '\\':
                 OutputDirectory += '\\'
         return OutputDirectory
 
-    def get_OutputFile( self ):
-        OutputFile = split( self.get_output_file_path()['*'] )[1]
+    def get_OutputFile(self):
+        OutputFile = split(self.get_output_file_path()['*'])[1]
         type = self.get_type()
         if type == "lib":
-            if not OutputFile.endswith( ".lib" ): OutputFile += ".lib"
+            if not OutputFile.endswith(".lib"): OutputFile += ".lib"
         elif type == "dll":
-            if not OutputFile.endswith( ".dll" ): OutputFile += ".dll"
+            if not OutputFile.endswith(".dll"): OutputFile += ".dll"
         elif type == "exe":
-            if not OutputFile.endswith( ".exe" ): OutputFile += ".exe"
+            if not OutputFile.endswith(".exe"): OutputFile += ".exe"
         elif type == "py_ext":
-            if not OutputFile.endswith( ".pyd" ): OutputFile += ".pyd"
+            if not OutputFile.endswith(".pyd"): OutputFile += ".pyd"
         return OutputFile
 
-    def get_PreprocessorDefinitions( self ):
-        cxxdefines = self.get_cxxdefines().get( "win32", combine_platforms=True, default=[] )
-        return ';'.join( cxxdefines )
+    def get_PreprocessorDefinitions(self):
+        cxxdefines = self.get_cxxdefines().get("win32", combine_platforms=True, default=[])
+        return ';'.join(cxxdefines)
 
-    def get_RootNamespace( self ):
+    def get_RootNamespace(self):
         return self.get_name()
 
-    def get_type( self ):
-        type = Project.get_type( self )
-        if type in ( "exe", "dll", "gui", "lib" ):
+    def get_type(self):
+        type = Project.get_type(self)
+        if type in ("exe", "dll", "gui", "lib"):
             return type
         elif type == "bin":
             return "exe"
@@ -235,11 +235,11 @@ class VCProj(Project):
         else:
             raise ValueError, type
 
-    def __repr__( self ):
+    def __repr__(self):
         AdditionalDependencies = self.get_AdditionalDependencies()
         AdditionalIncludeDirectories = self.get_AdditionalIncludeDirectories()
-        AdditionalLibraryDirectories = ntpaths( self.get_libpath()["win32"] )
-        AdditionalLibraryDirectories = ';'.join( AdditionalLibraryDirectories )
+        AdditionalLibraryDirectories = ntpaths(self.get_libpath()["win32"])
+        AdditionalLibraryDirectories = ';'.join(AdditionalLibraryDirectories)
         ConfigurationType = CONFIGURATION_TYPE[self.get_type()]
         IntermediateDirectory = self.get_IntermediateDirectory()
         Name = self.get_Name()
@@ -250,7 +250,7 @@ class VCProj(Project):
         SubSystem = SUBSYSTEM[self.get_type()]
 
         try:
-            vcproj_file =\
+            vcproj_file = \
                 open(
                     join(
                         self.get_project_dir_path(),
@@ -259,16 +259,16 @@ class VCProj(Project):
                 )
             vcproj_file_contents = vcproj_file.read()
             vcproj_file.close()
-            guid_i = vcproj_file_contents.index( "ProjectGUID=\"{" )
-            ProjectGUID = vcproj_file_contents[guid_i+13:vcproj_file_contents.index( "}", guid_i+1 )+1]
+            guid_i = vcproj_file_contents.index("ProjectGUID=\"{")
+            ProjectGUID = vcproj_file_contents[guid_i + 13:vcproj_file_contents.index("}", guid_i + 1) + 1]
         except IOError:
-            ProjectGUID = '{' + str( uuid4() ) + '}'
+            ProjectGUID = '{' + str(uuid4()) + '}'
 
         header_files, source_files = \
-            self.__get_files( self.get_source_file_tree(), [] )
+            self.__get_files(self.get_source_file_tree(), [])
 
-        header_files = "".join( header_files )
-        if len( header_files ) > 0:
+        header_files = "".join(header_files)
+        if len(header_files) > 0:
             header_files = """\
             <Filter
                 Name="Header Files"
@@ -279,8 +279,8 @@ class VCProj(Project):
             </Filter>
     """ % locals()
 
-        source_files = "".join( source_files )
-        if len( source_files ) > 0:
+        source_files = "".join(source_files)
+        if len(source_files) > 0:
             source_files = """\
             <Filter
                 Name="Source Files"
@@ -292,7 +292,7 @@ class VCProj(Project):
     """ % locals()
 
         configurations = []
-        for ConfigurationName in ( "Debug|Win32", "Release|Win32" ):
+        for ConfigurationName in ("Debug|Win32", "Release|Win32"):
             if ConfigurationName == "Debug|Win32":
                 BasicRuntimeChecks = 'BasicRuntimeChecks="3"'
                 DebugInformationFormat = 4
@@ -308,13 +308,13 @@ class VCProj(Project):
 
             tools = [VC_CL_COMPILER_TOOL % locals()]
             if self.get_type() == "lib":
-                tools.append( VC_LIBRARIAN_TOOL % locals() )
+                tools.append(VC_LIBRARIAN_TOOL % locals())
             else:
-                tools.append( VC_LINKER_TOOL % locals() )
-            tools = indent( "\t\t", '\n'.join( tools ) )
+                tools.append(VC_LINKER_TOOL % locals())
+            tools = indent("\t\t", '\n'.join(tools))
 
-            configurations.append( CONFIGURATION % locals() )
-        configurations = indent( "\t\t", "\r\n".join( configurations ) )
+            configurations.append(CONFIGURATION % locals())
+        configurations = indent("\t\t", "\r\n".join(configurations))
 
         return """\
 <?xml version="1.0" encoding="Windows-1252"?>
@@ -366,13 +366,13 @@ class VCProj(Project):
             source_paths.sort()
 
             for source_path in source_paths:
-                if not isinstance( source_file_tree[source_path], dict ): # source_path is a file
+                if not isinstance(source_file_tree[source_path], dict): # source_path is a file
                     source_file_path = source_path
                     if source_file_path in seen_source_files: continue
-                    seen_source_files.append( source_file_path )
-                    RelativePath = ntpath( source_file_path )
+                    seen_source_files.append(source_file_path)
+                    RelativePath = ntpath(source_file_path)
 
-                    source_file_ext = splitext( source_file_path )[1]
+                    source_file_ext = splitext(source_file_path)[1]
                     if source_file_ext in INCLUDE_FILE_EXTENSIONS:
                         # Check if we're in a directory with only headers
                         # If so, add this file to header_files.
@@ -380,16 +380,16 @@ class VCProj(Project):
                         # file to source_files.
                         is_header_file = True
                         for other_source_path in source_paths:
-                            if not isinstance( source_file_tree[other_source_path], dict ):
-                                if fnmatch( other_source_path, C_CXX_SOURCE_FILE_FNMATCH_PATTERNS ):
+                            if not isinstance(source_file_tree[other_source_path], dict):
+                                if fnmatch(other_source_path, C_CXX_SOURCE_FILE_FNMATCH_PATTERNS):
                                     is_header_file = False
                                     break
 
                         if is_header_file:
                             if source_file_ext in C_CXX_INCLUDE_FILE_EXTENSIONS:
-                                header_files.append( INCLUDE_FILE % locals() )
+                                header_files.append(INCLUDE_FILE % locals())
                             else:
-                                header_files.append( EXCLUDED_FILE % locals() )
+                                header_files.append(EXCLUDED_FILE % locals())
 
                             continue
                         elif source_file_ext in C_CXX_INCLUDE_FILE_EXTENSIONS:
@@ -397,54 +397,54 @@ class VCProj(Project):
                         else:
                             source_file = EXCLUDED_FILE % locals()
                     elif source_file_ext in C_CXX_SOURCE_FILE_EXTENSIONS and\
-                         platform in ( '*', "win32" ) and\
+                         platform in ('*', "win32") and\
                          not source_file_path in \
-                             self.get_exclude_files().get( platform, [] ):
+                             self.get_exclude_files().get(platform, []):
                             ObjectFile = "$(IntDir)"
-                            ObjectFile +=\
-                                ntpath( relpath( source_file_path, self.get_root_source_dir_path() ) )
-                            ObjectFile = ObjectFile[:-len( source_file_ext )] + ".obj"
+                            ObjectFile += \
+                                ntpath(relpath(source_file_path, self.get_root_source_dir_path()))
+                            ObjectFile = ObjectFile[:-len(source_file_ext)] + ".obj"
                             source_file = SOURCE_FILE % locals()
                     else:
                         source_file = EXCLUDED_FILE % locals()
 
-                    source_files.append( source_file )
+                    source_files.append(source_file)
 
             # Second pass: get all subdirectories
             # If there are no files in this source_file_tree and only one subdirectory,
             # then fold the subdirectory into this source_file_tree
             for source_path in source_paths:
-                if isinstance( source_file_tree[source_path], dict ): # source_path is a directory
+                if isinstance(source_file_tree[source_path], dict): # source_path is a directory
                     child_source_file_tree = {}
                     for platform, other_source_file_tree in platform_source_file_tree.iteritems():
-                        if other_source_file_tree.has_key( source_path ):
+                        if other_source_file_tree.has_key(source_path):
                             child_source_file_tree[platform] = other_source_file_tree[source_path]
 
                     child_header_files, child_source_files = \
-                        self.__get_files( child_source_file_tree, seen_source_files )
+                        self.__get_files(child_source_file_tree, seen_source_files)
 
-                    if len( child_header_files ) > 0 or len( child_source_files ) > 0:
-                        filter_name = split( relpath( source_path, self.get_root_source_dir_path() ) )[-1]
+                    if len(child_header_files) > 0 or len(child_source_files) > 0:
+                        filter_name = split(relpath(source_path, self.get_root_source_dir_path()))[-1]
                         if filter_name != "..":
                             filter_start = """<Filter Name="%(filter_name)s">\r\n""" % locals()
                             filter_end = """</Filter>\r\n"""
 
-                            if len( child_header_files ) > 0:
-                                if len( header_files ) > 0:
-                                    header_files.append( filter_start )
-                                    header_files.extend( child_header_files )
-                                    header_files.append( filter_end )
+                            if len(child_header_files) > 0:
+                                if len(header_files) > 0:
+                                    header_files.append(filter_start)
+                                    header_files.extend(child_header_files)
+                                    header_files.append(filter_end)
                                 else:
-                                    header_files.extend( child_header_files )
-                            if len( child_source_files ) > 0:
-                                if len( source_files ) > 0:
-                                    source_files.append( filter_start )
-                                    source_files.extend( child_source_files )
-                                    source_files.append( filter_end )
+                                    header_files.extend(child_header_files)
+                            if len(child_source_files) > 0:
+                                if len(source_files) > 0:
+                                    source_files.append(filter_start)
+                                    source_files.extend(child_source_files)
+                                    source_files.append(filter_end)
                                 else:
-                                    source_files.extend( child_source_files )
+                                    source_files.extend(child_source_files)
                         else:
-                            header_files.extend( child_header_files )
-                            source_files.extend( child_source_files )
+                            header_files.extend(child_header_files)
+                            source_files.extend(child_source_files)
 
         return header_files, source_files

@@ -32,7 +32,7 @@ from os import getcwd
 from os.path import abspath, join
 
 
-__all__ =\
+__all__ = \
 [
     "format_src",
     "generate_SConscript",
@@ -41,69 +41,69 @@ __all__ =\
 ]
 
 
-def format_src( *args, **kwds ):
+def format_src(*args, **kwds):
     from format_src import format_src
-    format_src( *args, **kwds )
+    format_src(*args, **kwds)
 
 
-def generate_SConscript( name, force=False, project_dir_path=None, *args, **kwds ):
+def generate_SConscript(name, force=False, project_dir_path=None, *args, **kwds):
     from project.sconscript import SConscript
     from utility.file import write_file
 
     if project_dir_path is None:
         project_dir_path = getcwd()
-    project_dir_path = abspath( project_dir_path )
+    project_dir_path = abspath(project_dir_path)
 
-    sconscript = SConscript( project_dir_path=project_dir_path, *args, **kwds )
+    sconscript = SConscript(project_dir_path=project_dir_path, *args, **kwds)
 
     write_file(
-        join( project_dir_path, name + ".SConscript" ),
-        repr( sconscript ),
+        join(project_dir_path, name + ".SConscript"),
+        repr(sconscript),
         force=force
     )
 
 
-def generate_vcproj( name, force=False, project_dir_path=None, *args, **kwds ):
+def generate_vcproj(name, force=False, project_dir_path=None, *args, **kwds):
     from project.vcproj import VCProj
     from utility.file import write_file
 
     if project_dir_path is None:
         project_dir_path = getcwd()
-    project_dir_path = abspath( project_dir_path )
+    project_dir_path = abspath(project_dir_path)
 
-    vcproj = VCProj( name=name, project_dir_path=project_dir_path, *args, **kwds )
+    vcproj = VCProj(name=name, project_dir_path=project_dir_path, *args, **kwds)
 
     write_file(
-        join( project_dir_path, name + ".vcproj" ),
-        repr( vcproj ),
+        join(project_dir_path, name + ".vcproj"),
+        repr(vcproj),
         force=force
     )
 
 
-def generate_vcxproj( name, force=False, project_dir_path=None, *args, **kwds ):
+def generate_vcxproj(name, force=False, project_dir_path=None, *args, **kwds):
     from project.vcxproj import VCXProj, VCXProjFilters, VCXProjUser
     from utility.file import write_file
 
     if project_dir_path is None:
         project_dir_path = getcwd()
-    project_dir_path = abspath( project_dir_path )
+    project_dir_path = abspath(project_dir_path)
 
-    vcxproj = VCXProj( name=name, project_dir_path=project_dir_path, *args, **kwds )
+    vcxproj = VCXProj(name=name, project_dir_path=project_dir_path, *args, **kwds)
 
     write_file(
-        join( project_dir_path, name + ".vcxproj" ),
-        repr( vcxproj ),
+        join(project_dir_path, name + ".vcxproj"),
+        repr(vcxproj),
         force=force
     )
 
     write_file(
-        join( project_dir_path, name + ".vcxproj.filters" ),
-        repr( VCXProjFilters( vcxproj ) ),
+        join(project_dir_path, name + ".vcxproj.filters"),
+        repr(VCXProjFilters(vcxproj)),
         force=force
     )
 
     write_file(
-        join( project_dir_path, name + ".vcxproj.user" ),
-        repr( VCXProjUser() ),
+        join(project_dir_path, name + ".vcxproj.user"),
+        repr(VCXProjUser()),
         force=force
     )

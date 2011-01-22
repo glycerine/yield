@@ -37,59 +37,59 @@ from yidl.target.target_test import *
 
 
 class PyTargetTest(TargetTest):
-    def get_py( self ):
-        py = repr( compile( self.get_idl(), PyTarget() ) )
-        py = StringIO( py ).readlines()
+    def get_py(self):
+        py = repr(compile(self.get_idl(), PyTarget()))
+        py = StringIO(py).readlines()
         py = [py_line.strip() for py_line in py]
         return py
 
 
 class PyTargetCompileTest(PyTargetTest):
-    def runTest( self ):
-        py = repr( compile( self.get_idl(), PyTarget() ) )
+    def runTest(self):
+        py = repr(compile(self.get_idl(), PyTarget()))
         import __builtin__
-        __builtin__.compile( py, "<string>", "exec" )
+        __builtin__.compile(py, "<string>", "exec")
 
 
 class PyTargetConstantTest(PyTargetTest):
-    def runTest( self ):
+    def runTest(self):
         assert "%(TEST_CONSTANT_NAME)s = %(TEST_CONSTANT_VALUE)s"\
                 % globals() in self.get_py()
 
 
 class PyTargetExceptionTest(PyTargetTest):
-    def runTest( self ):
+    def runTest(self):
         assert "class %(TEST_EXCEPTION)s(Exception): pass"\
                    % globals() in self.get_py()
 
 
 class PyTargetInterfaceTest(PyTargetTest):
-    def runTest( self ):
+    def runTest(self):
         assert "class %(TEST_INTERFACE)s(object):" % globals() in self.get_py()
 
 
 class PyTargetOperationTest(PyTargetTest):
-    def runTest( self ):
+    def runTest(self):
         assert "def %(TEST_OPERATION)s( self ): raise NotImplementedError"\
                    % globals() in self.get_py()
 
 
 class PyTargetSequenceTest(PyTargetTest):
-    def runTest( self ):
+    def runTest(self):
         assert "class %(TEST_SEQUENCE)s(list):" % globals() in self.get_py()
 
 
 class PyTargetStructTest(PyTargetTest):
-    def runTest( self ):
+    def runTest(self):
         assert "class %(TEST_STRUCT)s(object): pass"\
                    % globals() in self.get_py()
 
 
 suite = TestSuite()
-suite.addTest( PyTargetCompileTest() )
-suite.addTest( PyTargetConstantTest() )
-suite.addTest( PyTargetExceptionTest() )
-suite.addTest( PyTargetInterfaceTest() )
-suite.addTest( PyTargetOperationTest() )
-suite.addTest( PyTargetSequenceTest() )
-suite.addTest( PyTargetStructTest() )
+suite.addTest(PyTargetCompileTest())
+suite.addTest(PyTargetConstantTest())
+suite.addTest(PyTargetExceptionTest())
+suite.addTest(PyTargetInterfaceTest())
+suite.addTest(PyTargetOperationTest())
+suite.addTest(PyTargetSequenceTest())
+suite.addTest(PyTargetStructTest())

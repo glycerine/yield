@@ -32,7 +32,7 @@ from cStringIO import StringIO
 from unittest import TestCase
 
 
-__all__ =\
+__all__ = \
 [
     "ProjectTest",
     "TEST_CXXDEFINES",
@@ -67,7 +67,7 @@ TEST_SOURCE_FILE_PATHS = \
 
 
 class ProjectTest(TestCase):
-    def _get_project( self, project_class ):
+    def _get_project(self, project_class):
         return project_class(
                    cxxdefines=TEST_CXXDEFINES,
                    cxxflags=TEST_CXXFLAGS,
@@ -80,9 +80,9 @@ class ProjectTest(TestCase):
                    source_file_paths=TEST_SOURCE_FILE_PATHS,
                )
 
-    def _get_project_lines( self, project_class ):
-        project = self._get_project( project_class )
-        project_lines = StringIO( repr( project ) ).readlines()
+    def _get_project_lines(self, project_class):
+        project = self._get_project(project_class)
+        project_lines = StringIO(repr(project)).readlines()
         project_lines = [project_line.strip()
                             for project_line in project_lines]
         return project_lines

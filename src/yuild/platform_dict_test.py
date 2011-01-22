@@ -34,42 +34,42 @@ from platform_dict import PlatformDict
 
 
 class PlatformDictTest(TestCase):
-    def runTest( self ):
-        platform_dict = PlatformDict( "test" )
-        assert len( platform_dict ) == 1
+    def runTest(self):
+        platform_dict = PlatformDict("test")
+        assert len(platform_dict) == 1
         assert platform_dict.keys()[0] == '*'
         assert platform_dict.values()[0] == "test"
 
 
 class PlatformDictGetTest(PlatformDictTest):
-    def runTest( self ):
+    def runTest(self):
         pass
 
 
 class PlatformDictIterItemsTest(PlatformDictTest):
-    def runTest( self ):
+    def runTest(self):
         pass
 
 
 class PlatformDictKeysTest(PlatformDictTest):
-    def runTest( self ):
+    def runTest(self):
         pass
 
 
 class PlatformDictMergeTest(PlatformDictTest):
-    def runTest( self ):
+    def runTest(self):
         pass
 
 
 class PlatformDictSetTest(PlatformDictTest):
-    def runTest( self ):
+    def runTest(self):
         pass
 
 
 suite = TestSuite()
-suite.addTest( PlatformDictTest() )
-suite.addTest( PlatformDictGetTest() )
-suite.addTest( PlatformDictIterItemsTest() )
-suite.addTest( PlatformDictKeysTest() )
-suite.addTest( PlatformDictMergeTest() )
-suite.addTest( PlatformDictSetTest() )
+suite.addTest(PlatformDictTest())
+suite.addTest(PlatformDictGetTest())
+suite.addTest(PlatformDictIterItemsTest())
+suite.addTest(PlatformDictKeysTest())
+suite.addTest(PlatformDictMergeTest())
+suite.addTest(PlatformDictSetTest())

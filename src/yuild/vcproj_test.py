@@ -36,15 +36,15 @@ from project_test import *
 
 
 class VCProjTest(ProjectTest):
-    def get_vcproj( self ):
-        return self._get_project( VCProj )
+    def get_vcproj(self):
+        return self._get_project(VCProj)
 
-    def get_vcproj_lines( self ):
-        return self._get_project_lines( VCProj )
+    def get_vcproj_lines(self):
+        return self._get_project_lines(VCProj)
 
 
 class VCProjOutputFilePathTest(VCProjTest):
-    def runTest( self ):
+    def runTest(self):
         vcproj_lines = self.get_vcproj_lines()
         assert 'OutputDirectory="$(ProjectDir)"' in vcproj_lines
         assert 'OutputFile="%(TEST_OUTPUT_FILE_NAME)s"'\
@@ -52,12 +52,12 @@ class VCProjOutputFilePathTest(VCProjTest):
 
 
 class VCProjParseTest(VCProjTest):
-    def runTest( self ):
-        parse_xml( repr( self.get_vcproj() ) )
+    def runTest(self):
+        parse_xml(repr(self.get_vcproj()))
 
 
 class VCProjSourceFilePathsTest(VCProjTest):
-    def runTest( self ):
+    def runTest(self):
         vcproj_lines = self.get_vcproj_lines()
         for source_file_path in TEST_SOURCE_FILE_PATHS:
             assert '<File RelativePath="%(source_file_path)s">'\
@@ -65,14 +65,14 @@ class VCProjSourceFilePathsTest(VCProjTest):
 
 
 class VCProjTypeTest(VCProjTest):
-    def runTest( self ):
+    def runTest(self):
         vcproj_lines = self.get_vcproj_lines()
         assert 'Name="VCCLCompilerTool"' in vcproj_lines
         assert 'Name="VCLibrarianTool"' in vcproj_lines
 
 
 suite = TestSuite()
-suite.addTest( VCProjOutputFilePathTest() )
-suite.addTest( VCProjParseTest() )
-suite.addTest( VCProjSourceFilePathsTest() )
-suite.addTest( VCProjTypeTest() )
+suite.addTest(VCProjOutputFilePathTest())
+suite.addTest(VCProjParseTest())
+suite.addTest(VCProjSourceFilePathsTest())
+suite.addTest(VCProjTypeTest())

@@ -38,45 +38,45 @@ from project_test import *
 
 
 class VCXProjTest(ProjectTest):
-    def get_vcxproj( self ):
-        return self._get_project( VCXProj )
+    def get_vcxproj(self):
+        return self._get_project(VCXProj)
 
-    def get_vcxproj_lines( self ):
-        return self._get_project_lines( VCXProj )
+    def get_vcxproj_lines(self):
+        return self._get_project_lines(VCXProj)
 
 
 class VCXProjAdditionalDependenciesTest(VCXProjTest):
-    def runTest( self ):
-        test_libs = ' '.join( TEST_LIBS )
+    def runTest(self):
+        test_libs = ' '.join(TEST_LIBS)
         assert "<AdditionalDependencies>%(test_libs)s</AdditionalDependencies>"\
                % locals() in self.get_vcxproj_lines()
 
 
 class VCXProjAdditionalLibraryDirectoriesTest(VCXProjTest):
-    def runTest( self ):
-        test_libpath = ntpaths( TEST_LIBPATH )
+    def runTest(self):
+        test_libpath = ntpaths(TEST_LIBPATH)
         test_libpath = ["$(ProjectDir)" + path for path in test_libpath]
-        test_libpath = ';'.join( test_libpath )
+        test_libpath = ';'.join(test_libpath)
         assert "<AdditionalLibraryDirectories>%(test_libpath)s</AdditionalLibraryDirectories>"\
                % locals() in self.get_vcxproj_lines()
 
 
 class VCXProjAdditionalIncludeDirectoriesTest(VCXProjTest):
-    def runTest( self ):
-        test_cxxpath = ntpaths( TEST_CXXPATH )
+    def runTest(self):
+        test_cxxpath = ntpaths(TEST_CXXPATH)
         test_cxxpath = ["$(ProjectDir)" + path for path in test_cxxpath]
-        test_cxxpath = ';'.join( test_cxxpath )
+        test_cxxpath = ';'.join(test_cxxpath)
         assert "<AdditionalIncludeDirectories>%(test_cxxpath)s</AdditionalIncludeDirectories>"\
                % locals() in self.get_vcxproj_lines()
 
 
 class VCXProjConfigurationsTest(VCXProjTest):
-    def runTest( self ):
+    def runTest(self):
         vcxproj_lines = self.get_vcxproj_lines()
         for Configuration, Platform in \
             (
-                ( "Debug", "Win32" ),
-                ( "Release", "Win32" ),
+                ("Debug", "Win32"),
+                ("Release", "Win32"),
             ):
 
             assert '<ProjectConfiguration Include="%(Configuration)s|%(Platform)s">'\
@@ -90,42 +90,42 @@ class VCXProjConfigurationsTest(VCXProjTest):
 
 
 class VCXProjIntDirTest(VCXProjTest):
-    def runTest( self ):
+    def runTest(self):
         assert "<IntDir>$(SolutionDir)build\$(Configuration)\$(ProjectName)\</IntDir>"\
                in self.get_vcxproj_lines()
 
 
 class VCXProjNameTest(VCXProjTest):
-    def runTest( self ):
+    def runTest(self):
         assert "<RootNamespace>test</RootNamespace>" % globals()\
                in self.get_vcxproj_lines()
 
 
 class VCXProjOutDirTest(VCXProjTest):
-    def runTest( self ):
+    def runTest(self):
         assert "<OutDir>$(ProjectDir)</OutDir>" in self.get_vcxproj_lines()
 
 
 class VCXProjPreprocessorDefinitionsTest(VCXProjTest):
-    def runTest( self ):
-        test_cxxdefines = ';'.join( TEST_CXXDEFINES )
+    def runTest(self):
+        test_cxxdefines = ';'.join(TEST_CXXDEFINES)
         assert "<PreprocessorDefinitions>%(test_cxxdefines)s</PreprocessorDefinitions>"\
                % locals() in self.get_vcxproj_lines()
 
 
 class VCXProjParseTest(VCXProjTest):
-    def runTest( self ):
-        parse_xml( repr( self.get_vcxproj() ) )
+    def runTest(self):
+        parse_xml(repr(self.get_vcxproj()))
 
 
 class VCXProjRTTITest(VCXProjTest):
-    def runTest( self ):
+    def runTest(self):
         assert "<RuntimeTypeInfo>false</RuntimeTypeInfo>"\
                in self.get_vcxproj_lines()
 
 
 class VCXProjSourceFilePathsTest(VCXProjTest):
-    def runTest( self ):
+    def runTest(self):
         vcxproj_lines = self.get_vcxproj_lines()
         for source_file_path in TEST_SOURCE_FILE_PATHS:
             assert '<ClCompile Include="%(source_file_path)s">' % locals()\
@@ -133,21 +133,21 @@ class VCXProjSourceFilePathsTest(VCXProjTest):
 
 
 class VCXProjTypeTest(VCXProjTest):
-    def runTest( self ):
+    def runTest(self):
         assert "<ConfigurationType>StaticLibrary</ConfigurationType>"\
                in self.get_vcxproj_lines()
 
 
 suite = TestSuite()
-suite.addTest( VCXProjAdditionalDependenciesTest() )
-suite.addTest( VCXProjAdditionalIncludeDirectoriesTest() )
-suite.addTest( VCXProjAdditionalLibraryDirectoriesTest() )
-suite.addTest( VCXProjConfigurationsTest() )
-suite.addTest( VCXProjIntDirTest() )
-suite.addTest( VCXProjNameTest() )
-suite.addTest( VCXProjPreprocessorDefinitionsTest() )
-suite.addTest( VCXProjOutDirTest() )
-suite.addTest( VCXProjRTTITest() )
-suite.addTest( VCXProjParseTest() )
-suite.addTest( VCXProjSourceFilePathsTest() )
-suite.addTest( VCXProjTypeTest() )
+suite.addTest(VCXProjAdditionalDependenciesTest())
+suite.addTest(VCXProjAdditionalIncludeDirectoriesTest())
+suite.addTest(VCXProjAdditionalLibraryDirectoriesTest())
+suite.addTest(VCXProjConfigurationsTest())
+suite.addTest(VCXProjIntDirTest())
+suite.addTest(VCXProjNameTest())
+suite.addTest(VCXProjPreprocessorDefinitionsTest())
+suite.addTest(VCXProjOutDirTest())
+suite.addTest(VCXProjRTTITest())
+suite.addTest(VCXProjParseTest())
+suite.addTest(VCXProjSourceFilePathsTest())
+suite.addTest(VCXProjTypeTest())

@@ -28,7 +28,7 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-COMMENT_PREFIXES =\
+COMMENT_PREFIXES = \
 {
     'c': "/*",
     "cpp": "//",
@@ -37,7 +37,7 @@ COMMENT_PREFIXES =\
     "rl": "//",
 }
 
-COMMENT_SUFFIXES =\
+COMMENT_SUFFIXES = \
 {
     'c': "*/",
     "cpp": '',
@@ -46,7 +46,7 @@ COMMENT_SUFFIXES =\
     "rl": '',
 }
 
-INDENT_SPACES =\
+INDENT_SPACES = \
 {
     'c': ' ' * 2,
     "cpp": ' ' * 2,
@@ -55,9 +55,9 @@ INDENT_SPACES =\
     "rl": ' ' * 2,
 }
 
-C_INCLUDE_FILE_EXTENSIONS = ( ".h", )
+C_INCLUDE_FILE_EXTENSIONS = (".h",)
 C_INCLUDE_FILE_FNMATCH_PATTERNS = ['*' + ext for ext in C_INCLUDE_FILE_EXTENSIONS]
-C_SOURCE_FILE_EXTENSIONS = ( ".c", )
+C_SOURCE_FILE_EXTENSIONS = (".c",)
 C_SOURCE_FILE_FNMATCH_PATTERNS = ['*' + ext for ext in C_SOURCE_FILE_EXTENSIONS]
 C_FILE_EXTENSIONS = C_INCLUDE_FILE_EXTENSIONS + C_SOURCE_FILE_EXTENSIONS
 C_FILE_FNMATCH_PATTERNS = ['*' + ext for ext in C_FILE_EXTENSIONS]
@@ -67,9 +67,9 @@ for c_file_extension in C_FILE_EXTENSIONS:
     INDENT_SPACES[c_file_extension] = INDENT_SPACES['c']
 
 
-CXX_INCLUDE_FILE_EXTENSIONS = ( ".hpp", )
+CXX_INCLUDE_FILE_EXTENSIONS = (".hpp",)
 CXX_INCLUDE_FILE_FNMATCH_PATTERNS = ['*' + ext for ext in CXX_INCLUDE_FILE_EXTENSIONS]
-CXX_SOURCE_FILE_EXTENSIONS = ( ".cc", ".cpp" )
+CXX_SOURCE_FILE_EXTENSIONS = (".cc", ".cpp")
 CXX_SOURCE_FILE_FNMATCH_PATTERNS = ['*' + ext for ext in CXX_SOURCE_FILE_EXTENSIONS]
 CXX_FILE_EXTENSIONS = CXX_INCLUDE_FILE_EXTENSIONS + CXX_SOURCE_FILE_EXTENSIONS
 CXX_FILE_FNMATCH_PATTERNS = ['*' + ext for ext in CXX_FILE_EXTENSIONS]
@@ -86,7 +86,7 @@ C_CXX_SOURCE_FILE_FNMATCH_PATTERNS = ['*' + ext for ext in C_CXX_SOURCE_FILE_EXT
 C_CXX_FILE_EXTENSIONS = C_CXX_INCLUDE_FILE_EXTENSIONS + C_CXX_SOURCE_FILE_EXTENSIONS
 C_CXX_FILE_FNMATCH_PATTERNS = C_CXX_INCLUDE_FILE_FNMATCH_PATTERNS + C_CXX_SOURCE_FILE_FNMATCH_PATTERNS
 
-IDL_SOURCE_FILE_EXTENSIONS = ( ".idl", )
+IDL_SOURCE_FILE_EXTENSIONS = (".idl",)
 for idl_source_file_extension in IDL_SOURCE_FILE_EXTENSIONS:
     COMMENT_PREFIXES[idl_source_file_extension] = "//"
     COMMENT_SUFFIXES[idl_source_file_extension] = ''
@@ -102,7 +102,7 @@ for idl_source_file_extension in IDL_SOURCE_FILE_EXTENSIONS:
 
 INCLUDE_FILE_FNMATCH_PATTERNS = ['*' + ext for ext in INCLUDE_FILE_EXTENSIONS.iterkeys()]
 
-PLATFORMS =\
+PLATFORMS = \
 (
     '*',
     "bsd",
@@ -115,11 +115,11 @@ PLATFORMS =\
     "win32",
 )
 
-ABSTRACT_PLATFORMS = ( "bsd", "unix", "posix", "*" )
-CONCRETE_PLATFORMS = ( "darwin", "freebsd", "linux", "sunos", "win32" )
-assert len( ABSTRACT_PLATFORMS ) + len( CONCRETE_PLATFORMS ) == len( PLATFORMS )
+ABSTRACT_PLATFORMS = ("bsd", "unix", "posix", "*")
+CONCRETE_PLATFORMS = ("darwin", "freebsd", "linux", "sunos", "win32")
+assert len(ABSTRACT_PLATFORMS) + len(CONCRETE_PLATFORMS) == len(PLATFORMS)
 
-PLATFORM_TREE =\
+PLATFORM_TREE = \
 {
     '*': None,
     "bsd": "unix",
@@ -131,9 +131,9 @@ PLATFORM_TREE =\
     "unix": "posix",
     "win32": '*'
 }
-assert len( PLATFORM_TREE ) == len( PLATFORMS )
+assert len(PLATFORM_TREE) == len(PLATFORMS)
 
-PLATFORM_GUARDS =\
+PLATFORM_GUARDS = \
 {
     '*': "#if 1",
     "bsd": "#if defined(__MACH__) || defined(__FreeBSD__)",
@@ -145,15 +145,15 @@ PLATFORM_GUARDS =\
     "unix": "#ifdef __unix__",
     "win32": "#ifdef _WIN32"
 }
-assert len( PLATFORM_GUARDS ) == len( PLATFORMS )
+assert len(PLATFORM_GUARDS) == len(PLATFORMS)
 
-PY_SOURCE_FILE_EXTENSIONS = ( ".py", )
+PY_SOURCE_FILE_EXTENSIONS = (".py",)
 for py_source_file_extension in PY_SOURCE_FILE_EXTENSIONS:
     COMMENT_PREFIXES[py_source_file_extension] = COMMENT_PREFIXES["py"]
     COMMENT_SUFFIXES[py_source_file_extension] = COMMENT_SUFFIXES["py"]
     INDENT_SPACES[py_source_file_extension] = INDENT_SPACES["py"]
 
-RAGEL_SOURCE_FILE_EXTENSIONS = ( ".rl", )
+RAGEL_SOURCE_FILE_EXTENSIONS = (".rl",)
 for ragel_source_file_extension in RAGEL_SOURCE_FILE_EXTENSIONS:
     COMMENT_PREFIXES[ragel_source_file_extension] = COMMENT_PREFIXES["rl"]
     COMMENT_SUFFIXES[ragel_source_file_extension] = COMMENT_SUFFIXES["rl"]
@@ -173,7 +173,7 @@ for source_file_extension in RAGEL_SOURCE_FILE_EXTENSIONS:
 
 SOURCE_FILE_FNMATCH_PATTERNS = ['*' + ext for ext in SOURCE_FILE_EXTENSIONS.iterkeys()]
 
-SYS_PLATFORM_CHECKS =\
+SYS_PLATFORM_CHECKS = \
 {
     '*': 'True:',
     "bsd": 'sys.platform == "darwin" or "bsd" in sys.platform',
@@ -183,7 +183,7 @@ SYS_PLATFORM_CHECKS =\
     "sunos": 'sys.platform.startswith( "sunos" )',
     "win32": 'sys.platform == "win32"',
 }
-SYS_PLATFORM_CHECKS["posix"] =\
+SYS_PLATFORM_CHECKS["posix"] = \
     " or ".join(
         (
             SYS_PLATFORM_CHECKS["bsd"],
@@ -194,8 +194,8 @@ SYS_PLATFORM_CHECKS["posix"] =\
 SYS_PLATFORM_CHECKS["unix"] = SYS_PLATFORM_CHECKS["posix"]
 for __platform in PLATFORMS: SYS_PLATFORM_CHECKS[__platform]
 
-assert len( COMMENT_PREFIXES ) == len( COMMENT_SUFFIXES )
+assert len(COMMENT_PREFIXES) == len(COMMENT_SUFFIXES)
 for source_file_extension in COMMENT_PREFIXES.keys():
-    assert COMMENT_SUFFIXES.has_key( source_file_extension )
+    assert COMMENT_SUFFIXES.has_key(source_file_extension)
     COMMENT_PREFIXES[source_file_extension[1:]] = COMMENT_PREFIXES[source_file_extension]
     COMMENT_SUFFIXES[source_file_extension[1:]] = COMMENT_SUFFIXES[source_file_extension]

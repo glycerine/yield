@@ -33,7 +33,7 @@ import sys
 from unittest import TestCase
 
 
-__all__ =\
+__all__ = \
 [
     "TargetTest",
     "TEST_CONSTANT_NAME",
@@ -60,10 +60,10 @@ TEST_STRUCT = "TestStruct"
 
 
 class TargetTest(TestCase):
-    def __init__( self ):
-        TestCase.__init__( self )
-        my_dir_path = abspath( dirname( sys.modules[__name__].__file__ ) )
-        self.__idl_file_path = join( my_dir_path, "target_test.idl" )
+    def __init__(self):
+        TestCase.__init__(self)
+        my_dir_path = abspath(dirname(sys.modules[__name__].__file__))
+        self.__idl_file_path = join(my_dir_path, "target_test.idl")
 
-    def get_idl( self ):
+    def get_idl(self):
         return self.__idl_file_path

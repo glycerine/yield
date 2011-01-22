@@ -60,51 +60,51 @@ SOURCE_FILE_RULE = """\
 
 
 # Helper functions
-def expand_platform( platform ):
+def expand_platform(platform):
     if platform == "bsd":
-        platforms = ( "darwin", "freebsd", )
+        platforms = ("darwin", "freebsd",)
     elif platform == "posix" or platform == "unix":
-        platforms = ( "darwin", "freebsd", "linux", "sunos" )
+        platforms = ("darwin", "freebsd", "linux", "sunos")
     else:
-        platforms = ( platform, )
+        platforms = (platform,)
     return platforms
 
-def uname_check( platform, statements ):
+def uname_check(platform, statements):
     if platform == '*':
         return statements
     else:
-        statements = indent( INDENT_SPACES, statements )
+        statements = indent(INDENT_SPACES, statements)
         conditional_statements = []
-        for platform in expand_platform( platform ):
+        for platform in expand_platform(platform):
             uname_check = UNAME_CHECKS[platform]
-            conditional_statements.append( """\
+            conditional_statements.append("""\
 %(uname_check)s
 %(statements)s
-endif""" % locals() )
-        return '\n'.join( list( set( conditional_statements ) ) )
+endif""" % locals())
+        return '\n'.join(list(set(conditional_statements)))
 
 
-class Makefile( Project ):
-    def __repr__( self ):
+class Makefile(Project):
+    def __repr__(self):
         my_dir_path = "" # "$(dir $(lastword $(MAKEFILE_LIST)))"
 
-        assert len( self.get_build_dir_path() ) == 1 and self.get_build_dir_path().keys()[0] == '*'
-        build_dir_path = posixpath( self.get_build_dir_path()['*'] )
+        assert len(self.get_build_dir_path()) == 1 and self.get_build_dir_path().keys()[0] == '*'
+        build_dir_path = posixpath(self.get_build_dir_path()['*'])
 
         # CXXFLAGS
         platform_cxxflags = {}
         for platform, cxxflags in self.get_cxxflags().iteritems():
-            platform_cxxflags.setdefault( platform, [] ).extend( cxxflags )
+            platform_cxxflags.setdefault(platform, []).extend(cxxflags)
         for platform, cxxdefines in self.get_cxxdefines().iteritems():
-            platform_cxxflags.setdefault( platform, [] ).extend( ["-D" + cxxdefine for cxxdefine in cxxdefines] )
+            platform_cxxflags.setdefault(platform, []).extend(["-D" + cxxdefine for cxxdefine in cxxdefines])
         for platform, cxxpath in self.get_cxxpath().iteritems():
-            platform_cxxflags.setdefault( platform, [] ).extend( ["-I" + posixpath( cxxpath ) for cxxpath in cxxpath] )
+            platform_cxxflags.setdefault(platform, []).extend(["-I" + posixpath(cxxpath) for cxxpath in cxxpath])
         CXXFLAGS = []
-        platforms = list( platform_cxxflags.keys() ); platforms.sort()
+        platforms = list(platform_cxxflags.keys()); platforms.sort()
         for platform in platforms:
-            CXXFLAGS.append( uname_check( platform, "CXXFLAGS += " + ' '.join( platform_cxxflags[platform] ) ) )
+            CXXFLAGS.append(uname_check(platform, "CXXFLAGS += " + ' '.join(platform_cxxflags[platform])))
         CXXFLAGS.sort()
-        CXXFLAGS.append( """\
+        CXXFLAGS.append("""\
 ifneq ($COVERAGE,)
     CXXFLAGS += -fprofile-arcs -ftest-coverage
     LDFLAGS += -fprofile-arcs -ftest-coverage -lgcov
@@ -113,40 +113,40 @@ ifneq ($(RELEASE),)
     CXXFLAGS += -O2
 else
     CXXFLAGS += -g -D_DEBUG
-endif""" )
-        CXXFLAGS = pad( "\n\n", '\n'.join( CXXFLAGS ), "\n" )
+endif""")
+        CXXFLAGS = pad("\n\n", '\n'.join(CXXFLAGS), "\n")
 
         # LDFLAGS
         platform_ldflags = {}
         for platform, ldflags in self.get_ldflags().iteritems():
-            platform_ldflags.setdefault( platform, [] ).extend( ldflags )
+            platform_ldflags.setdefault(platform, []).extend(ldflags)
         for platform, libpath in self.get_libpath().iteritems():
-            platform_ldflags.setdefault( platform, [] ).extend( ["-L" + posixpath( libpath ) for libpath in libpath] )
+            platform_ldflags.setdefault(platform, []).extend(["-L" + posixpath(libpath) for libpath in libpath])
         LDFLAGS = []
-        platforms = list( platform_ldflags.keys() ); platforms.sort()
+        platforms = list(platform_ldflags.keys()); platforms.sort()
         for platform in platforms:
-            LDFLAGS.append( uname_check( platform, "LDFLAGS += " + ' '.join( platform_ldflags[platform] ) ) )
+            LDFLAGS.append(uname_check(platform, "LDFLAGS += " + ' '.join(platform_ldflags[platform])))
         LDFLAGS.sort()
-        LDFLAGS = pad( "\n\n", '\n'.join( LDFLAGS ), "\n" )
+        LDFLAGS = pad("\n\n", '\n'.join(LDFLAGS), "\n")
 
         # LIBS
         LIBS = []
         for platform, libs in self.get_libs().iteritems():
-            LIBS.append( uname_check( platform, "LIBS += " + ' '.join( ["-l" + lib for lib in libs] ) ) )
-        LIBS = pad( "\n\n", '\n'.join( LIBS ), "\n" )
+            LIBS.append(uname_check(platform, "LIBS += " + ' '.join(["-l" + lib for lib in libs])))
+        LIBS = pad("\n\n", '\n'.join(LIBS), "\n")
 
         # source_files
         platform_object_file_paths = {}
         source_file_rules = []
         source_files = self.get_source_files()
-        source_files = source_files.exclude( self.get_exclude_files() )
-        source_files = source_files.filter( C_CXX_SOURCE_FILE_FNMATCH_PATTERNS )
+        source_files = source_files.exclude(self.get_exclude_files())
+        source_files = source_files.filter(C_CXX_SOURCE_FILE_FNMATCH_PATTERNS)
         source_files_platform_dict = source_files.as_platform_dict()
 
         for platform, source_files in source_files_platform_dict.iteritems():
-            assert len( source_files ) > 0
+            assert len(source_files) > 0
 
-            for platform in expand_platform( platform ):
+            for platform in expand_platform(platform):
                 object_file_paths = []
 
                 for source_file in source_files:
@@ -154,68 +154,68 @@ endif""" )
 
                     object_file_path = \
                         my_dir_path + \
-                        join( 
+                        join(
                             self.get_build_dir_path()[platform],
-                            splitext( 
-                                relpath( source_file_path, self.get_root_source_dir_path() )
+                            splitext(
+                                relpath(source_file_path, self.get_root_source_dir_path())
                             )[0] + ".o"
                         )
-                    object_dir_path = posixpath( dirname( object_file_path ) )
-                    object_file_path = posixpath( object_file_path )
-                    object_file_paths.append( object_file_path )
+                    object_dir_path = posixpath(dirname(object_file_path))
+                    object_file_path = posixpath(object_file_path)
+                    object_file_paths.append(object_file_path)
 
-                    source_file_path = posixpath( source_file_path )
-                    source_file_rules.append( SOURCE_FILE_RULE % locals() )
+                    source_file_path = posixpath(source_file_path)
+                    source_file_rules.append(SOURCE_FILE_RULE % locals())
 
                 object_file_paths.sort()
-                platform_object_file_paths.setdefault( platform, [] ).append( 
+                platform_object_file_paths.setdefault(platform, []).append(
                     "OBJECT_FILE_PATHS += " + \
-                    ' '.join( object_file_paths )
+                    ' '.join(object_file_paths)
                 )
 
         object_file_paths = []
-        platforms = list( platform_object_file_paths.keys() ); platforms.sort()
+        platforms = list(platform_object_file_paths.keys()); platforms.sort()
         for platform in platforms:
             platform_object_file_paths[platform].sort()
-            object_file_paths.append( 
-                uname_check( 
+            object_file_paths.append(
+                uname_check(
                     platform,
-                    '\n'.join( platform_object_file_paths[platform] )
+                    '\n'.join(platform_object_file_paths[platform])
                 )
             )
-        object_file_paths = '\n'.join( object_file_paths )
+        object_file_paths = '\n'.join(object_file_paths)
 
-        source_file_rules = deduplist( source_file_rules )
+        source_file_rules = deduplist(source_file_rules)
         source_file_rules.sort()
-        source_file_rules = '\n'.join( source_file_rules )
+        source_file_rules = '\n'.join(source_file_rules)
 
         # project_references
         project_references = []
         # for project_reference in self.get_project_references().get( '*', default=[] ):
         #     Makefile = posixpath( project_reference + ".Makefile" )
         #    project_references.append( 'include %(Makefile)s' % locals() )
-        project_references = rpad( '\n'.join( project_references ), "\n\n\n" )
+        project_references = rpad('\n'.join(project_references), "\n\n\n")
 
         # output_file_path
-        assert len( self.get_output_file_path() ) == 1 and\
+        assert len(self.get_output_file_path()) == 1 and\
                self.get_output_file_path().keys()[0] == '*'
         output_file_path = self.get_output_file_path()['*']
-        output_dir_path, output_file_name = split( output_file_path )
+        output_dir_path, output_file_name = split(output_file_path)
         if self.get_type() == "exe":
             output_file_path_action = "$(LINK.cpp) $(OBJECT_FILE_PATHS) -o $@ $(LIBS)"
         elif self.get_type() == "lib":
-            if not output_file_name.startswith( "lib" ):
+            if not output_file_name.startswith("lib"):
                 output_file_name = "lib" + output_file_name
-            if not output_file_name.endswith( ".a" ):
+            if not output_file_name.endswith(".a"):
                 output_file_name += ".a"
-            output_file_path = join( output_dir_path, output_file_name )
+            output_file_path = join(output_dir_path, output_file_name)
             output_file_path_action = "$(AR) -r $@ $(OBJECT_FILE_PATHS)"
         else:
             raise NotImplementedError, self.get_type()
-        output_dir_path = my_dir_path + posixpath( output_dir_path )
-        output_file_path = my_dir_path + posixpath( output_file_path )
+        output_dir_path = my_dir_path + posixpath(output_dir_path)
+        output_file_path = my_dir_path + posixpath(output_file_path)
 
-        return ( """\
+        return ("""\
 # SHELL = /bin/bash
 UNAME := $(shell uname)%(CXXFLAGS)s%(LDFLAGS)s%(LIBS)s
 
@@ -240,53 +240,53 @@ depclean:
 
 %(source_file_rules)s
 
-""" % locals() ).replace( ' ' * 4, '\t' )
+""" % locals()).replace(' ' * 4, '\t')
 
 
 class TopLevelMakefile(object):
-    def __init__( self, project_references ):
+    def __init__(self, project_references):
         self.__project_references = project_references
 
-    def __repr__( self ):
+    def __repr__(self):
         clean_actions = []
         project_targets = []
         project_target_names = []
 
-        project_names = list( self.__project_references.keys() )
+        project_names = list(self.__project_references.keys())
         project_names.sort()
-        for project_name in project_names:            
-            clean_actions.append( "$(MAKE) -C proj/yield/%(project_name)s -f %(project_name)s.Makefile clean" % locals() )
-            clean_actions.append( "$(MAKE) -C proj/yield/%(project_name)s -f %(project_name)s_test.Makefile clean" % locals() )
-        
+        for project_name in project_names:
+            clean_actions.append("$(MAKE) -C proj/yield/%(project_name)s -f %(project_name)s.Makefile clean" % locals())
+            clean_actions.append("$(MAKE) -C proj/yield/%(project_name)s -f %(project_name)s_test.Makefile clean" % locals())
+
             project_references = \
-                ' '.join( 
-                    [split( project_reference )[1]
+                ' '.join(
+                    [split(project_reference)[1]
                     for project_reference in self.__project_references[project_name]]
                 )
-                
-            project_targets.append( """\
+
+            project_targets.append("""\
 %(project_name)s: %(project_references)s
     $(MAKE) -C proj/yield/%(project_name)s -f %(project_name)s.Makefile
 
 %(project_name)s_test: %(project_name)s
     $(MAKE) -C proj/yield/%(project_name)s -f %(project_name)s_test.Makefile
-""" % locals() )
-            project_target_names.extend( ( project_name, project_name + "_test" ) )
-        
+""" % locals())
+            project_target_names.extend((project_name, project_name + "_test"))
+
         clean_actions.sort()
-        clean_actions = '\n\t'.join( clean_actions )
+        clean_actions = '\n\t'.join(clean_actions)
 
         project_targets.sort()
-        project_targets = '\n'.join( project_targets )
-        
+        project_targets = '\n'.join(project_targets)
+
         project_target_names.sort()
-        project_target_names = ' '.join( project_target_names )
-        
-        return ( """\
+        project_target_names = ' '.join(project_target_names)
+
+        return ("""\
 all: %(project_target_names)s
     
 clean:
     %(clean_actions)s
 
 %(project_targets)s
-""" % locals() ).replace( ' ' * 4, '\t' )
+""" % locals()).replace(' ' * 4, '\t')

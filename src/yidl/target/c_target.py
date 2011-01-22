@@ -59,15 +59,15 @@ __all__ = \
 
 
 class CConstruct:
-    def get_includes( self ):
+    def get_includes(self):
         includes = []
         for child_construct in self.get_child_constructs():
-            includes.extend( child_construct.get_includes() )
+            includes.extend(child_construct.get_includes())
         return includes
 
 
 class CType(CConstruct):
-    def get_constant( self, identifier, value ):
+    def get_constant(self, identifier, value):
         name = self.get_name()
         return "const static %(name)s %(identifier)s = %(value)s;\n" % locals()
 
@@ -79,18 +79,18 @@ class CBufferType(BufferType, CType): pass
 
 
 class CConstant(Constant, CConstruct):
-    def __repr__( self ):
-        return self.get_type().get_constant( self.get_identifier(), self.get_value() )
+    def __repr__(self):
+        return self.get_type().get_constant(self.get_identifier(), self.get_value())
 
 
 class CEnumeratedType(EnumeratedType, CType):
-    def __repr__( self ):
-        return "enum " + self.get_name() + " {" + pad( " ", ", ".join( [repr( enumerator ) for enumerator in self.get_enumerators()] ), " " ) + "};"
+    def __repr__(self):
+        return "enum " + self.get_name() + " {" + pad(" ", ", ".join([repr(enumerator) for enumerator in self.get_enumerators()]), " ") + "};"
 
 class CEnumerator(Enumerator):
-    def __repr__( self ):
+    def __repr__(self):
         if self.get_value() is not None:
-            return self.get_identifier() + " = " + str( self.get_value() )
+            return self.get_identifier() + " = " + str(self.get_value())
         else:
             return self.get_identifier()
 
@@ -99,8 +99,8 @@ class CExceptionType(ExceptionType, CType): pass
 
 
 class CInclude(Include, CConstruct):
-    def __repr__( self ):
-        return "#include " + Include.__repr__( self ).replace( ".idl", ".h" )
+    def __repr__(self):
+        return "#include " + Include.__repr__(self).replace(".idl", ".h")
 
 
 class CInterface(Interface, CConstruct): pass
@@ -113,13 +113,13 @@ class CModule(Module, CConstruct): pass
 
 
 class CNumericType(NumericType, CType):
-    def get_default_value( self ):
+    def get_default_value(self):
         return "0"
 
-    def get_dummy_value( self ):
+    def get_dummy_value(self):
         return "0"
 
-    def get_includes( self ):
+    def get_includes(self):
         return ["<stdint.h>"]
 
 
@@ -128,15 +128,15 @@ class COperationParameter(OperationParameter, CConstruct): pass
 
 
 class CPointerType(PointerType, CType):
-    def get_default_value( self ):
+    def get_default_value(self):
         return "NULL"
 
-    def get_dummy_value( self ):
+    def get_dummy_value(self):
         return "NULL"
 
 
 class CReferenceType(ReferenceType, CType):
-    def get_dummy_value( self ):
+    def get_dummy_value(self):
         return "NULL"
 
 
@@ -144,10 +144,10 @@ class CSequenceType(SequenceType, CType): pass
 
 
 class CStringType(StringType, CType):
-    def get_constant( self, identifier, value ):
+    def get_constant(self, identifier, value):
         return "const static char* %(identifier)s = \"%(value)s\";\n" % locals()
 
-    def get_static_constant_name( self ):
+    def get_static_constant_name(self):
         return "char*"
 
 
@@ -156,16 +156,16 @@ class CStructTypeMember(StructTypeMember, CConstruct): pass
 
 
 class CTarget(Target, CConstruct):
-    def __repr__( self ):
-        includes =\
+    def __repr__(self):
+        includes = \
             rpad(
-                "\n".join( [repr( include ) for include in self.get_includes()] ),
+                "\n".join([repr(include) for include in self.get_includes()]),
                 "\n\n\n"
             )
 
-        modules = "\n\n".join( [repr( module ) for module in self.get_modules()] )
+        modules = "\n\n".join([repr(module) for module in self.get_modules()])
 
-        guard = "_" + str( abs( hash( modules ) ) ) + "_H_"
+        guard = "_" + str(abs(hash(modules))) + "_H_"
 
         return """\
 #ifndef %(guard)s
@@ -181,19 +181,19 @@ class CTarget(Target, CConstruct):
 
 """ % locals()
 
-    def get_includes( self ):
+    def get_includes(self):
         local_includes_dict = {}
         nonlocal_includes_dict = {}
-        for include in Target.get_includes( self ) + CConstruct.get_includes( self ):
-            if isinstance( include, CInclude ):
+        for include in Target.get_includes(self) + CConstruct.get_includes(self):
+            if isinstance(include, CInclude):
                 pass
-            elif isinstance( include, str ):
+            elif isinstance(include, str):
                 if include[0] == '<' and include[-1] == '>':
-                    include = CInclude( self, include[1:-1], local=False )
+                    include = CInclude(self, include[1:-1], local=False)
                 else:
-                    include = CInclude( self, include )
+                    include = CInclude(self, include)
             else:
-                raise TypeError, type( include )
+                raise TypeError, type(include)
 
             if include.is_local():
                 local_includes_dict[include.get_path()] = include
@@ -202,11 +202,11 @@ class CTarget(Target, CConstruct):
 
         includes = []
 
-        for includes_dict in ( local_includes_dict, nonlocal_includes_dict ):
+        for includes_dict in (local_includes_dict, nonlocal_includes_dict):
             include_paths = includes_dict.keys()
             include_paths.sort()
             for include_path in include_paths:
-                includes.append( includes_dict[include_path] )
+                includes.append(includes_dict[include_path])
 
         return includes
 

@@ -37,7 +37,7 @@ __all__ = ["BUILTIN_TYPE_NAMES", "NUMERIC_TYPE_NAMES", "grammar"]
 
 
 # Constants
-NUMERIC_TYPE_NAMES =\
+NUMERIC_TYPE_NAMES = \
 (
     "char", "unsigned char", "octet", "int8_t", "uint8_t",
     "short", "unsigned short", "int16_t", "uint16_t",
@@ -48,110 +48,110 @@ NUMERIC_TYPE_NAMES =\
     "off_t", "off64_t", "size_t", "ssize_t", "mode_t"
  )
 
-BUILTIN_TYPE_NAMES = ( "any", "boolean", "buffer", "string", "wstring" ) +\
+BUILTIN_TYPE_NAMES = ("any", "boolean", "buffer", "string", "wstring") + \
                      NUMERIC_TYPE_NAMES
 
 
-type_name = Word( alphas+"_", alphanums+"_:" )
+type_name = Word(alphas + "_", alphanums + "_:")
 for builtin_type_name in BUILTIN_TYPE_NAMES:
     type_name ^= builtin_type_name
-type_name ^= Literal( "..." )
-type_name += Optional( OneOrMore( Literal( "*" ) ) | Literal( "&" ) )
-parent_type_names = Optional( ':' + type_name + ZeroOrMore( ',' + type_name ) )
+type_name ^= Literal("...")
+type_name += Optional(OneOrMore(Literal("*")) | Literal("&"))
+parent_type_names = Optional(':' + type_name + ZeroOrMore(',' + type_name))
 
-identifier = Word( alphas+"_", alphanums+"_" )
+identifier = Word(alphas + "_", alphanums + "_")
 
 real = Combine\
        (
-           Word( nums+"+-", nums ) +\
-           '.' +\
-           Optional( Word( nums ) ) +\
-           Optional( CaselessLiteral( "E" ) +\
-           Word( nums+"+-", nums ) )
+           Word(nums + "+-", nums) + \
+           '.' + \
+           Optional(Word(nums)) + \
+           Optional(CaselessLiteral("E") + \
+           Word(nums + "+-", nums))
        )
 
 integer = Combine\
           (
-              CaselessLiteral( "0x" ) +\
-              Word( nums+"abcdefABCDEF" )
+              CaselessLiteral("0x") + \
+              Word(nums + "abcdefABCDEF")
           )\
-          |\
-          Word( nums+"+-", nums )
+          | \
+          Word(nums + "+-", nums)
 
-value = real | integer | QuotedString( "\"", "\\" ) | QuotedString( "'", "\\" )
+value = real | integer | QuotedString("\"", "\\") | QuotedString("'", "\\")
 
-tag = Optional( "#" + integer )
+tag = Optional("#" + integer)
 
 
-constant = Keyword( "const" ) + type_name + identifier + '=' + value + ';'
+constant = Keyword("const") + type_name + identifier + '=' + value + ';'
 
-declaration = Optional( Keyword( "const" ) ) +\
-              Optional( Keyword( "struct" ) ) +\
+declaration = Optional(Keyword("const")) + \
+              Optional(Keyword("struct")) + \
               type_name + identifier
 
-enum = Keyword( "enum" ) + identifier + '{' + identifier + Optional( '=' + value ) +\
-           ZeroOrMore( ',' + identifier + Optional( '=' + value ) ) +\
-       '}' + Optional( ';' )
+enum = Keyword("enum") + identifier + '{' + identifier + Optional('=' + value) + \
+           ZeroOrMore(',' + identifier + Optional('=' + value)) + \
+       '}' + Optional(';')
 
-exception = Keyword( "exception" ) + identifier + tag +\
+exception = Keyword("exception") + identifier + tag + \
             (
                 ';'
                 |
-                Group( '{' + ZeroOrMore( declaration + ';' ) +  '}' + Optional( ';' ) )
+                Group('{' + ZeroOrMore(declaration + ';') + '}' + Optional(';'))
             )
 
-map = Keyword( "map" ) + '<' + type_name + ',' + type_name + '>'
+map = Keyword("map") + '<' + type_name + ',' + type_name + '>'
 
-sequence = Keyword( "sequence" ) + '<' + type_name + '>'
+sequence = Keyword("sequence") + '<' + type_name + '>'
 
-struct = Keyword( "struct" ) + identifier + tag +\
+struct = Keyword("struct") + identifier + tag + \
          (
              ';'
              |
              Group
              (
-                 parent_type_names + '{' +\
-                     ZeroOrMore( declaration + ';' ) +
-                 '}' + Optional( ';' )
+                 parent_type_names + '{' + \
+                     ZeroOrMore(declaration + ';') +
+                 '}' + Optional(';')
              )
          )
 
-typedef = Keyword( "typedef" ) + ( sequence | map ) + identifier + tag + ';'
+typedef = Keyword("typedef") + (sequence | map) + identifier + tag + ';'
 
-operation_parameter =\
-    Optional( Keyword( "in" ) | Keyword( "out" ) | Keyword( "inout" ) ) +\
+operation_parameter = \
+    Optional(Keyword("in") | Keyword("out") | Keyword("inout")) + \
     declaration
-operation = Optional( Keyword( "oneway" ) | Keyword( "static" ) ) +\
-            ( Keyword( "void" ) | type_name ) +\
-            identifier + tag +\
-            '(' +\
-                Optional( operation_parameter + ZeroOrMore( ',' + operation_parameter ) ) +\
-            ')' +\
-            Literal( ';' )
+operation = Optional(Keyword("oneway") | Keyword("static")) + \
+            (Keyword("void") | type_name) + \
+            identifier + tag + \
+            '(' + \
+                Optional(operation_parameter + ZeroOrMore(',' + operation_parameter)) + \
+            ')' + \
+            Literal(';')
 
-interface = Optional( Keyword( "local" ) ) + Keyword( "interface" ) +\
-            identifier + tag + parent_type_names +\
-            '{' +\
-                ZeroOrMore( constant | exception | operation ) +\
-            '}' + Optional( ';' )
+interface = Optional(Keyword("local")) + Keyword("interface") + \
+            identifier + tag + parent_type_names + \
+            '{' + \
+                ZeroOrMore(constant | exception | operation) + \
+            '}' + Optional(';')
 
 module = Forward()
 module << (
-              Optional( Keyword( "local" ) ) +\
-              Keyword( "module" ) + identifier + tag +\
-              '{' +\
-                  ZeroOrMore( constant | enum | interface | module | struct | typedef ) +\
-              '}' + Optional( ';' )
+              Optional(Keyword("local")) + \
+              Keyword("module") + identifier + tag + \
+              '{' + \
+                  ZeroOrMore(constant | enum | interface | module | struct | typedef) + \
+              '}' + Optional(';')
           )
 
-include_file_path = Word( alphanums+"_-./" )
-include = Keyword( "#include" ) +\
+include_file_path = Word(alphanums + "_-./")
+include = Keyword("#include") + \
               (
-                  Group( '<' + include_file_path + '>' )
+                  Group('<' + include_file_path + '>')
                   |
-                  Group( '"' + include_file_path + '"' )
+                  Group('"' + include_file_path + '"')
               )
 
-grammar = ZeroOrMore( include ) + OneOrMore( module )
-grammar.ignore( "//" + restOfLine )
-grammar.ignore( cStyleComment )
+grammar = ZeroOrMore(include) + OneOrMore(module)
+grammar.ignore("//" + restOfLine)
+grammar.ignore(cStyleComment)

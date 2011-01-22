@@ -33,8 +33,8 @@ from os.path import exists
 
 from yutil import indent, lpad, posixpath, posixpaths, quotestrlist, rpad
 
-from yuild.constant import C_CXX_SOURCE_FILE_FNMATCH_PATTERNS,\
-                           INDENT_SPACES,\
+from yuild.constant import C_CXX_SOURCE_FILE_FNMATCH_PATTERNS, \
+                           INDENT_SPACES, \
                            SYS_PLATFORM_CHECKS
 from yuild.project import Project
 
@@ -47,31 +47,31 @@ INDENT_SPACES = INDENT_SPACES["py"]
 
 
 # Helper functions
-def _if_check( check ):
-    if isinstance( check, basestring ):
-        if check.endswith( ".h" ):
+def _if_check(check):
+    if isinstance(check, basestring):
+        if check.endswith(".h"):
             return 'build_conf.CheckHeader( "%(check)s" )' % locals()
         else:
             return 'build_conf.CheckLib( "%(check)s" )' % locals()
-    elif isinstance( check, tuple ) or isinstance( check, list ):
-        if len( check ) == 0:
+    elif isinstance(check, tuple) or isinstance(check, list):
+        if len(check) == 0:
             return ""
-        elif len( check ) == 1:
-            return _if_check( check[0] )
-        elif len( check ) == 2:
-            if check[0].endswith( ".h" ):
+        elif len(check) == 1:
+            return _if_check(check[0])
+        elif len(check) == 2:
+            if check[0].endswith(".h"):
                 language = "C"
                 header = check[0]
                 library = check[1]
-            elif check[0].endswith( ".hpp" ):
+            elif check[0].endswith(".hpp"):
                 language = "C++"
                 header = check[0]
                 library = check[1]
-            elif check[1].endswith( ".h" ):
+            elif check[1].endswith(".h"):
                 language = "C"
                 header = check[1]
                 library = check[0]
-            elif check[1].endswith( ".hpp" ):
+            elif check[1].endswith(".hpp"):
                 language = "C++"
                 header = check[1]
                 library = check[0]
@@ -80,51 +80,51 @@ def _if_check( check ):
 
             return 'build_conf.CheckLibWithHeader( "%(library)s", "%(header)s", "%(language)s" )' % locals()
         else:
-            return " and ".join( [_if_check( subcheck ) for subcheck in check] )
+            return " and ".join([_if_check(subcheck) for subcheck in check])
 
 
 class SConscript(Project):
-    def __repr__( self ):
+    def __repr__(self):
         INDENT_SPACES = globals()["INDENT_SPACES"]
 
         project_references = []
-        for project_reference in self.get_project_references().get( '*', default=[] ):
-            SConscript = posixpath( project_reference + ".SConscript" )
-            project_references.append( 'SConscript( "%(SConscript)s" )' % locals() )
-        project_references = lpad( "\n\n\n", '\n'.join( project_references ) )
+        for project_reference in self.get_project_references().get('*', default=[]):
+            SConscript = posixpath(project_reference + ".SConscript")
+            project_references.append('SConscript( "%(SConscript)s" )' % locals())
+        project_references = lpad("\n\n\n", '\n'.join(project_references))
 
         populate_build_environment = []
 
         for var, platform_dict in \
             (
-                ( "CXXDEFINES", self.get_cxxdefines() ),
-                ( "CXXFLAGS", self.get_cxxflags() ),
-                ( "CXXPATH", self.get_cxxpath() ),
-                ( "LIBPATH", self.get_libpath() ),
-                ( "LIBS", self.get_libs() ),
-                ( "LIBFLAGS", self.get_ldflags() ),
+                ("CXXDEFINES", self.get_cxxdefines()),
+                ("CXXFLAGS", self.get_cxxflags()),
+                ("CXXPATH", self.get_cxxpath()),
+                ("LIBPATH", self.get_libpath()),
+                ("LIBS", self.get_libs()),
+                ("LIBFLAGS", self.get_ldflags()),
             ):
                 platform_values = []
                 have_sys_platform_check = False
 
                 for platform, values in platform_dict.iteritems():
-                    if len( values ) > 0:
-                        if var.endswith( "PATH" ):
-                            values = posixpaths( values )
-                        values = quotestrlist( values )
-                        values = ", ".join( values )
+                    if len(values) > 0:
+                        if var.endswith("PATH"):
+                            values = posixpaths(values)
+                        values = quotestrlist(values)
+                        values = ", ".join(values)
                         if var == "LIBS":
                             append_method = "PrependUnique"
                         else:
                             append_method = "AppendUnique"
-                        append_values =\
+                        append_values = \
                             'build_env.%(append_method)s( %(var)s=[%(values)s] )' % locals()
                         if platform == "*":
-                            platform_values.append( append_values )
+                            platform_values.append(append_values)
                         else:
                             sys_platform_check \
-                                = SYS_PLATFORM_CHECKS[platform].\
-                                    replace( "sys.platform", "platform" )
+ = SYS_PLATFORM_CHECKS[platform].\
+                                    replace("sys.platform", "platform")
 
                             if have_sys_platform_check:
                                 sys_platform_check = "elif " + sys_platform_check + ':'
@@ -133,37 +133,37 @@ class SConscript(Project):
                                 have_sys_platform_check = True
 
                             platform_values.append(
-                                sys_platform_check + '\n' +\
+                                sys_platform_check + '\n' + \
                                 INDENT_SPACES + append_values
                             )
 
-                if len( platform_values ) > 0:
-                    platform_values = '\n'.join( platform_values )
-                    populate_build_environment.append( """\
+                if len(platform_values) > 0:
+                    platform_values = '\n'.join(platform_values)
+                    populate_build_environment.append("""\
 # %(var)s
 %(platform_values)s
-""" % locals() )
+""" % locals())
 
-        populate_build_environment =\
-            lpad( "\n\n\n", '\n'.join( populate_build_environment ) )
+        populate_build_environment = \
+            lpad("\n\n\n", '\n'.join(populate_build_environment))
 
-        sys_platform_check_win32 =\
-            SYS_PLATFORM_CHECKS["win32"].replace( "sys.platform", "platform" )
-        sys_platform_check_linux =\
-            SYS_PLATFORM_CHECKS["linux"].replace( "sys.platform", "platform" )
-        sys_platform_check_sunos =\
-            SYS_PLATFORM_CHECKS["sunos"].replace( "sys.platform", "platform" )
+        sys_platform_check_win32 = \
+            SYS_PLATFORM_CHECKS["win32"].replace("sys.platform", "platform")
+        sys_platform_check_linux = \
+            SYS_PLATFORM_CHECKS["linux"].replace("sys.platform", "platform")
+        sys_platform_check_sunos = \
+            SYS_PLATFORM_CHECKS["sunos"].replace("sys.platform", "platform")
 
         autoconf = []
         for platform, cppdefine_check in self.get_autoconf().iteritems():
             autoconf_block = []
 
-            sys_platform_check =\
-                SYS_PLATFORM_CHECKS[platform].replace( "sys.platform", "platform" )
-            autoconf_block.append( "if " + sys_platform_check + ':' )
+            sys_platform_check = \
+                SYS_PLATFORM_CHECKS[platform].replace("sys.platform", "platform")
+            autoconf_block.append("if " + sys_platform_check + ':')
 
             for cppdefine, check in cppdefine_check.iteritems():
-                if_check = _if_check( check )
+                if_check = _if_check(check)
                 autoconf_block.append(
                     indent(
                         INDENT_SPACES,
@@ -174,9 +174,9 @@ if not build_env.has_key( "CXXDEFINES" ) or not "%(cppdefine)s" in build_env["CX
 """ % locals()
                     )
                 )
-            autoconf.append( '\n'.join( autoconf_block ) )
-        if len( autoconf ) > 0:
-            autoconf = '\n'.join( autoconf )
+            autoconf.append('\n'.join(autoconf_block))
+        if len(autoconf) > 0:
+            autoconf = '\n'.join(autoconf)
             autoconf = """
 
 # autoconf
@@ -201,20 +201,20 @@ except:
             elif type == "exe" or type == "bin" or type == "gui":
                 build_method = "Program"
 
-        output_file_path = posixpath( self.get_output_file_path()['*'] )
+        output_file_path = posixpath(self.get_output_file_path()['*'])
 
         build_calls = []
         source_files = self.get_source_files()
-        source_files = source_files.exclude( self.get_exclude_files() )
-        source_files = source_files.filter( C_CXX_SOURCE_FILE_FNMATCH_PATTERNS )
+        source_files = source_files.exclude(self.get_exclude_files())
+        source_files = source_files.filter(C_CXX_SOURCE_FILE_FNMATCH_PATTERNS)
 
         have_sys_platform_check = False
         for platform, source_files in\
-            source_files.as_platform_dict().iteritems( combine_platforms=True ):
-            assert len( source_files ) > 0
-            source_files = quotestrlist( posixpaths( source_files ) )
-            source_files = ",\n" .join( source_files ) + ','
-            source_files = indent( INDENT_SPACES * 2, source_files  )
+            source_files.as_platform_dict().iteritems(combine_platforms=True):
+            assert len(source_files) > 0
+            source_files = quotestrlist(posixpaths(source_files))
+            source_files = ",\n" .join(source_files) + ','
+            source_files = indent(INDENT_SPACES * 2, source_files)
 
             build_call = """\
 build_env.%(build_method)s(
@@ -225,16 +225,16 @@ build_env.%(build_method)s(
 )""" % locals()
             if platform == "*":
                 if have_sys_platform_check:
-                    build_call = indent( INDENT_SPACES, build_call )
+                    build_call = indent(INDENT_SPACES, build_call)
                     build_call = """\
 else:
 %(build_call)s
 """ % locals()
             else:
-                sys_platform_check =\
+                sys_platform_check = \
                     SYS_PLATFORM_CHECKS[platform].\
-                        replace( "sys.platform", "platform" )
-                build_call = indent( INDENT_SPACES, build_call )
+                        replace("sys.platform", "platform")
+                build_call = indent(INDENT_SPACES, build_call)
                 build_call = """\
 if %(sys_platform_check)s:
 %(build_call)s
@@ -244,9 +244,9 @@ if %(sys_platform_check)s:
                 else:
                     have_sys_platform_check = True
 
-            build_calls.append( build_call )
+            build_calls.append(build_call)
 
-        build_call = "\n\n".join( build_calls )
+        build_call = "\n\n".join(build_calls)
 
         return """\
 import os

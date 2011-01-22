@@ -36,42 +36,42 @@ from source_files import SourceFiles
 
 
 class SourceFilesTest(TestCase):
-    def _get_source_files( self ):
-        return SourceFiles( "test1.cpp", "test2.cpp" )
+    def _get_source_files(self):
+        return SourceFiles("test1.cpp", "test2.cpp")
 
-    def runTest( self ):
+    def runTest(self):
         source_files = self._get_source_files()
-        assert len( source_files ) == 1, len( source_files )
+        assert len(source_files) == 1, len(source_files)
         assert source_files.keys()[0] == '*', source_files.keys()
-        assert isinstance( source_files.values()[0], list ), source_files.values()
-        assert len( source_files.values()[0] ) == 2, source_files.values()
+        assert isinstance(source_files.values()[0], list), source_files.values()
+        assert len(source_files.values()[0]) == 2, source_files.values()
 
-    def setUp( self ):
+    def setUp(self):
         self.tearDown()
         for file_paths in self._get_source_files().itervalues():
             for file_path in file_paths:
-                test_file = open( file_path, "w+" )
-                i = randint( 0, 11151980 )
-                test_file.write( """\
+                test_file = open(file_path, "w+")
+                i = randint(0, 11151980)
+                test_file.write("""\
 #include <somefile%(i)u.hpp>
 #include "otherfile%(i)u.hpp>"
 
 extern int errno;
-""" % locals() )
+""" % locals())
             test_file.close()
 
-    def tearDown( self ):
+    def tearDown(self):
         for file_paths in self._get_source_files().itervalues():
             for file_path in file_paths:
-                try: unlink( file_path )
+                try: unlink(file_path)
                 except: pass
 
 
 class SourceFilesReprTest(SourceFilesTest):
-    def runTest( self ):
-        repr_ = repr( self._get_source_files() )
+    def runTest(self):
+        repr_ = repr(self._get_source_files())
 
 
 suite = TestSuite()
-suite.addTest( SourceFilesTest() )
-suite.addTest( SourceFilesReprTest() )
+suite.addTest(SourceFilesTest())
+suite.addTest(SourceFilesReprTest())

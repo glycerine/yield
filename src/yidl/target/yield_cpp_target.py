@@ -43,15 +43,15 @@ __all__ = \
 
 
 class YieldCPPConstruct:
-    def get_parent_name_macro( self ):
-        return "_".join( self.get_name()[:-1] ).upper()
+    def get_parent_name_macro(self):
+        return "_".join(self.get_name()[:-1]).upper()
 
 
 class YieldCPPType(YieldCPPConstruct): pass
 
 
 class YieldCPPCompoundType(YieldCPPType):
-    def get_includes( self ):
+    def get_includes(self):
         return [
                    "yield/marshal/marshaller.hpp",
                    "yield/marshal/string_literal.hpp",
@@ -60,90 +60,90 @@ class YieldCPPCompoundType(YieldCPPType):
 
 
 class YieldCPPBooleanType(CPPBooleanType, YieldCPPType):
-    def get_boxed_name( self ):
+    def get_boxed_name(self):
         return "::yield::marshal::Boolean"
 
-    def get_include( self ):
+    def get_include(self):
         return ["yield/marshal/boolean.hpp"]
 
-    def get_unmarshal_call( self, key, value ):
+    def get_unmarshal_call(self, key, value):
         return "%(value)s = unmarshaller.read_bool( %(key)s )" % locals()
 
 
 class YieldCPPBufferType(CPPBufferType, YieldCPPType):
-    def get_cpp_name( self ):
+    def get_cpp_name(self):
         return "::yield::marshal::Buffer*"
 
-    def get_destructor_statement( self, identifier ):
+    def get_destructor_statement(self, identifier):
         return "::yield::marshal::Buffer::dec_ref( %(identifier)s );" % locals()
 
-    def get_default_value( self ):
+    def get_default_value(self):
         return "NULL"
 
-    def get_dummy_value( self ):
+    def get_dummy_value(self):
         return "NULL"
 
-    def get_getter( self, identifier ):
+    def get_getter(self, identifier):
         return "::yield::marshal::Buffer* get_%(identifier)s() const { return %(identifier)s; }" % locals()
 
-    def get_in_declaration( self, identifier, default_value=None ):
+    def get_in_declaration(self, identifier, default_value=None):
         assert default_value is None
         return "::yield::marshal::Buffer* %(identifier)s" % locals()
 
-    def get_out_declaration( self, identifier ):
+    def get_out_declaration(self, identifier):
         return "::yield::marshal::Buffer* %(identifier)s" % locals()
 
-    def get_initializer( self, identifier ):
+    def get_initializer(self, identifier):
         return "::yield::marshal::Object::inc_ref( %(identifier)s )" % locals()
 
-    def get_marshal_call( self, key, value ):
+    def get_marshal_call(self, key, value):
         return """if ( %(value)s != NULL ) marshaller.write( %(key)s, *%(value)s )""" % locals()
 
-    def get_return_name( self ):
+    def get_return_name(self):
         return "::yield::marshal::Buffer*"
 
-    def get_setter( self, identifier ):
+    def get_setter(self, identifier):
         return "void set_%(identifier)s( ::yield::marshal::Buffer* %(identifier)s ) { ::yield::marshal::Buffer::dec_ref( this->%(identifier)s ); this->%(identifier)s = ::yield::marshal::Object::inc_ref( %(identifier)s ); }" % locals()
 
-    def get_static_constant_name( self ):
+    def get_static_constant_name(self):
         raise NotImplementedError
 
-    def get_unmarshal_call( self, key, value ):
+    def get_unmarshal_call(self, key, value):
         return """if ( %(value)s != NULL ) unmarshaller.read( %(key)s, *%(value)s ); else %(value)s = unmarshaller.read_buffer( %(key)s )""" % locals()
 
 
 class YieldCPPEnumeratedType(CPPEnumeratedType, YieldCPPType):
-    def get_marshal_call( self, key, value ):
+    def get_marshal_call(self, key, value):
         return """marshaller.write( %(key)s, static_cast<int32_t>( %(value)s ) )""" % locals()
 
-    def get_unmarshal_call( self, key, value ):
+    def get_unmarshal_call(self, key, value):
         name = self.get_cpp_name()
         return """%(value)s = static_cast<%(name)s>( unmarshaller.read_int32( %(key)s ) )""" % locals()
 
 
 class YieldCPPExceptionType(CPPExceptionType, YieldCPPType):
     def get_createException_type_id_case(self):
-        name = str( self.get_name() )
-        type_id = int( self.get_name() )
+        name = str(self.get_name())
+        type_id = int(self.get_name())
         return "case %(type_id)s: return new %(name)s;" % locals()
 
-    def get_createException_type_name_strncmp( self ):
-        name = str( self.get_name() )
-        name_len = len( name )
+    def get_createException_type_name_strncmp(self):
+        name = str(self.get_name())
+        name_len = len(name)
         return "if ( type_name_len == %(name_len)u && strncmp( type_name, \"%(name)s\", %(name_len)u ) == 0 ) return new %(name)s;" % locals()
 
-    def __repr__( self ):
-        name = str( self.get_name() )
+    def __repr__(self):
+        name = str(self.get_name())
         parent_name_macro = self.get_parent_name_macro()
-        struct_type =\
+        struct_type = \
             CPPStructType(
                 self.get_parent_construct(),
                 self.get_name(),
-                ( "%(parent_name_macro)s_EXCEPTION_PARENT_CLASS" % locals(), ),
+                ("%(parent_name_macro)s_EXCEPTION_PARENT_CLASS" % locals(),),
                 self.get_members()
             )
 
-        if len( self.get_members() ) > 0:
+        if len(self.get_members()) > 0:
             accessors = []
             default_initializers = []
             member_declarations = []
@@ -151,8 +151,8 @@ class YieldCPPExceptionType(CPPExceptionType, YieldCPPType):
 
             have_error_code = have_error_message = False
             for member in self.get_members():
-                identifier = str( member.get_identifier() )
-                identifier_int = int( member.get_identifier() )
+                identifier = str(member.get_identifier())
+                identifier_int = int(member.get_identifier())
                 if identifier == "error_code" or identifier == "error_message":
                     if identifier == "error_code":
                         assert member.get_type().get_name() == "uint32_t"
@@ -168,103 +168,103 @@ class YieldCPPExceptionType(CPPExceptionType, YieldCPPType):
                             identifier
                         ) + ';'
                     )
-                    unmarshal_call.append( "set_%(identifier)s( %(identifier)s )" % member )
-                    unmarshal_calls.append( " ".join( unmarshal_call ) )
+                    unmarshal_call.append("set_%(identifier)s( %(identifier)s )" % member)
+                    unmarshal_calls.append(" ".join(unmarshal_call))
                 else:
-                    accessors.append( member.get_type().get_getter( identifier ) )
-                    accessors.append( member.get_type().get_setter( identifier ) )
+                    accessors.append(member.get_type().get_getter(identifier))
+                    accessors.append(member.get_type().get_setter(identifier))
 
                     member_declarations.append(
-                        member.get_type().get_cpp_name() +\
-                        " " +\
-                        identifier +\
+                        member.get_type().get_cpp_name() + \
+                        " " + \
+                        identifier + \
                         ";"
                     )
 
                     if member.get_default_value() is not None:
                         default_initializers.append(
-                            identifier +\
-                            "( " +\
-                            member.get_default_value() +\
+                            identifier + \
+                            "( " + \
+                            member.get_default_value() + \
                             " )"
                         )
                     elif member.get_type().get_default_value() is not None:
                         default_initializers.append(
-                            identifier +\
-                            "( " +\
-                            member.get_type().get_default_value() +\
+                            identifier + \
+                            "( " + \
+                            member.get_type().get_default_value() + \
                             " )"
                         )
 
                     unmarshal_calls.append(
                         member.get_type().get_unmarshal_call(
                             '::yield::marshal::StringLiteral( \"%(identifier)s\" )' % member,
-                            identifier )
+                            identifier)
                     )
 
-            accessors = "\n".join( accessors )
+            accessors = "\n".join(accessors)
             constructors = []
-            default_initializers = ", ".join( default_initializers )
+            default_initializers = ", ".join(default_initializers)
 
             default_constructor = name + "()"
-            if len( default_initializers ) > 0:
+            if len(default_initializers) > 0:
                 default_constructor += " : " + default_initializers
             default_constructor += " { }"
-            constructors.append( default_constructor )
+            constructors.append(default_constructor)
 
-            default_initializers = lpad( ", ", default_initializers )
+            default_initializers = lpad(", ", default_initializers)
 
             if have_error_code:
-                constructors.append( "%(name)s( uint32_t error_code ) : %(parent_name_macro)s_EXCEPTION_PARENT_CLASS( error_code )%(default_initializers)s { }" % locals() )
+                constructors.append("%(name)s( uint32_t error_code ) : %(parent_name_macro)s_EXCEPTION_PARENT_CLASS( error_code )%(default_initializers)s { }" % locals())
 
             if have_error_message:
-                constructors.append( "%(name)s( const char* error_message ) : %(parent_name_macro)s_EXCEPTION_PARENT_CLASS( error_message )%(default_initializers)s { }" % locals() )
-                constructors.append( "%(name)s( const string& error_message ) : %(parent_name_macro)s_EXCEPTION_PARENT_CLASS( error_message )%(default_initializers)s { }" % locals() )
+                constructors.append("%(name)s( const char* error_message ) : %(parent_name_macro)s_EXCEPTION_PARENT_CLASS( error_message )%(default_initializers)s { }" % locals())
+                constructors.append("%(name)s( const string& error_message ) : %(parent_name_macro)s_EXCEPTION_PARENT_CLASS( error_message )%(default_initializers)s { }" % locals())
 
             if have_error_code and have_error_message:
-                constructors.append( "%(name)s( uint32_t error_code, const char* error_message ) : %(parent_name_macro)s_EXCEPTION_PARENT_CLASS( error_code, error_message )%(default_initializers)s { }" % locals() )
-                constructors.append( "%(name)s( uint32_t error_code, const string& error_message ) : %(parent_name_macro)s_EXCEPTION_PARENT_CLASS( error_code, error_message )%(default_initializers)s { }" % locals() )
+                constructors.append("%(name)s( uint32_t error_code, const char* error_message ) : %(parent_name_macro)s_EXCEPTION_PARENT_CLASS( error_code, error_message )%(default_initializers)s { }" % locals())
+                constructors.append("%(name)s( uint32_t error_code, const string& error_message ) : %(parent_name_macro)s_EXCEPTION_PARENT_CLASS( error_code, error_message )%(default_initializers)s { }" % locals())
 
-            if len( member_declarations ) > 0:
-                member_declarations = "\n\nprotected:\n  " + "\n  ".join( member_declarations )
+            if len(member_declarations) > 0:
+                member_declarations = "\n\nprotected:\n  " + "\n  ".join(member_declarations)
 
                 # Full constructor
-                in_declarations =\
+                in_declarations = \
                     ", ".join(
-                        [member.get_type().get_in_declaration( identifier, member.get_default_value() )
+                        [member.get_type().get_in_declaration(identifier, member.get_default_value())
                         for member in self.get_members()]
                     )
 
                 initializers = []
                 parent_initializers = []
                 for member in self.get_members():
-                    identifier = str( member.get_identifier() )
+                    identifier = str(member.get_identifier())
                     if identifier == "error_code" or identifier == "error_message":
-                        parent_initializers.append( identifier )
+                        parent_initializers.append(identifier)
                     else:
                         initializers.append(
-                            identifier +\
-                            "( " +\
-                            member.get_type().get_initializer( identifier ) +\
+                            identifier + \
+                            "( " + \
+                            member.get_type().get_initializer(identifier) + \
                             " )"
                         )
 
-                if len( parent_initializers ) > 0:
+                if len(parent_initializers) > 0:
                     initializers.insert(
                         0,
-                        "%(parent_name_macro)s_EXCEPTION_PARENT_CLASS( " % locals() +\
-                        ", ".join( parent_initializers ) +\
+                        "%(parent_name_macro)s_EXCEPTION_PARENT_CLASS( " % locals() + \
+                        ", ".join(parent_initializers) + \
                         " )"
                     )
 
-                initializers = ", ".join( initializers )
-                constructors.append( "%(name)s( %(in_declarations)s ) : %(initializers)s { }" % locals() )
+                initializers = ", ".join(initializers)
+                constructors.append("%(name)s( %(in_declarations)s ) : %(initializers)s { }" % locals())
             else:
                 member_declarations = ""
 
-            constructors = "\n".join( constructors )
+            constructors = "\n".join(constructors)
 
-            unmarshal_calls = ";\n  ".join( unmarshal_calls )
+            unmarshal_calls = ";\n  ".join(unmarshal_calls)
             unmarshal_method = """\
 void unmarshal( ::yield::marshal::Unmarshaller& unmarshaller )
 {
@@ -277,19 +277,19 @@ void unmarshal( ::yield::marshal::Unmarshaller& unmarshaller )
             member_declarations = struct_type.get_member_declarations()
             unmarshal_method = struct_type.get_unmarshal_method()
 
-        accessors = lpad( "\n\n", indent( INDENT_SPACES, accessors ) )
-        constructors = indent( INDENT_SPACES, constructors )
+        accessors = lpad("\n\n", indent(INDENT_SPACES, accessors))
+        constructors = indent(INDENT_SPACES, constructors)
         destructor_statements = struct_type.get_destructor_statements()
-        marshal_method = indent( INDENT_SPACES, struct_type.get_marshal_method() )
-        member_getter_calls =\
+        marshal_method = indent(INDENT_SPACES, struct_type.get_marshal_method())
+        member_getter_calls = \
             pad(
                 " ",
-                ", ".join( ["get_" + member.get_identifier() + "()"
-                            for member in self.get_members()] ),
+                ", ".join(["get_" + member.get_identifier() + "()"
+                            for member in self.get_members()]),
                 " "
             )
-        type_id = int( self.get_name() )
-        unmarshal_method = indent( INDENT_SPACES, unmarshal_method )
+        type_id = int(self.get_name())
+        unmarshal_method = indent(INDENT_SPACES, unmarshal_method)
 
         return """\
 class %(name)s : public %(parent_name_macro)s_EXCEPTION_PARENT_CLASS
@@ -325,20 +325,20 @@ public:
 
 
 class YieldCPPInterface(CPPInterface, YieldCPPConstruct):
-    def _get_messages( self ):
-        name = str( self.get_name() )
-        if len( self.get_operations() ) > 0 or len( self.get_exception_types() ) > 0:
+    def _get_messages(self):
+        name = str(self.get_name())
+        if len(self.get_operations()) > 0 or len(self.get_exception_types()) > 0:
             messages = []
 
             for operation in self.get_operations():
-                messages.append( repr( operation.get_request_type() ) )
+                messages.append(repr(operation.get_request_type()))
                 if not operation.is_oneway():
-                    messages.append( repr( operation.get_response_type() ) )
+                    messages.append(repr(operation.get_response_type()))
 
             for exception_type in self.get_exception_types():
-                messages.append( repr( exception_type ) )
+                messages.append(repr(exception_type))
 
-            messages = indent( INDENT_SPACES, "\n\n".join( messages ) )
+            messages = indent(INDENT_SPACES, "\n\n".join(messages))
 
             return """\
 class %(name)sMessages
@@ -351,10 +351,10 @@ public:
         else:
             return "class %(name)sMessages { };" % locals()
 
-    def _get_message_factory( self ):
-        if len( self.get_exception_types() ) > 0:
-            createException_type_id_cases = indent( INDENT_SPACES * 2, "\n".join( [exception_type.get_createException_type_id_case() for exception_type in self.get_exception_types()] ) )
-            createException_type_name_strncmps = indent( INDENT_SPACES, "\nelse ".join( [exception_type.get_createException_type_name_strncmp() for exception_type in self.get_exception_types()] ) )
+    def _get_message_factory(self):
+        if len(self.get_exception_types()) > 0:
+            createException_type_id_cases = indent(INDENT_SPACES * 2, "\n".join([exception_type.get_createException_type_id_case() for exception_type in self.get_exception_types()]))
+            createException_type_name_strncmps = indent(INDENT_SPACES, "\nelse ".join([exception_type.get_createException_type_name_strncmp() for exception_type in self.get_exception_types()]))
             createException = """\
 virtual ::yield::Exception* createException( uint32_t type_id )
 {
@@ -379,9 +379,9 @@ createException
         else:
             createException = ""
 
-        if len( self.get_operations() ) > 0:
-            createRequest_type_id_cases = indent( INDENT_SPACES * 2, "\n".join( [operation.get_createRequest_type_id_case() for operation in self.get_operations()] ) )
-            createRequest_type_name_strncmps = indent( INDENT_SPACES, "\nelse ".join( [operation.get_createRequest_type_name_strncmp() for operation in self.get_operations()] ) )
+        if len(self.get_operations()) > 0:
+            createRequest_type_id_cases = indent(INDENT_SPACES * 2, "\n".join([operation.get_createRequest_type_id_case() for operation in self.get_operations()]))
+            createRequest_type_name_strncmps = indent(INDENT_SPACES, "\nelse ".join([operation.get_createRequest_type_name_strncmp() for operation in self.get_operations()]))
             createRequest = """\
 virtual ::yield::concurrency::Request* createRequest( uint32_t type_id )
 {
@@ -403,8 +403,8 @@ createRequest
   else return NULL;
 }
 """ % locals()
-            createResponse_type_id_cases = indent( INDENT_SPACES * 2, "\n".join( [operation.get_createResponse_type_id_case() for operation in self.get_operations()] ) )
-            createResponse_type_name_strncmps = indent( INDENT_SPACES, "\nelse ".join( [operation.get_createResponse_type_name_strncmp() for operation in self.get_operations()] ) )
+            createResponse_type_id_cases = indent(INDENT_SPACES * 2, "\n".join([operation.get_createResponse_type_id_case() for operation in self.get_operations()]))
+            createResponse_type_name_strncmps = indent(INDENT_SPACES, "\nelse ".join([operation.get_createResponse_type_name_strncmp() for operation in self.get_operations()]))
             createResponse = """\
 virtual ::yield::concurrency::Response* createResponse( uint32_t type_id )
 {
@@ -429,13 +429,13 @@ createResponse
         else:
             createRequest = createResponse = ""
 
-        name = str( self.get_name() )
-        createException = pad( "\n", indent( INDENT_SPACES, createException ), "\n" )
-        createRequest = pad( "\n", indent( INDENT_SPACES, createRequest ), "\n" )
-        createResponse = pad( "\n", indent( INDENT_SPACES, createResponse ), "\n" )
+        name = str(self.get_name())
+        createException = pad("\n", indent(INDENT_SPACES, createException), "\n")
+        createRequest = pad("\n", indent(INDENT_SPACES, createRequest), "\n")
+        createResponse = pad("\n", indent(INDENT_SPACES, createResponse), "\n")
 
         marshallable_object_factory = self.get_parent_target().get_marshallable_object_factory()
-        marshallable_object_factory = indent( INDENT_SPACES, marshallable_object_factory )
+        marshallable_object_factory = indent(INDENT_SPACES, marshallable_object_factory)
 
         return """\
 class %(name)sMessageFactory
@@ -450,10 +450,10 @@ public:
 };
 """ % locals()
 
-    def _get_request_handler( self ):
-        name = str( self.get_name() )
+    def _get_request_handler(self):
+        name = str(self.get_name())
 
-        request_handler_cases = indent( INDENT_SPACES * 3, "\n".join( [operation.get_request_handler_case() for operation in self.get_operations()] ) )
+        request_handler_cases = indent(INDENT_SPACES * 3, "\n".join([operation.get_request_handler_case() for operation in self.get_operations()]))
         handle = """\
   virtual void handle( ::yield::concurrency::Request& request )
   {
@@ -465,10 +465,10 @@ public:
   }
 """ % locals()
 
-        request_handler_defs = indent( INDENT_SPACES, "\n".join( [operation.get_request_handler_def() for operation in self.get_operations()] ) )
+        request_handler_defs = indent(INDENT_SPACES, "\n".join([operation.get_request_handler_def() for operation in self.get_operations()]))
 
-        name_upper = '_'.join( self.get_name() ).upper()
-        defines = lpad( """\n\n#define %(name_upper)s_REQUEST_HANDLER_PROTOTYPES \\\n""" % locals(), "\\\n".join( [operation.get_request_handler_prototype() + ";" for operation in self.get_operations()] ) )
+        name_upper = '_'.join(self.get_name()).upper()
+        defines = lpad("""\n\n#define %(name_upper)s_REQUEST_HANDLER_PROTOTYPES \\\n""" % locals(), "\\\n".join([operation.get_request_handler_prototype() + ";" for operation in self.get_operations()]))
 
         return """\
 class %(name)sRequestHandler
@@ -501,9 +501,9 @@ private:
 };%(defines)s
 """ % locals()
 
-    def _get_proxy( self ):
-        name = str( self.get_name() )
-        request_send_defs = indent( INDENT_SPACES, "\n".join( [operation.get_request_proxy_definition() for operation in self.get_operations()] ) )
+    def _get_proxy(self):
+        name = str(self.get_name())
+        request_send_defs = indent(INDENT_SPACES, "\n".join([operation.get_request_proxy_definition() for operation in self.get_operations()]))
 
         return """\
 class %(name)sProxy
@@ -543,58 +543,58 @@ private:
 };
 """ % locals()
 
-    def get_includes( self ):
+    def get_includes(self):
         if self.is_local():
-            return CPPInterface.get_includes( self )
+            return CPPInterface.get_includes(self)
         else:
-            return CPPInterface.get_includes( self ) +\
-                   [CPPInclude( self.get_parent_target(), "yield/concurrency.h" )]
+            return CPPInterface.get_includes(self) + \
+                   [CPPInclude(self.get_parent_target(), "yield/concurrency.h")]
 
-    def get_parent_class_macros( self ):
-        name_upper = '_'.join( self.get_name() ).upper()
-        parent_class_name_uppers = ['_'.join( self.get_name()[:name_part_i] ).upper() for name_part_i in xrange( 1, len( self.get_name() ) )]
+    def get_parent_class_macros(self):
+        name_upper = '_'.join(self.get_name()).upper()
+        parent_class_name_uppers = ['_'.join(self.get_name()[:name_part_i]).upper() for name_part_i in xrange(1, len(self.get_name()))]
         parent_class_name_uppers.reverse()
         all_parent_class_macros = []
         for define_class_name, default_parent_class_name in \
         (
-            ( "EXCEPTION", "::yield::Exception" ),
-            ( "REQUEST", "::yield::concurrency::Request" ),
-            ( "RESPONSE", "::yield::concurrency::Response" ),
+            ("EXCEPTION", "::yield::Exception"),
+            ("REQUEST", "::yield::concurrency::Request"),
+            ("RESPONSE", "::yield::concurrency::Response"),
         ):
-            all_parent_class_macros.append( "#ifndef %(name_upper)s_%(define_class_name)s_PARENT_CLASS\n" % locals() )
+            all_parent_class_macros.append("#ifndef %(name_upper)s_%(define_class_name)s_PARENT_CLASS\n" % locals())
             all_parent_class_macros.append(
-                "#" +\
+                "#" + \
                 "#el".join(
                     ["if defined( %(parent_class_name_upper)s_%(define_class_name)s_PARENT_CLASS )\n" % locals() + \
                      "#define %(name_upper)s_%(define_class_name)s_PARENT_CLASS %(parent_class_name_upper)s_%(define_class_name)s_PARENT_CLASS\n" % locals()
                      for parent_class_name_upper in parent_class_name_uppers]
                 )
             )
-            all_parent_class_macros.append( "#else\n" )
-            all_parent_class_macros.append( "#define %(name_upper)s_%(define_class_name)s_PARENT_CLASS %(default_parent_class_name)s\n" % locals() )
-            all_parent_class_macros.append( "#endif\n#endif\n" )
-        return "".join( all_parent_class_macros )
+            all_parent_class_macros.append("#else\n")
+            all_parent_class_macros.append("#define %(name_upper)s_%(define_class_name)s_PARENT_CLASS %(default_parent_class_name)s\n" % locals())
+            all_parent_class_macros.append("#endif\n#endif\n")
+        return "".join(all_parent_class_macros)
 
-    def __repr__( self ):
-        have_operations = len( self.get_operations() ) > 0
-        have_exception_types = len( self.get_exception_types() ) > 0
+    def __repr__(self):
+        have_operations = len(self.get_operations()) > 0
+        have_exception_types = len(self.get_exception_types()) > 0
 
-        if self.is_local() or ( not have_operations and not have_exception_types ):
-            return CPPInterface.__repr__( self )
+        if self.is_local() or (not have_operations and not have_exception_types):
+            return CPPInterface.__repr__(self)
         else:
-            yield_cpp_interface = [CPPInterface.__repr__( self )]
-            yield_cpp_interface.append( self.get_parent_class_macros() )
-            yield_cpp_interface.append( self._get_messages() )
-            yield_cpp_interface.append( self._get_message_factory() )
+            yield_cpp_interface = [CPPInterface.__repr__(self)]
+            yield_cpp_interface.append(self.get_parent_class_macros())
+            yield_cpp_interface.append(self._get_messages())
+            yield_cpp_interface.append(self._get_message_factory())
             if have_operations:
-                yield_cpp_interface.append( self._get_request_handler() )
-                yield_cpp_interface.append( self._get_proxy() )
+                yield_cpp_interface.append(self._get_request_handler())
+                yield_cpp_interface.append(self._get_proxy())
 
-            return "\n\n".join( yield_cpp_interface )
+            return "\n\n".join(yield_cpp_interface)
 
 
 class YieldCPPMapType(CPPMapType, YieldCPPCompoundType):
-    def get_base_names( self ):
+    def get_base_names(self):
         key_type_boxed_name = self.get_key_type().get_boxed_name()
         value_type_cpp_name = self.get_value_type().get_cpp_name()
         return [
@@ -602,18 +602,18 @@ class YieldCPPMapType(CPPMapType, YieldCPPCompoundType):
                    "std::map< %(key_type_boxed_name)s, %(value_type_cpp_name)s >" % locals()
                ]
 
-    def get_includes( self ):
-        return CPPMapType.get_includes( self ) +\
-               YieldCPPCompoundType.get_includes( self ) +\
+    def get_includes(self):
+        return CPPMapType.get_includes(self) + \
+               YieldCPPCompoundType.get_includes(self) + \
                ["yield/marshal/map.hpp"]
 
-    def get_other_methods( self ):
+    def get_other_methods(self):
         key_type_boxed_name = self.get_key_type().get_boxed_name()
-        name = str( self.get_name() )
-        type_id = int( self.get_name() )
+        name = str(self.get_name())
+        type_id = int(self.get_name())
         value_type_cpp_name = self.get_value_type().get_cpp_name()
-        value_marshal_call = self.get_value_type().get_marshal_call( "i->first", "i->second" )
-        value_unmarshal_call = self.get_value_type().get_unmarshal_call( "key", "value" )
+        value_marshal_call = self.get_value_type().get_marshal_call("i->first", "i->second")
+        value_unmarshal_call = self.get_value_type().get_unmarshal_call("key", "value")
         return """\
 // yield::marshal::Object
 const static uint32_t TYPE_ID = static_cast<uint32_t>( %(type_id)u );
@@ -642,55 +642,55 @@ void unmarshal( ::yield::marshal::Unmarshaller& unmarshaller )
 size_t get_size() const { return size(); }
 """ % locals()
 
-    def get_unmarshal_call( self, key, value ):
+    def get_unmarshal_call(self, key, value):
         return """unmarshaller.read_map( %(key)s, %(value)s )""" % locals()
 
 
 class YieldCPPNumericType(CPPNumericType, YieldCPPType):
-    def get_boxed_name( self ):
-        if self.get_name() in ( "double", "float" ):
+    def get_boxed_name(self):
+        if self.get_name() in ("double", "float"):
             return "::yield::marshal::Double"
         else:
             return "::yield::marshal::Integer"
 
-    def get_includes( self ):
-        if self.get_name() in ( "double", "float" ):
+    def get_includes(self):
+        if self.get_name() in ("double", "float"):
             return ["yield/marshal/double.hpp"]
         else:
             return ["yield/marshal/integer.hpp"]
 
-    def get_unmarshal_call( self, key, value ):
-        name = str( self.get_name() )
-        if name.endswith( "_t" ): name = name[:-2]
+    def get_unmarshal_call(self, key, value):
+        name = str(self.get_name())
+        if name.endswith("_t"): name = name[:-2]
         return "%(value)s = unmarshaller.read_%(name)s( %(key)s )" % locals()
 
 
 class YieldCPPOperation(CPPOperation, YieldCPPConstruct):
-    def get_createRequest_type_id_case( self ):
-        name = str( self.get_request_type().get_name() )
-        type_id = int( self.get_request_type().get_name() )
+    def get_createRequest_type_id_case(self):
+        name = str(self.get_request_type().get_name())
+        type_id = int(self.get_request_type().get_name())
         return "case %(type_id)u: return new %(name)s;" % locals()
 
-    def get_createRequest_type_name_strncmp( self ):
-        name = str( self.get_request_type().get_name() )
-        name_len = len( name )
+    def get_createRequest_type_name_strncmp(self):
+        name = str(self.get_request_type().get_name())
+        name_len = len(name)
         return "if ( type_name_len == %(name_len)u && strncmp( type_name, \"%(name)s\", %(name_len)u ) == 0 ) return new %(name)s;" % locals()
 
-    def get_createResponse_type_id_case( self ):
-        name = str( self.get_response_type().get_name() )
-        type_id = int( self.get_response_type().get_name() )
+    def get_createResponse_type_id_case(self):
+        name = str(self.get_response_type().get_name())
+        type_id = int(self.get_response_type().get_name())
         return "case %(type_id)u: return new %(name)s;" % locals()
 
-    def get_createResponse_type_name_strncmp( self ):
-        name = str( self.get_response_type().get_name() )
-        name_len = len( name )
+    def get_createResponse_type_name_strncmp(self):
+        name = str(self.get_response_type().get_name())
+        name_len = len(name)
         return "if ( type_name_len == %(name_len)u && strncmp( type_name, \"%(name)s\", %(name_len)u ) == 0 ) return new %(name)s;" % locals()
 
-    def get_request_handler_case( self ):
+    def get_request_handler_case(self):
         return self.get_request_type().get_request_handler_case()
 
-    def get_request_handler_def( self ):
-        name = str( self.get_name() )
+    def get_request_handler_def(self):
+        name = str(self.get_name())
 
         temp_out_variables = []
         call_parameters = []
@@ -702,47 +702,47 @@ class YieldCPPOperation(CPPOperation, YieldCPPConstruct):
             if parameter.is_out():
                 if parameter.is_in():
                     temp_out_variables.append(
-                        parameter.get_type().get_temp_name() +\
-                        " " +\
-                        parameter_identifier +\
-                        "( __request.get_%(parameter_identifier)s()" % locals() +\
+                        parameter.get_type().get_temp_name() + \
+                        " " + \
+                        parameter_identifier + \
+                        "( __request.get_%(parameter_identifier)s()" % locals() + \
                          " );"
                     )
                 else:
                     temp_out_variables.append(
-                        parameter.get_type().get_temp_name() +\
-                        " " +\
-                        parameter_identifier +\
+                        parameter.get_type().get_temp_name() + \
+                        " " + \
+                        parameter_identifier + \
                         ";"
                     )
 
-                call_parameters.append( parameter_identifier )
-                respond_parameters.append( parameter_identifier )
+                call_parameters.append(parameter_identifier)
+                respond_parameters.append(parameter_identifier)
             elif parameter.is_in():
-                call_parameters.append( "__request.get_%(parameter_identifier)s()" % locals() )
+                call_parameters.append("__request.get_%(parameter_identifier)s()" % locals())
 
         if self.get_return_type() is not None:
-            temp_out_variables.append( self.get_return_type().get_return_name() + " _return_value =" )
-            respond_parameters.append( "_return_value" )
+            temp_out_variables.append(self.get_return_type().get_return_name() + " _return_value =")
+            respond_parameters.append("_return_value")
 
-        temp_out_variables =\
-            rpad( indent( INDENT_SPACES * 3, "\n".join( temp_out_variables ) ), "\n\n" )
+        temp_out_variables = \
+            rpad(indent(INDENT_SPACES * 3, "\n".join(temp_out_variables)), "\n\n")
 
-        test_call_params = pad( " ", ", ".join( call_parameters ), " " )
+        test_call_params = pad(" ", ", ".join(call_parameters), " ")
         test_call = INDENT_SPACES * 3 + "_interface->%(name)s(%(test_call_params)s);" % locals()
-        if len( test_call ) <= 80:
+        if len(test_call) <= 80:
             call = test_call
         else:
-            call= ["(" ]
-            call.append( INDENT_SPACES + ( ",\n" + INDENT_SPACES ).join( call_parameters ) )
-            call.append( ");" )
+            call = ["(" ]
+            call.append(INDENT_SPACES + (",\n" + INDENT_SPACES).join(call_parameters))
+            call.append(");")
             call = INDENT_SPACES * 3 + "_interface->%(name)s\n" % locals() + \
-                   indent( INDENT_SPACES * 3, "\n".join( call ) )
+                   indent(INDENT_SPACES * 3, "\n".join(call))
 
-        if len( respond_parameters ) > 0:
-            respond = "\n\n" + INDENT_SPACES * 3 +\
-                      "__request.respond( " +\
-                      ", ".join( respond_parameters ) +\
+        if len(respond_parameters) > 0:
+            respond = "\n\n" + INDENT_SPACES * 3 + \
+                      "__request.respond( " + \
+                      ", ".join(respond_parameters) + \
                       " );"
         else:
             respond = ""
@@ -768,31 +768,31 @@ virtual void handle( %(name)sRequest& __request )
 }
 """ % locals()
 
-    def get_request_handler_prototype( self ):
+    def get_request_handler_prototype(self):
         return self.get_request_type().get_request_handler_prototype()
 
-    def get_request_proxy_definition( self ):
-        name = str( self.get_name() )
+    def get_request_proxy_definition(self):
+        name = str(self.get_name())
 
-        parameter_identifiers =\
+        parameter_identifiers = \
             rpad(
                 ", ".join(
-                    [str( parameter.get_identifier() )
+                    [str(parameter.get_identifier())
                      for parameter in self.get_parameters()]
                 ),
             ", "
         )
 
-        in_parameter_identifiers =\
+        in_parameter_identifiers = \
             pad(
                 "( ",
                 ", ".join(
-                    [str( parameter.get_identifier() )
-                     for parameter in self.get_in_parameters()] ),
+                    [str(parameter.get_identifier())
+                     for parameter in self.get_in_parameters()]),
                 " )"
             )
 
-        prototype = CPPOperation.__repr__( self )
+        prototype = CPPOperation.__repr__(self)
 
         if self.is_oneway():
             return """\
@@ -805,16 +805,16 @@ virtual void handle( %(name)sRequest& __request )
             out_setters = []
             for parameter in self.get_parameters():
                 if parameter.is_out():
-                    lvalue = str( parameter.get_identifier() )
+                    lvalue = str(parameter.get_identifier())
                     rvalue = "__response->get_" + parameter.get_identifier() + "()"
-                    out_setters.append( lvalue + " = " + rvalue + ";"  )
+                    out_setters.append(lvalue + " = " + rvalue + ";")
 
             if self.get_return_type() is not None:
                 lvalue = self.get_return_type().get_return_name() + " _return_value"
                 rvalue = "__response->get__return_value()"
-                out_setters.append( lvalue + " = " + rvalue + ";"  )
+                out_setters.append(lvalue + " = " + rvalue + ";")
 
-            out_setters = lpad( "\n", indent( INDENT_SPACES, "\n".join( out_setters ) ) )
+            out_setters = lpad("\n", indent(INDENT_SPACES, "\n".join(out_setters)))
 
             if self.get_return_type() is not None:
                 return_statement = "return _return_value; "
@@ -836,14 +836,14 @@ virtual void handle( %(name)sRequest& __request )
 }
 """ % locals()
 
-    def get_request_type( self ):
+    def get_request_type(self):
         return YieldCPPRequestType(
                    self,
                    self.get_name() + "Request",
                    members=self.get_in_parameters()
                 )
 
-    def get_response_type( self ):
+    def get_response_type(self):
         return YieldCPPRequestType(
                    self,
                    self.get_name() + "Response",
@@ -852,13 +852,13 @@ virtual void handle( %(name)sRequest& __request )
 
 
 class YieldCPPPointerType(CPPPointerType, YieldCPPType):
-    def get_unmarshal_call( self, key, value ):
+    def get_unmarshal_call(self, key, value):
         cpp_name = self.get_cpp_name()
         return """%(value)s = static_cast<%(cpp_name)s>( unmarshaller.read_pointer( %(key)s ) )""" % locals()
 
 
 class YieldCPPRequestType(CPPStructType, YieldCPPType):
-    def get_other_methods( self ):
+    def get_other_methods(self):
         if self.get_parent_operation().is_oneway():
             return ""
 
@@ -867,14 +867,14 @@ class YieldCPPRequestType(CPPStructType, YieldCPPType):
         respond_parameters = []
         response_parameters = []
         for out_parameter in self.get_parent_operation().get_response_type().get_members():
-            respond_parameters.append( out_parameter.get_type().get_in_declaration( out_parameter.get_identifier() ) )
-            response_parameters.append( out_parameter.get_identifier() )
+            respond_parameters.append(out_parameter.get_type().get_in_declaration(out_parameter.get_identifier()))
+            response_parameters.append(out_parameter.get_identifier())
 
-        test_respond_parameters = pad( " ", ", ".join( respond_parameters ), " " )
+        test_respond_parameters = pad(" ", ", ".join(respond_parameters), " ")
         test_respond_prototype = "virtual void respond(%(respond_parameters)s)" % locals()
-        if len( test_respond_prototype ) <= 80:
+        if len(test_respond_prototype) <= 80:
             respond_parameters = test_respond_parameters
-            response_parameters = pad( " ", ", ".join( response_parameters ), " " )
+            response_parameters = pad(" ", ", ".join(response_parameters), " ")
             respond = """
 virtual void respond(%(respond_parameters)s)
 {
@@ -882,8 +882,8 @@ virtual void respond(%(respond_parameters)s)
 }
 """ % locals()
         else:
-            respond_parameters = indent( INDENT_SPACES, "\n,".join( respond_parameters ) )
-            response_parameters = indent( INDENT_SPACES * 5 + ' ', "\n,".join( response_parameters ) )
+            respond_parameters = indent(INDENT_SPACES, "\n,".join(respond_parameters))
+            response_parameters = indent(INDENT_SPACES * 5 + ' ', "\n,".join(response_parameters))
             respond = """
 virtual void
 respond
@@ -907,14 +907,14 @@ virtual ::yield::concurrency::Response* createDefaultResponse()
 """
         response_parameters = []
         for inout_parameter in self.get_parent_operation().get_inout_parameters():
-            response_parameters.append( "get_" + inout_parameter.get_identifier() + "()" )
-        test_response_parameters = pad( "( ", ", ".join( response_parameters ), " )" )
-        if len( test_response_parameters ) <= 0:
+            response_parameters.append("get_" + inout_parameter.get_identifier() + "()")
+        test_response_parameters = pad("( ", ", ".join(response_parameters), " )")
+        if len(test_response_parameters) <= 0:
             response_parameters = test_response_parameters
             createDefaultResponse += """\
   return new %(response_type_name)s%(response_parameters)s;""" % locals()
         else:
-            response_parameters = indent( INDENT_SPACES * 7 + ' ', "\n,".join( response_parameters ) )
+            response_parameters = indent(INDENT_SPACES * 7 + ' ', "\n,".join(response_parameters))
             createDefaultResponse += """\
   return new %(response_type_name)s
              (
@@ -934,38 +934,38 @@ virtual void respond( ::yield::concurrency::Response& response )
 }
 """ % locals()
 
-    def get_base_names( self ):
-        return ( self.get_parent_name_macro() + "_REQUEST_PARENT_CLASS", )
+    def get_base_names(self):
+        return (self.get_parent_name_macro() + "_REQUEST_PARENT_CLASS",)
 
-    def get_parent_operation( self ):
+    def get_parent_operation(self):
         return self.get_parent_construct()
 
-    def get_request_handler_case( self ):
-        name = str( self.get_name() )
-        type_id = int( self.get_name() )
+    def get_request_handler_case(self):
+        name = str(self.get_name())
+        type_id = int(self.get_name())
         return "case %(type_id)uUL: handle( static_cast<%(name)s&>( request ) ); return;" % locals()
 
-    def get_request_handler_prototype( self ):
-        name = str( self.get_name() )
+    def get_request_handler_prototype(self):
+        name = str(self.get_name())
         return "virtual void handle( %(name)s& __request )" % locals()
 
 
 class YieldCPPResponseType(CPPStructType, YieldCPPType):
-    def get_base_names( self ):
-        return ( self.get_parent_name_macro() + "_RESPONSE_PARENT_CLASS", )
+    def get_base_names(self):
+        return (self.get_parent_name_macro() + "_RESPONSE_PARENT_CLASS",)
 
 
 class YieldCPPSequenceType(CPPSequenceType, YieldCPPCompoundType):
-    def get_includes( self ):
-        return YieldCPPCompoundType.get_includes( self ) +\
+    def get_includes(self):
+        return YieldCPPCompoundType.get_includes(self) + \
                ["yield/marshal/null.hpp", "yield/marshal/sequence.hpp"]
 
-    def get_other_methods( self ):
-        name = str( self.get_name() )
-        type_id = int( self.get_name() )
+    def get_other_methods(self):
+        name = str(self.get_name())
+        type_id = int(self.get_name())
         value_type_cpp_name = self.get_value_type().get_cpp_name()
-        value_marshal_call = self.get_value_type().get_marshal_call( "::yield::marshal::Null()", "( *this )[value_i]" )
-        value_unmarshal_call = self.get_value_type().get_unmarshal_call( "::yield::marshal::Null()", "value" )
+        value_marshal_call = self.get_value_type().get_marshal_call("::yield::marshal::Null()", "( *this )[value_i]")
+        value_unmarshal_call = self.get_value_type().get_unmarshal_call("::yield::marshal::Null()", "value")
         return """\
 // yield::Object
 const static uint32_t TYPE_ID = static_cast<uint32_t>( %(type_id)u );
@@ -994,39 +994,39 @@ void unmarshal( ::yield::marshal::Unmarshaller& unmarshaller )
 size_t get_size() const { return size(); }
 """ % locals()
 
-    def get_base_names( self ):
-        return ["::yield::marshal::Sequence"] + CPPSequenceType.get_base_names( self )
+    def get_base_names(self):
+        return ["::yield::marshal::Sequence"] + CPPSequenceType.get_base_names(self)
 
-    def get_unmarshal_call( self, key, value ):
+    def get_unmarshal_call(self, key, value):
         return """unmarshaller.read_sequence( %(key)s, %(value)s )""" % locals()
 
 
 class YieldCPPStringType(CPPStringType, YieldCPPType):
-    def get_includes( self ):
-        return CPPStringType.get_includes( self ) +\
+    def get_includes(self):
+        return CPPStringType.get_includes(self) + \
                ["yield/marshal/string.hpp"]
 
-    def get_boxed_name( self ):
+    def get_boxed_name(self):
         return "::yield::marshal::String"
 
-    def get_unmarshal_call( self, key, value ):
+    def get_unmarshal_call(self, key, value):
         return """unmarshaller.read_string( %(key)s, %(value)s )""" % locals()
 
 
 class YieldCPPStructType(CPPStructType, YieldCPPCompoundType):
-    def get_includes( self ):
-        return YieldCPPCompoundType.get_includes( self ) +\
+    def get_includes(self):
+        return YieldCPPCompoundType.get_includes(self) + \
                ["yield/marshal/object.hpp"]
 
-    def get_marshal_method( self ):
-        if len( self.get_members() ) > 0:
+    def get_marshal_method(self):
+        if len(self.get_members()) > 0:
             marshal_calls = []
             for member in self.get_members():
                 identifier = member.get_identifier()
-                identifier_int = int( member.get_identifier() )
+                identifier_int = int(member.get_identifier())
                 key = '::yield::marshal::StringLiteral( \"%(identifier)s\" )' % locals()
-                marshal_calls.append( member.get_type().get_marshal_call( key, "get_" + member.get_identifier() + "()" ) )
-            marshal_calls = ";\n  ".join( marshal_calls  )
+                marshal_calls.append(member.get_type().get_marshal_call(key, "get_" + member.get_identifier() + "()"))
+            marshal_calls = ";\n  ".join(marshal_calls)
 
             return """\
 void marshal( ::yield::marshal::Marshaller& marshaller ) const
@@ -1038,21 +1038,21 @@ void marshal( ::yield::marshal::Marshaller& marshaller ) const
         else:
             return "void marshal( ::yield::marshal::Marshaller& ) const { }"
 
-    def get_base_names( self ):
+    def get_base_names(self):
         return ["::yield::marshal::Object"]
 
-    def get_unmarshal_call( self, key, value ):
+    def get_unmarshal_call(self, key, value):
         return """unmarshaller.read_object( %(key)s, %(value)s )""" % locals()
 
-    def get_unmarshal_method( self ):
-        if len( self.get_members() ) > 0:
+    def get_unmarshal_method(self):
+        if len(self.get_members()) > 0:
             unmarshal_calls = []
             for member in self.get_members():
                 identifier = member.get_identifier()
-                identifier_int = int( member.get_identifier() )
+                identifier_int = int(member.get_identifier())
                 key = '::yield::marshal::StringLiteral( \"%(identifier)s\" )' % locals()
-                unmarshal_calls.append( member.get_type().get_unmarshal_call( key, member.get_identifier() ) )
-            unmarshal_calls = ";\n  ".join( unmarshal_calls  )
+                unmarshal_calls.append(member.get_type().get_unmarshal_call(key, member.get_identifier()))
+            unmarshal_calls = ";\n  ".join(unmarshal_calls)
 
             return """\
 void unmarshal( ::yield::marshal::Unmarshaller& unmarshaller )
@@ -1063,18 +1063,18 @@ void unmarshal( ::yield::marshal::Unmarshaller& unmarshaller )
         else:
             return "void unmarshal( ::yield::marshal::Unmarshaller& ) { }"
 
-    def __repr__( self ):
-        accessors = lpad( "\n\n", indent( INDENT_SPACES, self.get_accessors() ) )
-        constructors = indent( INDENT_SPACES, pad( "\n", self.get_constructors(), "\n\n" ) )
+    def __repr__(self):
+        accessors = lpad("\n\n", indent(INDENT_SPACES, self.get_accessors()))
+        constructors = indent(INDENT_SPACES, pad("\n", self.get_constructors(), "\n\n"))
         destructor_statements = self.get_destructor_statements()
-        marshal_method = indent( INDENT_SPACES, self.get_marshal_method() )
+        marshal_method = indent(INDENT_SPACES, self.get_marshal_method())
         member_declarations = self.get_member_declarations()
-        name = str( self.get_name() )
-        operator_equals = indent( INDENT_SPACES, self.get_operator_equals() )
-        other_methods = lpad( "\n", indent( INDENT_SPACES, self.get_other_methods() ) )
-        base_names = ", public ".join( self.get_base_names() )
-        type_id = int( self.get_name() )
-        unmarshal_method = indent( INDENT_SPACES, self.get_unmarshal_method() )
+        name = str(self.get_name())
+        operator_equals = indent(INDENT_SPACES, self.get_operator_equals())
+        other_methods = lpad("\n", indent(INDENT_SPACES, self.get_other_methods()))
+        base_names = ", public ".join(self.get_base_names())
+        type_id = int(self.get_name())
+        unmarshal_method = indent(INDENT_SPACES, self.get_unmarshal_method())
         return """\
 class %(name)s : public %(base_names)s
 {
@@ -1099,34 +1099,34 @@ public:%(constructors)s
 
 
 class YieldCPPTarget(CPPTarget):
-    def __init__( self, force=False, output_file_path=None ):
-        CPPTarget.__init__( self )
+    def __init__(self, force=False, output_file_path=None):
+        CPPTarget.__init__(self)
         self.__force = force
         self.__output_file_path = output_file_path
 
-    def finalize( self ):
+    def finalize(self):
         if self.__output_file_path is not None:
-            write_file( self.__output_file_path, repr( self ), force=self.__force )
+            write_file(self.__output_file_path, repr(self), force=self.__force)
 
-    def get_marshallable_object_factory( self, class_name=None ):
+    def get_marshallable_object_factory(self, class_name=None):
         user_defined_types = []
         for module in self.get_modules():
-            user_defined_types.extend( module.get_types() )
+            user_defined_types.extend(module.get_types())
 
         seen_type_ids = []
         type_id_cases = []
         type_name_strncmps = []
         for type in user_defined_types:
-            type_name = str( type.get_name() )
-            type_name_len = len( type_name )
-            type_id = int( type.get_name )
+            type_name = str(type.get_name())
+            type_name_len = len(type_name)
+            type_id = int(type.get_name)
             if type_id != 0 and type_id not in seen_type_ids:
-                type_id_cases.append( "case %(type_id)s: return new %(type_name)s;" % locals() )
-                seen_type_ids.append( type_id )
-            type_name_strncmps.append( "if ( type_name_len == %(type_name_len)u && strncmp( type_name, \"%(type_name)s\", %(type_name_len)u ) == 0 ) return new %(type_name)s;" % locals() )
+                type_id_cases.append("case %(type_id)s: return new %(type_name)s;" % locals())
+                seen_type_ids.append(type_id)
+            type_name_strncmps.append("if ( type_name_len == %(type_name_len)u && strncmp( type_name, \"%(type_name)s\", %(type_name_len)u ) == 0 ) return new %(type_name)s;" % locals())
 
-        if len( type_id_cases ) > 0:
-            type_id_cases = indent( INDENT_SPACES * 2, "\n".join( type_id_cases ) )
+        if len(type_id_cases) > 0:
+            type_id_cases = indent(INDENT_SPACES * 2, "\n".join(type_id_cases))
             createMarshallableObject_type_id = """\
 virtual ::yield::marshal::MarshallableObject*
 createMarshallableObject
@@ -1145,9 +1145,9 @@ createMarshallableObject
         else:
             createMarshallableObject_type_id = ""
 
-        if len( type_name_strncmps ) > 0:
-            type_name_strncmps.append( "return NULL;" )
-            type_name_strncmps = indent( INDENT_SPACES, "\nelse ".join( type_name_strncmps ) )
+        if len(type_name_strncmps) > 0:
+            type_name_strncmps.append("return NULL;")
+            type_name_strncmps = indent(INDENT_SPACES, "\nelse ".join(type_name_strncmps))
             createMarshallableObject_type_name = """\
 virtual ::yield::marshal::MarshallableObject*
 createMarshallableObject
@@ -1164,8 +1164,8 @@ createMarshallableObject
 
         if class_name is not None:
             "class " + class_name + "\n{" + \
-            indent( INDENT_SPACES, createMarshallableObject_type_id ) + \
-            indent( INDENT_SPACES, createMarshallableObject_type_name ) + \
+            indent(INDENT_SPACES, createMarshallableObject_type_id) + \
+            indent(INDENT_SPACES, createMarshallableObject_type_name) + \
             "\n};"
         else:
             return createMarshallableObject_type_id + createMarshallableObject_type_name

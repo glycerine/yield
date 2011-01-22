@@ -37,60 +37,60 @@ from project_test import *
 
 
 class SConscriptTest(ProjectTest):
-    def get_sconscript( self ):
-        return self._get_project( SConscript )
+    def get_sconscript(self):
+        return self._get_project(SConscript)
 
-    def get_sconscript_lines( self ):
-        return self._get_project_lines( SConscript )
+    def get_sconscript_lines(self):
+        return self._get_project_lines(SConscript)
 
 
 class SConscriptCompileTest(SConscriptTest):
-    def runTest( self ):
-        compile( repr( self.get_sconscript() ), "<string>", "exec" )
+    def runTest(self):
+        compile(repr(self.get_sconscript()), "<string>", "exec")
 
 
 class SConscriptEnvironmentTest(SConscriptTest):
-    def __init__( self, key, values ):
-        SConscriptTest.__init__( self )
+    def __init__(self, key, values):
+        SConscriptTest.__init__(self)
         self.__key = key
         self.__values = values
 
-    def runTest( self ):
+    def runTest(self):
         key = self.__key
-        values = ", ".join( quotestrlist( self.__values ) )
+        values = ", ".join(quotestrlist(self.__values))
         assert 'build_env["%(key)s"].extend( [%(values)s] )'\
                    % locals() in self.get_sconscript_lines()
 
-    def shortDescription( self ):
+    def shortDescription(self):
         return self.__class__.__name__ + '("' + self.__key + '")'
 
 
 class SConscriptOutputFilePathTest(SConscriptTest):
-    def runTest( self ):
+    def runTest(self):
         assert '"%(TEST_OUTPUT_FILE_PATH)s",'\
             % globals() in self.get_sconscript_lines()
 
 
 class SConscriptSourceFilePathsTest(SConscriptTest):
-    def runTest( self ):
+    def runTest(self):
         sconscript_lines = self.get_sconscript_lines()
         for source_file_path in TEST_SOURCE_FILE_PATHS:
             assert '"%(source_file_path)s",' % locals() in sconscript_lines
 
 
 class SConscriptTypeTest(SConscriptTest):
-    def runTest( self ):
+    def runTest(self):
         assert "build_env.Library(" in self.get_sconscript_lines()
 
 
 suite = TestSuite()
-suite.addTest( SConscriptCompileTest() )
-suite.addTest( SConscriptEnvironmentTest( "CXXDEFINES", TEST_CXXDEFINES ) )
-suite.addTest( SConscriptEnvironmentTest( "CXXFLAGS", TEST_CXXFLAGS ) )
-suite.addTest( SConscriptEnvironmentTest( "CXXPATH", TEST_CXXPATH ) )
-suite.addTest( SConscriptEnvironmentTest( "LIBPATH", TEST_LIBPATH ) )
-suite.addTest( SConscriptEnvironmentTest( "LIBS", TEST_LIBS ) )
-suite.addTest( SConscriptEnvironmentTest( "LDFLAGS", TEST_LDFLAGS ) )
-suite.addTest( SConscriptOutputFilePathTest() )
-suite.addTest( SConscriptSourceFilePathsTest() )
-suite.addTest( SConscriptTypeTest() )
+suite.addTest(SConscriptCompileTest())
+suite.addTest(SConscriptEnvironmentTest("CXXDEFINES", TEST_CXXDEFINES))
+suite.addTest(SConscriptEnvironmentTest("CXXFLAGS", TEST_CXXFLAGS))
+suite.addTest(SConscriptEnvironmentTest("CXXPATH", TEST_CXXPATH))
+suite.addTest(SConscriptEnvironmentTest("LIBPATH", TEST_LIBPATH))
+suite.addTest(SConscriptEnvironmentTest("LIBS", TEST_LIBS))
+suite.addTest(SConscriptEnvironmentTest("LDFLAGS", TEST_LDFLAGS))
+suite.addTest(SConscriptOutputFilePathTest())
+suite.addTest(SConscriptSourceFilePathsTest())
+suite.addTest(SConscriptTypeTest())

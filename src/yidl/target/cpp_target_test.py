@@ -46,17 +46,17 @@ from yidl.target.target_test import *
 
 
 class CPPTargetTest(TargetTest):
-    def get_cpp( self ):
-        cpp = repr( compile( self.get_idl(), CPPTarget() ) )
-        cpp = StringIO( cpp ).readlines()
+    def get_cpp(self):
+        cpp = repr(compile(self.get_idl(), CPPTarget()))
+        cpp = StringIO(cpp).readlines()
         cpp = [cpp_line.strip() for cpp_line in cpp]
         return cpp
 
 
 class CPPTargetCompileTest(CPPTargetTest):
-    def runTest( self ):
+    def runTest(self):
         cpp = self.get_cpp()
-        cpp.append( """\
+        cpp.append("""\
 
 int main( int, char** )
 {
@@ -65,25 +65,25 @@ int main( int, char** )
     %(TEST_MODULE)s::%(TEST_SEQUENCE)s test_sequence;
     %(TEST_MODULE)s::%(TEST_STRUCT)s test_struct;
 }
-""" % globals() )
-        cpp = '\n'.join( cpp )
+""" % globals())
+        cpp = '\n'.join(cpp)
 
-        cpp_file_path = md5( cpp ).hexdigest() + ".cpp"
-        cpp_file = open( cpp_file_path, "w" )
-        cpp_file.write( cpp )
+        cpp_file_path = md5(cpp).hexdigest() + ".cpp"
+        cpp_file = open(cpp_file_path, "w")
+        cpp_file.write(cpp)
         cpp_file.close()
 
         cc = ccompiler.new_compiler()
         try:
             extra_preargs = sys.platform == "win32" and ["/EHsc"] or None
-            objects = cc.compile( [cpp_file_path], extra_preargs=extra_preargs )
-            os.unlink( objects[0] )
+            objects = cc.compile([cpp_file_path], extra_preargs=extra_preargs)
+            os.unlink(objects[0])
         finally:
-            os.unlink( cpp_file_path )
+            os.unlink(cpp_file_path)
 
 
 class CPPTargetExceptionTest(CPPTargetTest):
-    def runTest( self ):
+    def runTest(self):
         cpp = self.get_cpp()
         assert "class %(TEST_EXCEPTION)s : public std::exception" % globals()
         assert "virtual ~%(TEST_EXCEPTION)s() throw() {  }" % globals() in cpp
@@ -91,38 +91,38 @@ class CPPTargetExceptionTest(CPPTargetTest):
 
 
 class CPPTargetHeaderGuardTest(CPPTargetTest):
-    def runTest( self ):
+    def runTest(self):
         cpp = self.get_cpp()
-        assert cpp[0].startswith( "#ifndef" )
-        assert cpp[1].startswith( "#define" )
-        assert cpp[-2].startswith( "#endif" )
-        assert len( cpp[2] ) == 0
-        assert len( cpp[3] ) == 0
+        assert cpp[0].startswith("#ifndef")
+        assert cpp[1].startswith("#define")
+        assert cpp[-2].startswith("#endif")
+        assert len(cpp[2]) == 0
+        assert len(cpp[3]) == 0
 
 
 class CPPTargetInterfaceTest(CPPTargetTest):
-    def runTest( self ):
+    def runTest(self):
         cpp = self.get_cpp()
         assert "class %(TEST_INTERFACE)s" % globals() in cpp
         assert "virtual ~TestException() throw() {  }" in cpp
 
 
 class CPPTargetModuleTest(CPPTargetTest):
-    def runTest( self ):
+    def runTest(self):
         cpp = self.get_cpp()
-        namespace_i = cpp.index( "namespace %(TEST_MODULE)s" % globals() )
-        assert cpp[namespace_i+1] == "{"
+        namespace_i = cpp.index("namespace %(TEST_MODULE)s" % globals())
+        assert cpp[namespace_i + 1] == "{"
         assert cpp[-4] == "}"
 
 
 class CPPTargetOperationTest(CPPTargetTest):
-    def runTest( self ):
+    def runTest(self):
         cpp = self.get_cpp()
         assert "virtual void %(TEST_OPERATION)s() { }" % globals() in cpp
 
 
 class CPPTargetSequenceTest(CPPTargetTest):
-    def runTest( self ):
+    def runTest(self):
         cpp = self.get_cpp()
         assert "#include <string>" in cpp
         assert "#include <vector>" in cpp
@@ -135,13 +135,13 @@ class CPPTargetSequenceTest(CPPTargetTest):
 
 
 class CPPTargetStringTest(CPPTargetTest):
-    def runTest( self ):
+    def runTest(self):
         cpp = self.get_cpp()
         assert "#include <string>" in cpp
 
 
 class CPPTargetStructTest(CPPTargetTest):
-    def runTest( self ):
+    def runTest(self):
         cpp = self.get_cpp()
         assert "class %(TEST_STRUCT)s" % globals() in cpp
         assert "bool operator==( const %(TEST_STRUCT)s& ) const { return true; }"\
@@ -149,12 +149,12 @@ class CPPTargetStructTest(CPPTargetTest):
 
 
 suite = TestSuite()
-suite.addTest( CPPTargetCompileTest() )
-suite.addTest( CPPTargetExceptionTest() )
-suite.addTest( CPPTargetHeaderGuardTest() )
-suite.addTest( CPPTargetInterfaceTest() )
-suite.addTest( CPPTargetModuleTest() )
-suite.addTest( CPPTargetOperationTest() )
-suite.addTest( CPPTargetSequenceTest() )
-suite.addTest( CPPTargetStringTest() )
-suite.addTest( CPPTargetStructTest() )
+suite.addTest(CPPTargetCompileTest())
+suite.addTest(CPPTargetExceptionTest())
+suite.addTest(CPPTargetHeaderGuardTest())
+suite.addTest(CPPTargetInterfaceTest())
+suite.addTest(CPPTargetModuleTest())
+suite.addTest(CPPTargetOperationTest())
+suite.addTest(CPPTargetSequenceTest())
+suite.addTest(CPPTargetStringTest())
+suite.addTest(CPPTargetStructTest())

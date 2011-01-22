@@ -36,58 +36,58 @@ from yidl.target import Target
 
 
 # Constants
-ILL_FORMED_IDL =\
+ILL_FORMED_IDL = \
 (
     "module { };",
 )
 
 
-WELL_FORMED_IDL =\
+WELL_FORMED_IDL = \
 (
     # module only
-    ( "module", "yidl", "{", "}" ),
-    ( "module", "yidl", "{", "}", ";" ),
-    ( "module", "yidl", "#", "1", "{", "}", ";" ),
+    ("module", "yidl", "{", "}"),
+    ("module", "yidl", "{", "}", ";"),
+    ("module", "yidl", "#", "1", "{", "}", ";"),
 
     # constant
-    ( "module", "yidl", "{", "const", "uint32_t", "test_constant", "=", "1", ";", "}", ),
+    ("module", "yidl", "{", "const", "uint32_t", "test_constant", "=", "1", ";", "}",),
 
     # interface
     # empty interface
-    ( "module", "yidl", "{", "interface", "TestInterface", "{", "}", ";", "}", ";",  ),
+    ("module", "yidl", "{", "interface", "TestInterface", "{", "}", ";", "}", ";",),
 
     # operation
     # null operation
-    ( "module", "yidl", "{", "interface", "TestInterface", "{", "void", "TestOperation", "(", ")", ";", "}", ";", "}", ";" ),
+    ("module", "yidl", "{", "interface", "TestInterface", "{", "void", "TestOperation", "(", ")", ";", "}", ";", "}", ";"),
     # operation with one parameter
-    ( "module", "yidl", "{", "interface", "TestInterface", "{", "void", "TestOperation", "(", "uint32_t", "x", ")", ";", "}", ";", "}", ";" ),
+    ("module", "yidl", "{", "interface", "TestInterface", "{", "void", "TestOperation", "(", "uint32_t", "x", ")", ";", "}", ";", "}", ";"),
     # operation with return value
-    ( "module", "yidl", "{", "interface", "TestInterface", "{", "uint32_t", "TestOperation", "(", ")", ";", "}", ";", "}", ";" ),
+    ("module", "yidl", "{", "interface", "TestInterface", "{", "uint32_t", "TestOperation", "(", ")", ";", "}", ";", "}", ";"),
 
     # struct
     # empty struct
-    ( "module", "yidl", "{", "struct", "TestStruct", "{", "}", ";", "}", ";" ),
+    ("module", "yidl", "{", "struct", "TestStruct", "{", "}", ";", "}", ";"),
     # forward-declared struct
-    ( "module", "yidl", "{", "struct", "TestStruct", ";", "}", ";" ),
+    ("module", "yidl", "{", "struct", "TestStruct", ";", "}", ";"),
     # struct with member
-    ( "module", "yidl", "{", "struct", "TestStruct", "{", "uint8_t", "byte", ";", "}", ";", "}", ";" ),
+    ("module", "yidl", "{", "struct", "TestStruct", "{", "uint8_t", "byte", ";", "}", ";", "}", ";"),
 )
 
 
 class CompilerTest(TestCase):
-    def __init__( self, idl, well_formed=True ):
-        TestCase.__init__( self )
+    def __init__(self, idl, well_formed=True):
+        TestCase.__init__(self)
         self.__idl = idl
         self.__well_formed = well_formed
 
-    def runTest( self ):
+    def runTest(self):
         if self.__well_formed:
-            compile( self.__idl, Target() )
+            compile(self.__idl, Target())
         else:
             try:
-                compile( self.__idl, Target(), print_parsing_errors=False )
-                print >>sys.stderr, "Successfully parsed ill-formed IDL"
-                print >>sys.stderr, self.__idl
+                compile(self.__idl, Target(), print_parsing_errors=False)
+                print >> sys.stderr, "Successfully parsed ill-formed IDL"
+                print >> sys.stderr, self.__idl
                 self.fail()
             except AssertionError:
                 raise
@@ -95,21 +95,21 @@ class CompilerTest(TestCase):
                 # traceback.print_exc()
                 pass
 
-    def shortDescription( self ):
-        return self.__class__.__name__ + "( idl='" + self.__idl + "', well_formed=" + str( self.__well_formed ) + " )"
+    def shortDescription(self):
+        return self.__class__.__name__ + "( idl='" + self.__idl + "', well_formed=" + str(self.__well_formed) + " )"
 
 
 suite = TestSuite()
 
 for idl in ILL_FORMED_IDL:
-    suite.addTest( CompilerTest( idl, well_formed=False ) )
+    suite.addTest(CompilerTest(idl, well_formed=False))
 
 for idl in WELL_FORMED_IDL:
-    suite.addTest( CompilerTest( ' '.join( idl ) ) )
+    suite.addTest(CompilerTest(' '.join(idl)))
 
 for idl in WELL_FORMED_IDL:
     token_i_min = 1
-    token_i_max = len( idl ) - 1
+    token_i_max = len(idl) - 1
     if idl[token_i_max] == ';': token_i_max -= 1
-    for token_i in xrange( token_i_min, token_i_max ):
-        suite.addTest( CompilerTest( ' '.join( idl[:token_i] ), well_formed=False ) )
+    for token_i in xrange(token_i_min, token_i_max):
+        suite.addTest(CompilerTest(' '.join(idl[:token_i]), well_formed=False))

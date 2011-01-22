@@ -55,58 +55,58 @@ else:
 
 
 class CheckCHeaderTest(TestCase):
-    def runTest( self ):
-        assert CheckCHeader( C_HEADER )
+    def runTest(self):
+        assert CheckCHeader(C_HEADER)
 
 
 class CheckCXXHeaderTest(TestCase):
-    def runTest( self ):
-        assert CheckCXXHeader( CXX_HEADER, include_quotes="<>" )
+    def runTest(self):
+        assert CheckCXXHeader(CXX_HEADER, include_quotes="<>")
 
 
 class CheckDeclarationTest(TestCase):
-    def runTest( self ):
-        assert CheckDeclaration( C_DECLARATION, includes=C_HEADER, language="C" )
+    def runTest(self):
+        assert CheckDeclaration(C_DECLARATION, includes=C_HEADER, language="C")
 
 
 class CheckFuncTest(TestCase):
-    def runTest( self ):
-        assert CheckFunc( C_FUNC, includes=C_HEADER, language="C" )
+    def runTest(self):
+        assert CheckFunc(C_FUNC, includes=C_HEADER, language="C")
 
 
 class CheckHeaderTest(TestCase):
-    def runTest( self ):
-        assert CheckHeader( C_HEADER, language="C" )
-        assert CheckHeader( CXX_HEADER, language="C++" )
+    def runTest(self):
+        assert CheckHeader(C_HEADER, language="C")
+        assert CheckHeader(CXX_HEADER, language="C++")
 
 
 class CheckLibTest(TestCase):
-    def runTest( self ):
-        assert CheckLib( C_LIB, language="C" )
+    def runTest(self):
+        assert CheckLib(C_LIB, language="C")
 
 
 class CheckLibWithHeaderTest(TestCase):
-    def runTest( self ):
-        assert CheckLibWithHeader( C_LIB, C_HEADER, language="C" )
+    def runTest(self):
+        assert CheckLibWithHeader(C_LIB, C_HEADER, language="C")
 
 
 class CheckTypeTest(TestCase):
-    def runTest( self ):
-        assert CheckType( C_TYPE, includes=C_HEADER, language="C" )
+    def runTest(self):
+        assert CheckType(C_TYPE, includes=C_HEADER, language="C")
 
 
 class CheckTypeSizeTest(TestCase):
-    def runTest( self ):
-        assert CheckTypeSize( C_TYPE, includes=C_HEADER, language="C", expect=C_TYPE_SIZE )
+    def runTest(self):
+        assert CheckTypeSize(C_TYPE, includes=C_HEADER, language="C", expect=C_TYPE_SIZE)
 
 
 suite = TestSuite()
-suite.addTest( CheckCHeaderTest() )
-suite.addTest( CheckCXXHeaderTest() )
-suite.addTest( CheckDeclarationTest() )
-suite.addTest( CheckFuncTest() )
-suite.addTest( CheckHeaderTest() )
-suite.addTest( CheckLibTest() )
-suite.addTest( CheckLibWithHeaderTest() )
-suite.addTest( CheckTypeTest() )
-suite.addTest( CheckTypeSizeTest() )
+suite.addTest(CheckCHeaderTest())
+suite.addTest(CheckCXXHeaderTest())
+suite.addTest(CheckDeclarationTest())
+suite.addTest(CheckFuncTest())
+suite.addTest(CheckHeaderTest())
+suite.addTest(CheckLibTest())
+suite.addTest(CheckLibWithHeaderTest())
+suite.addTest(CheckTypeTest())
+suite.addTest(CheckTypeSizeTest())
