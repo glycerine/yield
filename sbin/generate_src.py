@@ -36,6 +36,7 @@ assert __name__ == "__main__"
 from os import chdir, listdir, unlink
 from os.path import abspath, dirname, exists, join, split, splitext
 from optparse import OptionParser
+import re
 from subprocess import call
 import sys
 
@@ -173,19 +174,28 @@ if options.all or options.test_main_cpp:
 
         for test_cpp_file in SourceFiles(test_cpp_file_paths):
             test_suite_names = []
-            for test_cpp_file_line in open(test_cpp_file.get_path()).readlines():
-                test_cpp_file_line = test_cpp_file_line.strip()
-                if test_cpp_file_line.startswith("TEST_SUITE_EX"):
-                    test_suite_name = test_cpp_file_line.split(' ')[1][:-1]
-                elif test_cpp_file_line.startswith("TEST_SUITE"):
-                    test_suite_name = test_cpp_file_line.split(' ')[1]
+            test_cpp_file_lines = open(test_cpp_file.get_path()).readlines()
+            test_cpp_file_line_i = 0
+            while test_cpp_file_line_i < len(test_cpp_file_lines):
+                test_cpp_file_line = test_cpp_file_lines[test_cpp_file_line_i].strip()
+                if test_cpp_file_line.startswith("TEST_SUITE"):
+                    test_suite_declaration = []
+                    while test_cpp_file_line_i < len(test_cpp_file_lines):
+                        test_cpp_file_line = test_cpp_file_lines[test_cpp_file_line_i].strip()
+                        test_suite_declaration.append(test_cpp_file_line)
+                        test_cpp_file_line_i += 1
+                        if test_cpp_file_line.find(';') != -1:
+                            break
+                    test_suite_declaration = ''.join(test_suite_declaration).replace(' ', '')
+                    test_suite_name = re.match("TEST_SUITE(?:_EX)?\((\w+)", test_suite_declaration)
+                    if test_suite_name is not None:
+                        test_suite_name = test_suite_name.groups()[0]
+                        if not test_suite_name.endswith("TestSuite"):
+                            test_suite_name += "TestSuite"
+                        test_suite_names.append(test_suite_name)
                 else:
+                    test_cpp_file_line_i += 1
                     continue
-
-                if not test_suite_name.endswith("TestSuite"):
-                    test_suite_name += "TestSuite"
-                test_suite_names.append(test_suite_name)
-                break
 
             if len(test_suite_names) > 0:
                 test_suite_names = strlistsort(test_suite_names)
@@ -230,8 +240,7 @@ std::cout << std::endl;""" % locals()
 %(test_suite_decls)s
 
 
-int main( int, char** )
-{
+int main(int, char**) {
   int failed_test_case_count = 0;
 
 %(test_suite_runs)s
