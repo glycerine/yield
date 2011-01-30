@@ -7,4 +7,5 @@ pad-header
 pad-oper
 preserve-date
 # recursive
+suffix=None
 unpad-paren
