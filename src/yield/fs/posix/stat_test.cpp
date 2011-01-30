@@ -28,9 +28,9 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
+#include "file_system.hpp"
 #include "../stat_test.hpp"
 #include "stat.hpp"
-#include "volume.hpp"
 
 
 namespace yield {
@@ -38,14 +38,14 @@ namespace fs {
 namespace posix {
 class StatStructStatTest : public StatTest {
 public:
-  StatStructStatTest(yield::fs::Volume& volume)
-    : StatTest(volume)
+  StatStructStatTest(yield::fs::FileSystem& file_system)
+    : StatTest(file_system)
   { }
 
   // yunit::Test
   void run() {
     auto_Object<Stat> stbuf1
-    = static_cast<Stat*>(get_volume().stat(get_test_file_name()));
+    = static_cast<Stat*>(get_file_system().stat(get_test_file_name()));
     DateTime current_date_time = DateTime::now();
     struct stat stbuf2 = stbuf1->operator struct stat();
     throw_assert_ne(stbuf2.st_mode, 0);
@@ -59,10 +59,10 @@ public:
 };
 
 
-class StatTestSuite : public yield::fs::StatTestSuite<Volume> {
+class StatTestSuite : public yield::fs::StatTestSuite<FileSystem> {
 public:
   StatTestSuite() {
-    add("Stat+struct stat", new StatStructStatTest(get_volume()));
+    add("Stat+struct stat", new StatStructStatTest(get_file_system()));
   }
 };
 }

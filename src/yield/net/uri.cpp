@@ -159,6 +159,11 @@ void URI::init(const char* uri, size_t uri_len) {
   memset(&scheme, 0, sizeof(scheme));
   memset(&userinfo, 0, sizeof(userinfo));
 
+  int cs;
+  const char* eof = static_cast<char*>(*buffer) + buffer->size();
+  char* p = static_cast<char*>(*buffer);
+  const char* pe = eof;
+
 
   /* #line 2 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.cpp" */
   static const char _init_actions[] = {
@@ -1938,7 +1943,7 @@ _out:
     {}
   }
 
-  /* #line 233 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
+  /* #line 238 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\net\\uri.rl" */
 
 
   if (cs == init_error)

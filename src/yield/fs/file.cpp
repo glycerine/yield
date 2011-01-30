@@ -47,12 +47,12 @@ size_t File::getpagesize() {
 //  bool ret
 //)
 //{
-//  return Volume::trace( log, method, path, ret );
+//  return FileSystem::trace( log, method, path, ret );
 //}
 
 //Stat* File::trace_getattr( Log& log, const Path& path, Stat* ret )
 //{
-//  return Volume::trace_getattr( log, path, ret );
+//  return FileSystem::trace_getattr( log, path, ret );
 //}
 
 //File::Lock*
@@ -157,7 +157,7 @@ size_t File::getpagesize() {
 //  bool ret
 //)
 //{
-//  return Volume::trace_truncate( log, path, new_size, ret );
+//  return FileSystem::trace_truncate( log, path, new_size, ret );
 //}
 
 //ssize_t

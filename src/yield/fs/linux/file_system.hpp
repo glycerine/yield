@@ -1,4 +1,4 @@
-// yield/fs/linux/volume.hpp
+// yield/fs/linux/file_system.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -28,19 +28,19 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-#ifndef _YIELD_FS_LINUX_VOLUME_HPP_
-#define _YIELD_FS_LINUX_VOLUME_HPP_
+#ifndef _YIELD_FS_LINUX_FILE_SYSTEM_HPP_
+#define _YIELD_FS_LINUX_FILE_SYSTEM_HPP_
 
 
-#include "../posix/volume.hpp"
+#include "../posix/file_system.hpp"
 
 
 namespace yield {
 namespace fs {
 namespace linux {
-class Volume : public yield::fs::posix::Volume {
+class FileSystem : public yield::fs::posix::FileSystem {
 public:
-  // yield::fs::Volume
+  // yield::fs::FileSystem
   yield::fs::File*
   open
   (

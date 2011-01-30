@@ -28,8 +28,8 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
+#include "file_system.hpp"
 #include "memory_mapped_file.hpp"
-#include "volume.hpp"
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
 
@@ -71,7 +71,7 @@ void MemoryMappedFile::reserve(size_t capacity) {
 
   if (get_file().truncate(capacity)) {
     data_
-    = Volume::mmap
+    = FileSystem::mmap
       (
         NULL,
         capacity,

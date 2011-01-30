@@ -36,8 +36,8 @@
 #include "yield/auto_object.hpp"
 #include "yield/date_time.hpp"
 #include "yield/exception.hpp"
+#include "yield/fs/file_system.hpp"
 #include "yield/fs/stat.hpp"
-#include "yield/fs/volume.hpp"
 #include "yunit.hpp"
 
 #include <sstream>
@@ -49,30 +49,30 @@ namespace yield {
 namespace fs {
 class StatTest : public yunit::Test {
 public:
-  StatTest(Volume& volume)
+  StatTest(FileSystem& file_system)
     : test_dir_name("stat_test"),
       test_file_name("stat_test.txt"),
-      volume(volume.inc_ref())
+      file_system(file_system.inc_ref())
   { }
 
   virtual ~StatTest() {
-    Volume::dec_ref(volume);
+    FileSystem::dec_ref(file_system);
   }
 
   // Test
   void setup() {
     teardown();
 
-    if (!volume.touch(get_test_file_name()))
+    if (!file_system.touch(get_test_file_name()))
       throw Exception();
 
-    if (!volume.mkdir(get_test_dir_name()))
+    if (!file_system.mkdir(get_test_dir_name()))
       throw Exception();
   }
 
   void teardown() {
-    volume.unlink(get_test_file_name());
-    volume.rmdir(get_test_dir_name());
+    file_system.unlink(get_test_file_name());
+    file_system.rmdir(get_test_dir_name());
   }
 
 protected:
@@ -82,26 +82,26 @@ protected:
   const Path& get_test_file_name() const {
     return test_file_name;
   }
-  Volume& get_volume() const {
-    return volume;
+  FileSystem& get_file_system() const {
+    return file_system;
   }
 
 private:
   Path test_dir_name, test_file_name;
-  Volume& volume;
+  FileSystem& file_system;
 };
 
 
 class StatComparisonTest : public StatTest {
 public:
-  StatComparisonTest(Volume& volume)
-    : StatTest(volume)
+  StatComparisonTest(FileSystem& file_system)
+    : StatTest(file_system)
   { }
 
   // yunit::Test
   void run() {
-    auto_Object<Stat> stbuf1 = get_volume().stat(get_test_file_name());
-    auto_Object<Stat> stbuf2 = get_volume().stat(get_test_file_name());
+    auto_Object<Stat> stbuf1 = get_file_system().stat(get_test_file_name());
+    auto_Object<Stat> stbuf2 = get_file_system().stat(get_test_file_name());
     throw_assert_eq(*stbuf1, *stbuf2);
   }
 };
@@ -109,13 +109,13 @@ public:
 
 class StatDirTest : public StatTest {
 public:
-  StatDirTest(Volume& volume)
-    : StatTest(volume)
+  StatDirTest(FileSystem& file_system)
+    : StatTest(file_system)
   { }
 
   // yunit::Test
   void run() {
-    auto_Object<Stat> stbuf = get_volume().stat(get_test_dir_name());
+    auto_Object<Stat> stbuf = get_file_system().stat(get_test_dir_name());
     throw_assert(stbuf->has_atime());
     throw_assert(stbuf->has_ctime());
     throw_assert(stbuf->has_mtime());
@@ -133,13 +133,13 @@ public:
 
 class StatFileTest : public StatTest {
 public:
-  StatFileTest(Volume& volume)
-    : StatTest(volume)
+  StatFileTest(FileSystem& file_system)
+    : StatTest(file_system)
   { }
 
   // yunit::Test
   void run() {
-    auto_Object<Stat> stbuf = get_volume().stat(get_test_file_name());
+    auto_Object<Stat> stbuf = get_file_system().stat(get_test_file_name());
     throw_assert_eq(stbuf->get_size(), 0);
     throw_assert_false(stbuf->ISBLK());
     throw_assert_false(stbuf->ISCHR());
@@ -158,33 +158,33 @@ public:
 
 //TEST_EX( Stat, to_ostream, StatTest )
 //{
-//  auto_Object<Stat> stbuf = get_volume().stat( get_test_file_name() );
+//  auto_Object<Stat> stbuf = get_file_system().stat( get_test_file_name() );
 //  std::ostringstream oss;
 //  oss << *stbuf;
 //  throw_assert_false( oss.str().empty() );
 //}
 
 
-template <class VolumeType>
+template <class FileSystemType>
 class StatTestSuite : public yunit::TestSuite {
 public:
-  StatTestSuite(YO_NEW_REF Volume* volume = NULL)
-    : volume(volume != NULL ? *volume : *new VolumeType) {
-    add("Stat::operator==", new StatComparisonTest(this->volume));
-    add("Stat( dir )", new StatDirTest(this->volume));
-    add("Stat( file )", new StatFileTest(this->volume));
+  StatTestSuite(YO_NEW_REF FileSystem* file_system = NULL)
+    : file_system(file_system != NULL ? *file_system : *new FileSystemType) {
+    add("Stat::operator==", new StatComparisonTest(this->file_system));
+    add("Stat( dir )", new StatDirTest(this->file_system));
+    add("Stat( file )", new StatFileTest(this->file_system));
   }
 
   virtual ~StatTestSuite() {
-    Volume::dec_ref(volume);
+    FileSystem::dec_ref(file_system);
   }
 
-  Volume& get_volume() {
-    return volume;
+  FileSystem& get_file_system() {
+    return file_system;
   }
 
 private:
-  Volume& volume;
+  FileSystem& file_system;
 };
 }
 }

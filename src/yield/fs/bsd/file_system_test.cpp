@@ -1,4 +1,4 @@
-// yield/fs/bsd/volume_test.cpp
+// yield/fs/bsd/file_system_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -28,8 +28,8 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-#include "../volume_test.hpp"
-#include "volume.hpp"
+#include "../file_system_test.hpp"
+#include "file_system.hpp"
 
 
-TEST_SUITE_EX(BSDVolume, yield::fs::VolumeTestSuite<yield::fs::bsd::Volume>);
+TEST_SUITE_EX(BSDFileSystem, yield::fs::FileSystemTestSuite<yield::fs::bsd::FileSystem>);

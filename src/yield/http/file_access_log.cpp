@@ -31,7 +31,7 @@
 #include "file_access_log.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/fs/file.hpp"
-#include "yield/fs/volume.hpp"
+#include "yield/fs/file_system.hpp"
 
 #include <fcntl.h>
 
@@ -40,7 +40,7 @@ namespace yield {
 namespace http {
 using yield::fs::File;
 using yield::fs::Path;
-using yield::fs::Volume;
+using yield::fs::FileSystem;
 
 
 FileAccessLog::FileAccessLog(const Path& file_path, Format& format)
@@ -59,8 +59,8 @@ FileAccessLog::write
   const HTTPResponse& http_response
 ) {
   if (file == NULL) {
-    auto_Object<Volume> volume = Volume::create();
-    file = volume->open(file_path, O_CREAT | O_WRONLY | O_APPEND);
+    auto_Object<FileSystem> file_system = FileSystem::create();
+    file = file_system->open(file_path, O_CREAT | O_WRONLY | O_APPEND);
     if (file == NULL)
       return;
   }

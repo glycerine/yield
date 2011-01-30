@@ -30,7 +30,7 @@
 
 #include "yield/fs/file.hpp"
 #include "yield/fs/file_log.hpp"
-#include "yield/fs/volume.hpp"
+#include "yield/fs/file_system.hpp"
 
 
 namespace yield {
@@ -45,13 +45,13 @@ FileLog::~FileLog() {
 
 void FileLog::write(const char* str, size_t str_len) {
   if (file == NULL) {
-    Volume* volume = Volume::create();
-    if (volume != NULL) {
-      file = volume->open(file_path, O_CREAT | O_WRONLY | O_APPEND);
+    FileSystem* file_system = FileSystem::create();
+    if (file_system != NULL) {
+      file = file_system->open(file_path, O_CREAT | O_WRONLY | O_APPEND);
       if (file != NULL)
-        Volume::dec_ref(*volume);
+        FileSystem::dec_ref(*file_system);
       else {
-        Volume::dec_ref(*volume);
+        FileSystem::dec_ref(*file_system);
         return;
       }
     } else

@@ -1,4 +1,4 @@
-// yield/fs/bsd/volume.cpp
+// yield/fs/bsd/file_system.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -29,13 +29,13 @@
 
 
 #include "directory.hpp"
-#include "volume.hpp"
+#include "file_system.hpp"
 
 
 namespace yield {
 namespace fs {
 namespace bsd {
-YO_NEW_REF yield::fs::Directory* Volume::opendir(const Path& path) {
+YO_NEW_REF yield::fs::Directory* FileSystem::opendir(const Path& path) {
   DIR* dirp = ::opendir(path.c_str());
   if (dirp != NULL)
     return new Directory(dirp, path);

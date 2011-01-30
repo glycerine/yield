@@ -35,7 +35,7 @@
 #include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/fs/directory.hpp"
-#include "yield/fs/volume.hpp"
+#include "yield/fs/file_system.hpp"
 #include "yunit.hpp"
 
 
@@ -44,15 +44,15 @@ namespace fs {
 class DirectoryTest : public yunit::Test {
 public:
   virtual ~DirectoryTest() {
-    Volume::dec_ref(volume);
+    FileSystem::dec_ref(file_system);
   }
 
 protected:
-  DirectoryTest(Volume& volume)
+  DirectoryTest(FileSystem& file_system)
     : test_dir_name("directory_test"),
       test_file_name("directory_test.txt"),
       test_file_path(test_dir_name / test_file_name),
-      volume(volume.inc_ref()) {
+      file_system(file_system.inc_ref()) {
     directory = NULL;
   }
 
@@ -60,13 +60,13 @@ protected:
   void setup() {
     teardown();
 
-    if (!get_volume().mkdir(get_test_dir_name()))
+    if (!get_file_system().mkdir(get_test_dir_name()))
       throw Exception();
 
-    if (!get_volume().touch(get_test_file_path()))
+    if (!get_file_system().touch(get_test_file_path()))
       throw Exception();
 
-    directory = get_volume().opendir(get_test_dir_name());
+    directory = get_file_system().opendir(get_test_dir_name());
     if (directory == NULL)
       throw Exception();
   }
@@ -75,8 +75,8 @@ protected:
     Directory::dec_ref(directory);
     directory = NULL;
 
-    if (get_volume().exists(get_test_dir_name())) {
-      if (!get_volume().rmtree(get_test_dir_name()))
+    if (get_file_system().exists(get_test_dir_name())) {
+      if (!get_file_system().rmtree(get_test_dir_name()))
         throw Exception();
     }
   }
@@ -94,14 +94,14 @@ protected:
   const Path& get_test_file_path() const {
     return test_file_path;
   }
-  Volume& get_volume() const {
-    return volume;
+  FileSystem& get_file_system() const {
+    return file_system;
   }
 
 private:
   Directory* directory;
   Path test_dir_name, test_file_name, test_file_path;
-  Volume& volume;
+  FileSystem& file_system;
 };
 
 
@@ -109,8 +109,8 @@ private:
     class Directory_##TestName##Test : public DirectoryTest \
     { \
     public:\
-      Directory_##TestName##Test( yield::fs::Volume* volume = NULL ) \
-        : DirectoryTest( "Directory_" # TestName "Test", volume ) \
+      Directory_##TestName##Test( yield::fs::FileSystem* file_system = NULL ) \
+        : DirectoryTest( "Directory_" # TestName "Test", file_system ) \
       { } \
       void run(); \
     };\
@@ -119,8 +119,8 @@ private:
 
 class DirectoryCloseTest : public DirectoryTest {
 public:
-  DirectoryCloseTest(Volume& volume)
-    : DirectoryTest(volume)
+  DirectoryCloseTest(FileSystem& file_system)
+    : DirectoryTest(file_system)
   { }
 
   // Test
@@ -132,8 +132,8 @@ public:
 
 class DirectoryReadTest : public DirectoryTest {
 public:
-  DirectoryReadTest(Volume& volume)
-    : DirectoryTest(volume)
+  DirectoryReadTest(FileSystem& file_system)
+    : DirectoryTest(file_system)
   { }
 
   // Test
@@ -175,8 +175,8 @@ public:
 
 class DirectoryRewindTest : public DirectoryTest {
 public:
-  DirectoryRewindTest(Volume& volume)
-    : DirectoryTest(volume)
+  DirectoryRewindTest(FileSystem& file_system)
+    : DirectoryTest(file_system)
   { }
 
   // Test
@@ -196,18 +196,18 @@ public:
 };
 
 
-template <class VolumeType>
+template <class FileSystemType>
 class DirectoryTestSuite : public yunit::TestSuite {
 public:
-  DirectoryTestSuite(YO_NEW_REF VolumeType* volume = NULL) {
-    if (volume == NULL)
-      volume = new VolumeType;
+  DirectoryTestSuite(YO_NEW_REF FileSystemType* file_system = NULL) {
+    if (file_system == NULL)
+      file_system = new FileSystemType;
 
-    add("Directory::close", new DirectoryCloseTest(*volume));
-    add("Directory::read", new DirectoryReadTest(*volume));
-    add("Directory::rewind", new DirectoryRewindTest(*volume));
+    add("Directory::close", new DirectoryCloseTest(*file_system));
+    add("Directory::read", new DirectoryReadTest(*file_system));
+    add("Directory::rewind", new DirectoryRewindTest(*file_system));
 
-    Volume::dec_ref(*volume);
+    FileSystem::dec_ref(*file_system);
   }
 };
 }

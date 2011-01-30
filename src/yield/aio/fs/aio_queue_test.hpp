@@ -40,8 +40,8 @@
 #include "yield/aio/fs/pread_aiocb.hpp"
 #include "yield/aio/fs/pwrite_aiocb.hpp"
 #include "yield/fs/file.hpp"
+#include "yield/fs/file_system.hpp"
 #include "yield/fs/path.hpp"
-#include "yield/fs/volume.hpp"
 #include "yunit.hpp"
 
 #include <fcntl.h>
@@ -52,7 +52,7 @@ namespace aio {
 namespace fs {
 using yield::fs::File;
 using yield::fs::Path;
-using yield::fs::Volume;
+using yield::fs::FileSystem;
 
 
 template <class AIOQueueType>
@@ -66,18 +66,18 @@ public:
   void teardown() {
     delete aio_queue;
     aio_queue = NULL;
-    volume->unlink(get_test_file_name());
+    file_system->unlink(get_test_file_name());
   }
 
 protected:
   AIOQueueTest()
     : test_buffer("aio_queue_test"),
       test_file_name("aio_queue_test.txt") {
-    volume = Volume::create();
+    file_system = FileSystem::create();
   }
 
   ~AIOQueueTest() {
-    delete volume;
+    delete file_system;
   }
 
   AIOQueueType& get_aio_queue() const {
@@ -89,15 +89,15 @@ protected:
   const Path& get_test_file_name() const {
     return test_file_name;
   }
-  Volume& get_volume() const {
-    return *volume;
+  FileSystem& get_file_system() const {
+    return *file_system;
   }
 
 private:
   AIOQueueType* aio_queue;
   Page test_buffer;
   Path test_file_name;
-  Volume* volume;
+  FileSystem* file_system;
 };
 
 
@@ -111,7 +111,7 @@ public:
 
     {
       auto_Object<File> file
-      = this->get_volume().creat(this->get_test_file_name());
+      = this->get_file_system().creat(this->get_test_file_name());
 
       file->write
       (
@@ -121,7 +121,7 @@ public:
     }
 
     auto_Object<File> file
-    = this->get_volume().open
+    = this->get_file_system().open
       (
         this->get_test_file_name(),
         O_ASYNC | O_RDONLY
@@ -159,7 +159,7 @@ public:
   void run() {
     {
       auto_Object<File> file
-      = this->get_volume().open
+      = this->get_file_system().open
         (
           this->get_test_file_name(),
           O_ASYNC | O_CREAT | O_TRUNC | O_WRONLY
@@ -193,7 +193,7 @@ public:
 
     {
       auto_Object<File> file
-      = this->get_volume().open(this->get_test_file_name());
+      = this->get_file_system().open(this->get_test_file_name());
       auto_Object<Page> page = new Page;
       ssize_t read_ret = file->read(*page, page->capacity());
       throw_assert_gt(read_ret, 0);

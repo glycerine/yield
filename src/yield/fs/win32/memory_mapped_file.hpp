@@ -39,7 +39,7 @@
 namespace yield {
 namespace fs {
 namespace win32 {
-class Volume;
+class FileSystem;
 
 
 class MemoryMappedFile : public yield::fs::MemoryMappedFile {
@@ -60,7 +60,7 @@ public:
   bool unmap();
 
 private:
-  friend class Volume;
+  friend class FileSystem;
 
   MemoryMappedFile
   (

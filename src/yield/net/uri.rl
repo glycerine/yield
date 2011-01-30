@@ -219,6 +219,11 @@ void URI::init(const char* uri, size_t uri_len) {
   memset(&scheme, 0, sizeof(scheme));
   memset(&userinfo, 0, sizeof(userinfo));
 
+  int cs;
+  const char* eof = static_cast<char*>( *buffer ) + buffer->size();
+  char* p = static_cast<char*>( *buffer );
+  const char* pe = eof;
+
   %%{
     machine init;
     alphtype unsigned char;

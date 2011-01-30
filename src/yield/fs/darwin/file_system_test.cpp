@@ -1,4 +1,4 @@
-// yield/fs/darwin/volume_test.cpp
+// yield/fs/darwin/file_system_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -28,8 +28,8 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-#include "../volume_test.hpp"
-#include "volume.hpp"
+#include "../file_system_test.hpp"
+#include "file_system.hpp"
 
 
-TEST_SUITE_EX(DarwinVolume, yield::fs::VolumeTestSuite<yield::fs::darwin::Volume>);
+TEST_SUITE_EX(DarwinFileSystem, yield::fs::FileSystemTestSuite<yield::fs::darwin::FileSystem>);

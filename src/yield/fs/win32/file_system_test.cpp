@@ -1,4 +1,4 @@
-// yield/fs/win32/volume_test.cpp
+// yield/fs/win32/file_system_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -28,8 +28,8 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-#include "../volume_test.hpp"
-#include "volume.hpp"
+#include "../file_system_test.hpp"
+#include "file_system.hpp"
 
 
-TEST_SUITE_EX(Win32Volume, yield::fs::VolumeTestSuite<yield::fs::win32::Volume>);
+TEST_SUITE_EX(Win32FileSystem, yield::fs::FileSystemTestSuite<yield::fs::win32::FileSystem>);

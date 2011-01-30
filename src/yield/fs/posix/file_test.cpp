@@ -29,7 +29,7 @@
 
 
 #include "../file_test.hpp"
-#include "volume.hpp"
+#include "file_system.hpp"
 
 
-TEST_SUITE_EX(POSIXFile, yield::fs::FileTestSuite<yield::fs::posix::Volume>);
+TEST_SUITE_EX(POSIXFile, yield::fs::FileTestSuite<yield::fs::posix::FileSystem>);

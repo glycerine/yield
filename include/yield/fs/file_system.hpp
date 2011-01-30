@@ -1,4 +1,4 @@
-// yield/fs/volume.hpp
+// yield/fs/file_system.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -28,8 +28,8 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-#ifndef _YIELD_FS_VOLUME_HPP_
-#define _YIELD_FS_VOLUME_HPP_
+#ifndef _YIELD_FS_FILE_SYSTEM_HPP_
+#define _YIELD_FS_FILE_SYSTEM_HPP_
 
 
 #include "yield/object.hpp"
@@ -71,7 +71,7 @@ class MemoryMappedFile;
 class Stat;
 
 
-class Volume : public Object {
+class FileSystem : public Object {
 public:
   static mode_t FILE_MODE_DEFAULT;
   static mode_t DIRECTORY_MODE_DEFAULT;
@@ -82,9 +82,9 @@ public:
   static uint32_t OPEN_FLAGS_DEFAULT; // O_RDONLY
 
 public:
-  static Volume* create();
+  static FileSystem* create();
 
-  virtual ~Volume() { }
+  virtual ~FileSystem() { }
 
   virtual bool access(const Path&, int amode) = 0;
   bool chmod(const Path&, mode_t);
@@ -165,10 +165,8 @@ public:
     const DateTime& ctime
   );
 
-  virtual bool volname(const Path&, OUT Path&) = 0;
-
   // Object
-  Volume& inc_ref() {
+  FileSystem& inc_ref() {
     return Object::inc_ref(*this);
   }
 

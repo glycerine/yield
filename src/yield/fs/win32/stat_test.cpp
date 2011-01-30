@@ -28,9 +28,9 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
+#include "file_system.hpp"
 #include "../stat_test.hpp"
 #include "stat.hpp"
-#include "volume.hpp"
 
 #include <Windows.h>
 
@@ -41,13 +41,13 @@ namespace fs {
 namespace win32 {
 class StatBY_HANDLE_FILE_INFORMATIONTest : public StatTest {
 public:
-  StatBY_HANDLE_FILE_INFORMATIONTest(yield::fs::Volume& volume)
-    : StatTest(volume)
+  StatBY_HANDLE_FILE_INFORMATIONTest(yield::fs::FileSystem& file_system)
+    : StatTest(file_system)
   { }
 
   virtual void run() {
     auto_Object<Stat> stbuf1
-    = static_cast<Stat*>(get_volume().stat(get_test_file_name()));
+    = static_cast<Stat*>(get_file_system().stat(get_test_file_name()));
 
     BY_HANDLE_FILE_INFORMATION bhfi = *stbuf1;
 
@@ -86,13 +86,13 @@ public:
 
 class StatWIN32_FILE_ATTRIBUTE_DATATest : public StatTest {
 public:
-  StatWIN32_FILE_ATTRIBUTE_DATATest(yield::fs::Volume& volume)
-    : StatTest(volume)
+  StatWIN32_FILE_ATTRIBUTE_DATATest(yield::fs::FileSystem& file_system)
+    : StatTest(file_system)
   { }
 
   virtual void run() {
     auto_Object<Stat> stbuf1
-    = static_cast<Stat*>(get_volume().stat(get_test_file_name()));
+    = static_cast<Stat*>(get_file_system().stat(get_test_file_name()));
 
     WIN32_FILE_ATTRIBUTE_DATA fad = *stbuf1;
 
@@ -126,13 +126,13 @@ public:
 
 class StatWIN32_FIND_DATATest : public StatTest {
 public:
-  StatWIN32_FIND_DATATest(yield::fs::Volume& volume)
-    : StatTest(volume)
+  StatWIN32_FIND_DATATest(yield::fs::FileSystem& file_system)
+    : StatTest(file_system)
   { }
 
   virtual void run() {
     auto_Object<Stat> stbuf1
-    = static_cast<Stat*>(get_volume().stat(get_test_file_name()));
+    = static_cast<Stat*>(get_file_system().stat(get_test_file_name()));
 
     WIN32_FIND_DATA fd = *stbuf1;
 
@@ -167,25 +167,25 @@ public:
 };
 
 
-class StatTestSuite : public yield::fs::StatTestSuite<Volume> {
+class StatTestSuite : public yield::fs::StatTestSuite<FileSystem> {
 public:
   StatTestSuite() {
     add
     (
       "Stat+BY_HANDLE_FILE_INFORMATION()",
-      new StatBY_HANDLE_FILE_INFORMATIONTest(get_volume())
+      new StatBY_HANDLE_FILE_INFORMATIONTest(get_file_system())
     );
 
     add
     (
       "Stat+WIN32_FILE_ATTRIBUTE_DATA",
-      new StatWIN32_FILE_ATTRIBUTE_DATATest(get_volume())
+      new StatWIN32_FILE_ATTRIBUTE_DATATest(get_file_system())
     );
 
     add
     (
       "Stat+WIN32_FIND_DATA",
-      new StatWIN32_FIND_DATATest(get_volume())
+      new StatWIN32_FIND_DATATest(get_file_system())
     );
   }
 };

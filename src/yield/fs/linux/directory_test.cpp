@@ -29,7 +29,7 @@
 
 
 #include "../directory_test.hpp"
-#include "volume.hpp"
+#include "file_system.hpp"
 
 
-TEST_SUITE_EX(LinuxDirectory, yield::fs::DirectoryTestSuite<yield::fs::linux::Volume>);
+TEST_SUITE_EX(LinuxDirectory, yield::fs::DirectoryTestSuite<yield::fs::linux::FileSystem>);

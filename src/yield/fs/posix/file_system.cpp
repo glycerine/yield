@@ -1,4 +1,4 @@
-// yield/fs/posix/volume.cpp
+// yield/fs/posix/file_system.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -32,7 +32,7 @@
 #include "file.hpp"
 #include "memory_mapped_file.hpp"
 #include "stat.hpp"
-#include "volume.hpp"
+#include "file_system.hpp"
 #include "yield/assert.hpp"
 
 #include <errno.h>
@@ -48,11 +48,11 @@
 namespace yield {
 namespace fs {
 namespace posix {
-bool Volume::access(const Path& path, int amode) {
+bool FileSystem::access(const Path& path, int amode) {
   return ::access(path.c_str(), amode) >= 0;
 }
 
-yield::fs::Stat* Volume::getattr(const Path& path) {
+yield::fs::Stat* FileSystem::getattr(const Path& path) {
   struct stat stbuf;
   if (::stat(path.c_str(), &stbuf) != -1)
     return new Stat(stbuf);
@@ -60,16 +60,16 @@ yield::fs::Stat* Volume::getattr(const Path& path) {
     return NULL;
 }
 
-bool Volume::link(const Path& old_path, const Path& new_path) {
+bool FileSystem::link(const Path& old_path, const Path& new_path) {
   return ::link(old_path.c_str(), new_path.c_str()) != -1;
 }
 
-bool Volume::mkdir(const Path& path, mode_t mode) {
+bool FileSystem::mkdir(const Path& path, mode_t mode) {
   return ::mkdir(path.c_str(), mode) != -1;
 }
 
 yield::fs::File*
-Volume::mkfifo
+FileSystem::mkfifo
 (
   const Path& path,
   uint32_t flags,
@@ -82,7 +82,7 @@ Volume::mkfifo
 }
 
 void*
-Volume::mmap
+FileSystem::mmap
 (
   void* start,
   size_t length,
@@ -95,7 +95,7 @@ Volume::mmap
 }
 
 yield::fs::MemoryMappedFile*
-Volume::mmap
+FileSystem::mmap
 (
   yield::fs::File& file,
   void* start,
@@ -140,7 +140,7 @@ Volume::mmap
 }
 
 yield::fs::File*
-Volume::open
+FileSystem::open
 (
   const Path& path,
   uint32_t flags,
@@ -154,7 +154,7 @@ Volume::open
     return NULL;
 }
 
-yield::fs::Directory* Volume::opendir(const Path& path) {
+yield::fs::Directory* FileSystem::opendir(const Path& path) {
   DIR* dirp = ::opendir(path.c_str());
   if (dirp != NULL)
     return new Directory(dirp, path);
@@ -162,12 +162,12 @@ yield::fs::Directory* Volume::opendir(const Path& path) {
     return NULL;
 }
 
-YO_NEW_REF ExtendedAttributes* Volume::openxattrs(const Path&) {
+YO_NEW_REF ExtendedAttributes* FileSystem::openxattrs(const Path&) {
   errno = ENOTSUP;
   return NULL;
 }
 
-bool Volume::readlink(const Path& path, OUT Path& target_path) {
+bool FileSystem::readlink(const Path& path, OUT Path& target_path) {
   char target_path_[PATH_MAX];
   ssize_t target_path_len
   = ::readlink(path.c_str(), target_path_, PATH_MAX);
@@ -178,7 +178,7 @@ bool Volume::readlink(const Path& path, OUT Path& target_path) {
     return false;
 }
 
-bool Volume::realpath(const Path& path, OUT Path& realpath) {
+bool FileSystem::realpath(const Path& path, OUT Path& realpath) {
   char realpath_[PATH_MAX];
   if (::realpath(path.c_str(), realpath_) != NULL) {
     realpath.assign(realpath_);
@@ -187,15 +187,15 @@ bool Volume::realpath(const Path& path, OUT Path& realpath) {
     return false;
 }
 
-bool Volume::rename(const Path& from_path, const Path& to_path) {
+bool FileSystem::rename(const Path& from_path, const Path& to_path) {
   return ::rename(from_path.c_str(), to_path.c_str()) != -1;
 }
 
-bool Volume::rmdir(const Path& path) {
+bool FileSystem::rmdir(const Path& path) {
   return ::rmdir(path.c_str()) != -1;
 }
 
-bool Volume::setattr(const Path& path, const yield::fs::Stat& stbuf) {
+bool FileSystem::setattr(const Path& path, const yield::fs::Stat& stbuf) {
   if
   (
     stbuf.has_attributes()
@@ -269,25 +269,20 @@ bool Volume::setattr(const Path& path, const yield::fs::Stat& stbuf) {
   return true;
 }
 
-bool Volume::statvfs(const Path& path, struct statvfs& stbuf) {
+bool FileSystem::statvfs(const Path& path, struct statvfs& stbuf) {
   return ::statvfs(path.c_str(), &stbuf) == 0;
 }
 
-bool Volume::symlink(const Path& old_path, const Path& new_path) {
+bool FileSystem::symlink(const Path& old_path, const Path& new_path) {
   return ::symlink(old_path.c_str(), new_path.c_str()) != -1;
 }
 
-bool Volume::truncate(const Path& path, uint64_t new_size) {
+bool FileSystem::truncate(const Path& path, uint64_t new_size) {
   return ::truncate(path.c_str(), new_size) >= 0;
 }
 
-bool Volume::unlink(const Path& path) {
+bool FileSystem::unlink(const Path& path) {
   return ::unlink(path.c_str()) != -1;
-}
-
-bool Volume::volname(const Path&, OUT Path&) {
-  errno = ENOTSUP;
-  return false;
 }
 }
 }

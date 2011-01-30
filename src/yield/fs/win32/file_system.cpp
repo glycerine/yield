@@ -1,4 +1,4 @@
-// yield/fs/win32/volume.cpp
+// yield/fs/win32/file_system.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -33,7 +33,7 @@
 #include "memory_mapped_file.hpp"
 #include "named_pipe.hpp"
 #include "stat.hpp"
-#include "volume.hpp"
+#include "file_system.hpp"
 #include "yield/assert.hpp"
 #include "yield/fs/path.hpp"
 
@@ -44,11 +44,11 @@
 namespace yield {
 namespace fs {
 namespace win32 {
-bool Volume::access(const Path&, int) {
+bool FileSystem::access(const Path&, int) {
   return true;
 }
 
-yield::fs::Stat* Volume::getattr(const Path& path) {
+yield::fs::Stat* FileSystem::getattr(const Path& path) {
   WIN32_FILE_ATTRIBUTE_DATA stbuf;
   if (GetFileAttributesEx(path.c_str(), GetFileExInfoStandard, &stbuf))
     return new Stat(stbuf);
@@ -56,14 +56,14 @@ yield::fs::Stat* Volume::getattr(const Path& path) {
     return NULL;
 }
 
-bool Volume::isdir(const Path& path) {
+bool FileSystem::isdir(const Path& path) {
   DWORD dwAttributes = GetFileAttributes(path.c_str());
   return dwAttributes != INVALID_FILE_ATTRIBUTES
          &&
          (dwAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
 }
 
-bool Volume::isfile(const Path& path) {
+bool FileSystem::isfile(const Path& path) {
   DWORD dwAttributes = GetFileAttributes(path.c_str());
   return dwAttributes != INVALID_FILE_ATTRIBUTES
          &&
@@ -74,7 +74,7 @@ bool Volume::isfile(const Path& path) {
          );
 }
 
-bool Volume::link(const Path& old_path, const Path& new_path) {
+bool FileSystem::link(const Path& old_path, const Path& new_path) {
   return CreateHardLink
          (
            new_path.c_str(),
@@ -83,12 +83,12 @@ bool Volume::link(const Path& old_path, const Path& new_path) {
          ) == TRUE;
 }
 
-bool Volume::mkdir(const Path& path, mode_t mode) {
+bool FileSystem::mkdir(const Path& path, mode_t mode) {
   return CreateDirectory(path.c_str(), NULL) == TRUE;
 }
 
 yield::fs::File*
-Volume::mkfifo
+FileSystem::mkfifo
 (
   const Path& path,
   uint32_t flags,
@@ -135,7 +135,7 @@ Volume::mkfifo
 }
 
 void*
-Volume::mmap
+FileSystem::mmap
 (
   size_t length,
   int prot,
@@ -211,7 +211,7 @@ Volume::mmap
 }
 
 yield::fs::MemoryMappedFile*
-Volume::mmap
+FileSystem::mmap
 (
   yield::fs::File& file,
   void* addr,
@@ -271,7 +271,7 @@ Volume::mmap
 }
 
 yield::fs::File*
-Volume::open
+FileSystem::open
 (
   const Path& path,
   uint32_t flags,
@@ -338,7 +338,7 @@ Volume::open
   return NULL;
 }
 
-yield::fs::Directory* Volume::opendir(const Path& path) {
+yield::fs::Directory* FileSystem::opendir(const Path& path) {
   HANDLE hDirectory
   = CreateFile
     (
@@ -357,17 +357,17 @@ yield::fs::Directory* Volume::opendir(const Path& path) {
     return NULL;
 }
 
-YO_NEW_REF ExtendedAttributes* Volume::openxattrs(const Path&) {
+YO_NEW_REF ExtendedAttributes* FileSystem::openxattrs(const Path&) {
   SetLastError(ERROR_NOT_SUPPORTED);
   return NULL;
 }
 
-bool Volume::readlink(const Path&, Path&) {
+bool FileSystem::readlink(const Path&, Path&) {
   SetLastError(ERROR_NOT_SUPPORTED);
   return false;
 }
 
-bool Volume::realpath(const Path& path, OUT Path& realpath) {
+bool FileSystem::realpath(const Path& path, OUT Path& realpath) {
   wchar_t full_path_name[MAX_PATH];
 
   DWORD full_path_name_len
@@ -380,7 +380,7 @@ bool Volume::realpath(const Path& path, OUT Path& realpath) {
     return false;
 }
 
-bool Volume::rename(const Path& from_path, const Path& to_path) {
+bool FileSystem::rename(const Path& from_path, const Path& to_path) {
   return MoveFileEx
          (
            from_path.c_str(),
@@ -389,11 +389,11 @@ bool Volume::rename(const Path& from_path, const Path& to_path) {
          ) == TRUE;
 }
 
-bool Volume::rmdir(const Path& path) {
+bool FileSystem::rmdir(const Path& path) {
   return RemoveDirectory(path.c_str()) == TRUE;
 }
 
-bool Volume::setattr(const Path& path, const yield::fs::Stat& stbuf) {
+bool FileSystem::setattr(const Path& path, const yield::fs::Stat& stbuf) {
   if
   (
     stbuf.has_blksize()
@@ -481,7 +481,7 @@ bool Volume::setattr(const Path& path, const yield::fs::Stat& stbuf) {
   return true;
 }
 
-bool Volume::statvfs(const Path& path, struct statvfs& stbuf) {
+bool FileSystem::statvfs(const Path& path, struct statvfs& stbuf) {
   ULARGE_INTEGER uFreeBytesAvailableToCaller,
                  uTotalNumberOfBytes,
                  uTotalNumberOfFreeBytes;
@@ -509,54 +509,21 @@ bool Volume::statvfs(const Path& path, struct statvfs& stbuf) {
     return false;
 }
 
-bool Volume::symlink(const Path&, const Path&) {
+bool FileSystem::symlink(const Path&, const Path&) {
   SetLastError(ERROR_NOT_SUPPORTED);
   return false;
 }
 
-bool Volume::unlink(const Path& path) {
+bool FileSystem::unlink(const Path& path) {
   return DeleteFileW(path.c_str()) == TRUE;
 }
 
-bool Volume::truncate(const Path& path, uint64_t new_size) {
+bool FileSystem::truncate(const Path& path, uint64_t new_size) {
   yield::fs::File* file
   = open(path, O_CREAT | O_WRONLY, FILE_MODE_DEFAULT, 0);
   if (file != NULL) {
     file->truncate(new_size);
     File::dec_ref(*file);
-    return true;
-  } else
-    return false;
-}
-
-bool Volume::volname(const Path& path, OUT Path& volname) {
-  wchar_t file_system_name[MAX_PATH],
-          volume_name[MAX_PATH];
-
-  Path realpath;
-  if (this->realpath(path, realpath)) {
-    Path::size_type colon_i = realpath.find_first_of(L":\\");
-    debug_assert_ne(colon_i, Path::npos);
-    volname.assign(realpath.data(), colon_i + 2);
-
-    if
-    (
-      GetVolumeInformation
-      (
-        volname.c_str(),
-        volume_name,
-        MAX_PATH,
-        NULL,
-        NULL,
-        NULL,
-        file_system_name,
-        MAX_PATH
-      )
-    ) {
-      if (wcsnlen(volume_name, MAX_PATH) > 0)
-        volname = volume_name;
-    }
-
     return true;
   } else
     return false;

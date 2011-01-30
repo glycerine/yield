@@ -36,8 +36,8 @@
 #include "extended_attributes_test.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/fs/file.hpp"
+#include "yield/fs/file_system.hpp"
 #include "yield/fs/stat.hpp"
-#include "yield/fs/volume.hpp"
 
 #include <fcntl.h> // For O_*
 
@@ -46,24 +46,24 @@ namespace yield {
 namespace fs {
 class FilePair : public ChannelPair {
 public:
-  FilePair(const Path& path, Volume& volume)
+  FilePair(const Path& path, FileSystem& file_system)
     : path(path),
-      volume(volume.inc_ref()) {
+      file_system(file_system.inc_ref()) {
     read_file = write_file = NULL;
   }
 
   ~FilePair() {
     File::dec_ref(read_file);
     File::dec_ref(write_file);
-    volume.unlink(path);
-    Volume::dec_ref(volume);
+    file_system.unlink(path);
+    FileSystem::dec_ref(file_system);
   }
 
   File& get_read_file() {
     if (read_file == NULL) {
       get_write_file();
 
-      read_file = volume.open(path, O_RDONLY);
+      read_file = file_system.open(path, O_RDONLY);
       if (read_file == NULL) throw Exception();
     }
 
@@ -73,7 +73,7 @@ public:
   File& get_write_file() {
     if (write_file == NULL) {
       write_file
-      = volume.open(path, O_CREAT | O_TRUNC | O_WRONLY);
+      = file_system.open(path, O_CREAT | O_TRUNC | O_WRONLY);
       if (write_file == NULL) throw Exception();
     }
 
@@ -91,29 +91,29 @@ public:
 private:
   Path path;
   File* read_file, *write_file;
-  Volume& volume;
+  FileSystem& file_system;
 };
 
 
 class FilePairFactory : public ChannelPairFactory {
 public:
-  FilePairFactory(const Path& path, Volume& volume)
+  FilePairFactory(const Path& path, FileSystem& file_system)
     : path(path),
-      volume(volume.inc_ref())
+      file_system(file_system.inc_ref())
   { }
 
   ~FilePairFactory() {
-    Volume::dec_ref(volume);
+    FileSystem::dec_ref(file_system);
   }
 
   // yield::ChannelPairFactory
   ChannelPair& createChannelPair() {
-    return *new FilePair(path, volume);
+    return *new FilePair(path, file_system);
   }
 
 private:
   Path path;
-  Volume& volume;
+  FileSystem& file_system;
 };
 
 
@@ -599,16 +599,16 @@ public:
 };
 
 
-template <class VolumeType>
+template <class FileSystemType>
 class FileTestSuite : public ChannelTestSuite {
 public:
-  FileTestSuite(YO_NEW_REF VolumeType* volume = NULL)
+  FileTestSuite(YO_NEW_REF FileSystemType* file_system = NULL)
     : ChannelTestSuite
     (
       *new FilePairFactory
       (
         "file_test.txt",
-        volume != NULL ? *volume : *new VolumeType
+        file_system != NULL ? *file_system : *new FileSystemType
       )
     ) {
     FilePairFactory& file_pair_factory

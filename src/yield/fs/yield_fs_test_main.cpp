@@ -40,19 +40,19 @@ extern yunit::TestSuite& PathTestSuite();
 extern yunit::TestSuite& BSDDirectoryTestSuite();
 #endif
 #if defined(__MACH__) || defined(__FreeBSD__)
-extern yunit::TestSuite& BSDVolumeTestSuite();
+extern yunit::TestSuite& BSDFileSystemTestSuite();
 #endif
 #ifdef __MACH__
 extern yunit::TestSuite& DarwinFileTestSuite();
 #endif
 #ifdef __MACH__
-extern yunit::TestSuite& DarwinVolumeTestSuite();
+extern yunit::TestSuite& DarwinFileSystemTestSuite();
 #endif
 #ifdef __FreeBSD__
 extern yunit::TestSuite& FreeBSDFileTestSuite();
 #endif
 #ifdef __FreeBSD__
-extern yunit::TestSuite& FreeBSDVolumeTestSuite();
+extern yunit::TestSuite& FreeBSDFileSystemTestSuite();
 #endif
 #ifdef __linux__
 extern yunit::TestSuite& LinuxDirectoryTestSuite();
@@ -61,7 +61,7 @@ extern yunit::TestSuite& LinuxDirectoryTestSuite();
 extern yunit::TestSuite& LinuxFileTestSuite();
 #endif
 #ifdef __linux__
-extern yunit::TestSuite& LinuxVolumeTestSuite();
+extern yunit::TestSuite& LinuxFileSystemTestSuite();
 #endif
 #ifdef __unix__
 extern yunit::TestSuite& POSIXDirectoryTestSuite();
@@ -73,7 +73,7 @@ extern yunit::TestSuite& POSIXFileTestSuite();
 extern yunit::TestSuite& POSIXStatTestSuite();
 #endif
 #ifdef __unix__
-extern yunit::TestSuite& POSIXVolumeTestSuite();
+extern yunit::TestSuite& POSIXFileSystemTestSuite();
 #endif
 #ifdef _WIN32
 extern yunit::TestSuite& Win32DirectoryTestSuite();
@@ -85,7 +85,7 @@ extern yunit::TestSuite& Win32FileTestSuite();
 extern yunit::TestSuite& Win32StatTestSuite();
 #endif
 #ifdef _WIN32
-extern yunit::TestSuite& Win32VolumeTestSuite();
+extern yunit::TestSuite& Win32FileSystemTestSuite();
 #endif
 
 
@@ -115,9 +115,9 @@ int main(int, char**) {
 #endif
 
 #if defined(__MACH__) || defined(__FreeBSD__)
-  // BSDVolume
-  std::cout << "BSDVolume:" << std::endl;
-  failed_test_case_count += BSDVolumeTestSuite().run();
+  // BSDFileSystem
+  std::cout << "BSDFileSystem:" << std::endl;
+  failed_test_case_count += BSDFileSystemTestSuite().run();
   std::cout << std::endl;
 #endif
 
@@ -129,9 +129,9 @@ int main(int, char**) {
 #endif
 
 #ifdef __MACH__
-  // DarwinVolume
-  std::cout << "DarwinVolume:" << std::endl;
-  failed_test_case_count += DarwinVolumeTestSuite().run();
+  // DarwinFileSystem
+  std::cout << "DarwinFileSystem:" << std::endl;
+  failed_test_case_count += DarwinFileSystemTestSuite().run();
   std::cout << std::endl;
 #endif
 
@@ -143,9 +143,9 @@ int main(int, char**) {
 #endif
 
 #ifdef __FreeBSD__
-  // FreeBSDVolume
-  std::cout << "FreeBSDVolume:" << std::endl;
-  failed_test_case_count += FreeBSDVolumeTestSuite().run();
+  // FreeBSDFileSystem
+  std::cout << "FreeBSDFileSystem:" << std::endl;
+  failed_test_case_count += FreeBSDFileSystemTestSuite().run();
   std::cout << std::endl;
 #endif
 
@@ -164,9 +164,9 @@ int main(int, char**) {
 #endif
 
 #ifdef __linux__
-  // LinuxVolume
-  std::cout << "LinuxVolume:" << std::endl;
-  failed_test_case_count += LinuxVolumeTestSuite().run();
+  // LinuxFileSystem
+  std::cout << "LinuxFileSystem:" << std::endl;
+  failed_test_case_count += LinuxFileSystemTestSuite().run();
   std::cout << std::endl;
 #endif
 
@@ -192,9 +192,9 @@ int main(int, char**) {
 #endif
 
 #ifdef __unix__
-  // POSIXVolume
-  std::cout << "POSIXVolume:" << std::endl;
-  failed_test_case_count += POSIXVolumeTestSuite().run();
+  // POSIXFileSystem
+  std::cout << "POSIXFileSystem:" << std::endl;
+  failed_test_case_count += POSIXFileSystemTestSuite().run();
   std::cout << std::endl;
 #endif
 
@@ -220,9 +220,9 @@ int main(int, char**) {
 #endif
 
 #ifdef _WIN32
-  // Win32Volume
-  std::cout << "Win32Volume:" << std::endl;
-  failed_test_case_count += Win32VolumeTestSuite().run();
+  // Win32FileSystem
+  std::cout << "Win32FileSystem:" << std::endl;
+  failed_test_case_count += Win32FileSystemTestSuite().run();
   std::cout << std::endl;
 #endif
 

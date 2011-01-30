@@ -1,4 +1,4 @@
-// yield/fs/freebsd/volume_test.cpp
+// yield/fs/freebsd/file_system_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -28,8 +28,8 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-#include "../volume_test.hpp"
-#include "volume.hpp"
+#include "../file_system_test.hpp"
+#include "file_system.hpp"
 
 
-TEST_SUITE_EX(FreeBSDVolume, yield::fs::VolumeTestSuite<yield::fs::freebsd::Volume>);
+TEST_SUITE_EX(FreeBSDFileSystem, yield::fs::FileSystemTestSuite<yield::fs::freebsd::FileSystem>);

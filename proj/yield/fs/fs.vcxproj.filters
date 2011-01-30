@@ -39,6 +39,9 @@
     <ClInclude Include="..\..\..\include\yield\fs\file_log.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\file_system.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\include\yield\fs\memory_mapped_file.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -46,9 +49,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\yield\fs\stat.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\fs\volume.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -62,13 +62,13 @@
     <ClCompile Include="..\..\..\src\yield\fs\bsd\directory_test.cpp">
       <Filter>Source Files\bsd</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\fs\bsd\volume.cpp">
+    <ClCompile Include="..\..\..\src\yield\fs\bsd\file_system.cpp">
       <Filter>Source Files\bsd</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\fs\bsd\volume.hpp">
+    <ClInclude Include="..\..\..\src\yield\fs\bsd\file_system.hpp">
       <Filter>Source Files\bsd</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\fs\bsd\volume_test.cpp">
+    <ClCompile Include="..\..\..\src\yield\fs\bsd\file_system_test.cpp">
       <Filter>Source Files\bsd</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\fs\darwin\extended_attributes.cpp">
@@ -83,16 +83,16 @@
     <ClInclude Include="..\..\..\src\yield\fs\darwin\file.hpp">
       <Filter>Source Files\darwin</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\fs\darwin\file_test.cpp">
+    <ClCompile Include="..\..\..\src\yield\fs\darwin\file_system.cpp">
       <Filter>Source Files\darwin</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\fs\darwin\volume.cpp">
-      <Filter>Source Files\darwin</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\fs\darwin\volume.hpp">
+    <ClInclude Include="..\..\..\src\yield\fs\darwin\file_system.hpp">
       <Filter>Source Files\darwin</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\fs\darwin\volume_test.cpp">
+    <ClCompile Include="..\..\..\src\yield\fs\darwin\file_system_test.cpp">
+      <Filter>Source Files\darwin</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\darwin\file_test.cpp">
       <Filter>Source Files\darwin</Filter>
     </ClCompile>
     <ClInclude Include="..\..\..\src\yield\fs\directory_test.hpp">
@@ -110,6 +110,12 @@
     <ClCompile Include="..\..\..\src\yield\fs\file_log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\file_system.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\file_system_test.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\src\yield\fs\file_test.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -125,16 +131,16 @@
     <ClInclude Include="..\..\..\src\yield\fs\freebsd\file.hpp">
       <Filter>Source Files\freebsd</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\fs\freebsd\file_test.cpp">
+    <ClCompile Include="..\..\..\src\yield\fs\freebsd\file_system.cpp">
       <Filter>Source Files\freebsd</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\fs\freebsd\volume.cpp">
-      <Filter>Source Files\freebsd</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\fs\freebsd\volume.hpp">
+    <ClInclude Include="..\..\..\src\yield\fs\freebsd\file_system.hpp">
       <Filter>Source Files\freebsd</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\fs\freebsd\volume_test.cpp">
+    <ClCompile Include="..\..\..\src\yield\fs\freebsd\file_system_test.cpp">
+      <Filter>Source Files\freebsd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\freebsd\file_test.cpp">
       <Filter>Source Files\freebsd</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\fs\linux\directory.cpp">
@@ -158,16 +164,16 @@
     <ClInclude Include="..\..\..\src\yield\fs\linux\file.hpp">
       <Filter>Source Files\linux</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\fs\linux\file_test.cpp">
+    <ClCompile Include="..\..\..\src\yield\fs\linux\file_system.cpp">
       <Filter>Source Files\linux</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\fs\linux\volume.cpp">
-      <Filter>Source Files\linux</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\fs\linux\volume.hpp">
+    <ClInclude Include="..\..\..\src\yield\fs\linux\file_system.hpp">
       <Filter>Source Files\linux</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\fs\linux\volume_test.cpp">
+    <ClCompile Include="..\..\..\src\yield\fs\linux\file_system_test.cpp">
+      <Filter>Source Files\linux</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\linux\file_test.cpp">
       <Filter>Source Files\linux</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\fs\memory_mapped_file.cpp">
@@ -197,6 +203,15 @@
     <ClInclude Include="..\..\..\src\yield\fs\posix\file.hpp">
       <Filter>Source Files\posix</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\fs\posix\file_system.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\posix\file_system.hpp">
+      <Filter>Source Files\posix</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\fs\posix\file_system_test.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\fs\posix\file_test.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>
@@ -218,25 +233,10 @@
     <ClCompile Include="..\..\..\src\yield\fs\posix\stat_test.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\fs\posix\volume.cpp">
-      <Filter>Source Files\posix</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\fs\posix\volume.hpp">
-      <Filter>Source Files\posix</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\fs\posix\volume_test.cpp">
-      <Filter>Source Files\posix</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\fs\stat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClInclude Include="..\..\..\src\yield\fs\stat_test.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\fs\volume.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\fs\volume_test.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClCompile Include="..\..\..\src\yield\fs\win32\directory.cpp">
@@ -254,6 +254,15 @@
     <ClInclude Include="..\..\..\src\yield\fs\win32\file.hpp">
       <Filter>Source Files\win32</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\fs\win32\file_system.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\win32\file_system.hpp">
+      <Filter>Source Files\win32</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\fs\win32\file_system_test.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\fs\win32\file_test.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
@@ -279,15 +288,6 @@
       <Filter>Source Files\win32</Filter>
     </ClInclude>
     <ClCompile Include="..\..\..\src\yield\fs\win32\stat_test.cpp">
-      <Filter>Source Files\win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\fs\win32\volume.cpp">
-      <Filter>Source Files\win32</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\fs\win32\volume.hpp">
-      <Filter>Source Files\win32</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\fs\win32\volume_test.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\fs\yield_fs_test_main.cpp">

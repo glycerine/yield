@@ -1,4 +1,4 @@
-// yield/fs/linux/volume.cpp
+// yield/fs/linux/file_system.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -31,7 +31,7 @@
 #include "directory.hpp"
 #include "extended_attributes.hpp"
 #include "file.hpp"
-#include "volume.hpp"
+#include "file_system.hpp"
 
 #include <fcntl.h>
 
@@ -40,7 +40,7 @@ namespace yield {
 namespace fs {
 namespace linux {
 yield::fs::File*
-Volume::open
+FileSystem::open
 (
   const Path& path,
   uint32_t flags,
@@ -54,7 +54,7 @@ Volume::open
     return NULL;
 }
 
-YO_NEW_REF yield::fs::Directory* Volume::opendir(const Path& path) {
+YO_NEW_REF yield::fs::Directory* FileSystem::opendir(const Path& path) {
   DIR* dirp = ::opendir(path.c_str());
   if (dirp != NULL)
     return new Directory(dirp, path);
@@ -63,7 +63,7 @@ YO_NEW_REF yield::fs::Directory* Volume::opendir(const Path& path) {
 }
 
 yield::fs::ExtendedAttributes*
-Volume::openxattrs
+FileSystem::openxattrs
 (
   const Path& path
 ) {

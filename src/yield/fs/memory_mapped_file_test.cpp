@@ -31,8 +31,8 @@
 #include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/fs/file.hpp"
+#include "yield/fs/file_system.hpp"
 #include "yield/fs/memory_mapped_file.hpp"
-#include "yield/fs/volume.hpp"
 #include "yunit.hpp"
 
 #include <fcntl.h> // For O_*
@@ -48,14 +48,14 @@ namespace fs {
 class MemoryMappedFileTest : public yunit::Test {
 public:
   virtual ~MemoryMappedFileTest() {
-    Volume::dec_ref(volume);
+    FileSystem::dec_ref(file_system);
   }
 
 protected:
   MemoryMappedFileTest()
     : test_file_name("mmf_test.bin"),
       test_string("test string") {
-    volume = NULL;
+    file_system = NULL;
   }
 
   File& get_test_file() const {
@@ -70,12 +70,12 @@ protected:
 
   // yunit::Test
   void setup() {
-    volume = Volume::create();
-    if (volume != NULL) {
-      volume->unlink(get_test_file_name());
+    file_system = FileSystem::create();
+    if (file_system != NULL) {
+      file_system->unlink(get_test_file_name());
 
       test_file
-      = volume->open
+      = file_system->open
         (
           get_test_file_name(),
           O_CREAT | O_TRUNC | O_RDWR | O_SYNC
@@ -84,42 +84,42 @@ protected:
       if (test_file != NULL)
         return;
       else
-        Volume::dec_ref(*volume);
+        FileSystem::dec_ref(*file_system);
     }
 
     throw Exception();
   }
 
   void teardown() {
-    if (volume != NULL) {
+    if (file_system != NULL) {
       test_file->close();
       File::dec_ref(*test_file);
-      volume->unlink(get_test_file_name());
+      file_system->unlink(get_test_file_name());
     }
   }
 
 protected:
-  Volume& get_volume() const {
-    return *volume;
+  FileSystem& get_file_system() const {
+    return *file_system;
   }
 
 private:
   File* test_file;
   Path test_file_name;
   string test_string;
-  Volume* volume;
+  FileSystem* file_system;
 };
 
 
 TEST_EX(MemoryMappedFile, mmap, MemoryMappedFileTest) {
   auto_Object<MemoryMappedFile> mmf
-  = get_volume().mmap(get_test_file().inc_ref());
+  = get_file_system().mmap(get_test_file().inc_ref());
 }
 
 TEST_EX(MemoryMappedFile, read, MemoryMappedFileTest) {
   {
     auto_Object<MemoryMappedFile> mmf
-    = get_volume().mmap(get_test_file().inc_ref());
+    = get_file_system().mmap(get_test_file().inc_ref());
 
     mmf->reserve(get_test_string().size());
 
@@ -138,14 +138,14 @@ TEST_EX(MemoryMappedFile, read, MemoryMappedFileTest) {
   }
 
   {
-    auto_Object<File> test_file = get_volume().open(get_test_file_name());
+    auto_Object<File> test_file = get_file_system().open(get_test_file_name());
 
     auto_Object<MemoryMappedFile> mmf
-    = get_volume().mmap
+    = get_file_system().mmap
       (
         test_file->inc_ref(),
         NULL,
-        Volume::MMAP_LENGTH_WHOLE_FILE,
+        FileSystem::MMAP_LENGTH_WHOLE_FILE,
         PROT_READ,
         MAP_PRIVATE
       );
@@ -161,7 +161,7 @@ TEST_EX(MemoryMappedFile, read, MemoryMappedFileTest) {
 
 TEST_EX(MemoryMappedFile, write, MemoryMappedFileTest) {
   auto_Object<MemoryMappedFile> mmf
-  = get_volume().mmap(get_test_file().inc_ref());
+  = get_file_system().mmap(get_test_file().inc_ref());
 
   mmf->reserve(get_test_string().size());
 

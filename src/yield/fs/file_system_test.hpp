@@ -1,4 +1,4 @@
-// yield/fs/volume_test.hpp
+// yield/fs/file_system_test.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -28,15 +28,15 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-#ifndef _YIELD_FS_VOLUME_TEST_HPP_
-#define _YIELD_FS_VOLUME_TEST_HPP_
+#ifndef _YIELD_FS_FILE_SYSTEM_TEST_HPP_
+#define _YIELD_FS_FILE_SYSTEM_TEST_HPP_
 
 
 #include "extended_attributes_test.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/fs/file.hpp"
 #include "yield/fs/stat.hpp"
-#include "yield/fs/volume.hpp"
+#include "yield/fs/file_system.hpp"
 #include "yunit.hpp"
 
 #include <fcntl.h>
@@ -47,16 +47,16 @@
 
 namespace yield {
 namespace fs {
-class VolumeTest : public yunit::Test {
+class FileSystemTest : public yunit::Test {
 public:
-  virtual ~VolumeTest() { }
+  virtual ~FileSystemTest() { }
 
 protected:
-  VolumeTest(Volume& volume)
-    : test_dir_name("volume_test"),
-      test_file_name("volume_test.txt"),
-      test_link_name("volume_test_link.txt"),
-      volume(volume.inc_ref())
+  FileSystemTest(FileSystem& file_system)
+    : test_dir_name("file_system_test"),
+      test_file_name("file_system_test.txt"),
+      test_link_name("file_system_test_link.txt"),
+      file_system(file_system.inc_ref())
   { }
 
   const Path& get_test_dir_name() const {
@@ -68,51 +68,51 @@ protected:
   const Path& get_test_link_name() const {
     return test_link_name;
   }
-  Volume& get_volume() const {
-    return volume;
+  FileSystem& get_file_system() const {
+    return file_system;
   }
 
   // yunit::Test
   void setup() {
     teardown();
-    volume.touch(get_test_file_name());
+    file_system.touch(get_test_file_name());
   }
 
   void teardown() {
-    volume.rmtree(get_test_dir_name());
-    volume.unlink(get_test_file_name());
-    volume.unlink(get_test_link_name());
+    file_system.rmtree(get_test_dir_name());
+    file_system.unlink(get_test_file_name());
+    file_system.unlink(get_test_link_name());
   }
 
 private:
   Path test_dir_name, test_file_name, test_link_name;
-  Volume& volume;
+  FileSystem& file_system;
 };
 
 
-class VolumeAccessTest : public VolumeTest {
+class FileSystemAccessTest : public FileSystemTest {
 public:
-  VolumeAccessTest(Volume& volume)
-    : VolumeTest(volume)
+  FileSystemAccessTest(FileSystem& file_system)
+    : FileSystemTest(file_system)
   { }
 
   // Test
   void run() {
-    throw_assert(get_volume().access(get_test_file_name(), O_RDONLY));
+    throw_assert(get_file_system().access(get_test_file_name(), O_RDONLY));
   }
 };
 
 
-class VolumeChmodTest : public VolumeTest {
+class FileSystemChmodTest : public FileSystemTest {
 public:
-  VolumeChmodTest(Volume& volume)
-    : VolumeTest(volume)
+  FileSystemChmodTest(FileSystem& file_system)
+    : FileSystemTest(file_system)
   { }
 
   // Test
   void run() {
-    mode_t mode = Volume::FILE_MODE_DEFAULT;
-    if (get_volume().chmod(get_test_file_name(), mode))
+    mode_t mode = FileSystem::FILE_MODE_DEFAULT;
+    if (get_file_system().chmod(get_test_file_name(), mode))
       return;
     else if (Exception::get_last_error_code() != ENOTSUP)
       throw Exception();
@@ -120,10 +120,10 @@ public:
 };
 
 
-class VolumeChownTest : public VolumeTest {
+class FileSystemChownTest : public FileSystemTest {
 public:
-  VolumeChownTest(Volume& volume)
-    : VolumeTest(volume)
+  FileSystemChownTest(FileSystem& file_system)
+    : FileSystemTest(file_system)
   { }
 
   // Test
@@ -138,7 +138,7 @@ public:
     gid = getgid();
 #endif
 
-    if (get_volume().chown(get_test_file_name(), uid, gid))
+    if (get_file_system().chown(get_test_file_name(), uid, gid))
       return;
     else if (Exception::get_last_error_code() != ENOTSUP)
       throw Exception();
@@ -146,15 +146,15 @@ public:
 };
 
 
-class VolumeCreatTest : public VolumeTest {
+class FileSystemCreatTest : public FileSystemTest {
 public:
-  VolumeCreatTest(Volume& volume)
-    : VolumeTest(volume)
+  FileSystemCreatTest(FileSystem& file_system)
+    : FileSystemTest(file_system)
   { }
 
   // Test
   void run() {
-    File* file = get_volume().creat(get_test_file_name());
+    File* file = get_file_system().creat(get_test_file_name());
     if (file != NULL)
       File::dec_ref(*file);
     else
@@ -163,148 +163,148 @@ public:
 };
 
 
-class VolumeExistsTest : public VolumeTest {
+class FileSystemExistsTest : public FileSystemTest {
 public:
-  VolumeExistsTest(Volume& volume)
-    : VolumeTest(volume)
+  FileSystemExistsTest(FileSystem& file_system)
+    : FileSystemTest(file_system)
   { }
 
   // Test
   void run() {
-    if (!get_volume().exists(get_test_file_name()))
+    if (!get_file_system().exists(get_test_file_name()))
       throw Exception();
 
-    throw_assert_false(get_volume().exists(Path("some other file.txt")));
+    throw_assert_false(get_file_system().exists(Path("some other file.txt")));
   }
 };
 
 
-class VolumeExtendedAttributesGetTest
-  : public VolumeTest,
+class FileSystemExtendedAttributesGetTest
+  : public FileSystemTest,
     private ExtendedAttributesGetTest {
 public:
-  VolumeExtendedAttributesGetTest(Volume& volume)
-    : VolumeTest(volume)
+  FileSystemExtendedAttributesGetTest(FileSystem& file_system)
+    : FileSystemTest(file_system)
   { }
 
   // Test
   void run() {
     ExtendedAttributesGetTest::run
     (
-      get_volume().openxattrs(get_test_file_name())
+      get_file_system().openxattrs(get_test_file_name())
     );
   }
 };
 
 
-class VolumeExtendedAttributesListTest
-  : public VolumeTest,
+class FileSystemExtendedAttributesListTest
+  : public FileSystemTest,
     private ExtendedAttributesListTest {
 public:
-  VolumeExtendedAttributesListTest(Volume& volume)
-    : VolumeTest(volume)
+  FileSystemExtendedAttributesListTest(FileSystem& file_system)
+    : FileSystemTest(file_system)
   { }
 
   // Test
   void run() {
     ExtendedAttributesListTest::run
     (
-      get_volume().openxattrs(get_test_file_name())
+      get_file_system().openxattrs(get_test_file_name())
     );
   }
 };
 
 
-class VolumeExtendedAttributesRemoveTest
-  : public VolumeTest,
+class FileSystemExtendedAttributesRemoveTest
+  : public FileSystemTest,
     private ExtendedAttributesRemoveTest {
 public:
-  VolumeExtendedAttributesRemoveTest(Volume& volume)
-    : VolumeTest(volume)
+  FileSystemExtendedAttributesRemoveTest(FileSystem& file_system)
+    : FileSystemTest(file_system)
   { }
 
   // Test
   void run() {
     ExtendedAttributesRemoveTest::run
     (
-      get_volume().openxattrs(get_test_file_name())
+      get_file_system().openxattrs(get_test_file_name())
     );
   }
 };
 
 
-class VolumeExtendedAttributesSetTest
-  : public VolumeTest,
+class FileSystemExtendedAttributesSetTest
+  : public FileSystemTest,
     private ExtendedAttributesSetTest {
 public:
-  VolumeExtendedAttributesSetTest(Volume& volume)
-    : VolumeTest(volume)
+  FileSystemExtendedAttributesSetTest(FileSystem& file_system)
+    : FileSystemTest(file_system)
   { }
 
   // Test
   void run() {
     ExtendedAttributesSetTest::run
     (
-      get_volume().openxattrs(get_test_file_name())
+      get_file_system().openxattrs(get_test_file_name())
     );
   }
 };
 
 
-class VolumeGetattrTest : public VolumeTest {
+class FileSystemGetattrTest : public FileSystemTest {
 public:
-  VolumeGetattrTest(Volume& volume)
-    : VolumeTest(volume)
+  FileSystemGetattrTest(FileSystem& file_system)
+    : FileSystemTest(file_system)
   { }
 
   // Test
   void run() {
-    auto_Object<Stat> stbuf = get_volume().getattr(get_test_file_name());
+    auto_Object<Stat> stbuf = get_file_system().getattr(get_test_file_name());
   }
 };
 
 
-class VolumeIsDirTest : public VolumeTest {
+class FileSystemIsDirTest : public FileSystemTest {
 public:
-  VolumeIsDirTest(Volume& volume)
-    : VolumeTest(volume)
+  FileSystemIsDirTest(FileSystem& file_system)
+    : FileSystemTest(file_system)
   { }
 
   // Test
   void run() {
-    get_volume().mkdir(get_test_dir_name());
-    throw_assert(get_volume().isdir(get_test_dir_name()));
-    throw_assert_false(get_volume().isdir(get_test_file_name()));
-    throw_assert_false(get_volume().isdir(Path("nodir")));
+    get_file_system().mkdir(get_test_dir_name());
+    throw_assert(get_file_system().isdir(get_test_dir_name()));
+    throw_assert_false(get_file_system().isdir(get_test_file_name()));
+    throw_assert_false(get_file_system().isdir(Path("nodir")));
   }
 };
 
 
-class VolumeIsFileTest : public VolumeTest {
+class FileSystemIsFileTest : public FileSystemTest {
 public:
-  VolumeIsFileTest(Volume& volume)
-    : VolumeTest(volume)
+  FileSystemIsFileTest(FileSystem& file_system)
+    : FileSystemTest(file_system)
   { }
 
   // Test
   void run() {
-    throw_assert(get_volume().isfile(get_test_file_name()));
-    get_volume().mkdir(get_test_dir_name());
-    throw_assert_false(get_volume().isfile(get_test_dir_name()));
-    throw_assert_false(get_volume().isfile(Path("nofile.txt")));
+    throw_assert(get_file_system().isfile(get_test_file_name()));
+    get_file_system().mkdir(get_test_dir_name());
+    throw_assert_false(get_file_system().isfile(get_test_dir_name()));
+    throw_assert_false(get_file_system().isfile(Path("nofile.txt")));
   }
 };
 
 
-class VolumeLinkTest : public VolumeTest {
+class FileSystemLinkTest : public FileSystemTest {
 public:
-  VolumeLinkTest(Volume& volume)
-    : VolumeTest(volume)
+  FileSystemLinkTest(FileSystem& file_system)
+    : FileSystemTest(file_system)
   { }
 
   // Test
   void run() {
-    if (get_volume().link(get_test_file_name(), get_test_link_name()))
+    if (get_file_system().link(get_test_file_name(), get_test_link_name()))
       return;
     else if (Exception::get_last_error_code() != ENOTSUP)
       throw Exception();
@@ -312,46 +312,46 @@ public:
 };
 
 
-class VolumeMkdirTest : public VolumeTest {
+class FileSystemMkdirTest : public FileSystemTest {
 public:
-  VolumeMkdirTest(Volume& volume)
-    : VolumeTest(volume)
+  FileSystemMkdirTest(FileSystem& file_system)
+    : FileSystemTest(file_system)
   { }
 
   // Test
   void run() {
-    if (!get_volume().mkdir(get_test_dir_name()))
+    if (!get_file_system().mkdir(get_test_dir_name()))
       throw Exception();
   }
 };
 
 
-class VolumeMktreeTest : public VolumeTest {
+class FileSystemMktreeTest : public FileSystemTest {
 public:
-  VolumeMktreeTest(Volume& volume)
-    : VolumeTest(volume)
+  FileSystemMktreeTest(FileSystem& file_system)
+    : FileSystemTest(file_system)
   { }
 
   // Test
   void run() {
-    Path subdir_path(Path("volume_test") + Path("subdir"));
-    if (!get_volume().mktree(subdir_path)) throw Exception();
-    throw_assert(get_volume().exists(subdir_path));
+    Path subdir_path(Path("file_system_test") + Path("subdir"));
+    if (!get_file_system().mktree(subdir_path)) throw Exception();
+    throw_assert(get_file_system().exists(subdir_path));
   }
 };
 
 
-class VolumeOpenTest : public VolumeTest {
+class FileSystemOpenTest : public FileSystemTest {
 public:
-  VolumeOpenTest(Volume& volume)
-    : VolumeTest(volume)
+  FileSystemOpenTest(FileSystem& file_system)
+    : FileSystemTest(file_system)
   { }
 
   // Test
   void run() {
-    auto_Object<File> file = get_volume().open(get_test_file_name());
+    auto_Object<File> file = get_file_system().open(get_test_file_name());
 
-    File* no_file = get_volume().open(Path("nofile.txt"), O_RDONLY);
+    File* no_file = get_file_system().open(Path("nofile.txt"), O_RDONLY);
     if (no_file != NULL) {
       File::dec_ref(*no_file);
       throw_assert(false);
@@ -360,17 +360,17 @@ public:
 };
 
 
-class VolumeReadLinkTest : public VolumeTest {
+class FileSystemReadLinkTest : public FileSystemTest {
 public:
-  VolumeReadLinkTest(Volume& volume)
-    : VolumeTest(volume)
+  FileSystemReadLinkTest(FileSystem& file_system)
+    : FileSystemTest(file_system)
   { }
 
   // Test
   void run() {
-    if (get_volume().symlink(get_test_file_name(), get_test_link_name())) {
+    if (get_file_system().symlink(get_test_file_name(), get_test_link_name())) {
       Path target_path;
-      if (get_volume().readlink(get_test_link_name(), target_path)) {
+      if (get_file_system().readlink(get_test_link_name(), target_path)) {
         throw_assert_eq(target_path, get_test_file_name());
       } else if (Exception::get_last_error_code() != ENOTSUP)
         throw Exception();
@@ -380,16 +380,16 @@ public:
 };
 
 
-class VolumeRealPathTest : public VolumeTest {
+class FileSystemRealPathTest : public FileSystemTest {
 public:
-  VolumeRealPathTest(Volume& volume)
-    : VolumeTest(volume)
+  FileSystemRealPathTest(FileSystem& file_system)
+    : FileSystemTest(file_system)
   { }
 
   // yunit::Test
   void run() {
     Path realpath;
-    if (!get_volume().realpath(get_test_file_name(), realpath))
+    if (!get_file_system().realpath(get_test_file_name(), realpath))
       throw Exception();
     throw_assert_false(realpath.empty());
     throw_assert_ne(get_test_file_name(), realpath);
@@ -398,69 +398,69 @@ public:
 };
 
 
-class VolumeRenameTest : public VolumeTest {
+class FileSystemRenameTest : public FileSystemTest {
 public:
-  VolumeRenameTest(Volume& volume)
-    : VolumeTest(volume)
+  FileSystemRenameTest(FileSystem& file_system)
+    : FileSystemTest(file_system)
   { }
 
   // Test
   void run() {
-    if (!get_volume().rename(get_test_file_name(), Path("volume_test2.txt")))
+    if (!get_file_system().rename(get_test_file_name(), Path("file_system_test2.txt")))
       throw Exception();
-    get_volume().unlink(Path("volume_test2.txt"));
+    get_file_system().unlink(Path("file_system_test2.txt"));
   }
 };
 
 
-class VolumeRmDirTest : public VolumeTest {
+class FileSystemRmDirTest : public FileSystemTest {
 public:
-  VolumeRmDirTest(Volume& volume)
-    : VolumeTest(volume)
+  FileSystemRmDirTest(FileSystem& file_system)
+    : FileSystemTest(file_system)
   { }
 
   // Test
   void run() {
-    get_volume().mkdir(get_test_dir_name());
-    if (!get_volume().rmdir(get_test_dir_name()))
+    get_file_system().mkdir(get_test_dir_name());
+    if (!get_file_system().rmdir(get_test_dir_name()))
       throw Exception();
   }
 };
 
 
-class VolumeRmTreeTest : public VolumeTest {
+class FileSystemRmTreeTest : public FileSystemTest {
 public:
-  VolumeRmTreeTest(Volume& volume)
-    : VolumeTest(volume)
+  FileSystemRmTreeTest(FileSystem& file_system)
+    : FileSystemTest(file_system)
   { }
 
   // Test
   void run() {
-    if (!get_volume().mkdir(get_test_dir_name()))
+    if (!get_file_system().mkdir(get_test_dir_name()))
       throw Exception();
 
-    if (!get_volume().touch(get_test_dir_name() / get_test_file_name()))
+    if (!get_file_system().touch(get_test_dir_name() / get_test_file_name()))
       throw Exception();
 
-    if (!get_volume().rmtree(get_test_dir_name()))
+    if (!get_file_system().rmtree(get_test_dir_name()))
       throw Exception();
 
-    throw_assert_false(get_volume().exists(get_test_dir_name()));
+    throw_assert_false(get_file_system().exists(get_test_dir_name()));
   }
 };
 
 
-class VolumeStatVFSTest : public VolumeTest {
+class FileSystemStatVFSTest : public FileSystemTest {
 public:
-  VolumeStatVFSTest(Volume& volume)
-    : VolumeTest(volume)
+  FileSystemStatVFSTest(FileSystem& file_system)
+    : FileSystemTest(file_system)
   { }
 
   // Test
   void run() {
-    get_volume().mkdir(get_test_dir_name());
+    get_file_system().mkdir(get_test_dir_name());
     struct statvfs stbuf;
-    if (!get_volume().statvfs(get_test_dir_name(), stbuf))
+    if (!get_file_system().statvfs(get_test_dir_name(), stbuf))
       throw Exception();
     throw_assert_gt(stbuf.f_bsize, 0);
     throw_assert_gt(stbuf.f_blocks, 0);
@@ -471,33 +471,33 @@ public:
 };
 
 
-class VolumeTouchTest : public VolumeTest {
+class FileSystemTouchTest : public FileSystemTest {
 public:
-  VolumeTouchTest(Volume& volume)
-    : VolumeTest(volume)
+  FileSystemTouchTest(FileSystem& file_system)
+    : FileSystemTest(file_system)
   { }
 
   // Test
   void run() {
-    if (!get_volume().touch(get_test_file_name()))
+    if (!get_file_system().touch(get_test_file_name()))
       throw Exception();
 
-    if (get_volume().touch(get_test_dir_name() / get_test_file_name())) {
+    if (get_file_system().touch(get_test_dir_name() / get_test_file_name())) {
       throw_assert(false);
     }
   }
 };
 
 
-class VolumeSymlinkTest : public VolumeTest {
+class FileSystemSymlinkTest : public FileSystemTest {
 public:
-  VolumeSymlinkTest(Volume& volume)
-    : VolumeTest(volume)
+  FileSystemSymlinkTest(FileSystem& file_system)
+    : FileSystemTest(file_system)
   { }
 
   // Test
   void run() {
-    if (get_volume().symlink(get_test_file_name(), get_test_link_name()))
+    if (get_file_system().symlink(get_test_file_name(), get_test_link_name()))
       return;
     else if (Exception::get_last_error_code() != ENOTSUP)
       throw Exception();
@@ -505,26 +505,26 @@ public:
 };
 
 
-class VolumeTruncateTest : public VolumeTest {
+class FileSystemTruncateTest : public FileSystemTest {
 public:
-  VolumeTruncateTest(Volume& volume)
-    : VolumeTest(volume)
+  FileSystemTruncateTest(FileSystem& file_system)
+    : FileSystemTest(file_system)
   { }
 
   // Test
   void run() {
     {
       auto_Object<File> file
-      = get_volume().open(get_test_file_name(), O_WRONLY);
+      = get_file_system().open(get_test_file_name(), O_WRONLY);
       ssize_t write_ret = file->write("test", 4);
       if (write_ret != 4) throw Exception();
       if (!file->sync()) throw Exception();
-      auto_Object<Stat> stbuf = get_volume().getattr(get_test_file_name());
+      auto_Object<Stat> stbuf = get_file_system().getattr(get_test_file_name());
       throw_assert_eq(stbuf->get_size(), 4);
     }
 
-    if (get_volume().truncate(get_test_file_name(), 0)) {
-      auto_Object<Stat> stbuf = get_volume().getattr(get_test_file_name());
+    if (get_file_system().truncate(get_test_file_name(), 0)) {
+      auto_Object<Stat> stbuf = get_file_system().getattr(get_test_file_name());
       throw_assert_eq(stbuf->get_size(), 0);
     } else
       throw Exception();
@@ -532,24 +532,24 @@ public:
 };
 
 
-class VolumeUnlinkTest : public VolumeTest {
+class FileSystemUnlinkTest : public FileSystemTest {
 public:
-  VolumeUnlinkTest(Volume& volume)
-    : VolumeTest(volume)
+  FileSystemUnlinkTest(FileSystem& file_system)
+    : FileSystemTest(file_system)
   { }
 
   // Test
   void run() {
-    if (!get_volume().unlink(get_test_file_name()))
+    if (!get_file_system().unlink(get_test_file_name()))
       throw Exception();
   }
 };
 
 
-class VolumeUtimeTest : public VolumeTest {
+class FileSystemUtimeTest : public FileSystemTest {
 public:
-  VolumeUtimeTest(Volume& volume)
-    : VolumeTest(volume)
+  FileSystemUtimeTest(FileSystem& file_system)
+    : FileSystemTest(file_system)
   { }
 
   // Test
@@ -557,8 +557,8 @@ public:
     DateTime atime = DateTime::now(),
              mtime = DateTime::now();
 
-    if (get_volume().utime(get_test_file_name(), atime, mtime)) {
-      auto_Object<Stat> stbuf = get_volume().getattr(get_test_file_name());
+    if (get_file_system().utime(get_test_file_name(), atime, mtime)) {
+      auto_Object<Stat> stbuf = get_file_system().getattr(get_test_file_name());
       throw_assert_le(stbuf->get_atime() - atime, Time::NS_IN_S);
       throw_assert_le(stbuf->get_mtime() - mtime, Time::NS_IN_S);
     } else
@@ -568,8 +568,8 @@ public:
     mtime = DateTime::now();
     DateTime ctime = DateTime::now();
 
-    if (get_volume().utime(get_test_file_name(), atime, mtime, ctime)) {
-      auto_Object<Stat> stbuf = get_volume().getattr(get_test_file_name());
+    if (get_file_system().utime(get_test_file_name(), atime, mtime, ctime)) {
+      auto_Object<Stat> stbuf = get_file_system().getattr(get_test_file_name());
       throw_assert_le(stbuf->get_atime() - atime, Time::NS_IN_S);
       throw_assert_le(stbuf->get_mtime() - mtime, Time::NS_IN_S);
       throw_assert_le(stbuf->get_ctime() - ctime, Time::NS_IN_S);
@@ -579,98 +579,79 @@ public:
 };
 
 
-class VolumeVolnameTest : public VolumeTest {
+template <class FileSystemType>
+class FileSystemTestSuite : public yunit::TestSuite {
 public:
-  VolumeVolnameTest(Volume& volume)
-    : VolumeTest(volume)
-  { }
+  FileSystemTestSuite(YO_NEW_REF FileSystemType* file_system = NULL) {
+    if (file_system == NULL)
+      file_system = new FileSystemType;
 
-  // Test
-  void run() {
-    Path volname;
-    if (get_volume().volname(get_test_file_name(), volname)) {
-      throw_assert_false(volname.empty());
-    } else if (Exception::get_last_error_code() != ENOTSUP)
-      throw Exception();
-  }
-};
+    add("FileSystem::access", new FileSystemAccessTest(*file_system));
+    add("FileSystem::chmod", new FileSystemChmodTest(*file_system));
+    add("FileSystem::chown", new FileSystemChownTest(*file_system));
 
+    add("FileSystem::creat", new FileSystemCreatTest(*file_system));
 
-template <class VolumeType>
-class VolumeTestSuite : public yunit::TestSuite {
-public:
-  VolumeTestSuite(YO_NEW_REF VolumeType* volume = NULL) {
-    if (volume == NULL)
-      volume = new VolumeType;
+    add("FileSystem::exists", new FileSystemExistsTest(*file_system));
 
-    add("Volume::access", new VolumeAccessTest(*volume));
-    add("Volume::chmod", new VolumeChmodTest(*volume));
-    add("Volume::chown", new VolumeChownTest(*volume));
-
-    add("Volume::creat", new VolumeCreatTest(*volume));
-
-    add("Volume::exists", new VolumeExistsTest(*volume));
-
-    add("Volume::getattr", new VolumeGetattrTest(*volume));
+    add("FileSystem::getattr", new FileSystemGetattrTest(*file_system));
 
     add
     (
-      "Volume::getxattr",
-      new VolumeExtendedAttributesGetTest(*volume)
+      "FileSystem::getxattr",
+      new FileSystemExtendedAttributesGetTest(*file_system)
     );
 
-    add("Volume::isdir", new VolumeIsDirTest(*volume));
-    add("Volume::isfile", new VolumeIsFileTest(*volume));
+    add("FileSystem::isdir", new FileSystemIsDirTest(*file_system));
+    add("FileSystem::isfile", new FileSystemIsFileTest(*file_system));
 
     add
     (
-      "Volume::listxattr",
-      new VolumeExtendedAttributesListTest(*volume)
+      "FileSystem::listxattr",
+      new FileSystemExtendedAttributesListTest(*file_system)
     );
 
-    add("Volume::link", new VolumeLinkTest(*volume));
+    add("FileSystem::link", new FileSystemLinkTest(*file_system));
 
-    add("Volume::mkdir", new VolumeMkdirTest(*volume));
-    add("Volume::mktree", new VolumeMktreeTest(*volume));
+    add("FileSystem::mkdir", new FileSystemMkdirTest(*file_system));
+    add("FileSystem::mktree", new FileSystemMktreeTest(*file_system));
 
-    add("Volume::open", new VolumeOpenTest(*volume));
+    add("FileSystem::open", new FileSystemOpenTest(*file_system));
 
-    add("Volume::readlink", new VolumeReadLinkTest(*volume));
+    add("FileSystem::readlink", new FileSystemReadLinkTest(*file_system));
 
-    add("Volume::realpath", new VolumeRealPathTest(*volume));
+    add("FileSystem::realpath", new FileSystemRealPathTest(*file_system));
 
     add
     (
-      "Volume::removexattr",
-      new VolumeExtendedAttributesRemoveTest(*volume)
+      "FileSystem::removexattr",
+      new FileSystemExtendedAttributesRemoveTest(*file_system)
     );
 
-    add("Volume::rename", new VolumeRenameTest(*volume));
+    add("FileSystem::rename", new FileSystemRenameTest(*file_system));
 
-    add("Volume::rmdir", new VolumeRmDirTest(*volume));
-    add("Volume::rmtree", new VolumeRmTreeTest(*volume));
+    add("FileSystem::rmdir", new FileSystemRmDirTest(*file_system));
+    add("FileSystem::rmtree", new FileSystemRmTreeTest(*file_system));
 
     add
     (
-      "Volume::setxattr",
-      new VolumeExtendedAttributesSetTest(*volume)
+      "FileSystem::setxattr",
+      new FileSystemExtendedAttributesSetTest(*file_system)
     );
 
-    add("Volume::statvfs", new VolumeStatVFSTest(*volume));
+    add("FileSystem::statvfs", new FileSystemStatVFSTest(*file_system));
 
-    add("Volume::symlink", new VolumeSymlinkTest(*volume));
+    add("FileSystem::symlink", new FileSystemSymlinkTest(*file_system));
 
-    add("Volume::touch", new VolumeTouchTest(*volume));
+    add("FileSystem::touch", new FileSystemTouchTest(*file_system));
 
-    add("Volume::truncate", new VolumeTruncateTest(*volume));
+    add("FileSystem::truncate", new FileSystemTruncateTest(*file_system));
 
-    add("Volume::unlink", new VolumeUnlinkTest(*volume));
+    add("FileSystem::unlink", new FileSystemUnlinkTest(*file_system));
 
-    add("Volume::utime", new VolumeUtimeTest(*volume));
+    add("FileSystem::utime", new FileSystemUtimeTest(*file_system));
 
-    add("Volume::volname", new VolumeVolnameTest(*volume));
-
-    Volume::dec_ref(*volume);
+    FileSystem::dec_ref(*file_system);
   }
 };
 }

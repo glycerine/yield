@@ -1,4 +1,4 @@
-// yield/fs/win32/volume.hpp
+// yield/fs/win32/file_system.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -28,17 +28,17 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-#ifndef _YIELD_FS_WIN32_VOLUME_HPP_
-#define _YIELD_FS_WIN32_VOLUME_HPP_
+#ifndef _YIELD_FS_WIN32_FILE_SYSTEM_HPP_
+#define _YIELD_FS_WIN32_FILE_SYSTEM_HPP_
 
 
-#include "yield/fs/volume.hpp"
+#include "yield/fs/file_system.hpp"
 
 
 namespace yield {
 namespace fs {
 namespace win32 {
-class Volume : public yield::fs::Volume {
+class FileSystem : public yield::fs::FileSystem {
 public:
   static void*
   mmap
@@ -51,7 +51,7 @@ public:
     void*& out_hFileMapping
   );
 
-  // Volume
+  // FileSystem
   bool access(const Path&, int);
   bool isdir(const Path&);
   bool isfile(const Path&);
@@ -98,7 +98,6 @@ public:
   bool symlink(const Path&, const Path&);
   bool truncate(const Path&, uint64_t);
   bool unlink(const Path& path);
-  bool volname(const Path&, OUT Path&);
 };
 }
 }

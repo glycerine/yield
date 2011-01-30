@@ -1,4 +1,4 @@
-// yield/fs/posix/volume.hpp
+// yield/fs/posix/file_system.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -28,17 +28,17 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-#ifndef _YIELD_FS_POSIX_VOLUME_HPP_
-#define _YIELD_FS_POSIX_VOLUME_HPP_
+#ifndef _YIELD_FS_POSIX_FILE_SYSTEM_HPP_
+#define _YIELD_FS_POSIX_FILE_SYSTEM_HPP_
 
 
-#include "yield/fs/volume.hpp"
+#include "yield/fs/file_system.hpp"
 
 
 namespace yield {
 namespace fs {
 namespace posix {
-class Volume : public yield::fs::Volume {
+class FileSystem : public yield::fs::FileSystem {
 public:
   static void*
   mmap
@@ -51,7 +51,7 @@ public:
     uint64_t offset
   );
 
-  // Volume
+  // FileSystem
   bool access(const Path&, int amode);
   yield::fs::Stat* getattr(const Path&);
   bool link(const Path& old_path, const Path& new_path);
@@ -96,7 +96,6 @@ public:
   bool symlink(const Path& old_path, const Path& new_path);
   bool truncate(const Path&, uint64_t new_size);
   bool unlink(const Path&);
-  bool volname(const Path&, OUT Path&);
 };
 }
 }

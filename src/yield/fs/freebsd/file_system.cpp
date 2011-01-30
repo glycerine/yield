@@ -1,4 +1,4 @@
-// yield/fs/freebsd/volume.cpp
+// yield/fs/freebsd/file_system.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -30,7 +30,7 @@
 
 #include "extended_attributes.hpp"
 #include "file.hpp"
-#include "volume.hpp"
+#include "file_system.hpp"
 
 #include <fcntl.h>
 
@@ -39,7 +39,7 @@ namespace yield {
 namespace fs {
 namespace freebsd {
 yield::fs::File*
-Volume::open
+FileSystem::open
 (
   const Path& path,
   uint32_t flags,
@@ -54,7 +54,7 @@ Volume::open
 }
 
 yield::fs::ExtendedAttributes*
-Volume::openxattrs
+FileSystem::openxattrs
 (
   const Path& path
 ) {
