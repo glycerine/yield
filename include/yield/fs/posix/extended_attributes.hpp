@@ -1,4 +1,4 @@
-// yield/fs/win32/file.hpp
+// yield/fs/posix/extended_attributes.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,53 +27,44 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_FS_WIN32_FILE_HPP_
-#define _YIELD_FS_WIN32_FILE_HPP_
+#ifndef _YIELD_FS_POSIX_EXTENDED_ATTRIBUTES_HPP_
+#define _YIELD_FS_POSIX_EXTENDED_ATTRIBUTES_HPP_
 
-#include "yield/fs/file.hpp"
+#include "yield/object.hpp"
 
 
 namespace yield {
 namespace fs {
-namespace win32 {
-class File : public yield::fs::File {
+class Path;
+
+
+namespace posix {
+
+class ExtendedAttributes : public Object {
 public:
-  File(fd_t fd);
-  ~File();
+  virtual ~ExtendedAttributes() { }
 
-  // Channel
-  operator fd_t() const {
-    return fd;
+  virtual bool get(const char* name, string& value);
+  virtual ssize_t get(const char* name, void* value, size_t size) = 0;
+  virtual bool list(vector<string>& out_names) = 0;
+  virtual bool remove(const char* name) = 0;
+
+  virtual bool set(const char* name, const char* value, int flags = 0);
+  virtual bool set(const char* name, const string& value, int flags = 0);
+
+  virtual bool
+  set
+  (
+    const char* name,
+    const void* value,
+    size_t size,
+    int flags = 0
+  ) = 0;
+
+  // Object
+  ExtendedAttributes& inc_ref() {
+    return Object::inc_ref(*this);
   }
-  ssize_t read(void* buf, size_t buflen);
-  ssize_t readv(const iovec* iov, int iovlen);
-  virtual bool set_blocking_mode(bool blocking_mode);
-  ssize_t write(const void* buf, size_t buflen);
-  ssize_t writev(const iovec* iov, int iovlen);
-
-  // File
-  bool close();
-  virtual bool datasync();
-  YO_NEW_REF yield::fs::Stat* getattr();
-  YO_NEW_REF Lock* getlk(const Lock&);
-  YO_NEW_REF ExtendedAttributes* openxattrs();
-  ssize_t pread(void*, size_t, uint64_t);
-  ssize_t preadv(const iovec*, int, uint64_t);
-  ssize_t pwrite(const void*, size_t, uint64_t);
-  ssize_t pwritev(const iovec*, int, uint64_t);
-  uint64_t seek(int64_t offset, uint8_t whence);
-  bool setlk(const Lock&);
-  bool setlkw(const Lock&);
-  virtual bool sync();
-  uint64_t tell();
-  bool truncate(uint64_t);
-  bool unlk(const Lock&);
-
-private:
-  bool setlk(const Lock&, bool wait);
-
-private:
-  fd_t fd;
 };
 }
 }

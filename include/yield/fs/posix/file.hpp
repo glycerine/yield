@@ -41,12 +41,58 @@ namespace fs {
 namespace posix {
 class File : public yield::fs::File {
 public:
-  class Lock : public yield::fs::File::Lock {
+  class Lock : public Object {
   public:
+    Lock
+    (
+      uint64_t start,
+      uint64_t len,
+      bool exclusive = true,
+      pid_t pid = static_cast<pid_t>(-1),   // getpid()
+      int16_t whence = SEEK_SET
+    )
+      : exclusive(exclusive),
+        len(len),
+        pid(pid),
+        start(start),
+        whence(whence)
+    { }
+
     Lock(const flock& flock_);
     Lock(const yield::fs::File::Lock&);
 
+  public:
+    uint64_t get_len() const {
+      return len;
+    }
+    pid_t get_pid() const {
+      return pid;
+    }
+    uint64_t get_start() const {
+      return start;
+    }
+    int16_t get_whence() const {
+      return whence;
+    }
+    bool is_exclusive() const {
+      return exclusive;
+    }
+
+  public:
     operator flock() const;
+
+  public:
+    // Object
+    File::Lock& inc_ref() {
+      return Object::inc_ref(*this);
+    }
+
+  private:
+    bool exclusive;
+    uint64_t len;
+    pid_t pid;
+    uint64_t start;
+    int16_t whence;
   };
 
 public:
@@ -59,7 +105,7 @@ public:
     return fd;
   }
   ssize_t read(void* buf, size_t buflen);
-  ssize_t readv(const iovec* iov, int iovlen);
+  ssize_t readv(const iovec* iov, int iovlen)
   bool set_blocking_mode(bool blocking_mode);
   ssize_t write(const void* buf, size_t buflen);
   ssize_t writev(const iovec* iov, int iovlen);

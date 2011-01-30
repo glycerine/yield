@@ -30,37 +30,19 @@
 #ifndef _YIELD_FS_DIRECTORY_HPP_
 #define _YIELD_FS_DIRECTORY_HPP_
 
-#include "yield/object.hpp"
-#include "yield/fs/stat.hpp"
-
+#ifdef _WIN32
+#include "win32/directory.hpp"
+#else
+#include "posix/directory.hpp"
+#endif
 
 namespace yield {
 namespace fs {
-class Path;
-
-
-class Directory : public Object {
-public:
-  class Entry : public Stat {
-  public:
-    virtual const Path& get_name() const = 0;
-    virtual bool is_hidden() const = 0;
-    virtual bool is_special() const = 0;
-  };
-
-public:
-  virtual ~Directory() { }
-
-  virtual bool close() = 0;
-  virtual YO_NEW_REF Entry* read(Entry::Type = Entry::TYPE_ALL) = 0;
-  virtual bool read(Entry&, Entry::Type = Entry::TYPE_ALL) = 0;
-  virtual void rewind() = 0;
-
-  // Object
-  Directory& inc_ref() {
-    return Object::inc_ref(*this);
-  }
-};
+#ifdef _WIN32
+typedef win32::Directory Directory;
+#else
+typedef posix::Directory Directory;
+#endif
 }
 }
 

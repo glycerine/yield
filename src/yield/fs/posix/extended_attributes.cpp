@@ -1,4 +1,4 @@
-// yield/fs/extended_attributes.cpp
+// yield/fs/posix/extended_attributes.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -36,6 +36,7 @@
 
 namespace yield {
 namespace fs {
+namespace posix {
 bool ExtendedAttributes::get(const char* name, string& out_value) {
   ssize_t estimated_value_len = get(name, NULL, 0);
   if (estimated_value_len != -1) {
@@ -189,5 +190,6 @@ ExtendedAttributes::set
 
 //  return ret;
 //}
+}
 }
 }

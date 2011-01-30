@@ -52,43 +52,43 @@
 
 
 #define TEST_EX( TestSuiteName, TestName, TestType )\
-extern yunit::TestSuite& TestSuiteName##TestSuite();\
-class TestSuiteName##TestName##Test : public TestType\
-{\
-public:\
-  TestSuiteName##TestName##Test()\
+  extern yunit::TestSuite& TestSuiteName##TestSuite();\
+  class TestSuiteName##TestName##Test : public TestType\
   {\
-    ::TestSuiteName##TestSuite().add\
-    (\
+  public:\
+    TestSuiteName##TestName##Test()\
+    {\
+      ::TestSuiteName##TestSuite().add\
+      (\
        # TestSuiteName "::" # TestName,\
        this\
-    );\
-  }\
-  void run();\
-};\
-TestSuiteName##TestName##Test* TestSuiteName##TestName##Test_\
+      );\
+    }\
+    void run();\
+  };\
+  TestSuiteName##TestName##Test* TestSuiteName##TestName##Test_\
   = new TestSuiteName##TestName##Test;\
-void TestSuiteName##TestName##Test::run()
+  void TestSuiteName##TestName##Test::run()
 
 #define TEST( TestSuiteName, TestName )\
   TEST_EX( TestSuiteName, TestName, yunit::Test )
 
 
 #define TEST_SUITE_EX( TestSuiteName, TestSuiteType )\
-yunit::TestSuite& TestSuiteName##TestSuite()\
-{\
-  static TestSuiteType* test_suite = new TestSuiteType();\
-  return *test_suite;\
-}\
-class TestSuiteName##TestSuiteDest\
-{\
-public:\
-  ~TestSuiteName##TestSuiteDest()\
+  yunit::TestSuite& TestSuiteName##TestSuite()\
   {\
-    delete &TestSuiteName##TestSuite();\
+    static TestSuiteType* test_suite = new TestSuiteType();\
+    return *test_suite;\
   }\
-};\
-TestSuiteName##TestSuiteDest TestSuiteName##TestSuiteDest_;
+  class TestSuiteName##TestSuiteDest\
+  {\
+  public:\
+    ~TestSuiteName##TestSuiteDest()\
+    {\
+      delete &TestSuiteName##TestSuite();\
+    }\
+  };\
+  TestSuiteName##TestSuiteDest TestSuiteName##TestSuiteDest_;
 
 #define TEST_SUITE( TestSuiteName )\
   TEST_SUITE_EX( TestSuiteName, yunit::TestSuite )

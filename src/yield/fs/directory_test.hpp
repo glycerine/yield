@@ -104,15 +104,15 @@ private:
 
 
 #define YIELD_PLATFORM_DIRECTORY_TEST( TestName ) \
-    class Directory_##TestName##Test : public DirectoryTest \
-    { \
-    public:\
-      Directory_##TestName##Test( yield::fs::FileSystem* file_system = NULL ) \
-        : DirectoryTest( "Directory_" # TestName "Test", file_system ) \
-      { } \
-      void run(); \
-    };\
-      inline void Directory_##TestName##Test::run()
+  class Directory_##TestName##Test : public DirectoryTest \
+  { \
+  public:\
+    Directory_##TestName##Test( yield::fs::FileSystem* file_system = NULL ) \
+      : DirectoryTest( "Directory_" # TestName "Test", file_system ) \
+    { } \
+    void run(); \
+  };\
+  inline void Directory_##TestName##Test::run()
 
 
 class DirectoryCloseTest : public DirectoryTest {

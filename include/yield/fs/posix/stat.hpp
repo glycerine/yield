@@ -30,7 +30,7 @@
 #ifndef _YIELD_FS_POSIX_STAT_HPP_
 #define _YIELD_FS_POSIX_STAT_HPP_
 
-#include "yield/fs/stat.hpp"
+#include "yield/object.hpp"
 
 #include <sys/stat.h>
 
@@ -38,55 +38,102 @@
 namespace yield {
 namespace fs {
 namespace posix {
-class Stat : public yield::fs::Stat, private stat {
+class Stat : public Object, private stat {
+public:
+  typedef uint8_t Type;
+  const static Type TYPE_ALL = static_cast<Type>(~0);
+  const static Type TYPE_CHR = 1;
+  const static Type TYPE_BLK = 2;
+  const static Type TYPE_DIR = 4;
+  const static Type TYPE_FIFO = 8;
+  const static Type TYPE_LNK = 16;
+  const static Type TYPE_REG = 32;
+  const static Type TYPE_SOCK = 64;
+
 public:
   Stat();
   Stat(const struct stat&);
 
-  operator struct stat() const;
-  Stat& operator=(const struct stat&);
-
-  // Stat
+public:
   const DateTime& get_atime() const {
     return atime;
   }
+
   uint64_t get_blksize() const {
     return st_blksize;
   }
+
   uint64_t get_blocks() const {
     return st_blocks;
   }
+
   const DateTime& get_ctime() const {
     return ctime;
   }
+
   uint64_t get_dev() const {
     return st_dev;
   }
+
   gid_t get_gid() const {
     return st_gid;
   }
+
   uint64_t get_ino() const {
     return st_ino;
   }
+
   mode_t get_mode() const {
     return st_mode;
   }
+
   const DateTime& get_mtime() const {
     return mtime;
   }
+
   int16_t get_nlink() const {
     return st_nlink;
   }
+
   uint64_t get_rdev() const {
     return st_rdev;
   }
+
   uint64_t get_size() const {
     return st_size;
   }
+
   Type get_type() const;
+
   uid_t get_uid() const {
     return st_uid;
   }
+
+  bool ISBLK() const {
+    return get_type() == TYPE_BLK;
+  }
+  bool ISCHR() const {
+    return get_type() == TYPE_CHR;
+  }
+  bool ISDIR() const {
+    return get_type() == TYPE_DIR;
+  }
+  bool ISFIFO() const {
+    return get_type() == TYPE_FIFO;
+  }
+  bool ISLNK() const {
+    return get_type() == TYPE_LNK;
+  }
+  bool ISREG() const {
+    return get_type() == TYPE_REG;
+  }
+  bool ISSOCK() const {
+    return get_type() == TYPE_SOCK;
+  }
+
+public:
+  operator struct stat() const;
+  Stat& operator=(const struct stat&);
 
 private:
   DateTime atime, ctime, mtime;

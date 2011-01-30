@@ -1,4 +1,4 @@
-// yield/fs/extended_attributes.hpp
+// yield/fs/win32/memory_mapped_file.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,46 +27,61 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_FS_EXTENDED_ATTRIBUTES_HPP_
-#define _YIELD_FS_EXTENDED_ATTRIBUTES_HPP_
+#ifndef _YIELD_FS_WIN32_MEMORY_MAPPED_FILE_HPP_
+#define _YIELD_FS_WIN32_MEMORY_MAPPED_FILE_HPP_
 
-#include "yield/object.hpp"
+#include "file.hpp"
+#include "yield/buffer.hpp"
 
+#define MAP_FIXED   1
+#define MAP_SHARED  2
+#define MAP_PRIVATE 4
+#define PROT_EXEC  0x10 // PAGE_EXECUTE
+#define PROT_READ  0x02 // PAGE_READONLY
+#define PROT_WRITE 0x04 // PAGE_READWRITE
+#define PROT_NONE  0x01 // PAGE_NOACCESS
 
 namespace yield {
-class Log;
-
-
 namespace fs {
-class Path;
+namespace win32 {
+class FileSystem;
 
-
-class ExtendedAttributes : public Object {
+class MemoryMappedFile : public Buffer {
 public:
-  virtual ~ExtendedAttributes() { }
+  ~MemoryMappedFile();
 
-  virtual bool get(const char* name, string& value);
-  virtual ssize_t get(const char* name, void* value, size_t size) = 0;
-  virtual bool list(vector<string>& out_names) = 0;
-  virtual bool remove(const char* name) = 0;
-
-  virtual bool set(const char* name, const char* value, int flags = 0);
-  virtual bool set(const char* name, const string& value, int flags = 0);
-
-  virtual bool
-  set
-  (
-    const char* name,
-    const void* value,
-    size_t size,
-    int flags = 0
-  ) = 0;
-
-  // Object
-  ExtendedAttributes& inc_ref() {
-    return Object::inc_ref(*this);
+  // yield::Buffer
+  void* data() {
+    return data_;
   }
+  const void* data() const {
+    return data_;
+  }
+  void reserve(size_t capacity);
+
+  // yield::fs::MemoryMappedFile
+  bool sync(void* ptr, size_t length);
+  bool unmap();
+
+private:
+  friend class FileSystem;
+
+  MemoryMappedFile
+  (
+    size_t capacity,
+    void* data,
+    YO_NEW_REF File& file,
+    int flags,
+    fd_t hFileMapping,
+    uint64_t offset,
+    int prot
+  );
+
+private:
+  void* data_;
+  fd_t hFileMapping;
 };
+}
 }
 }
 

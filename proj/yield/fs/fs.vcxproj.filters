@@ -36,9 +36,6 @@
     <ClInclude Include="..\..\..\include\yield\fs\directory.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\fs\extended_attributes.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\yield\fs\file.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -54,13 +51,40 @@
     <ClInclude Include="..\..\..\include\yield\fs\path.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\posix\directory.hpp">
+      <Filter>Header Files\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\posix\extended_attributes.hpp">
+      <Filter>Header Files\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\posix\file.hpp">
+      <Filter>Header Files\posix</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\include\yield\fs\posix\file_system.hpp">
+      <Filter>Header Files\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\posix\memory_mapped_file.hpp">
+      <Filter>Header Files\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\posix\stat.hpp">
       <Filter>Header Files\posix</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\yield\fs\stat.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\win32\directory.hpp">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\win32\file.hpp">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\include\yield\fs\win32\file_system.hpp">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\win32\memory_mapped_file.hpp">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\win32\stat.hpp">
       <Filter>Header Files\win32</Filter>
     </ClInclude>
   </ItemGroup>
@@ -110,19 +134,7 @@
     <ClInclude Include="..\..\..\src\yield\fs\directory_test.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\fs\extended_attributes.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\fs\extended_attributes_test.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\fs\file.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\fs\file_log.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\fs\file_system.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClInclude Include="..\..\..\src\yield\fs\file_system_test.hpp">
@@ -203,18 +215,18 @@
     <ClCompile Include="..\..\..\src\yield\fs\posix\directory.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\fs\posix\directory.hpp">
-      <Filter>Source Files\posix</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\src\yield\fs\posix\directory_test.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\posix\extended_attributes.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\posix\extended_attributes_test.hpp">
+      <Filter>Source Files\posix</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\..\src\yield\fs\posix\file.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\fs\posix\file.hpp">
-      <Filter>Source Files\posix</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\src\yield\fs\posix\file_system.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>
@@ -227,23 +239,14 @@
     <ClCompile Include="..\..\..\src\yield\fs\posix\memory_mapped_file.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\fs\posix\memory_mapped_file.hpp">
-      <Filter>Source Files\posix</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\src\yield\fs\posix\path.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\fs\posix\stat.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\fs\posix\stat.hpp">
-      <Filter>Source Files\posix</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\src\yield\fs\posix\stat_test.cpp">
       <Filter>Source Files\posix</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\fs\stat.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClInclude Include="..\..\..\src\yield\fs\stat_test.hpp">
       <Filter>Source Files</Filter>
@@ -251,18 +254,12 @@
     <ClCompile Include="..\..\..\src\yield\fs\win32\directory.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\fs\win32\directory.hpp">
-      <Filter>Source Files\win32</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\src\yield\fs\win32\directory_test.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\fs\win32\file.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\fs\win32\file.hpp">
-      <Filter>Source Files\win32</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\src\yield\fs\win32\file_system.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
@@ -275,9 +272,6 @@
     <ClCompile Include="..\..\..\src\yield\fs\win32\memory_mapped_file.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\fs\win32\memory_mapped_file.hpp">
-      <Filter>Source Files\win32</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\src\yield\fs\win32\named_pipe.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
@@ -290,9 +284,6 @@
     <ClCompile Include="..\..\..\src\yield\fs\win32\stat.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\fs\win32\stat.hpp">
-      <Filter>Source Files\win32</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\src\yield\fs\win32\stat_test.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>

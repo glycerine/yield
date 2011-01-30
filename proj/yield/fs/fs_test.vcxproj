@@ -102,7 +102,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClInclude Include="..\..\..\src\yield\fs\directory_test.hpp" />
-    <ClInclude Include="..\..\..\src\yield\fs\extended_attributes_test.hpp" />
     <ClInclude Include="..\..\..\src\yield\fs\file_system_test.hpp" />
     <ClInclude Include="..\..\..\src\yield\fs\file_test.hpp" />
     <ClCompile Include="..\..\..\src\yield\fs\freebsd\file_system_test.cpp">
@@ -135,6 +134,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\posix\extended_attributes_test.hpp" />
     <ClCompile Include="..\..\..\src\yield\fs\posix\file_system_test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>

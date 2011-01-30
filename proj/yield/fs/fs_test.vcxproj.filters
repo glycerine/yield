@@ -42,9 +42,6 @@
     <ClInclude Include="..\..\..\src\yield\fs\directory_test.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\yield\fs\extended_attributes_test.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\yield\fs\file_system_test.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -78,6 +75,9 @@
     <ClCompile Include="..\..\..\src\yield\fs\posix\directory_test.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\posix\extended_attributes_test.hpp">
+      <Filter>Source Files\posix</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\..\src\yield\fs\posix\file_system_test.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>
