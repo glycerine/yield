@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_AIO_AIOCB_HPP_
 #define _YIELD_AIO_AIOCB_HPP_
-
 
 #ifdef _WIN32
 #include "yield/aio/win32/aiocb.hpp"
@@ -48,6 +46,5 @@ typedef posix::AIOCB AIOCB;
 #endif
 }
 }
-
 
 #endif

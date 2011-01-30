@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_HTTP_HTTP_RESPONSE_PARSER_HPP_
 #define _YIELD_HTTP_HTTP_RESPONSE_PARSER_HPP_
-
 
 #include "yield/http/http_message_parser.hpp"
 #include "yield/http/http_response.hpp"
@@ -55,6 +53,5 @@ private:
 };
 };
 };
-
 
 #endif

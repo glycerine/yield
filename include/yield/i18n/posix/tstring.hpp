@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_I18N_POSIX_TSTRING_HPP_
 #define _YIELD_I18N_POSIX_TSTRING_HPP_
-
 
 #include "yield/types.hpp"
 #include "yield/i18n/code.hpp"
@@ -62,6 +60,5 @@ private:
 }
 }
 }
-
 
 #endif

@@ -27,7 +27,6 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 from cStringIO import StringIO
 from hashlib import md5
 from os import sep as os_sep
@@ -192,9 +191,7 @@ class SourceFile:
            lines.insert(0, "#ifndef _%(guard)s_" % locals())
            lines.insert(1, "#define _%(guard)s_" % locals())
            lines.insert(2, "")
-           lines.insert(2, "")
            if len(lines[-1]) != 0: lines.append("")
-           if len(lines[-2]) != 0: lines.append("")
 
            lines.append("#endif")
 
@@ -211,7 +208,6 @@ class SourceFile:
             )
             for line in boilerplate
         ])
-        lines.append('')
         lines.extend(old_lines)
 
         # Convert tabs to spaces

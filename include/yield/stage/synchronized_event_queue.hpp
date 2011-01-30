@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_STAGE_SYNCHRONIZED_EVENT_QUEUE_HPP_
 #define _YIELD_STAGE_SYNCHRONIZED_EVENT_QUEUE_HPP_
-
 
 #include "yield/event_queue.hpp"
 #include "yield/thread/synchronized_queue.hpp"
@@ -50,6 +48,5 @@ public:
 };
 };
 };
-
 
 #endif

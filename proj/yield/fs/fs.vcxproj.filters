@@ -4,6 +4,12 @@
     <Filter Include="Header Files">
       <UniqueIdentifier>{708ecb08-bd66-4543-a793-0da4996746b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\posix">
+      <UniqueIdentifier>{b4b7b336-5696-41eb-94ec-3a1f77057189}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\win32">
+      <UniqueIdentifier>{cc0a1dfa-4087-40c5-a7e1-57f3aeed8946}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source Files\bsd">
       <UniqueIdentifier>{4b1a3a93-e539-4904-9cab-510b3de17c91}</UniqueIdentifier>
     </Filter>
@@ -48,8 +54,14 @@
     <ClInclude Include="..\..\..\include\yield\fs\path.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\posix\file_system.hpp">
+      <Filter>Header Files\posix</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\include\yield\fs\stat.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\win32\file_system.hpp">
+      <Filter>Header Files\win32</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -206,9 +218,6 @@
     <ClCompile Include="..\..\..\src\yield\fs\posix\file_system.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\fs\posix\file_system.hpp">
-      <Filter>Source Files\posix</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\src\yield\fs\posix\file_system_test.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>
@@ -257,9 +266,6 @@
     <ClCompile Include="..\..\..\src\yield\fs\win32\file_system.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\fs\win32\file_system.hpp">
-      <Filter>Source Files\win32</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\src\yield\fs\win32\file_system_test.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>

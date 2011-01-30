@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_HTTP_STREAM_SOCKET_PEER_HPP_
 #define _YIELD_HTTP_STREAM_SOCKET_PEER_HPP_
-
 
 #include "yield/aio/net/sockets/recv_aiocb.hpp"
 #include "yield/aio/net/sockets/send_aiocb.hpp"
@@ -155,6 +153,5 @@ protected:
 };
 }
 }
-
 
 #endif

@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_TYPES_HPP_
 #define _YIELD_TYPES_HPP_
-
 
 #include "yield/config.hpp"
 
@@ -177,6 +175,5 @@ memcpy_s
 }
 #endif
 }
-
 
 #endif

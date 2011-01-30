@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_FS_POSIX_MEMORY_MAPPED_FILE_HPP_
 #define _YIELD_FS_POSIX_MEMORY_MAPPED_FILE_HPP_
-
 
 #include "file.hpp"
 #include "yield/fs/memory_mapped_file.hpp"
@@ -72,6 +70,5 @@ private:
 }
 }
 }
-
 
 #endif

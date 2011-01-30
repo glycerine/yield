@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YUNIT_HPP_
 #define _YUNIT_HPP_
-
 
 #include <cstdio>
 #include <iostream> // For cout, cerr, and endl
@@ -157,6 +155,5 @@ public:
   }
 };
 }
-
 
 #endif

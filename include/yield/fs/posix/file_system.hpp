@@ -27,18 +27,27 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_FS_POSIX_FILE_SYSTEM_HPP_
 #define _YIELD_FS_POSIX_FILE_SYSTEM_HPP_
 
-
 #include "yield/fs/file_system.hpp"
+
+
+struct statvfs;
 
 
 namespace yield {
 namespace fs {
 namespace posix {
 class FileSystem : public yield::fs::FileSystem {
+public:
+  static mode_t FILE_MODE_DEFAULT;
+  static mode_t DIRECTORY_MODE_DEFAULT;
+  static int MMAP_FLAGS_DEFAULT; // MAP_SHARED
+  const static size_t MMAP_LENGTH_WHOLE_FILE = static_cast<size_t>(-1);
+  static int MMAP_PROT_DEFAULT; // PROT_READ|PROT_WRITE
+  static uint32_t OPEN_FLAGS_DEFAULT; // O_RDONLY
+
 public:
   static void*
   mmap
@@ -61,28 +70,28 @@ public:
   mkfifo
   (
     const Path&,
-    uint32_t flags,
-    mode_t mode
+    uint32_t flags = OPEN_FLAGS_DEFAULT,
+    mode_t mode = FILE_MODE_DEFAULT
   );
 
   YO_NEW_REF yield::fs::MemoryMappedFile*
   mmap
   (
     yield::fs::File& file,
-    void* start,
-    size_t length,
-    int prot,
-    int flags,
-    uint64_t offset
+    void* start = NULL,
+    size_t length = MMAP_LENGTH_WHOLE_FILE,
+    int prot = MMAP_PROT_DEFAULT,
+    int flags = MMAP_FLAGS_DEFAULT,
+    uint64_t offset = 0
   );
 
   virtual YO_NEW_REF yield::fs::File*
   open
   (
     const Path&,
-    uint32_t flags,
-    mode_t mode,
-    uint32_t attributes
+    uint32_t flags = OPEN_FLAGS_DEFAULT,
+    mode_t mode = FILE_MODE_DEFAULT,
+    uint32_t attributes = OPEN_ATTRIBUTES_DEFAULT
   );
 
   virtual YO_NEW_REF yield::fs::Directory* opendir(const Path&);
@@ -100,6 +109,5 @@ public:
 }
 }
 }
-
 
 #endif

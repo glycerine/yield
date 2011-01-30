@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_CONFIG_HPP_
 #define _YIELD_CONFIG_HPP_
-
 
 #if defined(__FreeBSD__)
 #ifdef _FILE_OFFSET_BITS
@@ -65,6 +63,5 @@
 #ifdef unix
 #undef unix
 #endif
-
 
 #endif

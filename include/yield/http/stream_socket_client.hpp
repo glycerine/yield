@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_HTTP_STREAM_SOCKET_CLIENT_HPP_
 #define _YIELD_HTTP_STREAM_SOCKET_CLIENT_HPP_
-
 
 #include "yield/buffer.hpp"
 #include "yield/time.hpp"
@@ -215,6 +213,5 @@ private:
 };
 }
 }
-
 
 #endif

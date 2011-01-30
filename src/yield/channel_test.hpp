@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_CHANNEL_TEST_HPP_
 #define _YIELD_CHANNEL_TEST_HPP_
-
 
 #include "yield/assert.hpp"
 #include "yield/channel.hpp"
@@ -411,6 +409,5 @@ private:
   ChannelPairFactory& channel_pair_factory;
 };
 }
-
 
 #endif

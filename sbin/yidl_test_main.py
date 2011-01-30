@@ -29,7 +29,6 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 from unittest import TestSuite, TextTestRunner
 
 from yidl.compiler.compiler_test import suite as compiler_test_suite

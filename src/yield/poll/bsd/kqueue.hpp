@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_POLL_BSD_KQUEUE_HPP_
 #define _YIELD_POLL_BSD_KQUEUE_HPP_
-
 
 #include "yield/poll/fd_event_queue.hpp"
 
@@ -63,6 +61,5 @@ private:
 }
 }
 }
-
 
 #endif

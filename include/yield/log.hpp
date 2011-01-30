@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_LOG_HPP_
 #define _YIELD_LOG_HPP_
-
 
 #include "yield/object.hpp"
 
@@ -146,6 +144,5 @@ private:
   Level level;
 };
 }
-
 
 #endif

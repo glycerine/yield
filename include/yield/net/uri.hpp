@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_NET_URI_HPP_
 #define _YIELD_NET_URI_HPP_
-
 
 #include "yield/exception.hpp"
 #include "yield/object.hpp"
@@ -173,6 +171,5 @@ std::ostream& operator<<(std::ostream&, const URI&);
 #pragma warning( pop )
 #endif
 //
-
 
 #endif

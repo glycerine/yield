@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_AIO_NET_SOCKETS_SEND_AIOCB_HPP_
 #define _YIELD_AIO_NET_SOCKETS_SEND_AIOCB_HPP_
-
 
 #include "yield/aio/net/sockets/aiocb.hpp"
 #include "yield/net/sockets/socket.hpp"
@@ -88,6 +86,5 @@ private:
 }
 }
 }
-
 
 #endif

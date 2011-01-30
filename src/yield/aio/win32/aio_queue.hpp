@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_AIO_WIN32_AIO_QUEUE_HPP_
 #define _YIELD_AIO_WIN32_AIO_QUEUE_HPP_
-
 
 #include "yield/aio/aiocb.hpp"
 #include "yield/event_queue.hpp"
@@ -62,6 +60,5 @@ private:
 }
 }
 }
-
 
 #endif

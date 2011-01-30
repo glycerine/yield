@@ -27,7 +27,6 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 from pyparsing import Literal, CaselessLiteral, Keyword, Word, ZeroOrMore, OneOrMore, \
         Forward, Group, Optional, Combine, \
         alphas, nums, alphanums, printables, QuotedString, restOfLine, cStyleComment

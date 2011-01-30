@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_HTTP_HTTP_CLIENT_TEST_HPP_
 #define _YIELD_HTTP_HTTP_CLIENT_TEST_HPP_
-
 
 #include "test_http_request_handler.hpp"
 #include "yield/auto_object.hpp"
@@ -280,6 +278,5 @@ protected:
 };
 };
 };
-
 
 #endif

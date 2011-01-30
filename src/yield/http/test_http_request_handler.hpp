@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_HTTP_TEST_HTTP_REQUEST_HANDLER_HPP_
 #define _YIELD_HTTP_TEST_HTTP_REQUEST_HANDLER_HPP_
-
 
 #include "yield/assert.hpp"
 #include "yield/http/http_request_handler.hpp"
@@ -53,6 +51,5 @@ class TestHTTPRequestHandler : public HTTPRequestHandler {
 };
 }
 }
-
 
 #endif

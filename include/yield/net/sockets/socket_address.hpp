@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_NET_SOCKETS_SOCKET_ADDRESS_HPP_
 #define _YIELD_NET_SOCKETS_SOCKET_ADDRESS_HPP_
-
 
 #include "yield/exception.hpp"
 #include "yield/object.hpp"
@@ -293,6 +291,5 @@ operator<<
 #pragma warning( pop )
 #endif
 //
-
 
 #endif

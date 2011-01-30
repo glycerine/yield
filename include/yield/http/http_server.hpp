@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_HTTP_HTTP_SERVER_HPP_
 #define _YIELD_HTTP_HTTP_SERVER_HPP_
-
 
 #include "yield/http/stream_socket_server.hpp"
 
@@ -65,6 +63,5 @@ private:
 };
 }
 }
-
 
 #endif

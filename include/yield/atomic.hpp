@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_ATOMIC_HPP_
 #define _YIELD_ATOMIC_HPP_
-
 
 #include "yield/types.hpp"
 
@@ -232,6 +230,5 @@ static inline atomic_t atomic_inc(volatile atomic_t* cur_value) {
 #endif
 }
 }
-
 
 #endif

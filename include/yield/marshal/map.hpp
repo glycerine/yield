@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_MARSHAL_MAP_HPP_
 #define _YIELD_MARSHAL_MAP_HPP_
-
 
 #include "yield/marshal/object.hpp"
 
@@ -45,6 +43,5 @@ public:
 };
 }
 }
-
 
 #endif

@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_I18N_TSTRING_HPP_
 #define _YIELD_I18N_TSTRING_HPP_
-
 
 #ifdef _WIN32
 #include "yield/i18n/win32/tstring.hpp"
@@ -48,6 +46,5 @@ typedef posix::tstring tstring;
 #endif
 }
 }
-
 
 #endif

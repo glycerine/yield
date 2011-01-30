@@ -27,7 +27,6 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #include "yield/buffer.hpp"
 #include "yield/aio/net/sockets/send_aiocb.hpp"
 #include "yield/net/sockets/socket_address.hpp"

@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_PROCESS_PROCESS_HPP_
 #define _YIELD_PROCESS_PROCESS_HPP_
-
 
 #include "yield/object.hpp"
 #include "yield/fs/path.hpp"
@@ -116,6 +114,5 @@ private:
 };
 }
 }
-
 
 #endif

@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_BUFFER_HPP_
 #define _YIELD_BUFFER_HPP_
-
 
 #include "yield/object.hpp"
 
@@ -109,6 +107,5 @@ private:
   size_t size_;
 };
 }
-
 
 #endif

@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_POLL_POSIX_POLLER_HPP_
 #define _YIELD_POLL_POSIX_POLLER_HPP_
-
 
 #include "yield/poll/fd_event_queue.hpp"
 #include "yield/thread/non_blocking_concurrent_queue.hpp"
@@ -62,6 +60,5 @@ private:
 }
 }
 }
-
 
 #endif

@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_STAGE_STAGE_HPP_
 #define _YIELD_STAGE_STAGE_HPP_
-
 
 #include "yield/event.hpp"
 #include "yield/event_handler.hpp"
@@ -109,6 +107,5 @@ private:
 };
 };
 };
-
 
 #endif

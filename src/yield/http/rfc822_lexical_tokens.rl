@@ -27,5 +27,4 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 # Adapted from the EBNF in RFC 822 section 3.3%%{  machine rfc822_lexical_tokens;  alphtype unsigned char;  crlf = "\r\n";  ctl = ( cntrl | 127 );  lws = crlf? ( ' ' | '\t' )+;  quoted_pair = '\\' ascii;}%%

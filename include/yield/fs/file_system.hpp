@@ -27,156 +27,21 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_FS_FILE_SYSTEM_HPP_
 #define _YIELD_FS_FILE_SYSTEM_HPP_
 
-
-#include "yield/object.hpp"
-#include "yield/fs/path.hpp"
-
-
 #ifdef _WIN32
-struct statvfs {
-  unsigned long f_bsize;    // File system block size.
-  unsigned long f_frsize;   // Fundamental file system block size.
-  uint64_t    f_blocks;     // Total number of blocks on file system
-  // in units of f_frsize.
-  uint64_t    f_bfree;      // Total number of free blocks.
-  uint64_t    f_bavail;     // Number of free blocks available to
-  // non-privileged process.
-  uint64_t    f_files;      // Total number of file serial numbers.
-  uint64_t    f_ffree;      // Total number of free file serial numbers.
-  uint64_t    f_favail;     // Number of file serial numbers available to
-  // non-privileged process.
-  unsigned long f_fsid;     // File system ID.
-  unsigned long f_flag;     // Bit mask of f_flag values.
-  unsigned long f_namemax;  // Maximum filename length.
-};
+#include "win32/file_system.hpp"
 #else
-struct statvfs;
+#include "posix/file_system.hpp"
 #endif
 
-
-namespace yield {
-class DateTime;
-class Log;
-
-
 namespace fs {
-class Directory;
-class ExtendedAttributes;
-class File;
-class MemoryMappedFile;
-class Stat;
-
-
-class FileSystem : public Object {
-public:
-  static mode_t FILE_MODE_DEFAULT;
-  static mode_t DIRECTORY_MODE_DEFAULT;
-  static int MMAP_FLAGS_DEFAULT; // MAP_SHARED
-  const static size_t MMAP_LENGTH_WHOLE_FILE = static_cast<size_t>(-1);
-  static int MMAP_PROT_DEFAULT; // PROT_READ|PROT_WRITE
-  const static uint32_t OPEN_ATTRIBUTES_DEFAULT = 0;
-  static uint32_t OPEN_FLAGS_DEFAULT; // O_RDONLY
-
-public:
-  static FileSystem* create();
-
-  virtual ~FileSystem() { }
-
-  virtual bool access(const Path&, int amode) = 0;
-  bool chmod(const Path&, mode_t);
-  bool chown(const Path&, uid_t, gid_t);
-  YO_NEW_REF File* creat(const Path&);
-  YO_NEW_REF File* creat(const Path&, mode_t);
-  bool exists(const Path& path);
-  virtual YO_NEW_REF Stat* getattr(const Path&) = 0;
-  virtual bool isdir(const Path&);
-  virtual bool isfile(const Path&);
-  virtual bool link(const Path& old_path, const Path& new_path) = 0;
-  bool mkdir(const Path&);
-  virtual bool mkdir(const Path&, mode_t) = 0;
-
-  virtual YO_NEW_REF File*
-  mkfifo
-  (
-    const Path&,
-    uint32_t flags = OPEN_FLAGS_DEFAULT,
-    mode_t mode = FILE_MODE_DEFAULT
-  ) = 0;
-
-  bool mktree(const Path&);
-  bool mktree(const Path&, mode_t);
-
-  virtual YO_NEW_REF MemoryMappedFile*
-  mmap
-  (
-    YO_NEW_REF File& file,
-    void* start = NULL,
-    size_t length = MMAP_LENGTH_WHOLE_FILE,
-    int prot = MMAP_PROT_DEFAULT,
-    int flags = MMAP_FLAGS_DEFAULT,
-    uint64_t offset = 0
-  ) = 0;
-
-  virtual YO_NEW_REF File*
-  open
-  (
-    const Path& path,
-    uint32_t flags = OPEN_FLAGS_DEFAULT,
-    mode_t mode = FILE_MODE_DEFAULT,
-    uint32_t attributes = OPEN_ATTRIBUTES_DEFAULT
-  ) = 0;
-
-  virtual YO_NEW_REF Directory* opendir(const Path&) = 0;
-  virtual YO_NEW_REF ExtendedAttributes* openxattrs(const Path&) = 0;
-  virtual bool readlink(const Path&, OUT Path&) = 0;
-  virtual bool realpath(const Path&, OUT Path&) = 0;
-  virtual bool rename(const Path& from_path, const Path& to_path) = 0;
-  virtual bool rmdir(const Path& path) = 0;
-  bool rmtree(const Path&);
-  virtual bool setattr(const Path&, const Stat& stbuf) = 0;
-  YO_NEW_REF Stat* stat(const Path& p) {
-    return getattr(p);
-  }
-  virtual bool statvfs(const Path&, struct statvfs&) = 0;
-  virtual bool symlink(const Path& old_path, const Path& new_path) = 0;
-  bool touch(const Path&);
-  bool touch(const Path&, mode_t);
-  virtual bool truncate(const Path&, uint64_t new_size) = 0;
-  virtual bool unlink(const Path& path) = 0;
-
-  bool
-  utime
-  (
-    const Path&,
-    const DateTime& atime,
-    const DateTime& mtime
-  );
-
-  bool
-  utime
-  (
-    const Path&,
-    const DateTime& atime,
-    const DateTime& mtime,
-    const DateTime& ctime
-  );
-
-  // Object
-  FileSystem& inc_ref() {
-    return Object::inc_ref(*this);
-  }
-
-private:
-  class chmodStat;
-  class chownStat;
-  class utimeStat;
-};
+#ifdef _WIN32
+typedef win32::FileSystem FileSystem;
+#else
+typedef posix::FileSystem FileSystem;
+#endif
 }
-}
-
 
 #endif

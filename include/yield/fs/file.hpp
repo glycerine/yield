@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_FS_FILE_HPP_
 #define _YIELD_FS_FILE_HPP_
-
 
 #include "yield/channel.hpp"
 
@@ -157,6 +155,5 @@ protected:
 //std::ostream& operator<<( std::ostream& os, const File::Lock& lock );
 }
 }
-
 
 #endif

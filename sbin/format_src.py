@@ -29,7 +29,6 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 from os.path import abspath, dirname, exists, isdir, isfile, join, split, splitext
 from optparse import OptionParser
 from subprocess import call

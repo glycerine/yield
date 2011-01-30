@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_FS_PATH_HPP_
 #define _YIELD_FS_PATH_HPP_
-
 
 #include "yield/object.hpp"
 #include "yield/i18n/tstring.hpp"
@@ -121,6 +119,5 @@ inline Path operator/(const Path& left, const Path& right) {
 std::ostream& operator<<(std::ostream&, const Path&);
 }
 }
-
 
 #endif

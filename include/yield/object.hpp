@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_OBJECT_HPP_
 #define _YIELD_OBJECT_HPP_
-
 
 #include "yield/atomic.hpp"
 #include "yield/types.hpp"
@@ -108,6 +106,5 @@ ObjectType* object_cast(Object& object) {
 // function/method or is returned by a function/method
 #define YO_NEW_REF
 }
-
 
 #endif

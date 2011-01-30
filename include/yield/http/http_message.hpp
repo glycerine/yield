@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_HTTP_HTTP_MESSAGE_HPP_
 #define _YIELD_HTTP_HTTP_MESSAGE_HPP_
-
 
 #include "yield/buffer.hpp"
 #include "yield/date_time.hpp"
@@ -123,6 +121,5 @@ private:
 };
 }
 }
-
 
 #endif

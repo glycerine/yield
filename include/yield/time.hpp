@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_TIME_HPP_
 #define _YIELD_TIME_HPP_
-
 
 #include "yield/types.hpp"
 
@@ -202,6 +200,5 @@ private:
   uint64_t _ns; // Not relative to any epoch
 };
 }
-
 
 #endif

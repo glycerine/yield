@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_AIO_FS_AIO_QUEUE_TEST_HPP_
 #define _YIELD_AIO_FS_AIO_QUEUE_TEST_HPP_
-
 
 #include "../../event_queue_test.hpp"
 #include "yield/assert.hpp"
@@ -233,6 +231,5 @@ public:
 }
 }
 }
-
 
 #endif

@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_STAGE_POLLING_STAGE_SCHEDULER_HPP_
 #define _YIELD_STAGE_POLLING_STAGE_SCHEDULER_HPP_
-
 
 #include "yield/stage/stage_scheduler.hpp"
 #include "yield/thread/runnable.hpp"
@@ -86,6 +84,5 @@ private:
 };
 }
 }
-
 
 #endif

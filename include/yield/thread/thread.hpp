@@ -27,10 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 #ifndef _YIELD_THREAD_THREAD_HPP_
 #define _YIELD_THREAD_THREAD_HPP_
-
 
 #include "yield/auto_object.hpp"
 #include "yield/object.hpp"
@@ -123,6 +121,5 @@ private:
 };
 }
 }
-
 
 #endif
