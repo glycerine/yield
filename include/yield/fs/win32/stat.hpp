@@ -53,7 +53,15 @@ public:
   const static Type TYPE_REG = 2;
 
 public:
-  Stat();
+  Stat(
+    const DateTime& atime,
+    uint32_t attributes,
+    const DateTime& ctime,
+    const DateTime& mtime,
+    int16_t nlink,
+    uint64_t size
+  );
+
   Stat(const BY_HANDLE_FILE_INFORMATION&);
   Stat(const WIN32_FILE_ATTRIBUTE_DATA&);
   Stat(const WIN32_FIND_DATA&);
@@ -100,7 +108,7 @@ public:
 
   Stat& operator=(const BY_HANDLE_FILE_INFORMATION&);
   Stat& operator=(const WIN32_FILE_ATTRIBUTE_DATA&);
-  Stat& operator=(const WIN32_FIND_DATA&);
+  virtual Stat& operator=(const WIN32_FIND_DATA&);
 
 private:
   void set_size(uint32_t nFileSizeLow, uint32_t nFileSizeHigh);

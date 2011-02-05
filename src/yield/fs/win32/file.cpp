@@ -27,12 +27,11 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "file.hpp"
-#include "stat.hpp"
 #include "yield/page.hpp"
+#include "yield/fs/win32/file.hpp"
+#include "yield/fs/win32/stat.hpp"
 
 #include <Windows.h>
-
 
 namespace yield {
 namespace fs {
@@ -62,7 +61,7 @@ bool File::datasync() {
   return FlushFileBuffers(*this) != 0;
 }
 
-YO_NEW_REF yield::fs::Stat* File::getattr() {
+YO_NEW_REF Stat* File::getattr() {
   BY_HANDLE_FILE_INFORMATION by_handle_file_information;
   if (GetFileInformationByHandle(*this, &by_handle_file_information) != 0)
     return new Stat(by_handle_file_information);
@@ -70,15 +69,10 @@ YO_NEW_REF yield::fs::Stat* File::getattr() {
     return NULL;
 }
 
-YO_NEW_REF File::Lock* File::getlk(const Lock&) {
-  SetLastError(ERROR_NOT_SUPPORTED);
-  return NULL;
-}
-
-YO_NEW_REF ExtendedAttributes* File::openxattrs() {
-  SetLastError(ERROR_NOT_SUPPORTED);
-  return NULL;
-}
+//YO_NEW_REF File::Lock* File::getlk(const Lock&) {
+//  SetLastError(ERROR_NOT_SUPPORTED);
+//  return NULL;
+//}
 
 ssize_t File::pread(void* buf, size_t buflen, uint64_t offset) {
   OVERLAPPED overlapped;

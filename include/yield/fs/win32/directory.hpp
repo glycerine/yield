@@ -30,55 +30,29 @@
 #ifndef _YIELD_FS_WIN32_DIRECTORY_HPP_
 #define _YIELD_FS_WIN32_DIRECTORY_HPP_
 
-#include "stat.hpp"
-#include "yield/fs/directory.hpp"
+#include "yield/object.hpp"
 #include "yield/fs/path.hpp"
-
+#include "yield/fs/win32/stat.hpp"
 
 namespace yield {
 namespace fs {
 namespace win32 {
-class Directory : public yield::fs::Directory {
+class Directory : public Object {
 public:
-  class Entry : public yield::fs::Directory::Entry {
+  class Entry : public Stat {
   public:
-    Entry() { }
+    Entry(const WIN32_FIND_DATA&);
 
-    Entry& operator=(const WIN32_FIND_DATA&);
-
-    // Directory::Entry
     const Path& get_name() const {
       return name;
     }
     bool is_hidden() const;
     bool is_special() const;
 
-    // Stat
-    const DateTime& get_atime() const {
-      return stbuf.get_atime();
-    }
-    uint32_t get_attributes() const {
-      return stbuf.get_attributes();
-    }
-    virtual const DateTime& get_ctime() const {
-      return stbuf.get_ctime();
-    }
-    const DateTime& get_mtime() const {
-      return stbuf.get_mtime();
-    }
-    int16_t get_nlink() const {
-      return stbuf.get_nlink();
-    }
-    uint64_t get_size() const {
-      return stbuf.get_size();
-    }
-    Type get_type() const {
-      return stbuf.get_type();
-    }
+    Entry& operator=(const WIN32_FIND_DATA&);
 
   private:
     Path name;
-    yield::fs::win32::Stat stbuf;
   };
 
 public:
@@ -96,9 +70,12 @@ public:
 
   // Directory
   bool close();
-  yield::fs::Directory::Entry* read(Entry::Type types);
-  bool read(yield::fs::Directory::Entry&, Entry::Type types);
+  YO_NEW_REF Entry* read(Entry::Type types);
+  bool read(Entry&, Entry::Type types);
   void rewind();
+
+private:
+  bool read(OUT Entry*&, Entry::Type types);
 
 private:
   fd_t hDirectory, hFindFile;

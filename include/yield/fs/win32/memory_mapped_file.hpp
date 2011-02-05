@@ -50,6 +50,18 @@ class MemoryMappedFile : public Buffer {
 public:
   ~MemoryMappedFile();
 
+public:
+  bool close(); 
+  File& get_file() { return file; }
+  int get_flags() const { return flags; }
+  uint64_t get_offset() const { return offset; }
+  int get_prot() const { return prot; }
+  bool sync();
+  bool sync(size_t offset, size_t length);
+  bool sync(void* ptr, size_t length);
+  bool unmap();
+
+public:
   // yield::Buffer
   void* data() {
     return data_;
@@ -58,10 +70,6 @@ public:
     return data_;
   }
   void reserve(size_t capacity);
-
-  // yield::fs::MemoryMappedFile
-  bool sync(void* ptr, size_t length);
-  bool unmap();
 
 private:
   friend class FileSystem;
@@ -79,7 +87,11 @@ private:
 
 private:
   void* data_;
+  File& file;
+  int flags;
   fd_t hFileMapping;
+  uint64_t offset;
+  int prot;
 };
 }
 }

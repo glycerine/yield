@@ -31,7 +31,6 @@
 
 #include <Windows.h>
 
-
 namespace yield {
 namespace fs {
 namespace win32 {

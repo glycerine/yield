@@ -27,13 +27,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "memory_mapped_file.hpp"
-#include "file_system.hpp"
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
+#include "yield/fs/win32/file_system.hpp"
+#include "yield/fs/win32/memory_mapped_file.hpp"
 
 #include <Windows.h>
-
 
 namespace yield {
 namespace fs {
@@ -48,9 +47,14 @@ MemoryMappedFile::MemoryMappedFile
   uint64_t offset,
   int prot
 )
-  : yield::fs::MemoryMappedFile(capacity, file, flags, offset, prot),
+  : Buffer(capacity),
     data_(data),
-    hFileMapping(hFileMapping) {
+    file(file),
+    flags(flags),
+    hFileMapping(hFileMapping),
+    offset(offset),
+    prot(prot)
+{
   if (data_ == reinterpret_cast<void*>(-1)) {
     debug_assert_eq(hFileMapping, NULL);
   } else {
@@ -62,11 +66,16 @@ MemoryMappedFile::MemoryMappedFile
 
 MemoryMappedFile::~MemoryMappedFile() {
   close();
+  File::dec_ref(file);
+}
+
+bool MemoryMappedFile::close() {
+  return unmap() && get_file().close();
 }
 
 void MemoryMappedFile::reserve(size_t capacity) {
   if (data_ != reinterpret_cast<void*>(-1)) {
-    if (!yield::fs::MemoryMappedFile::sync())
+    if (!sync())
       throw Exception();
 
     if (!unmap())
@@ -97,6 +106,14 @@ void MemoryMappedFile::reserve(size_t capacity) {
     throw Exception();
 }
 
+bool MemoryMappedFile::sync() {
+  return sync(data(), capacity());
+}
+
+bool MemoryMappedFile::sync(size_t offset, size_t length) {
+  return sync(static_cast<char*>(data()) + offset, length);
+}
+
 bool MemoryMappedFile::sync(void* ptr, size_t length) {
   if (data_ != reinterpret_cast<void*>(-1))
     return FlushViewOfFile(ptr, length) == TRUE;
@@ -121,8 +138,7 @@ bool MemoryMappedFile::unmap() {
       hFileMapping = NULL;
       return true;
     } else {
-      DebugBreak();
-      return false;
+      DebugBreak();      return false;
     }
   } else {
     SetLastError(ERROR_INVALID_PARAMETER);

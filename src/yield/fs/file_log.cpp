@@ -27,7 +27,6 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/fs/file.hpp"
 #include "yield/fs/file_log.hpp"
 #include "yield/fs/file_system.hpp"
 
@@ -44,16 +43,8 @@ FileLog::~FileLog() {
 
 void FileLog::write(const char* str, size_t str_len) {
   if (file == NULL) {
-    FileSystem* file_system = FileSystem::create();
-    if (file_system != NULL) {
-      file = file_system->open(file_path, O_CREAT | O_WRONLY | O_APPEND);
-      if (file != NULL)
-        FileSystem::dec_ref(*file_system);
-      else {
-        FileSystem::dec_ref(*file_system);
-        return;
-      }
-    } else
+    file = FileSystem().open(file_path, O_CREAT | O_WRONLY | O_APPEND);
+    if (file == NULL)
       return;
   }
 

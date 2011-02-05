@@ -52,7 +52,7 @@ LIBS += -lyield_i18n -lyield_common
 DEP_FILE_PATHS := $(shell find ../../../build/yield/fs -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../build/yield/fs/file_log.o ../../../build/yield/fs/memory_mapped_file.o
+OBJECT_FILE_PATHS += ../../../build/yield/fs/file_log.o
 ifeq ($(UNAME), Darwin)
 	OBJECT_FILE_PATHS += ../../../build/yield/fs/bsd/directory.o ../../../build/yield/fs/bsd/file_system.o
 	OBJECT_FILE_PATHS += ../../../build/yield/fs/darwin/extended_attributes.o ../../../build/yield/fs/darwin/file.o ../../../build/yield/fs/darwin/file_system.o
@@ -139,10 +139,6 @@ depclean:
 ../../../build/yield/fs/linux/file_system.o: ../../../src/yield/fs/linux/file_system.cpp
 	-mkdir -p ../../../build/yield/fs/linux 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/fs/linux/file_system.o -MD $(CXXFLAGS) ../../../src/yield/fs/linux/file_system.cpp
-
-../../../build/yield/fs/memory_mapped_file.o: ../../../src/yield/fs/memory_mapped_file.cpp
-	-mkdir -p ../../../build/yield/fs 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs/memory_mapped_file.o -MD $(CXXFLAGS) ../../../src/yield/fs/memory_mapped_file.cpp
 
 ../../../build/yield/fs/posix/directory.o: ../../../src/yield/fs/posix/directory.cpp
 	-mkdir -p ../../../build/yield/fs/posix 2>/dev/null

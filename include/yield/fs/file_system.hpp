@@ -36,12 +36,14 @@
 #include "posix/file_system.hpp"
 #endif
 
+namespace yield {
 namespace fs {
 #ifdef _WIN32
 typedef win32::FileSystem FileSystem;
 #else
 typedef posix::FileSystem FileSystem;
 #endif
+}
 }
 
 #endif

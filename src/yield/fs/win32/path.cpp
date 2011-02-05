@@ -29,7 +29,6 @@
 
 #include "yield/fs/path.hpp"
 
-
 namespace yield {
 namespace fs {
 const Path Path::CURRENT_DIRECTORY(L'.');

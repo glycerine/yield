@@ -27,27 +27,22 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "directory.hpp"
-#include "file.hpp"
-#include "memory_mapped_file.hpp"
 #include "named_pipe.hpp"
-#include "stat.hpp"
-#include "file_system.hpp"
-#include "yield/assert.hpp"
 #include "yield/fs/path.hpp"
+#include "yield/assert.hpp"
+#include "yield/fs/win32/directory.hpp"
+#include "yield/fs/win32/file.hpp"
+#include "yield/fs/win32/file_system.hpp"
+#include "yield/fs/win32/memory_mapped_file.hpp"
+#include "yield/fs/win32/stat.hpp"
 
 #include <fcntl.h> // For O_*
 #include <Windows.h>
 
-
 namespace yield {
 namespace fs {
 namespace win32 {
-bool FileSystem::access(const Path&, int) {
-  return true;
-}
-
-yield::fs::Stat* FileSystem::getattr(const Path& path) {
+Stat* FileSystem::getattr(const Path& path) {
   WIN32_FILE_ATTRIBUTE_DATA stbuf;
   if (GetFileAttributesEx(path.c_str(), GetFileExInfoStandard, &stbuf))
     return new Stat(stbuf);
@@ -86,7 +81,7 @@ bool FileSystem::mkdir(const Path& path, mode_t mode) {
   return CreateDirectory(path.c_str(), NULL) == TRUE;
 }
 
-yield::fs::File*
+File*
 FileSystem::mkfifo
 (
   const Path& path,
@@ -209,10 +204,10 @@ FileSystem::mmap
   return reinterpret_cast<void*>(-1);
 }
 
-yield::fs::MemoryMappedFile*
+MemoryMappedFile*
 FileSystem::mmap
 (
-  yield::fs::File& file,
+  File& file,
   void* addr,
   size_t length,
   int prot,
@@ -269,7 +264,7 @@ FileSystem::mmap
   }
 }
 
-yield::fs::File*
+File*
 FileSystem::open
 (
   const Path& path,
@@ -337,7 +332,7 @@ FileSystem::open
   return NULL;
 }
 
-yield::fs::Directory* FileSystem::opendir(const Path& path) {
+Directory* FileSystem::opendir(const Path& path) {
   HANDLE hDirectory
   = CreateFile
     (
@@ -354,16 +349,6 @@ yield::fs::Directory* FileSystem::opendir(const Path& path) {
     return new Directory(hDirectory);
   else
     return NULL;
-}
-
-YO_NEW_REF ExtendedAttributes* FileSystem::openxattrs(const Path&) {
-  SetLastError(ERROR_NOT_SUPPORTED);
-  return NULL;
-}
-
-bool FileSystem::readlink(const Path&, Path&) {
-  SetLastError(ERROR_NOT_SUPPORTED);
-  return false;
 }
 
 bool FileSystem::realpath(const Path& path, OUT Path& realpath) {
@@ -390,94 +375,6 @@ bool FileSystem::rename(const Path& from_path, const Path& to_path) {
 
 bool FileSystem::rmdir(const Path& path) {
   return RemoveDirectory(path.c_str()) == TRUE;
-}
-
-bool FileSystem::setattr(const Path& path, const yield::fs::Stat& stbuf) {
-  if
-  (
-    stbuf.has_blksize()
-    ||
-    stbuf.has_blocks()
-    ||
-    stbuf.has_dev()
-    ||
-    stbuf.has_gid()
-    ||
-    stbuf.has_ino()
-    ||
-    stbuf.has_mode()
-    ||
-    stbuf.has_nlink()
-    ||
-    stbuf.has_rdev()
-    ||
-    stbuf.has_size()
-    ||
-    stbuf.has_uid()
-  ) {
-    SetLastError(ERROR_NOT_SUPPORTED);
-    return false;
-  }
-
-  bool have_setattr = false;
-
-  if (stbuf.has_atime() || stbuf.has_ctime() || stbuf.has_mtime()) {
-    File* file
-    = static_cast<File*>
-      (
-        open
-        (
-          path,
-          O_WRONLY,
-          FILE_MODE_DEFAULT,
-          OPEN_ATTRIBUTES_DEFAULT
-        )
-      );
-
-    if (file != NULL) {
-      FILETIME ftCreationTime = stbuf.get_ctime(),
-               ftLastAccessTime = stbuf.get_atime(),
-               ftLastWriteTime = stbuf.get_mtime();
-
-      if
-      (
-        SetFileTime
-        (
-          *file,
-          stbuf.has_ctime() ? &ftCreationTime : NULL,
-          stbuf.has_atime() ? &ftLastAccessTime : NULL,
-          stbuf.has_mtime() ? &ftLastWriteTime : NULL
-        )
-      ) {
-        have_setattr = true;
-        File::dec_ref(*file);
-      } else {
-        debug_assert_false(have_setattr);
-        File::dec_ref(*file);
-      }
-    } else {
-      debug_assert_false(have_setattr);
-      return false;
-    }
-  }
-
-  if (stbuf.has_attributes()) {
-    if
-    (
-      SetFileAttributes
-      (
-        path.c_str(),
-        stbuf.get_attributes()
-      )
-    )
-      have_setattr = true;
-    else {
-      debug_assert_false(have_setattr);
-      return false;
-    }
-  }
-
-  return true;
 }
 
 bool FileSystem::statvfs(const Path& path, struct statvfs& stbuf) {
@@ -508,22 +405,60 @@ bool FileSystem::statvfs(const Path& path, struct statvfs& stbuf) {
     return false;
 }
 
-bool FileSystem::symlink(const Path&, const Path&) {
-  SetLastError(ERROR_NOT_SUPPORTED);
-  return false;
+bool FileSystem::truncate(const Path& path, uint64_t new_size) {
+  File* file = open(path, O_CREAT | O_WRONLY, FILE_MODE_DEFAULT, 0);
+  if (file != NULL) {
+    file->truncate(new_size);
+    File::dec_ref(*file);
+    return true;
+  } else
+    return false;
 }
 
 bool FileSystem::unlink(const Path& path) {
   return DeleteFileW(path.c_str()) == TRUE;
 }
 
-bool FileSystem::truncate(const Path& path, uint64_t new_size) {
-  yield::fs::File* file
-  = open(path, O_CREAT | O_WRONLY, FILE_MODE_DEFAULT, 0);
+bool
+FileSystem::utime(
+  const Path& path,
+  const DateTime& atime,
+  const DateTime& mtime
+) {
+  File* file = open(path, O_WRONLY);
   if (file != NULL) {
-    file->truncate(new_size);
-    File::dec_ref(*file);
-    return true;
+    FILETIME ftLastAccessTime = atime;
+    FILETIME ftLastWriteTime = mtime;
+    if (SetFileTime(*file, NULL, &ftLastAccessTime, &ftLastWriteTime)) {
+      File::dec_ref(*file);
+      return true;
+    } else {
+      File::dec_ref(*file);
+      return false;
+    }
+  } else
+    return false;
+}
+
+bool
+FileSystem::utime(
+  const Path& path,
+  const DateTime& atime,
+  const DateTime& mtime,
+  const DateTime& ctime
+) {
+  File* file = open(path, O_WRONLY);
+  if (file != NULL) {
+    FILETIME ftCreationTime = ctime;
+    FILETIME ftLastAccessTime = atime;
+    FILETIME ftLastWriteTime = mtime;
+    if (SetFileTime(*file, &ftCreationTime, &ftLastAccessTime, &ftLastWriteTime)) {
+      File::dec_ref(*file);
+      return true;
+    } else {
+      File::dec_ref(*file);
+      return false;
+    }
   } else
     return false;
 }

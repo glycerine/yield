@@ -41,7 +41,9 @@
 namespace yield {
 namespace fs {
 namespace win32 {
-class File : public yield::fs::File {
+class Stat;
+
+class File : public Channel {
 public:
   class Lock : public Object {
   public:
@@ -96,9 +98,8 @@ public:
 public:
   bool close();
   virtual bool datasync();
-  YO_NEW_REF yield::fs::Stat* getattr();
-  YO_NEW_REF Lock* getlk(const Lock&);
-  YO_NEW_REF ExtendedAttributes* openxattrs();
+  YO_NEW_REF Stat* getattr();
+  //YO_NEW_REF Lock* getlk(const Lock&);
   ssize_t pread(void*, size_t, uint64_t);
   ssize_t preadv(const iovec*, int, uint64_t);
   ssize_t pwrite(const void*, size_t, uint64_t);

@@ -27,20 +27,26 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "stat.hpp"
+#include "yield/fs/win32/stat.hpp"
 
 #include <Windows.h>
-
 
 namespace yield {
 namespace fs {
 namespace win32 {
-Stat::Stat()
-  : atime(INVALID_ATIME),
-    attributes(INVALID_ATTRIBUTES),
-    ctime(INVALID_CTIME),
-    mtime(INVALID_MTIME),
-    nlink(INVALID_NLINK)
+Stat::Stat(
+  const DateTime& atime,
+  uint32_t attributes,
+  const DateTime& ctime,
+  const DateTime& mtime,
+  int16_t nlink,
+  uint64_t size
+) : atime(atime),
+  attributes(attributes),
+  ctime(ctime),
+  mtime(mtime),
+  nlink(nlink),
+  size(size)
 { }
 
 Stat::Stat(const BY_HANDLE_FILE_INFORMATION& stbuf)
@@ -71,29 +77,10 @@ Stat::Stat(const WIN32_FIND_DATA& stbuf)
 }
 
 Stat::Type Stat::get_type() const {
-  if
-  (
-    (get_attributes() & FILE_ATTRIBUTE_DEVICE)
-    ==
-    FILE_ATTRIBUTE_DEVICE
-  )
-    return TYPE_BLK;
-  else if
-  (
-    (get_attributes() & FILE_ATTRIBUTE_DIRECTORY)
-    ==
-    FILE_ATTRIBUTE_DIRECTORY
-  )
+  if ((attributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
     return TYPE_DIR;
-  else if
-  (
-    get_attributes() == FILE_ATTRIBUTE_NORMAL
-    ||
-    get_attributes() == FILE_ATTRIBUTE_ARCHIVE
-  )
-    return TYPE_REG;
   else
-    return yield::fs::Stat::get_type();
+    return TYPE_REG;
 }
 
 Stat::operator BY_HANDLE_FILE_INFORMATION() const {

@@ -200,9 +200,6 @@
     <ClCompile Include="..\..\..\src\yield\fs\linux\file_test.cpp">
       <Filter>Source Files\linux</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\fs\memory_mapped_file.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\fs\memory_mapped_file_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -30,7 +30,7 @@
 #ifndef _YIELD_FS_WIN32_NAMED_PIPE_HPP_
 #define _YIELD_FS_WIN32_NAMED_PIPE_HPP_
 
-#include "file.hpp"
+#include "yield/fs/win32/file.hpp"
 
 
 namespace yield {

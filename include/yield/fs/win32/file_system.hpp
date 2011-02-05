@@ -30,8 +30,7 @@
 #ifndef _YIELD_FS_WIN32_FILE_SYSTEM_HPP_
 #define _YIELD_FS_WIN32_FILE_SYSTEM_HPP_
 
-#include "yield/fs/file_system.hpp"
-
+#include "yield/object.hpp"
 
 struct statvfs {
   unsigned long f_bsize;    // File system block size.
@@ -52,9 +51,18 @@ struct statvfs {
 
 
 namespace yield {
+class DateTime;
+
 namespace fs {
+class Path;
+
 namespace win32 {
-class FileSystem : public yield::fs::FileSystem {
+class Directory;
+class File;
+class MemoryMappedFile;
+class Stat;
+
+class FileSystem : public Object {
 public:
   static mode_t FILE_MODE_DEFAULT;
   static mode_t DIRECTORY_MODE_DEFAULT;
@@ -77,14 +85,13 @@ public:
   );
 
   // FileSystem
-  bool access(const Path&, int);
   bool isdir(const Path&);
   bool isfile(const Path&);
-  YO_NEW_REF yield::fs::Stat* getattr(const Path&);
+  YO_NEW_REF Stat* getattr(const Path&);
   bool link(const Path& old_path, const Path& new_path);
   bool mkdir(const Path&, mode_t);
 
-  yield::fs::File*
+  File*
   mkfifo
   (
     const Path&,
@@ -92,10 +99,10 @@ public:
     mode_t mode = FILE_MODE_DEFAULT
   );
 
-  YO_NEW_REF yield::fs::MemoryMappedFile*
+  YO_NEW_REF MemoryMappedFile*
   mmap
   (
-    YO_NEW_REF yield::fs::File& file,
+    YO_NEW_REF File& file,
     void* start = NULL,
     size_t length = MMAP_LENGTH_WHOLE_FILE,
     int prot = MMAP_PROT_DEFAULT,
@@ -103,7 +110,7 @@ public:
     uint64_t offset = 0
   );
 
-  YO_NEW_REF yield::fs::File*
+  YO_NEW_REF File*
   open
   (
     const Path& path,
@@ -112,17 +119,15 @@ public:
     uint32_t attributes = OPEN_ATTRIBUTES_DEFAULT
   );
 
-  YO_NEW_REF yield::fs::Directory* opendir(const Path&);
-  YO_NEW_REF ExtendedAttributes* openxattrs(const Path&);
-  bool readlink(const Path&, Path&);
+  YO_NEW_REF Directory* opendir(const Path&);
   bool realpath(const Path&, OUT Path&);
   bool rename(const Path& from_path, const Path& to_path);
   bool rmdir(const Path& path);
-  bool setattr(const Path&, const yield::fs::Stat&);
   bool statvfs(const Path&, struct statvfs&);
-  bool symlink(const Path&, const Path&);
   bool truncate(const Path&, uint64_t);
-  bool unlink(const Path& path);
+  bool unlink(const Path&);
+  bool utime(const Path&, const DateTime& atime, const DateTime& mtime);
+  bool utime(const Path&, const DateTime& atime, const DateTime& mtime, const DateTime& ctime);
 };
 }
 }

@@ -31,6 +31,7 @@
 #define _YIELD_FS_FILE_LOG_HPP_
 
 #include "yield/log.hpp"
+#include "yield/fs/file.hpp"
 #include "yield/fs/path.hpp"
 
 #include <fcntl.h> // For O_*
@@ -38,9 +39,6 @@
 
 namespace yield {
 namespace fs {
-class File;
-
-
 class FileLog : public yield::Log {
 public:
   FileLog(const Path& file_path, const Level& level);
