@@ -130,7 +130,7 @@ for project_name in PROJECT_NAMES:
                         project_dict["project_dir_path"],
                         project_dict["name"] + file_ext
                     ),
-                    repr(project_class(**project_dict)),
+                    str(project_class(**project_dict)),
                     force=options.force
                 )
 
@@ -138,7 +138,7 @@ for project_name in PROJECT_NAMES:
 # Generate Visual Studio solution files
 write_file(
     "yield.sln",
-    repr(
+    str(
         VCXSln(
             [join("proj", "yield", project_name, project_name)
              for project_name in PROJECT_NAMES] + \
@@ -153,6 +153,6 @@ write_file(
 # Generate top-level Makefile
 write_file(
     "Makefile",
-    repr(TopLevelMakefile(PROJECT_REFERENCES)),
+    str(TopLevelMakefile(PROJECT_REFERENCES)),
     force=options.force
 )

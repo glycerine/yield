@@ -84,7 +84,7 @@ endif""" % locals())
 
 
 class Makefile(Project):
-    def __repr__(self):
+    def __str__(self):
         my_dir_path = "" # "$(dir $(lastword $(MAKEFILE_LIST)))"
 
         assert len(self.get_build_dir_path()) == 1 and self.get_build_dir_path().keys()[0] == '*'
@@ -201,14 +201,14 @@ endif""")
         output_file_path = self.get_output_file_path()['*']
         output_dir_path, output_file_name = split(output_file_path)
         if self.get_type() == "exe":
-            output_file_path_action = "$(LINK.cpp) $(OBJECT_FILE_PATHS) -o $@ $(LIBS)"
+            output_file_path_recipe = "$(LINK.cpp) $(OBJECT_FILE_PATHS) -o $@ $(LIBS)"
         elif self.get_type() == "lib":
             if not output_file_name.startswith("lib"):
                 output_file_name = "lib" + output_file_name
             if not output_file_name.endswith(".a"):
                 output_file_name += ".a"
             output_file_path = join(output_dir_path, output_file_name)
-            output_file_path_action = "$(AR) -r $@ $(OBJECT_FILE_PATHS)"
+            output_file_path_recipe = "$(AR) -r $@ $(OBJECT_FILE_PATHS)"
         else:
             raise NotImplementedError, self.get_type()
         output_dir_path = my_dir_path + posixpath(output_dir_path)
@@ -226,7 +226,7 @@ DEP_FILE_PATHS := $(shell find %(my_dir_path)s%(build_dir_path)s -name "*.d")
 
 %(project_references)s%(output_file_path)s: $(OBJECT_FILE_PATHS)
     -mkdir -p %(output_dir_path)s 2>/dev/null
-    %(output_file_path_action)s
+    %(output_file_path_recipe)s
 
 clean:
     $(RM) %(output_file_path)s $(OBJECT_FILE_PATHS)
@@ -247,15 +247,19 @@ class TopLevelMakefile(object):
         self.__project_references = project_references
 
     def __repr__(self):
-        clean_actions = []
+        clean_recipes = []
+        depclean_recipes = []
+        project_rules = []
         project_targets = []
-        project_target_names = []
 
         project_names = list(self.__project_references.keys())
         project_names.sort()
         for project_name in project_names:
-            clean_actions.append("$(MAKE) -C proj/yield/%(project_name)s -f %(project_name)s.Makefile clean" % locals())
-            clean_actions.append("$(MAKE) -C proj/yield/%(project_name)s -f %(project_name)s_test.Makefile clean" % locals())
+            for recipe_type in ("clean", "depclean"):
+                for project_name_ in (project_name, project_name + "_test"):
+                    locals()[recipe_type + "_recipes"].append(
+                        "$(MAKE) -C proj/yield/%(project_name)s -f %(project_name_)s.Makefile %(recipe_type)s" % locals()
+                    )
 
             project_references = \
                 ' '.join(
@@ -263,29 +267,36 @@ class TopLevelMakefile(object):
                     for project_reference in self.__project_references[project_name]]
                 )
 
-            project_targets.append("""\
+            project_rules.append("""\
 %(project_name)s: %(project_references)s
     $(MAKE) -C proj/yield/%(project_name)s -f %(project_name)s.Makefile
 
 %(project_name)s_test: %(project_name)s
     $(MAKE) -C proj/yield/%(project_name)s -f %(project_name)s_test.Makefile
 """ % locals())
-            project_target_names.extend((project_name, project_name + "_test"))
+            project_targets.extend((project_name, project_name + "_test"))
 
-        clean_actions.sort()
-        clean_actions = '\n\t'.join(clean_actions)
+        clean_recipes.sort()
+        clean_recipes = '\n\t'.join(clean_recipes)
+
+        depclean_recipes.sort()
+        depclean_recipes = '\n\t'.join(depclean_recipes)
+
+        project_rules.sort()
+        project_rules = '\n'.join(project_rules)
 
         project_targets.sort()
-        project_targets = '\n'.join(project_targets)
-
-        project_target_names.sort()
-        project_target_names = ' '.join(project_target_names)
+        project_targets = ' '.join(project_targets)
 
         return ("""\
-all: %(project_target_names)s
+all: %(project_targets)s
 
 clean:
-    %(clean_actions)s
+    %(clean_recipes)s
 
-%(project_targets)s
+depclean:
+    %(depclean_recipes)s
+
+
+%(project_rules)s
 """ % locals()).replace(' ' * 4, '\t')

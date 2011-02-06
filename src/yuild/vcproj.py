@@ -234,7 +234,7 @@ class VCProj(Project):
         else:
             raise ValueError, type
 
-    def __repr__(self):
+    def __str__(self):
         AdditionalDependencies = self.get_AdditionalDependencies()
         AdditionalIncludeDirectories = self.get_AdditionalIncludeDirectories()
         AdditionalLibraryDirectories = ntpaths(self.get_libpath()["win32"])

@@ -200,7 +200,7 @@ class VCXProj(VCProj):
                    visit_source_file
                )
 
-    def __repr__(self):
+    def __str__(self):
         AdditionalDependencies = self.get_AdditionalDependencies(';')
         AdditionalIncludeDirectories = self.get_AdditionalIncludeDirectories()
         AdditionalLibraryDirectories = self.get_AdditionalLibraryDirectories()
@@ -445,7 +445,7 @@ class VCXProjFilters(object):
                 items[item_i] = "".join([item_lines[0], new_Filter_line, item_lines[2]])
         return items
 
-    def __repr__(self):
+    def __str__(self):
         header_filters, header_items = \
             self.__get_filters(
                 "Header Files",
@@ -525,7 +525,7 @@ class VCXProjUser(object):
     def __init__(self, *args, **kwds):
         pass
 
-    def __repr__(self):
+    def __str__(self):
         return """\
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
@@ -601,7 +601,7 @@ class VCXSln(object):
 
         self.__vcxproj_references = VCXProjReferences(sln_dir_path, project_references)
 
-    def __repr__(self):
+    def __str__(self):
         Projects = []
         ProjectConfigurationPlatforms = []
         for vcxproj_reference in self.__vcxproj_references:
