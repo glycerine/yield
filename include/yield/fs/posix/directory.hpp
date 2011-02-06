@@ -95,6 +95,8 @@ public:
   void rewind();
 
 protected:
+  Directory(DIR* dirp);
+
   operator DIR* () {
     return dirp;
   }

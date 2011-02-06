@@ -31,75 +31,80 @@
 
 #include <sys/xattr.h>
 
-
 namespace yield {
 namespace fs {
 namespace darwin {
 ExtendedAttributes(fd_t fd)
-  : fd(fd)
+  : yield::fs::posix::ExtendedAttributes(fd)
 { }
 
 ExtendedAttributes(const Path& path)
-  : fd(-1), path(path)
+  : yield::fs::posix::ExtendedAttributes(path)
 { }
 
-~ExtendedAttributes() {
-  if (fd != -1)
-    close(fd);
+ssize_t
+ExtendedAttributes::get(
+  fd_t fd,
+  const char* name,
+  void* value,
+  size_t size
+) {
+  return fgetxattr(fd, name, value, size, 0, 0);
 }
 
-ssize_t ExtendedAttributes::get(const char* name, void* value, size_t size) {
-  if (fd != -1)
-    return fgetxattr(fd, name, value, size, 0, 0);
-  else
-    return getxattr(path.c_str(), name, value, size, 0, 0);
+ssize_t
+ExtendedAttributes::get(
+  const Path& path,
+  const char* name,
+  void* value,
+  size_t size
+) {
+  return getxattr(path.c_str(), name, value, size, 0, 0);
 }
 
-bool ExtendedAttributes::list(vector<string>& out_names) {
-  size_t names_len;
-  if (fd != -1)
-    names_len = flistxattr(fd, NULL, 0, 0);
-  else
-    names_len = listxattr(path.c_str(), NULL, 0);
-
-  if (names_len > 0) {
-    char* names = new char[names_len];
-
-    if (fd != -1)
-      flistxattr(fd, names, names_len, 0);
-    else
-      listxattr(path.c_str(), names, names_len, 0);
-
-    char* name = names;
-    do {
-      size_t name_len = strlen(name);
-      out_names.push_back(string(name, name_len));
-      name += name_len;
-    } while (static_cast<size_t>(name - names) < names_len);
-    delete [] names;
-  }
-  return true;
+ssize_t ExtendedAttributes::list(fd_t fd, char* names, size_t names_len) {
+  return flistxattr(fd, names, names_len, 0);
 }
 
-bool ExtendedAttributes::remove(const char* name) {
-  if (fd != -1)
-    return fremovexattr(fd, name, 0) != -1;
-  else
-    return removexattr(path.c_str(), name, 0) != -1;
+ssize_t
+ExtendedAttributes::list(
+  const Path& path,
+  char* names,
+  size_t names_len
+) {
+  return listxattr(path.c_str(), names, names_len);
+}
+
+bool ExtendedAttributes::remove(fd_t fd, const char* name) {
+  return fremovexattr(fd, name, 0) == 0;
+}
+
+bool ExtendedAttributes::remove(const Path& path, const char* name) {
+    return removexattr(path.c_str(), name, 0) == 0;
 }
 
 bool
 ExtendedAttributes::set
 (
+  fd_t fd,
   const char* name,
   const void* value,
   size_t size,
   int flags
 ) {
-  if (fd != -1)
-    return fsetxattr(fd, name, value, size, 0, flags) != -1;
-  else
-    return setxattr(path, name, value, size, 0, flags) != -1;
+  return fsetxattr(fd, name, value, size, 0, flags) == 0;
+}
+
+bool
+ExtendedAttributes::set
+(
+  const Path& path,
+  const char* name,
+  const void* value,
+  size_t size,
+  int flags
+) {
+  return setxattr(path.c_str(), name, value, size, 0, flags) != -1;
 }
 }
 }

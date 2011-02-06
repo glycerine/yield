@@ -37,6 +37,19 @@
 namespace yield {
 namespace fs {
 namespace posix {
+ExtendedAttributes(fd_t fd)
+  : fd(fd)
+{ }
+
+ExtendedAttributes(const Path& path)
+  : fd(-1), path(path)
+{ }
+
+~ExtendedAttributes() {
+  if (fd != -1)
+    ::close(fd);
+}
+
 bool ExtendedAttributes::get(const char* name, string& out_value) {
   ssize_t estimated_value_len = get(name, NULL, 0);
   if (estimated_value_len != -1) {
@@ -48,6 +61,46 @@ bool ExtendedAttributes::get(const char* name, string& out_value) {
     return true;
   } else
     return false;
+}
+
+ssize_t ExtendedAttributes::get(const char* name, void* value, size_t size) {
+  if (fd != -1)
+    return get(fd, name, value, size);
+  else
+    return get(path, name, value, size);
+}
+
+bool ExtendedAttributes::list(vector<string>& out_names) {
+  size_t names_len;
+  if (fd != -1)
+    names_len = list(fd, NULL, 0);
+  else
+    names_len = list(path, NULL, 0);
+
+  if (names_len > 0) {
+    char* names = new char[names_len];
+
+    if (fd != -1)
+      list(fd, names, names_len);
+    else
+      list(path.c_str(), names, names_len);
+
+    char* name = names;
+    do {
+      size_t name_len = strlen(name);
+      out_names.push_back(string(name, name_len));
+      name += name_len;
+    } while (static_cast<size_t>(name - names) < names_len);
+    delete [] names;
+  }
+  return true;
+}
+
+bool ExtendedAttributes::remove(const char* name) {
+  if (fd != -1)
+    return remove(fd, name);
+  else
+    return remove(path, name);
 }
 
 bool ExtendedAttributes::set(const char* name, const char* value, int flags) {
@@ -64,132 +117,19 @@ ExtendedAttributes::set
   return set(name, value.c_str(), value.size(), flags);
 }
 
-//ssize_t
-//ExtendedAttributes::trace_get
-//(
-//  Log& log,
-//  const Path& path,
-//  const char* name,
-//  void* value,
-//  size_t size,
-//  ssize_t ret
-//)
-//{
-//  uint32_t last_error_code = Exception::get_last_error_code();
-
-//  if ( ret != -1 )
-//  {
-//    if ( value == NULL )
-//    {
-//      Log::Stream log_stream = log.get_stream( Log::INFO );
-//      log_stream <<
-//        "ExtendedAttributes::get( " << path << ", " << name << " ) -> " <<
-//        static_cast<size_t>( ret ) << ".";
-//    }
-//    else
-//    {
-//      log.get_stream( Log::INFO ) <<
-//        "ExtendedAttributes::get( " << path << ", " << name << " ) -> ";
-//      log.write( value, size, Log::INFO );
-//    }
-//  }
-//  else
-//  {
-//    log.get_stream( Log::INFO ) <<
-//      "ExtendedAttributes::get( " << path << ", " << name << " ) -> failed: ";
-//       Exception( last_error_code );
-//  }
-
-//  Exception::set_last_error_code( last_error_code );
-
-//  return ret;
-//}
-
-//bool
-//ExtendedAttributes::trace_list
-//(
-//  Log& log,
-//  const Path& path,
-//  vector<string>& out_names,
-//  bool ret
-//)
-//{
-//  uint32_t last_error_code = Exception::get_last_error_code();
-
-//  {
-//    Log::Stream log_stream = log.get_stream( Log::INFO );
-//    log_stream << "ExtendedAttributes::list( " << path << " ) -> ";
-//    if ( ret )
-//    {
-//      log_stream << "[ ";
-//      for
-//      (
-//        vector<string>::const_iterator name_i = out_names.begin();
-//        name_i != out_names.end();
-//        ++name_i
-//      )
-//        log_stream << *name_i << ' ';
-//      log_stream << "].";
-//    }
-//    else
-//      log_stream << "failed: " << Exception( last_error_code ) << ".";
-//  }
-
-//  Exception::set_last_error_code( last_error_code );
-
-//  return ret;
-//}
-
-//bool
-//ExtendedAttributes::trace_remove
-//(
-//  Log& log,
-//  const Path& path,
-//  const char* name,
-//  bool ret
-//)
-//{
-//  uint32_t last_error_code = Exception::get_last_error_code();
-
-//  {
-//    Log::Stream log_stream = log.get_stream( Log::INFO );
-//    log_stream << "ExtendedAttributes::remove( " <<
-//      path << ", " << name << " ) -> ";
-//    if ( ret ) log_stream << "succeeded.";
-//    else log_stream << "failed: " << Exception( last_error_code ) << ".";
-//  }
-
-//  Exception::set_last_error_code( last_error_code );
-
-//  return ret;
-//}
-
-//bool
-//ExtendedAttributes::trace_set
-//(
-//  Log& log,
-//  const Path& path,
-//  const char* name,
-//  const void* value,
-//  size_t size,
-//  int flags,
-//  bool ret
-//)
-//{
-//  uint32_t last_error_code = Exception::get_last_error_code();
-
-//  {
-//    Log::Stream log_stream = log.get_stream( Log::INFO );
-//    log_stream << "ExtendedAttributes::set( " << path << ", " << name
-//      << ", value, " << ", " << size << ", " << flags << " ) -> ";
-//    if ( ret ) log_stream << "succeeded.";
-//    else log_stream << "failed: " << Exception( last_error_code ) << ".";
-//  }
-
-//  Exception::set_last_error_code( last_error_code );
-
-//  return ret;
-//}
+bool
+ExtendedAttributes::set
+(
+  const char* name,
+  const void* value,
+  size_t size,
+  int flags
+) {
+  if (fd != -1)
+    return set(fd, name, value, size, 0, flags);
+  else
+    return set(path, name, value, size, 0, flags);
+}
 }
 }
 }

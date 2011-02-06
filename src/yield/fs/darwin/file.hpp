@@ -32,17 +32,18 @@
 
 #include "../posix/file.hpp"
 
-
 namespace yield {
 namespace fs {
 namespace darwin {
+class ExtendedAttributes;
+
 class File : public yield::fs::posix::File {
 public:
   File(fd_t fd);
   ~File();
 
-  // yield::fs::File
-  yield::fs::ExtendedAttributes* openxattrs();
+  // yield::fs::posix::File
+  yield::fs::posix::ExtendedAttributes* openxattrs();
 
 private:
   ExtendedAttributes* xattrs;

@@ -32,10 +32,11 @@
 
 #include "../posix/file.hpp"
 
-
 namespace yield {
 namespace fs {
 namespace linux {
+class ExtendedAttributes;
+
 class File : public yield::fs::posix::File {
 public:
   File(fd_t fd);
@@ -43,7 +44,7 @@ public:
 
   // yield::fs::File
   bool datasync();
-  yield::fs::ExtendedAttributes* openxattrs();
+  yield::fs::posix::ExtendedAttributes* openxattrs();
 
 private:
   ExtendedAttributes* xattrs;

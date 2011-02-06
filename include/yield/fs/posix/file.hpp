@@ -86,6 +86,7 @@ public:
   virtual ~File();
 
 public:
+  virtual bool datasync();
   YO_NEW_REF Stat* getattr();
   YO_NEW_REF Lock* getlk(const File::Lock&);
   virtual YO_NEW_REF ExtendedAttributes* openxattrs();

@@ -27,9 +27,23 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/assert.hpp"
+#if defined(__FreeBSD__)
+#include "../freebsd/extended_attributes.hpp"
+#include "../freebsd/file.hpp"
+#elif defined(__linux__)
+#include "../linux/directory.hpp"
+#include "../linux/extended_attributes.hpp"
+#include "../linux/file.hpp"
+#elif defined(__MACH__)
+#include "../bsd/directory.hpp"
+#include "../darwin/extended_attributes.hpp"
+#include "../darwin/file.hpp"
+#else
 #include "yield/fs/posix/directory.hpp"
 #include "yield/fs/posix/file.hpp"
+#endif
+
+#include "yield/assert.hpp"
 #include "yield/fs/posix/file_system.hpp"
 #include "yield/fs/posix/memory_mapped_file.hpp"
 #include "yield/fs/posix/stat.hpp"
@@ -159,23 +173,46 @@ FileSystem::open
   uint32_t attributes
 ) {
   fd_t fd = ::open(path.c_str(), flags, mode);
-  if (fd >= 0)
+  if (fd >= 0) {
+#if defined(__FreeBSD__)
+    return new freebsd::File(fd);
+#elif defined(__linux__)
+    return new linux::File(fd);
+#elif defined(__MACH__)
+    return new darwin::File(fd);
+#else
     return new File(fd);
+#endif
+  }
   else
     return NULL;
 }
 
 Directory* FileSystem::opendir(const Path& path) {
   DIR* dirp = ::opendir(path.c_str());
-  if (dirp != NULL)
+  if (dirp != NULL) {
+#if defined(__FreeBSD__) || defined(__MACH__)
+    return new bsd::Directory(dirp);
+#elif defined(__linux__)
+    return new linux::Directory(dirp);
+#else
     return new Directory(dirp, path);
+#endif
+  }
   else
     return NULL;
 }
 
-YO_NEW_REF ExtendedAttributes* FileSystem::openxattrs(const Path&) {
-  errno = ENOTSUP;
+YO_NEW_REF ExtendedAttributes* FileSystem::openxattrs(const Path& path) {
+#if defined(__FreeBSD)
+  return new freebsd::ExtendedAttributes(path);
+#elif defined(__linux__)
+  return new linux::ExtendedAttributes(path);
+#elif defined(__MACH__)
+  return new darwin::ExtendedAttributes(path);
+#else
   return NULL;
+#endif
 }
 
 bool FileSystem::readlink(const Path& path, OUT Path& target_path) {

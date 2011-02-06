@@ -34,15 +34,11 @@
 namespace yield {
 namespace fs {
 namespace linux {
-Directory::Directory(DIR* dirp, const Path& path)
-  : yield::fs::posix::Directory(dirp, path)
+Directory::Directory(DIR* dirp)
+  : yield::fs::posix::Directory(dirp)
 { }
 
-bool Directory::read
-(
-  OUT yield::fs::Directory::Entry& entry,
-  Entry::Type types
-) {
+bool Directory::read(OUT Entry*& entry) {
   dirent* dirent_;
   while ((dirent_ = readdir(*this)) != NULL) {
     Entry::Type entry_type;
@@ -70,21 +66,18 @@ bool Directory::read
       break;
     default:
       DebugBreak();
-      entry_type = Entry::INVALID_TYPE;
+      entry_type = Entry::TYPE_REG;
       break;
     }
 
-    if ((entry_type & types) == entry_type) {
-      static_cast<Entry&>(entry) = *dirent_;   // To set entry.name
-      Path entry_path(get_path() / entry.get_name());
-
-      struct stat stbuf;
-      if (stat(entry_path.c_str(), &stbuf) != -1) {
-        static_cast<Entry&>(entry) = stbuf;
-        debug_assert_eq(entry.get_type(), entry_type);
-        return true;
-      }
+    if (entry == NULL)
+      entry = new Entry(*dirent, entry_type);
+    else {
+      entry->set_name(dirent_.d_name);
+      entry->set_type(entry_type);
     }
+
+    return true;
   }
 
   return false;

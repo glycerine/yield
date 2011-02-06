@@ -32,29 +32,25 @@
 
 #include "yield/object.hpp"
 
-
 namespace yield {
 namespace fs {
 class Path;
 
-
 namespace posix {
-
 class ExtendedAttributes : public Object {
 public:
-  virtual ~ExtendedAttributes() { }
+  virtual ~ExtendedAttributes();
 
-  virtual bool get(const char* name, string& value);
-  virtual ssize_t get(const char* name, void* value, size_t size) = 0;
-  virtual bool list(vector<string>& out_names) = 0;
-  virtual bool remove(const char* name) = 0;
+  bool get(const char* name, string& value);
+  ssize_t get(const char* name, void* value, size_t size);
+  bool list(vector<string>& out_names);
+  bool remove(const char* name);
 
-  virtual bool set(const char* name, const char* value, int flags = 0);
-  virtual bool set(const char* name, const string& value, int flags = 0);
+  bool set(const char* name, const char* value, int flags = 0);
+  bool set(const char* name, const string& value, int flags = 0);
 
-  virtual bool
-  set
-  (
+  bool
+  set(
     const char* name,
     const void* value,
     size_t size,
@@ -65,6 +61,41 @@ public:
   ExtendedAttributes& inc_ref() {
     return Object::inc_ref(*this);
   }
+
+protected:
+  ExtendedAttributes(fd_t fd);
+  ExtendedAttributes(const Path& path);
+  ~ExtendedAttributes();
+
+  virtual ssize_t get(fd_t, const char* name, void* value, size_t size) = 0;
+  virtual ssize_t get(const Path&, const char* name, void* value, size_t size) = 0;
+  virtual ssize_t list(fd_t, char* list, size_t size) = 0;
+  virtual ssize_t list(const Path&, char* list, size_t size) = 0;
+  virtual bool remove(fd_t, const char* name) = 0;
+  virtual bool remove(const Path&, const char* name) = 0;
+
+  virtual bool
+  set(
+    fd_t,
+    const char* name,
+    const void* value,
+    size_t size,
+    int flags 
+  ) = 0;
+
+  virtual bool
+  set(
+    const Path&,
+    const char* name,
+    const void* value,
+    size_t size,
+    int flags 
+  ) = 0;
+
+private:
+  fd_t fd;
+  Path path;
+
 };
 }
 }

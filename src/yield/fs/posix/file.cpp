@@ -27,6 +27,14 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#if defined(__FreeBSD__)
+#include "../freebsd/extended_attributes.hpp"
+#elif defined(__linux__)
+#include "../linux/extended_attributes.hpp"
+#elif defined(__MACH__)
+#include "../darwin/extended_attributes.hpp"
+#endif
+
 #include "yield/fs/posix/file.hpp"
 #include "yield/fs/posix/stat.hpp"
 
@@ -56,6 +64,10 @@ bool File::close() {
       return false;
   } else
     return false;
+}
+
+bool File::datasync() {
+  return sync();
 }
 
 Stat* File::getattr() {

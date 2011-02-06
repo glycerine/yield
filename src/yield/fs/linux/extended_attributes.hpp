@@ -30,28 +30,44 @@
 #ifndef _YIELD_FS_LINUX_EXTENDED_ATTRIBUTES_HPP_
 #define _YIELD_FS_LINUX_EXTENDED_ATTRIBUTES_HPP_
 
-#include "yield/fs/extended_attributes.hpp"
-#include "yield/fs/path.hpp"
-
+#include "yield/fs/posix/extended_attributes.hpp"
 
 namespace yield {
 namespace fs {
+class Path;
+
 namespace linux {
-class ExtendedAttributes : public yield::fs::ExtendedAttributes {
+class ExtendedAttributes : public yield::fs::posix::ExtendedAttributes {
 public:
   ExtendedAttributes(fd_t fd);
   ExtendedAttributes(const Path& path);
-  ~ExtendedAttributes();
 
-  // yield::fs::ExtendedAttributes
-  ssize_t get(const char* name, void* value, size_t size);
-  bool list(vector<string>& out_names);
-  bool remove(const char* name);
-  bool set(const char* name, const void* value, size_t size, int flags);
+protected:
+  // yield::fs::posix::ExtendedAttributes
+  ssize_t get(fd_t, const char* name, void* value, size_t size);
+  ssize_t get(const Path&, const char* name, void* value, size_t size);
+  ssize_t list(fd_t, char* list, size_t size);
+  ssize_t list(const Path&, char* list, size_t size);
+  bool remove(fd_t, const char* name);
+  bool remove(const Path&, const char* name);
 
-private:
-  fd_t fd;
-  Path path;
+  bool
+  set(
+    fd_t,
+    const char* name,
+    const void* value,
+    size_t size,
+    int flags 
+  );
+
+  bool
+  set(
+    const Path&,
+    const char* name,
+    const void* value,
+    size_t size,
+    int flags 
+  );
 };
 }
 }

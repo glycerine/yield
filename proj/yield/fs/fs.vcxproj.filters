@@ -95,18 +95,6 @@
     <ClInclude Include="..\..\..\src\yield\fs\bsd\directory.hpp">
       <Filter>Source Files\bsd</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\fs\bsd\directory_test.cpp">
-      <Filter>Source Files\bsd</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\fs\bsd\file_system.cpp">
-      <Filter>Source Files\bsd</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\fs\bsd\file_system.hpp">
-      <Filter>Source Files\bsd</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\fs\bsd\file_system_test.cpp">
-      <Filter>Source Files\bsd</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\fs\darwin\extended_attributes.cpp">
       <Filter>Source Files\darwin</Filter>
     </ClCompile>
@@ -119,18 +107,6 @@
     <ClInclude Include="..\..\..\src\yield\fs\darwin\file.hpp">
       <Filter>Source Files\darwin</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\fs\darwin\file_system.cpp">
-      <Filter>Source Files\darwin</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\fs\darwin\file_system.hpp">
-      <Filter>Source Files\darwin</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\fs\darwin\file_system_test.cpp">
-      <Filter>Source Files\darwin</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\fs\darwin\file_test.cpp">
-      <Filter>Source Files\darwin</Filter>
-    </ClCompile>
     <ClInclude Include="..\..\..\src\yield\fs\directory_test.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -155,27 +131,12 @@
     <ClInclude Include="..\..\..\src\yield\fs\freebsd\file.hpp">
       <Filter>Source Files\freebsd</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\fs\freebsd\file_system.cpp">
-      <Filter>Source Files\freebsd</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\fs\freebsd\file_system.hpp">
-      <Filter>Source Files\freebsd</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\fs\freebsd\file_system_test.cpp">
-      <Filter>Source Files\freebsd</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\fs\freebsd\file_test.cpp">
-      <Filter>Source Files\freebsd</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\fs\linux\directory.cpp">
       <Filter>Source Files\linux</Filter>
     </ClCompile>
     <ClInclude Include="..\..\..\src\yield\fs\linux\directory.hpp">
       <Filter>Source Files\linux</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\fs\linux\directory_test.cpp">
-      <Filter>Source Files\linux</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\fs\linux\extended_attributes.cpp">
       <Filter>Source Files\linux</Filter>
     </ClCompile>
@@ -188,18 +149,6 @@
     <ClInclude Include="..\..\..\src\yield\fs\linux\file.hpp">
       <Filter>Source Files\linux</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\fs\linux\file_system.cpp">
-      <Filter>Source Files\linux</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\fs\linux\file_system.hpp">
-      <Filter>Source Files\linux</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\fs\linux\file_system_test.cpp">
-      <Filter>Source Files\linux</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\fs\linux\file_test.cpp">
-      <Filter>Source Files\linux</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\fs\memory_mapped_file_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

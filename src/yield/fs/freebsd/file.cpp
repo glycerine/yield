@@ -30,7 +30,6 @@
 #include "extended_attributes.hpp"
 #include "file.hpp"
 
-
 namespace yield {
 namespace fs {
 namespace freebsd {

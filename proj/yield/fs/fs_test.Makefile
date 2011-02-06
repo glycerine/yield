@@ -54,17 +54,12 @@ DEP_FILE_PATHS := $(shell find ../../../build/yield/fs_test -name "*.d")
 
 OBJECT_FILE_PATHS += ../../../build/yield/fs_test/memory_mapped_file_test.o ../../../build/yield/fs_test/named_pipe_test.o ../../../build/yield/fs_test/path_test.o ../../../build/yield/fs_test/yield_fs_test_main.o
 ifeq ($(UNAME), Darwin)
-	OBJECT_FILE_PATHS += ../../../build/yield/fs_test/bsd/directory_test.o ../../../build/yield/fs_test/bsd/file_system_test.o
-	OBJECT_FILE_PATHS += ../../../build/yield/fs_test/darwin/file_system_test.o ../../../build/yield/fs_test/darwin/file_test.o
 	OBJECT_FILE_PATHS += ../../../build/yield/fs_test/posix/directory_test.o ../../../build/yield/fs_test/posix/file_system_test.o ../../../build/yield/fs_test/posix/file_test.o ../../../build/yield/fs_test/posix/stat_test.o
 endif
 ifeq ($(UNAME), FreeBSD)
-	OBJECT_FILE_PATHS += ../../../build/yield/fs_test/bsd/directory_test.o ../../../build/yield/fs_test/bsd/file_system_test.o
-	OBJECT_FILE_PATHS += ../../../build/yield/fs_test/freebsd/file_system_test.o ../../../build/yield/fs_test/freebsd/file_test.o
 	OBJECT_FILE_PATHS += ../../../build/yield/fs_test/posix/directory_test.o ../../../build/yield/fs_test/posix/file_system_test.o ../../../build/yield/fs_test/posix/file_test.o ../../../build/yield/fs_test/posix/stat_test.o
 endif
 ifeq ($(UNAME), Linux)
-	OBJECT_FILE_PATHS += ../../../build/yield/fs_test/linux/directory_test.o ../../../build/yield/fs_test/linux/file_system_test.o ../../../build/yield/fs_test/linux/file_test.o
 	OBJECT_FILE_PATHS += ../../../build/yield/fs_test/posix/directory_test.o ../../../build/yield/fs_test/posix/file_system_test.o ../../../build/yield/fs_test/posix/file_test.o ../../../build/yield/fs_test/posix/stat_test.o
 endif
 ifeq ($(UNAME), Solaris)
@@ -87,42 +82,6 @@ depclean:
 
 -include $(DEP_FILE_PATHS)
 
-
-../../../build/yield/fs_test/bsd/directory_test.o: ../../../src/yield/fs/bsd/directory_test.cpp
-	-mkdir -p ../../../build/yield/fs_test/bsd 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/bsd/directory_test.o -MD $(CXXFLAGS) ../../../src/yield/fs/bsd/directory_test.cpp
-
-../../../build/yield/fs_test/bsd/file_system_test.o: ../../../src/yield/fs/bsd/file_system_test.cpp
-	-mkdir -p ../../../build/yield/fs_test/bsd 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/bsd/file_system_test.o -MD $(CXXFLAGS) ../../../src/yield/fs/bsd/file_system_test.cpp
-
-../../../build/yield/fs_test/darwin/file_system_test.o: ../../../src/yield/fs/darwin/file_system_test.cpp
-	-mkdir -p ../../../build/yield/fs_test/darwin 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/darwin/file_system_test.o -MD $(CXXFLAGS) ../../../src/yield/fs/darwin/file_system_test.cpp
-
-../../../build/yield/fs_test/darwin/file_test.o: ../../../src/yield/fs/darwin/file_test.cpp
-	-mkdir -p ../../../build/yield/fs_test/darwin 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/darwin/file_test.o -MD $(CXXFLAGS) ../../../src/yield/fs/darwin/file_test.cpp
-
-../../../build/yield/fs_test/freebsd/file_system_test.o: ../../../src/yield/fs/freebsd/file_system_test.cpp
-	-mkdir -p ../../../build/yield/fs_test/freebsd 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/freebsd/file_system_test.o -MD $(CXXFLAGS) ../../../src/yield/fs/freebsd/file_system_test.cpp
-
-../../../build/yield/fs_test/freebsd/file_test.o: ../../../src/yield/fs/freebsd/file_test.cpp
-	-mkdir -p ../../../build/yield/fs_test/freebsd 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/freebsd/file_test.o -MD $(CXXFLAGS) ../../../src/yield/fs/freebsd/file_test.cpp
-
-../../../build/yield/fs_test/linux/directory_test.o: ../../../src/yield/fs/linux/directory_test.cpp
-	-mkdir -p ../../../build/yield/fs_test/linux 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/linux/directory_test.o -MD $(CXXFLAGS) ../../../src/yield/fs/linux/directory_test.cpp
-
-../../../build/yield/fs_test/linux/file_system_test.o: ../../../src/yield/fs/linux/file_system_test.cpp
-	-mkdir -p ../../../build/yield/fs_test/linux 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/linux/file_system_test.o -MD $(CXXFLAGS) ../../../src/yield/fs/linux/file_system_test.cpp
-
-../../../build/yield/fs_test/linux/file_test.o: ../../../src/yield/fs/linux/file_test.cpp
-	-mkdir -p ../../../build/yield/fs_test/linux 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/linux/file_test.o -MD $(CXXFLAGS) ../../../src/yield/fs/linux/file_test.cpp
 
 ../../../build/yield/fs_test/memory_mapped_file_test.o: ../../../src/yield/fs/memory_mapped_file_test.cpp
 	-mkdir -p ../../../build/yield/fs_test 2>/dev/null

@@ -33,6 +33,10 @@
 namespace yield {
 namespace fs {
 namespace posix {
+Directory::Directory(DIR* dirp)
+  : dirp(dirp)
+{ }
+
 Directory::Directory(DIR* dirp, const Path& path)
   : dirp(dirp), path(path)
 { }
