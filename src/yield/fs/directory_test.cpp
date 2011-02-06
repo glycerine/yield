@@ -36,10 +36,10 @@
 #include "yield/fs/file_system.hpp"
 #include "yunit.hpp"
 
+TEST_SUITE(Directory);
 
 namespace yield {
 namespace fs {
-template <class FileSystemType>
 class DirectoryTest : public yunit::Test {
 protected:
   DirectoryTest()
@@ -53,13 +53,13 @@ protected:
   void setup() {
     teardown();
 
-    if (!FileSystemType().mkdir(get_test_dir_name()))
+    if (!FileSystem().mkdir(get_test_dir_name()))
       throw Exception();
 
-    if (!FileSystemType().touch(get_test_file_path()))
+    if (!FileSystem().touch(get_test_file_path()))
       throw Exception();
 
-    directory = FileSystemType().opendir(get_test_dir_name());
+    directory = FileSystem().opendir(get_test_dir_name());
     if (directory == NULL)
       throw Exception();
   }
@@ -68,8 +68,8 @@ protected:
     Directory::dec_ref(directory);
     directory = NULL;
 
-    if (FileSystemType().exists(get_test_dir_name())) {
-      if (!FileSystemType().rmtree(get_test_dir_name()))
+    if (FileSystem().exists(get_test_dir_name())) {
+      if (!FileSystem().rmtree(get_test_dir_name()))
         throw Exception();
     }
   }
@@ -97,86 +97,55 @@ private:
 };
 
 
-template <class FileSystemType>
-class DirectoryCloseTest : public DirectoryTest<FileSystemType> {
-public:
-  // Test
-  void run() {
-    if (!get_directory().close())
-      throw Exception();
+TEST_EX(Directory, close, DirectoryTest) {
+  if (!get_directory().close())
+    throw Exception();
+}
+
+
+TEST_EX(Directory, read, DirectoryTest) {
+  {
+    auto_Object<Directory::Entry> dentry = get_directory().read();
+    throw_assert_eq(dentry->get_name(), Path::CURRENT_DIRECTORY);
+    throw_assert(dentry->ISDIR());
   }
-};
 
+  {
+    auto_Object<Directory::Entry> dentry = get_directory().read();
+    throw_assert_eq(dentry->get_name(), Path::PARENT_DIRECTORY);
+    throw_assert(dentry->ISDIR());
+  }
 
-template <class FileSystemType>
-class DirectoryReadTest : public DirectoryTest<FileSystemType> {
-public:
-  // Test
-  void run() {
-    {
-      auto_Object<Directory::Entry> dentry = get_directory().read();
-      throw_assert_eq(dentry->get_name(), Path::CURRENT_DIRECTORY);
-      throw_assert(dentry->ISDIR());
-    }
+  {
+    auto_Object<Directory::Entry> dentry = get_directory().read();
+    throw_assert_eq(dentry->get_name(), get_test_file_name());
+    throw_assert_false(dentry->is_hidden());
+    throw_assert(dentry->ISREG());
+  }
 
-    {
-      auto_Object<Directory::Entry> dentry = get_directory().read();
-      throw_assert_eq(dentry->get_name(), Path::PARENT_DIRECTORY);
-      throw_assert(dentry->ISDIR());
-    }
-
-    {
-      auto_Object<Directory::Entry> dentry = get_directory().read();
-      throw_assert_eq(dentry->get_name(), get_test_file_name());
-      throw_assert(dentry->has_atime());
-      throw_assert(dentry->has_ctime());
-      throw_assert(dentry->has_mtime());
-      throw_assert(dentry->has_nlink());
-      throw_assert(dentry->has_size());
-      throw_assert_false(dentry->is_hidden());
-      throw_assert(dentry->ISREG());
-    }
-
-    {
-      Directory::Entry* dentry = get_directory().read();
-      if (dentry != NULL) {
-        Directory::Entry::dec_ref(*dentry);
-        throw_assert(false);
-      }
+  {
+    Directory::Entry* dentry = get_directory().read();
+    if (dentry != NULL) {
+      Directory::Entry::dec_ref(*dentry);
+      throw_assert(false);
     }
   }
-};
+}
 
 
-template <class FileSystemType>
-class DirectoryRewindTest : public DirectoryTest<FileSystemType> {
-public:
-  // Test
-  void run() {
-    {
-      auto_Object<Directory::Entry> dentry = get_directory().read();
-      throw_assert_eq(dentry->get_name(), Path::CURRENT_DIRECTORY);
-    }
-
-    get_directory().rewind();
-
-    {
-      auto_Object<Directory::Entry> dentry = get_directory().read();
-      throw_assert_eq(dentry->get_name(), Path::CURRENT_DIRECTORY);
-    }
+TEST_EX(Directory, rewind, DirectoryTest) {
+  {
+    auto_Object<Directory::Entry> dentry = get_directory().read();
+    throw_assert_eq(dentry->get_name(), Path::CURRENT_DIRECTORY);
   }
-};
 
+  get_directory().rewind();
 
-template <class FileSystemType>
-class DirectoryTestSuite : public yunit::TestSuite {
-public:
-  DirectoryTestSuite() {
-    add("Directory::close", new DirectoryCloseTest<FileSystemType>);
-    add("Directory::read", new DirectoryReadTest<FileSystemType>);
-    add("Directory::rewind", new DirectoryRewindTest<FileSystemType>);
+  {
+    auto_Object<Directory::Entry> dentry = get_directory().read();
+    throw_assert_eq(dentry->get_name(), Path::CURRENT_DIRECTORY);
   }
-};
+}
 }
 }
 

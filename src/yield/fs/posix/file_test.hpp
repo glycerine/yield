@@ -100,9 +100,9 @@ template <class FileSystemType>
 class FileTestSuite : public yield::fs::FileTestSuite<FileSystemType> {
 public:
   FileTestSuite()
-    ) {
+  ) {
     FilePairFactory& file_pair_factory
-      = static_cast<FilePairFactory&>(get_channel_pair_factory());
+    = static_cast<FilePairFactory&>(get_channel_pair_factory());
 
     add
     (

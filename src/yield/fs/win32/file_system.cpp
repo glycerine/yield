@@ -28,8 +28,9 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "named_pipe.hpp"
-#include "yield/fs/path.hpp"
+#include "yield/auto_object.hpp"
 #include "yield/assert.hpp"
+#include "yield/fs/path.hpp"
 #include "yield/fs/win32/directory.hpp"
 #include "yield/fs/win32/file.hpp"
 #include "yield/fs/win32/file_system.hpp"
@@ -42,6 +43,17 @@
 namespace yield {
 namespace fs {
 namespace win32 {
+int FileSystem::MMAP_FLAGS_DEFAULT = MAP_SHARED;
+int FileSystem::MMAP_PROT_DEFAULT = PROT_READ | PROT_WRITE;
+
+YO_NEW_REF File* FileSystem::creat(const Path& path) {
+  return open(path, O_CREAT|O_WRONLY|O_TRUNC);
+}
+
+bool FileSystem::exists(const Path& path) {
+  return GetFileAttributes(path.c_str()) != INVALID_FILE_ATTRIBUTES;
+}
+
 bool FileSystem::isdir(const Path& path) {
   DWORD dwAttributes = GetFileAttributes(path.c_str());
   return dwAttributes != INVALID_FILE_ATTRIBUTES
@@ -69,16 +81,11 @@ bool FileSystem::link(const Path& old_path, const Path& new_path) {
          ) == TRUE;
 }
 
-bool FileSystem::mkdir(const Path& path, mode_t mode) {
+bool FileSystem::mkdir(const Path& path) {
   return CreateDirectory(path.c_str(), NULL) == TRUE;
 }
 
-File*
-FileSystem::mkfifo(
-  const Path& path,
-  uint32_t flags,
-  mode_t
-) {
+File* FileSystem::mkfifo(const Path& path, uint32_t flags) {
   if (path.find_first_of(L"\\\\.\\pipe") != Path::npos) {
     DWORD dwOpenMode = 0;
     if ((flags & O_ASYNC) == O_ASYNC)
@@ -117,6 +124,19 @@ FileSystem::mkfifo(
     SetLastError(ERROR_INVALID_PARAMETER);
     return NULL;
   }
+}
+
+bool FileSystem::mktree(const Path& path) {
+  bool ret = true;
+
+  std::pair<Path, Path> path_parts = path.split();
+  if (!path_parts.first.empty())
+    ret &= mktree(path_parts.first);
+
+  if (!exists(path) && !mkdir(path))
+    return false;
+
+  return ret;
 }
 
 MemoryMappedFile*
@@ -257,7 +277,6 @@ File*
 FileSystem::open(
   const Path& path,
   uint32_t flags,
-  mode_t mode,
   uint32_t attributes
 ) {
   DWORD dwDesiredAccess = 0,
@@ -365,6 +384,38 @@ bool FileSystem::rmdir(const Path& path) {
   return RemoveDirectory(path.c_str()) == TRUE;
 }
 
+bool FileSystem::rmtree(const Path& path) {
+  Directory* test_dir = opendir(path);
+  if (test_dir != NULL) {
+    auto_Object<Directory> dir(test_dir);
+    Directory::Entry* test_dentry = dir->read();
+    if (test_dentry != NULL) {
+      auto_Object<Directory::Entry> dentry(*test_dentry);
+
+      do {
+        if (dentry->is_special())
+          continue;
+
+        Path dentry_path(path / dentry->get_name());
+
+        if (dentry->ISDIR()) {
+          if (rmtree(dentry_path))
+            continue;
+          else
+            return false;
+        } else if (unlink(dentry_path))
+          continue;
+        else
+          return false;
+      } while (dir->read(*dentry));
+
+      return rmdir(path);
+    }
+  }
+
+  return false;
+}
+
 Stat* FileSystem::stat(const Path& path) {
   WIN32_FILE_ATTRIBUTE_DATA stbuf;
   if (GetFileAttributesEx(path.c_str(), GetFileExInfoStandard, &stbuf))
@@ -401,8 +452,17 @@ bool FileSystem::statvfs(const Path& path, struct statvfs& stbuf) {
     return false;
 }
 
+bool FileSystem::touch(const Path& path) {
+  File* file = creat(path);
+  if (file != NULL) {
+    File::dec_ref(*file);
+    return true;
+  } else
+    return false;
+}
+
 bool FileSystem::truncate(const Path& path, uint64_t new_size) {
-  File* file = open(path, O_CREAT | O_WRONLY, FILE_MODE_DEFAULT, 0);
+  File* file = open(path, O_CREAT|O_WRONLY);
   if (file != NULL) {
     file->truncate(new_size);
     File::dec_ref(*file);

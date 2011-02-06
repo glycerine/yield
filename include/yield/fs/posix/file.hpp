@@ -105,6 +105,12 @@ public:
   bool unlk(const Lock&);
 
 public:
+  // Object
+  File& inc_ref() {
+    return Object::inc_ref(*this);
+  }
+
+public:
   // Channel
   bool close();
   operator fd_t() const {

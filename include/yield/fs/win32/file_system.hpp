@@ -64,28 +64,23 @@ class Stat;
 
 class FileSystem {
 public:
-  static mode_t FILE_MODE_DEFAULT;
-  static mode_t DIRECTORY_MODE_DEFAULT;
   static int MMAP_FLAGS_DEFAULT; // MAP_SHARED
   const static size_t MMAP_LENGTH_WHOLE_FILE = static_cast<size_t>(-1);
   static int MMAP_PROT_DEFAULT; // PROT_READ|PROT_WRITE
-  static uint32_t OPEN_FLAGS_DEFAULT; // O_RDONLY
-  const static uint32_t OPEN_ATTRIBUTES_DEFAULT = 0;
 
 public:
+  YO_NEW_REF File* creat(const Path&);
+
+  bool exists(const Path&);
   bool isdir(const Path&);
   bool isfile(const Path&);
 
   bool link(const Path& old_path, const Path& new_path);
 
-  bool mkdir(const Path&, mode_t mode = DIRECTORY_MODE_DEFAULT);
+  bool mkdir(const Path&);
+  bool mktree(const Path&);
 
-  File*
-  mkfifo(
-    const Path&,
-    uint32_t flags = OPEN_FLAGS_DEFAULT,
-    mode_t mode = FILE_MODE_DEFAULT
-  );
+  YO_NEW_REF File* mkfifo(const Path&, uint32_t flags = 0);
 
   YO_NEW_REF MemoryMappedFile*
   mmap(
@@ -109,10 +104,9 @@ public:
 
   YO_NEW_REF File*
   open(
-    const Path& path,
-    uint32_t flags = OPEN_FLAGS_DEFAULT,
-    mode_t mode = FILE_MODE_DEFAULT,
-    uint32_t attributes = OPEN_ATTRIBUTES_DEFAULT
+    const Path&,
+    uint32_t flags = 0,
+    uint32_t attributes = 0
   );
 
   YO_NEW_REF Directory* opendir(const Path&);
@@ -121,10 +115,13 @@ public:
 
   bool rename(const Path& from_path, const Path& to_path);
 
-  bool rmdir(const Path& path);
+  bool rmdir(const Path&);
+  bool rmtree(const Path&);
 
   YO_NEW_REF Stat* stat(const Path&);
   bool statvfs(const Path&, struct statvfs&);
+
+  bool touch(const Path&);
 
   bool truncate(const Path&, uint64_t);
 

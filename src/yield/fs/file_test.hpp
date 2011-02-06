@@ -548,7 +548,7 @@ public:
       )
     ) {
     FilePairFactory& file_pair_factory
-      = static_cast<FilePairFactory&>(get_channel_pair_factory());
+    = static_cast<FilePairFactory&>(get_channel_pair_factory());
 
     add("File::datasync", new FileDataSyncTest(file_pair_factory));
 

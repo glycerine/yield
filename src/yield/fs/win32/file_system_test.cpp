@@ -28,7 +28,25 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../file_system_test.hpp"
-#include "file_system.hpp"
 
+TEST_SUITE_EX(FileSystem, yield::fs::FileSystemTestSuite);
 
-TEST_SUITE_EX(Win32FileSystem, yield::fs::FileSystemTestSuite<yield::fs::win32::FileSystem>);
+namespace yield {
+namespace fs {
+namespace win32 {
+TEST_EX(FileSystem, Win32FileSystemUTime, FileSystemTest) {
+  DateTime atime = DateTime::now();
+  DateTime mtime = DateTime::now();
+  DateTime ctime = DateTime::now();
+
+  if (FileSystem().utime(get_test_file_name(), atime, mtime, ctime)) {
+    auto_Object<Stat> stbuf = FileSystem().stat(get_test_file_name());
+    throw_assert_le(stbuf->get_atime() - atime, Time::NS_IN_S);
+    throw_assert_le(stbuf->get_mtime() - mtime, Time::NS_IN_S);
+    throw_assert_le(stbuf->get_ctime() - ctime, Time::NS_IN_S);
+  } else if (Exception::get_last_error_code() != ENOTSUP)
+    throw Exception();
+}
+}
+}
+}

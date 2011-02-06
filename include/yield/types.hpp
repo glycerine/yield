@@ -109,22 +109,10 @@ const static fd_t INVALID_FD = -1;
 #endif
 
 #ifdef _WIN32
-typedef int16_t gid_t; // The st_gid in struct stat is a short.
-#endif
-
-#ifdef _WIN32
 struct iovec {
   size_t iov_len;
   void* iov_base;
 };
-#endif
-
-#ifdef _WIN32
-typedef uint16_t mode_t;
-#endif
-
-#ifdef _WIN32
-typedef int32_t pid_t;
 #endif
 
 #if defined(_WIN64)
@@ -139,10 +127,6 @@ typedef int socket_t;
 
 #ifdef _WIN32
 typedef intptr_t ssize_t;
-#endif
-
-#ifdef _WIN32
-typedef int16_t uid_t; // The st_uid in struct stat is a short.
 #endif
 
 

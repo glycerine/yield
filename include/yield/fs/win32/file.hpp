@@ -47,17 +47,14 @@ class File : public Channel {
 public:
   class Lock : public Object {
   public:
-    Lock
-    (
+    Lock(
       uint64_t start,
       uint64_t len,
       bool exclusive = true,
-      pid_t pid = static_cast<pid_t>(-1),   // getpid()
       int16_t whence = SEEK_SET
     )
       : exclusive(exclusive),
         len(len),
-        pid(pid),
         start(start),
         whence(whence)
     { }
@@ -65,9 +62,7 @@ public:
     uint64_t get_len() const {
       return len;
     }
-    pid_t get_pid() const {
-      return pid;
-    }
+
     uint64_t get_start() const {
       return start;
     }
@@ -86,7 +81,6 @@ public:
   private:
     bool exclusive;
     uint64_t len;
-    pid_t pid;
     uint64_t start;
     int16_t whence;
   };
@@ -111,6 +105,12 @@ public:
   uint64_t tell();
   bool truncate(uint64_t);
   bool unlk(const Lock&);
+
+public:
+  // Object
+  File& inc_ref() {
+    return Object::inc_ref(*this);
+  }
 
 public:
   // Channel
