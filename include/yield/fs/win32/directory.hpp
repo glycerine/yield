@@ -43,12 +43,15 @@ public:
   public:
     Entry(const WIN32_FIND_DATA&);
 
+  public:
     const Path& get_name() const {
       return name;
     }
+
     bool is_hidden() const;
     bool is_special() const;
 
+  public:
     Entry& operator=(const WIN32_FIND_DATA&);
 
   private:
@@ -70,12 +73,12 @@ public:
 
   // Directory
   bool close();
-  YO_NEW_REF Entry* read(Entry::Type types);
-  bool read(Entry&, Entry::Type types);
+  YO_NEW_REF Entry* read();
+  bool read(Entry&);
   void rewind();
 
 private:
-  bool read(OUT Entry*&, Entry::Type types);
+  bool read(OUT Entry*&);
 
 private:
   fd_t hDirectory, hFindFile;

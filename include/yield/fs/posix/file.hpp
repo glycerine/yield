@@ -30,75 +30,78 @@
 #ifndef _YIELD_FS_POSIX_FILE_HPP_
 #define _YIELD_FS_POSIX_FILE_HPP_
 
-#include "yield/fs/file.hpp"
-
+#include "yield/channel.hpp"
 
 struct flock;
-
 
 namespace yield {
 namespace fs {
 namespace posix {
-class File : public yield::fs::File {
-public:
-  class Lock : public Object {
-  public:
-    Lock
-    (
-      uint64_t start,
-      uint64_t len,
-      bool exclusive = true,
-      pid_t pid = static_cast<pid_t>(-1),   // getpid()
-      int16_t whence = SEEK_SET
-    )
-      : exclusive(exclusive),
-        len(len),
-        pid(pid),
-        start(start),
-        whence(whence)
-    { }
+class ExtendedAttributes;
+class Stat;
 
-    Lock(const flock& flock_);
-    Lock(const yield::fs::File::Lock&);
+class File : public Channel {
+public:
+  class Lock : public Object, private flock {
+  public:
+    Lock(const flock& flock_) {
+      *this = flock_;
+    }
 
   public:
     uint64_t get_len() const {
-      return len;
+      return l_len;
     }
+
     pid_t get_pid() const {
-      return pid;
+      return l_pid;
     }
+
     uint64_t get_start() const {
-      return start;
+      return l_start;
     }
+
     int16_t get_whence() const {
       return whence;
     }
+
     bool is_exclusive() const {
-      return exclusive;
+      return l_type == F_WRLCK;
     }
 
   public:
-    operator flock() const;
+    operator flock() const {
+      return *this;
+    }
 
   public:
     // Object
-    File::Lock& inc_ref() {
+    Lock& inc_ref() {
       return Object::inc_ref(*this);
     }
-
-  private:
-    bool exclusive;
-    uint64_t len;
-    pid_t pid;
-    uint64_t start;
-    int16_t whence;
   };
 
 public:
   File(fd_t fd);
   virtual ~File();
 
+public:
+  YO_NEW_REF Stat* getattr();
+  YO_NEW_REF Lock* getlk(const File::Lock&);
+  virtual YO_NEW_REF ExtendedAttributes* openxattrs();
+  ssize_t pread(void*, size_t, uint64_t);
+  ssize_t preadv(const iovec*, int, uint64_t);
+  ssize_t pwrite(const void*, size_t, uint64_t);
+  ssize_t pwritev(const iovec*, int, uint64_t);
+  uint64_t seek(int64_t offset, uint8_t whence);
+  bool setlk(const Lock&);
+  bool setlkw(const Lock&);
+  bool sync();
+  uint64_t tell();
+  bool truncate(uint64_t new_size);
+  bool unlk(const Lock&);
+
+public:
   // Channel
   bool close();
   operator fd_t() const {
@@ -109,22 +112,6 @@ public:
   bool set_blocking_mode(bool blocking_mode);
   ssize_t write(const void* buf, size_t buflen);
   ssize_t writev(const iovec* iov, int iovlen);
-
-  // yield::fs::File
-  YO_NEW_REF yield::fs::Stat* getattr();
-  YO_NEW_REF yield::fs::File::Lock* getlk(const yield::fs::File::Lock&);
-  virtual YO_NEW_REF ExtendedAttributes* openxattrs();
-  ssize_t pread(void*, size_t, uint64_t);
-  ssize_t preadv(const iovec*, int, uint64_t);
-  ssize_t pwrite(const void*, size_t, uint64_t);
-  ssize_t pwritev(const iovec*, int, uint64_t);
-  uint64_t seek(int64_t offset, uint8_t whence);
-  bool setlk(const yield::fs::File::Lock&);
-  bool setlkw(const yield::fs::File::Lock&);
-  bool sync();
-  uint64_t tell();
-  bool truncate(uint64_t new_size);
-  bool unlk(const yield::fs::File::Lock&);
 
 private:
   fd_t fd;

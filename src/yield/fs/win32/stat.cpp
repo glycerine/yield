@@ -76,11 +76,12 @@ Stat::Stat(const WIN32_FIND_DATA& stbuf)
   set_size(stbuf.nFileSizeLow, stbuf.nFileSizeHigh);
 }
 
-Stat::Type Stat::get_type() const {
-  if ((attributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
-    return TYPE_DIR;
-  else
-    return TYPE_REG;
+bool Stat::ISDIR() const {
+  return (attributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY;
+}
+
+bool Stat::ISREG() const {
+  return !ISDIR();
 }
 
 Stat::operator BY_HANDLE_FILE_INFORMATION() const {

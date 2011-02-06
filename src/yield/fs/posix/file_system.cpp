@@ -27,12 +27,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "directory.hpp"
-#include "file.hpp"
-#include "memory_mapped_file.hpp"
-#include "stat.hpp"
-#include "file_system.hpp"
 #include "yield/assert.hpp"
+#include "yield/fs/posix/directory.hpp"
+#include "yield/fs/posix/file.hpp"
+#include "yield/fs/posix/file_system.hpp"
+#include "yield/fs/posix/memory_mapped_file.hpp"
+#include "yield/fs/posix/stat.hpp"
 
 #include <errno.h>
 #include <fcntl.h>
@@ -48,33 +48,45 @@ namespace yield {
 namespace fs {
 namespace posix {
 bool FileSystem::access(const Path& path, int amode) {
-  return ::access(path.c_str(), amode) >= 0;
+  return ::access(path.c_str(), amode) == 0;
 }
 
-yield::fs::Stat* FileSystem::getattr(const Path& path) {
+bool FileSystem::chmod(const Path& path, mode_t mode) {
+  return ::chmod(path.c_str(), mode) == 0;
+}
+
+bool FileSystem::chown(const Path& path, uid_t uid) {
+  return ::chown(path.c_str(), uid, -1) == 0;
+}
+
+bool FileSystem::chown(const Path& path, uid_t uid, gid_t gid) {
+  return ::chown(path.c_str(), uid, gid) == 0;
+}
+
+Stat* FileSystem::getattr(const Path& path) {
   struct stat stbuf;
-  if (::stat(path.c_str(), &stbuf) != -1)
+  if (::stat(path.c_str(), &stbuf) == 0)
     return new Stat(stbuf);
   else
     return NULL;
 }
 
 bool FileSystem::link(const Path& old_path, const Path& new_path) {
-  return ::link(old_path.c_str(), new_path.c_str()) != -1;
+  return ::link(old_path.c_str(), new_path.c_str()) == 0;
 }
 
 bool FileSystem::mkdir(const Path& path, mode_t mode) {
-  return ::mkdir(path.c_str(), mode) != -1;
+  return ::mkdir(path.c_str(), mode) == 0;
 }
 
-yield::fs::File*
+File*
 FileSystem::mkfifo
 (
   const Path& path,
   uint32_t flags,
   mode_t mode
 ) {
-  if (::mkfifo(path.c_str(), mode) != -1)
+  if (::mkfifo(path.c_str(), mode) == 0)
     return open(path, flags | O_NONBLOCK, mode, 0);
   else
     return NULL;
@@ -93,10 +105,10 @@ FileSystem::mmap
   return ::mmap(start, length, prot, flags, fd, offset);
 }
 
-yield::fs::MemoryMappedFile*
+MemoryMappedFile*
 FileSystem::mmap
 (
-  yield::fs::File& file,
+  File& file,
   void* start,
   size_t length,
   int prot,
@@ -105,7 +117,7 @@ FileSystem::mmap
 ) {
   if (length == MMAP_LENGTH_WHOLE_FILE) {
     struct stat stbuf;
-    if (::fstat(file, &stbuf) != -1)
+    if (::fstat(file, &stbuf) == 0)
       length = static_cast<size_t>(stbuf.st_size);
     else
       return NULL;
@@ -138,7 +150,7 @@ FileSystem::mmap
   }
 }
 
-yield::fs::File*
+File*
 FileSystem::open
 (
   const Path& path,
@@ -147,13 +159,13 @@ FileSystem::open
   uint32_t attributes
 ) {
   fd_t fd = ::open(path.c_str(), flags, mode);
-  if (fd != -1)
+  if (fd >= 0)
     return new File(fd);
   else
     return NULL;
 }
 
-yield::fs::Directory* FileSystem::opendir(const Path& path) {
+Directory* FileSystem::opendir(const Path& path) {
   DIR* dirp = ::opendir(path.c_str());
   if (dirp != NULL)
     return new Directory(dirp, path);
@@ -187,85 +199,11 @@ bool FileSystem::realpath(const Path& path, OUT Path& realpath) {
 }
 
 bool FileSystem::rename(const Path& from_path, const Path& to_path) {
-  return ::rename(from_path.c_str(), to_path.c_str()) != -1;
+  return ::rename(from_path.c_str(), to_path.c_str()) == 0;
 }
 
 bool FileSystem::rmdir(const Path& path) {
-  return ::rmdir(path.c_str()) != -1;
-}
-
-bool FileSystem::setattr(const Path& path, const yield::fs::Stat& stbuf) {
-  if
-  (
-    stbuf.has_attributes()
-    ||
-    stbuf.has_blksize()
-    ||
-    stbuf.has_blocks()
-    ||
-    stbuf.has_dev()
-    ||
-    stbuf.has_ino()
-    ||
-    stbuf.has_nlink()
-    ||
-    stbuf.has_rdev()
-    ||
-    stbuf.has_size()
-  ) {
-    errno = ENOTSUP;
-    return false;
-  }
-
-  bool have_setattr = false;
-
-  if (stbuf.has_atime() || stbuf.has_mtime()) {
-    timeval tv[2];
-    tv[0] = stbuf.get_atime();
-    tv[1] = stbuf.get_mtime();
-    if (::utimes(path.c_str(), tv) == 0)
-      have_setattr = true;
-    else {
-      debug_assert_false(have_setattr);
-      return false;
-    }
-  }
-
-  if (stbuf.has_mode()) {
-    if (::chmod(path.c_str(), stbuf.get_mode()) == 0)
-      have_setattr = true;
-    else {
-      debug_assert_false(have_setattr);
-      return false;
-    }
-  }
-
-  if (stbuf.has_uid()) {
-    if (stbuf.has_gid()) {   // Change both
-      if (::chown(path.c_str(), stbuf.get_uid(), stbuf.get_gid()) == 0)
-        have_setattr = true;
-      else {
-        debug_assert_false(have_setattr);
-        return false;
-      }
-    } else { // Only change the uid
-      if (::chown(path.c_str(), stbuf.get_uid(), -1) == 0)
-        have_setattr = true;
-      else {
-        debug_assert_false(have_setattr);
-        return false;
-      }
-    }
-  } else if (stbuf.has_gid()) {   // Only change the gid
-    if (::chown(path.c_str(), -1, stbuf.get_gid()) == 0)
-      have_setattr = true;
-    else {
-      debug_assert_false(have_setattr);
-      return false;
-    }
-  }
-
-  return true;
+  return ::rmdir(path.c_str()) == 0;
 }
 
 bool FileSystem::statvfs(const Path& path, struct statvfs& stbuf) {
@@ -273,16 +211,22 @@ bool FileSystem::statvfs(const Path& path, struct statvfs& stbuf) {
 }
 
 bool FileSystem::symlink(const Path& old_path, const Path& new_path) {
-  return ::symlink(old_path.c_str(), new_path.c_str()) != -1;
+  return ::symlink(old_path.c_str(), new_path.c_str()) == 0;
 }
 
 bool FileSystem::truncate(const Path& path, uint64_t new_size) {
-  return ::truncate(path.c_str(), new_size) >= 0;
+  return ::truncate(path.c_str(), new_size) == 0;
 }
 
 bool FileSystem::unlink(const Path& path) {
-  return ::unlink(path.c_str()) != -1;
+  return ::unlink(path.c_str()) == 0;
 }
+
+bool FileSystem::utime(const Path&, const DateTime& atime, const DateTime& mtime) {
+  timeval tv[2];
+  tv[0] = atime;
+  tv[1] = mtime;
+  return ::utimes(path.c_str(), tv) == 0;
 }
 }
 }

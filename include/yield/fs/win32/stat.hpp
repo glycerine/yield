@@ -47,12 +47,6 @@ namespace fs {
 namespace win32 {
 class Stat : public Object {
 public:
-  typedef uint8_t Type;
-  const static Type TYPE_ALL = static_cast<Type>(~0);
-  const static Type TYPE_DIR = 1;
-  const static Type TYPE_REG = 2;
-
-public:
   Stat(
     const DateTime& atime,
     uint32_t attributes,
@@ -91,15 +85,8 @@ public:
     return size;
   }
 
-  Type get_type() const;
-
-  bool ISDIR() const {
-    return get_type() == TYPE_DIR;
-  }
-
-  bool ISREG() const {
-    return get_type() == TYPE_REG;
-  }
+  bool ISDIR() const;
+  bool ISREG() const;
 
 public:
   operator BY_HANDLE_FILE_INFORMATION() const;

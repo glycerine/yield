@@ -27,11 +27,11 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "yield/assert.hpp"
 #include "yield/date_time.hpp"
 #include "yield/fs/win32/directory.hpp"
 
 #include <Windows.h>
-
 
 namespace yield {
 namespace fs {
@@ -62,28 +62,25 @@ bool Directory::close() {
     return false;
 }
 
-Directory::Entry* Directory::read(Entry::Type types) {
-  Entry* dentry = NULL;
-  if (read(dentry, types))
-    return dentry;
+Directory::Entry* Directory::read() {
+  Entry* entry = NULL;
+  if (read(entry))
+    return entry;
   else
     return NULL;
 }
 
-bool Directory::read(OUT Entry& dentry, Entry::Type types) {
-  Entry* p_dentry = &dentry;
-  return read(p_dentry, types);
+bool Directory::read(OUT Entry& entry) {
+  Entry* p_dentry = &entry;
+  return read(p_dentry);
 }
 
-bool Directory::read(OUT Entry*& dentry, Entry::Type types) {
-  bool allocated_dentry = false;
-
+bool Directory::read(OUT Entry*& entry) {
   if (hFindFile == INVALID_HANDLE_VALUE) {
     const size_t file_name_info_size
     = sizeof(FILE_NAME_INFO) + sizeof(WCHAR) * MAX_PATH;
     char file_name_info_buffer[file_name_info_size];
-    FILE_NAME_INFO* file_name_info
-    = new(file_name_info_buffer) FILE_NAME_INFO;
+    FILE_NAME_INFO* file_name_info = new(file_name_info_buffer) FILE_NAME_INFO;
 
     if
     (
@@ -103,14 +100,12 @@ bool Directory::read(OUT Entry*& dentry, Entry::Type types) {
       WIN32_FIND_DATA find_data;
       hFindFile = FindFirstFile(search_pattern.c_str(), &find_data);
       if (hFindFile != INVALID_HANDLE_VALUE) {
-        if (dentry == NULL) {
-          dentry = new Entry(find_data);
-          allocated_dentry = true;
-        } else
-          *dentry = find_data;
+        if (entry == NULL)
+          entry = new Entry(find_data);
+        else
+          *entry = find_data;
 
-        if ((dentry->get_type() & types) == dentry->get_type())
-          return true;
+        return true;
       } else
         return false;
     } else
@@ -119,21 +114,16 @@ bool Directory::read(OUT Entry*& dentry, Entry::Type types) {
 
   WIN32_FIND_DATA find_data;
   while (FindNextFile(hFindFile, &find_data)) {
-    if (dentry == NULL) {
-      dentry = new Entry(find_data);
-      allocated_dentry = true;
-    } else
-      *dentry = find_data;
+    if (entry == NULL)
+      entry = new Entry(find_data);
+    else
+      *entry = find_data;
 
-    if ((dentry->get_type() & types) == dentry->get_type())
-      return true;
+    return true;
   }
 
   FindClose(hFindFile);
   hFindFile = INVALID_HANDLE_VALUE;
-
-  if (allocated_dentry)
-    delete dentry;
 
   return false;
 }

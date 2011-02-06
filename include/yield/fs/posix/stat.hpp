@@ -40,18 +40,6 @@ namespace fs {
 namespace posix {
 class Stat : public Object, private stat {
 public:
-  typedef uint8_t Type;
-  const static Type TYPE_ALL = static_cast<Type>(~0);
-  const static Type TYPE_CHR = 1;
-  const static Type TYPE_BLK = 2;
-  const static Type TYPE_DIR = 4;
-  const static Type TYPE_FIFO = 8;
-  const static Type TYPE_LNK = 16;
-  const static Type TYPE_REG = 32;
-  const static Type TYPE_SOCK = 64;
-
-public:
-  Stat();
   Stat(const struct stat&);
 
 public:
@@ -103,37 +91,42 @@ public:
     return st_size;
   }
 
-  Type get_type() const;
-
   uid_t get_uid() const {
     return st_uid;
   }
 
   bool ISBLK() const {
-    return get_type() == TYPE_BLK;
+    return S_ISBLK(get_mode());
   }
+
   bool ISCHR() const {
-    return get_type() == TYPE_CHR;
+    return S_ISCHR(get_mode());
   }
+
   bool ISDIR() const {
-    return get_type() == TYPE_DIR;
+    return S_ISDIR(get_mode());
   }
+
   bool ISFIFO() const {
-    return get_type() == TYPE_FIFO;
+    return S_ISFIFO(get_mode());
   }
+
   bool ISLNK() const {
-    return get_type() == TYPE_LNK;
+    return S_ISLNK(get_mode());
   }
+
   bool ISREG() const {
-    return get_type() == TYPE_REG;
+    return S_ISREG(get_mode());
   }
+
   bool ISSOCK() const {
-    return get_type() == TYPE_SOCK;
+    return S_ISSOCK(get_mode());
   }
 
 public:
-  operator struct stat() const;
-  Stat& operator=(const struct stat&);
+  operator struct stat() const {
+    return *this;
+  }
 
 private:
   DateTime atime, ctime, mtime;

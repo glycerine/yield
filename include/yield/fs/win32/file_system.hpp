@@ -30,7 +30,7 @@
 #ifndef _YIELD_FS_WIN32_FILE_SYSTEM_HPP_
 #define _YIELD_FS_WIN32_FILE_SYSTEM_HPP_
 
-#include "yield/object.hpp"
+#include "yield/types.hpp"
 
 struct statvfs {
   unsigned long f_bsize;    // File system block size.
@@ -62,7 +62,7 @@ class File;
 class MemoryMappedFile;
 class Stat;
 
-class FileSystem : public Object {
+class FileSystem {
 public:
   static mode_t FILE_MODE_DEFAULT;
   static mode_t DIRECTORY_MODE_DEFAULT;

@@ -30,79 +30,53 @@
 #ifndef _YIELD_FS_POSIX_DIRECTORY_HPP_
 #define _YIELD_FS_POSIX_DIRECTORY_HPP_
 
-#include "stat.hpp"
-#include "yield/fs/directory.hpp"
 #include "yield/fs/path.hpp"
+#include "yield/
 
 #include <dirent.h>
-
 
 namespace yield {
 namespace fs {
 namespace posix {
-class Directory : public yield::fs::Directory {
+class Directory : public Object {
 public:
-  class Entry : public yield::fs::Directory::Entry {
+  class Entry : public Object {
   public:
-    Entry() { }
+    typedef uint8_t Type;
+    const static Type TYPE_CHR = 1;
+    const static Type TYPE_BLK = 2;
+    const static Type TYPE_DIR = 4;
+    const static Type TYPE_FIFO = 8;
+    const static Type TYPE_LNK = 16;
+    const static Type TYPE_REG = 32;
+    const static Type TYPE_SOCK = 64;
 
-    Entry& operator=(const dirent&);
-    Entry& operator=(const struct stat&);
+  public:
+    Entry(const dirent&, Type type);
 
-    // yield::fs::Stat
-    const DateTime& get_atime() const {
-      return stbuf.get_atime();
-    }
-    uint64_t get_blksize() const {
-      return stbuf.get_blksize();
-    }
-    uint64_t get_blocks() const {
-      return stbuf.get_blocks();
-    }
-    const DateTime& get_ctime() const {
-      return stbuf.get_ctime();
-    }
-    uint64_t get_dev() const {
-      return stbuf.get_dev();
-    }
-    gid_t get_gid() const {
-      return stbuf.get_gid();
-    }
-    uint64_t get_ino() const {
-      return stbuf.get_ino();
-    }
-    mode_t get_mode() const {
-      return stbuf.get_mode();
-    }
-    const DateTime& get_mtime() const {
-      return stbuf.get_mtime();
-    }
-    int16_t get_nlink() const {
-      return stbuf.get_nlink();
-    }
-    uint64_t get_rdev() const {
-      return stbuf.get_rdev();
-    }
-    uint64_t get_size() const {
-      return stbuf.get_size();
-    }
-    Type get_type() const {
-      return stbuf.get_type();
-    }
-    uid_t get_uid() const {
-      return stbuf.get_uid();
-    }
-
-    // yield::fs::Directory::Entry
+  public:
     const Path& get_name() const {
       return name;
     }
+
+    Type get_type() const {
+      return type;
+    }
+
     bool is_hidden() const;
     bool is_special() const;
 
+    void set_name(const Path& name) {
+      this->name = name;
+    }
+
+    void set_type(Type type) {
+      this->type = type;
+    }
+
   private:
     Path name;
-    yield::fs::posix::Stat stbuf;
+    Type type;
   };
 
 public:
@@ -116,17 +90,20 @@ public:
 
   // Directory
   bool close();
-  yield::fs::Directory::Entry* read(Entry::Type types);
-  virtual bool read(yield::fs::Directory::Entry&, Entry::Type types);
+  YO_NEW_REF Entry* read();
+  bool read(OUT Entry&);
   void rewind();
 
 protected:
   operator DIR* () {
     return dirp;
   }
+
   const Path& get_path() const {
     return path;
   }
+
+  virtual bool read(OUT Entry*&);
 
 private:
   DIR* dirp;

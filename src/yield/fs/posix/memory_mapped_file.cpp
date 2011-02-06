@@ -27,14 +27,13 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "file_system.hpp"
-#include "memory_mapped_file.hpp"
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
+#include "yield/fs/posix/file_system.hpp"
+#include "yield/fs/posix/memory_mapped_file.hpp"
 
 #include <errno.h>
 #include <sys/mman.h>
-
 
 namespace yield {
 namespace fs {
@@ -43,17 +42,26 @@ MemoryMappedFile::MemoryMappedFile
 (
   size_t capacity,
   void* data,
-  YO_NEW_REF File& file,
+  File& file,
   int flags,
   uint64_t offset,
   int prot
 )
-  : yield::fs::MemoryMappedFile(capacity, file, flags, offset, prot),
-    data_(data)
+  : Buffer(capacity),
+    data_(data),
+    file(file),
+    flags(flags),
+    offset(offset),
+    prot(prot) 
 { }
 
 MemoryMappedFile::~MemoryMappedFile() {
   close();
+  File::dec_ref(file);
+}
+
+bool MemoryMappedFile::close() {
+  return unmap() && get_file().close();
 }
 
 void MemoryMappedFile::reserve(size_t capacity) {
@@ -86,6 +94,14 @@ void MemoryMappedFile::reserve(size_t capacity) {
       throw Exception();
   } else
     throw Exception();
+}
+
+bool MemoryMappedFile::sync() {
+  return sync(data(), capacity());
+}
+
+bool MemoryMappedFile::sync(size_t offset, size_t length) {
+  return sync(static_cast<char*>(data()) + offset, length);
 }
 
 bool MemoryMappedFile::sync(void* ptr, size_t length) {

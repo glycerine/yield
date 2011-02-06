@@ -27,8 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "file.hpp"
-#include "stat.hpp"
+#include "yield/fs/posix/file.hpp"
+#include "yield/fs/posix/stat.hpp"
 
 #include <errno.h>
 #include <fcntl.h>
@@ -58,7 +58,7 @@ bool File::close() {
     return false;
 }
 
-yield::fs::Stat* File::getattr() {
+Stat* File::getattr() {
   struct stat stbuf;
   if (fstat(*this, &stbuf) != -1)
     return new Stat(stbuf);
@@ -66,17 +66,13 @@ yield::fs::Stat* File::getattr() {
     return NULL;
 }
 
-yield::fs::File::Lock*
-File::getlk
-(
-  const yield::fs::File::Lock& lock
-) {
-  struct flock flock_ = Lock(lock);
+File::Lock* File::getlk(const Lock& lock) {
+  struct flock flock_ = lock;
   if (fcntl(*this, F_GETLK, &flock_) != -1) {
     if (flock_.l_type == F_UNLCK)   // No lock blocking lock
       return NULL;
     else
-      return new File::Lock(flock_);
+      return new Lock(flock_);
   } else
     return NULL;
 }
@@ -125,13 +121,13 @@ bool File::set_blocking_mode(bool blocking_mode) {
     return fcntl(*this, F_SETFL, current_fcntl_flags | O_NONBLOCK) != -1;
 }
 
-bool File::setlk(const yield::fs::File::Lock& lock) {
+bool File::setlk(const Lock& lock) {
   flock flock_ = Lock(lock);
   return fcntl(*this, F_SETLK, &flock_) != -1;
 }
 
-bool File::setlkw(const yield::fs::File::Lock& lock) {
-  flock flock_ = File::Lock(lock);
+bool File::setlkw(const Lock& lock) {
+  flock flock_ = Lock(lock);
   return fcntl(*this, F_SETLKW, &flock_) != -1;
 }
 
@@ -147,8 +143,8 @@ bool File::truncate(uint64_t new_size) {
   return ::ftruncate(*this, new_size) != -1;
 }
 
-bool File::unlk(const yield::fs::File::Lock& lock) {
-  flock flock_ = File::Lock(lock);
+bool File::unlk(const Lock& lock) {
+  flock flock_ = lock;
   flock_.l_type = F_UNLCK;
   return fcntl(*this, F_SETLK, &flock_) != -1;
 }
@@ -160,33 +156,6 @@ ssize_t File::write(const void* buf, size_t buflen) {
 ssize_t File::writev(const iovec* iov, int iovlen) {
   return ::writev(*this, iov, iovlen);
 }
-
-
-File::Lock::Lock(const flock& flock_)
-  : yield::fs::File::Lock
-  (
-    flock_.l_start,
-    flock_.l_len,
-    flock_.l_type == F_WRLCK,
-    flock_.l_pid,
-    flock_.l_whence
-  )
-{ }
-
-File::Lock::Lock(const yield::fs::File::Lock& lock)
-  : yield::fs::File::Lock(lock)
-{ }
-
-File::Lock::operator struct flock() const {
-  struct flock flock_;
-  flock_.l_pid = get_pid();
-  // static_assert( sizeof( flock_.l_start ) == sizeof( uint64_t ), "" );
-  flock_.l_start = get_start();
-  flock_.l_type = this->is_exclusive() ? F_WRLCK : F_RDLCK;
-  flock_.l_whence = get_whence();
-  // static_assert( sizeof( flock_.l_len ) == sizeof( uint64_t ), "" );
-  flock_.l_len = get_len();
-  return flock_;
 }
 }
 }

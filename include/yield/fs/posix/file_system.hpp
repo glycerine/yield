@@ -30,16 +30,21 @@
 #ifndef _YIELD_FS_POSIX_FILE_SYSTEM_HPP_
 #define _YIELD_FS_POSIX_FILE_SYSTEM_HPP_
 
-#include "yield/fs/file_system.hpp"
-
+#include "yield/object.hpp"
 
 struct statvfs;
 
-
 namespace yield {
 namespace fs {
+class Path;
+
 namespace posix {
-class FileSystem : public yield::fs::FileSystem {
+class ExtendedAttributes;
+class File;
+class MemoryMappedFile;
+class Stat;
+
+class FileSystem {
 public:
   static mode_t FILE_MODE_DEFAULT;
   static mode_t DIRECTORY_MODE_DEFAULT;
@@ -49,6 +54,22 @@ public:
   static uint32_t OPEN_FLAGS_DEFAULT; // O_RDONLY
 
 public:
+  bool access(const Path&, int amode);
+  bool chmod(const Path&, mode_t);
+  bool chown(const Path&, uid_t);
+  bool chown(const Path&, uid_t, gid_t);
+  Stat* getattr(const Path&);
+  bool link(const Path& old_path, const Path& new_path);
+  bool mkdir(const Path&, mode_t mode);
+
+  YO_NEW_REF File*
+  mkfifo
+  (
+    const Path&,
+    uint32_t flags = OPEN_FLAGS_DEFAULT,
+    mode_t mode = FILE_MODE_DEFAULT
+  );
+
   static void*
   mmap
   (
@@ -60,24 +81,10 @@ public:
     uint64_t offset
   );
 
-  // FileSystem
-  bool access(const Path&, int amode);
-  yield::fs::Stat* getattr(const Path&);
-  bool link(const Path& old_path, const Path& new_path);
-  bool mkdir(const Path&, mode_t mode);
-
-  YO_NEW_REF yield::fs::File*
-  mkfifo
-  (
-    const Path&,
-    uint32_t flags = OPEN_FLAGS_DEFAULT,
-    mode_t mode = FILE_MODE_DEFAULT
-  );
-
-  YO_NEW_REF yield::fs::MemoryMappedFile*
+  YO_NEW_REF MemoryMappedFile*
   mmap
   (
-    yield::fs::File& file,
+    File& file,
     void* start = NULL,
     size_t length = MMAP_LENGTH_WHOLE_FILE,
     int prot = MMAP_PROT_DEFAULT,
@@ -85,7 +92,7 @@ public:
     uint64_t offset = 0
   );
 
-  virtual YO_NEW_REF yield::fs::File*
+  virtual YO_NEW_REF File*
   open
   (
     const Path&,
@@ -94,17 +101,17 @@ public:
     uint32_t attributes = OPEN_ATTRIBUTES_DEFAULT
   );
 
-  virtual YO_NEW_REF yield::fs::Directory* opendir(const Path&);
+  virtual YO_NEW_REF Directory* opendir(const Path&);
   virtual YO_NEW_REF ExtendedAttributes* openxattrs(const Path&);
   bool readlink(const Path&, OUT Path&);
   bool realpath(const Path&, OUT Path&);
   bool rename(const Path& from_path, const Path& to_path);
   bool rmdir(const Path&);
-  bool setattr(const Path&, const yield::fs::Stat&);
   bool statvfs(const Path&, struct statvfs&);
   bool symlink(const Path& old_path, const Path& new_path);
   bool truncate(const Path&, uint64_t new_size);
   bool unlink(const Path&);
+  bool utime(const Path&, const DateTime& atime, const DateTime& mtime);
 };
 }
 }

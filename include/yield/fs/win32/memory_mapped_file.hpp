@@ -30,7 +30,6 @@
 #ifndef _YIELD_FS_WIN32_MEMORY_MAPPED_FILE_HPP_
 #define _YIELD_FS_WIN32_MEMORY_MAPPED_FILE_HPP_
 
-#include "file.hpp"
 #include "yield/buffer.hpp"
 
 #define MAP_FIXED   1
@@ -44,6 +43,7 @@
 namespace yield {
 namespace fs {
 namespace win32 {
+class File;
 class FileSystem;
 
 class MemoryMappedFile : public Buffer {
@@ -51,14 +51,28 @@ public:
   ~MemoryMappedFile();
 
 public:
-  bool close(); 
-  File& get_file() { return file; }
-  int get_flags() const { return flags; }
-  uint64_t get_offset() const { return offset; }
-  int get_prot() const { return prot; }
+  bool close();
+
+  File& get_file() {
+    return file;
+  }
+
+  int get_flags() const {
+    return flags;
+  }
+
+  uint64_t get_offset() const {
+    return offset;
+  }
+
+  int get_prot() const {
+    return prot;
+  }
+
   bool sync();
   bool sync(size_t offset, size_t length);
   bool sync(void* ptr, size_t length);
+
   bool unmap();
 
 public:
@@ -66,9 +80,11 @@ public:
   void* data() {
     return data_;
   }
+
   const void* data() const {
     return data_;
   }
+
   void reserve(size_t capacity);
 
 private:

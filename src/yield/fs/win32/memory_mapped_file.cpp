@@ -29,6 +29,7 @@
 
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
+#include "yield/fs/win32/file.hpp"
 #include "yield/fs/win32/file_system.hpp"
 #include "yield/fs/win32/memory_mapped_file.hpp"
 
@@ -53,8 +54,7 @@ MemoryMappedFile::MemoryMappedFile
     flags(flags),
     hFileMapping(hFileMapping),
     offset(offset),
-    prot(prot)
-{
+    prot(prot) {
   if (data_ == reinterpret_cast<void*>(-1)) {
     debug_assert_eq(hFileMapping, NULL);
   } else {
@@ -138,7 +138,8 @@ bool MemoryMappedFile::unmap() {
       hFileMapping = NULL;
       return true;
     } else {
-      DebugBreak();      return false;
+      DebugBreak();
+      return false;
     }
   } else {
     SetLastError(ERROR_INVALID_PARAMETER);

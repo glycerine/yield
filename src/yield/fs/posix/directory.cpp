@@ -27,8 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "yield/assert.hpp"
 #include "directory.hpp"
-
 
 namespace yield {
 namespace fs {
@@ -50,30 +50,45 @@ bool Directory::close() {
     return false;
 }
 
-yield::fs::Directory::Entry* Directory::read(Entry::Type types) {
-  Entry* entry = new Entry;
-  if (read(*entry, types))
+Directory::Entry* Directory::read() {
+  Entry* entry = NULL;
+  if (read(entry))
     return entry;
-  else {
-    delete entry;
+  else
     return NULL;
-  }
 }
 
-bool Directory::read
-(
-  OUT yield::fs::Directory::Entry& entry,
-  Entry::Type types
-) {
+bool Directory::read(OUT Entry& entry) {
+  Entry* p_entry = &entry;
+  return read(p_entry);
+}
+
+bool Directory::read(OUT Entry*& entry) {
   dirent* dirent_;
   while ((dirent_ = readdir(dirp)) != NULL) {
-    static_cast<Entry&>(entry) = *dirent_;   // To set entry.name
-
     struct stat stbuf;
-    if (stat((path / entry.get_name()).c_str(), &stbuf) != -1) {
-      static_cast<Entry&>(entry) = stbuf;
-      if ((entry.get_type() & types) == entry.get_type())
-        return true;
+    if (stat((path / dirent_.d_name).c_str(), &stbuf) != -1) {
+      Entry::Type entry_type;
+      if (S_ISBLK(get_mode())) entry_type = Entry::TYPE_BLK;
+      else if (S_ISCHR(get_mode())) entry_type = Entry::TYPE_CHR;
+      else if (S_ISDIR(get_mode())) entry_type = Entry::TYPE_DIR;
+      else if (S_ISFIFO(get_mode())) entry_type = Entry::TYPE_FIFO;
+      else if (S_ISLNK(get_mode())) entry_type = Entry::TYPE_LNK;
+      else if (S_ISREG(get_mode())) entry_type = Entry::TYPE_REG;
+      else if (S_ISSOCK(get_mode())) entry_type = Entry::TYPE_SOCK;
+      else {
+        entry_type = Entry::TYPE_REG;
+        DebugBreak();
+      }
+
+      if (entry == NULL)
+        entry = new Entry(dirent_.d_name, entry_type);
+      else {
+        entry->set_name(dirent_.d_name);
+        entry->set_type(entry_type);
+      }
+
+      return true;
     }
   }
 
@@ -93,16 +108,6 @@ bool Directory::Entry::is_special() const {
   return get_name() == Path::CURRENT_DIRECTORY
          ||
          get_name() == Path::PARENT_DIRECTORY;
-}
-
-Directory::Entry& Directory::Entry::operator=(const dirent& dirent_) {
-  this->name = Path(dirent_.d_name);
-  return *this;
-}
-
-Directory::Entry& Directory::Entry::operator=(const struct stat& stbuf) {
-  this->stbuf = stbuf;
-  return *this;
 }
 }
 }
