@@ -31,11 +31,10 @@
 #define _YIELD_FS_POSIX_EXTENDED_ATTRIBUTES_HPP_
 
 #include "yield/object.hpp"
+#include "yield/fs/path.hpp"
 
 namespace yield {
 namespace fs {
-class Path;
-
 namespace posix {
 class ExtendedAttributes : public Object {
 public:
@@ -55,7 +54,7 @@ public:
     const void* value,
     size_t size,
     int flags = 0
-  ) = 0;
+  );
 
   // Object
   ExtendedAttributes& inc_ref() {
@@ -65,7 +64,6 @@ public:
 protected:
   ExtendedAttributes(fd_t fd);
   ExtendedAttributes(const Path& path);
-  ~ExtendedAttributes();
 
   virtual ssize_t get(fd_t, const char* name, void* value, size_t size) = 0;
   virtual ssize_t get(const Path&, const char* name, void* value, size_t size) = 0;
@@ -95,7 +93,6 @@ protected:
 private:
   fd_t fd;
   Path path;
-
 };
 }
 }

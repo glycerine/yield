@@ -32,7 +32,7 @@
 
 #include "yield/channel.hpp"
 
-struct flock;
+#include <fcntl.h>
 
 namespace yield {
 namespace fs {
@@ -42,36 +42,35 @@ class Stat;
 
 class File : public Channel {
 public:
-  class Lock : public Object, private flock {
+  class Lock : public Object {
   public:
-    Lock(const flock& flock_) {
-      *this = flock_;
+    Lock(const flock& flock_) : flock_(flock_) {
     }
 
   public:
     uint64_t get_len() const {
-      return l_len;
+      return flock_.l_len;
     }
 
     pid_t get_pid() const {
-      return l_pid;
+      return flock_.l_pid;
     }
 
     uint64_t get_start() const {
-      return l_start;
+      return flock_.l_start;
     }
 
     int16_t get_whence() const {
-      return whence;
+      return flock_.l_whence;
     }
 
     bool is_exclusive() const {
-      return l_type == F_WRLCK;
+      return flock_.l_type == F_WRLCK;
     }
 
   public:
     operator flock() const {
-      return *this;
+      return flock_;
     }
 
   public:
@@ -79,6 +78,9 @@ public:
     Lock& inc_ref() {
       return Object::inc_ref(*this);
     }
+
+  private:
+    flock flock_;
   };
 
 public:
@@ -109,7 +111,7 @@ public:
     return fd;
   }
   ssize_t read(void* buf, size_t buflen);
-  ssize_t readv(const iovec* iov, int iovlen)
+  ssize_t readv(const iovec* iov, int iovlen);
   bool set_blocking_mode(bool blocking_mode);
   ssize_t write(const void* buf, size_t buflen);
   ssize_t writev(const iovec* iov, int iovlen);

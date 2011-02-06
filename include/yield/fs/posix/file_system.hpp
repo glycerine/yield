@@ -35,10 +35,13 @@
 struct statvfs;
 
 namespace yield {
+class DateTime;
+
 namespace fs {
 class Path;
 
 namespace posix {
+class Directory;
 class ExtendedAttributes;
 class File;
 class MemoryMappedFile;
@@ -97,8 +100,7 @@ public:
   (
     const Path&,
     uint32_t flags = OPEN_FLAGS_DEFAULT,
-    mode_t mode = FILE_MODE_DEFAULT,
-    uint32_t attributes = OPEN_ATTRIBUTES_DEFAULT
+    mode_t mode = FILE_MODE_DEFAULT
   );
 
   virtual YO_NEW_REF Directory* opendir(const Path&);

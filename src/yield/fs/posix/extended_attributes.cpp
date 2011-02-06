@@ -28,24 +28,20 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/assert.hpp"
-#include "yield/exception.hpp"
-#include "yield/log.hpp"
-#include "yield/fs/extended_attributes.hpp"
-#include "yield/fs/path.hpp"
-
+#include "yield/fs/posix/extended_attributes.hpp"
 
 namespace yield {
 namespace fs {
 namespace posix {
-ExtendedAttributes(fd_t fd)
+ExtendedAttributes::ExtendedAttributes(fd_t fd)
   : fd(fd)
 { }
 
-ExtendedAttributes(const Path& path)
+ExtendedAttributes::ExtendedAttributes(const Path& path)
   : fd(-1), path(path)
 { }
 
-~ExtendedAttributes() {
+ExtendedAttributes::~ExtendedAttributes() {
   if (fd != -1)
     ::close(fd);
 }
@@ -126,9 +122,9 @@ ExtendedAttributes::set
   int flags
 ) {
   if (fd != -1)
-    return set(fd, name, value, size, 0, flags);
+    return set(fd, name, value, size, flags);
   else
-    return set(path, name, value, size, 0, flags);
+    return set(path, name, value, size, flags);
 }
 }
 }

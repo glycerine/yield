@@ -71,9 +71,9 @@ bool Directory::read(OUT Entry*& entry) {
     }
 
     if (entry == NULL)
-      entry = new Entry(*dirent, entry_type);
+      entry = new Entry(dirent_->d_name, entry_type);
     else {
-      entry->set_name(dirent_.d_name);
+      entry->set_name(dirent_->d_name);
       entry->set_type(entry_type);
     }
 

@@ -30,7 +30,7 @@
 #ifndef _YIELD_FS_BSD_DIRECTORY_HPP_
 #define _YIELD_FS_BSD_DIRECTORY_HPP_
 
-#include "../posix/directory.hpp"
+#include "yield/fs/posix/directory.hpp"
 
 namespace yield {
 namespace fs {

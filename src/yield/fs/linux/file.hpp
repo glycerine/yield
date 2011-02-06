@@ -30,7 +30,7 @@
 #ifndef _YIELD_FS_LINUX_FILE_HPP_
 #define _YIELD_FS_LINUX_FILE_HPP_
 
-#include "../posix/file.hpp"
+#include "yield/fs/posix/file.hpp"
 
 namespace yield {
 namespace fs {

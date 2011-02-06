@@ -35,11 +35,11 @@
 namespace yield {
 namespace fs {
 namespace linux {
-ExtendedAttributes(fd_t fd)
+ExtendedAttributes::ExtendedAttributes(fd_t fd)
   : yield::fs::posix::ExtendedAttributes(fd)
 { }
 
-ExtendedAttributes(const Path& path)
+ExtendedAttributes::ExtendedAttributes(const Path& path)
   : yield::fs::posix::ExtendedAttributes(path)
 { }
 

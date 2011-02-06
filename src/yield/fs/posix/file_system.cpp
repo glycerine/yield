@@ -101,7 +101,7 @@ FileSystem::mkfifo
   mode_t mode
 ) {
   if (::mkfifo(path.c_str(), mode) == 0)
-    return open(path, flags | O_NONBLOCK, mode, 0);
+    return open(path, flags | O_NONBLOCK, mode);
   else
     return NULL;
 }
@@ -169,8 +169,7 @@ FileSystem::open
 (
   const Path& path,
   uint32_t flags,
-  mode_t mode,
-  uint32_t attributes
+  mode_t mode
 ) {
   fd_t fd = ::open(path.c_str(), flags, mode);
   if (fd >= 0) {
@@ -259,11 +258,12 @@ bool FileSystem::unlink(const Path& path) {
   return ::unlink(path.c_str()) == 0;
 }
 
-bool FileSystem::utime(const Path&, const DateTime& atime, const DateTime& mtime) {
+bool FileSystem::utime(const Path& path, const DateTime& atime, const DateTime& mtime) {
   timeval tv[2];
   tv[0] = atime;
   tv[1] = mtime;
   return ::utimes(path.c_str(), tv) == 0;
+}
 }
 }
 }

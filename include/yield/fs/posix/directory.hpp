@@ -31,7 +31,6 @@
 #define _YIELD_FS_POSIX_DIRECTORY_HPP_
 
 #include "yield/fs/path.hpp"
-#include "yield/
 
 #include <dirent.h>
 
@@ -52,7 +51,9 @@ public:
     const static Type TYPE_SOCK = 64;
 
   public:
-    Entry(const dirent&, Type type);
+    Entry(const Path& name, Type type)
+      : name(name), type(type)
+    { }
 
   public:
     const Path& get_name() const {

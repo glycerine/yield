@@ -56,8 +56,8 @@ File::~File() {
 }
 
 bool File::close() {
-  if (fd != -1) {
-    if (::close(fd) != -1) {
+  if (fd >= 0) {
+    if (::close(fd) == 0) {
       fd = -1;
       return true;
     } else
@@ -72,15 +72,15 @@ bool File::datasync() {
 
 Stat* File::getattr() {
   struct stat stbuf;
-  if (fstat(*this, &stbuf) != -1)
+  if (fstat(*this, &stbuf) == 0)
     return new Stat(stbuf);
   else
     return NULL;
 }
 
 File::Lock* File::getlk(const Lock& lock) {
-  struct flock flock_ = lock;
-  if (fcntl(*this, F_GETLK, &flock_) != -1) {
+  flock flock_ = lock;
+  if (fcntl(*this, F_GETLK, &flock_) == 0) {
     if (flock_.l_type == F_UNLCK)   // No lock blocking lock
       return NULL;
     else
@@ -126,25 +126,25 @@ bool File::set_blocking_mode(bool blocking_mode) {
   int current_fcntl_flags = fcntl(*this, F_GETFL, 0);
   if (blocking_mode) {
     if ((current_fcntl_flags & O_NONBLOCK) == O_NONBLOCK)
-      return fcntl(*this, F_SETFL, current_fcntl_flags ^ O_NONBLOCK) != -1;
+      return fcntl(*this, F_SETFL, current_fcntl_flags ^ O_NONBLOCK) == 0;
     else
       return true;
   } else
-    return fcntl(*this, F_SETFL, current_fcntl_flags | O_NONBLOCK) != -1;
+    return fcntl(*this, F_SETFL, current_fcntl_flags | O_NONBLOCK) == 0;
 }
 
 bool File::setlk(const Lock& lock) {
-  flock flock_ = Lock(lock);
-  return fcntl(*this, F_SETLK, &flock_) != -1;
+  flock flock_ = lock;
+  return fcntl(*this, F_SETLK, &flock_) == 0;
 }
 
 bool File::setlkw(const Lock& lock) {
-  flock flock_ = Lock(lock);
-  return fcntl(*this, F_SETLKW, &flock_) != -1;
+  flock flock_ = lock;
+  return fcntl(*this, F_SETLKW, &flock_) == 0;
 }
 
 bool File::sync() {
-  return fsync(*this) != -1;
+  return fsync(*this) == 0;
 }
 
 uint64_t File::tell() {
@@ -152,13 +152,13 @@ uint64_t File::tell() {
 }
 
 bool File::truncate(uint64_t new_size) {
-  return ::ftruncate(*this, new_size) != -1;
+  return ::ftruncate(*this, new_size) == 0;
 }
 
 bool File::unlk(const Lock& lock) {
   flock flock_ = lock;
   flock_.l_type = F_UNLCK;
-  return fcntl(*this, F_SETLK, &flock_) != -1;
+  return fcntl(*this, F_SETLK, &flock_) == 0;
 }
 
 ssize_t File::write(const void* buf, size_t buflen) {
@@ -167,7 +167,6 @@ ssize_t File::write(const void* buf, size_t buflen) {
 
 ssize_t File::writev(const iovec* iov, int iovlen) {
   return ::writev(*this, iov, iovlen);
-}
 }
 }
 }

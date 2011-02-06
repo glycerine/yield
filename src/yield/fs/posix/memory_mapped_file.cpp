@@ -29,6 +29,7 @@
 
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
+#include "yield/fs/posix/file.hpp"
 #include "yield/fs/posix/file_system.hpp"
 #include "yield/fs/posix/memory_mapped_file.hpp"
 
@@ -66,7 +67,7 @@ bool MemoryMappedFile::close() {
 
 void MemoryMappedFile::reserve(size_t capacity) {
   if (data_ != MAP_FAILED) {
-    if (!yield::fs::MemoryMappedFile::sync())
+    if (!sync())
       throw Exception();
 
     if (!unmap())

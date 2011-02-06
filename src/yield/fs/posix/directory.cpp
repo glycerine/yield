@@ -28,7 +28,9 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/assert.hpp"
-#include "directory.hpp"
+#include "yield/fs/posix/directory.hpp"
+
+#include <sys/stat.h>
 
 namespace yield {
 namespace fs {
@@ -71,24 +73,21 @@ bool Directory::read(OUT Entry*& entry) {
   dirent* dirent_;
   while ((dirent_ = readdir(dirp)) != NULL) {
     struct stat stbuf;
-    if (stat((path / dirent_.d_name).c_str(), &stbuf) != -1) {
+    if (stat((path / dirent_->d_name).c_str(), &stbuf) == 0) {
       Entry::Type entry_type;
-      if (S_ISBLK(get_mode())) entry_type = Entry::TYPE_BLK;
-      else if (S_ISCHR(get_mode())) entry_type = Entry::TYPE_CHR;
-      else if (S_ISDIR(get_mode())) entry_type = Entry::TYPE_DIR;
-      else if (S_ISFIFO(get_mode())) entry_type = Entry::TYPE_FIFO;
-      else if (S_ISLNK(get_mode())) entry_type = Entry::TYPE_LNK;
-      else if (S_ISREG(get_mode())) entry_type = Entry::TYPE_REG;
-      else if (S_ISSOCK(get_mode())) entry_type = Entry::TYPE_SOCK;
-      else {
-        entry_type = Entry::TYPE_REG;
-        DebugBreak();
-      }
+      if (S_ISBLK(stbuf.st_mode)) entry_type = Entry::TYPE_BLK;
+      else if (S_ISCHR(stbuf.st_mode)) entry_type = Entry::TYPE_CHR;
+      else if (S_ISDIR(stbuf.st_mode)) entry_type = Entry::TYPE_DIR;
+      else if (S_ISFIFO(stbuf.st_mode)) entry_type = Entry::TYPE_FIFO;
+      else if (S_ISLNK(stbuf.st_mode)) entry_type = Entry::TYPE_LNK;
+      else if (S_ISREG(stbuf.st_mode)) entry_type = Entry::TYPE_REG;
+      else if (S_ISSOCK(stbuf.st_mode)) entry_type = Entry::TYPE_SOCK;
+      else { entry_type = Entry::TYPE_REG; DebugBreak(); }
 
       if (entry == NULL)
-        entry = new Entry(dirent_.d_name, entry_type);
+        entry = new Entry(dirent_->d_name, entry_type);
       else {
-        entry->set_name(dirent_.d_name);
+        entry->set_name(dirent_->d_name);
         entry->set_type(entry_type);
       }
 

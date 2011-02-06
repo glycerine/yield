@@ -31,6 +31,7 @@
 #define _YIELD_FS_POSIX_STAT_HPP_
 
 #include "yield/object.hpp"
+#include "yield/date_time.hpp"
 
 #include <sys/stat.h>
 
