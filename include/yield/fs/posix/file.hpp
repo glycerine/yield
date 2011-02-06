@@ -89,7 +89,6 @@ public:
 
 public:
   virtual bool datasync();
-  YO_NEW_REF Stat* getattr();
   YO_NEW_REF Lock* getlk(const File::Lock&);
   virtual YO_NEW_REF ExtendedAttributes* openxattrs();
   ssize_t pread(void*, size_t, uint64_t);
@@ -99,6 +98,7 @@ public:
   uint64_t seek(int64_t offset, uint8_t whence);
   bool setlk(const Lock&);
   bool setlkw(const Lock&);
+  YO_NEW_REF Stat* stat();
   bool sync();
   uint64_t tell();
   bool truncate(uint64_t new_size);

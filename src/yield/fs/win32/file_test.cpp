@@ -30,5 +30,4 @@
 #include "../file_test.hpp"
 #include "file_system.hpp"
 
-
 TEST_SUITE_EX(Win32File, yield::fs::FileTestSuite<yield::fs::win32::FileSystem>);

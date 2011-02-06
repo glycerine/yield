@@ -77,14 +77,6 @@ bool FileSystem::chown(const Path& path, uid_t uid, gid_t gid) {
   return ::chown(path.c_str(), uid, gid) == 0;
 }
 
-Stat* FileSystem::getattr(const Path& path) {
-  struct stat stbuf;
-  if (::stat(path.c_str(), &stbuf) == 0)
-    return new Stat(stbuf);
-  else
-    return NULL;
-}
-
 bool FileSystem::link(const Path& old_path, const Path& new_path) {
   return ::link(old_path.c_str(), new_path.c_str()) == 0;
 }
@@ -94,8 +86,7 @@ bool FileSystem::mkdir(const Path& path, mode_t mode) {
 }
 
 File*
-FileSystem::mkfifo
-(
+FileSystem::mkfifo(
   const Path& path,
   uint32_t flags,
   mode_t mode
@@ -106,22 +97,8 @@ FileSystem::mkfifo
     return NULL;
 }
 
-void*
-FileSystem::mmap
-(
-  void* start,
-  size_t length,
-  int prot,
-  int flags,
-  fd_t fd,
-  uint64_t offset
-) {
-  return ::mmap(start, length, prot, flags, fd, offset);
-}
-
 MemoryMappedFile*
-FileSystem::mmap
-(
+FileSystem::mmap(
   File& file,
   void* start,
   size_t length,
@@ -164,9 +141,20 @@ FileSystem::mmap
   }
 }
 
+void*
+FileSystem::mmap(
+  void* start,
+  size_t length,
+  int prot,
+  int flags,
+  fd_t fd,
+  uint64_t offset
+) {
+  return ::mmap(start, length, prot, flags, fd, offset);
+}
+
 File*
-FileSystem::open
-(
+FileSystem::open(
   const Path& path,
   uint32_t flags,
   mode_t mode
@@ -238,6 +226,14 @@ bool FileSystem::rename(const Path& from_path, const Path& to_path) {
 
 bool FileSystem::rmdir(const Path& path) {
   return ::rmdir(path.c_str()) == 0;
+}
+
+Stat* FileSystem::stat(const Path& path) {
+  struct stat stbuf;
+  if (::stat(path.c_str(), &stbuf) == 0)
+    return new Stat(stbuf);
+  else
+    return NULL;
 }
 
 bool FileSystem::statvfs(const Path& path, struct statvfs& stbuf) {

@@ -98,7 +98,6 @@ public:
 public:
   bool close();
   virtual bool datasync();
-  YO_NEW_REF Stat* getattr();
   //YO_NEW_REF Lock* getlk(const Lock&);
   ssize_t pread(void*, size_t, uint64_t);
   ssize_t preadv(const iovec*, int, uint64_t);
@@ -107,6 +106,7 @@ public:
   uint64_t seek(int64_t offset, uint8_t whence);
   bool setlk(const Lock&);
   bool setlkw(const Lock&);
+  YO_NEW_REF Stat* stat();
   virtual bool sync();
   uint64_t tell();
   bool truncate(uint64_t);

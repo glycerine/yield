@@ -45,6 +45,9 @@
     <ClCompile Include="..\..\..\src\yield\fs\posix\file_test.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\posix\file_test.hpp">
+      <Filter>Source Files\posix</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\..\src\yield\fs\posix\stat_test.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>

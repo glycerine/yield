@@ -70,14 +70,6 @@ bool File::datasync() {
   return sync();
 }
 
-Stat* File::getattr() {
-  struct stat stbuf;
-  if (fstat(*this, &stbuf) == 0)
-    return new Stat(stbuf);
-  else
-    return NULL;
-}
-
 File::Lock* File::getlk(const Lock& lock) {
   flock flock_ = lock;
   if (fcntl(*this, F_GETLK, &flock_) == 0) {
@@ -141,6 +133,14 @@ bool File::setlk(const Lock& lock) {
 bool File::setlkw(const Lock& lock) {
   flock flock_ = lock;
   return fcntl(*this, F_SETLKW, &flock_) == 0;
+}
+
+Stat* File::stat() {
+  struct stat stbuf;
+  if (fstat(*this, &stbuf) == 0)
+    return new Stat(stbuf);
+  else
+    return NULL;
 }
 
 bool File::sync() {

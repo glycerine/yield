@@ -42,14 +42,6 @@
 namespace yield {
 namespace fs {
 namespace win32 {
-Stat* FileSystem::getattr(const Path& path) {
-  WIN32_FILE_ATTRIBUTE_DATA stbuf;
-  if (GetFileAttributesEx(path.c_str(), GetFileExInfoStandard, &stbuf))
-    return new Stat(stbuf);
-  else
-    return NULL;
-}
-
 bool FileSystem::isdir(const Path& path) {
   DWORD dwAttributes = GetFileAttributes(path.c_str());
   return dwAttributes != INVALID_FILE_ATTRIBUTES
@@ -82,8 +74,7 @@ bool FileSystem::mkdir(const Path& path, mode_t mode) {
 }
 
 File*
-FileSystem::mkfifo
-(
+FileSystem::mkfifo(
   const Path& path,
   uint32_t flags,
   mode_t
@@ -128,9 +119,67 @@ FileSystem::mkfifo
   }
 }
 
+MemoryMappedFile*
+FileSystem::mmap(
+  File& file,
+  void* addr,
+  size_t length,
+  int prot,
+  int flags,
+  uint64_t offset
+) {
+  if (addr == NULL) {
+    if (length == MMAP_LENGTH_WHOLE_FILE) {
+      ULARGE_INTEGER uliFileSize;
+      uliFileSize.LowPart
+      = GetFileSize(static_cast<File&>(file), &uliFileSize.HighPart);
+      if (uliFileSize.LowPart != INVALID_FILE_SIZE)
+        length = static_cast<size_t>(uliFileSize.QuadPart);
+      else
+        length = 0;
+    }
+
+    HANDLE hFileMapping;
+    LPVOID lpMapAddress;
+
+    if (length > 0) {   // Can't CreateFileMapping on an empty file
+      // just return an "empty" MemoryMappedFile (lpMapAddress=NULL)
+      lpMapAddress    // that can be resized
+      = mmap
+        (
+          length,
+          prot,
+          flags,
+          static_cast<File&>(file),
+          offset,
+          hFileMapping
+        );
+
+      if (lpMapAddress == reinterpret_cast<LPVOID>(-1))
+        return NULL;
+    } else {
+      hFileMapping = NULL;
+      lpMapAddress = reinterpret_cast<LPVOID>(-1);
+    }
+
+    return new MemoryMappedFile
+           (
+             length,
+             lpMapAddress,
+             static_cast<File&>(file),
+             flags,
+             hFileMapping,
+             offset,
+             prot
+           );
+  } else {
+    SetLastError(ERROR_INVALID_PARAMETER);
+    return NULL;
+  }
+}
+
 void*
-FileSystem::mmap
-(
+FileSystem::mmap(
   size_t length,
   int prot,
   int flags,
@@ -204,69 +253,8 @@ FileSystem::mmap
   return reinterpret_cast<void*>(-1);
 }
 
-MemoryMappedFile*
-FileSystem::mmap
-(
-  File& file,
-  void* addr,
-  size_t length,
-  int prot,
-  int flags,
-  uint64_t offset
-) {
-  if (addr == NULL) {
-    if (length == MMAP_LENGTH_WHOLE_FILE) {
-      ULARGE_INTEGER uliFileSize;
-      uliFileSize.LowPart
-      = GetFileSize(static_cast<File&>(file), &uliFileSize.HighPart);
-      if (uliFileSize.LowPart != INVALID_FILE_SIZE)
-        length = static_cast<size_t>(uliFileSize.QuadPart);
-      else
-        length = 0;
-    }
-
-    HANDLE hFileMapping;
-    LPVOID lpMapAddress;
-
-    if (length > 0) {   // Can't CreateFileMapping on an empty file
-      // just return an "empty" MemoryMappedFile (lpMapAddress=NULL)
-      lpMapAddress    // that can be resized
-      = mmap
-        (
-          length,
-          prot,
-          flags,
-          static_cast<File&>(file),
-          offset,
-          hFileMapping
-        );
-
-      if (lpMapAddress == reinterpret_cast<LPVOID>(-1))
-        return NULL;
-    } else {
-      hFileMapping = NULL;
-      lpMapAddress = reinterpret_cast<LPVOID>(-1);
-    }
-
-    return new MemoryMappedFile
-           (
-             length,
-             lpMapAddress,
-             static_cast<File&>(file),
-             flags,
-             hFileMapping,
-             offset,
-             prot
-           );
-  } else {
-    SetLastError(ERROR_INVALID_PARAMETER);
-    return NULL;
-  }
-}
-
 File*
-FileSystem::open
-(
+FileSystem::open(
   const Path& path,
   uint32_t flags,
   mode_t mode,
@@ -375,6 +363,14 @@ bool FileSystem::rename(const Path& from_path, const Path& to_path) {
 
 bool FileSystem::rmdir(const Path& path) {
   return RemoveDirectory(path.c_str()) == TRUE;
+}
+
+Stat* FileSystem::stat(const Path& path) {
+  WIN32_FILE_ATTRIBUTE_DATA stbuf;
+  if (GetFileAttributesEx(path.c_str(), GetFileExInfoStandard, &stbuf))
+    return new Stat(stbuf);
+  else
+    return NULL;
 }
 
 bool FileSystem::statvfs(const Path& path, struct statvfs& stbuf) {

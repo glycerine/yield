@@ -61,14 +61,6 @@ bool File::datasync() {
   return FlushFileBuffers(*this) != 0;
 }
 
-YO_NEW_REF Stat* File::getattr() {
-  BY_HANDLE_FILE_INFORMATION by_handle_file_information;
-  if (GetFileInformationByHandle(*this, &by_handle_file_information) != 0)
-    return new Stat(by_handle_file_information);
-  else
-    return NULL;
-}
-
 //YO_NEW_REF File::Lock* File::getlk(const Lock&) {
 //  SetLastError(ERROR_NOT_SUPPORTED);
 //  return NULL;
@@ -366,6 +358,14 @@ bool File::setlk(const Lock& lock, bool wait) {
   }
 
   return false;
+}
+
+YO_NEW_REF Stat* File::stat() {
+  BY_HANDLE_FILE_INFORMATION by_handle_file_information;
+  if (GetFileInformationByHandle(*this, &by_handle_file_information) != 0)
+    return new Stat(by_handle_file_information);
+  else
+    return NULL;
 }
 
 bool File::sync() {

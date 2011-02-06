@@ -58,35 +58,26 @@ public:
 
 public:
   bool access(const Path&, int amode);
+
   bool chmod(const Path&, mode_t);
   bool chown(const Path&, uid_t);
   bool chown(const Path&, uid_t, gid_t);
+
   Stat* getattr(const Path&);
+
   bool link(const Path& old_path, const Path& new_path);
-  bool mkdir(const Path&, mode_t mode);
+
+  bool mkdir(const Path&, mode_t mode = DIRECTORY_MODE_DEFAULT);
 
   YO_NEW_REF File*
-  mkfifo
-  (
+  mkfifo(
     const Path&,
     uint32_t flags = OPEN_FLAGS_DEFAULT,
     mode_t mode = FILE_MODE_DEFAULT
   );
 
-  static void*
-  mmap
-  (
-    void* start,
-    size_t length,
-    int prot,
-    int flags,
-    fd_t fd,
-    uint64_t offset
-  );
-
   YO_NEW_REF MemoryMappedFile*
-  mmap
-  (
+  mmap(
     File& file,
     void* start = NULL,
     size_t length = MMAP_LENGTH_WHOLE_FILE,
@@ -95,7 +86,17 @@ public:
     uint64_t offset = 0
   );
 
-  virtual YO_NEW_REF File*
+  static void*
+  mmap(
+    void* start,
+    size_t length,
+    int prot,
+    int flags,
+    fd_t fd,
+    uint64_t offset
+  );
+
+  YO_NEW_REF File*
   open
   (
     const Path&,
@@ -103,16 +104,25 @@ public:
     mode_t mode = FILE_MODE_DEFAULT
   );
 
-  virtual YO_NEW_REF Directory* opendir(const Path&);
-  virtual YO_NEW_REF ExtendedAttributes* openxattrs(const Path&);
+  YO_NEW_REF Directory* opendir(const Path&);
+  YO_NEW_REF ExtendedAttributes* openxattrs(const Path&);
+
   bool readlink(const Path&, OUT Path&);
+
   bool realpath(const Path&, OUT Path&);
+
   bool rename(const Path& from_path, const Path& to_path);
+
   bool rmdir(const Path&);
+
   bool statvfs(const Path&, struct statvfs&);
+
   bool symlink(const Path& old_path, const Path& new_path);
+
   bool truncate(const Path&, uint64_t new_size);
+
   bool unlink(const Path&);
+
   bool utime(const Path&, const DateTime& atime, const DateTime& mtime);
 };
 }

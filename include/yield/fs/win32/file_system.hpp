@@ -73,35 +73,22 @@ public:
   const static uint32_t OPEN_ATTRIBUTES_DEFAULT = 0;
 
 public:
-  static void*
-  mmap
-  (
-    size_t length,
-    int prot,
-    int flags,
-    fd_t fd,
-    uint64_t offset,
-    void*& out_hFileMapping
-  );
-
-  // FileSystem
   bool isdir(const Path&);
   bool isfile(const Path&);
-  YO_NEW_REF Stat* getattr(const Path&);
+
   bool link(const Path& old_path, const Path& new_path);
-  bool mkdir(const Path&, mode_t);
+
+  bool mkdir(const Path&, mode_t mode = DIRECTORY_MODE_DEFAULT);
 
   File*
-  mkfifo
-  (
+  mkfifo(
     const Path&,
     uint32_t flags = OPEN_FLAGS_DEFAULT,
     mode_t mode = FILE_MODE_DEFAULT
   );
 
   YO_NEW_REF MemoryMappedFile*
-  mmap
-  (
+  mmap(
     YO_NEW_REF File& file,
     void* start = NULL,
     size_t length = MMAP_LENGTH_WHOLE_FILE,
@@ -110,9 +97,18 @@ public:
     uint64_t offset = 0
   );
 
+  static void*
+  mmap(
+    size_t length,
+    int prot,
+    int flags,
+    fd_t fd,
+    uint64_t offset,
+    void*& out_hFileMapping
+  );
+
   YO_NEW_REF File*
-  open
-  (
+  open(
     const Path& path,
     uint32_t flags = OPEN_FLAGS_DEFAULT,
     mode_t mode = FILE_MODE_DEFAULT,
@@ -120,12 +116,20 @@ public:
   );
 
   YO_NEW_REF Directory* opendir(const Path&);
+
   bool realpath(const Path&, OUT Path&);
+
   bool rename(const Path& from_path, const Path& to_path);
+
   bool rmdir(const Path& path);
+
+  YO_NEW_REF Stat* stat(const Path&);
   bool statvfs(const Path&, struct statvfs&);
+
   bool truncate(const Path&, uint64_t);
+
   bool unlink(const Path&);
+
   bool utime(const Path&, const DateTime& atime, const DateTime& mtime);
   bool utime(const Path&, const DateTime& atime, const DateTime& mtime, const DateTime& ctime);
 };

@@ -28,7 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../directory_test.hpp"
-#include "file_system.hpp"
+#include "yield/fs/win32/file_system.hpp"
 
 
 TEST_SUITE_EX(Win32Directory, yield::fs::DirectoryTestSuite<yield::fs::win32::FileSystem>);

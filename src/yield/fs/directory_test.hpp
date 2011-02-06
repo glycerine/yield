@@ -39,18 +39,13 @@
 
 namespace yield {
 namespace fs {
+template <class FileSystemType>
 class DirectoryTest : public yunit::Test {
-public:
-  virtual ~DirectoryTest() {
-    FileSystem::dec_ref(file_system);
-  }
-
 protected:
-  DirectoryTest(FileSystem& file_system)
+  DirectoryTest()
     : test_dir_name("directory_test"),
       test_file_name("directory_test.txt"),
-      test_file_path(test_dir_name / test_file_name),
-      file_system(file_system.inc_ref()) {
+      test_file_path(test_dir_name / test_file_name) {
     directory = NULL;
   }
 
@@ -58,13 +53,13 @@ protected:
   void setup() {
     teardown();
 
-    if (!get_file_system().mkdir(get_test_dir_name()))
+    if (!FileSystemType().mkdir(get_test_dir_name()))
       throw Exception();
 
-    if (!get_file_system().touch(get_test_file_path()))
+    if (!FileSystemType().touch(get_test_file_path()))
       throw Exception();
 
-    directory = get_file_system().opendir(get_test_dir_name());
+    directory = FileSystemType().opendir(get_test_dir_name());
     if (directory == NULL)
       throw Exception();
   }
@@ -73,8 +68,8 @@ protected:
     Directory::dec_ref(directory);
     directory = NULL;
 
-    if (get_file_system().exists(get_test_dir_name())) {
-      if (!get_file_system().rmtree(get_test_dir_name()))
+    if (FileSystemType().exists(get_test_dir_name())) {
+      if (!FileSystemType().rmtree(get_test_dir_name()))
         throw Exception();
     }
   }
@@ -83,57 +78,39 @@ protected:
   Directory& get_directory() const {
     return *directory;
   }
+
   const Path& get_test_dir_name() const {
     return test_dir_name;
   }
+
   const Path& get_test_file_name() const {
     return test_file_name;
   }
+
   const Path& get_test_file_path() const {
     return test_file_path;
-  }
-  FileSystem& get_file_system() const {
-    return file_system;
   }
 
 private:
   Directory* directory;
   Path test_dir_name, test_file_name, test_file_path;
-  FileSystem& file_system;
 };
 
 
-#define YIELD_PLATFORM_DIRECTORY_TEST( TestName ) \
-  class Directory_##TestName##Test : public DirectoryTest \
-  { \
-  public:\
-    Directory_##TestName##Test( yield::fs::FileSystem* file_system = NULL ) \
-      : DirectoryTest( "Directory_" # TestName "Test", file_system ) \
-    { } \
-    void run(); \
-  };\
-  inline void Directory_##TestName##Test::run()
-
-
-class DirectoryCloseTest : public DirectoryTest {
+template <class FileSystemType>
+class DirectoryCloseTest : public DirectoryTest<FileSystemType> {
 public:
-  DirectoryCloseTest(FileSystem& file_system)
-    : DirectoryTest(file_system)
-  { }
-
   // Test
   void run() {
-    if (!get_directory().close()) throw Exception();
+    if (!get_directory().close())
+      throw Exception();
   }
 };
 
 
-class DirectoryReadTest : public DirectoryTest {
+template <class FileSystemType>
+class DirectoryReadTest : public DirectoryTest<FileSystemType> {
 public:
-  DirectoryReadTest(FileSystem& file_system)
-    : DirectoryTest(file_system)
-  { }
-
   // Test
   void run() {
     {
@@ -171,12 +148,9 @@ public:
 };
 
 
-class DirectoryRewindTest : public DirectoryTest {
+template <class FileSystemType>
+class DirectoryRewindTest : public DirectoryTest<FileSystemType> {
 public:
-  DirectoryRewindTest(FileSystem& file_system)
-    : DirectoryTest(file_system)
-  { }
-
   // Test
   void run() {
     {
@@ -197,15 +171,10 @@ public:
 template <class FileSystemType>
 class DirectoryTestSuite : public yunit::TestSuite {
 public:
-  DirectoryTestSuite(YO_NEW_REF FileSystemType* file_system = NULL) {
-    if (file_system == NULL)
-      file_system = new FileSystemType;
-
-    add("Directory::close", new DirectoryCloseTest(*file_system));
-    add("Directory::read", new DirectoryReadTest(*file_system));
-    add("Directory::rewind", new DirectoryRewindTest(*file_system));
-
-    FileSystem::dec_ref(*file_system);
+  DirectoryTestSuite() {
+    add("Directory::close", new DirectoryCloseTest<FileSystemType>);
+    add("Directory::read", new DirectoryReadTest<FileSystemType>);
+    add("Directory::rewind", new DirectoryRewindTest<FileSystemType>);
   }
 };
 }

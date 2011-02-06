@@ -31,10 +31,10 @@
 #define _YIELD_FS_FILE_TEST_HPP_
 
 #include "../channel_test.hpp"
-#include "extended_attributes_test.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/fs/file.hpp"
 #include "yield/fs/file_system.hpp"
+#include "yield/fs/path.hpp"
 #include "yield/fs/stat.hpp"
 
 #include <fcntl.h> // For O_*
@@ -70,8 +70,7 @@ public:
 
   File& get_write_file() {
     if (write_file == NULL) {
-      write_file
-      = file_system.open(path, O_CREAT | O_TRUNC | O_WRONLY);
+      write_file = file_system.open(path, O_CREAT | O_TRUNC | O_WRONLY);
       if (write_file == NULL) throw Exception();
     }
 
@@ -82,6 +81,7 @@ public:
   Channel& get_read_channel() {
     return get_read_file();
   }
+
   Channel& get_write_channel() {
     return get_write_file();
   }
@@ -150,69 +150,9 @@ public:
 
     throw_assert_ge
     (
-      get_write_file().getattr()->get_size(),
+      get_write_file().stat()->get_size(),
       get_test_string().size()
     );
-  }
-};
-
-
-class FileExtendedAttributesGetTest
-  : public FileTest,
-    private ExtendedAttributesGetTest {
-public:
-  FileExtendedAttributesGetTest(FilePairFactory& file_pair_factory)
-    : FileTest(file_pair_factory)
-  { }
-
-  // yunit::Test
-  void run() {
-    ExtendedAttributesGetTest::run(get_write_file().openxattrs());
-  }
-};
-
-
-class FileExtendedAttributesListTest
-  : public FileTest,
-    private ExtendedAttributesListTest {
-public:
-  FileExtendedAttributesListTest(FilePairFactory& file_pair_factory)
-    : FileTest(file_pair_factory)
-  { }
-
-  // yunit::Test
-  void run() {
-    ExtendedAttributesListTest::run(get_write_file().openxattrs());
-  }
-};
-
-
-class FileExtendedAttributesRemoveTest
-  : public FileTest,
-    private ExtendedAttributesRemoveTest {
-public:
-  FileExtendedAttributesRemoveTest(FilePairFactory& file_pair_factory)
-    : FileTest(file_pair_factory)
-  { }
-
-  // yunit::Test
-  void run() {
-    ExtendedAttributesRemoveTest::run(get_write_file().openxattrs());
-  }
-};
-
-
-class FileExtendedAttributesSetTest
-  : public FileTest,
-    private ExtendedAttributesSetTest {
-public:
-  FileExtendedAttributesSetTest(FilePairFactory& file_pair_factory)
-    : FileTest(file_pair_factory)
-  { }
-
-  // yunit::Test
-  void run() {
-    ExtendedAttributesSetTest::run(get_write_file().openxattrs());
   }
 };
 
@@ -227,23 +167,6 @@ public:
   void run() {
     size_t pagesize = get_write_file().getpagesize();
     throw_assert_eq(pagesize % 2, 0);
-  }
-};
-
-
-class FileGetAttrTest : public FileTest {
-public:
-  FileGetAttrTest(FilePairFactory& file_pair_factory)
-    : FileTest(file_pair_factory)
-  { }
-
-  void run() {
-    auto_Object<Stat> stbuf = get_write_file().getattr();
-    throw_assert(stbuf->ISREG());
-    throw_assert_eq(stbuf->get_size(), 0);
-    throw_assert_ne(stbuf->get_atime(), Stat::INVALID_ATIME);
-    throw_assert_ne(stbuf->get_mtime(), Stat::INVALID_MTIME);
-    throw_assert_ne(stbuf->get_ctime(), Stat::INVALID_CTIME);
   }
 };
 
@@ -515,6 +438,23 @@ public:
 };
 
 
+class FileStatTest : public FileTest {
+public:
+  FileStatTest(FilePairFactory& file_pair_factory)
+    : FileTest(file_pair_factory)
+  { }
+
+  void run() {
+    auto_Object<Stat> stbuf = get_write_file().stat();
+    throw_assert(stbuf->ISREG());
+    throw_assert_eq(stbuf->get_size(), 0);
+    throw_assert_ne(stbuf->get_atime(), Stat::INVALID_ATIME);
+    throw_assert_ne(stbuf->get_mtime(), Stat::INVALID_MTIME);
+    throw_assert_ne(stbuf->get_ctime(), Stat::INVALID_CTIME);
+  }
+};
+
+
 class FileSyncTest : public FileTest {
 public:
   FileSyncTest(FilePairFactory& file_pair_factory)
@@ -534,7 +474,7 @@ public:
 
     throw_assert_ge
     (
-      get_write_file().getattr()->get_size(),
+      get_write_file().stat()->get_size(),
       get_test_string().size()
     );
   }
@@ -575,7 +515,7 @@ public:
     if (!get_write_file().truncate(0))
       throw Exception();
 
-    throw_assert_eq(get_write_file().getattr()->get_size(), 0);
+    throw_assert_eq(get_write_file().stat()->get_size(), 0);
   }
 };
 
@@ -600,35 +540,21 @@ public:
 template <class FileSystemType>
 class FileTestSuite : public ChannelTestSuite {
 public:
-  FileTestSuite(YO_NEW_REF FileSystemType* file_system = NULL)
-    : ChannelTestSuite
-    (
-      *new FilePairFactory
-      (
+  FileTestSuite()
+    : ChannelTestSuite(
+      *new FilePairFactory(
         "file_test.txt",
-        file_system != NULL ? *file_system : *new FileSystemType
+        *new FileSystemType
       )
     ) {
     FilePairFactory& file_pair_factory
-    = static_cast<FilePairFactory&>(get_channel_pair_factory());
+      = static_cast<FilePairFactory&>(get_channel_pair_factory());
 
     add("File::datasync", new FileDataSyncTest(file_pair_factory));
 
-    add
-    (
-      "File::getxattr",
-      new FileExtendedAttributesGetTest(file_pair_factory)
-    );
-
     add("File::getpagesize", new FileGetPageSizeTest(file_pair_factory));
-    add("File::getattr", new FileGetAttrTest(file_pair_factory));
-    add("File::getlk", new FileGetLockTest(file_pair_factory));
 
-    add
-    (
-      "File::listxattr",
-      new FileExtendedAttributesListTest(file_pair_factory)
-    );
+    add("File::getlk", new FileGetLockTest(file_pair_factory));
 
     add("File::pread", new FilePReadTest(file_pair_factory));
 
@@ -658,26 +584,19 @@ public:
       new FilePWriteVTwoTest(file_pair_factory)
     );
 
-    add
-    (
-      "File::removexattr",
-      new FileExtendedAttributesRemoveTest(file_pair_factory)
-    );
-
     add("File::seek", new FileSeekTest(file_pair_factory));
 
     add("File::setlk", new FileSetLockTest(file_pair_factory));
     add("File::setlkw", new FileSetLockBlockingTest(file_pair_factory));
 
-    add
-    (
-      "File::setxattr",
-      new FileExtendedAttributesSetTest(file_pair_factory)
-    );
+    add("File::stat", new FileStatTest(file_pair_factory));
 
     add("File::sync", new FileSyncTest(file_pair_factory));
+
     add("File::tell", new FileTellTest(file_pair_factory));
+
     add("File::truncate", new FileTruncateTest(file_pair_factory));
+
     add("File::unlk", new FileUnlockTest(file_pair_factory));
   }
 };
