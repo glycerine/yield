@@ -78,7 +78,7 @@ protected:
     const char* name,
     const void* value,
     size_t size,
-    int flags 
+    int flags
   ) = 0;
 
   virtual bool
@@ -87,7 +87,7 @@ protected:
     const char* name,
     const void* value,
     size_t size,
-    int flags 
+    int flags
   ) = 0;
 
 private:

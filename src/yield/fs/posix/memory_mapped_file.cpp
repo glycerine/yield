@@ -53,7 +53,7 @@ MemoryMappedFile::MemoryMappedFile
     file(file),
     flags(flags),
     offset(offset),
-    prot(prot) 
+    prot(prot)
 { }
 
 MemoryMappedFile::~MemoryMappedFile() {

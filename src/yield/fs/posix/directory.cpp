@@ -82,7 +82,10 @@ bool Directory::read(OUT Entry*& entry) {
       else if (S_ISLNK(stbuf.st_mode)) entry_type = Entry::TYPE_LNK;
       else if (S_ISREG(stbuf.st_mode)) entry_type = Entry::TYPE_REG;
       else if (S_ISSOCK(stbuf.st_mode)) entry_type = Entry::TYPE_SOCK;
-      else { entry_type = Entry::TYPE_REG; DebugBreak(); }
+      else {
+        entry_type = Entry::TYPE_REG;
+        DebugBreak();
+      }
 
       if (entry == NULL)
         entry = new Entry(dirent_->d_name, entry_type);

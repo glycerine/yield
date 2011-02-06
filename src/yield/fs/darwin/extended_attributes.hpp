@@ -57,7 +57,7 @@ protected:
     const char* name,
     const void* value,
     size_t size,
-    int flags 
+    int flags
   );
 
   bool
@@ -66,7 +66,7 @@ protected:
     const char* name,
     const void* value,
     size_t size,
-    int flags 
+    int flags
   );
 };
 }

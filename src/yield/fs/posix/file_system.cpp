@@ -182,8 +182,7 @@ FileSystem::open
 #else
     return new File(fd);
 #endif
-  }
-  else
+  } else
     return NULL;
 }
 
@@ -197,8 +196,7 @@ Directory* FileSystem::opendir(const Path& path) {
 #else
     return new Directory(dirp, path);
 #endif
-  }
-  else
+  } else
     return NULL;
 }
 

@@ -34,11 +34,11 @@
 namespace yield {
 namespace fs {
 namespace darwin {
-ExtendedAttributes(fd_t fd)
+ExtendedAttributes::ExtendedAttributes(fd_t fd)
   : yield::fs::posix::ExtendedAttributes(fd)
 { }
 
-ExtendedAttributes(const Path& path)
+ExtendedAttributes::ExtendedAttributes(const Path& path)
   : yield::fs::posix::ExtendedAttributes(path)
 { }
 
@@ -80,7 +80,7 @@ bool ExtendedAttributes::remove(fd_t fd, const char* name) {
 }
 
 bool ExtendedAttributes::remove(const Path& path, const char* name) {
-    return removexattr(path.c_str(), name, 0) == 0;
+  return removexattr(path.c_str(), name, 0) == 0;
 }
 
 bool

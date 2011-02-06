@@ -32,162 +32,143 @@
 
 #include <sys/extattr.h>
 
-
 namespace yield {
 namespace fs {
 namespace freebsd {
-ExtendedAttributes(fd_t fd)
-  : fd(fd)
+ExtendedAttributes::ExtendedAttributes(fd_t fd)
+  : yield::fs::posix::ExtendedAttributes(fd)
 { }
 
-ExtendedAttributes(const Path& path)
-  : fd(-1), path(path)
+ExtendedAttributes::ExtendedAttributes(const Path& path)
+  : yield::fs::posix::ExtendedAttributes(path)
 { }
 
-~ExtendedAttributes() {
-  if (fd != -1)
-    close(fd);
-}
-
-ssize_t ExtendedAttributes::get(const char* name, void* value, size_t size) {
+ssize_t
+ExtendedAttributes::get(
+  fd_t fd,
+  const char* name,
+  void* value,
+  size_t size
+) {
   static int namespaces[]
   = { EXTATTR_NAMESPACE_USER, EXTATTR_NAMESPACE_SYSTEM };
 
   for (int namespace_i = 0; namespace_i < 2; namespace_i++) {
-    ssize_t ret;
-
-    if (fd != -1) {
-      ret = extattr_get_fd
-            (
-              fd,
-              namespaces[namespace_i],
-              name,
-              value,
-              size
-            );
-    } else {
-      ret = extattr_get_file
-            (
-              path.c_str(),
-              namespaces[namespace_i],
-              name,
-              value,
-              size
-            );
-    }
-
-    if (ret != -1)
+    ssize_ret = extattr_get_fd(fd, namespaces[namespace_i], name, value, size);
+    if (ret >= 0)
       return ret;
   }
 
   return -1;
 }
 
-bool ExtendedAttributes::list(OUT vector<string>& out_names) {
+ssize_t
+ExtendedAttributes::get(
+  const Path& path,
+  const char* name,
+  void* value,
+  size_t size
+) {
+  static int namespaces[]
+  = { EXTATTR_NAMESPACE_USER, EXTATTR_NAMESPACE_SYSTEM };
+
+  for (int namespace_i = 0; namespace_i < 2; namespace_i++) {
+    ssize_t ret =
+      extattr_get_file(
+        path.c_str(),
+        namespaces[namespace_i],
+        name,
+        value,
+        size
+      );
+
+    if (ret >= 0)
+      return ret;
+  }
+
+  return -1;
+}
+
+ssize_t ExtendedAttributes::list(fd_t fd, char* names, size_t names_len) {
   static int namespaces[]
   = { EXTATTR_NAMESPACE_SYSTEM, EXTATTR_NAMESPACE_USER };
 
   for (int namespace_i = 0; namespace_i < 2; namespace_i++) {
-    char* names;
-    ssize_t names_len;
-
-    if (fd != -1) {
-      names_len = extattr_list_fd(fd, namespaces[namespace_i], NULL, 0);
-
-      if (names_len > 0) {
-        names = new char[names_len];
-
-        ssize_t ret
-        = extattr_list_fd
-          (
-            fd,
-            namespaces[namespace_i],
-            names,
-            names_len
-          );
-
-        debug_assert_eq(ret, names_len);
-      } else
-        continue;
-    } else {
-      names_len
-      = extattr_list_file
-        (
-          path.c_str(),
-          namespaces[namespace_i],
-          NULL,
-          0
-        );
-
-      if (names_len > 0) {
-        names = new char[names_len];
-
-        ssize_t ret
-        = extattr_list_file
-          (
-            path.c_str(),
-            namespaces[namespace_i],
-            names,
-            names_len
-          );
-
-        debug_assert_eq(ret, names_len);
-      } else
-        continue;
-    }
-
-    char* name = names;
-    do {
-      size_t name_len = name[0];
-      out_names.push_back(string(name, name_len));
-      name += name_len + 1;
-    } while (static_cast<size_t>(name - names) < names_len);
-    delete [] names;
+    ssize_t ret = extattr_list_fd(fd, namespaces[namespace_i], names, names_len);
+    if (ret >= 0)
+      return ret;
   }
 
-  return true;
+  return -1;
 }
 
-bool ExtendedAttributes::remove(const char* name) {
-  if (fd != -1)
-    return extattr_delete_fd(fd, EXTATTR_NAMESPACE_USER, name) != -1;
-  else {
-    return extattr_delete_file
-           (
-             path.c_str(),
-             EXTATTR_NAMESPACE_USER,
-             name
-           ) != -1;
+ssize_t
+ExtendedAttributes::list(
+  const Path& path,
+  char* names,
+  size_t names_len
+) {
+  static int namespaces[]
+  = { EXTATTR_NAMESPACE_SYSTEM, EXTATTR_NAMESPACE_USER };
+
+  for (int namespace_i = 0; namespace_i < 2; namespace_i++) {
+    ssize_t ret =
+      extattr_list_file(
+        path.c_str(),
+        namespaces[namespace_i],
+        NULL,
+        0
+      );
+
+    if (ret >= 0)
+      return ret;
   }
+
+  return -1;
+}
+
+bool ExtendedAttributes::remove(fd_t fd, const char* name) {
+  return extattr_delete_fd(fd, EXTATTR_NAMESPACE_USER, name) == 0;
+}
+
+bool ExtendedAttributes::remove(const Path& path, const char* name) {
+  return extattr_delete_file(path.c_str(), EXTATTR_NAMESPACE_USER, name) == 0;
 }
 
 bool
 ExtendedAttributes::set
 (
+  fd_t fd,
   const char* name,
   const void* value,
   size_t size,
-  int
+  int flags
 ) {
-  if (fd != -1) {
-    return extattr_set_fd
-           (
-             fd,
-             EXTATTR_NAMESPACE_USER,
-             name,
-             value,
-             size
-           ) != -1;
-  } else {
-    return extattr_set_file
-           (
-             path.c_str(),
-             EXTATTR_NAMESPACE_USER,
-             name,
-             value,
-             size
-           ) != -1;
-  }
+  return extattr_set_fd(
+           fd,
+           EXTATTR_NAMESPACE_USER,
+           name,
+           value,
+           size
+         ) == 0;
+}
+
+bool
+ExtendedAttributes::set
+(
+  const Path& path,
+  const char* name,
+  const void* value,
+  size_t size,
+  int flags
+) {
+  return extattr_set_file(
+           path.c_str(),
+           EXTATTR_NAMESPACE_USER,
+           name,
+           value,
+           size
+         ) == 0;
 }
 }
 }
