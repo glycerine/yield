@@ -55,7 +55,7 @@ option_parser = OptionParser()
 option_parser.add_option("-a", "--all", action="store_true")
 option_parser.add_option("-d", "--debug", action="store_true")
 option_parser.add_option("-f", "--force", action="store_true")
-option_parser.add_option("--idl", action="store_true")
+# option_parser.add_option("--idl", action="store_true")
 option_parser.add_option("--public", action="store_true")
 option_parser.add_option("--test-main-cpp", action="store_true")
 option_parser.add_option("--test-py", action="store_true")
@@ -64,34 +64,34 @@ options, ignore = option_parser.parse_args()
 
 
 
-if options.all or options.idl:
-    from yidl.compiler import compile
-    from yidl.target.yield_cpp_target import YieldCXXTarget
-
-    # Generate source from IDL definitions
-    for dir_path in\
-        (
-            join(YIELD_DIR_PATH, "include"),
-            join(YIELD_DIR_PATH, "src", "yield"),
-        ):
-
-        for idl_file_path in rglob(join(dir_path, "**", "*.idl")):
-            hpp_file_path = \
-                join(
-                    dirname(idl_file_path),
-                    split(idl_file_path)[1][:-3] + "hpp"
-                )
-
-            if options.debug:
-                print "compiling", idl_file_path, "into", hpp_file_path
-
-            compile(
-                idl_file_path,
-                YieldCXXTarget(
-                    force=options.force,
-                    output_file_path=hpp_file_path
-                )
-            )
+#if options.all or options.idl:
+#    from yidl.compiler import compile
+#    from yidl.target.yield_cpp_target import YieldCXXTarget
+#
+#    # Generate source from IDL definitions
+#    for dir_path in\
+#        (
+#            join(YIELD_DIR_PATH, "include"),
+#            join(YIELD_DIR_PATH, "src", "yield"),
+#        ):
+#
+#        for idl_file_path in rglob(join(dir_path, "**", "*.idl")):
+#            hpp_file_path = \
+#                join(
+#                    dirname(idl_file_path),
+#                    split(idl_file_path)[1][:-3] + "hpp"
+#                )
+#
+#            if options.debug:
+#                print "compiling", idl_file_path, "into", hpp_file_path
+#
+#            compile(
+#                idl_file_path,
+#                YieldCXXTarget(
+#                    force=options.force,
+#                    output_file_path=hpp_file_path
+#                )
+#            )
 
 if options.all or options.ragel:
     # Generate source from Ragel state machine definitions
