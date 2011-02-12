@@ -44,6 +44,20 @@ class File : public Channel {
 public:
   class Lock : public Object {
   public:
+    Lock(
+      uint64_t len,
+      uint64_t start,
+      bool exclusive = true,
+      pid_t pid = -1,
+      int16_t whence = SEEK_SET
+    ) {
+        flock_.l_len = len;
+        flock_.l_pid = pid;
+        flock_.l_start = start;
+        flock_.l_type = exclusive ? F_WRLCK : F_RDLCK;
+        flock_.l_whence = whence;
+    }
+
     Lock(const flock& flock_) : flock_(flock_) {
     }
 
@@ -95,7 +109,7 @@ public:
   ssize_t preadv(const iovec*, int, uint64_t);
   ssize_t pwrite(const void*, size_t, uint64_t);
   ssize_t pwritev(const iovec*, int, uint64_t);
-  uint64_t seek(int64_t offset, uint8_t whence);
+  uint64_t seek(int64_t offset, uint8_t whence = SEEK_SET);
   bool setlk(const Lock&);
   bool setlkw(const Lock&);
   YO_NEW_REF Stat* stat();

@@ -29,7 +29,7 @@
 
 #include "extended_attributes_test.hpp"
 #include "../file_system_test.hpp"
-#include "file_system.hpp"
+#include "yield/fs/posix/file_system.hpp"
 
 
 TEST_SUITE_EX(POSIXFileSystem, yield::fs::FileSystemTestSuite);
@@ -57,7 +57,7 @@ TEST_EX(POSIXFileSystem, chown, FileSystemTest) {
 
 TEST_EX(POSIXFileSystem, getxattr, FileSystemTest) {
   ExtendedAttributesGetTest().run(
-    FileSystem().openxattrs(gettest_file_name())
+    FileSystem().openxattrs(get_test_file_name())
   );
 }
 

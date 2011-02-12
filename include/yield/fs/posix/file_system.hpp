@@ -63,6 +63,8 @@ public:
   bool chown(const Path&, uid_t);
   bool chown(const Path&, uid_t, gid_t);
 
+  YO_NEW_REF File* creat(const Path&, mode_t mode = FILE_MODE_DEFAULT);
+
   bool exists(const Path&);
   bool isdir(const Path&);
   bool isfile(const Path&);
@@ -77,6 +79,8 @@ public:
     uint32_t flags = OPEN_FLAGS_DEFAULT,
     mode_t mode = FILE_MODE_DEFAULT
   );
+
+  bool mktree(const Path&, mode_t mode = DIRECTORY_MODE_DEFAULT);
 
   YO_NEW_REF MemoryMappedFile*
   mmap(
@@ -122,6 +126,8 @@ public:
   bool statvfs(const Path&, struct statvfs&);
 
   bool symlink(const Path& old_path, const Path& new_path);
+
+  bool touch(const Path&, mode_t mode = FILE_MODE_DEFAULT);
 
   bool truncate(const Path&, uint64_t new_size);
 

@@ -32,7 +32,7 @@
 
 #include "yield/exception.hpp"
 #include "yield/assert.hpp"
-#include "yield/fs/extended_attributes.hpp"
+#include "yield/fs/posix/extended_attributes.hpp"
 #include "yunit.hpp"
 
 
@@ -45,6 +45,7 @@ protected:
     : test_xattr_value("test_xattr_value")
   { }
 
+protected:
   const char* get_test_xattr_name() const {
     return "user.test_xattr";
   }
@@ -52,6 +53,7 @@ protected:
     return test_xattr_value;
   }
 
+protected:
   YO_NEW_REF ExtendedAttributes*
   set_test_xattr
   (
@@ -83,7 +85,7 @@ private:
 
 
 class ExtendedAttributesGetTest : public ExtendedAttributesTest {
-protected:
+public:
   void run(ExtendedAttributes* xattrs) {
     if ((xattrs = set_test_xattr(xattrs)) != NULL) {
       string xattr_value;
@@ -96,7 +98,7 @@ protected:
 
 
 class ExtendedAttributesListTest : public ExtendedAttributesTest {
-protected:
+public:
   void run(ExtendedAttributes* xattrs) {
     if ((xattrs = set_test_xattr(xattrs)) != NULL) {
       vector<string> names;
@@ -122,7 +124,7 @@ protected:
 
 
 class ExtendedAttributesRemoveTest : public ExtendedAttributesTest {
-protected:
+public:
   void run(ExtendedAttributes* xattrs) {
     if ((xattrs = set_test_xattr(xattrs)) != NULL) {
       if (xattrs->remove(get_test_xattr_name()))
@@ -137,7 +139,7 @@ protected:
 
 
 class ExtendedAttributesSetTest : public ExtendedAttributesTest {
-protected:
+public:
   void run(ExtendedAttributes* xattrs) {
     ExtendedAttributes::dec_ref(set_test_xattr(xattrs));
   }

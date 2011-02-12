@@ -43,6 +43,7 @@
 #include "yield/fs/posix/file.hpp"
 #endif
 
+#include "yield/auto_object.hpp"
 #include "yield/assert.hpp"
 #include "yield/fs/posix/file_system.hpp"
 #include "yield/fs/posix/memory_mapped_file.hpp"
@@ -75,6 +76,10 @@ bool FileSystem::chown(const Path& path, uid_t uid) {
 
 bool FileSystem::chown(const Path& path, uid_t uid, gid_t gid) {
   return ::chown(path.c_str(), uid, gid) == 0;
+}
+
+YO_NEW_REF File* FileSystem::creat(const Path& path, mode_t mode) {
+  return open(path, O_CREAT|O_WRONLY|O_TRUNC, mode);
 }
 
 bool FileSystem::exists(const Path& path) {
@@ -111,14 +116,14 @@ FileSystem::mkfifo(
     return NULL;
 }
 
-bool FileSystem::mktree(const Path& path) {
+bool FileSystem::mktree(const Path& path, mode_t mode) {
   bool ret = true;
 
   std::pair<Path, Path> path_parts = path.split();
   if (!path_parts.first.empty())
-    ret &= mktree(path_parts.first);
+    ret &= mktree(path_parts.first, mode);
 
-  if (!exists(path) && !mkdir(path))
+  if (!exists(path) && !mkdir(path, mode))
     return false;
 
   return ret;
@@ -300,6 +305,15 @@ bool FileSystem::statvfs(const Path& path, struct statvfs& stbuf) {
 
 bool FileSystem::symlink(const Path& old_path, const Path& new_path) {
   return ::symlink(old_path.c_str(), new_path.c_str()) == 0;
+}
+
+bool FileSystem::touch(const Path& path, mode_t mode) {
+  File* file = creat(path, mode);
+  if (file != NULL) {
+    File::dec_ref(*file);
+    return true;
+  } else
+    return false;
 }
 
 bool FileSystem::truncate(const Path& path, uint64_t new_size) {

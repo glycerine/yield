@@ -77,7 +77,7 @@ public:
     }
 
     bool ISLNK() const {
-      return get_type() == TYPE_LINK;
+      return get_type() == TYPE_LNK;
     }
 
     bool ISREG() const {

@@ -27,9 +27,6 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_FS_DIRECTORY_TEST_HPP_
-#define _YIELD_FS_DIRECTORY_TEST_HPP_
-
 #include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/fs/directory.hpp"
@@ -148,5 +145,3 @@ TEST_EX(Directory, rewind, DirectoryTest) {
 }
 }
 }
-
-#endif
