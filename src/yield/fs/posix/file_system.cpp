@@ -77,6 +77,20 @@ bool FileSystem::chown(const Path& path, uid_t uid, gid_t gid) {
   return ::chown(path.c_str(), uid, gid) == 0;
 }
 
+bool FileSystem::exists(const Path& path) {
+  return access(path, F_OK);
+}
+
+bool FileSystem::isdir(const Path& path) {
+  struct stat stbuf;
+  return ::stat(path.c_str(), &stbuf) != -1 && S_ISDIR(stbuf.st_mode);
+}
+
+bool FileSystem::isfile(const Path& path) {
+  struct stat stbuf;
+  return ::stat(path.c_str(), &stbuf) != -1 && S_ISREG(stbuf.st_mode);
+}
+
 bool FileSystem::link(const Path& old_path, const Path& new_path) {
   return ::link(old_path.c_str(), new_path.c_str()) == 0;
 }
@@ -95,6 +109,19 @@ FileSystem::mkfifo(
     return open(path, flags | O_NONBLOCK, mode);
   else
     return NULL;
+}
+
+bool FileSystem::mktree(const Path& path) {
+  bool ret = true;
+
+  std::pair<Path, Path> path_parts = path.split();
+  if (!path_parts.first.empty())
+    ret &= mktree(path_parts.first);
+
+  if (!exists(path) && !mkdir(path))
+    return false;
+
+  return ret;
 }
 
 MemoryMappedFile*
@@ -225,6 +252,38 @@ bool FileSystem::rename(const Path& from_path, const Path& to_path) {
 
 bool FileSystem::rmdir(const Path& path) {
   return ::rmdir(path.c_str()) == 0;
+}
+
+bool FileSystem::rmtree(const Path& path) {
+  Directory* test_dir = opendir(path);
+  if (test_dir != NULL) {
+    auto_Object<Directory> dir(test_dir);
+    Directory::Entry* test_dentry = dir->read();
+    if (test_dentry != NULL) {
+      auto_Object<Directory::Entry> dentry(*test_dentry);
+
+      do {
+        if (dentry->is_special())
+          continue;
+
+        Path dentry_path(path / dentry->get_name());
+
+        if (dentry->ISDIR()) {
+          if (rmtree(dentry_path))
+            continue;
+          else
+            return false;
+        } else if (unlink(dentry_path))
+          continue;
+        else
+          return false;
+      } while (dir->read(*dentry));
+
+      return rmdir(path);
+    }
+  }
+
+  return false;
 }
 
 Stat* FileSystem::stat(const Path& path) {

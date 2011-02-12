@@ -42,8 +42,8 @@ public:
   class Entry : public Object {
   public:
     typedef uint8_t Type;
-    const static Type TYPE_CHR = 1;
-    const static Type TYPE_BLK = 2;
+    const static Type TYPE_BLK = 1;
+    const static Type TYPE_CHR = 2;
     const static Type TYPE_DIR = 4;
     const static Type TYPE_FIFO = 8;
     const static Type TYPE_LNK = 16;
@@ -62,6 +62,30 @@ public:
 
     Type get_type() const {
       return type;
+    }
+
+    bool ISCHR() const {
+      return get_type() == TYPE_CHR;
+    }
+
+    bool ISDIR() const {
+      return get_type() == TYPE_DIR;
+    }
+
+    bool ISFIFO() const {
+      return get_type() == TYPE_FIFO;
+    }
+
+    bool ISLNK() const {
+      return get_type() == TYPE_LINK;
+    }
+
+    bool ISREG() const {
+      return get_type() == TYPE_REG;
+    }
+
+    bool ISSOCK() const {
+      return get_type() == TYPE_SOCK;
     }
 
     bool is_hidden() const;

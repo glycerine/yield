@@ -43,8 +43,8 @@ bool Directory::read(OUT Entry*& entry) {
   while ((dirent_ = readdir(*this)) != NULL) {
     Entry::Type entry_type;
     switch (dirent_->d_type) {
-    case DT_FIFO:
-      entry_type = Entry::TYPE_FIFO;
+    case DT_BLK:
+      entry_type = Entry::TYPE_BLK;
       break;
     case DT_CHR:
       entry_type = Entry::TYPE_CHR;
@@ -52,14 +52,14 @@ bool Directory::read(OUT Entry*& entry) {
     case DT_DIR:
       entry_type = Entry::TYPE_DIR;
       break;
-    case DT_BLK:
-      entry_type = Entry::TYPE_BLK;
-      break;
-    case DT_REG:
-      entry_type = Entry::TYPE_REG;
+    case DT_FIFO:
+      entry_type = Entry::TYPE_FIFO;
       break;
     case DT_LNK:
       entry_type = Entry::TYPE_LNK;
+      break;
+    case DT_REG:
+      entry_type = Entry::TYPE_REG;
       break;
     case DT_SOCK:
       entry_type = Entry::TYPE_SOCK;

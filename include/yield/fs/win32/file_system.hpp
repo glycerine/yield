@@ -78,9 +78,10 @@ public:
   bool link(const Path& old_path, const Path& new_path);
 
   bool mkdir(const Path&);
-  bool mktree(const Path&);
 
   YO_NEW_REF File* mkfifo(const Path&, uint32_t flags = 0);
+
+  bool mktree(const Path&);
 
   YO_NEW_REF MemoryMappedFile*
   mmap(

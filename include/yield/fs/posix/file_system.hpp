@@ -63,6 +63,10 @@ public:
   bool chown(const Path&, uid_t);
   bool chown(const Path&, uid_t, gid_t);
 
+  bool exists(const Path&);
+  bool isdir(const Path&);
+  bool isfile(const Path&);
+
   bool link(const Path& old_path, const Path& new_path);
 
   bool mkdir(const Path&, mode_t mode = DIRECTORY_MODE_DEFAULT);
@@ -112,6 +116,7 @@ public:
   bool rename(const Path& from_path, const Path& to_path);
 
   bool rmdir(const Path&);
+  bool rmtree(const Path&);
 
   YO_NEW_REF Stat* stat(const Path&);
   bool statvfs(const Path&, struct statvfs&);
