@@ -241,7 +241,17 @@ class FileSystemStatTest : public FileSystemTest {
 public:
   // Test
   void run() {
+    DateTime now = DateTime::now();
     auto_Object<Stat> stbuf = FileSystem().stat(get_test_file_name());
+    throw_assert_ne(stbuf->get_atime(), DateTime::INVALID_DATE_TIME);
+    throw_assert_le(stbuf->get_atime(), now);
+    throw_assert_ne(stbuf->get_ctime(), DateTime::INVALID_DATE_TIME);
+    throw_assert_le(stbuf->get_ctime(), now);
+    throw_assert_ne(stbuf->get_mtime(), DateTime::INVALID_DATE_TIME);
+    throw_assert_le(stbuf->get_mtime(), now);
+    throw_assert_eq(stbuf->get_nlink(), 1);
+    throw_assert_eq(stbuf->get_size(), 0);
+    throw_assert(stbuf->ISREG());
   }
 };
 

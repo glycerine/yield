@@ -35,6 +35,7 @@
 #include "yield/date_time.hpp"
 #include "yield/exception.hpp"
 #include "yield/fs/file_system.hpp"
+#include "yield/fs/path.hpp"
 #include "yield/fs/stat.hpp"
 #include "yunit.hpp"
 
@@ -47,142 +48,140 @@ namespace yield {
 namespace fs {
 class StatTest : public yunit::Test {
 public:
-  StatTest(FileSystem& file_system)
+  StatTest()
     : test_dir_name("stat_test"),
-      test_file_name("stat_test.txt"),
-      file_system(file_system.inc_ref())
+      test_file_name("stat_test.txt")
   { }
-
-  virtual ~StatTest() {
-    FileSystem::dec_ref(file_system);
-  }
 
   // Test
   void setup() {
     teardown();
 
-    if (!file_system.touch(get_test_file_name()))
+    if (!FileSystem().touch(get_test_file_name()))
       throw Exception();
 
-    if (!file_system.mkdir(get_test_dir_name()))
+    if (!FileSystem().mkdir(get_test_dir_name()))
       throw Exception();
   }
 
   void teardown() {
-    file_system.unlink(get_test_file_name());
-    file_system.rmdir(get_test_dir_name());
+    FileSystem().unlink(get_test_file_name());
+    FileSystem().rmdir(get_test_dir_name());
   }
 
 protected:
   const Path& get_test_dir_name() const {
     return test_dir_name;
   }
+
   const Path& get_test_file_name() const {
     return test_file_name;
-  }
-  FileSystem& get_file_system() const {
-    return file_system;
   }
 
 private:
   Path test_dir_name, test_file_name;
-  FileSystem& file_system;
 };
 
 
-class StatComparisonTest : public StatTest {
+class StatGetAtimeTest : public StatTest {
 public:
-  StatComparisonTest(FileSystem& file_system)
-    : StatTest(file_system)
-  { }
-
   // yunit::Test
   void run() {
-    auto_Object<Stat> stbuf1 = get_file_system().stat(get_test_file_name());
-    auto_Object<Stat> stbuf2 = get_file_system().stat(get_test_file_name());
+    DateTime now = DateTime::now();
+    auto_Object<Stat> stbuf = FileSystem().stat(get_test_dir_name());
+    throw_assert_ne(stbuf->get_atime(), DateTime::INVALID_DATE_TIME);
+    throw_assert_le(stbuf->get_atime(), now);
+  }
+};
+
+
+class StatGetCtimeTest : public StatTest {
+public:
+  // yunit::Test
+  void run() {
+    DateTime now = DateTime::now();
+    auto_Object<Stat> stbuf = FileSystem().stat(get_test_dir_name());
+    throw_assert_ne(stbuf->get_ctime(), DateTime::INVALID_DATE_TIME);
+    throw_assert_le(stbuf->get_ctime(), now);
+  }
+};
+
+
+class StatGetMtimeTest : public StatTest {
+public:
+  // yunit::Test
+  void run() {
+    DateTime now = DateTime::now();
+    auto_Object<Stat> stbuf = FileSystem().stat(get_test_dir_name());
+    throw_assert_ne(stbuf->get_mtime(), DateTime::INVALID_DATE_TIME);
+    throw_assert_le(stbuf->get_mtime(), now);
+  }
+};
+
+
+class StatGetNlinkTest : public StatTest {
+public:
+  // yunit::Test
+  void run() {
+    auto_Object<Stat> stbuf = FileSystem().stat(get_test_dir_name());
+    throw_assert_eq(stbuf->get_nlink(), 1);
+  }
+};
+
+
+class StatGetSizeTest : public StatTest {
+public:
+  // yunit::Test
+  void run() {
+    auto_Object<Stat> stbuf = FileSystem().stat(get_test_dir_name());
+    throw_assert_eq(stbuf->get_size(), 0);
+  }
+};
+
+
+class StatISDIRTest : public StatTest {
+public:
+  // yunit::Test
+  void run() {
+    auto_Object<Stat> stbuf = FileSystem().stat(get_test_dir_name());
+    throw_assert(stbuf->ISDIR());
+  }
+};
+
+
+class StatISREGTest : public StatTest {
+public:
+  // yunit::Test
+  void run() {
+    auto_Object<Stat> stbuf = FileSystem().stat(get_test_file_name());
+    throw_assert(stbuf->ISREG());
+  }
+};
+
+
+class StatOperatorEqualsEqualsTest : public StatTest {
+public:
+  // yunit::Test
+  void run() {
+    auto_Object<Stat> stbuf1 = FileSystem().stat(get_test_file_name());
+    auto_Object<Stat> stbuf2 = FileSystem().stat(get_test_file_name());
     throw_assert_eq(*stbuf1, *stbuf2);
   }
 };
 
 
-class StatDirTest : public StatTest {
-public:
-  StatDirTest(FileSystem& file_system)
-    : StatTest(file_system)
-  { }
-
-  // yunit::Test
-  void run() {
-    auto_Object<Stat> stbuf = get_file_system().stat(get_test_dir_name());
-    throw_assert(stbuf->has_atime());
-    throw_assert(stbuf->has_ctime());
-    throw_assert(stbuf->has_mtime());
-    throw_assert(stbuf->has_nlink());
-    throw_assert_false(stbuf->ISBLK());
-    throw_assert_false(stbuf->ISCHR());
-    throw_assert(stbuf->ISDIR());
-    throw_assert_false(stbuf->ISFIFO());
-    throw_assert_false(stbuf->ISLNK());
-    throw_assert_false(stbuf->ISREG());
-    throw_assert_false(stbuf->ISSOCK());
-  }
-};
-
-
-class StatFileTest : public StatTest {
-public:
-  StatFileTest(FileSystem& file_system)
-    : StatTest(file_system)
-  { }
-
-  // yunit::Test
-  void run() {
-    auto_Object<Stat> stbuf = get_file_system().stat(get_test_file_name());
-    throw_assert_eq(stbuf->get_size(), 0);
-    throw_assert_false(stbuf->ISBLK());
-    throw_assert_false(stbuf->ISCHR());
-    throw_assert_false(stbuf->ISDIR());
-    throw_assert_false(stbuf->ISFIFO());
-    throw_assert_false(stbuf->ISLNK());
-    throw_assert(stbuf->ISREG());
-    throw_assert_false(stbuf->ISSOCK());
-    throw_assert(stbuf->has_atime());
-    throw_assert(stbuf->has_ctime());
-    throw_assert(stbuf->has_mtime());
-    throw_assert(stbuf->has_nlink());
-  }
-};
-
-
-//TEST_EX( Stat, to_ostream, StatTest )
-//{
-//  auto_Object<Stat> stbuf = get_file_system().stat( get_test_file_name() );
-//  std::ostringstream oss;
-//  oss << *stbuf;
-//  throw_assert_false( oss.str().empty() );
-//}
-
-
-template <class FileSystemType>
 class StatTestSuite : public yunit::TestSuite {
 public:
-  StatTestSuite(YO_NEW_REF FileSystem* file_system = NULL)
-    : file_system(file_system != NULL ? *file_system : *new FileSystemType) {
-    add("Stat::operator==", new StatComparisonTest(this->file_system));
-    add("Stat( dir )", new StatDirTest(this->file_system));
-    add("Stat( file )", new StatFileTest(this->file_system));
+  StatTestSuite() {
+    add("Stat::get_atime", new StatGetAtimeTest);
+    add("Stat::get_ctime", new StatGetCtimeTest);
+    add("Stat::get_mtime", new StatGetMtimeTest);
+    add("Stat::get_nlink", new StatGetNlinkTest);
+    add("Stat::get_size", new StatGetSizeTest);
+    add("Stat::ISDIR", new StatISDIRTest);
+    add("Stat::ISREG", new StatISREGTest);
+    add("Stat::operator==", new StatOperatorEqualsEqualsTest);
   }
-
-  virtual ~StatTestSuite() {
-    FileSystem::dec_ref(file_system);
-  }
-
-  FileSystem& get_file_system() {
-    return file_system;
-  }
-
-private:
-  FileSystem& file_system;
 };
 }
 }

@@ -28,6 +28,5 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../file_test.hpp"
-#include "file_system.hpp"
 
-TEST_SUITE_EX(Win32File, yield::fs::FileTestSuite<yield::fs::win32::FileSystem>);
+TEST_SUITE_EX(Win32File, yield::fs::FileTestSuite);

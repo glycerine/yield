@@ -176,9 +176,6 @@
     <ClCompile Include="..\..\..\src\yield\fs\posix\file_system_test.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\fs\posix\file_system_test.hpp">
-      <Filter>Source Files\posix</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\src\yield\fs\posix\file_test.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>

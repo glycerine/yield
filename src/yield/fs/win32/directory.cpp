@@ -136,6 +136,9 @@ void Directory::rewind() {
 }
 
 
+Directory::Entry::Entry(const WIN32_FIND_DATA& find_data) : Stat(find_data) {
+}
+
 bool Directory::Entry::is_hidden() const {
   return (get_attributes() & FILE_ATTRIBUTE_HIDDEN) != 0;
 }

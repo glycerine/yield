@@ -27,8 +27,74 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "extended_attributes_test.hpp"
 #include "../file_system_test.hpp"
 #include "file_system.hpp"
 
 
-TEST_SUITE_EX(POSIXFileSystem, yield::fs::FileSystemTestSuite<yield::fs::posix::FileSystem>);
+TEST_SUITE_EX(POSIXFileSystem, yield::fs::FileSystemTestSuite);
+
+namespace yield {
+namespace fs {
+namespace posix {
+TEST_EX(POSIXFileSystem, access, FileSystemTest) {
+  throw_assert(FileSystem().access(get_test_file_name(), O_RDONLY));
+}
+
+TEST_EX(POSIXFileSystem, chmod, FileSystemTest) {
+  mode_t mode = FileSystem::FILE_MODE_DEFAULT;
+  if (!FileSystem().chmod(get_test_file_name(), mode))
+    throw Exception();
+}
+
+TEST_EX(POSIXFileSystem, chown, FileSystemTest) {
+  uid_t uid = getuid();
+  gid_t gid = getgid();
+
+  if (!FileSystem().chown(get_test_file_name(), uid, gid))
+    throw Exception();
+}
+
+TEST_EX(POSIXFileSystem, getxattr, FileSystemTest) {
+  ExtendedAttributesGetTest().run(
+    FileSystem().openxattrs(gettest_file_name())
+  );
+}
+
+TEST_EX(POSIXFileSystem, listxattr, FileSystemTest) {
+  ExtendedAttributesListTest().run(
+    FileSystem().openxattrs(get_test_file_name())
+  );
+}
+
+TEST_EX(POSIXFileSystem, readlink, FileSystemTest) {
+  if (FileSystem().symlink(get_test_file_name(), get_test_link_name())) {
+    Path target_path;
+    if (FileSystem().readlink(get_test_link_name(), target_path)) {
+      throw_assert_eq(target_path, get_test_file_name());
+      return;
+    }
+  }
+
+  throw Exception();
+}
+
+TEST_EX(POSIXFileSystem, removexattr, FileSystemTest) {
+  ExtendedAttributesRemoveTest().run(
+    FileSystem().openxattrs(get_test_file_name())
+  );
+}
+
+TEST_EX(POSIXFileSystem, setxattr, FileSystemTest) {
+  ExtendedAttributesSetTest().run(
+    FileSystem().openxattrs(get_test_file_name())
+  );
+}
+
+TEST_EX(POSIXFileSystem, symlink, FileSystemTest) {
+    if (!FileSystem().symlink(get_test_file_name(), get_test_link_name()))
+      throw Exception();
+}
+}
+}
+}

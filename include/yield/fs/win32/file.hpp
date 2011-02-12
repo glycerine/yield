@@ -97,7 +97,7 @@ public:
   ssize_t preadv(const iovec*, int, uint64_t);
   ssize_t pwrite(const void*, size_t, uint64_t);
   ssize_t pwritev(const iovec*, int, uint64_t);
-  uint64_t seek(int64_t offset, uint8_t whence);
+  uint64_t seek(int64_t offset, uint8_t whence = SEEK_SET);
   bool setlk(const Lock&);
   bool setlkw(const Lock&);
   YO_NEW_REF Stat* stat();

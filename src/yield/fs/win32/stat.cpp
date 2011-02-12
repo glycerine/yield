@@ -84,6 +84,15 @@ bool Stat::ISREG() const {
   return !ISDIR();
 }
 
+bool Stat::operator==(const Stat& other) const {
+  return get_atime() == other.get_atime() &&
+         get_attributes() == other.get_attributes() &&
+         get_ctime() == other.get_ctime() &&
+         get_mtime() == other.get_mtime() &&
+         get_nlink() == other.get_nlink() &&
+         get_size() == other.get_size();
+}
+
 Stat::operator BY_HANDLE_FILE_INFORMATION() const {
   BY_HANDLE_FILE_INFORMATION bhfi;
   memset(&bhfi, 0, sizeof(bhfi));

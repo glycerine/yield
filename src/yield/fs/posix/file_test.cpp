@@ -27,8 +27,34 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "file_test.hpp"
-#include "yield/fs/posix/file_system.hpp"
+#include "../file_test.hpp"
 
+TEST_SUITE_EX(File, yield::fs::posix::FileTestSuite);
 
-TEST_SUITE_EX(POSIXFile, yield::fs::posix::FileTestSuite<yield::fs::posix::FileSystem>);
+namespace yield {
+namespace fs {
+namespace posix {
+class FileGetLockTest : public FileTest {
+public:
+  FileGetLockTest(FilePairFactory& file_pair_factory)
+    : FileTest(file_pair_factory)
+  { }
+
+  // yunit::Test
+  void run() {
+    File::Lock flock_(0, 256);
+    if (get_write_file().setlk(flock_)) {
+      File::Lock* blocking_flock = get_write_file().getlk(flock_);
+      if (blocking_flock != NULL)
+        File::Lock::dec_ref(*blocking_flock);
+      else if (Exception::get_last_error_code() != ENOTSUP)
+        throw Exception();
+    } else if (Exception::get_last_error_code() != ENOTSUP)
+      throw Exception();
+  }
+};
+
+TEST_EX(File, getlk, FileGetLockTest);
+}
+}
+}

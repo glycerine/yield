@@ -30,6 +30,7 @@
 #include "../channel_test.hpp"
 #include "yield/fs/file.hpp"
 #include "yield/fs/file_system.hpp"
+#include "yield/fs/path.hpp"
 
 #include <fcntl.h> // For O_*
 
@@ -38,22 +39,19 @@ namespace yield {
 namespace fs {
 class NamedPipePair : public ChannelPair {
 public:
-  NamedPipePair(const Path& path, FileSystem& file_system)
-    : path(path),
-      file_system(file_system.inc_ref()) {
+  NamedPipePair(const Path& path) : path(path) {
     read_file = write_file = NULL;
   }
 
   ~NamedPipePair() {
     File::dec_ref(read_file);
     File::dec_ref(write_file);
-    file_system.unlink(path);
-    FileSystem::dec_ref(file_system);
+    FileSystem().unlink(path);
   }
 
   File& get_read_file() {
     if (read_file == NULL) {
-      read_file = file_system.mkfifo(path);
+      read_file = FileSystem().mkfifo(path);
       if (read_file == NULL)
         throw Exception();
     }
@@ -64,7 +62,7 @@ public:
   File& get_write_file() {
     if (write_file == NULL) {
       get_read_file(); // To start the server if necessary
-      write_file = file_system.open(path, O_WRONLY);
+      write_file = FileSystem().open(path, O_WRONLY);
       if (write_file == NULL)
         throw Exception();
     }
@@ -76,26 +74,20 @@ public:
   Channel& get_read_channel() {
     return get_read_file();
   }
+
   Channel& get_write_channel() {
     return get_write_file();
   }
 
 private:
   Path path;
-  File* read_file, *write_file;
-  FileSystem& file_system;
+  File *read_file, *write_file;
 };
 
 
 class NamedPipePairFactory : public ChannelPairFactory {
 public:
-  NamedPipePairFactory(const Path& path, FileSystem& file_system)
-    : path(path),
-      file_system(file_system.inc_ref())
-  { }
-
-  ~NamedPipePairFactory() {
-    FileSystem::dec_ref(file_system);
+  NamedPipePairFactory(const Path& path) : path(path) {
   }
 
   // yield::Object
@@ -105,28 +97,26 @@ public:
 
   // yield::ChannelPairFactory
   ChannelPair& createChannelPair() {
-    return *new NamedPipePair(path, file_system);
+    return *new NamedPipePair(path);
   }
 
 private:
   Path path;
-  FileSystem& file_system;
 };
 
 
 class NamedPipeTestSuite : public ChannelTestSuite {
 public:
-  NamedPipeTestSuite(YO_NEW_REF FileSystem* file_system = NULL)
+  NamedPipeTestSuite()
     : ChannelTestSuite
     (
       *new NamedPipePairFactory
       (
 #ifdef _WIN32
-        "\\\\.\\pipe\\named_pipe_test.txt",
+        "\\\\.\\pipe\\named_pipe_test.txt"
 #else
-        "named_pipe_test.txt",
+        "named_pipe_test.txt"
 #endif
-        (file_system != NULL ? *file_system : *FileSystem::create())
       )
     )
   { }

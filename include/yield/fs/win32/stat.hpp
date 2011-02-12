@@ -89,6 +89,8 @@ public:
   bool ISREG() const;
 
 public:
+  bool operator==(const Stat&) const;
+
   operator BY_HANDLE_FILE_INFORMATION() const;
   operator WIN32_FILE_ATTRIBUTE_DATA() const;
   operator WIN32_FIND_DATA() const;

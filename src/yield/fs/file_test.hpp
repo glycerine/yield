@@ -44,24 +44,21 @@ namespace yield {
 namespace fs {
 class FilePair : public ChannelPair {
 public:
-  FilePair(const Path& path, FileSystem& file_system)
-    : path(path),
-      file_system(file_system.inc_ref()) {
+  FilePair(const Path& path) : path(path) {
     read_file = write_file = NULL;
   }
 
   ~FilePair() {
     File::dec_ref(read_file);
     File::dec_ref(write_file);
-    file_system.unlink(path);
-    FileSystem::dec_ref(file_system);
+    FileSystem().unlink(path);
   }
 
   File& get_read_file() {
     if (read_file == NULL) {
       get_write_file();
 
-      read_file = file_system.open(path, O_RDONLY);
+      read_file = FileSystem().open(path, O_RDONLY);
       if (read_file == NULL) throw Exception();
     }
 
@@ -70,7 +67,7 @@ public:
 
   File& get_write_file() {
     if (write_file == NULL) {
-      write_file = file_system.open(path, O_CREAT | O_TRUNC | O_WRONLY);
+      write_file = FileSystem().open(path, O_CREAT | O_TRUNC | O_WRONLY);
       if (write_file == NULL) throw Exception();
     }
 
@@ -89,29 +86,21 @@ public:
 private:
   Path path;
   File* read_file, *write_file;
-  FileSystem& file_system;
 };
 
 
 class FilePairFactory : public ChannelPairFactory {
 public:
-  FilePairFactory(const Path& path, FileSystem& file_system)
-    : path(path),
-      file_system(file_system.inc_ref())
-  { }
-
-  ~FilePairFactory() {
-    FileSystem::dec_ref(file_system);
+  FilePairFactory(const Path& path) : path(path) {
   }
 
   // yield::ChannelPairFactory
   ChannelPair& createChannelPair() {
-    return *new FilePair(path, file_system);
+    return *new FilePair(path);
   }
 
 private:
   Path path;
-  FileSystem& file_system;
 };
 
 
@@ -153,41 +142,6 @@ public:
       get_write_file().stat()->get_size(),
       get_test_string().size()
     );
-  }
-};
-
-
-class FileGetPageSizeTest : public FileTest {
-public:
-  FileGetPageSizeTest(FilePairFactory& file_pair_factory)
-    : FileTest(file_pair_factory)
-  { }
-
-  // yunit::Test
-  void run() {
-    size_t pagesize = get_write_file().getpagesize();
-    throw_assert_eq(pagesize % 2, 0);
-  }
-};
-
-
-class FileGetLockTest : public FileTest {
-public:
-  FileGetLockTest(FilePairFactory& file_pair_factory)
-    : FileTest(file_pair_factory)
-  { }
-
-  // yunit::Test
-  void run() {
-    File::Lock flock_(0, 256);
-    if (get_write_file().setlk(flock_)) {
-      File::Lock* blocking_flock = get_write_file().getlk(flock_);
-      if (blocking_flock != NULL)
-        File::Lock::dec_ref(*blocking_flock);
-      else if (Exception::get_last_error_code() != ENOTSUP)
-        throw Exception();
-    } else if (Exception::get_last_error_code() != ENOTSUP)
-      throw Exception();
   }
 };
 
@@ -445,12 +399,16 @@ public:
   { }
 
   void run() {
+    DateTime now = DateTime::now();
     auto_Object<Stat> stbuf = get_write_file().stat();
-    throw_assert(stbuf->ISREG());
+    throw_assert_ne(stbuf->get_atime(), DateTime::INVALID_DATE_TIME);
+    throw_assert_le(stbuf->get_atime(), now);
+    throw_assert_ne(stbuf->get_ctime(), DateTime::INVALID_DATE_TIME);
+    throw_assert_le(stbuf->get_ctime(), now);
+    throw_assert_ne(stbuf->get_mtime(), DateTime::INVALID_DATE_TIME);
+    throw_assert_le(stbuf->get_mtime(), now);
+    throw_assert_eq(stbuf->get_nlink(), 1);
     throw_assert_eq(stbuf->get_size(), 0);
-    throw_assert_ne(stbuf->get_atime(), Stat::INVALID_ATIME);
-    throw_assert_ne(stbuf->get_mtime(), Stat::INVALID_MTIME);
-    throw_assert_ne(stbuf->get_ctime(), Stat::INVALID_CTIME);
   }
 };
 
@@ -537,24 +495,13 @@ public:
 };
 
 
-template <class FileSystemType>
 class FileTestSuite : public ChannelTestSuite {
 public:
-  FileTestSuite()
-    : ChannelTestSuite(
-      *new FilePairFactory(
-        "file_test.txt",
-        *new FileSystemType
-      )
-    ) {
+  FileTestSuite() : ChannelTestSuite(*new FilePairFactory("file_test.txt")) {
     FilePairFactory& file_pair_factory
-    = static_cast<FilePairFactory&>(get_channel_pair_factory());
+      = static_cast<FilePairFactory&>(get_channel_pair_factory());
 
     add("File::datasync", new FileDataSyncTest(file_pair_factory));
-
-    add("File::getpagesize", new FileGetPageSizeTest(file_pair_factory));
-
-    add("File::getlk", new FileGetLockTest(file_pair_factory));
 
     add("File::pread", new FilePReadTest(file_pair_factory));
 

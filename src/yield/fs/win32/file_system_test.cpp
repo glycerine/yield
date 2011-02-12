@@ -29,12 +29,12 @@
 
 #include "../file_system_test.hpp"
 
-TEST_SUITE_EX(FileSystem, yield::fs::FileSystemTestSuite);
+TEST_SUITE_EX(Win32FileSystem, yield::fs::FileSystemTestSuite);
 
 namespace yield {
 namespace fs {
 namespace win32 {
-TEST_EX(FileSystem, Win32FileSystemUTime, FileSystemTest) {
+TEST_EX(Win32FileSystem, Win32FileSystemUTime, FileSystemTest) {
   DateTime atime = DateTime::now();
   DateTime mtime = DateTime::now();
   DateTime ctime = DateTime::now();
