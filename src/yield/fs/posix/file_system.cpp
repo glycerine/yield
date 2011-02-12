@@ -62,6 +62,13 @@
 namespace yield {
 namespace fs {
 namespace posix {
+mode_t FileSystem::FILE_MODE_DEFAULT = S_IREAD | S_IWRITE;
+mode_t FileSystem::DIRECTORY_MODE_DEFAULT = S_IREAD | S_IWRITE | S_IEXEC;
+int FileSystem::MMAP_FLAGS_DEFAULT = MAP_SHARED;
+int FileSystem::MMAP_PROT_DEFAULT = PROT_READ | PROT_WRITE;
+uint32_t FileSystem::OPEN_FLAGS_DEFAULT = O_RDONLY;
+
+
 bool FileSystem::access(const Path& path, int amode) {
   return ::access(path.c_str(), amode) == 0;
 }

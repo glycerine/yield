@@ -74,6 +74,22 @@ Stat::Stat(const struct stat& stbuf)
 //  st_uid = stbuf.st_uid;
 //  return *this;
 //}
+
+bool Stat::operator==(const Stat& other) const {
+  return get_atime() == other.get_atime() &&
+         get_blksize() == other.get_blksize() &&
+         get_blocks() == other.get_blocks() &&
+         get_ctime() == other.get_ctime() &&
+         get_dev() == other.get_dev() &&
+         get_gid() == other.get_gid() &&
+         get_ino() == other.get_ino() &&
+         get_mode() == other.get_mode() &&
+         get_mtime() == other.get_mtime() &&
+         get_nlink() == other.get_nlink() &&
+         get_rdev() == other.get_rdev() &&
+         get_size() == other.get_size() &&
+         get_uid() == other.get_uid();
+}
 }
 }
 }

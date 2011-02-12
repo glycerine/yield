@@ -125,6 +125,8 @@ public:
   }
 
 public:
+  bool operator==(const Stat&) const;
+
   operator struct stat() const {
     return *this;
   }
