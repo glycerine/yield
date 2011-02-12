@@ -128,8 +128,7 @@ public:
 
   // yunit::Test
   void run() {
-    get_write_file().write
-    (
+    get_write_file().write(
       get_test_string().data(),
       get_test_string().size()
     );
@@ -137,8 +136,7 @@ public:
     if (!get_write_file().datasync())
       throw Exception();
 
-    throw_assert_ge
-    (
+    throw_assert_ge(
       get_write_file().stat()->get_size(),
       get_test_string().size()
     );
@@ -159,8 +157,7 @@ public:
     string _string;
     _string.resize(7);
     ssize_t pread_ret
-    = get_read_file().pread
-      (
+    = get_read_file().pread(
         const_cast<char*>(_string.data()),
         _string.size(),
         4
@@ -421,8 +418,7 @@ public:
 
   // yunit::Test
   void run() {
-    get_write_file().write
-    (
+    get_write_file().write(
       get_test_string().data(),
       get_test_string().size()
     );
@@ -430,8 +426,7 @@ public:
     if (!get_write_file().sync())
       throw Exception();
 
-    throw_assert_ge
-    (
+    throw_assert_ge(
       get_write_file().stat()->get_size(),
       get_test_string().size()
     );
@@ -505,28 +500,24 @@ public:
 
     add("File::pread", new FilePReadTest(file_pair_factory));
 
-    add
-    (
+    add(
       "File::preadv( iov, 1 )",
       new FilePReadVOneTest(file_pair_factory)
     );
 
-    add
-    (
+    add(
       "File::preadv( iov, 2 )",
       new FilePReadVTwoTest(file_pair_factory)
     );
 
     add("File::pwrite", new FilePWriteTest(file_pair_factory));
 
-    add
-    (
+    add(
       "File::pwritev( iov, 1 )",
       new FilePWriteVOneTest(file_pair_factory)
     );
 
-    add
-    (
+    add(
       "File::pwritev( iov, 2 )",
       new FilePWriteVTwoTest(file_pair_factory)
     );

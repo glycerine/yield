@@ -346,52 +346,44 @@ class ChannelTestSuite : public yunit::TestSuite {
 public:
   ChannelTestSuite(YO_NEW_REF ChannelPairFactory& channel_pair_factory)
     : channel_pair_factory(channel_pair_factory) {
-    add
-    (
+    add(
       "Channel::close",
       new ChannelCloseTest(channel_pair_factory)
     );
 
-    add
-    (
+    add(
       "Channel::operator fd_t()",
       new ChannelOperatorFDTest(channel_pair_factory)
     );
 
     add("Channel::read", new ChannelReadTest(channel_pair_factory));
 
-    add
-    (
+    add(
       "Channel::readv( iov, 1 )",
       new ChannelReadVOneTest(channel_pair_factory)
     );
 
-    add
-    (
+    add(
       "Channel::readv( iov, 2 )",
       new ChannelReadVTwoTest(channel_pair_factory)
     );
 
-    add
-    (
+    add(
       "Channel::set_blocking_mode",
       new ChannelSetBlockingModeTest(channel_pair_factory)
     );
 
-    add
-    (
+    add(
       "Channel::write",
       new ChannelWriteTest(channel_pair_factory)
     );
 
-    add
-    (
+    add(
       "Channel::writev( iov, 1 )",
       new ChannelWriteVOneTest(channel_pair_factory)
     );
 
-    add
-    (
+    add(
       "Channel::writev( iov, 2 )",
       new ChannelWriteVTwoTest(channel_pair_factory)
     );

@@ -29,11 +29,69 @@
 
 #include "../file_test.hpp"
 
-TEST_SUITE_EX(File, yield::fs::posix::FileTestSuite);
-
 namespace yield {
 namespace fs {
 namespace posix {
+class FileExtendedAttributesGetTest
+  : public FileTest,
+    private ExtendedAttributesGetTest {
+public:
+  FileExtendedAttributesGetTest(FilePairFactory& file_pair_factory)
+    : FileTest(file_pair_factory)
+  { }
+
+  // yunit::Test
+  void run() {
+    ExtendedAttributesGetTest::run(get_write_file().openxattrs());
+  }
+};
+
+
+class FileExtendedAttributesListTest
+  : public FileTest,
+    private ExtendedAttributesListTest {
+public:
+  FileExtendedAttributesListTest(FilePairFactory& file_pair_factory)
+    : FileTest(file_pair_factory)
+  { }
+
+  // yunit::Test
+  void run() {
+    ExtendedAttributesListTest::run(get_write_file().openxattrs());
+  }
+};
+
+
+class FileExtendedAttributesRemoveTest
+  : public FileTest,
+    private ExtendedAttributesRemoveTest {
+public:
+  FileExtendedAttributesRemoveTest(FilePairFactory& file_pair_factory)
+    : FileTest(file_pair_factory)
+  { }
+
+  // yunit::Test
+  void run() {
+    ExtendedAttributesRemoveTest::run(get_write_file().openxattrs());
+  }
+};
+
+
+class FileExtendedAttributesSetTest
+  : public FileTest,
+    private ExtendedAttributesSetTest {
+public:
+  FileExtendedAttributesSetTest(FilePairFactory& file_pair_factory)
+    : FileTest(file_pair_factory)
+  { }
+
+  // yunit::Test
+  void run() {
+    ExtendedAttributesSetTest::run(get_write_file().openxattrs());
+  }
+};
+
+
 class FileGetLockTest : public FileTest {
 public:
   FileGetLockTest(FilePairFactory& file_pair_factory)
@@ -54,7 +112,36 @@ public:
   }
 };
 
-TEST_EX(File, getlk, FileGetLockTest);
+
+class FileTestSuite : public yield::fs::FileTestSuite {
+public:
+  FileTestSuite() {
+    FilePairFactory& file_pair_factory
+    = static_cast<FilePairFactory&>(get_channel_pair_factory());
+
+    add(
+      "File::getxattr",
+      new FileExtendedAttributesGetTest(file_pair_factory)
+    );
+
+    add(
+      "File::listxattr",
+      new FileExtendedAttributesListTest(file_pair_factory)
+    );
+
+    add(
+      "File::removexattr",
+      new FileExtendedAttributesRemoveTest(file_pair_factory)
+    );
+
+    add(
+      "File::setxattr",
+      new FileExtendedAttributesSetTest(file_pair_factory)
+    );
+  }
+};
 }
 }
 }
+
+TEST_SUITE_EX(POSIXFile, yield::fs::posix::FileTestSuite);
