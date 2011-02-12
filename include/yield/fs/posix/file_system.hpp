@@ -63,8 +63,6 @@ public:
   bool chown(const Path&, uid_t);
   bool chown(const Path&, uid_t, gid_t);
 
-  Stat* getattr(const Path&);
-
   bool link(const Path& old_path, const Path& new_path);
 
   bool mkdir(const Path&, mode_t mode = DIRECTORY_MODE_DEFAULT);
@@ -115,6 +113,7 @@ public:
 
   bool rmdir(const Path&);
 
+  YO_NEW_REF Stat* stat(const Path&);
   bool statvfs(const Path&, struct statvfs&);
 
   bool symlink(const Path& old_path, const Path& new_path);

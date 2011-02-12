@@ -202,8 +202,7 @@ YO_NEW_REF ExtendedAttributes* FileSystem::openxattrs(const Path& path) {
 
 bool FileSystem::readlink(const Path& path, OUT Path& target_path) {
   char target_path_[PATH_MAX];
-  ssize_t target_path_len
-  = ::readlink(path.c_str(), target_path_, PATH_MAX);
+  ssize_t target_path_len = ::readlink(path.c_str(), target_path_, PATH_MAX);
   if (target_path_len > 0) {
     target_path.assign(target_path_, target_path_len);
     return true;
