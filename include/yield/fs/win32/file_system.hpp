@@ -83,26 +83,6 @@ public:
 
   bool mktree(const Path&);
 
-  YO_NEW_REF MemoryMappedFile*
-  mmap(
-    YO_NEW_REF File& file,
-    void* start = NULL,
-    size_t length = MMAP_LENGTH_WHOLE_FILE,
-    int prot = MMAP_PROT_DEFAULT,
-    int flags = MMAP_FLAGS_DEFAULT,
-    uint64_t offset = 0
-  );
-
-  static void*
-  mmap(
-    size_t length,
-    int prot,
-    int flags,
-    fd_t fd,
-    uint64_t offset,
-    void*& out_hFileMapping
-  );
-
   YO_NEW_REF File*
   open(
     const Path&,

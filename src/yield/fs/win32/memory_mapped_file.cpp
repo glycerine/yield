@@ -30,7 +30,6 @@
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
 #include "yield/fs/win32/file.hpp"
-#include "yield/fs/win32/file_system.hpp"
 #include "yield/fs/win32/memory_mapped_file.hpp"
 
 #include <Windows.h>
@@ -38,29 +37,31 @@
 namespace yield {
 namespace fs {
 namespace win32 {
-MemoryMappedFile::MemoryMappedFile
-(
+MemoryMappedFile::MemoryMappedFile(
   size_t capacity,
   void* data,
-  File& file,
-  int flags,
-  HANDLE hFileMapping,
-  uint64_t offset,
-  int prot
-)
-  : Buffer(capacity),
+  YO_NEW_REF File& file,
+  fd_t file_mapping,
+  uint64_t file_offset,
+  unsigned int flags,
+  unsigned int prot,
+  bool read_only,
+  bool shared
+) : Buffer(capacity),
     data_(data),
     file(file),
+    file_mapping(file_mapping),
+    file_offset(file_offset),
     flags(flags),
-    hFileMapping(hFileMapping),
-    offset(offset),
-    prot(prot) {
+    prot(prot),
+    read_only(read_only),
+    shared(shared) {
   if (data_ == reinterpret_cast<void*>(-1)) {
-    debug_assert_eq(hFileMapping, NULL);
+    debug_assert_eq(file_mapping, NULL);
   } else {
     debug_assert_ne(data_, NULL);
-    debug_assert_ne(hFileMapping, NULL);
-    debug_assert_ne(hFileMapping, INVALID_HANDLE_VALUE);
+    debug_assert_ne(file_mapping, NULL);
+    debug_assert_ne(file_mapping, INVALID_HANDLE_VALUE);
   }
 }
 
@@ -74,44 +75,67 @@ bool MemoryMappedFile::close() {
 }
 
 void MemoryMappedFile::reserve(size_t capacity) {
-  if (data_ != reinterpret_cast<void*>(-1)) {
-    if (!sync())
-      throw Exception();
+  if (capacity != 0 && capacity > capacity_) {
+    if (data_ != reinterpret_cast<void*>(-1)) {
+      if (!sync())
+        throw Exception();
 
-    if (!unmap())
+      if (!unmap())
+        throw Exception();
+    }
+
+    debug_assert_eq(data_, reinterpret_cast<void*>(-1));
+    debug_assert_eq(capacity_, 0);
+    debug_assert_eq(file_mapping, NULL);
+
+    if (file.truncate(capacity)) {
+      ULARGE_INTEGER uliMaximumSize;
+      uliMaximumSize.QuadPart = capacity;
+
+      HANDLE hFileMapping =
+        CreateFileMapping(
+          file,
+          NULL,
+          prot,
+          uliMaximumSize.HighPart,
+          uliMaximumSize.LowPart,
+          NULL
+        );
+
+      if (hFileMapping != NULL) {
+        ULARGE_INTEGER uliFileOffset;
+        uliFileOffset.QuadPart = file_offset;
+
+        LPVOID lpMapAddress
+          = MapViewOfFile(
+              hFileMapping,
+              flags,
+              uliFileOffset.HighPart,
+              uliFileOffset.LowPart,
+              uliMaximumSize.LowPart
+            );
+
+        if (lpMapAddress != NULL) {
+          capacity_ = capacity;
+          data_ = lpMapAddress;
+          file_mapping = hFileMapping;
+        } else {
+          CloseHandle(hFileMapping);
+          throw Exception();
+        }
+      } else
+        throw Exception();
+    } else
       throw Exception();
   }
-
-  debug_assert_eq(data_, reinterpret_cast<void*>(-1));
-  debug_assert_eq(capacity_, 0);
-  debug_assert_eq(hFileMapping, NULL);
-
-  if (get_file().truncate(capacity)) {
-    data_
-    = FileSystem::mmap
-      (
-        capacity,
-        get_prot(),
-        get_flags(),
-        static_cast<File&>(get_file()),
-        get_offset(),
-        hFileMapping
-      );
-
-    if (data_ != reinterpret_cast<void*>(-1))
-      capacity_ = capacity;
-    else
-      throw Exception();
-  } else
-    throw Exception();
 }
 
 bool MemoryMappedFile::sync() {
-  return sync(data(), capacity());
+  return sync(data_, capacity_);
 }
 
 bool MemoryMappedFile::sync(size_t offset, size_t length) {
-  return sync(static_cast<char*>(data()) + offset, length);
+  return sync(static_cast<char*>(data_) + offset, length);
 }
 
 bool MemoryMappedFile::sync(void* ptr, size_t length) {
@@ -125,17 +149,17 @@ bool MemoryMappedFile::sync(void* ptr, size_t length) {
 
 bool MemoryMappedFile::unmap() {
   if (data_ != reinterpret_cast<void*>(-1)) {
-    debug_assert_ne(hFileMapping, NULL);
+    debug_assert_ne(file_mapping, NULL);
 
     if
     (
       UnmapViewOfFile(data_)
       &&
-      CloseHandle(hFileMapping)
+      CloseHandle(file_mapping)
     ) {
       capacity_ = 0;
       data_ = reinterpret_cast<void*>(-1);
-      hFileMapping = NULL;
+      file_mapping = NULL;
       return true;
     } else {
       DebugBreak();

@@ -29,6 +29,7 @@
 
 #include "yield/page.hpp"
 #include "yield/fs/win32/file.hpp"
+#include "yield/fs/win32/memory_mapped_file.hpp"
 #include "yield/fs/win32/stat.hpp"
 
 #include <Windows.h>
@@ -61,10 +62,84 @@ bool File::datasync() {
   return FlushFileBuffers(*this) != 0;
 }
 
-//YO_NEW_REF File::Lock* File::getlk(const Lock&) {
-//  SetLastError(ERROR_NOT_SUPPORTED);
-//  return NULL;
-//}
+YO_NEW_REF MemoryMappedFile*
+File::mmap(
+  size_t length,
+  uint64_t offset,
+  bool read_only,
+  bool shared
+) {
+  if (length == SIZE_MAX) {
+    ULARGE_INTEGER uliFileSize;
+    uliFileSize.LowPart = GetFileSize(*this, &uliFileSize.HighPart);
+    if (uliFileSize.LowPart != INVALID_FILE_SIZE)
+      length = uliFileSize.LowPart;
+    else
+      return NULL;
+  }
+
+  DWORD flags;
+  if (shared)
+    flags = read_only ? FILE_MAP_READ : FILE_MAP_WRITE;
+  else
+    flags = FILE_MAP_COPY;
+  DWORD prot = read_only ? PAGE_READONLY : PAGE_READWRITE;
+
+  HANDLE hFileMapping;
+  LPVOID lpMapAddress;
+  if (length > 0) {
+    ULARGE_INTEGER uliMaximumSize;
+    uliMaximumSize.QuadPart = length;
+
+    hFileMapping =
+      CreateFileMapping(
+        *this,
+        NULL,
+        prot,
+        uliMaximumSize.HighPart,
+        uliMaximumSize.LowPart,
+        NULL
+      );
+
+    if (hFileMapping != NULL) {   // not INVALID_HANDLE_VALUE
+      ULARGE_INTEGER uliFileOffset;
+      uliFileOffset.QuadPart = offset;
+
+      lpMapAddress
+        = MapViewOfFile(
+            hFileMapping,
+            flags,
+            uliFileOffset.HighPart,
+            uliFileOffset.LowPart,
+            uliMaximumSize.LowPart
+          );
+
+      if (lpMapAddress == NULL) {
+        CloseHandle(hFileMapping);
+        return NULL;
+      }
+    } else
+      return NULL;
+  } else { // length == 0
+      // Can't CreateFileMapping on an empty file; instead 
+      // return an "empty" MemoryMappedFile (lpMapAddress=NULL).
+      hFileMapping = NULL;
+      lpMapAddress = reinterpret_cast<LPVOID>(-1);
+  }
+
+  return new
+    MemoryMappedFile(
+      length,
+      lpMapAddress,
+      *this,
+      hFileMapping,
+      offset,
+      flags,
+      prot,
+      read_only,
+      shared
+    );
+}
 
 ssize_t File::pread(void* buf, size_t buflen, uint64_t offset) {
   OVERLAPPED overlapped;

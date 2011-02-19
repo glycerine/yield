@@ -42,6 +42,11 @@ class Stat;
 
 class File : public Channel {
 public:
+  static int MMAP_FLAGS_DEFAULT; // MMAP_SHARED
+  const static size_t MMAP_LENGTH_WHOLE_FILE = static_cast<size_t>(-1);
+  static int MMAP_PROT_DEFAULT; // PROT_READ|PROT_WRITE
+
+public:
   class Lock : public Object {
   public:
     Lock(
@@ -103,19 +108,38 @@ public:
 
 public:
   virtual bool datasync();
+
   YO_NEW_REF Lock* getlk(const File::Lock&);
+
+  YO_NEW_REF MemoryMappedFile*
+  mmap(
+    int flags = MMAP_FLAGS_DEFAULT,
+    size_t length = MMAP_LENGTH_WHOLE_FILE,
+    uint64_t offset = 0,
+    int prot = MMAP_PROT_DEFAULT
+  );
+
   virtual YO_NEW_REF ExtendedAttributes* openxattrs();
+
   ssize_t pread(void*, size_t, uint64_t);
   ssize_t preadv(const iovec*, int, uint64_t);
+
   ssize_t pwrite(const void*, size_t, uint64_t);
   ssize_t pwritev(const iovec*, int, uint64_t);
+
   uint64_t seek(int64_t offset, uint8_t whence = SEEK_SET);
+
   bool setlk(const Lock&);
   bool setlkw(const Lock&);
+
   YO_NEW_REF Stat* stat();
+
   bool sync();
+
   uint64_t tell();
+
   bool truncate(uint64_t new_size);
+
   bool unlk(const Lock&);
 
 public:

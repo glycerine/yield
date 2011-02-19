@@ -90,14 +90,12 @@ private:
 
 
 TEST_EX(MemoryMappedFile, mmap, MemoryMappedFileTest) {
-  auto_Object<MemoryMappedFile> mmf
-    = FileSystem().mmap(get_test_file().inc_ref());
+  auto_Object<MemoryMappedFile> mmf = get_test_file().mmap();
 }
 
 TEST_EX(MemoryMappedFile, read, MemoryMappedFileTest) {
   {
-    auto_Object<MemoryMappedFile> mmf
-    = FileSystem().mmap(get_test_file().inc_ref());
+    auto_Object<MemoryMappedFile> mmf = get_test_file().mmap();
 
     mmf->reserve(get_test_string().size());
 
@@ -119,13 +117,11 @@ TEST_EX(MemoryMappedFile, read, MemoryMappedFileTest) {
     auto_Object<File> test_file = FileSystem().open(get_test_file_name());
 
     auto_Object<MemoryMappedFile> mmf
-    = FileSystem().mmap
-      (
-        test_file->inc_ref(),
-        NULL,
-        FileSystem::MMAP_LENGTH_WHOLE_FILE,
-        PROT_READ,
-        MAP_PRIVATE
+    = get_test_file().mmap(
+        SIZE_MAX,
+        0,
+        true,
+        false
       );
 
     throw_assert_eq(mmf->capacity(), get_test_string().size());
@@ -138,8 +134,7 @@ TEST_EX(MemoryMappedFile, read, MemoryMappedFileTest) {
 }
 
 TEST_EX(MemoryMappedFile, write, MemoryMappedFileTest) {
-  auto_Object<MemoryMappedFile> mmf
-  = FileSystem().mmap(get_test_file().inc_ref());
+  auto_Object<MemoryMappedFile> mmf = get_test_file().mmap();
 
   mmf->reserve(get_test_string().size());
 

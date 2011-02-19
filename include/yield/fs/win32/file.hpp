@@ -41,6 +41,7 @@
 namespace yield {
 namespace fs {
 namespace win32 {
+class MemoryMappedFile;
 class Stat;
 
 class File : public Channel {
@@ -91,19 +92,36 @@ public:
 
 public:
   bool close();
+
   virtual bool datasync();
-  //YO_NEW_REF Lock* getlk(const Lock&);
+
+  YO_NEW_REF MemoryMappedFile*
+  mmap(
+    size_t length = SIZE_MAX,
+    uint64_t offset = 0,
+    bool read_only = false,
+    bool shared = true
+  );
+
   ssize_t pread(void*, size_t, uint64_t);
   ssize_t preadv(const iovec*, int, uint64_t);
+
   ssize_t pwrite(const void*, size_t, uint64_t);
   ssize_t pwritev(const iovec*, int, uint64_t);
+
   uint64_t seek(int64_t offset, uint8_t whence = SEEK_SET);
+
   bool setlk(const Lock&);
   bool setlkw(const Lock&);
+
   YO_NEW_REF Stat* stat();
+
   virtual bool sync();
+
   uint64_t tell();
+
   bool truncate(uint64_t);
+
   bool unlk(const Lock&);
 
 public:

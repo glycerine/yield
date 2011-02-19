@@ -51,9 +51,6 @@ class FileSystem {
 public:
   static mode_t FILE_MODE_DEFAULT;
   static mode_t DIRECTORY_MODE_DEFAULT;
-  static int MMAP_FLAGS_DEFAULT; // MAP_SHARED
-  const static size_t MMAP_LENGTH_WHOLE_FILE = static_cast<size_t>(-1);
-  static int MMAP_PROT_DEFAULT; // PROT_READ|PROT_WRITE
   static uint32_t OPEN_FLAGS_DEFAULT; // O_RDONLY
 
 public:
@@ -82,29 +79,8 @@ public:
 
   bool mktree(const Path&, mode_t mode = DIRECTORY_MODE_DEFAULT);
 
-  YO_NEW_REF MemoryMappedFile*
-  mmap(
-    File& file,
-    void* start = NULL,
-    size_t length = MMAP_LENGTH_WHOLE_FILE,
-    int prot = MMAP_PROT_DEFAULT,
-    int flags = MMAP_FLAGS_DEFAULT,
-    uint64_t offset = 0
-  );
-
-  static void*
-  mmap(
-    void* start,
-    size_t length,
-    int prot,
-    int flags,
-    fd_t fd,
-    uint64_t offset
-  );
-
   YO_NEW_REF File*
-  open
-  (
+  open(
     const Path&,
     uint32_t flags = OPEN_FLAGS_DEFAULT,
     mode_t mode = FILE_MODE_DEFAULT

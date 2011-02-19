@@ -68,6 +68,7 @@ public:
   void* data() {
     return &data_[0];
   }
+
   const void* data() const {
     return &data_[0];
   }

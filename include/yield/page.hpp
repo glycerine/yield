@@ -61,9 +61,11 @@ public:
   void* data() {
     return data_;
   }
+
   const void* data() const {
     return data_;
   }
+
   void reserve(size_t new_capacity);
 
 private:

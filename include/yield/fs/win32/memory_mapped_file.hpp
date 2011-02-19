@@ -53,22 +53,24 @@ public:
 public:
   bool close();
 
+public:
   File& get_file() {
     return file;
   }
 
-  int get_flags() const {
-    return flags;
+  uint64_t get_file_offset() const {
+    return file_offset;
   }
 
-  uint64_t get_offset() const {
-    return offset;
+  bool is_read_only() const {
+    return read_only;
   }
 
-  int get_prot() const {
-    return prot;
+  bool is_shared() const {
+    return shared;
   }
 
+public:
   bool sync();
   bool sync(size_t offset, size_t length);
   bool sync(void* ptr, size_t length);
@@ -88,26 +90,30 @@ public:
   void reserve(size_t capacity);
 
 private:
-  friend class FileSystem;
+  friend class File;
 
-  MemoryMappedFile
-  (
+  MemoryMappedFile(
     size_t capacity,
     void* data,
     YO_NEW_REF File& file,
-    int flags,
-    fd_t hFileMapping,
-    uint64_t offset,
-    int prot
+    fd_t file_mapping,
+    uint64_t file_offset,
+    unsigned int flags,
+    unsigned int prot,
+    bool read_only,
+    bool shared
   );
 
 private:
+  size_t capacity_;
   void* data_;
   File& file;
-  int flags;
-  fd_t hFileMapping;
-  uint64_t offset;
-  int prot;
+  fd_t file_mapping;
+  uint64_t file_offset;
+  unsigned int flags;
+  unsigned int prot;
+  bool read_only;
+  bool shared;
 };
 }
 }
