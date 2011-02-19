@@ -44,7 +44,6 @@ namespace posix {
 class Directory;
 class ExtendedAttributes;
 class File;
-class MemoryMappedFile;
 class Stat;
 
 class FileSystem {

@@ -35,6 +35,7 @@
 #include "../darwin/extended_attributes.hpp"
 #endif
 #include "yield/fs/posix/file.hpp"
+#include "yield/fs/posix/memory_mapped_file.hpp"
 #include "yield/fs/posix/stat.hpp"
 
 #include <errno.h>
@@ -112,9 +113,7 @@ File::mmap(
       *this,
       offset,
       flags,
-      prot,
-      read_only,
-      shared
+      prot
     );
 }
 

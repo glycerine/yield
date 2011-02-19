@@ -47,7 +47,7 @@ MemoryMappedFile::MemoryMappedFile
   uint64_t file_offset,
   int flags,
   int prot
-)
+) 
   : Buffer(capacity),
     data_(data),
     file(file.inc_ref()),
@@ -74,7 +74,7 @@ bool MemoryMappedFile::is_shared() const {
 }
 
 void MemoryMappedFile::reserve(size_t capacity) {
-  if (capacity != 0 && capacity > capcaity_) {
+  if (capacity != 0 && capacity > capacity_) {
     if (data_ != MAP_FAILED) {
       if (!sync())
         throw Exception();

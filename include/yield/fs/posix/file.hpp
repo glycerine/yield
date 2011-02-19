@@ -38,6 +38,7 @@ namespace yield {
 namespace fs {
 namespace posix {
 class ExtendedAttributes;
+class MemoryMappedFile;
 class Stat;
 
 class File : public Channel {
