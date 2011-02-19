@@ -40,7 +40,7 @@ namespace win32 {
 MemoryMappedFile::MemoryMappedFile(
   size_t capacity,
   void* data,
-  YO_NEW_REF File& file,
+  File& file,
   fd_t file_mapping,
   uint64_t file_offset,
   unsigned int flags,
@@ -49,7 +49,7 @@ MemoryMappedFile::MemoryMappedFile(
   bool shared
 ) : Buffer(capacity),
     data_(data),
-    file(file),
+    file(file.inc_ref()),
     file_mapping(file_mapping),
     file_offset(file_offset),
     flags(flags),

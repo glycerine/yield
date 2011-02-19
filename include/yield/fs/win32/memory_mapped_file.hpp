@@ -95,7 +95,7 @@ private:
   MemoryMappedFile(
     size_t capacity,
     void* data,
-    YO_NEW_REF File& file,
+    File& file,
     fd_t file_mapping,
     uint64_t file_offset,
     unsigned int flags,
@@ -105,7 +105,6 @@ private:
   );
 
 private:
-  size_t capacity_;
   void* data_;
   File& file;
   fd_t file_mapping;

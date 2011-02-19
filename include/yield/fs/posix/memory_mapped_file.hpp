@@ -41,30 +41,29 @@ class MemoryMappedFile : public Buffer {
 public:
   ~MemoryMappedFile();
 
+public:
   bool close();
 
+public:
   File& get_file() {
     return file;
   }
 
-  int get_flags() const {
-    return flags;
+  uint64_t get_file_offset() const {
+    return file_offset;
   }
 
-  uint64_t get_offset() const {
-    return offset;
-  }
+  bool is_read_only() const;
+  bool is_shared() const;
 
-  int get_prot() const {
-    return prot;
-  }
-
+public:
   bool sync();
   bool sync(size_t offset, size_t length);
   bool sync(void* ptr, size_t length);
 
   bool unmap();
 
+public:
   // yield::Buffer
   void* data() {
     return data_;
@@ -77,23 +76,22 @@ public:
   void reserve(size_t capacity);
 
 private:
-  friend class FileSystem;
+  friend class File;
 
-  MemoryMappedFile
-  (
+  MemoryMappedFile(
     size_t capacity,
     void* data,
-    YO_NEW_REF File& file,
+    File& file,
+    uint64_t file_offset,
     int flags,
-    uint64_t offset,
     int prot
   );
 
 private:
   void* data_;
   File& file;
+  uint64_t file_offset;
   int flags;
-  uint64_t offset;
   int prot;
 };
 }

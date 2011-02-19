@@ -34,22 +34,20 @@
 #elif defined(__MACH__)
 #include "../darwin/extended_attributes.hpp"
 #endif
-
 #include "yield/fs/posix/file.hpp"
 #include "yield/fs/posix/stat.hpp"
 
 #include <errno.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#include <sys/mman.h>
 #include <unistd.h>
-
 
 namespace yield {
 namespace fs {
 namespace posix {
-File::File(fd_t fd)
-  : fd(fd)
-{ }
+File::File(fd_t fd) : fd(fd) {
+}
 
 File::~File() {
   close();
@@ -79,6 +77,45 @@ File::Lock* File::getlk(const Lock& lock) {
       return new Lock(flock_);
   } else
     return NULL;
+}
+
+YO_NEW_REF MemoryMappedFile*
+File::mmap(
+  size_t length,
+  uint64_t offset,
+  bool read_only,
+  bool shared
+) {
+  if (length == SIZE_MAX) {
+    struct stat stbuf;
+    if (::fstat(*this, &stbuf) == 0)
+      length = stbuf.st_size;
+    else
+      return NULL;
+  }
+
+  int flags = shared ? MAP_SHARED : MAP_PRIVATE;
+  int prot = read_only ? PROT_READ : PROT_READ|PROT_WRITE;
+
+  void* data;
+  if (length > 0) {
+    data = ::mmap(NULL, length, prot, flags, *this, offset);
+    if (data == MAP_FAILED)
+      return NULL;
+  } else
+    data = MAP_FAILED;
+
+  return new
+    MemoryMappedFile(
+      length,
+      data,
+      *this,
+      offset,
+      flags,
+      prot,
+      read_only,
+      shared
+    );
 }
 
 YO_NEW_REF ExtendedAttributes* File::openxattrs() {

@@ -42,11 +42,6 @@ class Stat;
 
 class File : public Channel {
 public:
-  static int MMAP_FLAGS_DEFAULT; // MMAP_SHARED
-  const static size_t MMAP_LENGTH_WHOLE_FILE = static_cast<size_t>(-1);
-  static int MMAP_PROT_DEFAULT; // PROT_READ|PROT_WRITE
-
-public:
   class Lock : public Object {
   public:
     Lock(
@@ -113,10 +108,10 @@ public:
 
   YO_NEW_REF MemoryMappedFile*
   mmap(
-    int flags = MMAP_FLAGS_DEFAULT,
-    size_t length = MMAP_LENGTH_WHOLE_FILE,
+    size_t length = SIZE_MAX,
     uint64_t offset = 0,
-    int prot = MMAP_PROT_DEFAULT
+    bool read_only = false,
+    bool shared = true
   );
 
   virtual YO_NEW_REF ExtendedAttributes* openxattrs();

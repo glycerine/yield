@@ -54,7 +54,6 @@
 #include <limits.h> // for PATH_MAX
 #include <stdio.h>
 #include <stdlib.h> // for realpath
-#include <sys/mman.h>
 #include <sys/statvfs.h>
 #include <sys/time.h>
 
@@ -64,8 +63,6 @@ namespace fs {
 namespace posix {
 mode_t FileSystem::FILE_MODE_DEFAULT = S_IREAD | S_IWRITE;
 mode_t FileSystem::DIRECTORY_MODE_DEFAULT = S_IREAD | S_IWRITE | S_IEXEC;
-int FileSystem::MMAP_FLAGS_DEFAULT = MAP_SHARED;
-int FileSystem::MMAP_PROT_DEFAULT = PROT_READ | PROT_WRITE;
 uint32_t FileSystem::OPEN_FLAGS_DEFAULT = O_RDONLY;
 
 
@@ -134,62 +131,6 @@ bool FileSystem::mktree(const Path& path, mode_t mode) {
     return false;
 
   return ret;
-}
-
-MemoryMappedFile*
-FileSystem::mmap(
-  File& file,
-  void* start,
-  size_t length,
-  int prot,
-  int flags,
-  uint64_t offset
-) {
-  if (length == MMAP_LENGTH_WHOLE_FILE) {
-    struct stat stbuf;
-    if (::fstat(file, &stbuf) == 0)
-      length = static_cast<size_t>(stbuf.st_size);
-    else
-      return NULL;
-  }
-
-  if (length > 0) {
-    start = mmap(start, length, prot, flags, file, offset);
-    if (start != MAP_FAILED) {
-      return new MemoryMappedFile
-             (
-               length,
-               start,
-               static_cast<File&>(file),
-               flags,
-               offset,
-               prot
-             );
-    } else
-      return NULL;
-  } else {
-    return new MemoryMappedFile
-           (
-             length,
-             MAP_FAILED,
-             static_cast<File&>(file),
-             flags,
-             offset,
-             prot
-           );
-  }
-}
-
-void*
-FileSystem::mmap(
-  void* start,
-  size_t length,
-  int prot,
-  int flags,
-  fd_t fd,
-  uint64_t offset
-) {
-  return ::mmap(start, length, prot, flags, fd, offset);
 }
 
 File*

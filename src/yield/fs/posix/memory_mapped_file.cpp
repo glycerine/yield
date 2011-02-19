@@ -44,15 +44,15 @@ MemoryMappedFile::MemoryMappedFile
   size_t capacity,
   void* data,
   File& file,
+  uint64_t file_offset,
   int flags,
-  uint64_t offset,
   int prot
 )
   : Buffer(capacity),
     data_(data),
-    file(file),
+    file(file.inc_ref()),
+    file_offset(file_offset),
     flags(flags),
-    offset(offset),
     prot(prot)
 { }
 
@@ -62,47 +62,47 @@ MemoryMappedFile::~MemoryMappedFile() {
 }
 
 bool MemoryMappedFile::close() {
-  return unmap() && get_file().close();
+  return unmap() && file.close();
+}
+
+bool MemoryMappedFile::is_read_only() const {
+  return (prot & PROT_WRITE) != PROT_WRITE;
+}
+
+bool MemoryMappedFile::is_shared() const {
+  return (flags & MAP_SHARED) == MAP_SHARED;
 }
 
 void MemoryMappedFile::reserve(size_t capacity) {
-  if (data_ != MAP_FAILED) {
-    if (!sync())
-      throw Exception();
+  if (capacity != 0 && capacity > capcaity_) {
+    if (data_ != MAP_FAILED) {
+      if (!sync())
+        throw Exception();
 
-    if (!unmap())
+      if (!unmap())
+        throw Exception();
+    }
+
+    debug_assert_eq(capacity_, 0);
+    debug_assert_eq(data_, MAP_FAILED);
+
+    if (file.truncate(capacity)) {
+      data_ = ::mmap(NULL, capacity, prot, flags, file, file_offset);
+      if (data_ != MAP_FAILED)
+        capacity_ = capacity;
+      else
+        throw Exception();
+    } else
       throw Exception();
   }
-
-  debug_assert_eq(capacity_, 0);
-  debug_assert_eq(data_, MAP_FAILED);
-
-  if (get_file().truncate(capacity)) {
-    data_
-    = FileSystem::mmap
-      (
-        NULL,
-        capacity,
-        get_prot(),
-        get_flags(),
-        static_cast<File&>(get_file()),
-        get_offset()
-      );
-
-    if (data_ != MAP_FAILED)
-      capacity_ = capacity;
-    else
-      throw Exception();
-  } else
-    throw Exception();
 }
 
 bool MemoryMappedFile::sync() {
-  return sync(data(), capacity());
+  return sync(data_, capacity());
 }
 
 bool MemoryMappedFile::sync(size_t offset, size_t length) {
-  return sync(static_cast<char*>(data()) + offset, length);
+  return sync(static_cast<char*>(data_) + offset, length);
 }
 
 bool MemoryMappedFile::sync(void* ptr, size_t length) {
