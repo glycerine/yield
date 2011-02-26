@@ -1,0 +1,884 @@
+# Copyright (c) 2011 Minor Gordon
+# All rights reserved
+
+# This source file is part of the Yield project.
+
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# * Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+# * Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+# * Neither the name of the Yield project nor the
+# names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL Minor Gordon BE LIABLE FOR ANY DIRECT,
+# INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+# ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+# THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+assert __name__ == "__main__"
+
+from copy import deepcopy
+from os import sep as os_sep
+from os import makedirs
+from os import chdir, listdir, unlink
+from os.path import abspath, dirname, exists, isdir, isfile, join, split, splitext
+from optparse import OptionParser
+from pprint import pprint
+import re
+from subprocess import call
+import sys
+
+from yuild import Makefile, TopLevelMakefile, \
+                  SourceFiles, \
+                  VCXProj, VCXProjFilters, VCXProjUser, VCXSln
+from yuild.constant import C_CXX_INCLUDE_FILE_FNMATCH_PATTERNS, \
+                           CXX_SOURCE_FILE_FNMATCH_PATTERNS, \
+                           INCLUDE_FILE_FNMATCH_PATTERNS, \
+                           INDENT_SPACES, \
+                           PLATFORM_GUARDS, \
+                           SOURCE_FILE_FNMATCH_PATTERNS
+from yutil import deduplist, \
+                  fnmatch, \
+                  indent, \
+                  list_subdirectories, \
+                  mirror_subdirectories, \
+                  rglob, \
+                  strlistsort, \
+                  write_file
+
+
+__all__ = [
+    "AUTHOR",
+    "AUTOCONF",
+    "CXXFLAGS",
+    "CXXPATH",
+    "EXCLUDE_FILE_PATHS",
+    "INCLUDE_DIR_PATH",
+    "INCLUDE_FILE_PATHS",
+    "LIBPATH",
+    "LIBS",
+    "LDFLAGS",
+    "PROJECT_BUILD_ORDER",
+    "PROJECT_NAMES",
+    "PROJECT_REFERENCES",
+    "PROJECT_REFERENCES_EXPANDED",
+    "ROOT_DIR_PATH",
+    "SOURCE_DIR_PATH",
+    "SOURCE_FILE_PATHS",
+    "THIRD_PARTY_SOURCE_FNMATCH_PATTERNS",
+]
+
+
+AUTHOR = "Minor Gordon"
+
+
+ROOT_DIR_PATH = dirname(abspath(__file__))
+INCLUDE_DIR_PATH = join(ROOT_DIR_PATH, "include")
+SOURCE_DIR_PATH = join(ROOT_DIR_PATH, "src")
+
+
+AUTOCONF = {}
+
+AUTOCONF["net"] = {
+#    "linux": { "YIELD_HAVE_LINUX_LIBUUID": ( "uuid", "uuid/uuid.h" ), },
+#    "unix": { "YIELD_HAVE_OPENSSL": ( "crypto", "ssl", "ssl.h" ), },
+#    "win32": { "YIELD_HAVE_OPENSSL": ( "libeay32", "ssleay32", "ssl.h" ), },
+}
+
+AUTOCONF["thread"] = {
+#    "unix": { "YIELD_HAVE_PAPI": ( "papi", "papi.h" ), },
+}
+
+#    "unix": { "YIELD_HAVE_ZLIB": ( "z", "zlib.h" ), },
+#    "win32":  { "YIELD_HAVE_ZLIB": ( "zdll", "zlib.h" ), },
+
+CXXFLAGS = {
+    "unix": ["-fno-rtti", "-Wall", "-Wold-style-cast", "-Wunused-macros"],
+    "win32": [
+      "/EHsc", # Enable exceptions
+      "/GR-", # Disable RTTI
+      "/nologo",
+      "/wd\"4100\"",
+      "/wd\"4127\"",
+      "/wd\"4290\"",
+      "/wd\"4355\"",
+      "/wd\"4512\"",
+      # "/Za" # Disable language extensions
+    ]
+}
+
+CXXPATH = {
+    "*": [
+        INCLUDE_DIR_PATH,
+    ]
+}
+
+LDFLAGS = {
+    "win32": [
+        "/ignore:4006",
+        "/ignore:4221"
+    ],
+}
+
+LIBPATH = {
+    "*": [join(ROOT_DIR_PATH, "lib")],
+    # "win32": [join( ROOT_DIR_PATH, "lib", "win32" )]
+}
+
+LIBS = {}
+
+LIBS["aio"] = {
+    "linux": ["aio"],
+}
+
+LIBS["common"] = {
+    "linux": ["rt", "stdc++"],
+    "sunos": ["m", "rt", "stdc++"],
+}
+
+LIBS["i18n"] = {
+    "darwin": ["iconv"],
+    "freebsd": ["iconv", "intl"],
+    "sunos": ["iconv"],
+}
+
+LIBS["net"] = {
+    "sunos": ["nsl", "socket", "uuid"],
+}
+
+LIBS["process"] = {
+    "linux": ["dl"],
+}
+
+LIBS["thread"] = {
+    "freebsd": ["pthread"],
+    "linux": ["pthread"],
+    "sunos": ["cpc", "kstat"],
+}
+
+
+PROJECT_REFERENCES = {}
+PROJECT_REFERENCES["aio"] = ("fs", "net", "poll", "stage")
+PROJECT_REFERENCES["common"] = tuple()
+PROJECT_REFERENCES["fs"] = ("i18n",)
+PROJECT_REFERENCES["http"] = ("aio", "stage")
+PROJECT_REFERENCES["i18n"] = ("common",)
+PROJECT_REFERENCES["marshal"] = ("common",)
+PROJECT_REFERENCES["net"] = ("common",)
+PROJECT_REFERENCES["poll"] = ("net", "thread",)
+PROJECT_REFERENCES["process"] = ("fs",)
+PROJECT_REFERENCES["stage"] = ("thread",)
+PROJECT_REFERENCES["thread"] = ("common",)
+
+# Expand project references so that the list has dependencies going left -> right, e.g.
+# if project A depends on project B depends on project C, the order will be [A, B, C]
+def __expand_project_references(project_name):
+    project_references = []
+    for project_reference in PROJECT_REFERENCES[project_name]:
+        project_references.append(project_reference)
+        for project_reference in __expand_project_references(project_reference):
+            try:
+                del project_references[project_references.index(project_reference)]
+            except ValueError:
+                pass
+            project_references.append(project_reference)
+    return project_references
+PROJECT_REFERENCES_EXPANDED = {}
+for project_name in PROJECT_REFERENCES.iterkeys():
+    PROJECT_REFERENCES_EXPANDED[project_name] = \
+        deduplist(__expand_project_references(project_name))
+
+# pprint( PROJECT_REFERENCES_EXPANDED )
+
+LIBS_EXPANDED = {}
+for project_name, project_references in PROJECT_REFERENCES_EXPANDED.iteritems():
+    # Add all of the project references' libs to the project's libs
+    LIBS_EXPANDED[project_name] = {}
+    for project_reference in project_references + [project_name]:
+        try:
+            for platform, platform_libs in LIBS[project_reference].iteritems():
+                LIBS_EXPANDED[project_name].setdefault(platform, []).extend(platform_libs)
+        except KeyError:
+            pass
+
+    # Add the project references' outputs to the project's libs
+    for project_reference in project_references:
+        project_reference_lib = "yield_" + project_reference
+        LIBS_EXPANDED[project_name].setdefault('*', [])
+        assert project_reference_lib not in LIBS_EXPANDED[project_name]['*'], LIBS_EXPANDED[project_name]['*']
+        LIBS_EXPANDED[project_name]['*'].append(project_reference_lib)
+
+    # dedup
+    for platform in LIBS_EXPANDED[project_name].iterkeys():
+        LIBS_EXPANDED[project_name][platform] = deduplist(LIBS_EXPANDED[project_name][platform])
+LIBS = LIBS_EXPANDED
+
+# pprint( LIBS )
+
+PROJECT_NAMES = PROJECT_REFERENCES.keys()
+
+PROJECT_BUILD_ORDER = []
+def __fill_project_build_order(project_name):
+    for project_reference in PROJECT_REFERENCES[project_name]:
+        __fill_project_build_order(project_reference)
+
+    if project_name not in PROJECT_BUILD_ORDER:
+        PROJECT_BUILD_ORDER.append(project_name)
+__fill_project_build_order("http")
+__fill_project_build_order("marshal")
+__fill_project_build_order("process")
+assert len(PROJECT_BUILD_ORDER) == len(PROJECT_NAMES)
+
+
+EXCLUDE_FILE_PATHS = {}
+INCLUDE_FILE_PATHS = {}
+SOURCE_FILE_PATHS = {}
+
+
+for project_name in PROJECT_NAMES:
+    if project_name != "common":
+        project_include_dir_path = join(INCLUDE_DIR_PATH, "yield", project_name)
+        assert exists(project_include_dir_path), project_include_dir_path
+        project_source_dir_path = join(SOURCE_DIR_PATH, "yield", project_name)
+        assert exists(project_source_dir_path), project_source_dir_path
+
+        if not EXCLUDE_FILE_PATHS.has_key(project_name):
+            EXCLUDE_FILE_PATHS[project_name] = [
+                 join(project_source_dir_path, "**", "*_test" + fnmatch_pattern)
+                 for fnmatch_pattern in SOURCE_FILE_FNMATCH_PATTERNS
+            ]
+
+        EXCLUDE_FILE_PATHS.setdefault(project_name + "_test", [])
+
+        if not INCLUDE_FILE_PATHS.has_key(project_name):
+            INCLUDE_FILE_PATHS[project_name] = [
+                join(project_include_dir_path, "**", fnmatch_pattern)
+                for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS
+            ]
+
+        INCLUDE_FILE_PATHS.setdefault(project_name + "_test", [])
+
+        if not SOURCE_FILE_PATHS.has_key(project_name):
+            SOURCE_FILE_PATHS[project_name] = [
+                 join(project_source_dir_path, "**", fnmatch_pattern)
+                 for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
+                                        SOURCE_FILE_FNMATCH_PATTERNS
+            ]
+
+        if not SOURCE_FILE_PATHS.has_key(project_name + "_test"):
+            SOURCE_FILE_PATHS[project_name + "_test"] = [
+                join(project_source_dir_path, "**", "*_test" + fnmatch_pattern)
+                for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
+                                       SOURCE_FILE_FNMATCH_PATTERNS
+            ]\
+            + [
+                join(project_source_dir_path, "**", "test_" + fnmatch_pattern)
+                for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
+                                       SOURCE_FILE_FNMATCH_PATTERNS
+            ]\
+            + \
+            [join(project_source_dir_path, "yield_" + project_name + "_test_main.cpp")]
+
+EXCLUDE_FILE_PATHS["common"] = [
+    join(SOURCE_DIR_PATH, "yield", "*_test" + fnmatch_pattern)
+    for fnmatch_pattern in SOURCE_FILE_FNMATCH_PATTERNS
+]
+
+EXCLUDE_FILE_PATHS["common_test"] = []
+
+INCLUDE_FILE_PATHS["aio"] = [
+    join(INCLUDE_DIR_PATH, "yield", "aio", "posix", "aiocb.hpp"),
+    join(INCLUDE_DIR_PATH, "yield", "aio", "win32", "aiocb.hpp"),
+    join(INCLUDE_DIR_PATH, "yield", "aio", "aiocb.hpp"),
+    join(INCLUDE_DIR_PATH, "yield", "aio", "net", "sockets", "aiocb.hpp"), # before accept_aiocb
+] + \
+INCLUDE_FILE_PATHS["aio"]
+
+INCLUDE_FILE_PATHS["common"] = [
+    join(INCLUDE_DIR_PATH, "yield", "types.hpp"), # before atomic
+    join(INCLUDE_DIR_PATH, "yield", "atomic.hpp"), # before object
+    join(INCLUDE_DIR_PATH, "yield", "object.hpp"), # before event
+    join(INCLUDE_DIR_PATH, "yield", "event.hpp"), # before message
+    join(INCLUDE_DIR_PATH, "yield", "message.hpp"), # before response
+    join(INCLUDE_DIR_PATH, "yield", "response.hpp"), # before exception
+    join(INCLUDE_DIR_PATH, "yield", "time.hpp"), # before event_queue
+] + [
+    join(INCLUDE_DIR_PATH, "yield", fnmatch_pattern)
+    for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS
+]
+
+INCLUDE_FILE_PATHS["common_test"] = [join(INCLUDE_DIR_PATH, "yunit.hpp")]
+
+SOURCE_FILE_PATHS["common"] = [
+    join(SOURCE_DIR_PATH, "yield", fnmatch_pattern)
+    for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
+                           SOURCE_FILE_FNMATCH_PATTERNS
+]
+
+SOURCE_FILE_PATHS["common_test"] = [
+    join(SOURCE_DIR_PATH, "yield", "*_test" + fnmatch_pattern)
+    for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
+                           SOURCE_FILE_FNMATCH_PATTERNS
+]\
++ \
+[join(SOURCE_DIR_PATH, "yield", "yield_common_test_main.cpp")]
+
+INCLUDE_FILE_PATHS["fs"] = [
+    join(INCLUDE_DIR_PATH, "yield", "fs", "file.hpp"), # before aiocb
+    join(INCLUDE_DIR_PATH, "yield", "fs", "path.hpp"), # before file_log
+    join(INCLUDE_DIR_PATH, "yield", "fs", "stat.hpp"), # before directory
+] + \
+INCLUDE_FILE_PATHS["fs"]
+
+INCLUDE_FILE_PATHS["i18n"] = [
+    join(INCLUDE_DIR_PATH, "yield", "i18n", "posix", "code.hpp"),
+    join(INCLUDE_DIR_PATH, "yield", "i18n", "posix", "iconv.hpp"),
+    join(INCLUDE_DIR_PATH, "yield", "i18n", "posix", "tstring.hpp"),
+    join(INCLUDE_DIR_PATH, "yield", "i18n", "win32", "code.hpp"),
+    join(INCLUDE_DIR_PATH, "yield", "i18n", "win32", "iconv.hpp"),
+    join(INCLUDE_DIR_PATH, "yield", "i18n", "win32", "tstring.hpp"),
+] + \
+INCLUDE_FILE_PATHS["i18n"]
+
+INCLUDE_FILE_PATHS["http"] = [
+    join(INCLUDE_DIR_PATH, "yield", "http", "socket_peer.hpp"), # before socket_client
+    join(INCLUDE_DIR_PATH, "yield", "http", "socket_client.hpp"), # before stream_socket_client
+    join(INCLUDE_DIR_PATH, "yield", "http", "socket_server.hpp"), # before stream_socket_server
+    join(INCLUDE_DIR_PATH, "yield", "http", "stream_socket_peer.hpp"), # before stream_socket_client
+    join(INCLUDE_DIR_PATH, "yield", "http", "stream_socket_client.hpp"), # before http_client
+    join(INCLUDE_DIR_PATH, "yield", "http", "stream_socket_server.hpp"), # before http_server
+] + \
+INCLUDE_FILE_PATHS["http"]
+
+INCLUDE_FILE_PATHS["net"] = [
+    join(INCLUDE_DIR_PATH, "yield", "net", "uri.hpp"), # before socket_address
+    join(INCLUDE_DIR_PATH, "yield", "net", "sockets", "socket.hpp"), # before datagram_socket
+] + \
+INCLUDE_FILE_PATHS["net"]
+
+INCLUDE_FILE_PATHS["stage"] = [
+    join(INCLUDE_DIR_PATH, "yield", "stage", "event.hpp"),
+    join(INCLUDE_DIR_PATH, "yield", "stage", "message.hpp"),
+    join(INCLUDE_DIR_PATH, "yield", "stage", "response.hpp"),
+    join(INCLUDE_DIR_PATH, "yield", "stage", "stage_scheduler.hpp"),
+] + \
+INCLUDE_FILE_PATHS["stage"]
+
+INCLUDE_FILE_PATHS["thread"] = [
+    join(INCLUDE_DIR_PATH, "yield", "thread", "mutex.hpp"),
+    join(INCLUDE_DIR_PATH, "yield", "thread", "condition_variable.hpp"), # before synchronized_queue
+    join(INCLUDE_DIR_PATH, "yield", "thread", "synchronized_queue.hpp"), # Before synchronized_event_queue
+    join(INCLUDE_DIR_PATH, "yield", "thread", "thread.hpp"),
+] + \
+INCLUDE_FILE_PATHS["thread"]
+
+SOURCE_FILE_PATHS["fs"] = [
+    join(SOURCE_DIR_PATH, "yield", "fs", "win32", "stat.hpp"), # before directory
+] + \
+SOURCE_FILE_PATHS["fs"]
+
+SOURCE_FILE_PATHS["net"] = [
+    join(SOURCE_DIR_PATH, "yield", "net", "sockets", "win32", "winsock.hpp"),
+] + \
+SOURCE_FILE_PATHS["net"]
+
+SOURCE_FILE_PATHS["thread"] = [
+    join(SOURCE_DIR_PATH, "yield", "thread", "win32", "mutex.hpp"), # before condition_variable
+    join(SOURCE_DIR_PATH, "yield", "thread", "win32", "lightweight_mutex.hpp"), # before condition_variable
+    join(SOURCE_DIR_PATH, "yield", "thread", "win32", "semaphore.hpp"), # before condition_variable
+] + \
+SOURCE_FILE_PATHS["thread"]
+
+assert len(EXCLUDE_FILE_PATHS) == len(INCLUDE_FILE_PATHS) == len(SOURCE_FILE_PATHS)
+
+for __project_name in EXCLUDE_FILE_PATHS.iterkeys():
+    for file_paths in (EXCLUDE_FILE_PATHS, INCLUDE_FILE_PATHS, SOURCE_FILE_PATHS):
+        file_paths[__project_name] = \
+            deduplist(list(rglob(file_paths[__project_name])))
+
+THIRD_PARTY_SOURCE_FNMATCH_PATTERNS = (
+    "charProps.c",
+    "genx.*",
+    "pyparsing.py",
+    "rapidxml.hpp",
+    "yajl.*",
+)
+
+
+
+
+# Parse options
+option_parser = OptionParser()
+option_parser.add_option("--check-src-namespace", action="store_true")
+option_parser.add_option("--check-src-type-id", action="store_true")
+option_parser.add_option("--check-src-width", action="store_true")
+option_parser.add_option("--check-src-yunit", action="store_true")
+option_parser.add_option("-d", "--debug", action="store_true")
+option_parser.add_option("-f", "--force", action="store_true")
+option_parser.add_option("--format-src", action="store_true")
+option_parser.add_option("-p", "--project")
+option_parser.add_option("--generate-proj", action="store_true")
+option_parser.add_option("--generate-src", action="store_true")
+option_parser.add_option("--generate-src-test_main_cpp", action="store_true")
+option_parser.add_option("--generate-src-test_py", action="store_true")
+option_parser.add_option("--generate-src-rl", action="store_true")
+
+options, _ = option_parser.parse_args()
+
+
+if options.project:
+    assert options.project in PROJECT_NAMES, options.project
+    project_names = [options.project]
+else:
+    project_names = PROJECT_NAMES
+
+
+if options.check_src_namespace or \
+   options.check_src_type_id or \
+   options.check_src_width or \
+   options.check_src_yunit:
+
+    include_file_paths = []
+    source_file_paths = []
+    for project_name in project_names:
+        for include_file_paths_ in INCLUDE_FILE_PATHS[project_name]:
+            include_file_paths.extend(list(rglob(include_file_paths_)))
+        for source_file_paths_ in SOURCE_FILE_PATHS[project_name]:
+            source_file_paths.extend(list(rglob(source_file_paths_)))
+
+    if options.check_src_namespace or options.check_src_type_id:
+        for include_file_path in include_file_paths:
+            namespaces = include_file_path[len(INCLUDE_DIR_PATH) + 1:].split(os_sep)[:-1]
+            assert len(namespaces) > 0
+
+            include_file_lines = [include_file_line.strip()
+                                  for include_file_line in
+                                  open(include_file_path).readlines()]
+
+            for include_file_line in include_file_lines:
+                if options.check_src_namespace:
+                    if include_file_line.startswith("namespace ") and \
+                       not '{' in include_file_line:
+                        namespace = include_file_line[10:]
+                        if namespace == namespaces[0]:
+                            del namespaces[0]
+                        else:
+                            print include_file_path[len(join(INCLUDE_DIR_PATH, "yield")) + 1:] + ":",
+                            print "expected namespace", namespaces[0],
+                            print "but found", namespace
+                            break
+
+                if options.check_src_type_id:
+                    from zlib import crc32
+
+                    if include_file_line.startswith("class") and \
+                       not include_file_line.endswith(';'):
+                        globals()["class_"] = include_file_line.split(' ')[1]
+                    elif "TYPE_ID = " in include_file_line:
+                        type_id = include_file_line.split(' ')[-1][:-1]
+                        if type_id.endswith("UL"): type_id = type_id[:-2]
+                        type_name = "::".join(namespaces + [class_])
+                        expected_type_id = str(crc32(type_name) & 0xffffffff)
+
+                        if type_id != expected_type_id:
+                            print type_name + ": expected TYPE_ID =",
+                            print expected_type_id, "but found", type_id
+
+                        quoted_type_name = '"' + type_name + '"'
+                        found_quoted_type_name = False
+                        for other_include_file_line in include_file_lines:
+                            if quoted_type_name in other_include_file_line:
+                                found_quoted_type_name = True
+                                break
+                        if not found_quoted_type_name:
+                            print type_name + ": could not find type name literal"
+
+    if options.check_src_width:
+        for file_path in include_file_paths + source_file_paths:
+            if not fnmatch(file_path, THIRD_PARTY_SOURCE_FNMATCH_PATTERNS):
+                file_lines = open(file_path).readlines()
+                for file_line_i in xrange(len(file_lines)):
+                    file_line = file_lines[file_line_i]
+                    if len(file_line) > 80:
+                        print file_path + ':' + str(file_line_i + 1) + " is " + \
+                              str(len(file_line)) + " columns wide"
+
+    if options.check_src_yunit:
+        source_files = SourceFiles(source_file_paths)
+        source_files = source_files.filter(CXX_SOURCE_FILE_FNMATCH_PATTERNS)
+        source_files = source_files.exclude(THIRD_PARTY_SOURCE_FNMATCH_PATTERNS)
+        for source_file_path in source_files['*']:
+            source_dir_path, source_file_name = split(source_file_path)
+            source_file_stem, source_file_ext = splitext(source_file_name)
+            if not source_file_stem.endswith("_test") and\
+               not source_file_stem.endswith("_test_main"):
+                test_file_path = \
+                    join(
+                        source_dir_path,
+                        source_file_stem + "_test" + source_file_ext
+                    )
+                if not exists(test_file_path):
+                    print "missing", test_file_path[len(YIELD_SRC_ROOT_DIR_PATH) + 1:]
+
+
+if options.format_src:
+    source_paths = \
+    {
+        "Yield":
+            [
+                join(ROOT_DIR_PATH, "include"),
+                join(ROOT_DIR_PATH, "src", "yield"),
+            ],
+        "yutil":
+            [
+                join(ROOT_DIR_PATH, "src", "yutil.py"),
+                join(ROOT_DIR_PATH, "src", "yutil_test.py"),
+            ],
+        "yuild": [join(ROOT_DIR_PATH, "src", "yuild")],
+    }
+
+    for project, source_paths in source_paths.iteritems():
+        source_files = SourceFiles()
+        for source_path in source_paths:
+            if isdir(source_path):
+                for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
+                                       SOURCE_FILE_FNMATCH_PATTERNS:
+                    for source_file_path in rglob(join(source_path, "**", fnmatch_pattern)):
+                        source_files.append(source_file_path)
+            else:
+                assert isfile(source_path), source_path
+                source_files.append(source_path)
+
+        source_files = source_files.exclude(THIRD_PARTY_SOURCE_FNMATCH_PATTERNS)
+
+        source_files.format(
+            author="Minor Gordon",
+            force=options.force,
+            project=project,
+        )
+
+#        AStyle = join(ROOT_DIR_PATH, "sbin", "AStyle.exe")
+#        if exists(AStyle):
+#            astylerc_path = join(ROOT_DIR_PATH, "etc", "astylerc")
+#            assert exists(astylerc_path)
+#            for source_file in source_files:
+#                source_file_ext = splitext(source_file.get_path())[1]
+#                if source_file_ext in (".cpp", ".hpp"):
+#                    call([AStyle, "--options=" + astylerc_path, source_file.get_path()])
+
+
+if options.generate_proj:
+    # Generate project files
+    for project_name in PROJECT_NAMES:
+        project = \
+        {
+           "autoconf": AUTOCONF.get(project_name, None),
+           "build_dir_path": join(ROOT_DIR_PATH, "build", "yield", project_name),
+           "cxxflags": CXXFLAGS,
+           "cxxpath": CXXPATH,
+           "exclude_file_paths": EXCLUDE_FILE_PATHS[project_name],
+           "include_file_paths": INCLUDE_FILE_PATHS[project_name],
+           "libpath": LIBPATH,
+           "libs": LIBS.get(project_name, {}),
+           "ldflags": LDFLAGS,
+           "name": project_name,
+           "output_file_path": join(ROOT_DIR_PATH, "lib", "yield_" + project_name),
+           "project_dir_path": join(ROOT_DIR_PATH, "proj", "yield", project_name),
+           "project_references":
+                [
+                    join(
+                        ROOT_DIR_PATH,
+                        "proj",
+                        "yield",
+                        project_reference,
+                        project_reference
+                    )
+                    for project_reference in PROJECT_REFERENCES[project_name]
+                ],
+           "source_file_paths": SOURCE_FILE_PATHS[project_name],
+           "type": "lib",
+        }
+
+        project_test = project.copy()
+        project_test["build_dir_path"] = \
+            join(ROOT_DIR_PATH, "build", "yield", project_name + "_test")
+        project_test["exclude_file_paths"] = EXCLUDE_FILE_PATHS[project_name + "_test"]
+        project_test["include_file_paths"] = INCLUDE_FILE_PATHS[project_name + "_test"]
+        project_test["libs"] = deepcopy(project["libs"])
+        project_test["libs"].setdefault('*', []).insert(0, "yield_" + project_name)
+
+        project_test["name"] = project_name + "_test"
+        project_test["output_file_path"] = \
+            join(ROOT_DIR_PATH, "bin", "yield_" + project_name + "_test")
+        project_test["project_references"] = \
+            [join(ROOT_DIR_PATH, "proj", "yield", project_name, project_name)]
+        project_test["source_file_paths"] = \
+             SOURCE_FILE_PATHS[project_name + "_test"]
+        project_test["type"] = "exe"
+
+        for project_dict in (project, project_test):
+            if project_dict is not None:
+                for key in ("build_dir_path", "project_dir_path"):
+                    if not exists(project_dict[key]):
+                        makedirs(project_dict[key])
+
+                if project_name != "common":
+                    project_source_dir_path = \
+                        join(SOURCE_DIR_PATH, "yield", project_name)
+
+                    mirror_subdirectories(
+                        project_source_dir_path,
+                        project["build_dir_path"]
+                    )
+
+                    mirror_subdirectories(
+                        project_source_dir_path,
+                        project_test["build_dir_path"]
+                    )
+
+                for project_class, file_ext in \
+                    (
+                        (Makefile, ".Makefile"),
+                        (VCXProj, ".vcxproj"),
+                        (VCXProjFilters, ".vcxproj.filters"),
+                        (VCXProjUser, ".vcxproj.user"),
+                    ):
+
+                    write_file(
+                        join(
+                            project_dict["project_dir_path"],
+                            project_dict["name"] + file_ext
+                        ),
+                        str(project_class(**project_dict)),
+                        force=options.force
+                    )
+
+
+    # Generate Visual Studio solution files
+    write_file(
+        "yield.sln",
+        str(
+            VCXSln(
+                [join("proj", "yield", project_name, project_name)
+                 for project_name in PROJECT_NAMES] + \
+                [join("proj", "yield", project_name, project_name + "_test")
+                 for project_name in PROJECT_NAMES],
+                "yield.sln"
+            )
+        ),
+        newline="\r\n"
+    )
+
+    # Generate top-level Makefile
+    write_file(
+        "Makefile",
+        str(TopLevelMakefile(PROJECT_REFERENCES)),
+        force=options.force
+    )
+
+
+if options.generate_src or options.generate_src_rl:
+    for rl_file_path in rglob(join(ROOT_DIR_PATH, "src", "yield", "**", "*.rl")):
+        cpp_file_path = \
+            join(
+                dirname(rl_file_path),
+                split(rl_file_path)[1][:-2] + "cpp"
+            )
+
+        if exists(cpp_file_path):
+            args = ["ragel"]
+            args.append("-L")
+            args.extend(("-o", cpp_file_path))
+            args.append(rl_file_path)
+            call(args)
+            print "wrote", cpp_file_path
+
+
+if options.generate_src or options.generate_src_test_main_cpp:
+    for project_name in PROJECT_NAMES:
+        if project_name == "common":
+            project_src_dir_path = join(ROOT_DIR_PATH, "src", "yield")
+            test_cpp_file_paths = list(rglob(join(project_src_dir_path, "*_test.cpp")))
+        else:
+            project_src_dir_path = join(ROOT_DIR_PATH, "src", "yield", project_name)
+            test_cpp_file_paths = list(rglob(join(project_src_dir_path, "**", "*_test.cpp")))
+
+        test_suite_decls = []
+        test_suite_runs = []
+
+        for test_cpp_file in SourceFiles(test_cpp_file_paths):
+            test_suite_names = []
+            test_cpp_file_lines = open(test_cpp_file.get_path()).readlines()
+            test_cpp_file_line_i = 0
+            while test_cpp_file_line_i < len(test_cpp_file_lines):
+                test_cpp_file_line = test_cpp_file_lines[test_cpp_file_line_i].strip()
+                if test_cpp_file_line.startswith("TEST_SUITE"):
+                    test_suite_declaration = []
+                    while test_cpp_file_line_i < len(test_cpp_file_lines):
+                        test_cpp_file_line = test_cpp_file_lines[test_cpp_file_line_i].strip()
+                        test_suite_declaration.append(test_cpp_file_line)
+                        test_cpp_file_line_i += 1
+                        if test_cpp_file_line.find(';') != -1:
+                            break
+                    test_suite_declaration = ''.join(test_suite_declaration).replace(' ', '')
+                    test_suite_name = re.match("TEST_SUITE(?:_EX)?\((\w+)", test_suite_declaration)
+                    if test_suite_name is not None:
+                        test_suite_name = test_suite_name.groups()[0]
+                        if not test_suite_name.endswith("TestSuite"):
+                            test_suite_name += "TestSuite"
+                        test_suite_names.append(test_suite_name)
+                else:
+                    test_cpp_file_line_i += 1
+                    continue
+
+            if len(test_suite_names) > 0:
+                test_suite_names = strlistsort(test_suite_names)
+
+                for test_suite_name in test_suite_names:
+                    assert test_suite_name.endswith("TestSuite")
+                    test_suite_stem = test_suite_name[:-9]
+
+                    test_suite_decl = \
+                        "extern yunit::TestSuite& %(test_suite_name)s();" % locals()
+
+                    test_suite_run = """\
+// %(test_suite_stem)s
+std::cout << "%(test_suite_stem)s:" << std::endl;
+failed_test_case_count += %(test_suite_name)s().run();
+std::cout << std::endl;""" % locals()
+
+                    if test_cpp_file.get_platform() != "*":
+                        platform_guard = PLATFORM_GUARDS[test_cpp_file.get_platform()]
+
+                        test_suite_decl = indent(INDENT_SPACES["cpp"], test_suite_decl)
+                        test_suite_decl = "%(platform_guard)s\n%(test_suite_decl)s\n#endif" % locals()
+
+                        test_suite_run = indent(INDENT_SPACES["cpp"], test_suite_run)
+                        test_suite_run = "%(platform_guard)s\n%(test_suite_run)s\n#endif" % locals()
+
+                    test_suite_decls.append(test_suite_decl)
+                    test_suite_runs.append(test_suite_run)
+
+        test_suite_decls = '\n'.join(test_suite_decls)
+        test_suite_runs = \
+            indent(INDENT_SPACES["cpp"], '\n\n'.join(test_suite_runs))
+
+        write_file(
+            join(project_src_dir_path, "yield_" + project_name + "_test_main.cpp"),
+        """\
+#include "yunit.hpp"
+
+#include <iostream>
+
+
+%(test_suite_decls)s
+
+
+int main(int, char**) {
+  int failed_test_case_count = 0;
+
+%(test_suite_runs)s
+
+  return failed_test_case_count;
+}
+
+""" % locals(), force=options.force)
+
+
+if options.generate_src or options.generate_src_test_py:
+    if not '.' in sys.path:
+        sys.path.append('.')
+
+    for py_file_path in rglob(join(ROOT_DIR_PATH, "src", "yield", "**", "*_test.py")):
+        py_dir_path, py_module_name = split(py_file_path)
+        chdir(py_dir_path)
+        py_module_name = splitext(py_module_name)[0]
+        try: unlink(py_module_name + ".pyc")
+        except: pass
+        __import__(py_module_name)
+
+
+#if options.generate_src or options.generate_src_idl:
+#    from yidl.compiler import compile
+#    from yidl.target.yield_cpp_target import YieldCXXTarget
+#
+#    # Generate source from IDL definitions
+#    for dir_path in\
+#        (
+#            join(ROOT_DIR_PATH, "include"),
+#            join(ROOT_DIR_PATH, "src", "yield"),
+#        ):
+#
+#        for idl_file_path in rglob(join(dir_path, "**", "*.idl")):
+#            hpp_file_path = \
+#                join(
+#                    dirname(idl_file_path),
+#                    split(idl_file_path)[1][:-3] + "hpp"
+#                )
+#
+#            if options.debug:
+#                print "compiling", idl_file_path, "into", hpp_file_path
+#
+#            compile(
+#                idl_file_path,
+#                YieldCXXTarget(
+#                    force=options.force,
+#                    output_file_path=hpp_file_path
+#                )
+#            )
+
+#if options.generate_src or options.public:
+#    YIELD_PUBLIC_DIR_PATH = \
+#        abspath(join(ROOT_DIR_PATH, "..", "yield_public"))
+#    if exists(YIELD_PUBLIC_DIR_PATH):
+#        assert exists(join(YIELD_PUBLIC_DIR_PATH, "include", "yield"))
+#        assert exists(join(YIELD_PUBLIC_DIR_PATH, "src", "yield"))
+#
+#        for project_name in listdir(join(YIELD_PUBLIC_DIR_PATH, "include", "yield")):
+#            if project_name.endswith(".hpp"):
+#                project_name = splitext(project_name)[0]
+#
+#                hpp = []
+#                cpp = ['#include "yield/%(project_name)s.hpp"\n\n\n' % locals()]
+#
+#                for project_reference in PROJECT_BUILD_ORDER[:PROJECT_BUILD_ORDER.index(project_name) + 1]:
+#                    include_files = SourceFiles(INCLUDE_FILE_PATHS[project_reference])
+#                    include_files = include_files.filter(C_CXX_INCLUDE_FILE_FNMATCH_PATTERNS)
+#                    hpp.append(include_files.get_combined_repr())
+#                    source_files = SourceFiles(SOURCE_FILE_PATHS[project_reference])
+#                    source_files = source_files.filter(C_CXX_FILE_FNMATCH_PATTERNS)
+#                    source_files = source_files.exclude("test_*")
+#                    source_files = source_files.exclude("*_test*")
+#                    cpp.append(source_files.get_combined_repr())
+#
+#                write_file(
+#                    join(
+#                        YIELD_PUBLIC_DIR_PATH,
+#                        "include",
+#                        "yield",
+#                        project_name + ".hpp"
+#                    ),
+#                    hpp,
+#                    force=options.force
+#                )
+#
+#                write_file(
+#                    join(
+#                        YIELD_PUBLIC_DIR_PATH,
+#                        "src",
+#                        "yield",
+#                        project_name + ".cpp"
+#                    ),
+#                    cpp,
+#                    force=options.force
+#                )

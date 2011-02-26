@@ -1,4 +1,4 @@
-// yield/fs/directory_test.hpp
+// yield/fs/directory_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
