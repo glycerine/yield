@@ -106,13 +106,13 @@ File::mmap(
       uliFileOffset.QuadPart = offset;
 
       lpMapAddress
-        = MapViewOfFile(
-            hFileMapping,
-            flags,
-            uliFileOffset.HighPart,
-            uliFileOffset.LowPart,
-            uliMaximumSize.LowPart
-          );
+      = MapViewOfFile(
+          hFileMapping,
+          flags,
+          uliFileOffset.HighPart,
+          uliFileOffset.LowPart,
+          uliMaximumSize.LowPart
+        );
 
       if (lpMapAddress == NULL) {
         CloseHandle(hFileMapping);
@@ -121,24 +121,24 @@ File::mmap(
     } else
       return NULL;
   } else { // length == 0
-      // Can't CreateFileMapping on an empty file; instead 
-      // return an "empty" MemoryMappedFile (lpMapAddress=NULL).
-      hFileMapping = NULL;
-      lpMapAddress = reinterpret_cast<LPVOID>(-1);
+    // Can't CreateFileMapping on an empty file; instead
+    // return an "empty" MemoryMappedFile (lpMapAddress=NULL).
+    hFileMapping = NULL;
+    lpMapAddress = reinterpret_cast<LPVOID>(-1);
   }
 
   return new
-    MemoryMappedFile(
-      length,
-      lpMapAddress,
-      *this,
-      hFileMapping,
-      offset,
-      flags,
-      prot,
-      read_only,
-      shared
-    );
+         MemoryMappedFile(
+           length,
+           lpMapAddress,
+           *this,
+           hFileMapping,
+           offset,
+           flags,
+           prot,
+           read_only,
+           shared
+         );
 }
 
 ssize_t File::pread(void* buf, size_t buflen, uint64_t offset) {

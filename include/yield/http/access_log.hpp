@@ -35,17 +35,10 @@
 
 #include <ostream>
 
-
 namespace yield {
-namespace fs {
-class File;
-}
-
-
 namespace http {
 class HTTPRequest;
 class HTTPResponse;
-
 
 class AccessLog : public Object {
 public:

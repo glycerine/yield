@@ -28,7 +28,7 @@ else
 endif
 
 
-LDFLAGS += -L../../../lib
+LDFLAGS += -L../../../lib/yield
 ifeq ($(UNAME), MINGW32)
 	LDFLAGS += /ignore:4006 /ignore:4221
 endif
@@ -49,12 +49,12 @@ DEP_FILE_PATHS := $(shell find ../../../build/yield/marshal_test -name "*.d")
 OBJECT_FILE_PATHS += ../../../build/yield/marshal_test/json/json_marshaller_test.o ../../../build/yield/marshal_test/pretty_printer_test.o ../../../build/yield/marshal_test/xdr/xdr_marshaller_test.o ../../../build/yield/marshal_test/xml/xml_marshaller_test.o ../../../build/yield/marshal_test/yield_marshal_test_main.o
 
 
-../../../bin/yield_marshal_test: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../bin 2>/dev/null
+../../../bin/yield/yield_marshal_test: $(OBJECT_FILE_PATHS)
+	-mkdir -p ../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(OBJECT_FILE_PATHS) -o $@ $(LIBS)
 
 clean:
-	$(RM) ../../../bin/yield_marshal_test $(OBJECT_FILE_PATHS)
+	$(RM) ../../../bin/yield/yield_marshal_test $(OBJECT_FILE_PATHS)
 
 depclean:
 	$(RM) $(DEP_FILE_PATHS)

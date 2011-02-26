@@ -28,7 +28,7 @@ else
 endif
 
 
-LDFLAGS += -L../../../lib
+LDFLAGS += -L../../../lib/yield
 ifeq ($(UNAME), MINGW32)
 	LDFLAGS += /ignore:4006 /ignore:4221
 endif
@@ -48,12 +48,12 @@ DEP_FILE_PATHS := $(shell find ../../../build/yield/common -name "*.d")
 OBJECT_FILE_PATHS += ../../../build/yield/common/buffer.o ../../../build/yield/common/date_time.o ../../../build/yield/common/exception.o ../../../build/yield/common/log.o ../../../build/yield/common/page.o ../../../build/yield/common/request.o ../../../build/yield/common/string_buffer.o ../../../build/yield/common/time.o
 
 
-../../../lib/libyield_common.a: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../lib 2>/dev/null
+../../../lib/yield/libyield_common.a: $(OBJECT_FILE_PATHS)
+	-mkdir -p ../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(OBJECT_FILE_PATHS)
 
 clean:
-	$(RM) ../../../lib/libyield_common.a $(OBJECT_FILE_PATHS)
+	$(RM) ../../../lib/yield/libyield_common.a $(OBJECT_FILE_PATHS)
 
 depclean:
 	$(RM) $(DEP_FILE_PATHS)

@@ -96,7 +96,7 @@ File::mmap(
   }
 
   int flags = shared ? MAP_SHARED : MAP_PRIVATE;
-  int prot = read_only ? PROT_READ : PROT_READ|PROT_WRITE;
+  int prot = read_only ? PROT_READ : PROT_READ | PROT_WRITE;
 
   void* data;
   if (length > 0) {
@@ -107,14 +107,14 @@ File::mmap(
     data = MAP_FAILED;
 
   return new
-    MemoryMappedFile(
-      length,
-      data,
-      *this,
-      offset,
-      flags,
-      prot
-    );
+         MemoryMappedFile(
+           length,
+           data,
+           *this,
+           offset,
+           flags,
+           prot
+         );
 }
 
 YO_NEW_REF ExtendedAttributes* File::openxattrs() {

@@ -81,7 +81,7 @@ public:
 
 private:
   Path path;
-  File *read_file, *write_file;
+  File* read_file, *write_file;
 };
 
 

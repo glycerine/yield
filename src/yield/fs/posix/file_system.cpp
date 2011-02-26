@@ -83,7 +83,7 @@ bool FileSystem::chown(const Path& path, uid_t uid, gid_t gid) {
 }
 
 YO_NEW_REF File* FileSystem::creat(const Path& path, mode_t mode) {
-  return open(path, O_CREAT|O_WRONLY|O_TRUNC, mode);
+  return open(path, O_CREAT | O_WRONLY | O_TRUNC, mode);
 }
 
 bool FileSystem::exists(const Path& path) {

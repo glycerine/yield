@@ -52,11 +52,11 @@ public:
       pid_t pid = -1,
       int16_t whence = SEEK_SET
     ) {
-        flock_.l_len = len;
-        flock_.l_pid = pid;
-        flock_.l_start = start;
-        flock_.l_type = exclusive ? F_WRLCK : F_RDLCK;
-        flock_.l_whence = whence;
+      flock_.l_len = len;
+      flock_.l_pid = pid;
+      flock_.l_start = start;
+      flock_.l_type = exclusive ? F_WRLCK : F_RDLCK;
+      flock_.l_whence = whence;
     }
 
     Lock(const flock& flock_) : flock_(flock_) {

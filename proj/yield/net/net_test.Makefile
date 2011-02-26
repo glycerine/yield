@@ -28,7 +28,7 @@ else
 endif
 
 
-LDFLAGS += -L../../../lib
+LDFLAGS += -L../../../lib/yield
 ifeq ($(UNAME), MINGW32)
 	LDFLAGS += /ignore:4006 /ignore:4221
 endif
@@ -49,12 +49,12 @@ DEP_FILE_PATHS := $(shell find ../../../build/yield/net_test -name "*.d")
 OBJECT_FILE_PATHS += ../../../build/yield/net_test/sockets/socket_address_test.o ../../../build/yield/net_test/sockets/socket_pair_test.o ../../../build/yield/net_test/sockets/ssl/ssl_context_test.o ../../../build/yield/net_test/sockets/tcp_socket_test.o ../../../build/yield/net_test/sockets/udp_socket_test.o ../../../build/yield/net_test/uri_test.o ../../../build/yield/net_test/uuid_test.o ../../../build/yield/net_test/yield_net_test_main.o
 
 
-../../../bin/yield_net_test: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../bin 2>/dev/null
+../../../bin/yield/yield_net_test: $(OBJECT_FILE_PATHS)
+	-mkdir -p ../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(OBJECT_FILE_PATHS) -o $@ $(LIBS)
 
 clean:
-	$(RM) ../../../bin/yield_net_test $(OBJECT_FILE_PATHS)
+	$(RM) ../../../bin/yield/yield_net_test $(OBJECT_FILE_PATHS)
 
 depclean:
 	$(RM) $(DEP_FILE_PATHS)

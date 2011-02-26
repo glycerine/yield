@@ -22,13 +22,13 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IntDir>$(ProjectDir)..\..\..\build\yield\poll_test\</IntDir>
-    <OutDir>$(ProjectDir)..\..\..\bin\</OutDir>
+    <OutDir>$(ProjectDir)..\..\..\bin\yield\</OutDir>
     <TargetName>yield_poll_test</TargetName>
     <TargetExt></TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IntDir>$(ProjectDir)..\..\..\build\yield\poll_test\</IntDir>
-    <OutDir>$(ProjectDir)..\..\..\bin\</OutDir>
+    <OutDir>$(ProjectDir)..\..\..\bin\yield\</OutDir>
     <TargetName>yield_poll_test</TargetName>
     <TargetExt></TargetExt>
   </PropertyGroup>
@@ -51,7 +51,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>yield_poll.lib;yield_net.lib;yield_thread.lib;yield_common.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <OutputFile>$(OutDir)yield_poll_test.exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -72,7 +72,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>yield_poll.lib;yield_net.lib;yield_thread.lib;yield_common.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <OutputFile>$(OutDir)yield_poll_test.exe</OutputFile>
       <GenerateDebugInformation>false</GenerateDebugInformation>

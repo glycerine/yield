@@ -48,14 +48,14 @@ MemoryMappedFile::MemoryMappedFile(
   bool read_only,
   bool shared
 ) : Buffer(capacity),
-    data_(data),
-    file(file.inc_ref()),
-    file_mapping(file_mapping),
-    file_offset(file_offset),
-    flags(flags),
-    prot(prot),
-    read_only(read_only),
-    shared(shared) {
+  data_(data),
+  file(file.inc_ref()),
+  file_mapping(file_mapping),
+  file_offset(file_offset),
+  flags(flags),
+  prot(prot),
+  read_only(read_only),
+  shared(shared) {
   if (data_ == reinterpret_cast<void*>(-1)) {
     debug_assert_eq(file_mapping, NULL);
   } else {
@@ -107,13 +107,13 @@ void MemoryMappedFile::reserve(size_t capacity) {
         uliFileOffset.QuadPart = file_offset;
 
         LPVOID lpMapAddress
-          = MapViewOfFile(
-              hFileMapping,
-              flags,
-              uliFileOffset.HighPart,
-              uliFileOffset.LowPart,
-              uliMaximumSize.LowPart
-            );
+        = MapViewOfFile(
+            hFileMapping,
+            flags,
+            uliFileOffset.HighPart,
+            uliFileOffset.LowPart,
+            uliMaximumSize.LowPart
+          );
 
         if (lpMapAddress != NULL) {
           capacity_ = capacity;

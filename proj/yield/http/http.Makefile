@@ -28,7 +28,7 @@ else
 endif
 
 
-LDFLAGS += -L../../../lib
+LDFLAGS += -L../../../lib/yield
 ifeq ($(UNAME), MINGW32)
 	LDFLAGS += /ignore:4006 /ignore:4221
 endif
@@ -55,12 +55,12 @@ DEP_FILE_PATHS := $(shell find ../../../build/yield/http -name "*.d")
 OBJECT_FILE_PATHS += ../../../build/yield/http/access_log.o ../../../build/yield/http/file_access_log.o ../../../build/yield/http/http_client.o ../../../build/yield/http/http_message.o ../../../build/yield/http/http_message_parser.o ../../../build/yield/http/http_request.o ../../../build/yield/http/http_request_handler.o ../../../build/yield/http/http_request_parser.o ../../../build/yield/http/http_response.o ../../../build/yield/http/http_response_parser.o ../../../build/yield/http/http_server.o ../../../build/yield/http/socket_client.o ../../../build/yield/http/socket_peer.o ../../../build/yield/http/socket_server.o ../../../build/yield/http/stream_socket_client.o ../../../build/yield/http/stream_socket_peer.o ../../../build/yield/http/stream_socket_server.o
 
 
-../../../lib/libyield_http.a: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../lib 2>/dev/null
+../../../lib/yield/libyield_http.a: $(OBJECT_FILE_PATHS)
+	-mkdir -p ../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(OBJECT_FILE_PATHS)
 
 clean:
-	$(RM) ../../../lib/libyield_http.a $(OBJECT_FILE_PATHS)
+	$(RM) ../../../lib/yield/libyield_http.a $(OBJECT_FILE_PATHS)
 
 depclean:
 	$(RM) $(DEP_FILE_PATHS)

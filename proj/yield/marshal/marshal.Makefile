@@ -28,7 +28,7 @@ else
 endif
 
 
-LDFLAGS += -L../../../lib
+LDFLAGS += -L../../../lib/yield
 ifeq ($(UNAME), MINGW32)
 	LDFLAGS += /ignore:4006 /ignore:4221
 endif
@@ -49,12 +49,12 @@ DEP_FILE_PATHS := $(shell find ../../../build/yield/marshal -name "*.d")
 OBJECT_FILE_PATHS += ../../../build/yield/marshal/boolean.o ../../../build/yield/marshal/double.o ../../../build/yield/marshal/integer.o ../../../build/yield/marshal/json/json_decoder.o ../../../build/yield/marshal/json/json_encoder.o ../../../build/yield/marshal/json/json_marshaller.o ../../../build/yield/marshal/json/json_unmarshaller.o ../../../build/yield/marshal/json/yajl.o ../../../build/yield/marshal/marshaller.o ../../../build/yield/marshal/pretty_printer.o ../../../build/yield/marshal/string.o ../../../build/yield/marshal/string_literal.o ../../../build/yield/marshal/unmarshaller.o ../../../build/yield/marshal/xdr/xdr_decoder.o ../../../build/yield/marshal/xdr/xdr_encoder.o ../../../build/yield/marshal/xdr/xdr_marshaller.o ../../../build/yield/marshal/xdr/xdr_unmarshaller.o ../../../build/yield/marshal/xml/charProps.o ../../../build/yield/marshal/xml/genx.o ../../../build/yield/marshal/xml/xml_encoder.o ../../../build/yield/marshal/xml/xml_marshaller.o ../../../build/yield/marshal/xml/xml_unmarshaller.o
 
 
-../../../lib/libyield_marshal.a: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../lib 2>/dev/null
+../../../lib/yield/libyield_marshal.a: $(OBJECT_FILE_PATHS)
+	-mkdir -p ../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(OBJECT_FILE_PATHS)
 
 clean:
-	$(RM) ../../../lib/libyield_marshal.a $(OBJECT_FILE_PATHS)
+	$(RM) ../../../lib/yield/libyield_marshal.a $(OBJECT_FILE_PATHS)
 
 depclean:
 	$(RM) $(DEP_FILE_PATHS)

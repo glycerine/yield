@@ -31,14 +31,10 @@
 #define _YIELD_AIO_FS_AIOCB_HPP_
 
 #include "yield/aio/aiocb.hpp"
-
+#include "yield/fs/file.hpp"
 
 namespace yield {
 class Page;
-namespace fs {
-class File;
-}
-
 
 namespace aio {
 namespace fs {

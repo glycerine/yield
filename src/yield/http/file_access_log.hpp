@@ -30,9 +30,9 @@
 #ifndef _YIELD_HTTP_FILE_ACCESS_LOG_HPP_
 #define _YIELD_HTTP_FILE_ACCESS_LOG_HPP_
 
+#include "yield/fs/file.hpp"
 #include "yield/fs/path.hpp"
 #include "yield/http/access_log.hpp"
-
 
 namespace yield {
 namespace http {

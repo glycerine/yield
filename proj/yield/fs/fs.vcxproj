@@ -22,13 +22,13 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IntDir>$(ProjectDir)..\..\..\build\yield\fs\</IntDir>
-    <OutDir>$(ProjectDir)..\..\..\lib\</OutDir>
+    <OutDir>$(ProjectDir)..\..\..\lib\yield\</OutDir>
     <TargetName>yield_fs</TargetName>
     <TargetExt></TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IntDir>$(ProjectDir)..\..\..\build\yield\fs\</IntDir>
-    <OutDir>$(ProjectDir)..\..\..\lib\</OutDir>
+    <OutDir>$(ProjectDir)..\..\..\lib\yield\</OutDir>
     <TargetName>yield_fs</TargetName>
     <TargetExt></TargetExt>
   </PropertyGroup>
@@ -51,7 +51,7 @@
     </ClCompile>
     <Lib>
       <AdditionalDependencies>yield_i18n.lib;yield_common.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <OutputFile>$(OutDir)yield_fs.lib</OutputFile>
     </Lib>
@@ -70,7 +70,7 @@
     </ClCompile>
     <Lib>
       <AdditionalDependencies>yield_i18n.lib;yield_common.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <OutputFile>$(OutDir)yield_fs.lib</OutputFile>
     </Lib>

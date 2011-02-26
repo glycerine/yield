@@ -28,8 +28,6 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "file_access_log.hpp"
-#include "yield/auto_object.hpp"
-#include "yield/fs/file.hpp"
 #include "yield/fs/file_system.hpp"
 
 #include <fcntl.h>
@@ -58,8 +56,7 @@ FileAccessLog::write
   const HTTPResponse& http_response
 ) {
   if (file == NULL) {
-    auto_Object<FileSystem> file_system = FileSystem::create();
-    file = file_system->open(file_path, O_CREAT | O_WRONLY | O_APPEND);
+    file = FileSystem().open(file_path, O_CREAT | O_WRONLY | O_APPEND);
     if (file == NULL)
       return;
   }

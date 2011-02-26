@@ -44,7 +44,7 @@ namespace yield {
 namespace fs {
 namespace win32 {
 YO_NEW_REF File* FileSystem::creat(const Path& path) {
-  return open(path, O_CREAT|O_WRONLY|O_TRUNC);
+  return open(path, O_CREAT | O_WRONLY | O_TRUNC);
 }
 
 bool FileSystem::exists(const Path& path) {
@@ -325,7 +325,7 @@ bool FileSystem::touch(const Path& path) {
 }
 
 bool FileSystem::truncate(const Path& path, uint64_t new_size) {
-  File* file = open(path, O_CREAT|O_WRONLY);
+  File* file = open(path, O_CREAT | O_WRONLY);
   if (file != NULL) {
     file->truncate(new_size);
     File::dec_ref(*file);

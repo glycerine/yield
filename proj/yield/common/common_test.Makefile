@@ -28,7 +28,7 @@ else
 endif
 
 
-LDFLAGS += -L../../../lib
+LDFLAGS += -L../../../lib/yield
 ifeq ($(UNAME), MINGW32)
 	LDFLAGS += /ignore:4006 /ignore:4221
 endif
@@ -49,12 +49,12 @@ DEP_FILE_PATHS := $(shell find ../../../build/yield/common_test -name "*.d")
 OBJECT_FILE_PATHS += ../../../build/yield/common_test/atomic_test.o ../../../build/yield/common_test/auto_object_test.o ../../../build/yield/common_test/date_time_test.o ../../../build/yield/common_test/event_test.o ../../../build/yield/common_test/exception_test.o ../../../build/yield/common_test/fixed_buffer_test.o ../../../build/yield/common_test/log_test.o ../../../build/yield/common_test/message_test.o ../../../build/yield/common_test/object_test.o ../../../build/yield/common_test/page_test.o ../../../build/yield/common_test/request_test.o ../../../build/yield/common_test/response_test.o ../../../build/yield/common_test/string_buffer_test.o ../../../build/yield/common_test/time_test.o ../../../build/yield/common_test/yield_common_test_main.o
 
 
-../../../bin/yield_common_test: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../bin 2>/dev/null
+../../../bin/yield/yield_common_test: $(OBJECT_FILE_PATHS)
+	-mkdir -p ../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(OBJECT_FILE_PATHS) -o $@ $(LIBS)
 
 clean:
-	$(RM) ../../../bin/yield_common_test $(OBJECT_FILE_PATHS)
+	$(RM) ../../../bin/yield/yield_common_test $(OBJECT_FILE_PATHS)
 
 depclean:
 	$(RM) $(DEP_FILE_PATHS)

@@ -92,8 +92,8 @@ TEST_EX(POSIXFileSystem, setxattr, FileSystemTest) {
 }
 
 TEST_EX(POSIXFileSystem, symlink, FileSystemTest) {
-    if (!FileSystem().symlink(get_test_file_name(), get_test_link_name()))
-      throw Exception();
+  if (!FileSystem().symlink(get_test_file_name(), get_test_link_name()))
+    throw Exception();
 }
 }
 }

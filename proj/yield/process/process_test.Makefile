@@ -28,7 +28,7 @@ else
 endif
 
 
-LDFLAGS += -L../../../lib
+LDFLAGS += -L../../../lib/yield
 ifeq ($(UNAME), MINGW32)
 	LDFLAGS += /ignore:4006 /ignore:4221
 endif
@@ -55,12 +55,12 @@ DEP_FILE_PATHS := $(shell find ../../../build/yield/process_test -name "*.d")
 OBJECT_FILE_PATHS += ../../../build/yield/process_test/process_test.o ../../../build/yield/process_test/shared_library_test.o ../../../build/yield/process_test/yield_process_test_main.o
 
 
-../../../bin/yield_process_test: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../bin 2>/dev/null
+../../../bin/yield/yield_process_test: $(OBJECT_FILE_PATHS)
+	-mkdir -p ../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(OBJECT_FILE_PATHS) -o $@ $(LIBS)
 
 clean:
-	$(RM) ../../../bin/yield_process_test $(OBJECT_FILE_PATHS)
+	$(RM) ../../../bin/yield/yield_process_test $(OBJECT_FILE_PATHS)
 
 depclean:
 	$(RM) $(DEP_FILE_PATHS)

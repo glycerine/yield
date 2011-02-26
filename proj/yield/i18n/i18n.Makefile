@@ -28,7 +28,7 @@ else
 endif
 
 
-LDFLAGS += -L../../../lib
+LDFLAGS += -L../../../lib/yield
 ifeq ($(UNAME), MINGW32)
 	LDFLAGS += /ignore:4006 /ignore:4221
 endif
@@ -69,12 +69,12 @@ ifeq ($(UNAME), MINGW32)
 endif
 
 
-../../../lib/libyield_i18n.a: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../lib 2>/dev/null
+../../../lib/yield/libyield_i18n.a: $(OBJECT_FILE_PATHS)
+	-mkdir -p ../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(OBJECT_FILE_PATHS)
 
 clean:
-	$(RM) ../../../lib/libyield_i18n.a $(OBJECT_FILE_PATHS)
+	$(RM) ../../../lib/yield/libyield_i18n.a $(OBJECT_FILE_PATHS)
 
 depclean:
 	$(RM) $(DEP_FILE_PATHS)

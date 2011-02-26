@@ -28,7 +28,7 @@ else
 endif
 
 
-LDFLAGS += -L../../../lib
+LDFLAGS += -L../../../lib/yield
 ifeq ($(UNAME), MINGW32)
 	LDFLAGS += /ignore:4006 /ignore:4221
 endif
@@ -52,12 +52,12 @@ DEP_FILE_PATHS := $(shell find ../../../build/yield/stage_test -name "*.d")
 OBJECT_FILE_PATHS += ../../../build/yield/stage_test/seda_stage_scheduler_test.o ../../../build/yield/stage_test/stage_test.o ../../../build/yield/stage_test/synchronized_event_queue_test.o ../../../build/yield/stage_test/synchronized_response_queue_test.o ../../../build/yield/stage_test/wavefront_stage_scheduler_test.o ../../../build/yield/stage_test/yield_stage_test_main.o
 
 
-../../../bin/yield_stage_test: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../bin 2>/dev/null
+../../../bin/yield/yield_stage_test: $(OBJECT_FILE_PATHS)
+	-mkdir -p ../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(OBJECT_FILE_PATHS) -o $@ $(LIBS)
 
 clean:
-	$(RM) ../../../bin/yield_stage_test $(OBJECT_FILE_PATHS)
+	$(RM) ../../../bin/yield/yield_stage_test $(OBJECT_FILE_PATHS)
 
 depclean:
 	$(RM) $(DEP_FILE_PATHS)

@@ -47,7 +47,7 @@ MemoryMappedFile::MemoryMappedFile
   uint64_t file_offset,
   int flags,
   int prot
-) 
+)
   : Buffer(capacity),
     data_(data),
     file(file.inc_ref()),
