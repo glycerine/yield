@@ -38,10 +38,10 @@ ifeq ($(UNAME), FreeBSD)
 	LIBS += -lpthread
 endif
 ifeq ($(UNAME), Linux)
-	LIBS += -lrt -lstdc++ -lpthread
+	LIBS += -lpthread -lrt -lstdc++
 endif
 ifeq ($(UNAME), Solaris)
-	LIBS += -lm -lrt -lstdc++ -lcpc -lkstat
+	LIBS += -lcpc -lkstat -lm -lrt -lstdc++
 endif
 LIBS += -lyield_thread -lyield_common
 

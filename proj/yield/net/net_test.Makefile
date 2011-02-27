@@ -38,7 +38,7 @@ ifeq ($(UNAME), Linux)
 	LIBS += -lrt -lstdc++
 endif
 ifeq ($(UNAME), Solaris)
-	LIBS += -lm -lrt -lstdc++ -lnsl -lsocket -luuid
+	LIBS += -lnsl -lsocket -luuid -lm -lrt -lstdc++
 endif
 LIBS += -lyield_net -lyield_common
 

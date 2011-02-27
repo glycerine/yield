@@ -41,7 +41,7 @@ ifeq ($(UNAME), FreeBSD)
 	LIBS += -liconv -lintl -lpthread
 endif
 ifeq ($(UNAME), Linux)
-	LIBS += -lpthread -lrt -lstdc++ -laio
+	LIBS += -laio -lpthread -lrt -lstdc++
 endif
 ifeq ($(UNAME), Solaris)
 	LIBS += -liconv -lnsl -lsocket -luuid -lcpc -lkstat -lm -lrt -lstdc++

@@ -27,7 +27,7 @@
 
 assert __name__ == "__main__"
 
-from copy import deepcopy
+from copy import copy, deepcopy
 from os import chdir, listdir, makedirs, unlink
 from os.path import abspath, \
                     dirname, \
@@ -39,7 +39,6 @@ from os.path import abspath, \
                     split as path_split, \
                     splitext
 from optparse import OptionParser
-from pprint import pprint
 import re
 from subprocess import call
 import sys
@@ -52,6 +51,7 @@ from yuild.constant import C_CXX_INCLUDE_FILE_FNMATCH_PATTERNS, \
                            CXX_SOURCE_FILE_FNMATCH_PATTERNS, \
                            INCLUDE_FILE_FNMATCH_PATTERNS, \
                            INDENT_SPACES, \
+                           PLATFORMS, \
                            PLATFORM_GUARDS, \
                            SOURCE_FILE_FNMATCH_PATTERNS
 from yutil import deduplist, \
@@ -64,28 +64,46 @@ from yutil import deduplist, \
                   write_file
 
 
-AUTHOR = "Minor Gordon"
-
 
 ROOT_DIR_PATH = dirname(__file__)
 INCLUDE_DIR_PATH = path_join(ROOT_DIR_PATH, "include")
 SOURCE_DIR_PATH = path_join(ROOT_DIR_PATH, "src")
 
 
-AUTOCONF = {}
+PROJECT_NAMES = (
+    "aio",
+    "common",
+    "fs",
+    "http",
+    "i18n",
+    "marshal",
+    "net",
+    "poll",
+    "process",
+    "stage",
+    "thread"
+)
 
-AUTOCONF["net"] = {
-#    "linux": { "YIELD_HAVE_LINUX_LIBUUID": ( "uuid", "uuid/uuid.h" ), },
-#    "unix": { "YIELD_HAVE_OPENSSL": ( "crypto", "ssl", "ssl.h" ), },
-#    "win32": { "YIELD_HAVE_OPENSSL": ( "libeay32", "ssleay32", "ssl.h" ), },
-}
 
-AUTOCONF["thread"] = {
-#    "unix": { "YIELD_HAVE_PAPI": ( "papi", "papi.h" ), },
-}
+AUTHOR = "Minor Gordon"
+
+AUTOCONF = {
+    "net": {
+    #    "linux": { "YIELD_HAVE_LINUX_LIBUUID": ( "uuid", "uuid/uuid.h" ), },
+    #    "unix": { "YIELD_HAVE_OPENSSL": ( "crypto", "ssl", "ssl.h" ), },
+    #    "win32": { "YIELD_HAVE_OPENSSL": ( "libeay32", "ssleay32", "ssl.h" ), },
+    },
+
+    "thread": {
+    #    "unix": { "YIELD_HAVE_PAPI": ( "papi", "papi.h" ), },
+    },
 
 #    "unix": { "YIELD_HAVE_ZLIB": ( "z", "zlib.h" ), },
-#    "win32":  { "YIELD_HAVE_ZLIB": ( "zdll", "zlib.h" ), },
+#    "win32":  { "YIELD_HAVE_ZLIB": ( "zdll", "zlib.h" ), },    
+}
+for project_name in AUTOCONF.iterkeys():
+    assert project_name in PROJECT_NAMES, project_name
+
 
 CXXFLAGS = {
     "unix": ["-fno-rtti", "-Wall", "-Wold-style-cast", "-Wunused-macros"],
@@ -101,12 +119,16 @@ CXXFLAGS = {
       # "/Za" # Disable language extensions
     ]
 }
+for platform in CXXFLAGS.iterkeys():
+    assert platform in PLATFORMS, platform
 
 CXXPATH = {
     "*": [
         INCLUDE_DIR_PATH,
     ]
 }
+for platform in CXXPATH.iterkeys():
+    assert platform in PLATFORMS, platform
 
 LDFLAGS = {
     "win32": [
@@ -114,56 +136,80 @@ LDFLAGS = {
         "/ignore:4221"
     ],
 }
+for platform in LDFLAGS.iterkeys():
+    assert platform in PLATFORMS, platform
+
 
 LIBPATH = {
     "*": [path_join(ROOT_DIR_PATH, "lib", "yield")],
     # "win32": [path_join( ROOT_DIR_PATH, "lib", "win32" )]
 }
+for platform in LIBPATH.iterkeys():
+    assert platform in PLATFORMS, platform
 
-LIBS = {}
 
-LIBS["aio"] = {
-    "linux": ["aio"],
+LIBS = {
+    "aio": {
+        "linux": ["aio"],
+    },
+
+    "common": {
+        "linux": ["rt", "stdc++"],
+        "sunos": ["m", "rt", "stdc++"],
+    },
+
+    "i18n": {
+        "darwin": ["iconv"],
+        "freebsd": ["iconv", "intl"],
+        "sunos": ["iconv"],
+    },
+
+    "net": {
+        "sunos": ["nsl", "socket", "uuid"],
+    },
+
+    "process": {
+        "linux": ["dl"],
+    },
+
+    "thread": {
+        "freebsd": ["pthread"],
+        "linux": ["pthread"],
+        "sunos": ["cpc", "kstat"],
+    }
+}
+for project_name in LIBS.iterkeys():
+    assert project_name in PROJECT_NAMES, project_names
+
+OUTPUT_FILE_PATHS = {}
+for project_name in PROJECT_NAMES:
+    OUTPUT_FILE_PATHS[project_name] = \
+        path_join(ROOT_DIR_PATH, "lib", "yield", "yield_" + project_name)
+    OUTPUT_FILE_PATHS[project_name + "_test"] = \
+        path_join(ROOT_DIR_PATH, "bin", "yield", "yield_" + project_name + "_test")
+
+PROJECT_DIR_PATHS = {}
+for project_name in PROJECT_NAMES:
+    project_dir_path = path_join(ROOT_DIR_PATH, "proj", "yield", project_name)
+    PROJECT_DIR_PATHS[project_name] = project_dir_path
+    PROJECT_DIR_PATHS[project_name + "_test"] = project_dir_path
+
+PROJECT_REFERENCES = {
+    "aio": ("fs", "net", "poll", "stage"),
+    "common": tuple(),
+    "fs": ("i18n",),
+    "http": ("aio", "stage"),
+    "i18n": ("common",),
+    "marshal": ("common",),
+    "net": ("common",),
+    "poll": ("net", "thread",),
+    "process": ("fs",),
+    "stage": ("thread",),
+    "thread": ("common",),
 }
 
-LIBS["common"] = {
-    "linux": ["rt", "stdc++"],
-    "sunos": ["m", "rt", "stdc++"],
-}
-
-LIBS["i18n"] = {
-    "darwin": ["iconv"],
-    "freebsd": ["iconv", "intl"],
-    "sunos": ["iconv"],
-}
-
-LIBS["net"] = {
-    "sunos": ["nsl", "socket", "uuid"],
-}
-
-LIBS["process"] = {
-    "linux": ["dl"],
-}
-
-LIBS["thread"] = {
-    "freebsd": ["pthread"],
-    "linux": ["pthread"],
-    "sunos": ["cpc", "kstat"],
-}
-
-
-PROJECT_REFERENCES = {}
-PROJECT_REFERENCES["aio"] = ("fs", "net", "poll", "stage")
-PROJECT_REFERENCES["common"] = tuple()
-PROJECT_REFERENCES["fs"] = ("i18n",)
-PROJECT_REFERENCES["http"] = ("aio", "stage")
-PROJECT_REFERENCES["i18n"] = ("common",)
-PROJECT_REFERENCES["marshal"] = ("common",)
-PROJECT_REFERENCES["net"] = ("common",)
-PROJECT_REFERENCES["poll"] = ("net", "thread",)
-PROJECT_REFERENCES["process"] = ("fs",)
-PROJECT_REFERENCES["stage"] = ("thread",)
-PROJECT_REFERENCES["thread"] = ("common",)
+for project_name in PROJECT_NAMES:
+    PROJECT_REFERENCES[project_name + "_test"] = (project_name,)
 
 # Expand project references so that the list has dependencies going left -> right, e.g.
 # if project A depends on project B depends on project C, the order will be [A, B, C]
@@ -183,7 +229,6 @@ for project_name in PROJECT_REFERENCES.iterkeys():
     PROJECT_REFERENCES_EXPANDED[project_name] = \
         deduplist(__expand_project_references(project_name))
 
-# pprint( PROJECT_REFERENCES_EXPANDED )
 
 LIBS_EXPANDED = {}
 for project_name, project_references in PROJECT_REFERENCES_EXPANDED.iteritems():
@@ -208,27 +253,10 @@ for project_name, project_references in PROJECT_REFERENCES_EXPANDED.iteritems():
         LIBS_EXPANDED[project_name][platform] = deduplist(LIBS_EXPANDED[project_name][platform])
 LIBS = LIBS_EXPANDED
 
-# pprint( LIBS )
-
-PROJECT_NAMES = PROJECT_REFERENCES.keys()
-
-PROJECT_BUILD_ORDER = []
-def __fill_project_build_order(project_name):
-    for project_reference in PROJECT_REFERENCES[project_name]:
-        __fill_project_build_order(project_reference)
-
-    if project_name not in PROJECT_BUILD_ORDER:
-        PROJECT_BUILD_ORDER.append(project_name)
-__fill_project_build_order("http")
-__fill_project_build_order("marshal")
-__fill_project_build_order("process")
-assert len(PROJECT_BUILD_ORDER) == len(PROJECT_NAMES)
-
 
 EXCLUDE_FILE_PATHS = {}
 INCLUDE_FILE_PATHS = {}
 SOURCE_FILE_PATHS = {}
-
 
 for project_name in PROJECT_NAMES:
     if project_name != "common":
@@ -408,7 +436,6 @@ option_parser.add_option("--check-src-namespace", action="store_true")
 option_parser.add_option("--check-src-type-id", action="store_true")
 option_parser.add_option("--check-src-width", action="store_true")
 option_parser.add_option("--check-src-yunit", action="store_true")
-option_parser.add_option("-d", "--debug", action="store_true")
 option_parser.add_option("-f", "--force", action="store_true")
 option_parser.add_option("--format-src", action="store_true")
 option_parser.add_option("-p", "--project")
@@ -563,92 +590,57 @@ if options.format_src:
 
 
 if options.generate_proj:
-    # Generate project files
     for project_name in PROJECT_NAMES:
-        project = {
-           "autoconf": AUTOCONF.get(project_name, None),
-           "build_dir_path": path_join(ROOT_DIR_PATH, "build", "yield", project_name),
-           "cxxflags": CXXFLAGS,
-           "cxxpath": CXXPATH,
-           "exclude_file_paths": EXCLUDE_FILE_PATHS[project_name],
-           "include_file_paths": INCLUDE_FILE_PATHS[project_name],
-           "libpath": LIBPATH,
-           "libs": LIBS.get(project_name, {}),
-           "ldflags": LDFLAGS,
-           "name": project_name,
-           "output_file_path": path_join(ROOT_DIR_PATH, "lib", "yield", "yield_" + project_name),
-           "project_dir_path": path_join(ROOT_DIR_PATH, "proj", "yield", project_name),
-           "project_references":
-                [
-                    path_join(
-                        ROOT_DIR_PATH,
-                        "proj",
-                        "yield",
-                        project_reference,
-                        project_reference
-                    )
-                    for project_reference in PROJECT_REFERENCES[project_name]
+        for project_name_suffix, project_type in (("", "lib"), ("_test", "exe")):
+            project = {
+               "autoconf": AUTOCONF.get(project_name + project_name_suffix, None),
+               "build_dir_path": path_join(ROOT_DIR_PATH, "build", "yield", project_name + project_name_suffix),
+               "cxxflags": CXXFLAGS,
+               "cxxpath": CXXPATH,
+               "exclude_file_paths": EXCLUDE_FILE_PATHS[project_name + project_name_suffix],
+               "include_file_paths": INCLUDE_FILE_PATHS[project_name + project_name_suffix],
+               "libpath": LIBPATH,
+               "libs": LIBS.get(project_name + project_name_suffix, {}),
+               "ldflags": LDFLAGS,
+               "name": project_name + project_name_suffix,
+               "output_file_path": OUTPUT_FILE_PATHS[project_name + project_name_suffix],
+               "project_dir_path": PROJECT_DIR_PATHS[project_name + project_name_suffix],
+               "project_references": [
+                    path_join(PROJECT_DIR_PATHS[project_reference], project_reference)
+                    for project_reference in PROJECT_REFERENCES[project_name + project_name_suffix]
                 ],
-           "source_file_paths": SOURCE_FILE_PATHS[project_name],
-           "type": "lib",
-        }
+               "source_file_paths": SOURCE_FILE_PATHS[project_name + project_name_suffix],
+               "type": project_type
+            }
 
-        project_test = project.copy()
-        project_test["build_dir_path"] = \
-            path_join(ROOT_DIR_PATH, "build", "yield", project_name + "_test")
-        project_test["exclude_file_paths"] = EXCLUDE_FILE_PATHS[project_name + "_test"]
-        project_test["include_file_paths"] = INCLUDE_FILE_PATHS[project_name + "_test"]
-        project_test["libs"] = deepcopy(project["libs"])
-        project_test["libs"].setdefault('*', []).insert(0, "yield_" + project_name)
+            for key in ("build_dir_path", "project_dir_path"):
+                if not exists(project[key]):
+                    makedirs(project[key])
 
-        project_test["name"] = project_name + "_test"
-        project_test["output_file_path"] = \
-            path_join(ROOT_DIR_PATH, "bin", "yield", "yield_" + project_name + "_test")
-        project_test["project_references"] = \
-            [path_join(ROOT_DIR_PATH, "proj", "yield", project_name, project_name)]
-        project_test["source_file_paths"] = \
-             SOURCE_FILE_PATHS[project_name + "_test"]
-        project_test["type"] = "exe"
+            if project_name != "common":
+                mirror_subdirectories(
+                    path_join(SOURCE_DIR_PATH, "yield", project_name),
+                    project["build_dir_path"]
+                )
 
-        for project_dict in (project, project_test):
-            if project_dict is not None:
-                for key in ("build_dir_path", "project_dir_path"):
-                    if not exists(project_dict[key]):
-                        makedirs(project_dict[key])
+            for project_class, file_ext in (
+                (Makefile, ".Makefile"),
+                (VCXProj, ".vcxproj"),
+                (VCXProjFilters, ".vcxproj.filters"),
+                (VCXProjUser, ".vcxproj.user"),
+            ):
 
-                if project_name != "common":
-                    project_source_dir_path = \
-                        path_join(SOURCE_DIR_PATH, "yield", project_name)
-
-                    mirror_subdirectories(
-                        project_source_dir_path,
-                        project["build_dir_path"]
-                    )
-
-                    mirror_subdirectories(
-                        project_source_dir_path,
-                        project_test["build_dir_path"]
-                    )
-
-                for project_class, file_ext in \
-                    (
-                        (Makefile, ".Makefile"),
-                        (VCXProj, ".vcxproj"),
-                        (VCXProjFilters, ".vcxproj.filters"),
-                        (VCXProjUser, ".vcxproj.user"),
-                    ):
-
-                    write_file(
-                        path_join(
-                            project_dict["project_dir_path"],
-                            project_dict["name"] + file_ext
-                        ),
-                        str(project_class(**project_dict)),
-                        force=options.force
-                    )
+                write_file(
+                    path_join(
+                        project["project_dir_path"],
+                        project["name"] + file_ext
+                    ),
+                    str(project_class(**project)),
+                    force=options.force
+                )
 
 
-    # Generate Visual Studio solution files
+    # Generate Visual Studio solution
     write_file(
         "yield.sln",
         str(
@@ -666,7 +658,7 @@ if options.generate_proj:
     # Generate top-level Makefile
     write_file(
         "Makefile",
-        str(TopLevelMakefile(PROJECT_REFERENCES)),
+        str(TopLevelMakefile(PROJECT_DIR_PATHS, PROJECT_REFERENCES)),
         force=options.force
     )
 
@@ -822,6 +814,17 @@ if options.generate_src or options.generate_src_test_py:
 #            )
 
 #if options.generate_src or options.public:
+#    PROJECT_BUILD_ORDER = []
+#    def __fill_project_build_order(project_name):
+#        for project_reference in PROJECT_REFERENCES[project_name]:
+#            __fill_project_build_order(project_reference)
+#    
+#        if project_name not in PROJECT_BUILD_ORDER:
+#            PROJECT_BUILD_ORDER.append(project_name)
+#    __fill_project_build_order("http")
+#    __fill_project_build_order("marshal")
+#    __fill_project_build_order("process")
+#    assert len(PROJECT_BUILD_ORDER) == len(PROJECT_NAMES)
 #    YIELD_PUBLIC_DIR_PATH = \
 #        abspath(path_join(ROOT_DIR_PATH, "..", "yield_public"))
 #    if exists(YIELD_PUBLIC_DIR_PATH):

@@ -45,22 +45,18 @@ __all__ = ["VCProj"]
 
 
 # Constants
-CONFIGURATION_TYPE = \
-{
+CONFIGURATION_TYPE = {
     "dll": 2,
     "exe": 1,
     "gui": 1,
-    "lib": 4,
-    "py_ext": 2
+    "lib": 4
 }
 
-SUBSYSTEM = \
-{
+SUBSYSTEM = {
     "dll": 0,
     "exe": 0,
     "gui": 2,
-    "lib": 0,
-    "py_ext": 0
+    "lib": 0
 }
 
 
@@ -194,7 +190,7 @@ class VCProj(Project):
         return self.get_name()
 
     def get_OutputDirectory(self):
-        OutputDirectory = split(self.get_output_file_path()['*'])[0]
+        OutputDirectory = split(self.get_output_file_path()["win32"])[0]
         if len(OutputDirectory) == 0:
             OutputDirectory = "$(ProjectDir)"
         else:
@@ -204,16 +200,14 @@ class VCProj(Project):
         return OutputDirectory
 
     def get_OutputFile(self):
-        OutputFile = split(self.get_output_file_path()['*'])[1]
-        type = self.get_type()
-        if type == "lib":
-            if not OutputFile.endswith(".lib"): OutputFile += ".lib"
-        elif type == "dll":
-            if not OutputFile.endswith(".dll"): OutputFile += ".dll"
-        elif type == "exe":
-            if not OutputFile.endswith(".exe"): OutputFile += ".exe"
-        elif type == "py_ext":
-            if not OutputFile.endswith(".pyd"): OutputFile += ".pyd"
+        OutputFile = split(self.get_output_file_path()["win32"])[1]
+        if len(splitext(OutputFile)[1]) == 0:
+            if self.get_type() == "dll":
+                OutputFile += ".dll"
+            elif type == "exe":
+                OutputFile += ".exe"
+            elif type == "lib":
+                OutputFile += ".lib"
         return OutputFile
 
     def get_PreprocessorDefinitions(self):

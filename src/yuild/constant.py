@@ -27,8 +27,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-COMMENT_PREFIXES = \
-{
+COMMENT_PREFIXES = {
     'c': "/*",
     "cpp": "//",
     "java": "//",
@@ -36,8 +35,7 @@ COMMENT_PREFIXES = \
     "rl": "//",
 }
 
-COMMENT_SUFFIXES = \
-{
+COMMENT_SUFFIXES = {
     'c': "*/",
     "cpp": '',
     "java": '',
@@ -45,8 +43,7 @@ COMMENT_SUFFIXES = \
     "rl": '',
 }
 
-INDENT_SPACES = \
-{
+INDENT_SPACES = {
     'c': ' ' * 2,
     "cpp": ' ' * 2,
     "java": ' ' * 4,
@@ -101,8 +98,7 @@ for idl_source_file_extension in IDL_SOURCE_FILE_EXTENSIONS:
 
 INCLUDE_FILE_FNMATCH_PATTERNS = ['*' + ext for ext in INCLUDE_FILE_EXTENSIONS.iterkeys()]
 
-PLATFORMS = \
-(
+PLATFORMS = (
     '*',
     "bsd",
     "darwin",
@@ -118,8 +114,7 @@ ABSTRACT_PLATFORMS = ("bsd", "unix", "posix", "*")
 CONCRETE_PLATFORMS = ("darwin", "freebsd", "linux", "sunos", "win32")
 assert len(ABSTRACT_PLATFORMS) + len(CONCRETE_PLATFORMS) == len(PLATFORMS)
 
-PLATFORM_TREE = \
-{
+PLATFORM_TREE = {
     '*': None,
     "bsd": "unix",
     "darwin": "bsd",
@@ -132,8 +127,7 @@ PLATFORM_TREE = \
 }
 assert len(PLATFORM_TREE) == len(PLATFORMS)
 
-PLATFORM_GUARDS = \
-{
+PLATFORM_GUARDS = {
     '*': "#if 1",
     "bsd": "#if defined(__MACH__) || defined(__FreeBSD__)",
     "darwin": "#ifdef __MACH__",
@@ -172,8 +166,7 @@ for source_file_extension in RAGEL_SOURCE_FILE_EXTENSIONS:
 
 SOURCE_FILE_FNMATCH_PATTERNS = ['*' + ext for ext in SOURCE_FILE_EXTENSIONS.iterkeys()]
 
-SYS_PLATFORM_CHECKS = \
-{
+SYS_PLATFORM_CHECKS = {
     '*': 'True:',
     "bsd": 'sys.platform == "darwin" or "bsd" in sys.platform',
     "darwin": 'sys.platform == "darwin"',

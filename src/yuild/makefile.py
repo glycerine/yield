@@ -27,7 +27,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from os.path import dirname, join, split, splitext
+from os.path import dirname, join, sep as path_sep, split, splitext
 
 from yutil import deduplist, indent, posixpath, posixpaths, pad, relpath, rpad
 
@@ -196,18 +196,27 @@ endif""")
         project_references = rpad('\n'.join(project_references), "\n\n\n")
 
         # output_file_path
-        assert len(self.get_output_file_path()) == 1 and\
-               self.get_output_file_path().keys()[0] == '*'
+#        assert len(self.get_output_file_path()) == 1 and\
+#               self.get_output_file_path().keys()[0] == '*'
         output_file_path = self.get_output_file_path()['*']
         output_dir_path, output_file_name = split(output_file_path)
-        if self.get_type() == "exe":
+        if self.get_type() == "dll":
+            if len(splitext(output_file_name)[1]) == 0:
+                if not output_file_name.startswith("lib"):
+                    output_file_name = "lib" + output_file_name
+                if not output_file_name.endswith(".so"):
+                    output_file_name += ".so"
+            output_file_path = join(output_dir_path, output_file_name)
+            output_file_path_recipe = "$(LINK.cpp) -shared $(OBJECT_FILE_PATHS) -o $@ $(LIBS)"
+        elif self.get_type() == "exe":
             output_file_path_recipe = "$(LINK.cpp) $(OBJECT_FILE_PATHS) -o $@ $(LIBS)"
         elif self.get_type() == "lib":
-            if not output_file_name.startswith("lib"):
-                output_file_name = "lib" + output_file_name
-            if not output_file_name.endswith(".a"):
-                output_file_name += ".a"
-            output_file_path = join(output_dir_path, output_file_name)
+            if len(splitext(output_file_name)[1]) == 0:
+                if not output_file_name.startswith("lib"):
+                    output_file_name = "lib" + output_file_name
+                if not output_file_name.endswith(".a"):
+                    output_file_name += ".a"
+                output_file_path = join(output_dir_path, output_file_name)
             output_file_path_recipe = "$(AR) -r $@ $(OBJECT_FILE_PATHS)"
         else:
             raise NotImplementedError, self.get_type()
@@ -243,7 +252,8 @@ depclean:
 
 
 class TopLevelMakefile(object):
-    def __init__(self, project_references):
+    def __init__(self, project_dir_paths, project_references):
+        self.__project_dir_paths = project_dir_paths
         self.__project_references = project_references
 
     def __repr__(self):
@@ -252,14 +262,13 @@ class TopLevelMakefile(object):
         project_rules = []
         project_targets = []
 
-        project_names = list(self.__project_references.keys())
-        project_names.sort()
-        for project_name in project_names:
+        for project_name in sorted(self.__project_references.keys()):
+            project_dir_path = self.__project_dir_paths[project_name].replace(path_sep, '/')
+
             for recipe_type in ("clean", "depclean"):
-                for project_name_ in (project_name, project_name + "_test"):
-                    locals()[recipe_type + "_recipes"].append(
-                        "$(MAKE) -C proj/yield/%(project_name)s -f %(project_name_)s.Makefile %(recipe_type)s" % locals()
-                    )
+                locals()[recipe_type + "_recipes"].append(
+                    "$(MAKE) -C %(project_dir_path)s -f %(project_name)s.Makefile %(recipe_type)s" % locals()
+                )
 
             project_references = \
                 ' '.join(
@@ -269,24 +278,14 @@ class TopLevelMakefile(object):
 
             project_rules.append("""\
 %(project_name)s: %(project_references)s
-    $(MAKE) -C proj/yield/%(project_name)s -f %(project_name)s.Makefile
-
-%(project_name)s_test: %(project_name)s
-    $(MAKE) -C proj/yield/%(project_name)s -f %(project_name)s_test.Makefile
+    $(MAKE) -C %(project_dir_path)s -f %(project_name)s.Makefile
 """ % locals())
-            project_targets.extend((project_name, project_name + "_test"))
+            project_targets.append(project_name)
 
-        clean_recipes.sort()
-        clean_recipes = '\n\t'.join(clean_recipes)
-
-        depclean_recipes.sort()
-        depclean_recipes = '\n\t'.join(depclean_recipes)
-
-        project_rules.sort()
-        project_rules = '\n'.join(project_rules)
-
-        project_targets.sort()
-        project_targets = ' '.join(project_targets)
+        clean_recipes = '\n\t'.join(sorted(clean_recipes))
+        depclean_recipes = '\n\t'.join(sorted(depclean_recipes))
+        project_rules = '\n'.join(sorted(project_rules))
+        project_targets = ' '.join(sorted(project_targets))
 
         return ("""\
 all: %(project_targets)s

@@ -41,7 +41,7 @@ ifeq ($(UNAME), FreeBSD)
 	LIBS += -liconv -lintl
 endif
 ifeq ($(UNAME), Linux)
-	LIBS += -lrt -lstdc++ -ldl
+	LIBS += -ldl -lrt -lstdc++
 endif
 ifeq ($(UNAME), Solaris)
 	LIBS += -liconv -lm -lrt -lstdc++

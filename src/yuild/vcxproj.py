@@ -43,8 +43,7 @@ from yuild.vcproj import VCProj
 
 
 
-__all__ = \
-[
+__all__ = [
     "VCXProj",
     "VCXProjFilters",
     "VCXProjUser",
@@ -53,16 +52,15 @@ __all__ = \
 
 
 # Constants
-CONFIGURATION_TYPE = \
-{
+CONFIGURATION_TYPE = {
     "lib": "StaticLibrary",
     "dll": "DynamicLibrary",
     "exe": "Application",
     "gui": "Application",
 }
 
-SUBSYSTEM = \
-{
+SUBSYSTEM = {
+    "dll": "WINDOWS",
     "exe": "CONSOLE",
     "gui": "WINDOWS"
 }
@@ -71,30 +69,6 @@ INDENT_SPACES = ' ' * 2
 
 
 # Templates
-CONDITIONED_ITEM_DEFINITION_GROUP = """\
-<ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='%(Condition)s'">
-  <ClCompile>
-    <Optimization>Disabled</Optimization>
-    <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)s</AdditionalIncludeDirectories>
-    <PreprocessorDefinitions>%(PreprocessorDefinitions)s</PreprocessorDefinitions>
-    <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-    <RuntimeLibrary>%(RuntimeLibrary)s</RuntimeLibrary>
-    <RuntimeTypeInfo>false</RuntimeTypeInfo>
-    <WarningLevel>Level4</WarningLevel>%(DebugInformationFormat)s
-    <ProgramDataBaseFileName>$(TargetDir)$(TargetName).pdb</ProgramDataBaseFileName>
-    <AdditionalOptions>%(AdditionalOptions)s</AdditionalOptions>
-  </ClCompile>
-%(LibLink)s
-</ItemDefinitionGroup>
-"""
-
-CONDITIONED_PROPERTY_GROUP = """\
-<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='%(Condition)s'">
-  <IntDir>%(IntDir)s</IntDir>
-  <OutDir>%(OutDir)s</OutDir>%(TargetName)s%(TargetExt)s
-</PropertyGroup>
-"""
-
 CL_COMPILE_EXCLUDED_ITEM = """\
 <ClCompile Include="%(Include)s">
   <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -123,6 +97,14 @@ CL_INCLUDE_ITEM = """\
 <ClInclude Include="%(Include)s" />
 """
 
+CONFIGURATION_PROPERTY_GROUP = """\
+<PropertyGroup %(Condition)s Label="Configuration">
+  <ConfigurationType>%(ConfigurationType)s</ConfigurationType>
+  <CharacterSet>Unicode</CharacterSet>
+  <UseDebugLibraries>%(UseDebugLibraries)s</UseDebugLibraries>
+</PropertyGroup>
+"""
+
 FILTER_ITEM = """\
 <Filter Include="%(Include)s">
   <UniqueIdentifier>{%(UniqueIdentifier)s}</UniqueIdentifier>
@@ -133,7 +115,8 @@ LIB_ITEM_DEFINITION = """\
 <Lib>
   <AdditionalDependencies>%(AdditionalDependencies)s</AdditionalDependencies>
   <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)s</AdditionalLibraryDirectories>
-  <AdditionalOptions>%(AdditionalOptions)s</AdditionalOptions>%(OutputFile)s
+  <AdditionalOptions>%(AdditionalOptions)s</AdditionalOptions>
+  <GenerateDebugInformation>%(GenerateDebugInformation)s</GenerateDebugInformation>
 </Lib>
 """
 
@@ -141,10 +124,34 @@ LINK_ITEM_DEFINITION = """\
 <Link>
   <AdditionalDependencies>%(AdditionalDependencies)s</AdditionalDependencies>
   <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)s</AdditionalLibraryDirectories>
-  <AdditionalOptions>%(AdditionalOptions)s</AdditionalOptions>%(OutputFile)s
+  <AdditionalOptions>%(AdditionalOptions)s</AdditionalOptions>
   <GenerateDebugInformation>%(GenerateDebugInformation)s</GenerateDebugInformation>
   <SubSystem>%(SubSystem)s</SubSystem>
 </Link>
+"""
+
+OPTIONS_ITEM_DEFINITION_GROUP = """\
+<ItemDefinitionGroup %(Condition)s>
+  <ClCompile>
+    <Optimization>Disabled</Optimization>
+    <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)s</AdditionalIncludeDirectories>
+    <PreprocessorDefinitions>%(PreprocessorDefinitions)s</PreprocessorDefinitions>
+    <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+    <RuntimeLibrary>%(RuntimeLibrary)s</RuntimeLibrary>
+    <RuntimeTypeInfo>false</RuntimeTypeInfo>
+    <WarningLevel>Level4</WarningLevel>%(DebugInformationFormat)s
+    <ProgramDataBaseFileName>$(TargetDir)$(TargetName).pdb</ProgramDataBaseFileName>
+    <AdditionalOptions>%(AdditionalOptions)s</AdditionalOptions>
+  </ClCompile>
+%(LibLink)s
+</ItemDefinitionGroup>
+"""
+
+PATHS_PROPERTY_GROUP = """\
+<PropertyGroup>
+  <IntDir %(Condition)s>%(IntDir)s</IntDir>
+  <OutDir %(Condition)s>%(OutDir)s</OutDir>%(TargetName)s%(TargetExt)s
+</PropertyGroup>
 """
 
 PROJECT_CONFIGURATION_ITEM = """\
@@ -159,6 +166,12 @@ PROJECT_REFERENCE_ITEM = """\
   <Project>{%(Project)s}</Project>
   <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
 </ProjectReference>
+"""
+
+USER_PROPS_IMPORT_GROUP = """\
+<ImportGroup Label="PropertySheets" %(Condition)s>
+  <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+</ImportGroup>
 """
 
 
@@ -204,7 +217,6 @@ class VCXProj(VCProj):
         AdditionalDependencies = self.get_AdditionalDependencies(';')
         AdditionalIncludeDirectories = self.get_AdditionalIncludeDirectories()
         AdditionalLibraryDirectories = self.get_AdditionalLibraryDirectories()
-        ConfigurationType = CONFIGURATION_TYPE[self.get_type()]
         PreprocessorDefinitions = self.get_PreprocessorDefinitions()
         try:
             ProjectGuid = \
@@ -214,54 +226,60 @@ class VCXProj(VCProj):
                 ).get_Guid()
         except:
             print __name__ + ": generating GUID for project", self.get_name()
+            ProjectGuid = str(uuid4())
         RootNamespace = self.get_RootNamespace()
 
+        configuration_property_groups = []
         project_configuration_items = []
-        conditioned_property_groups = []
-        conditioned_item_definition_groups = []
+        paths_property_groups = []
+        options_item_definition_groups = []
+        user_props_import_groups = []
 
         for Platform in ("Win32",):
             for Configuration in ("Debug", "Release"):
-                Condition = Configuration + '|' + Platform
+                Condition = "'$(Configuration)|$(Platform)' == '%(Configuration)s|%(Platform)s'" % locals()
+                Condition = "Condition=\"%(Condition)s\"" % locals()
+
+                # Configuration property groups
+                ConfigurationType = CONFIGURATION_TYPE[self.get_type()]
+                UseDebugLibraries = Configuration == "Debug" and "true" or "false"
+                configuration_property_group = CONFIGURATION_PROPERTY_GROUP % locals()
+                configuration_property_group = indent(INDENT_SPACES, configuration_property_group)
+                configuration_property_groups.append(configuration_property_group)
 
                 # Project configuration item
-                Include = Condition
+                Include = Configuration + '|' + Platform
                 project_configuration_item = PROJECT_CONFIGURATION_ITEM % locals()
                 project_configuration_item = indent(INDENT_SPACES * 2, project_configuration_item)
                 project_configuration_items.append(project_configuration_item)
 
-                # Conditioned property group
+                # Paths property group
                 IntDir = self.get_IntermediateDirectory()
                 OutDir = self.get_OutputDirectory()
                 OutputFile = self.get_OutputFile()
-                if OutputFile == self.get_name():
-                    OutputFile = TargetExt = TargetName = ""
-                elif OutputFile == self.get_name() + '.' + self.get_type():
+                if OutputFile == self.get_name() or \
+                   OutputFile == self.get_name() + '.' + self.get_type():
+                    # OutputFile = TargetExt = TargetName = ""
                     OutputFile = TargetExt = TargetName = ""
                 else:
-                    OutputFile = "$(OutDir)" + OutputFile
-                    OutputFile = "<OutputFile>%(OutputFile)s</OutputFile>" % locals()
-                    OutputFile = '\n' + indent(INDENT_SPACES, OutputFile)
-
-                    TargetExt = splitext(OutputFile)[1]
-                    if TargetExt == '.' + self.get_type():
+                    TargetName, TargetExt = splitext(OutputFile)
+                    if len(TargetExt) == 0 or TargetExt == '.' + self.get_type():
                         TargetExt = ""
                     else:
-                        TargetExt = "<TargetExt>%(TargetExt)s</TargetExt>" % locals()
+                        TargetExt = """<TargetExt %(Condition)s>%(TargetExt)s</TargetExt>""" % locals()
                         TargetExt = '\n' + indent(INDENT_SPACES, TargetExt)
 
-                    TargetName = splitext(self.get_OutputFile())[0]
                     if TargetName == self.get_name():
                         TargetName = ""
                     else:
-                        TargetName = "<TargetName>%(TargetName)s</TargetName>" % locals()
+                        TargetName = """<TargetName %(Condition)s>%(TargetName)s</TargetName>""" % locals()
                         TargetName = '\n' + indent(INDENT_SPACES, TargetName)
 
-                conditioned_property_group = CONDITIONED_PROPERTY_GROUP % locals()
-                conditioned_property_group = indent(INDENT_SPACES, conditioned_property_group)
-                conditioned_property_groups.append(conditioned_property_group)
+                paths_property_group = PATHS_PROPERTY_GROUP % locals()
+                paths_property_group = indent(INDENT_SPACES, paths_property_group)
+                paths_property_groups.append(paths_property_group)
 
-                # Conditioned item definition group
+                # Options item definition group
                 if Configuration == "Debug":
                     RuntimeLibrary = "MultiThreadedDebugDLL"
                     DebugInformationFormat = '\n' + \
@@ -275,8 +293,7 @@ class VCXProj(VCProj):
                     DebugInformationFormat = ""
                     GenerateDebugInformation = "false"
 
-
-                if ConfigurationType == "Application":
+                if ConfigurationType == "Application" or ConfigurationType == "DynamicLibrary":
                     SubSystem = SUBSYSTEM[self.get_type()]
                     AdditionalOptions = ' '.join(self.get_ldflags().get("win32", []))
                     LibLink = LINK_ITEM_DEFINITION % locals()
@@ -287,13 +304,20 @@ class VCXProj(VCProj):
 
                 AdditionalOptions = ' '.join(self.get_cxxflags().get("win32", []))
 
-                conditioned_item_definition_group = CONDITIONED_ITEM_DEFINITION_GROUP % locals()
-                conditioned_item_definition_group = indent(INDENT_SPACES, conditioned_item_definition_group)
-                conditioned_item_definition_groups.append(conditioned_item_definition_group)
+                options_item_definition_group = OPTIONS_ITEM_DEFINITION_GROUP % locals()
+                options_item_definition_group = indent(INDENT_SPACES, options_item_definition_group)
+                options_item_definition_groups.append(options_item_definition_group)
 
+                # User properties import groups
+                user_props_import_group = USER_PROPS_IMPORT_GROUP % locals()
+                user_props_import_group = indent(INDENT_SPACES, user_props_import_group)
+                user_props_import_groups.append(user_props_import_group)
+
+        configuration_property_groups = '\n'.join(configuration_property_groups)
         project_configuration_items = '\n'.join(project_configuration_items)
-        conditioned_property_groups = '\n'.join(conditioned_property_groups)
-        conditioned_item_definition_groups = '\n'.join(conditioned_item_definition_groups)
+        paths_property_groups = '\n'.join(paths_property_groups)
+        options_item_definition_groups = '\n'.join(options_item_definition_groups)
+        user_props_import_groups = '\n'.join(user_props_import_groups)
 
         header_items = self.__get_header_items()
         header_items = indent(INDENT_SPACES * 2, "".join(header_items))
@@ -319,8 +343,11 @@ class VCXProj(VCProj):
         return """\
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+%(project_configuration_items)s
+  </ItemGroup>
+
   <PropertyGroup Label="Globals">
-    <ConfigurationType>%(ConfigurationType)s</ConfigurationType>
     <ProjectGuid>{%(ProjectGuid)s}</ProjectGuid>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <RootNamespace>%(RootNamespace)s</RootNamespace>
@@ -328,16 +355,17 @@ class VCXProj(VCProj):
 
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
 
-  <ItemGroup Label="ProjectConfigurations">
-%(project_configuration_items)s
-  </ItemGroup>
-
-%(conditioned_property_groups)s
+%(configuration_property_groups)s
 
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  
   <ImportGroup Label="ExtensionSettings" />
 
-%(conditioned_item_definition_groups)s
+%(user_props_import_groups)s
+
+%(paths_property_groups)s
+
+%(options_item_definition_groups)s
 
   <ItemGroup Label="ClIncludeItems">
 %(header_items)s
@@ -585,16 +613,19 @@ class VCXSln(object):
     ):
         if sln_file_path is not None:
             assert isinstance(sln_file_path, basestring), type(sln_file_path)
-            sln_file = open(sln_file_path)
             sln_dir_path = dirname(sln_file_path)
-            sln_lines = sln_file.readlines()
-            sln_file.close()
-            assert len(sln_lines) >= 5, len(sln_lines)
-            assert sln_lines[1].strip() == "Microsoft Visual Studio Solution File, Format Version 11.00", sln_lines[1]
-            assert sln_lines[2].startswith('#'), sln_lines[2]
-            assert sln_lines[3].startswith('Project("{'), sln_lines[3]
-            assert sln_lines[4].rstrip() == "EndProject"
-            self.__Guid = sln_lines[3][10:46]
+            try:
+                sln_file = open(sln_file_path)
+                sln_lines = sln_file.readlines()
+                sln_file.close()
+                assert len(sln_lines) >= 5, len(sln_lines)
+                assert sln_lines[1].strip() == "Microsoft Visual Studio Solution File, Format Version 11.00", sln_lines[1]
+                assert sln_lines[2].startswith('#'), sln_lines[2]
+                assert sln_lines[3].startswith('Project("{'), sln_lines[3]
+                assert sln_lines[4].rstrip() == "EndProject"
+                self.__Guid = sln_lines[3][10:46]
+            except IOError:
+                self.__Guid = str(uuid4())
         else:
             sln_dir_path = getcwd()
             self.__Guid = str(uuid4())
