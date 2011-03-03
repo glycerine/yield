@@ -262,7 +262,7 @@ class TopLevelMakefile(object):
         project_rules = []
         project_targets = []
 
-        for project_name in sorted(self.__project_references.keys()):
+        for project_name in sorted(self.__project_dir_paths.keys()):
             project_dir_path = self.__project_dir_paths[project_name].replace(path_sep, '/')
 
             for recipe_type in ("clean", "depclean"):
@@ -271,9 +271,9 @@ class TopLevelMakefile(object):
                 )
 
             project_references = \
-                ' '.join(
-                    [split(project_reference)[1]
-                    for project_reference in self.__project_references[project_name]]
+                ' '.join([
+                    split(project_reference)[1]
+                    for project_reference in self.__project_references.get(project_name, [])]
                 )
 
             project_rules.append("""\

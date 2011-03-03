@@ -68,17 +68,18 @@ public:
   const static uint32_t TYPE_ID = 707981577;
 
 public:
-  HTTPRequest
-  (
+  HTTPRequest(
     Method method,
     const yield::net::URI& uri,
     YO_NEW_REF Buffer* body = NULL
   );
 
   const DateTime& get_creation_date_time() const;
+
   Method get_method() const {
     return method;
   }
+
   const yield::net::URI& get_uri() const {
     return uri;
   }

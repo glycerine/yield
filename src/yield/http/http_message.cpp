@@ -27,7 +27,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/* #line 1 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message.rl" */
+/* #line 1 "src\\yield\\http\\http_message.rl" */
 // yield/http/http_message.rl
 
 // Copyright (c) 2011 Minor Gordon
@@ -141,7 +141,7 @@ get_date_field
     int day = 0, month = 0, year = 0;
 
 
-    /* #line 2 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message.cpp" */
+    /* #line 2 "src\\yield\\http\\http_message.cpp" */
     static const char _date_parser_actions[] = {
       0, 1, 0, 1, 1, 1, 2, 1,
       3, 1, 4, 1, 5, 1, 6, 1,
@@ -367,12 +367,12 @@ get_date_field
     static const int date_parser_en_main = 1;
 
 
-    /* #line 226 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message.cpp" */
+    /* #line 226 "src\\yield\\http\\http_message.cpp" */
     {
       cs = date_parser_start;
     }
 
-    /* #line 229 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message.cpp" */
+    /* #line 229 "src\\yield\\http\\http_message.cpp" */
     {
       int _klen;
       unsigned int _trans;
@@ -443,37 +443,37 @@ _match:
       while (_nacts-- > 0) {
         switch (*_acts++) {
         case 0:
-          /* #line 35 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\date.rl" */
+          /* #line 35 "src\\yield\\http\\date.rl" */
         {
           hour = atoi(p);
         }
         break;
         case 1:
-          /* #line 36 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\date.rl" */
+          /* #line 36 "src\\yield\\http\\date.rl" */
         {
           minute = atoi(p);
         }
         break;
         case 2:
-          /* #line 37 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\date.rl" */
+          /* #line 37 "src\\yield\\http\\date.rl" */
         {
           second = atoi(p);
         }
         break;
         case 3:
-          /* #line 39 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\date.rl" */
+          /* #line 39 "src\\yield\\http\\date.rl" */
         {
           day = atoi(p);
         }
         break;
         case 4:
-          /* #line 40 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\date.rl" */
+          /* #line 40 "src\\yield\\http\\date.rl" */
         {
           day = atoi(p);
         }
         break;
         case 5:
-          /* #line 47 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\date.rl" */
+          /* #line 47 "src\\yield\\http\\date.rl" */
         {
           switch (*(p - 1)) {
           case 'b':
@@ -526,25 +526,25 @@ _match:
         }
         break;
         case 6:
-          /* #line 78 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\date.rl" */
+          /* #line 78 "src\\yield\\http\\date.rl" */
         {
           year = atoi(p);
           year += (year < 50 ? 2000 : 1900);
         }
         break;
         case 7:
-          /* #line 79 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\date.rl" */
+          /* #line 79 "src\\yield\\http\\date.rl" */
         {
           year = atoi(p);
         }
         break;
         case 8:
-          /* #line 120 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message.rl" */
+          /* #line 120 "src\\yield\\http\\http_message.rl" */
         {
           return DateTime::INVALID_DATE_TIME;
         }
         break;
-        /* #line 357 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message.cpp" */
+        /* #line 357 "src\\yield\\http\\http_message.cpp" */
         }
       }
 
@@ -559,12 +559,12 @@ _again:
         while (__nacts-- > 0) {
           switch (*__acts++) {
           case 8:
-            /* #line 120 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message.rl" */
+            /* #line 120 "src\\yield\\http\\http_message.rl" */
           {
             return DateTime::INVALID_DATE_TIME;
           }
           break;
-          /* #line 374 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message.cpp" */
+          /* #line 374 "src\\yield\\http\\http_message.cpp" */
           }
         }
       }
@@ -573,7 +573,7 @@ _out:
       {}
     }
 
-    /* #line 125 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message.rl" */
+    /* #line 125 "src\\yield\\http\\http_message.rl" */
 
 
     if (cs != date_parser_error) {
@@ -601,7 +601,7 @@ HTTPMessage<HTTPMessageType>::get_field
   size_t name_len = strlen(name);
 
 
-  /* #line 380 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message.cpp" */
+  /* #line 380 "src\\yield\\http\\http_message.cpp" */
   static const char _field_parser_actions[] = {
     0, 1, 0, 1, 1, 1, 2, 1,
     3, 1, 4, 1, 5, 1, 6, 2,
@@ -669,12 +669,12 @@ HTTPMessage<HTTPMessageType>::get_field
   static const int field_parser_en_main = 1;
 
 
-  /* #line 446 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message.cpp" */
+  /* #line 446 "src\\yield\\http\\http_message.cpp" */
   {
     cs = field_parser_start;
   }
 
-  /* #line 449 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message.cpp" */
+  /* #line 449 "src\\yield\\http\\http_message.cpp" */
   {
     int _klen;
     unsigned int _trans;
@@ -745,31 +745,31 @@ _match:
     while (_nacts-- > 0) {
       switch (*_acts++) {
       case 0:
-        /* #line 30 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\field.rl" */
+        /* #line 30 "src\\yield\\http\\field.rl" */
       {
         field_name.iov_base = p;
       }
       break;
       case 1:
-        /* #line 30 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\field.rl" */
+        /* #line 30 "src\\yield\\http\\field.rl" */
       {
         field_name.iov_len = p - static_cast<char*>(field_name.iov_base);
       }
       break;
       case 2:
-        /* #line 30 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\field.rl" */
+        /* #line 30 "src\\yield\\http\\field.rl" */
       {
         field_value.iov_base = p;
       }
       break;
       case 3:
-        /* #line 30 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\field.rl" */
+        /* #line 30 "src\\yield\\http\\field.rl" */
       {
         field_value.iov_len = p - static_cast<char*>(field_value.iov_base);
       }
       break;
       case 4:
-        /* #line 159 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message.rl" */
+        /* #line 159 "src\\yield\\http\\http_message.rl" */
       {
         if
         (
@@ -783,7 +783,7 @@ _match:
       }
       break;
       case 5:
-        /* #line 172 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message.rl" */
+        /* #line 172 "src\\yield\\http\\http_message.rl" */
       { {
           p++;
           goto _out;
@@ -791,12 +791,12 @@ _match:
       }
       break;
       case 6:
-        /* #line 173 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message.rl" */
+        /* #line 173 "src\\yield\\http\\http_message.rl" */
       {
         return false;
       }
       break;
-      /* #line 552 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message.cpp" */
+      /* #line 552 "src\\yield\\http\\http_message.cpp" */
       }
     }
 
@@ -811,12 +811,12 @@ _again:
       while (__nacts-- > 0) {
         switch (*__acts++) {
         case 6:
-          /* #line 173 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message.rl" */
+          /* #line 173 "src\\yield\\http\\http_message.rl" */
         {
           return false;
         }
         break;
-        /* #line 569 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message.cpp" */
+        /* #line 569 "src\\yield\\http\\http_message.cpp" */
         }
       }
     }
@@ -825,7 +825,7 @@ _out:
     {}
   }
 
-  /* #line 178 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message.rl" */
+  /* #line 178 "src\\yield\\http\\http_message.rl" */
 
 
   return false;

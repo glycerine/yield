@@ -47,8 +47,7 @@ class Buffer;
 namespace net {
 class URI : public Object {
 public:
-  URI
-  (
+  URI(
     Buffer& buffer,
     const iovec& fragment,
     const iovec& host,
@@ -68,68 +67,100 @@ public:
 
   ~URI();
 
+public:
   string get_fragment() const {
     return iovec_to_string(fragment);
   }
+
   void get_fragment(OUT iovec& frag) const {
     frag = this->fragment;
   }
+
   string get_host() const {
     return iovec_to_string(host);
   }
+
   void get_host(OUT iovec& host) const {
     host = this->host;
   }
+
   string get_path() const {
     return iovec_to_string(path);
   }
+
   void get_path(OUT iovec& path) const {
     path = this->path;
   }
+
   uint16_t get_port() const {
     return port;
   }
+
   string get_scheme() const {
     return iovec_to_string(scheme);
   }
+
   void get_scheme(OUT iovec& scheme) const {
     scheme = this->scheme;
   }
+
   string get_query() const {
     return iovec_to_string(query);
   }
+
   void get_query(OUT iovec& query) const {
     query = this->query;
   }
+
   string get_userinfo() const {
     return iovec_to_string(userinfo);
   }
-  void get_userinfo(OUT iovec& ui) const {
-    ui = this->userinfo;
+
+  void get_userinfo(OUT iovec& userinfo) const {
+    userinfo = this->userinfo;
   }
 
+public:
   bool has_fragment() const {
     return fragment.iov_len > 0;
   }
+
+  bool has_host() const {
+    return host.iov_len > 0;
+  }
+
+  bool has_path() const {
+    return path.iov_len > 0;
+  }
+
   bool has_port() const {
     return port != 0;
   }
+
   bool has_query() const {
     return query.iov_len > 0;
   }
+
+  bool has_scheme() const {
+    return scheme.iov_len > 0;
+  }
+
   bool has_userinfo() const {
     return userinfo.iov_len > 0;
   }
 
+public:
   operator string() const;
 
   URI operator+(const char*) const;
   URI operator+(const string&) const;
 
+public:
   void set_port(uint16_t port) {
     this->port = port;
   }
 
+public:
   // Object
   URI& inc_ref() {
     return Object::inc_ref(*this);
@@ -143,8 +174,7 @@ private:
   static string iovec_to_string(const iovec&);
 
   void
-  rebase
-  (
+  rebase(
     char* old_base,
     const iovec& old_iov,
     char* new_base,

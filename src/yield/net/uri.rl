@@ -137,8 +137,7 @@
 
 namespace yield {
 namespace net {
-URI::URI
-(
+URI::URI(
   Buffer& buffer,
   const iovec& fragment,
   const iovec& host,
@@ -229,7 +228,7 @@ void URI::init(const char* uri, size_t uri_len) {
 
     include uri;
 
-    main := uri;
+    main := uri_reference;
 
     write data;
     write init;
