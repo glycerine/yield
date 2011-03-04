@@ -244,18 +244,22 @@ string URI::iovec_to_string(const iovec& iovec_) {
 }
 
 std::ostream& operator<<(std::ostream& os, const URI& uri) {
-  os.write(static_cast<char*>(uri.scheme.iov_base), uri.scheme.iov_len);
-  os.write("://", 3);
+  if (uri.has_scheme()) {
+    os.write(static_cast<char*>(uri.scheme.iov_base), uri.scheme.iov_len);
+    os.write("://", 3);
+  }
 
   if (uri.has_userinfo())
     os.write(static_cast<char*>(uri.userinfo.iov_base), uri.userinfo.iov_len);
 
-  os.write(static_cast<char*>(uri.host.iov_base), uri.host.iov_len);
+  if (uri.has_host())
+    os.write(static_cast<char*>(uri.host.iov_base), uri.host.iov_len);
 
   if (uri.has_port())
     os << ":" << uri.port;
 
-  os.write(static_cast<char*>(uri.path.iov_base), uri.path.iov_len);
+  if (uri.has_path())
+    os.write(static_cast<char*>(uri.path.iov_base), uri.path.iov_len);
 
   if (uri.has_query()) {
     os.write("?", 1);

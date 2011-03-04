@@ -47,15 +47,21 @@ public:
   void* get_body() const {
     return body;
   }
+
   size_t get_content_length() const {
     return content_length;
   }
+
   DateTime get_date_field(const char* name = "Date") const;
+
   bool get_field(const char* name, OUT iovec& value) const;
+
   string get_field(const char* name, const char* default_val = "") const;
+
   float get_http_version() const {
     return http_version;
   }
+
   bool has_field(const char* name) const;
 
   operator Buffer& ();
