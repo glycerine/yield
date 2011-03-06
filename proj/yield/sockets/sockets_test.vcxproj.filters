@@ -33,5 +33,8 @@
     <ClCompile Include="..\..\..\src\yield\sockets\udp_socket_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\yield_sockets_test_main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

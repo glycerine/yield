@@ -112,6 +112,8 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\sockets\udp_socket_test.cpp">
     </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\yield_sockets_test_main.cpp">
+    </ClCompile>
   </ItemGroup>
 
   <ItemGroup Label="ProjectReferenceItems">

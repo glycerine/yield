@@ -281,6 +281,10 @@
       <Project>{5a42594d-49a5-4b18-b77c-b48f230ca6f5}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+    <ProjectReference Include="..\sockets\sockets.vcxproj">
+      <Project>{d2e2c6b1-a975-427b-b5da-98db61720d9d}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
     <ProjectReference Include="..\poll\poll.vcxproj">
       <Project>{4591cab4-ae14-472d-9895-c50893e33350}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

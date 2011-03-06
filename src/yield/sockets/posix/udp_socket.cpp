@@ -1,4 +1,4 @@
-// yield/net/sockets/posix/udp_socket.cpp
+// yield/sockets/posix/udp_socket.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved

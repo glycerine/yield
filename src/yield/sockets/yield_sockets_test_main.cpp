@@ -1,4 +1,4 @@
-// yield/net/yield_net_test_main.cpp
+// yield/sockets/yield_sockets_test_main.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved

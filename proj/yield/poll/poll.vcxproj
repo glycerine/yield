@@ -173,6 +173,10 @@
   </ItemGroup>
 
   <ItemGroup Label="ProjectReferenceItems">
+    <ProjectReference Include="..\sockets\sockets.vcxproj">
+      <Project>{d2e2c6b1-a975-427b-b5da-98db61720d9d}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
     <ProjectReference Include="..\thread\thread.vcxproj">
       <Project>{6922dc00-f3dd-4736-84a2-76235cf41f68}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

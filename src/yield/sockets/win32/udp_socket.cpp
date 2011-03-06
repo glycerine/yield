@@ -1,4 +1,4 @@
-// yield/net/sockets/win32/udp_socket.cpp
+// yield/sockets/win32/udp_socket.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved

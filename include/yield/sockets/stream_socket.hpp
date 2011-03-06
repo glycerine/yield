@@ -1,4 +1,4 @@
-// yield/net/sockets/stream_socket.hpp
+// yield/sockets/stream_socket.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,8 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_NET_SOCKETS_STREAM_SOCKET_HPP_
-#define _YIELD_NET_SOCKETS_STREAM_SOCKET_HPP_
+#ifndef _YIELD_SOCKETS_STREAM_SOCKET_HPP_
+#define _YIELD_SOCKETS_STREAM_SOCKET_HPP_
 
 #include "yield/net/sockets/socket.hpp"
 #include "yield/net/sockets/socket_address.hpp"

@@ -1,4 +1,4 @@
-// yield/net/sockets/udp_socket_test.cpp
+// yield/sockets/udp_socket_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved

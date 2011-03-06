@@ -1,4 +1,4 @@
-// yield/net/sockets/posix/socket.cpp
+// yield/sockets/posix/socket.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved

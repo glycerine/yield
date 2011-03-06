@@ -128,5 +128,8 @@
     <ClCompile Include="..\..\..\src\yield\sockets\win32\udp_socket.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\yield_sockets_test_main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

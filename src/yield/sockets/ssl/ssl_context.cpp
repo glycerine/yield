@@ -1,4 +1,4 @@
-// yield/net/sockets/ssl/ssl_context.cpp
+// yield/sockets/ssl/ssl_context.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved

@@ -1,4 +1,4 @@
-// yield/net/sockets/tcp_socket_test.cpp
+// yield/sockets/tcp_socket_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved

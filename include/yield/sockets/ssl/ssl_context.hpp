@@ -1,4 +1,4 @@
-// yield/net/sockets/ssl/ssl_context.hpp
+// yield/sockets/ssl/ssl_context.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,8 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_NET_SOCKETS_SSL_SSL_CONTEXT_HPP_
-#define _YIELD_NET_SOCKETS_SSL_SSL_CONTEXT_HPP_
+#ifndef _YIELD_SOCKETS_SSL_SSL_CONTEXT_HPP_
+#define _YIELD_SOCKETS_SSL_SSL_CONTEXT_HPP_
 
 #ifdef YIELD_HAVE_OPENSSL
 struct ssl_ctx_st;

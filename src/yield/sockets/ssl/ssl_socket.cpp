@@ -1,4 +1,4 @@
-// yield/net/sockets/ssl/ssl_socket.cpp
+// yield/sockets/ssl/ssl_socket.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved

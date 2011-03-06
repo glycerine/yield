@@ -1,4 +1,4 @@
-// yield/net/sockets/ssl/ssl_exception.cpp
+// yield/sockets/ssl/ssl_exception.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved

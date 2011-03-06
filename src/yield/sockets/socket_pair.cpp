@@ -1,4 +1,4 @@
-// yield/net/sockets/socket_pair.cpp
+// yield/sockets/socket_pair.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
