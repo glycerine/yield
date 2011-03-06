@@ -52,7 +52,7 @@ LIBS += -lyield_fs -lyield_i18n -lyield_common
 DEP_FILE_PATHS := $(shell find ../../../build/yield/process -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../build/yield/process/option_parser.o ../../../build/yield/process/process.o
+OBJECT_FILE_PATHS += ../../../build/yield/process/process.o
 ifeq ($(UNAME), Darwin)
 	OBJECT_FILE_PATHS += ../../../build/yield/process/darwin/process.o
 	OBJECT_FILE_PATHS += ../../../build/yield/process/posix/process.o ../../../build/yield/process/posix/shared_library.o
@@ -93,10 +93,6 @@ depclean:
 ../../../build/yield/process/linux/process.o: ../../../src/yield/process/linux/process.cpp
 	-mkdir -p ../../../build/yield/process/linux 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/process/linux/process.o -MD $(CXXFLAGS) ../../../src/yield/process/linux/process.cpp
-
-../../../build/yield/process/option_parser.o: ../../../src/yield/process/option_parser.cpp
-	-mkdir -p ../../../build/yield/process 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/process/option_parser.o -MD $(CXXFLAGS) ../../../src/yield/process/option_parser.cpp
 
 ../../../build/yield/process/posix/process.o: ../../../src/yield/process/posix/process.cpp
 	-mkdir -p ../../../build/yield/process/posix 2>/dev/null

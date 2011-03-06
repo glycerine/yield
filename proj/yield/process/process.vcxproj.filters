@@ -10,11 +10,11 @@
     <Filter Include="Source Files\linux">
       <UniqueIdentifier>{9174dc30-ec53-4b20-ab9d-a1769fc17c15}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{e50715fc-16e7-4830-85fa-b57e653cd04b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\posix">
       <UniqueIdentifier>{ae17e2f8-73b6-4605-8d74-92afd2f9ccb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{e50715fc-16e7-4830-85fa-b57e653cd04b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\sunos">
       <UniqueIdentifier>{ff863381-f3aa-4df6-9772-8506101905bc}</UniqueIdentifier>
@@ -24,9 +24,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\include\yield\process\option_parser.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\yield\process\process.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -47,9 +44,6 @@
     <ClInclude Include="..\..\..\src\yield\process\linux\process.hpp">
       <Filter>Source Files\linux</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\process\option_parser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\process\posix\process.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>

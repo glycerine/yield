@@ -1,4 +1,4 @@
-// yield/process/option_parser.hpp
+// yield/getopt/option_parser.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,84 +27,22 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_PROCESS_OPTION_PARSER_HPP_
-#define _YIELD_PROCESS_OPTION_PARSER_HPP_
+#ifndef _YIELD_GETOPT_OPTION_PARSER_HPP_
+#define _YIELD_GETOPT_OPTION_PARSER_HPP_
 
 #include "yield/object.hpp"
-
+#include "yield/getopt/option.hpp"
+#include "yield/getopt/options.hpp"
+#include "yield/getopt/parsed_option.hpp"
+#include "yield/getopt/parsed_options.hpp"
 
 namespace yield {
-namespace process {
+namespace getopt {
 // Modelled after Python's optparse.OptionParser class
 class OptionParser : public Object {
 public:
-  class Option {
-  public:
-    Option
-    (
-      const string& option,
-      const string& help,
-      bool require_argument = true
-    );
-
-    Option(const string& option, bool require_argument = true);
-
-    const string& get_help() const {
-      return help;
-    }
-    bool get_require_argument() const {
-      return require_argument;
-    }
-
-    operator const char* () const {
-      return option.c_str();
-    }
-    operator const string& () const {
-      return option;
-    }
-    bool operator==(const string& option) const;
-    bool operator==(const char* option) const;
-    bool operator==(const Option& other) const;
-    bool operator<(const Option& other) const;   // For sorting
-
-  private:
-    string help, option;
-    bool require_argument;
-  };
-
-  class Options : public vector<Option> {
-  public:
-    void add
-    (
-      const string& option,
-      const string& help,
-      bool require_argument = true
-    );
-
-    void add(const string& option, bool require_argument = true);
-    void add(const Option& option);
-    void add(const Options& options);
-  };
-
-  class ParsedOption : public Option {
-  public:
-    ParsedOption(Option& option);
-    ParsedOption(Option& option, const string& argument);
-
-    const string& get_argument() const {
-      return argument;
-    }
-
-  private:
-    string argument;
-  };
-
-  typedef vector<ParsedOption> ParsedOptions;
-
-public:
   void
-  add_option
-  (
+  add_option(
     const string& option,
     const string& help,
     bool require_argument = true

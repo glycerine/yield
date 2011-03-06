@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "common", "proj\yield\common
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fs", "proj\yield\fs\fs.vcxproj", "{5A42594D-49A5-4B18-B77C-B48F230CA6F5}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "getopt", "proj\yield\getopt\getopt.vcxproj", "{9ADD0070-159F-4F8B-A67F-71E60DD078DB}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "http", "proj\yield\http\http.vcxproj", "{147916A2-6FBE-443B-A665-6F0A3D842C01}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "i18n", "proj\yield\i18n\i18n.vcxproj", "{AB31D0E8-9F88-4DF2-B07D-C26E959B841E}"
@@ -36,6 +38,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "common_test", "proj\yield\common\common_test.vcxproj", "{A35FEAB2-F78B-4706-A2D2-E605FF14E633}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fs_test", "proj\yield\fs\fs_test.vcxproj", "{98DBC1B0-9C20-4863-A16F-2AA46C5EC497}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "getopt_test", "proj\yield\getopt\getopt_test.vcxproj", "{E5E85DBE-AEFC-488A-B01F-62F009AB96D5}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "http_test", "proj\yield\http\http_test.vcxproj", "{6E13EC2A-7B66-44C5-BA5C-910EE415F912}"
 EndProject
@@ -79,6 +83,10 @@ Global
 		{5A42594D-49A5-4B18-B77C-B48F230CA6F5}.Debug|Win32.Build.0 = Debug|Win32
 		{5A42594D-49A5-4B18-B77C-B48F230CA6F5}.Release|Win32.ActiveCfg = Release|Win32
 		{5A42594D-49A5-4B18-B77C-B48F230CA6F5}.Release|Win32.Build.0 = Release|Win32
+		{9ADD0070-159F-4F8B-A67F-71E60DD078DB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9ADD0070-159F-4F8B-A67F-71E60DD078DB}.Debug|Win32.Build.0 = Debug|Win32
+		{9ADD0070-159F-4F8B-A67F-71E60DD078DB}.Release|Win32.ActiveCfg = Release|Win32
+		{9ADD0070-159F-4F8B-A67F-71E60DD078DB}.Release|Win32.Build.0 = Release|Win32
 		{147916A2-6FBE-443B-A665-6F0A3D842C01}.Debug|Win32.ActiveCfg = Debug|Win32
 		{147916A2-6FBE-443B-A665-6F0A3D842C01}.Debug|Win32.Build.0 = Debug|Win32
 		{147916A2-6FBE-443B-A665-6F0A3D842C01}.Release|Win32.ActiveCfg = Release|Win32
@@ -135,6 +143,10 @@ Global
 		{98DBC1B0-9C20-4863-A16F-2AA46C5EC497}.Debug|Win32.Build.0 = Debug|Win32
 		{98DBC1B0-9C20-4863-A16F-2AA46C5EC497}.Release|Win32.ActiveCfg = Release|Win32
 		{98DBC1B0-9C20-4863-A16F-2AA46C5EC497}.Release|Win32.Build.0 = Release|Win32
+		{E5E85DBE-AEFC-488A-B01F-62F009AB96D5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E5E85DBE-AEFC-488A-B01F-62F009AB96D5}.Debug|Win32.Build.0 = Debug|Win32
+		{E5E85DBE-AEFC-488A-B01F-62F009AB96D5}.Release|Win32.ActiveCfg = Release|Win32
+		{E5E85DBE-AEFC-488A-B01F-62F009AB96D5}.Release|Win32.Build.0 = Release|Win32
 		{6E13EC2A-7B66-44C5-BA5C-910EE415F912}.Debug|Win32.ActiveCfg = Debug|Win32
 		{6E13EC2A-7B66-44C5-BA5C-910EE415F912}.Debug|Win32.Build.0 = Debug|Win32
 		{6E13EC2A-7B66-44C5-BA5C-910EE415F912}.Release|Win32.ActiveCfg = Release|Win32

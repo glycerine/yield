@@ -1,4 +1,4 @@
-all: aio aio_test clientserver clientserver_test common common_test fs fs_test http http_test i18n i18n_test marshal marshal_test poll poll_test process process_test sockets sockets_test stage stage_test thread thread_test uri uri_test uuid uuid_test
+all: aio aio_test clientserver clientserver_test common common_test fs fs_test getopt getopt_test http http_test i18n i18n_test marshal marshal_test poll poll_test process process_test sockets sockets_test stage stage_test thread thread_test uri uri_test uuid uuid_test
 
 clean:
 	$(MAKE) -C proj/yield/aio -f aio.Makefile clean
@@ -9,6 +9,8 @@ clean:
 	$(MAKE) -C proj/yield/common -f common_test.Makefile clean
 	$(MAKE) -C proj/yield/fs -f fs.Makefile clean
 	$(MAKE) -C proj/yield/fs -f fs_test.Makefile clean
+	$(MAKE) -C proj/yield/getopt -f getopt.Makefile clean
+	$(MAKE) -C proj/yield/getopt -f getopt_test.Makefile clean
 	$(MAKE) -C proj/yield/http -f http.Makefile clean
 	$(MAKE) -C proj/yield/http -f http_test.Makefile clean
 	$(MAKE) -C proj/yield/i18n -f i18n.Makefile clean
@@ -39,6 +41,8 @@ depclean:
 	$(MAKE) -C proj/yield/common -f common_test.Makefile depclean
 	$(MAKE) -C proj/yield/fs -f fs.Makefile depclean
 	$(MAKE) -C proj/yield/fs -f fs_test.Makefile depclean
+	$(MAKE) -C proj/yield/getopt -f getopt.Makefile depclean
+	$(MAKE) -C proj/yield/getopt -f getopt_test.Makefile depclean
 	$(MAKE) -C proj/yield/http -f http.Makefile depclean
 	$(MAKE) -C proj/yield/http -f http_test.Makefile depclean
 	$(MAKE) -C proj/yield/i18n -f i18n.Makefile depclean
@@ -84,6 +88,12 @@ fs: i18n
 
 fs_test: fs
 	$(MAKE) -C proj/yield/fs -f fs_test.Makefile
+
+getopt: common
+	$(MAKE) -C proj/yield/getopt -f getopt.Makefile
+
+getopt_test: getopt
+	$(MAKE) -C proj/yield/getopt -f getopt_test.Makefile
 
 http: clientserver uri
 	$(MAKE) -C proj/yield/http -f http.Makefile

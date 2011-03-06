@@ -75,6 +75,7 @@ PROJECT_NAMES = (
     "clientserver",
     "common",
     "fs",
+    "getopt",
     "http",
     "i18n",
     "marshal",
@@ -209,6 +210,7 @@ PROJECT_REFERENCES = {
     "clientserver": ("aio",),
     "common": tuple(),
     "fs": ("i18n",),
+    "getopt": ("common",),
     "http": ("clientserver", "uri"),
     "i18n": ("common",),
     "marshal": ("common",),
@@ -437,6 +439,7 @@ THIRD_PARTY_SOURCE_FNMATCH_PATTERNS = (
     "genx.*",
     "pyparsing.py",
     "rapidxml.hpp",
+    "SimpleOpt.h",
     "yajl.*",
 )
 
