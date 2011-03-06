@@ -38,7 +38,7 @@ ifeq ($(UNAME), Linux)
 	LIBS += -lrt -lstdc++
 endif
 ifeq ($(UNAME), Solaris)
-	LIBS += -lnsl -lsocket -luuid -lm -lrt -lstdc++
+	LIBS += -lnsl -lsocket -lm -lrt -lstdc++
 endif
 LIBS += -lyield_net -lyield_common
 
@@ -46,7 +46,7 @@ LIBS += -lyield_net -lyield_common
 DEP_FILE_PATHS := $(shell find ../../../build/yield/net_test -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../build/yield/net_test/sockets/socket_address_test.o ../../../build/yield/net_test/sockets/socket_pair_test.o ../../../build/yield/net_test/sockets/ssl/ssl_context_test.o ../../../build/yield/net_test/sockets/tcp_socket_test.o ../../../build/yield/net_test/sockets/udp_socket_test.o ../../../build/yield/net_test/uri_test.o ../../../build/yield/net_test/uuid_test.o ../../../build/yield/net_test/yield_net_test_main.o
+OBJECT_FILE_PATHS += ../../../build/yield/net_test/sockets/socket_address_test.o ../../../build/yield/net_test/sockets/socket_pair_test.o ../../../build/yield/net_test/sockets/ssl/ssl_context_test.o ../../../build/yield/net_test/sockets/tcp_socket_test.o ../../../build/yield/net_test/sockets/udp_socket_test.o ../../../build/yield/net_test/yield_net_test_main.o
 
 
 ../../../bin/yield/yield_net_test: $(OBJECT_FILE_PATHS)
@@ -81,14 +81,6 @@ depclean:
 ../../../build/yield/net_test/sockets/udp_socket_test.o: ../../../src/yield/net/sockets/udp_socket_test.cpp
 	-mkdir -p ../../../build/yield/net_test/sockets 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/net_test/sockets/udp_socket_test.o -MD $(CXXFLAGS) ../../../src/yield/net/sockets/udp_socket_test.cpp
-
-../../../build/yield/net_test/uri_test.o: ../../../src/yield/net/uri_test.cpp
-	-mkdir -p ../../../build/yield/net_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/net_test/uri_test.o -MD $(CXXFLAGS) ../../../src/yield/net/uri_test.cpp
-
-../../../build/yield/net_test/uuid_test.o: ../../../src/yield/net/uuid_test.cpp
-	-mkdir -p ../../../build/yield/net_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/net_test/uuid_test.o -MD $(CXXFLAGS) ../../../src/yield/net/uuid_test.cpp
 
 ../../../build/yield/net_test/yield_net_test_main.o: ../../../src/yield/net/yield_net_test_main.cpp
 	-mkdir -p ../../../build/yield/net_test 2>/dev/null

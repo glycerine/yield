@@ -104,16 +104,9 @@
     <ClInclude Include="..\..\..\include\yield\net\sockets\tcp_socket.hpp" />
     <ClInclude Include="..\..\..\include\yield\net\sockets\udp_socket.hpp" />
     <ClInclude Include="..\..\..\include\yield\net\sockets\win32\winsock.hpp" />
-    <ClInclude Include="..\..\..\include\yield\net\uri.hpp" />
-    <ClInclude Include="..\..\..\include\yield\net\uuid.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
-    <ClCompile Include="..\..\..\src\yield\net\linux\uuid.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\net\linux\uuid.hpp" />
     <ClCompile Include="..\..\..\src\yield\net\sockets\posix\datagram_socket.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -190,31 +183,6 @@
     <ClCompile Include="..\..\..\src\yield\net\sockets\win32\udp_socket.cpp">
       <ObjectFileName>$(IntDir)sockets\win32\udp_socket.obj</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\net\sunos\uuid.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\net\sunos\uuid.hpp" />
-    <ClCompile Include="..\..\..\src\yield\net\uri.cpp">
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\net\uri.rl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\net\uri_test.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\net\uuid.cpp">
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\net\uuid_test.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\net\win32\uuid.cpp">
-      <ObjectFileName>$(IntDir)win32\uuid.obj</ObjectFileName>
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\net\win32\uuid.hpp" />
     <ClCompile Include="..\..\..\src\yield\net\yield_net_test_main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>

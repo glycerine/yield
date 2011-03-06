@@ -41,7 +41,7 @@
 
 namespace yield {
 namespace http {
-using yield::net::URI;
+using yield::uri::URI;
 
 Object& HTTPRequestParser::parse() {
   if (p < eof) {
@@ -68,7 +68,7 @@ Object& HTTPRequestParser::parse() {
       alphtype unsigned char;
 
       include basic_rules "basic_rules.rl";
-      include uri "../net/uri.rl";
+      include uri "../uri/uri.rl";
 
       method
         = ( "CONNECT" % { method = HTTPRequest::METHOD_CONNECT; } ) |
@@ -159,7 +159,7 @@ Object& HTTPRequestParser::parse() {
       p = ps;
       return *next_buffer;
     } else // Error parsing
-      return *new HTTPResponse(NULL, http_version, 400);
+      return *new HTTPResponse(400, NULL, http_version);
   } else // p == eof
     return *new Page;
 }

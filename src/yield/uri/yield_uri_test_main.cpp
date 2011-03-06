@@ -1,4 +1,4 @@
-// yield/net/sunos/uuid.cpp
+// yield/uri/yield_uri_test_main.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,30 +27,21 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "uuid.hpp"
+#include "yunit.hpp"
+
+#include <iostream>
 
 
-namespace yield {
-namespace net {
-namespace sunos {
-UUID::UUID() {
-  uuid_generate(uuid);
-}
+extern yunit::TestSuite& URITestSuite();
 
-UUID::UUID(const string& uuid) {
-  if (uuid_parse(const_cast<char*>(uuid.c_str()), this->uuid) != 0)
-    throw Exception();
-}
 
-bool UUID::operator==(const UUID& other) const {
-  return uuid_compare(uuid, other.uuid) == 0;
-}
+int main(int, char**) {
+  int failed_test_case_count = 0;
 
-UUID::operator string() const {
-  char uuid_string[UUID_PRINTABLE_STRING_LENGTH];
-  uuid_unparse(uuid, uuid_string);
-  return uuid_string;
-}
-}
-}
+  // URI
+  std::cout << "URI:" << std::endl;
+  failed_test_case_count += URITestSuite().run();
+  std::cout << std::endl;
+
+  return failed_test_case_count;
 }

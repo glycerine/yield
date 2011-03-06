@@ -48,8 +48,7 @@ using yield::net::sockets::TCPSocket;
 
 class HTTPServer::Connection : public StreamSocketServer::Connection {
 public:
-  Connection
-  (
+  Connection(
     HTTPServer& http_server,
     SocketAddress& peername,
     YO_NEW_REF StreamSocket& socket_
@@ -149,8 +148,7 @@ private:
 };
 
 
-HTTPServer::HTTPServer
-(
+HTTPServer::HTTPServer(
   YO_NEW_REF EventHandler& http_request_handler,
   const SocketAddress& sockname,
   Log* error_log,

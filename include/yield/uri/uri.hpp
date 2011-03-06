@@ -1,4 +1,4 @@
-// yield/net/uri.hpp
+// yield/uri/uri.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,8 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_NET_URI_HPP_
-#define _YIELD_NET_URI_HPP_
+#ifndef _YIELD_URI_URI_HPP_
+#define _YIELD_URI_URI_HPP_
 
 #include "yield/exception.hpp"
 #include "yield/object.hpp"
@@ -44,7 +44,7 @@ namespace yield {
 class Buffer;
 
 
-namespace net {
+namespace uri {
 class URI : public Object {
 public:
   URI(

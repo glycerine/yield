@@ -33,12 +33,14 @@
 #include "yield/object.hpp"
 #include "yield/fs/path.hpp"
 
-
 namespace yield {
 class Channel;
 
-
 namespace process {
+#ifdef _WIN32
+typedef unsigned long pid_t;
+#endif
+
 class Process : public Object {
 public:
   virtual ~Process();
@@ -82,18 +84,23 @@ public:
   );
 
   static yield::fs::Path get_current_executable_file_path();
+
   static pid_t getpid() {
     return self();
   }
+
   Channel* get_stderr() const {
     return stderr_;
   }
+
   Channel* get_stdin() const {
     return stdin_;
   }
+
   Channel* get_stdout() const {
     return stdout_;
   }
+
   virtual bool kill() = 0; // SIGKILL
   static YO_NEW_REF Process* open(pid_t pid);
   virtual bool poll(int* out_return_code = 0) = 0;   // waitpid() with WNOHANG
@@ -102,8 +109,7 @@ public:
   virtual int wait() = 0; // waitpid(), blocking
 
 protected:
-  Process
-  (
+  Process(
     YO_NEW_REF Channel* stderr_,
     YO_NEW_REF Channel* stdin_,
     YO_NEW_REF Channel* stdout_

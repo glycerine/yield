@@ -32,7 +32,7 @@
 
 #include "yield/buffer.hpp"
 #include "yield/time.hpp"
-#include "yield/net/uri.hpp"
+#include "yield/uri/uri.hpp"
 #include "yield/aio/net/sockets/connect_aiocb.hpp"
 #include "yield/http/socket_client.hpp"
 #include "yield/http/stream_socket_peer.hpp"
@@ -199,7 +199,7 @@ protected:
     const Configuration& configuration,
     Log* error_log,
     Log* trace_log,
-    const yield::net::URI& uri
+    const yield::uri::URI& uri
   );
 
   virtual ~StreamSocketClient();

@@ -49,7 +49,7 @@ class HTTPClient : public StreamSocketClient {
 public:
   HTTPClient
   (
-    const yield::net::URI& uri,
+    const yield::uri::URI& uri,
     Log* error_log = NULL,
     Log* trace_log = NULL
   );
@@ -57,20 +57,20 @@ public:
   HTTPClient
   (
     const Configuration& configuration,
-    const yield::net::URI& uri,
+    const yield::uri::URI& uri,
     Log* reror_log = NULL,
     Log* trace_log = NULL
   );
 
   ~HTTPClient();
 
-  static YO_NEW_REF HTTPResponse& GET(const yield::net::URI& uri);
+  static YO_NEW_REF HTTPResponse& GET(const yield::uri::URI& uri);
 
   //static
   //YO_NEW_REF HTTPResponse&
   //PUT
   //(
-  //  const yield::net::URI& uri,
+  //  const yield::uri::URI& uri,
   //  YO_NEW_REF Buffer& body
   //);
 

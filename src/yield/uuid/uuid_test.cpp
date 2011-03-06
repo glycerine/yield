@@ -1,4 +1,4 @@
-// yield/net/uuid.hpp
+// yield/uuid/uuid_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,51 +27,41 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_NET_UUID_HPP_
-#define _YIELD_NET_UUID_HPP_
+#include "yield/assert.hpp"
+#include "yield/auto_object.hpp"
+#include "yield/uuid/uuid.hpp"
+#include "yunit.hpp"
 
-#include "yield/object.hpp"
-
+TEST_SUITE(UUID);
 
 namespace yield {
-namespace net {
-#if defined(__sun)
-namespace sunos {
-class UUID;
-}
-#elif defined(_WIN32)
-namespace win32 {
-class UUID;
-}
-#elif defined(YIELD_HAVE_LINUX_LIBUUID)
-namespace linux {
-class UUID;
-}
-#endif
-
-
+namespace uuid {
 #if defined(__sun) || defined(_WIN32) || defined(YIELD_HAVE_LINUX_LIBUUID)
-class UUID : public Object {
-public:
-  UUID();
-  UUID(const string& uuid);
-  ~UUID();
+TEST(UUID, create) {
+  UUID uuid;
+}
 
-  bool operator!=(const UUID&) const;
-  bool operator==(const UUID&) const;
-  operator string() const;
-
-private:
-#if defined(__sun)
-  sunos::UUID* pimpl;
-#elif defined(_WIN32)
-  win32::UUID* pimpl;
-#elif defined(YIELD_HAVE_LINUX_LIBUUID)
-  linux::UUID* pimpl;
+TEST(UUID, cast_to_string) {
+  UUID uuid;
+  string uuid_str = uuid;
+  throw_assert_false(uuid_str.empty());
+#if defined(_WIN32) || defined(YIELD_HAVE_LINUX_LIBUUID)
+  throw_assert_eq(uuid_str.size(), 36);
 #endif
-};
+}
+
+TEST(UUID, compare) {
+  UUID uuid1, uuid2;
+  throw_assert_ne(uuid1, uuid2);
+}
+
+TEST(UUID, parse) {
+  UUID uuid1;
+  string uuid1_str = uuid1;
+
+  UUID uuid2(uuid1_str);
+  throw_assert_eq(uuid1, uuid2);
+}
 #endif
 }
 }
-
-#endif

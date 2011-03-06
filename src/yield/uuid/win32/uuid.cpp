@@ -1,4 +1,4 @@
-// yield/net/linux/uuid.hpp
+// yield/uuid/win32/uuid.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,36 +27,49 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_NET_LINUX_UUID_HPP_
-#define _YIELD_NET_LINUX_UUID_HPP_
-
-#include "yield/config.hpp"
-
-#include <string>
-using std::string;
-#ifdef YIELD_HAVE_LINUX_LIBUUID
-#include <uuid/uuid.h>
-#endif
+#include "uuid.hpp"
+#include "yield/exception.hpp"
 
 
 namespace yield {
-namespace net {
-namespace linux {
-#ifdef YIELD_HAVE_LINUX_LIBUUID
-class UUID {
-public:
-  UUID();
-  UUID(const string& uuid);
+namespace uuid {
+namespace win32 {
+UUID::UUID() {
+  if (UuidCreate(&uuid) != RPC_S_OK)
+    throw Exception();
+}
 
-  bool operator==(const UUID&) const;
-  operator string() const;
+UUID::UUID(const string& uuid) {
+  if
+  (
+    UuidFromStringA
+    (
+      reinterpret_cast<RPC_CSTR>
+      (
+        const_cast<char*>(uuid.c_str())
+      ),
+      &this->uuid
+    )
+    != RPC_S_OK
+  )
+    throw Exception();
+}
 
-private:
-  uuid_t uuid;
-};
-#endif
-};
-};
-};
+bool UUID::operator==(const UUID& other) const {
+  return memcmp(&uuid, &other.uuid, sizeof(uuid)) == 0;
+}
 
-#endif
+UUID::operator string() const {
+  RPC_CSTR temp_to_string;
+  UuidToStringA
+  (
+    &uuid,
+    &temp_to_string
+  );
+  string to_string(reinterpret_cast<char*>(temp_to_string));
+  RpcStringFreeA(&temp_to_string);
+  return to_string;
+}
+}
+}
+}

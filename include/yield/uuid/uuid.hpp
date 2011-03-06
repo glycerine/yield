@@ -1,4 +1,4 @@
-// yield/net/win32/uuid.hpp
+// yield/uuid/uuid.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,34 +27,49 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_NET_WIN32_UUID_HPP_
-#define _YIELD_NET_WIN32_UUID_HPP_
+#ifndef _YIELD_UUID_UUID_HPP_
+#define _YIELD_UUID_UUID_HPP_
 
-#include "yield/config.hpp"
-
-#include <string>
-using std::string;
-#define RPC_NO_WINDOWS_H 1
-#include <Rpc.h>
-#pragma comment( lib, "Rpcrt4.lib" )
-
+#include "yield/object.hpp"
 
 namespace yield {
-namespace net {
+namespace uuid {
+#if defined(__sun)
+namespace sunos {
+class UUID;
+}
+#elif defined(_WIN32)
 namespace win32 {
-class UUID {
+class UUID;
+}
+#elif defined(YIELD_HAVE_LINUX_LIBUUID)
+namespace linux {
+class UUID;
+}
+#endif
+
+#if defined(__sun) || defined(_WIN32) || defined(YIELD_HAVE_LINUX_LIBUUID)
+class UUID : public Object {
 public:
   UUID();
   UUID(const string& uuid);
+  ~UUID();
 
+  bool operator!=(const UUID&) const;
   bool operator==(const UUID&) const;
   operator string() const;
 
 private:
-  ::UUID uuid;
+#if defined(__sun)
+  sunos::UUID* pimpl;
+#elif defined(_WIN32)
+  win32::UUID* pimpl;
+#elif defined(YIELD_HAVE_LINUX_LIBUUID)
+  linux::UUID* pimpl;
+#endif
 };
-};
-};
-};
+#endif
+}
+}
 
 #endif

@@ -28,6 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <sstream> // for std::ostringstream
+#include "yield/assert.hpp"
 #include "yield/exception.hpp"
 #include "yield/string_buffer.hpp"
 #include "yield/http/http_request.hpp"
@@ -36,15 +37,14 @@
 
 namespace yield {
 namespace http {
-HTTPRequest::HTTPRequest
-(
+HTTPRequest::HTTPRequest(
   void* body,
   Buffer& buffer,
   size_t content_length,
   uint16_t fields_offset,
   float http_version,
   Method method,
-  const yield::net::URI& uri
+  const yield::uri::URI& uri
 )
   : HTTPMessage<HTTPRequest>
   (
@@ -59,13 +59,13 @@ HTTPRequest::HTTPRequest
   uri(uri)
 { }
 
-HTTPRequest::HTTPRequest
-(
+HTTPRequest::HTTPRequest(
   Method method,
-  const yield::net::URI& uri,
-  YO_NEW_REF Buffer* body
+  const yield::uri::URI& uri,
+  YO_NEW_REF Buffer* body,
+  float http_version
 )
-  : HTTPMessage<HTTPRequest>(body, 1.1f),
+  : HTTPMessage<HTTPRequest>(body, http_version),
     creation_date_time(DateTime::now()),
     method(method),
     uri(uri) {
@@ -124,7 +124,12 @@ HTTPRequest::HTTPRequest
   uri.get_path(uri_path);
   get_buffer().put(uri_path);
 
-  get_buffer().put(" HTTP/1.1\r\n", 11);
+  if (http_version == 1.1f)
+    get_buffer().put(" HTTP/1.1\r\n", 11);
+  else if (http_version == 1.0f)
+    get_buffer().put(" HTTP/1.0\r\n", 11);
+  else
+    DebugBreak();
 
   mark_fields_offset();
 
@@ -174,7 +179,7 @@ void HTTPRequest::respond(HTTPResponse& http_response) {
 }
 
 void HTTPRequest::respond(uint16_t status_code) {
-  respond(*new HTTPResponse(NULL, get_http_version(), status_code));
+  respond(*new HTTPResponse(status_code, NULL, get_http_version()));
 }
 
 void HTTPRequest::respond(uint16_t status_code, const char* body) {
@@ -182,7 +187,7 @@ void HTTPRequest::respond(uint16_t status_code, const char* body) {
 }
 
 void HTTPRequest::respond(uint16_t status_code, Buffer& body) {
-  respond(*new HTTPResponse(&body, get_http_version(), status_code));
+  respond(*new HTTPResponse(status_code, &body, get_http_version()));
 }
 
 void HTTPRequest::respond(Exception& exception) {

@@ -32,8 +32,6 @@
 #include <iostream>
 
 
-extern yunit::TestSuite& URITestSuite();
-extern yunit::TestSuite& UUIDTestSuite();
 extern yunit::TestSuite& SocketAddressTestSuite();
 extern yunit::TestSuite& SocketPairTestSuite();
 extern yunit::TestSuite& TCPSocketTestSuite();
@@ -43,16 +41,6 @@ extern yunit::TestSuite& SSLContextTestSuite();
 
 int main(int, char**) {
   int failed_test_case_count = 0;
-
-  // URI
-  std::cout << "URI:" << std::endl;
-  failed_test_case_count += URITestSuite().run();
-  std::cout << std::endl;
-
-  // UUID
-  std::cout << "UUID:" << std::endl;
-  failed_test_case_count += UUIDTestSuite().run();
-  std::cout << std::endl;
 
   // SocketAddress
   std::cout << "SocketAddress:" << std::endl;

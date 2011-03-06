@@ -116,10 +116,6 @@
     <ClCompile Include="..\..\..\src\yield\net\sockets\udp_socket_test.cpp">
       <ObjectFileName>$(IntDir)sockets\udp_socket_test.obj</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\net\uri_test.cpp">
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\net\uuid_test.cpp">
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\net\yield_net_test_main.cpp">
     </ClCompile>
   </ItemGroup>

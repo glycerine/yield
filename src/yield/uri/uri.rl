@@ -1,4 +1,4 @@
-// yield/net/uri.rl
+// yield/uri/uri.rl
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -30,7 +30,7 @@
 #include "yield/assert.hpp"
 #include "yield/string_buffer.hpp"
 #include "yield/exception.hpp"
-#include "yield/net/uri.hpp"
+#include "yield/uri/uri.hpp"
 
 #include <sstream> // or std::ostringstream
 #include <stdlib.h> // For atoi
@@ -136,7 +136,7 @@
 }%%
 
 namespace yield {
-namespace net {
+namespace uri {
 URI::URI(
   Buffer& buffer,
   const iovec& fragment,

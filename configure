@@ -81,7 +81,9 @@ PROJECT_NAMES = (
     "poll",
     "process",
     "stage",
-    "thread"
+    "thread",
+    "uuid",
+    "uri"
 )
 
 
@@ -89,7 +91,6 @@ AUTHOR = "Minor Gordon"
 
 AUTOCONF = {
     "net": {
-    #    "linux": { "YIELD_HAVE_LINUX_LIBUUID": ( "uuid", "uuid/uuid.h" ), },
     #    "unix": { "YIELD_HAVE_OPENSSL": ( "crypto", "ssl", "ssl.h" ), },
     #    "win32": { "YIELD_HAVE_OPENSSL": ( "libeay32", "ssleay32", "ssl.h" ), },
     },
@@ -100,6 +101,10 @@ AUTOCONF = {
 
 #    "unix": { "YIELD_HAVE_ZLIB": ( "z", "zlib.h" ), },
 #    "win32":  { "YIELD_HAVE_ZLIB": ( "zdll", "zlib.h" ), },    
+
+    "uuid": {
+        #    "linux": { "YIELD_HAVE_LINUX_LIBUUID": ( "uuid", "uuid/uuid.h" ), },
+    },
 }
 for project_name in AUTOCONF.iterkeys():
     assert project_name in PROJECT_NAMES, project_name
@@ -165,7 +170,7 @@ LIBS = {
     },
 
     "net": {
-        "sunos": ["nsl", "socket", "uuid"],
+        "sunos": ["nsl", "socket"],
     },
 
     "process": {
@@ -176,7 +181,11 @@ LIBS = {
         "freebsd": ["pthread"],
         "linux": ["pthread"],
         "sunos": ["cpc", "kstat"],
-    }
+    },
+
+    "uuid": {
+        "sunos": ["uuid"],
+    },
 }
 for project_name in LIBS.iterkeys():
     assert project_name in PROJECT_NAMES, project_names
@@ -198,7 +207,7 @@ PROJECT_REFERENCES = {
     "aio": ("fs", "net", "poll", "stage"),
     "common": tuple(),
     "fs": ("i18n",),
-    "http": ("aio", "stage"),
+    "http": ("aio", "stage", "uri"),
     "i18n": ("common",),
     "marshal": ("common",),
     "net": ("common",),
@@ -206,6 +215,8 @@ PROJECT_REFERENCES = {
     "process": ("fs",),
     "stage": ("thread",),
     "thread": ("common",),
+    "uri": ("common",),
+    "uuid": ("common",),
 }
 
 for project_name in PROJECT_NAMES:
@@ -573,7 +584,7 @@ if options.format_src:
         source_files = source_files.exclude(THIRD_PARTY_SOURCE_FNMATCH_PATTERNS)
 
         source_files.format(
-            author="Minor Gordon",
+            author=AUTHOR,
             force=options.force,
             project=project,
         )
@@ -581,8 +592,7 @@ if options.format_src:
         astylerc_path = path_join(ROOT_DIR_PATH, "etc", "astylerc")
         assert exists(astylerc_path)
         for source_file in source_files:
-            source_file_ext = splitext(source_file.get_path())[1]
-            if source_file_ext in (".cpp", ".hpp"):
+            if splitext(source_file.get_path())[1] in (".cpp", ".hpp"):
                 try:
                     call(["AStyle", "--options=" + astylerc_path, source_file.get_path()])
                 except:

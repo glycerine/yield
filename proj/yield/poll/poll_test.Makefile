@@ -41,7 +41,7 @@ ifeq ($(UNAME), Linux)
 	LIBS += -lpthread -lrt -lstdc++
 endif
 ifeq ($(UNAME), Solaris)
-	LIBS += -lnsl -lsocket -luuid -lcpc -lkstat -lm -lrt -lstdc++
+	LIBS += -lnsl -lsocket -lcpc -lkstat -lm -lrt -lstdc++
 endif
 LIBS += -lyield_poll -lyield_net -lyield_thread -lyield_common
 

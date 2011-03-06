@@ -64,38 +64,31 @@ public:
   void teardown() {
     delete aio_queue;
     aio_queue = NULL;
-    file_system->unlink(get_test_file_name());
+    FileSystem().unlink(get_test_file_name());
   }
 
 protected:
   AIOQueueTest()
     : test_buffer("aio_queue_test"),
       test_file_name("aio_queue_test.txt") {
-    file_system = FileSystem::create();
-  }
-
-  ~AIOQueueTest() {
-    delete file_system;
   }
 
   AIOQueueType& get_aio_queue() const {
     return *aio_queue;
   }
+
   Page& get_test_buffer() {
     return test_buffer;
   }
+
   const Path& get_test_file_name() const {
     return test_file_name;
-  }
-  FileSystem& get_file_system() const {
-    return *file_system;
   }
 
 private:
   AIOQueueType* aio_queue;
   Page test_buffer;
   Path test_file_name;
-  FileSystem* file_system;
 };
 
 
@@ -108,19 +101,16 @@ public:
     throw_assert_eq(null_event, NULL);
 
     {
-      auto_Object<File> file
-      = this->get_file_system().creat(this->get_test_file_name());
+      auto_Object<File> file = FileSystem().creat(this->get_test_file_name());
 
-      file->write
-      (
+      file->write(
         this->get_test_buffer(),
         this->get_test_buffer().size()
       );
     }
 
     auto_Object<File> file
-    = this->get_file_system().open
-      (
+    = FileSystem().open(
         this->get_test_file_name(),
         O_ASYNC | O_RDONLY
       );
@@ -157,7 +147,7 @@ public:
   void run() {
     {
       auto_Object<File> file
-      = this->get_file_system().open
+      = FileSystem().open
         (
           this->get_test_file_name(),
           O_ASYNC | O_CREAT | O_TRUNC | O_WRONLY
@@ -191,7 +181,7 @@ public:
 
     {
       auto_Object<File> file
-      = this->get_file_system().open(this->get_test_file_name());
+      = FileSystem().open(this->get_test_file_name());
       auto_Object<Page> page = new Page;
       ssize_t read_ret = file->read(*page, page->capacity());
       throw_assert_gt(read_ret, 0);

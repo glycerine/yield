@@ -44,7 +44,7 @@
 
 namespace yield {
 namespace http {
-using yield::net::URI;
+using yield::uri::URI;
 using yield::net::sockets::SocketAddress;
 using yield::net::sockets::StreamSocket;
 using yield::net::sockets::TCPSocket;
@@ -160,7 +160,7 @@ private:
 
 HTTPClient::HTTPClient
 (
-  const yield::net::URI& uri,
+  const yield::uri::URI& uri,
   Log* error_log,
   Log* trace_log
 )
@@ -177,7 +177,7 @@ HTTPClient::HTTPClient
 HTTPClient::HTTPClient
 (
   const Configuration& configuration,
-  const yield::net::URI& uri,
+  const yield::uri::URI& uri,
   Log* error_log,
   Log* trace_log
 )

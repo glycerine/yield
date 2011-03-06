@@ -1,4 +1,4 @@
-// yield/net/uri_test.cpp
+// yield/uri/uri_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -29,14 +29,13 @@
 
 #include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
-#include "yield/net/uri.hpp"
+#include "yield/uri/uri.hpp"
 #include "yunit.hpp"
-
 
 TEST_SUITE(URI);
 
 namespace yield {
-namespace net {
+namespace uri {
 TEST(URI, any) {
   URI uri("http://*:80/");
   throw_assert_eq(uri.get_scheme(), "http");

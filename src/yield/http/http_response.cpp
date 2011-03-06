@@ -53,11 +53,10 @@ HTTPResponse::HTTPResponse
   status_code(status_code)
 { }
 
-HTTPResponse::HTTPResponse
-(
+HTTPResponse::HTTPResponse(
+  uint16_t status_code,
   YO_NEW_REF Buffer* body,
-  float http_version,
-  uint16_t status_code
+  float http_version
 )
   : HTTPMessage<HTTPResponse>(body, http_version),
     status_code(status_code) {

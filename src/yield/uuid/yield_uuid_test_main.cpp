@@ -1,4 +1,4 @@
-// yield/net/sunos/uuid.hpp
+// yield/uuid/yield_uuid_test_main.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,32 +27,21 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_NET_SUNOS_UUID_HPP_
-#define _YIELD_NET_SUNOS_UUID_HPP_
+#include "yunit.hpp"
 
-#include "yield/config.hpp"
-
-#include <string>
-using std::string;
-#include <uuid/uuid.h>
+#include <iostream>
 
 
-namespace yield {
-namespace net {
-namespace sunos {
-class UUID {
-public:
-  UUID();
-  UUID(const string& uuid);
+extern yunit::TestSuite& UUIDTestSuite();
 
-  bool operator==(const UUID&) const;
-  operator string() const;
 
-private:
-  uuid_t uuid;
-};
-};
-};
-};
+int main(int, char**) {
+  int failed_test_case_count = 0;
 
-#endif
+  // UUID
+  std::cout << "UUID:" << std::endl;
+  failed_test_case_count += UUIDTestSuite().run();
+  std::cout << std::endl;
+
+  return failed_test_case_count;
+}

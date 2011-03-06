@@ -36,7 +36,7 @@
 #include "yield/http/http_client.hpp"
 #include "yield/http/http_response.hpp"
 #include "yield/http/http_server.hpp"
-#include "yield/net/uri.hpp"
+#include "yield/uri/uri.hpp"
 #include "yield/stage/seda_stage_scheduler.hpp"
 #include "yield/stage/synchronized_response_queue.hpp"
 #include "yunit.hpp"
@@ -44,7 +44,7 @@
 
 namespace yield {
 namespace http {
-using yield::net::URI;
+using yield::uri::URI;
 using yield::stage::SEDAStageScheduler;
 using yield::stage::SynchronizedResponseQueue;
 

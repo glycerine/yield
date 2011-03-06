@@ -32,7 +32,7 @@
 
 #include "yield/exception.hpp"
 #include "yield/object.hpp"
-#include "yield/net/uri.hpp"
+#include "yield/uri/uri.hpp"
 
 #include <ostream>
 #include <sstream> // for std::ostringstream
@@ -119,10 +119,6 @@ public:
 
   SocketAddress(const char* nodename, uint16_t port) throw(Exception) {
     init(nodename, port);
-  }
-
-  SocketAddress(const URI& uri) throw(Exception) {
-    init(uri.get_host().c_str(), uri.get_port());
   }
 
   SocketAddress(SocketAddress& other) {

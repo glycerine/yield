@@ -33,7 +33,7 @@
 #include "yield/date_time.hpp"
 #include "yield/request.hpp"
 #include "yield/http/http_message.hpp"
-#include "yield/net/uri.hpp"
+#include "yield/uri/uri.hpp"
 
 
 namespace yield {
@@ -70,8 +70,9 @@ public:
 public:
   HTTPRequest(
     Method method,
-    const yield::net::URI& uri,
-    YO_NEW_REF Buffer* body = NULL
+    const yield::uri::URI& uri,
+    YO_NEW_REF Buffer* body = NULL,
+    float http_version = 1.1f
   );
 
   const DateTime& get_creation_date_time() const;
@@ -80,7 +81,7 @@ public:
     return method;
   }
 
-  const yield::net::URI& get_uri() const {
+  const yield::uri::URI& get_uri() const {
     return uri;
   }
 
@@ -114,13 +115,13 @@ private:
     uint16_t fields_offset,
     float http_version,
     Method method,
-    const yield::net::URI& uri
+    const yield::uri::URI& uri
   );
 
 private:
   DateTime creation_date_time;
   Method method;
-  yield::net::URI uri;
+  yield::uri::URI uri;
 };
 }
 }

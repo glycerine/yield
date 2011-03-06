@@ -56,8 +56,7 @@ Object& HTTPResponseParser::parse() {
         void* body;
 
         if (parse_body(content_length, body)) {
-          return *new HTTPResponse
-                 (
+          return *new HTTPResponse(
                    body,
                    get_buffer(),
                    content_length,
@@ -84,7 +83,7 @@ Object& HTTPResponseParser::parse() {
       p = ps;
       return *next_buffer;
     } else // Error parsing
-      return *new HTTPResponse(NULL, http_version, 400);
+      return *new HTTPResponse(400, NULL, http_version);
   } else // p == eof
     return *new Page;
 }

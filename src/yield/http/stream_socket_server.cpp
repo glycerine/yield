@@ -45,8 +45,7 @@ using yield::net::sockets::SocketAddress;
 using yield::net::sockets::StreamSocket;
 
 
-StreamSocketServer::StreamSocketServer
-(
+StreamSocketServer::StreamSocketServer(
   Log* error_log,
   YO_NEW_REF StreamSocket& socket_,
   const SocketAddress& sockname,

@@ -71,7 +71,7 @@
 
 namespace yield {
 namespace http {
-using yield::net::URI;
+using yield::uri::URI;
 
 Object& HTTPRequestParser::parse() {
   if (p < eof) {
@@ -3159,67 +3159,67 @@ _match:
         }
         break;
         case 1:
-          /* #line 81 "src\\yield\\http\\../net/uri.rl" */
+          /* #line 81 "src\\yield\\http\\../uri/uri.rl" */
         {
           scheme.iov_base = p;
         }
         break;
         case 2:
-          /* #line 82 "src\\yield\\http\\../net/uri.rl" */
+          /* #line 82 "src\\yield\\http\\../uri/uri.rl" */
         {
           scheme.iov_len =  p - static_cast<char*>(scheme.iov_base);
         }
         break;
         case 3:
-          /* #line 86 "src\\yield\\http\\../net/uri.rl" */
+          /* #line 86 "src\\yield\\http\\../uri/uri.rl" */
         {
           userinfo.iov_base = p;
         }
         break;
         case 4:
-          /* #line 87 "src\\yield\\http\\../net/uri.rl" */
+          /* #line 87 "src\\yield\\http\\../uri/uri.rl" */
         {
           userinfo.iov_len = p - static_cast<char*>(userinfo.iov_base);
         }
         break;
         case 5:
-          /* #line 91 "src\\yield\\http\\../net/uri.rl" */
+          /* #line 91 "src\\yield\\http\\../uri/uri.rl" */
         {
           host.iov_base = p;
         }
         break;
         case 6:
-          /* #line 92 "src\\yield\\http\\../net/uri.rl" */
+          /* #line 92 "src\\yield\\http\\../uri/uri.rl" */
         {
           host.iov_len = p - static_cast<char*>(host.iov_base);
         }
         break;
         case 7:
-          /* #line 95 "src\\yield\\http\\../net/uri.rl" */
+          /* #line 95 "src\\yield\\http\\../uri/uri.rl" */
         {
           port = static_cast<uint16_t>(atoi(p));
         }
         break;
         case 8:
-          /* #line 100 "src\\yield\\http\\../net/uri.rl" */
+          /* #line 100 "src\\yield\\http\\../uri/uri.rl" */
         {
           path.iov_base = p;
         }
         break;
         case 9:
-          /* #line 101 "src\\yield\\http\\../net/uri.rl" */
+          /* #line 101 "src\\yield\\http\\../uri/uri.rl" */
         {
           path.iov_len = p - static_cast<char*>(path.iov_base);
         }
         break;
         case 10:
-          /* #line 119 "src\\yield\\http\\../net/uri.rl" */
+          /* #line 119 "src\\yield\\http\\../uri/uri.rl" */
         {
           query.iov_base = p;
         }
         break;
         case 11:
-          /* #line 120 "src\\yield\\http\\../net/uri.rl" */
+          /* #line 120 "src\\yield\\http\\../uri/uri.rl" */
         {
           query.iov_len = p - static_cast<char*>(query.iov_base);
         }
@@ -3405,7 +3405,7 @@ _out:
       p = ps;
       return *next_buffer;
     } else // Error parsing
-      return *new HTTPResponse(NULL, http_version, 400);
+      return *new HTTPResponse(400, NULL, http_version);
   } else // p == eof
     return *new Page;
 }

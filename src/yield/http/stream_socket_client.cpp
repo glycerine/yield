@@ -32,20 +32,19 @@
 #include "yield/log.hpp"
 #include "yield/aio/net/sockets/aio_queue.hpp"
 #include "yield/http/stream_socket_client.hpp"
-#include "yield/net/uri.hpp"
+#include "yield/uri/uri.hpp"
 #include "yield/net/sockets/socket_address.hpp"
 #include "yield/net/sockets/stream_socket.hpp"
 
 
 namespace yield {
 namespace http {
-using yield::net::URI;
+using yield::uri::URI;
 using yield::net::sockets::SocketAddress;
 using yield::net::sockets::StreamSocket;
 
 
-StreamSocketClient::StreamSocketClient
-(
+StreamSocketClient::StreamSocketClient(
   const Configuration& configuration,
   Log* error_log,
   Log* trace_log,
@@ -53,7 +52,7 @@ StreamSocketClient::StreamSocketClient
 )
   : StreamSocketPeer<SocketClient>(error_log, trace_log),
     configuration(configuration),
-    peername(*new SocketAddress(uri))
+    peername(*new SocketAddress(uri.get_host().c_str(), uri.get_port()))
 { }
 
 StreamSocketClient::~StreamSocketClient() {

@@ -36,12 +36,6 @@
     <ClCompile Include="..\..\..\src\yield\net\sockets\udp_socket_test.cpp">
       <Filter>Source Files\sockets</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\net\uri_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\net\uuid_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\net\yield_net_test_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

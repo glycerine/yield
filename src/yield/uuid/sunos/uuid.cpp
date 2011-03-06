@@ -1,4 +1,4 @@
-// yield/net/win32/uuid.cpp
+// yield/uuid/sunos/uuid.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -28,47 +28,28 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "uuid.hpp"
-#include "yield/exception.hpp"
 
 
 namespace yield {
-namespace net {
-namespace win32 {
+namespace uuid {
+namespace sunos {
 UUID::UUID() {
-  if (UuidCreate(&uuid) != RPC_S_OK)
-    throw Exception();
+  uuid_generate(uuid);
 }
 
 UUID::UUID(const string& uuid) {
-  if
-  (
-    UuidFromStringA
-    (
-      reinterpret_cast<RPC_CSTR>
-      (
-        const_cast<char*>(uuid.c_str())
-      ),
-      &this->uuid
-    )
-    != RPC_S_OK
-  )
+  if (uuid_parse(const_cast<char*>(uuid.c_str()), this->uuid) != 0)
     throw Exception();
 }
 
 bool UUID::operator==(const UUID& other) const {
-  return memcmp(&uuid, &other.uuid, sizeof(uuid)) == 0;
+  return uuid_compare(uuid, other.uuid) == 0;
 }
 
 UUID::operator string() const {
-  RPC_CSTR temp_to_string;
-  UuidToStringA
-  (
-    &uuid,
-    &temp_to_string
-  );
-  string to_string(reinterpret_cast<char*>(temp_to_string));
-  RpcStringFreeA(&temp_to_string);
-  return to_string;
+  char uuid_string[UUID_PRINTABLE_STRING_LENGTH];
+  uuid_unparse(uuid, uuid_string);
+  return uuid_string;
 }
 }
 }

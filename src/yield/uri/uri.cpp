@@ -1,4 +1,4 @@
-// yield/net/uri.cpp
+// yield/uri/uri.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,8 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/* #line 1 "src\\yield\\net\\uri.rl" */
-// yield/net/uri.rl
+/* #line 1 "src\\yield\\uri\\uri.rl" */
+// yield/uri/uri.rl
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -60,7 +60,7 @@
 #include "yield/assert.hpp"
 #include "yield/string_buffer.hpp"
 #include "yield/exception.hpp"
-#include "yield/net/uri.hpp"
+#include "yield/uri/uri.hpp"
 
 #include <sstream> // or std::ostringstream
 #include <stdlib.h> // For atoi
@@ -71,11 +71,11 @@
 #endif
 
 
-/* #line 136 "src\\yield\\net\\uri.rl" */
+/* #line 136 "src\\yield\\uri\\uri.rl" */
 
 
 namespace yield {
-namespace net {
+namespace uri {
 URI::URI(
   Buffer& buffer,
   const iovec& fragment,
@@ -162,7 +162,7 @@ void URI::init(const char* uri, size_t uri_len) {
   const char* pe = eof;
 
 
-  /* #line 2 "src\\yield\\net\\uri.cpp" */
+  /* #line 2 "src\\yield\\uri\\uri.cpp" */
   static const char _init_actions[] = {
     0, 1, 1, 1, 3, 1, 4, 1,
     5, 1, 6, 1, 7, 1, 8, 1,
@@ -1725,12 +1725,12 @@ void URI::init(const char* uri, size_t uri_len) {
   static const int init_en_main = 1;
 
 
-  /* #line 1563 "src\\yield\\net\\uri.cpp" */
+  /* #line 1563 "src\\yield\\uri\\uri.cpp" */
   {
     cs = init_start;
   }
 
-  /* #line 1566 "src\\yield\\net\\uri.cpp" */
+  /* #line 1566 "src\\yield\\uri\\uri.cpp" */
   {
     int _klen;
     unsigned int _trans;
@@ -1803,78 +1803,78 @@ _match:
     while (_nacts-- > 0) {
       switch (*_acts++) {
       case 0:
-        /* #line 81 "src\\yield\\net\\uri.rl" */
+        /* #line 81 "src\\yield\\uri\\uri.rl" */
       {
         scheme.iov_base = p;
       }
       break;
       case 1:
-        /* #line 82 "src\\yield\\net\\uri.rl" */
+        /* #line 82 "src\\yield\\uri\\uri.rl" */
       {
         scheme.iov_len =  p - static_cast<char*>(scheme.iov_base);
       }
       break;
       case 2:
-        /* #line 86 "src\\yield\\net\\uri.rl" */
+        /* #line 86 "src\\yield\\uri\\uri.rl" */
       {
         userinfo.iov_base = p;
       }
       break;
       case 3:
-        /* #line 87 "src\\yield\\net\\uri.rl" */
+        /* #line 87 "src\\yield\\uri\\uri.rl" */
       {
         userinfo.iov_len = p - static_cast<char*>(userinfo.iov_base);
       }
       break;
       case 4:
-        /* #line 91 "src\\yield\\net\\uri.rl" */
+        /* #line 91 "src\\yield\\uri\\uri.rl" */
       {
         host.iov_base = p;
       }
       break;
       case 5:
-        /* #line 92 "src\\yield\\net\\uri.rl" */
+        /* #line 92 "src\\yield\\uri\\uri.rl" */
       {
         host.iov_len = p - static_cast<char*>(host.iov_base);
       }
       break;
       case 6:
-        /* #line 95 "src\\yield\\net\\uri.rl" */
+        /* #line 95 "src\\yield\\uri\\uri.rl" */
       {
         port = static_cast<uint16_t>(atoi(p));
       }
       break;
       case 7:
-        /* #line 100 "src\\yield\\net\\uri.rl" */
+        /* #line 100 "src\\yield\\uri\\uri.rl" */
       {
         path.iov_base = p;
       }
       break;
       case 8:
-        /* #line 101 "src\\yield\\net\\uri.rl" */
+        /* #line 101 "src\\yield\\uri\\uri.rl" */
       {
         path.iov_len = p - static_cast<char*>(path.iov_base);
       }
       break;
       case 9:
-        /* #line 119 "src\\yield\\net\\uri.rl" */
+        /* #line 119 "src\\yield\\uri\\uri.rl" */
       {
         query.iov_base = p;
       }
       break;
       case 10:
-        /* #line 120 "src\\yield\\net\\uri.rl" */
+        /* #line 120 "src\\yield\\uri\\uri.rl" */
       {
         query.iov_len = p - static_cast<char*>(query.iov_base);
       }
       break;
       case 11:
-        /* #line 122 "src\\yield\\net\\uri.rl" */
+        /* #line 122 "src\\yield\\uri\\uri.rl" */
       {
         fragment.iov_base = p;
       }
       break;
-      /* #line 1675 "src\\yield\\net\\uri.cpp" */
+      /* #line 1675 "src\\yield\\uri\\uri.cpp" */
       }
     }
 
@@ -1891,60 +1891,60 @@ _test_eof:
       while (__nacts-- > 0) {
         switch (*__acts++) {
         case 4:
-          /* #line 91 "src\\yield\\net\\uri.rl" */
+          /* #line 91 "src\\yield\\uri\\uri.rl" */
         {
           host.iov_base = p;
         }
         break;
         case 5:
-          /* #line 92 "src\\yield\\net\\uri.rl" */
+          /* #line 92 "src\\yield\\uri\\uri.rl" */
         {
           host.iov_len = p - static_cast<char*>(host.iov_base);
         }
         break;
         case 6:
-          /* #line 95 "src\\yield\\net\\uri.rl" */
+          /* #line 95 "src\\yield\\uri\\uri.rl" */
         {
           port = static_cast<uint16_t>(atoi(p));
         }
         break;
         case 7:
-          /* #line 100 "src\\yield\\net\\uri.rl" */
+          /* #line 100 "src\\yield\\uri\\uri.rl" */
         {
           path.iov_base = p;
         }
         break;
         case 8:
-          /* #line 101 "src\\yield\\net\\uri.rl" */
+          /* #line 101 "src\\yield\\uri\\uri.rl" */
         {
           path.iov_len = p - static_cast<char*>(path.iov_base);
         }
         break;
         case 9:
-          /* #line 119 "src\\yield\\net\\uri.rl" */
+          /* #line 119 "src\\yield\\uri\\uri.rl" */
         {
           query.iov_base = p;
         }
         break;
         case 10:
-          /* #line 120 "src\\yield\\net\\uri.rl" */
+          /* #line 120 "src\\yield\\uri\\uri.rl" */
         {
           query.iov_len = p - static_cast<char*>(query.iov_base);
         }
         break;
         case 11:
-          /* #line 122 "src\\yield\\net\\uri.rl" */
+          /* #line 122 "src\\yield\\uri\\uri.rl" */
         {
           fragment.iov_base = p;
         }
         break;
         case 12:
-          /* #line 123 "src\\yield\\net\\uri.rl" */
+          /* #line 123 "src\\yield\\uri\\uri.rl" */
         {
           fragment.iov_len = p - static_cast<char*>(fragment.iov_base);
         }
         break;
-        /* #line 1717 "src\\yield\\net\\uri.cpp" */
+        /* #line 1717 "src\\yield\\uri\\uri.cpp" */
         }
       }
     }
@@ -1953,7 +1953,7 @@ _out:
     {}
   }
 
-  /* #line 236 "src\\yield\\net\\uri.rl" */
+  /* #line 236 "src\\yield\\uri\\uri.rl" */
 
 
   if (cs == init_error)

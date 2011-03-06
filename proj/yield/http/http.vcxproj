@@ -66,7 +66,7 @@
       <AdditionalOptions>/EHsc /GR- /nologo /wd"4100" /wd"4127" /wd"4290" /wd"4355" /wd"4512"</AdditionalOptions>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>yield_aio.lib;yield_fs.lib;yield_i18n.lib;yield_poll.lib;yield_net.lib;yield_stage.lib;yield_thread.lib;yield_common.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_aio.lib;yield_fs.lib;yield_i18n.lib;yield_poll.lib;yield_net.lib;yield_stage.lib;yield_thread.lib;yield_uri.lib;yield_common.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -85,7 +85,7 @@
       <AdditionalOptions>/EHsc /GR- /nologo /wd"4100" /wd"4127" /wd"4290" /wd"4355" /wd"4512"</AdditionalOptions>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>yield_aio.lib;yield_fs.lib;yield_i18n.lib;yield_poll.lib;yield_net.lib;yield_stage.lib;yield_thread.lib;yield_common.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_aio.lib;yield_fs.lib;yield_i18n.lib;yield_poll.lib;yield_net.lib;yield_stage.lib;yield_thread.lib;yield_uri.lib;yield_common.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -224,6 +224,10 @@
     </ProjectReference>
     <ProjectReference Include="..\stage\stage.vcxproj">
       <Project>{daef679c-4597-41ba-a066-d721108c830f}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\uri\uri.vcxproj">
+      <Project>{891a3e94-72d1-43e2-a65b-28fe4fafb33d}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>

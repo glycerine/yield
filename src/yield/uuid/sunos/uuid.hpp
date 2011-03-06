@@ -1,4 +1,4 @@
-// yield/net/uuid.cpp
+// yield/uuid/sunos/uuid.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,55 +27,32 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#if defined(__sun)
-#include "sunos/uuid.hpp"
-#elif defined(_WIN32)
-#include "win32/uuid.hpp"
-#elif defined(YIELD_HAVE_LINUX_LIBUUID)
-#include "linux/uuid.hpp"
-#endif
-#include "yield/assert.hpp"
-#include "yield/net/uuid.hpp"
+#ifndef _YIELD_UUID_SUNOS_UUID_HPP_
+#define _YIELD_UUID_SUNOS_UUID_HPP_
+
+#include "yield/config.hpp"
+
+#include <string>
+using std::string;
+#include <uuid/uuid.h>
 
 
 namespace yield {
-namespace net {
-#if defined(__sun) || defined(_WIN32) || defined(YIELD_HAVE_LINUX_LIBUUID)
-UUID::UUID() {
-#if defined(__sun)
-  pimpl = new sunos::UUID;
-#elif defined(_WIN32)
-  pimpl = new win32::UUID;
-#elif defined(YIELD_HAVE_LINUX_LIBUUID)
-  pimpl = new linux::UUID;
+namespace uuid {
+namespace sunos {
+class UUID {
+public:
+  UUID();
+  UUID(const string& uuid);
+
+  bool operator==(const UUID&) const;
+  operator string() const;
+
+private:
+  uuid_t uuid;
+};
+};
+};
+};
+
 #endif
-}
-
-UUID::UUID(const string& uuid) {
-#if defined(__sun)
-  pimpl = new sunos::UUID(uuid);
-#elif defined(_WIN32)
-  pimpl = new win32::UUID(uuid);
-#elif defined(YIELD_HAVE_LINUX_LIBUUID)
-  pimpl = new linux::UUID(uuid);
-#endif
-}
-
-UUID::~UUID() {
-  delete pimpl;
-}
-
-bool UUID::operator!=(const UUID& other) const {
-  return !operator==(other);
-}
-
-bool UUID::operator==(const UUID& other) const {
-  return pimpl->operator==(*other.pimpl);
-}
-
-UUID::operator string() const {
-  return pimpl->operator string();
-}
-#endif
-}
-}

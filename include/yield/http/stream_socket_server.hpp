@@ -49,8 +49,7 @@ class StreamSocketServer : public StreamSocketPeer<SocketServer> {
 protected:
   class Connection : public StreamSocketPeer<SocketServer>::Connection {
   public:
-    Connection
-    (
+    Connection(
       StreamSocketServer&,
       YO_NEW_REF yield::net::sockets::SocketAddress& peername,
       YO_NEW_REF yield::net::sockets::StreamSocket& socket_
@@ -60,8 +59,7 @@ protected:
   };
 
 protected:
-  StreamSocketServer
-  (
+  StreamSocketServer(
     Log* error_log,
     YO_NEW_REF yield::net::sockets::StreamSocket& socket_,
     const yield::net::sockets::SocketAddress& sockname,
@@ -71,8 +69,7 @@ protected:
   virtual ~StreamSocketServer();
 
   virtual Connection&
-  create_connection
-  (
+  create_connection(
     yield::net::sockets::SocketAddress& peername,
     yield::net::sockets::StreamSocket& socket_
   ) = 0;
