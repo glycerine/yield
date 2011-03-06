@@ -1,4 +1,4 @@
-// yield/aio/net/sockets/win32/send_aiocb.cpp
+// yield/aio/sockets/win32/send_aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -28,17 +28,16 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/buffer.hpp"
-#include "yield/aio/net/sockets/send_aiocb.hpp"
-#include "yield/net/sockets/socket_address.hpp"
-#include "yield/net/sockets/win32/winsock.hpp"
+#include "yield/aio/sockets/send_aiocb.hpp"
+#include "yield/sockets/socket_address.hpp"
+#include "yield/sockets/win32/winsock.hpp"
 
 
 namespace yield {
 namespace aio {
-namespace net {
 namespace sockets {
-using yield::net::sockets::Socket;
-using yield::net::sockets::SocketAddress;
+using yield::sockets::Socket;
+using yield::sockets::SocketAddress;
 
 
 static int
@@ -134,7 +133,6 @@ bool sendAIOCB::issue(yield::aio::win32::AIOQueue&) {
          ) == 0
          ||
          WSAGetLastError() == WSA_IO_PENDING;
-}
 }
 }
 }

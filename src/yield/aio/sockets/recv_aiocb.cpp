@@ -1,4 +1,4 @@
-// yield/aio/net/sockets/recv_aiocb.cpp
+// yield/aio/sockets/recv_aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -29,15 +29,14 @@
 
 #include "yield/assert.hpp"
 #include "yield/buffer.hpp"
-#include "yield/aio/net/sockets/recv_aiocb.hpp"
+#include "yield/aio/sockets/recv_aiocb.hpp"
 
 
 namespace yield {
 namespace aio {
-namespace net {
 namespace sockets {
-using yield::net::sockets::Socket;
-using yield::net::sockets::SocketAddress;
+using yield::sockets::Socket;
+using yield::sockets::SocketAddress;
 
 
 recvAIOCB::recvAIOCB
@@ -121,7 +120,6 @@ recvAIOCB::RetryStatus recvAIOCB::retry() {
     set_error(Exception::get_last_error_code());
     return RETRY_STATUS_ERROR;
   }
-}
 }
 }
 }

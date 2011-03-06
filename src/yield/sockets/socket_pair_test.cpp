@@ -29,9 +29,7 @@
 
 #include "socket_pair_test.hpp"
 
-
 namespace yield {
-namespace net {
 namespace sockets {
 class SocketPairTestSuite : public ChannelTestSuite {
 public:
@@ -41,6 +39,5 @@ public:
 };
 }
 }
-}
 
-TEST_SUITE_EX(SocketPair, yield::net::sockets::SocketPairTestSuite);
+TEST_SUITE_EX(SocketPair, yield::sockets::SocketPairTestSuite);

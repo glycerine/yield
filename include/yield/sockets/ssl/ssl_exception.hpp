@@ -34,7 +34,6 @@
 
 
 namespace yield {
-namespace net {
 namespace sockets {
 #ifdef YIELD_HAVE_OPENSSL
 namespace ssl {
@@ -44,7 +43,6 @@ public:
 };
 }
 #endif
-}
 }
 }
 

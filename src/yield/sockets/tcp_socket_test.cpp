@@ -28,7 +28,6 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "socket_test.hpp"
-#include "yield/net/sockets/tcp_socket.hpp"
+#include "yield/sockets/tcp_socket.hpp"
 
-
-TEST_SUITE_EX(TCPSocket, yield::net::sockets::SocketTestSuite<yield::net::sockets::TCPSocket>);
+TEST_SUITE_EX(TCPSocket, yield::sockets::SocketTestSuite<yield::sockets::TCPSocket>);

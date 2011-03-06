@@ -31,8 +31,8 @@
 #define _YIELD_POLL_WIN32_WSAPOLLER_HPP_
 
 #include "yield/event_queue.hpp"
-#include "yield/net/sockets/socket_pair.hpp"
-#include "yield/net/sockets/win32/winsock.hpp"
+#include "yield/sockets/socket_pair.hpp"
+#include "yield/sockets/win32/winsock.hpp"
 #include "yield/thread/non_blocking_concurrent_queue.hpp"
 
 
@@ -64,7 +64,7 @@ public:
 
 private:
   vector<pollfd> pollfds;
-  yield::net::sockets::SocketPair wake_socket_pair;
+  yield::sockets::SocketPair wake_socket_pair;
 };
 #endif
 }

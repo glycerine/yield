@@ -32,17 +32,17 @@
 #include "yield/exception.hpp"
 #include "yield/log.hpp"
 #include "yield/page.hpp"
-#include "yield/aio/net/sockets/accept_aiocb.hpp"
-#include "yield/aio/net/sockets/aio_queue.hpp"
+#include "yield/aio/sockets/accept_aiocb.hpp"
+#include "yield/aio/sockets/aio_queue.hpp"
 #include "yield/http/stream_socket_server.hpp"
-#include "yield/net/sockets/stream_socket.hpp"
+#include "yield/sockets/stream_socket.hpp"
 
 
 namespace yield {
 namespace http {
-using yield::aio::net::sockets::acceptAIOCB;
-using yield::net::sockets::SocketAddress;
-using yield::net::sockets::StreamSocket;
+using yield::aio::sockets::acceptAIOCB;
+using yield::sockets::SocketAddress;
+using yield::sockets::StreamSocket;
 
 
 StreamSocketServer::StreamSocketServer(

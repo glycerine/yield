@@ -1,4 +1,4 @@
-// yield/aio/net/sockets/win32/aiocb.cpp
+// yield/aio/sockets/win32/aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -29,12 +29,11 @@
 
 #include "yield/assert.hpp"
 #include "yield/event_handler.hpp"
-#include "yield/aio/net/sockets/aiocb.hpp"
+#include "yield/aio/sockets/aiocb.hpp"
 
 
 namespace yield {
 namespace aio {
-namespace net {
 namespace sockets {
 void __stdcall
 AIOCB::CompletionRoutine
@@ -49,7 +48,6 @@ AIOCB::CompletionRoutine
   aiocb.set_return(dwNumberOfBytesTransfered);
   debug_assert_ne(aiocb.get_completion_handler(), NULL);
   aiocb.get_completion_handler()->handle(aiocb);
-}
 }
 }
 }

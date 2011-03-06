@@ -33,17 +33,17 @@
 #include "yield/http/http_request_parser.hpp"
 #include "yield/http/http_response.hpp"
 #include "yield/http/http_server.hpp"
-#include "yield/aio/net/sockets/accept_aiocb.hpp"
-#include "yield/aio/net/sockets/aio_queue.hpp"
-#include "yield/net/sockets/tcp_socket.hpp"
+#include "yield/aio/sockets/accept_aiocb.hpp"
+#include "yield/aio/sockets/aio_queue.hpp"
+#include "yield/sockets/tcp_socket.hpp"
 
 
 namespace yield {
 namespace http {
-using yield::aio::net::sockets::acceptAIOCB;
-using yield::net::sockets::SocketAddress;
-using yield::net::sockets::StreamSocket;
-using yield::net::sockets::TCPSocket;
+using yield::aio::sockets::acceptAIOCB;
+using yield::sockets::SocketAddress;
+using yield::sockets::StreamSocket;
+using yield::sockets::TCPSocket;
 
 
 class HTTPServer::Connection : public StreamSocketServer::Connection {

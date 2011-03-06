@@ -31,11 +31,9 @@
 #define _YIELD_SOCKETS_SOCKET_PAIR_HPP_
 
 #include "yield/channel_pair.hpp"
-#include "yield/net/sockets/socket.hpp"
-
+#include "yield/sockets/socket.hpp"
 
 namespace yield {
-namespace net {
 namespace sockets {
 class SocketPair : public ChannelPair {
 public:
@@ -84,7 +82,6 @@ private:
 private:
   Socket* sockets[2];
 };
-}
 }
 }
 

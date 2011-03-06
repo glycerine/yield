@@ -1,4 +1,4 @@
-// yield/aio/net/sockets/bio_queue_test.cpp
+// yield/aio/sockets/bio_queue_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -31,4 +31,4 @@
 #include "bio_queue.hpp"
 
 
-TEST_SUITE_EX(SocketBIOQueue, yield::aio::net::sockets::AIOQueueTestSuite<yield::aio::net::sockets::BIOQueue>);
+TEST_SUITE_EX(SocketBIOQueue, yield::aio::sockets::AIOQueueTestSuite<yield::aio::sockets::BIOQueue>);

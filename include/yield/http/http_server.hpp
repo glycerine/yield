@@ -39,7 +39,7 @@ class HTTPServer : public StreamSocketServer {
 public:
   HTTPServer(
     YO_NEW_REF EventHandler& http_request_handler,
-    const yield::net::sockets::SocketAddress& sockname,
+    const yield::sockets::SocketAddress& sockname,
     Log* error_log = NULL,
     Log* trace_log = NULL
   );
@@ -50,11 +50,11 @@ private:
   class Connection;
 
 private:
-  // yield::net::sockets::StreamSocketServer
+  // yield::sockets::StreamSocketServer
   StreamSocketServer::Connection&
   create_connection(
-    yield::net::sockets::SocketAddress& peername,
-    yield::net::sockets::StreamSocket& socket_
+    yield::sockets::SocketAddress& peername,
+    yield::sockets::StreamSocket& socket_
   );
 
 private:

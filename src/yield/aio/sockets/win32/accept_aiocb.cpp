@@ -1,4 +1,4 @@
-// yield/aio/net/sockets/win32/accept_aiocb.cpp
+// yield/aio/sockets/win32/accept_aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -29,18 +29,17 @@
 
 #include "yield/assert.hpp"
 #include "yield/page.hpp"
-#include "yield/aio/net/sockets/accept_aiocb.hpp"
-#include "yield/net/sockets/socket_address.hpp"
-#include "yield/net/sockets/stream_socket.hpp"
-#include "yield/net/sockets/win32/winsock.hpp"
+#include "yield/aio/sockets/accept_aiocb.hpp"
+#include "yield/sockets/socket_address.hpp"
+#include "yield/sockets/stream_socket.hpp"
+#include "yield/sockets/win32/winsock.hpp"
 
 
 namespace yield {
 namespace aio {
-namespace net {
 namespace sockets {
-using yield::net::sockets::SocketAddress;
-using yield::net::sockets::StreamSocket;
+using yield::sockets::SocketAddress;
+using yield::sockets::StreamSocket;
 
 
 static LPFN_ACCEPTEX lpfnAcceptEx = NULL;
@@ -189,7 +188,6 @@ bool acceptAIOCB::issue(yield::aio::win32::AIOQueue&) {
            WSAGetLastError() == WSA_IO_PENDING;
   } else
     return false;
-}
 }
 }
 }

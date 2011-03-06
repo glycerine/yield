@@ -28,7 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef YIELD_HAVE_OPENSSL
-#include "yield/net/sockets/ssl/ssl_context.hpp"
+#include "yield/sockets/ssl/ssl_context.hpp"
 #endif
 #include "yunit.hpp"
 

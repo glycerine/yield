@@ -30,7 +30,7 @@
 #ifndef _YIELD_HTTP_SOCKET_SERVER_HPP_
 #define _YIELD_HTTP_SOCKET_SERVER_HPP_
 
-#include "yield/net/sockets/socket_address.hpp"
+#include "yield/sockets/socket_address.hpp"
 #include "yield/http/socket_peer.hpp"
 
 

@@ -30,12 +30,11 @@
 #ifndef _YIELD_SOCKETS_SOCKET_PAIR_TEST_HPP_
 #define _YIELD_SOCKETS_SOCKET_PAIR_TEST_HPP_
 
-#include "../../channel_test.hpp"
-#include "yield/net/sockets/socket_pair.hpp"
+#include "../channel_test.hpp"
+#include "yield/sockets/socket_pair.hpp"
 
 
 namespace yield {
-namespace net {
 namespace sockets {
 class SocketPairFactory : public ChannelPairFactory {
 public:
@@ -56,7 +55,6 @@ public:
 private:
   int domain, type, protocol;
 };
-}
 }
 }
 

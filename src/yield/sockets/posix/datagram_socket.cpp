@@ -27,15 +27,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/net/sockets/datagram_socket.hpp"
+#include "yield/sockets/datagram_socket.hpp"
 
 #include <sys/socket.h>
 
-
 namespace yield {
-namespace net {
 namespace sockets {
 int DatagramSocket::TYPE = SOCK_DGRAM;
-}
 }
 }

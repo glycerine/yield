@@ -29,7 +29,7 @@
 
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
-#include "yield/net/sockets/socket_address.hpp"
+#include "yield/sockets/socket_address.hpp"
 
 #include <arpa/inet.h>
 #include <errno.h>
@@ -38,9 +38,7 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 
-
 namespace yield {
-namespace net {
 namespace sockets {
 const SocketAddress
 SocketAddress::IN_ANY
@@ -290,7 +288,6 @@ socklen_t SocketAddress::len(int family) const {
     DebugBreak();
     return 0;
   }
-}
 }
 }
 }

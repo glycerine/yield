@@ -34,7 +34,7 @@
 #include "yield/auto_object.hpp"
 #include "yield/exception.hpp"
 #include "yield/poll/socket_event.hpp"
-#include "yield/net/sockets/socket_pair.hpp"
+#include "yield/sockets/socket_pair.hpp"
 #include "yield/poll/socket_event_queue.hpp"
 #include "yunit.hpp"
 
@@ -52,7 +52,7 @@ public:
   // yunit::Test
   void setup() {
     socket_event_queue = new SocketEventQueueType;
-    sockets = new yield::net::sockets::SocketPair;
+    sockets = new yield::sockets::SocketPair;
   }
 
   void teardown() {
@@ -73,7 +73,7 @@ protected:
 
 private:
   SocketEventQueueType* socket_event_queue;
-  yield::net::sockets::SocketPair* sockets;
+  yield::sockets::SocketPair* sockets;
 };
 
 

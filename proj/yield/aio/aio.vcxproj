@@ -102,13 +102,13 @@
     <ClInclude Include="..\..\..\include\yield\aio\fs\pwrite_aiocb.hpp" />
     <ClInclude Include="..\..\..\include\yield\aio\fs\setlk_aiocb.hpp" />
     <ClInclude Include="..\..\..\include\yield\aio\fs\unlk_aiocb.hpp" />
-    <ClInclude Include="..\..\..\include\yield\aio\net\sockets\accept_aiocb.hpp" />
-    <ClInclude Include="..\..\..\include\yield\aio\net\sockets\aio_queue.hpp" />
-    <ClInclude Include="..\..\..\include\yield\aio\net\sockets\aiocb.hpp" />
-    <ClInclude Include="..\..\..\include\yield\aio\net\sockets\connect_aiocb.hpp" />
-    <ClInclude Include="..\..\..\include\yield\aio\net\sockets\recv_aiocb.hpp" />
-    <ClInclude Include="..\..\..\include\yield\aio\net\sockets\send_aiocb.hpp" />
     <ClInclude Include="..\..\..\include\yield\aio\posix\aiocb.hpp" />
+    <ClInclude Include="..\..\..\include\yield\aio\sockets\accept_aiocb.hpp" />
+    <ClInclude Include="..\..\..\include\yield\aio\sockets\aio_queue.hpp" />
+    <ClInclude Include="..\..\..\include\yield\aio\sockets\aiocb.hpp" />
+    <ClInclude Include="..\..\..\include\yield\aio\sockets\connect_aiocb.hpp" />
+    <ClInclude Include="..\..\..\include\yield\aio\sockets\recv_aiocb.hpp" />
+    <ClInclude Include="..\..\..\include\yield\aio\sockets\send_aiocb.hpp" />
     <ClInclude Include="..\..\..\include\yield\aio\win32\aiocb.hpp" />
   </ItemGroup>
 
@@ -197,71 +197,71 @@
     <ClCompile Include="..\..\..\src\yield\aio\fs\win32\unlk_aiocb.cpp">
       <ObjectFileName>$(IntDir)fs\win32\unlk_aiocb.obj</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\accept_aiocb.cpp">
-      <ObjectFileName>$(IntDir)net\sockets\accept_aiocb.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\aio_queue.cpp">
-      <ObjectFileName>$(IntDir)net\sockets\aio_queue.obj</ObjectFileName>
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\aio\net\sockets\aio_queue_test.hpp" />
-    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\aiocb.cpp">
-      <ObjectFileName>$(IntDir)net\sockets\aiocb.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\bio_queue.cpp">
-      <ObjectFileName>$(IntDir)net\sockets\bio_queue.obj</ObjectFileName>
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\aio\net\sockets\bio_queue.hpp" />
-    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\bio_queue_test.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\connect_aiocb.cpp">
-      <ObjectFileName>$(IntDir)net\sockets\connect_aiocb.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\nbio_queue.cpp">
-      <ObjectFileName>$(IntDir)net\sockets\nbio_queue.obj</ObjectFileName>
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\aio\net\sockets\nbio_queue.hpp" />
-    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\nbio_queue_test.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\posix\accept_aiocb.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\recv_aiocb.cpp">
-      <ObjectFileName>$(IntDir)net\sockets\recv_aiocb.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\send_aiocb.cpp">
-      <ObjectFileName>$(IntDir)net\sockets\send_aiocb.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\win32\accept_aiocb.cpp">
-      <ObjectFileName>$(IntDir)net\sockets\win32\accept_aiocb.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\win32\aio_queue.cpp">
-      <ObjectFileName>$(IntDir)net\sockets\win32\aio_queue.obj</ObjectFileName>
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\aio\net\sockets\win32\aio_queue.hpp" />
-    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\win32\aio_queue_test.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\win32\aiocb.cpp">
-      <ObjectFileName>$(IntDir)net\sockets\win32\aiocb.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\win32\connect_aiocb.cpp">
-      <ObjectFileName>$(IntDir)net\sockets\win32\connect_aiocb.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\win32\recv_aiocb.cpp">
-      <ObjectFileName>$(IntDir)net\sockets\win32\recv_aiocb.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\win32\send_aiocb.cpp">
-      <ObjectFileName>$(IntDir)net\sockets\win32\send_aiocb.obj</ObjectFileName>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\aio\posix\aiocb.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\sockets\accept_aiocb.cpp">
+      <ObjectFileName>$(IntDir)sockets\accept_aiocb.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\sockets\aio_queue.cpp">
+      <ObjectFileName>$(IntDir)sockets\aio_queue.obj</ObjectFileName>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\aio\sockets\aio_queue_test.hpp" />
+    <ClCompile Include="..\..\..\src\yield\aio\sockets\aiocb.cpp">
+      <ObjectFileName>$(IntDir)sockets\aiocb.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\sockets\bio_queue.cpp">
+      <ObjectFileName>$(IntDir)sockets\bio_queue.obj</ObjectFileName>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\aio\sockets\bio_queue.hpp" />
+    <ClCompile Include="..\..\..\src\yield\aio\sockets\bio_queue_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\sockets\connect_aiocb.cpp">
+      <ObjectFileName>$(IntDir)sockets\connect_aiocb.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\sockets\nbio_queue.cpp">
+      <ObjectFileName>$(IntDir)sockets\nbio_queue.obj</ObjectFileName>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\aio\sockets\nbio_queue.hpp" />
+    <ClCompile Include="..\..\..\src\yield\aio\sockets\nbio_queue_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\sockets\posix\accept_aiocb.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\sockets\recv_aiocb.cpp">
+      <ObjectFileName>$(IntDir)sockets\recv_aiocb.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\sockets\send_aiocb.cpp">
+      <ObjectFileName>$(IntDir)sockets\send_aiocb.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\sockets\win32\accept_aiocb.cpp">
+      <ObjectFileName>$(IntDir)sockets\win32\accept_aiocb.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\sockets\win32\aio_queue.cpp">
+      <ObjectFileName>$(IntDir)sockets\win32\aio_queue.obj</ObjectFileName>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\aio\sockets\win32\aio_queue.hpp" />
+    <ClCompile Include="..\..\..\src\yield\aio\sockets\win32\aio_queue_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\sockets\win32\aiocb.cpp">
+      <ObjectFileName>$(IntDir)sockets\win32\aiocb.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\sockets\win32\connect_aiocb.cpp">
+      <ObjectFileName>$(IntDir)sockets\win32\connect_aiocb.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\sockets\win32\recv_aiocb.cpp">
+      <ObjectFileName>$(IntDir)sockets\win32\recv_aiocb.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\aio\sockets\win32\send_aiocb.cpp">
+      <ObjectFileName>$(IntDir)sockets\win32\send_aiocb.obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\aio\win32\aio_queue.cpp">
       <ObjectFileName>$(IntDir)win32\aio_queue.obj</ObjectFileName>

@@ -1,4 +1,4 @@
-// yield/aio/net/sockets/send_aiocb.cpp
+// yield/aio/sockets/send_aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -28,16 +28,15 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/buffer.hpp"
-#include "yield/aio/net/sockets/send_aiocb.hpp"
-#include "yield/net/sockets/socket_address.hpp"
+#include "yield/aio/sockets/send_aiocb.hpp"
+#include "yield/sockets/socket_address.hpp"
 
 
 namespace yield {
 namespace aio {
-namespace net {
 namespace sockets {
-using yield::net::sockets::Socket;
-using yield::net::sockets::SocketAddress;
+using yield::sockets::Socket;
+using yield::sockets::SocketAddress;
 
 
 sendAIOCB::sendAIOCB
@@ -127,7 +126,6 @@ sendAIOCB::RetryStatus sendAIOCB::retry() {
     set_error(Exception::get_last_error_code());
     return RETRY_STATUS_ERROR;
   }
-}
 }
 }
 }

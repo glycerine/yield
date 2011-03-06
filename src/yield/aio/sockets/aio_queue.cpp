@@ -1,4 +1,4 @@
-// yield/aio/net/sockets/aio_queue.cpp
+// yield/aio/sockets/aio_queue.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -32,12 +32,11 @@
 #ifdef _WIN32
 #include "win32/aio_queue.hpp"
 #endif
-#include "yield/aio/net/sockets/aio_queue.hpp"
+#include "yield/aio/sockets/aio_queue.hpp"
 
 
 namespace yield {
 namespace aio {
-namespace net {
 namespace sockets {
 AIOQueue::AIOQueue() {
 #ifdef _WIN32
@@ -61,7 +60,6 @@ YO_NEW_REF Event* AIOQueue::dequeue(const Time& timeout) {
 
 bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
   return pimpl->enqueue(event);
-}
 }
 }
 }

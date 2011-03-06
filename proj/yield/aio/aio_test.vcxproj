@@ -110,15 +110,15 @@
     <ClCompile Include="..\..\..\src\yield\aio\fs\win32\aio_queue_test.cpp">
       <ObjectFileName>$(IntDir)fs\win32\aio_queue_test.obj</ObjectFileName>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\aio\net\sockets\aio_queue_test.hpp" />
-    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\bio_queue_test.cpp">
-      <ObjectFileName>$(IntDir)net\sockets\bio_queue_test.obj</ObjectFileName>
+    <ClInclude Include="..\..\..\src\yield\aio\sockets\aio_queue_test.hpp" />
+    <ClCompile Include="..\..\..\src\yield\aio\sockets\bio_queue_test.cpp">
+      <ObjectFileName>$(IntDir)sockets\bio_queue_test.obj</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\nbio_queue_test.cpp">
-      <ObjectFileName>$(IntDir)net\sockets\nbio_queue_test.obj</ObjectFileName>
+    <ClCompile Include="..\..\..\src\yield\aio\sockets\nbio_queue_test.cpp">
+      <ObjectFileName>$(IntDir)sockets\nbio_queue_test.obj</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\aio\net\sockets\win32\aio_queue_test.cpp">
-      <ObjectFileName>$(IntDir)net\sockets\win32\aio_queue_test.obj</ObjectFileName>
+    <ClCompile Include="..\..\..\src\yield\aio\sockets\win32\aio_queue_test.cpp">
+      <ObjectFileName>$(IntDir)sockets\win32\aio_queue_test.obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\aio\yield_aio_test_main.cpp">
     </ClCompile>

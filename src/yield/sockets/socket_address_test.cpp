@@ -29,18 +29,15 @@
 
 #include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
-#include "yield/net/sockets/socket_address.hpp"
+#include "yield/sockets/socket_address.hpp"
 #include "yunit.hpp"
-
 
 #define TEST_NODENAME "localhost"
 #define TEST_SERVNAME static_cast<uint16_t>( 80 )
 
-
 TEST_SUITE(SocketAddress);
 
 namespace yield {
-namespace net {
 namespace sockets {
 TEST(SocketAddress, copy_constructor) {
   SocketAddress sockaddr1(TEST_NODENAME, TEST_SERVNAME);
@@ -78,7 +75,6 @@ TEST(SocketAddress, resolving_constructor) {
   SocketAddress(TEST_NODENAME, 80);
   SocketAddress(TEST_NODENAME, "80");
   SocketAddress(TEST_NODENAME, TEST_SERVNAME);
-}
 }
 }
 }

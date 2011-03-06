@@ -1,4 +1,4 @@
-// yield/aio/net/sockets/bio_queue.cpp
+// yield/aio/sockets/bio_queue.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -28,15 +28,14 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "bio_queue.hpp"
-#include "yield/aio/net/sockets/accept_aiocb.hpp"
-#include "yield/aio/net/sockets/connect_aiocb.hpp"
-#include "yield/aio/net/sockets/recv_aiocb.hpp"
-#include "yield/aio/net/sockets/send_aiocb.hpp"
+#include "yield/aio/sockets/accept_aiocb.hpp"
+#include "yield/aio/sockets/connect_aiocb.hpp"
+#include "yield/aio/sockets/recv_aiocb.hpp"
+#include "yield/aio/sockets/send_aiocb.hpp"
 
 
 namespace yield {
 namespace aio {
-namespace net {
 namespace sockets {
 bool BIOQueue::enqueue(YO_NEW_REF Event& event) {
   switch (event.get_type_id()) {
@@ -51,7 +50,6 @@ bool BIOQueue::enqueue(YO_NEW_REF Event& event) {
   default:
     return yield::aio::BIOQueue::enqueue(event);
   }
-}
 }
 }
 }

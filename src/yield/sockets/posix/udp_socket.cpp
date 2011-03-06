@@ -27,17 +27,14 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/net/sockets/udp_socket.hpp"
+#include "yield/sockets/udp_socket.hpp"
 
 #include <netinet/in.h> // For the IPPROTO_* constants
 #include <sys/socket.h>
 
-
 namespace yield {
-namespace net {
 namespace sockets {
 int UDPSocket::DOMAIN_DEFAULT = AF_INET;
 int UDPSocket::PROTOCOL = IPPROTO_UDP;
-}
 }
 }

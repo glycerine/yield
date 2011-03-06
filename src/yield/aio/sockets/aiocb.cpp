@@ -1,4 +1,4 @@
-// yield/aio/net/sockets/aiocb.cpp
+// yield/aio/sockets/aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,15 +27,14 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/aio/net/sockets/aiocb.hpp"
-#include "yield/net/sockets/socket.hpp"
+#include "yield/aio/sockets/aiocb.hpp"
+#include "yield/sockets/socket.hpp"
 
 
 namespace yield {
 namespace aio {
-namespace net {
 namespace sockets {
-using yield::net::sockets::Socket;
+using yield::sockets::Socket;
 
 
 AIOCB::AIOCB(Socket& socket_, void* buf, size_t nbytes)
@@ -54,7 +53,6 @@ Socket& AIOCB::get_socket() {
 void AIOCB::set_next_aiocb(AIOCB* next_aiocb) {
   AIOCB::dec_ref(this->next_aiocb);
   this->next_aiocb = next_aiocb;
-}
 }
 }
 }

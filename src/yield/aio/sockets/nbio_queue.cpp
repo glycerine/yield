@@ -1,4 +1,4 @@
-// yield/aio/net/sockets/nbio_queue.cpp
+// yield/aio/sockets/nbio_queue.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -31,22 +31,21 @@
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
 #include "yield/time.hpp"
-#include "yield/aio/net/sockets/accept_aiocb.hpp"
-#include "yield/aio/net/sockets/connect_aiocb.hpp"
-#include "yield/aio/net/sockets/recv_aiocb.hpp"
-#include "yield/aio/net/sockets/send_aiocb.hpp"
-#include "yield/net/sockets/stream_socket.hpp"
+#include "yield/aio/sockets/accept_aiocb.hpp"
+#include "yield/aio/sockets/connect_aiocb.hpp"
+#include "yield/aio/sockets/recv_aiocb.hpp"
+#include "yield/aio/sockets/send_aiocb.hpp"
+#include "yield/sockets/stream_socket.hpp"
 #include "yield/poll/socket_event.hpp"
 
 
 namespace yield {
 namespace aio {
-namespace net {
 namespace sockets {
 using std::map;
 using yield::poll::SocketEvent;
-using yield::net::sockets::SocketAddress;
-using yield::net::sockets::StreamSocket;
+using yield::sockets::SocketAddress;
+using yield::sockets::StreamSocket;
 
 
 Event* NBIOQueue::dequeue(const Time& timeout) {
@@ -130,7 +129,6 @@ Event* NBIOQueue::dequeue(const Time& timeout) {
 
 bool NBIOQueue::enqueue(Event& event) {
   return socket_event_queue.enqueue(event);
-}
 }
 }
 }

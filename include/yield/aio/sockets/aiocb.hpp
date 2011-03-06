@@ -1,4 +1,4 @@
-// yield/aio/net/sockets/aiocb.hpp
+// yield/aio/sockets/aiocb.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,22 +27,17 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_AIO_NET_SOCKETS_AIOCB_HPP_
-#define _YIELD_AIO_NET_SOCKETS_AIOCB_HPP_
+#ifndef _YIELD_AIO_SOCKETS_AIOCB_HPP_
+#define _YIELD_AIO_SOCKETS_AIOCB_HPP_
 
 #include "yield/aio/aiocb.hpp"
 
-
 namespace yield {
-namespace net {
 namespace sockets {
 class Socket;
 }
-}
-
 
 namespace aio {
-namespace net {
 namespace sockets {
 class AIOCB : public yield::aio::AIOCB {
 public:
@@ -51,12 +46,12 @@ public:
   AIOCB* get_next_aiocb() {
     return next_aiocb;
   }
-  yield::net::sockets::Socket& get_socket();
+  yield::sockets::Socket& get_socket();
 
   void set_next_aiocb(AIOCB* next_aiocb);
 
 protected:
-  AIOCB(yield::net::sockets::Socket&, void* buf, size_t nbytes);
+  AIOCB(yield::sockets::Socket&, void* buf, size_t nbytes);
 
 #ifdef _WIN32
   static void __stdcall
@@ -72,7 +67,6 @@ protected:
 private:
   AIOCB* next_aiocb;
 };
-}
 }
 }
 }

@@ -27,19 +27,16 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/net/sockets/tcp_socket.hpp"
+#include "yield/sockets/tcp_socket.hpp"
 
 #include <netinet/in.h> // For the IPPROTO_* constants
 #include <netinet/tcp.h> // For the TCP_* constants
 #include <sys/socket.h>
 
-
 namespace yield {
-namespace net {
 namespace sockets {
 int TCPSocket::DOMAIN_DEFAULT = AF_INET;
 int TCPSocket::PROTOCOL = IPPROTO_TCP;
-
 
 bool TCPSocket::setsockopt(Option option, bool onoff) {
   if (option == OPTION_TCP_NODELAY) {
@@ -54,7 +51,6 @@ bool TCPSocket::setsockopt(Option option, bool onoff) {
            ) == 0;
   } else
     return Socket::setsockopt(option, onoff);
-}
 }
 }
 }

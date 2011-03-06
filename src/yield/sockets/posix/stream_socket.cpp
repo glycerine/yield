@@ -27,14 +27,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/net/sockets/stream_socket.hpp"
+#include "yield/sockets/stream_socket.hpp"
 
 #include <errno.h>
 #include <sys/socket.h>
 
-
 namespace yield {
-namespace net {
 namespace sockets {
 int StreamSocket::TYPE = SOCK_STREAM;
 
@@ -67,7 +65,6 @@ bool StreamSocket::want_connect() const {
   default:
     return false;
   }
-}
 }
 }
 }

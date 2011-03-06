@@ -28,13 +28,11 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/assert.hpp"
-#include "yield/net/sockets/socket.hpp"
-#include "yield/net/sockets/socket_address.hpp"
-#include "yield/net/sockets/win32/winsock.hpp"
-
+#include "yield/sockets/socket.hpp"
+#include "yield/sockets/socket_address.hpp"
+#include "yield/sockets/win32/winsock.hpp"
 
 namespace yield {
-namespace net {
 namespace sockets {
 bool Socket::bind(const SocketAddress& _name) {
   const SocketAddress* name = _name.filter(get_domain());
@@ -462,7 +460,6 @@ Socket::MessageFlags::MessageFlags(int message_flags) {
   }
 
   platform_message_flags |= message_flags;
-}
 }
 }
 }

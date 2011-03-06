@@ -35,8 +35,8 @@
 #include "yield/http/http_request.hpp"
 #include "yield/http/http_response.hpp"
 #include "yield/http/http_response_parser.hpp"
-#include "yield/net/sockets/socket_address.hpp"
-#include "yield/net/sockets/tcp_socket.hpp"
+#include "yield/sockets/socket_address.hpp"
+#include "yield/sockets/tcp_socket.hpp"
 #include "yield/stage/synchronized_response_queue.hpp"
 
 #include <iostream> // for std::cout
@@ -45,9 +45,9 @@
 namespace yield {
 namespace http {
 using yield::uri::URI;
-using yield::net::sockets::SocketAddress;
-using yield::net::sockets::StreamSocket;
-using yield::net::sockets::TCPSocket;
+using yield::sockets::SocketAddress;
+using yield::sockets::StreamSocket;
+using yield::sockets::TCPSocket;
 using yield::stage::SynchronizedResponseQueue;
 
 

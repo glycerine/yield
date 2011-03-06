@@ -30,18 +30,18 @@
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
 #include "yield/log.hpp"
-#include "yield/aio/net/sockets/aio_queue.hpp"
+#include "yield/aio/sockets/aio_queue.hpp"
 #include "yield/http/stream_socket_client.hpp"
 #include "yield/uri/uri.hpp"
-#include "yield/net/sockets/socket_address.hpp"
-#include "yield/net/sockets/stream_socket.hpp"
+#include "yield/sockets/socket_address.hpp"
+#include "yield/sockets/stream_socket.hpp"
 
 
 namespace yield {
 namespace http {
 using yield::uri::URI;
-using yield::net::sockets::SocketAddress;
-using yield::net::sockets::StreamSocket;
+using yield::sockets::SocketAddress;
+using yield::sockets::StreamSocket;
 
 
 StreamSocketClient::StreamSocketClient(

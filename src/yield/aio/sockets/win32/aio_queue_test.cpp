@@ -1,4 +1,4 @@
-// yield/aio/net/sockets/win32/aio_queue_test.cpp
+// yield/aio/sockets/win32/aio_queue_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -31,4 +31,4 @@
 #include "../aio_queue_test.hpp"
 
 
-TEST_SUITE_EX(Win32SocketAIOQueue, yield::aio::net::sockets::AIOQueueTestSuite<yield::aio::net::sockets::win32::AIOQueue>);
+TEST_SUITE_EX(Win32SocketAIOQueue, yield::aio::sockets::AIOQueueTestSuite<yield::aio::sockets::win32::AIOQueue>);

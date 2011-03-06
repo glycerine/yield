@@ -1,4 +1,4 @@
-// yield/aio/net/sockets/connect_aiocb.hpp
+// yield/aio/sockets/connect_aiocb.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,23 +27,18 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_AIO_NET_SOCKETS_CONNECT_AIOCB_HPP_
-#define _YIELD_AIO_NET_SOCKETS_CONNECT_AIOCB_HPP_
+#ifndef _YIELD_AIO_SOCKETS_CONNECT_AIOCB_HPP_
+#define _YIELD_AIO_SOCKETS_CONNECT_AIOCB_HPP_
 
-#include "yield/aio/net/sockets/aiocb.hpp"
-
+#include "yield/aio/sockets/aiocb.hpp"
 
 namespace yield {
-namespace net {
 namespace sockets {
 class SocketAddress;
 class StreamSocket;
 }
-}
-
 
 namespace aio {
-namespace net {
 namespace sockets {
 class connectAIOCB : public AIOCB {
 public:
@@ -52,14 +47,14 @@ public:
 public:
   connectAIOCB
   (
-    yield::net::sockets::StreamSocket& socket_,
-    yield::net::sockets::SocketAddress& peername,
+    yield::sockets::StreamSocket& socket_,
+    yield::sockets::SocketAddress& peername,
     YO_NEW_REF Buffer* send_buffer = NULL
   );
 
   ~connectAIOCB();
 
-  const yield::net::sockets::SocketAddress& get_peername() const;
+  const yield::sockets::SocketAddress& get_peername() const;
   Buffer* get_send_buffer() const {
     return send_buffer;
   }
@@ -69,7 +64,7 @@ public:
     return TYPE_ID;
   }
   const char* get_type_name() const {
-    return "yield::aio::net::sockets::connectAIOCB";
+    return "yield::aio::sockets::connectAIOCB";
   }
 
   // yield::aio::AIOCB
@@ -82,10 +77,9 @@ private:
   connectAIOCB(connectAIOCB& other);
 
 private:
-  yield::net::sockets::SocketAddress& peername;
+  yield::sockets::SocketAddress& peername;
   Buffer* send_buffer;
 };
-}
 }
 }
 }

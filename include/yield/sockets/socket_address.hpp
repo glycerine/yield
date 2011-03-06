@@ -56,7 +56,6 @@ struct in6_addr;
 
 
 namespace yield {
-namespace net {
 namespace sockets {
 class SocketAddress : public Object {
 public:
@@ -277,7 +276,6 @@ operator<<
     os << nodename;
   else os << "(unknown)";
   return os;
-}
 }
 }
 }

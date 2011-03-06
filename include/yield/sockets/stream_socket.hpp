@@ -30,12 +30,10 @@
 #ifndef _YIELD_SOCKETS_STREAM_SOCKET_HPP_
 #define _YIELD_SOCKETS_STREAM_SOCKET_HPP_
 
-#include "yield/net/sockets/socket.hpp"
-#include "yield/net/sockets/socket_address.hpp"
-
+#include "yield/sockets/socket.hpp"
+#include "yield/sockets/socket_address.hpp"
 
 namespace yield {
-namespace net {
 namespace sockets {
 class StreamSocket : public Socket {
 public:
@@ -88,7 +86,6 @@ protected:
     return new StreamSocket(get_domain(), get_protocol(), socket_);
   }
 };
-}
 }
 }
 

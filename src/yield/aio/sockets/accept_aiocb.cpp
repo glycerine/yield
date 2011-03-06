@@ -1,4 +1,4 @@
-// yield/aio/net/sockets/accept_aiocb.cpp
+// yield/aio/sockets/accept_aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -28,17 +28,16 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/buffer.hpp"
-#include "yield/aio/net/sockets/accept_aiocb.hpp"
-#include "yield/net/sockets/socket_address.hpp"
-#include "yield/net/sockets/stream_socket.hpp"
+#include "yield/aio/sockets/accept_aiocb.hpp"
+#include "yield/sockets/socket_address.hpp"
+#include "yield/sockets/stream_socket.hpp"
 
 
 namespace yield {
 namespace aio {
-namespace net {
 namespace sockets {
-using yield::net::sockets::SocketAddress;
-using yield::net::sockets::StreamSocket;
+using yield::sockets::SocketAddress;
+using yield::sockets::StreamSocket;
 
 
 acceptAIOCB::~acceptAIOCB() {
@@ -70,7 +69,6 @@ acceptAIOCB::RetryStatus acceptAIOCB::retry() {
     set_error(Exception::get_last_error_code());
     return RETRY_STATUS_ERROR;
   }
-}
 }
 }
 }

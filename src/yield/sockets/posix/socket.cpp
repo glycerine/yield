@@ -28,8 +28,8 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/assert.hpp"
-#include "yield/net/sockets/socket.hpp"
-#include "yield/net/sockets/socket_address.hpp"
+#include "yield/sockets/socket.hpp"
+#include "yield/sockets/socket_address.hpp"
 
 #include <arpa/inet.h>
 #include <errno.h>
@@ -40,9 +40,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-
 namespace yield {
-namespace net {
 namespace sockets {
 bool Socket::bind(const SocketAddress& _name) {
   const SocketAddress* name = _name.filter(get_domain());
@@ -364,7 +362,6 @@ Socket::MessageFlags::MessageFlags(int message_flags) {
 #ifdef __linux
   platform_message_flags |= MSG_NOSIGNAL;
 #endif
-}
 }
 }
 }

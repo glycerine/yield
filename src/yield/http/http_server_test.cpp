@@ -38,7 +38,7 @@ TEST_SUITE(HTTPServer);
 
 namespace yield {
 namespace http {
-using yield::net::sockets::SocketAddress;
+using yield::sockets::SocketAddress;
 
 
 TEST(HTTPServer, create) {

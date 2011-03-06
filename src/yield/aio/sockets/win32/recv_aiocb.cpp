@@ -1,4 +1,4 @@
-// yield/aio/net/sockets/win32/recv_aiocb.cpp
+// yield/aio/sockets/win32/recv_aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -28,21 +28,17 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/buffer.hpp"
-#include "yield/aio/net/sockets/recv_aiocb.hpp"
-#include "yield/net/sockets/win32/winsock.hpp"
-
+#include "yield/aio/sockets/recv_aiocb.hpp"
+#include "yield/sockets/win32/winsock.hpp"
 
 namespace yield {
 namespace aio {
-namespace net {
 namespace sockets {
-using yield::net::sockets::Socket;
-using yield::net::sockets::SocketAddress;
-
+using yield::sockets::Socket;
+using yield::sockets::SocketAddress;
 
 static int
-WSARecvFrom
-(
+WSARecvFrom(
   Socket& socket_,
   Buffer& buffer,
   const Socket::MessageFlags& flags,
@@ -128,7 +124,6 @@ bool recvAIOCB::issue(yield::aio::win32::AIOQueue&) {
          ) == 0
          ||
          WSAGetLastError() == WSA_IO_PENDING;
-}
 }
 }
 }

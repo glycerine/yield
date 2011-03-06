@@ -27,16 +27,15 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "yield/sockets/ssl/ssl_socket.hpp"
+
 #ifdef YIELD_HAVE_OPENSSL
-
-#include "yield/net/sockets/ssl/ssl_socket.hpp"
-
 #include <openssl/ssl.h>
-
+#endif
 
 namespace yield {
-namespace net {
 namespace sockets {
+#ifdef YIELD_HAVE_OPENSSL
 namespace ssl {
 SSLSocket::SSLSocket
 (
@@ -166,9 +165,6 @@ bool SSLSocket::want_send() const {
   return SSL_want_write(ssl) == 1;
 }
 }
-}
-}
-}
-
 #endif
-//
+}
+}

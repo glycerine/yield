@@ -33,12 +33,9 @@
 #include "yield/channel.hpp"
 #include "yield/exception.hpp"
 
-
 namespace yield {
-namespace net {
 namespace sockets {
 class SocketAddress;
-
 
 class Socket : public Channel {
 public:
@@ -188,7 +185,6 @@ private:
   int domain, type, protocol;
   socket_t socket_;
 };
-}
 }
 }
 

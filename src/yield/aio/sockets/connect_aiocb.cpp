@@ -1,4 +1,4 @@
-// yield/aio/net/sockets/connect_aiocb.cpp
+// yield/aio/sockets/connect_aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -29,17 +29,16 @@
 
 #include "yield/assert.hpp"
 #include "yield/buffer.hpp"
-#include "yield/aio/net/sockets/connect_aiocb.hpp"
-#include "yield/net/sockets/socket_address.hpp"
-#include "yield/net/sockets/stream_socket.hpp"
+#include "yield/aio/sockets/connect_aiocb.hpp"
+#include "yield/sockets/socket_address.hpp"
+#include "yield/sockets/stream_socket.hpp"
 
 
 namespace yield {
 namespace aio {
-namespace net {
 namespace sockets {
-using yield::net::sockets::SocketAddress;
-using yield::net::sockets::StreamSocket;
+using yield::sockets::SocketAddress;
+using yield::sockets::StreamSocket;
 
 
 connectAIOCB::connectAIOCB
@@ -82,7 +81,6 @@ connectAIOCB::RetryStatus connectAIOCB::retry() {
     set_error(Exception::get_last_error_code());
     return RETRY_STATUS_ERROR;
   }
-}
 }
 }
 }

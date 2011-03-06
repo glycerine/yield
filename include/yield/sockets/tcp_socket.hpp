@@ -30,11 +30,10 @@
 #ifndef _YIELD_SOCKETS_TCP_SOCKET_HPP_
 #define _YIELD_SOCKETS_TCP_SOCKET_HPP_
 
-#include "yield/net/sockets/stream_socket.hpp"
+#include "yield/sockets/stream_socket.hpp"
 
 
 namespace yield {
-namespace net {
 namespace sockets {
 class TCPSocket : public StreamSocket {
 public:
@@ -80,7 +79,6 @@ protected:
     return new TCPSocket(get_domain(), socket_);
   }
 };
-}
 }
 }
 

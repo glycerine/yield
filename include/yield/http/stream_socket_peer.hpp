@@ -30,17 +30,13 @@
 #ifndef _YIELD_HTTP_STREAM_SOCKET_PEER_HPP_
 #define _YIELD_HTTP_STREAM_SOCKET_PEER_HPP_
 
-#include "yield/aio/net/sockets/recv_aiocb.hpp"
-#include "yield/aio/net/sockets/send_aiocb.hpp"
-
+#include "yield/aio/sockets/recv_aiocb.hpp"
+#include "yield/aio/sockets/send_aiocb.hpp"
 
 namespace yield {
-namespace net {
 namespace sockets {
 class StreamSocket;
 }
-}
-
 
 namespace http {
 template <class SocketPeerType>
@@ -55,8 +51,8 @@ protected:
     Connection
     (
       StreamSocketPeer&,
-      yield::net::sockets::SocketAddress& peername,
-      YO_NEW_REF yield::net::sockets::StreamSocket& socket_
+      yield::sockets::SocketAddress& peername,
+      YO_NEW_REF yield::sockets::StreamSocket& socket_
     );
 
     virtual ~Connection();
@@ -64,10 +60,10 @@ protected:
     void close();
 
     const string& get_log_prefix();
-    yield::net::sockets::SocketAddress& get_peername() const {
+    yield::sockets::SocketAddress& get_peername() const {
       return peername;
     }
-    yield::net::sockets::StreamSocket& get_socket() const {
+    yield::sockets::StreamSocket& get_socket() const {
       return *socket_;
     }
 
@@ -76,7 +72,7 @@ protected:
 
     // Object
     virtual const char* get_type_name() const {
-      return "yield::net::sockets::StreamSocketPeer::Connection";
+      return "yield::sockets::StreamSocketPeer::Connection";
     }
 
     Connection& inc_ref() {
@@ -87,7 +83,7 @@ protected:
     void enqueue(YO_NEW_REF recvAIOCB& recv_aiocb);
     void enqueue(YO_NEW_REF sendAIOCB& send_aiocb);
 
-    yield::aio::net::sockets::AIOQueue& get_aio_queue() const {
+    yield::aio::sockets::AIOQueue& get_aio_queue() const {
       return aio_queue;
     }
     Log* get_error_log() const {
@@ -98,11 +94,11 @@ protected:
     }
 
   private:
-    yield::aio::net::sockets::AIOQueue& aio_queue;
+    yield::aio::sockets::AIOQueue& aio_queue;
     Log* error_log;
     string log_prefix;
-    yield::net::sockets::SocketAddress& peername;
-    yield::net::sockets::StreamSocket* socket_;
+    yield::sockets::SocketAddress& peername;
+    yield::sockets::StreamSocket* socket_;
     Log* trace_log;
   };
 
@@ -124,22 +120,22 @@ protected:
 
 
   class recvAIOCB
-    : public yield::aio::net::sockets::recvAIOCB,
+    : public yield::aio::sockets::recvAIOCB,
       public StreamSocketPeer::AIOCB {
   public:
     recvAIOCB(Connection& connection, YO_NEW_REF Buffer& buffer)
-      : yield::aio::net::sockets::recvAIOCB(connection.get_socket(), buffer, 0),
+      : yield::aio::sockets::recvAIOCB(connection.get_socket(), buffer, 0),
         StreamSocketPeer::AIOCB(connection)
     { }
   };
 
 
   class sendAIOCB
-    : public yield::aio::net::sockets::sendAIOCB,
+    : public yield::aio::sockets::sendAIOCB,
       public StreamSocketPeer::AIOCB {
   public:
     sendAIOCB(Connection& connection, YO_NEW_REF Buffer& buffer)
-      : yield::aio::net::sockets::sendAIOCB(connection.get_socket(), buffer, 0),
+      : yield::aio::sockets::sendAIOCB(connection.get_socket(), buffer, 0),
         StreamSocketPeer::AIOCB(connection)
     { }
   };

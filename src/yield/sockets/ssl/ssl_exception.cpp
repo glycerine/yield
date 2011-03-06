@@ -27,17 +27,16 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "yield/sockets/ssl/ssl_exception.hpp"
+
 #ifdef YIELD_HAVE_OPENSSL
-
-#include "yield/net/sockets/ssl/ssl_exception.hpp"
-
 #include <openssl/err.h>
 #include <openssl/ssl.h>
-
+#endif
 
 namespace yield {
-namespace net {
 namespace sockets {
+#ifdef YIELD_HAVE_OPENSSL
 namespace ssl {
 SSLException::SSLException()
   : Exception(ERR_peek_error()) {
@@ -48,9 +47,6 @@ SSLException::SSLException()
   set_error_message(error_message);
 }
 }
-}
-}
-}
-
 #endif
-//
+}
+}

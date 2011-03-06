@@ -33,16 +33,12 @@
 #include "yield/http/socket_server.hpp"
 #include "yield/http/stream_socket_peer.hpp"
 
-
 namespace yield {
 namespace aio {
-namespace net {
 namespace sockets {
 class acceptAIOCB;
 }
 }
-}
-
 
 namespace http {
 class StreamSocketServer : public StreamSocketPeer<SocketServer> {
@@ -51,18 +47,18 @@ protected:
   public:
     Connection(
       StreamSocketServer&,
-      YO_NEW_REF yield::net::sockets::SocketAddress& peername,
-      YO_NEW_REF yield::net::sockets::StreamSocket& socket_
+      YO_NEW_REF yield::sockets::SocketAddress& peername,
+      YO_NEW_REF yield::sockets::StreamSocket& socket_
     );
 
-    virtual void handle(YO_NEW_REF yield::aio::net::sockets::acceptAIOCB& accept_aiocb) = 0;
+    virtual void handle(YO_NEW_REF yield::aio::sockets::acceptAIOCB& accept_aiocb) = 0;
   };
 
 protected:
   StreamSocketServer(
     Log* error_log,
-    YO_NEW_REF yield::net::sockets::StreamSocket& socket_,
-    const yield::net::sockets::SocketAddress& sockname,
+    YO_NEW_REF yield::sockets::StreamSocket& socket_,
+    const yield::sockets::SocketAddress& sockname,
     Log* trace_log
   );
 
@@ -70,13 +66,13 @@ protected:
 
   virtual Connection&
   create_connection(
-    yield::net::sockets::SocketAddress& peername,
-    yield::net::sockets::StreamSocket& socket_
+    yield::sockets::SocketAddress& peername,
+    yield::sockets::StreamSocket& socket_
   ) = 0;
 
-  void enqueue(YO_NEW_REF yield::aio::net::sockets::acceptAIOCB& accept_aiocb);
+  void enqueue(YO_NEW_REF yield::aio::sockets::acceptAIOCB& accept_aiocb);
 
-  yield::net::sockets::StreamSocket& get_socket() const {
+  yield::sockets::StreamSocket& get_socket() const {
     return socket_;
   }
 
@@ -84,7 +80,7 @@ protected:
   virtual void service(YO_NEW_REF Event& event);
 
 private:
-  yield::net::sockets::StreamSocket& socket_;
+  yield::sockets::StreamSocket& socket_;
 };
 }
 }

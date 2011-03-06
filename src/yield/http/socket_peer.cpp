@@ -28,13 +28,13 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/log.hpp"
-#include "yield/aio/net/sockets/aio_queue.hpp"
+#include "yield/aio/sockets/aio_queue.hpp"
 #include "yield/http/socket_peer.hpp"
 
 
 namespace yield {
 namespace http {
-using yield::aio::net::sockets::AIOQueue;
+using yield::aio::sockets::AIOQueue;
 
 
 SocketPeer::SocketPeer

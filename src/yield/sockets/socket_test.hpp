@@ -30,15 +30,13 @@
 #ifndef _YIELD_SOCKETS_SOCKET_TEST_HPP_
 #define _YIELD_SOCKETS_SOCKET_TEST_HPP_
 
-#include "../../channel_test.hpp"
+#include "../channel_test.hpp"
 #include "socket_pair_test.hpp"
 #include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
-#include "yield/net/sockets/socket_address.hpp"
-
+#include "yield/sockets/socket_address.hpp"
 
 namespace yield {
-namespace net {
 namespace sockets {
 template <class SocketType>
 class SocketBindTest : public yunit::Test {
@@ -120,7 +118,6 @@ public:
     add("Socket::shutdown", new SocketShutdownTest<SocketType>);
   }
 };
-}
 }
 }
 

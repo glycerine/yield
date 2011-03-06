@@ -1,4 +1,4 @@
-// yield/aio/net/sockets/win32/connect_aiocb.cpp
+// yield/aio/sockets/win32/connect_aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -28,17 +28,16 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/buffer.hpp"
-#include "yield/aio/net/sockets/connect_aiocb.hpp"
-#include "yield/net/sockets/socket.hpp"
-#include "yield/net/sockets/socket_address.hpp"
-#include "yield/net/sockets/win32/winsock.hpp"
+#include "yield/aio/sockets/connect_aiocb.hpp"
+#include "yield/sockets/socket.hpp"
+#include "yield/sockets/socket_address.hpp"
+#include "yield/sockets/win32/winsock.hpp"
 
 
 namespace yield {
 namespace aio {
-namespace net {
 namespace sockets {
-using yield::net::sockets::SocketAddress;
+using yield::sockets::SocketAddress;
 
 
 LPFN_CONNECTEX lpfnConnectEx = NULL;
@@ -95,7 +94,6 @@ bool connectAIOCB::issue(yield::aio::win32::AIOQueue&) {
            WSAGetLastError() == WSA_IO_PENDING;
   } else
     return false;
-}
 }
 }
 }

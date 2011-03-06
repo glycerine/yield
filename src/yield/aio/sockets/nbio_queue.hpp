@@ -1,4 +1,4 @@
-// yield/aio/net/sockets/nbio_queue.hpp
+// yield/aio/sockets/nbio_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,8 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_AIO_NET_SOCKETS_NBIO_QUEUE_HPP_
-#define _YIELD_AIO_NET_SOCKETS_NBIO_QUEUE_HPP_
+#ifndef _YIELD_AIO_SOCKETS_NBIO_QUEUE_HPP_
+#define _YIELD_AIO_SOCKETS_NBIO_QUEUE_HPP_
 
 #include "yield/event_queue.hpp"
 #include "yield/poll/socket_event_queue.hpp"
@@ -38,7 +38,6 @@
 
 namespace yield {
 namespace aio {
-namespace net {
 namespace sockets {
 class AIOCB;
 
@@ -63,7 +62,6 @@ private:
   std::map<socket_t, AIOCB*> issued_aiocbs;
   yield::poll::SocketEventQueue socket_event_queue;
 };
-}
 }
 }
 }

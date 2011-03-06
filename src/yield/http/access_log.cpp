@@ -33,7 +33,7 @@
 #include "yield/http/access_log.hpp"
 #include "yield/http/http_request.hpp"
 #include "yield/http/http_response.hpp"
-#include "yield/net/sockets/socket_address.hpp"
+#include "yield/sockets/socket_address.hpp"
 
 #include <sstream> // for std::ostringstream
 #ifdef _WIN32
@@ -43,7 +43,7 @@
 
 namespace yield {
 namespace http {
-using yield::net::sockets::SocketAddress;
+using yield::sockets::SocketAddress;
 
 
 AccessLog::AccessLog(Format& format)

@@ -34,12 +34,10 @@
 #include "yield/http/http_request.hpp"
 #include "yield/http/http_response.hpp"
 
-
 namespace yield {
-namespace net {
+namespace uri {
 class URI;
 }
-
 
 namespace http {
 class HTTPRequestParser : public HTTPMessageParser {

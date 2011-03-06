@@ -28,19 +28,17 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/exception.hpp"
-#include "yield/net/sockets/datagram_socket.hpp"
-#include "yield/net/sockets/socket_address.hpp"
-#include "yield/net/sockets/socket_pair.hpp"
-#include "yield/net/sockets/stream_socket.hpp"
-#include "yield/net/sockets/tcp_socket.hpp"
+#include "yield/sockets/datagram_socket.hpp"
+#include "yield/sockets/socket_address.hpp"
+#include "yield/sockets/socket_pair.hpp"
+#include "yield/sockets/stream_socket.hpp"
+#include "yield/sockets/tcp_socket.hpp"
 
 #ifndef _WIN32
 #include <sys/socket.h>
 #endif
 
-
 namespace yield {
-namespace net {
 namespace sockets {
 #ifdef _WIN32
 int SocketPair::DOMAIN_DEFAULT = TCPSocket::DOMAIN_DEFAULT;
@@ -156,7 +154,6 @@ SocketPair::socketpair
   }
 
   return false;
-}
 }
 }
 }

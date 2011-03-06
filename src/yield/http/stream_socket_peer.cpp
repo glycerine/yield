@@ -31,10 +31,10 @@
 #include "yield/exception.hpp"
 #include "yield/buffer.hpp"
 #include "yield/log.hpp"
-#include "yield/aio/net/sockets/aio_queue.hpp"
+#include "yield/aio/sockets/aio_queue.hpp"
 #include "yield/http/socket_client.hpp"
 #include "yield/http/socket_server.hpp"
-#include "yield/net/sockets/stream_socket.hpp"
+#include "yield/sockets/stream_socket.hpp"
 #include "yield/http/stream_socket_peer.hpp"
 
 #include <sstream> // for ostringstream
@@ -42,8 +42,8 @@
 
 namespace yield {
 namespace http {
-using yield::net::sockets::SocketAddress;
-using yield::net::sockets::StreamSocket;
+using yield::sockets::SocketAddress;
+using yield::sockets::StreamSocket;
 
 
 template <class SocketPeerType>

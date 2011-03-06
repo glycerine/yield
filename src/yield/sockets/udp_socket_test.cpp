@@ -28,20 +28,16 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "socket_test.hpp"
-#include "yield/net/sockets/udp_socket.hpp"
+#include "yield/sockets/udp_socket.hpp"
 
-
-TEST_SUITE_EX(UDPSocket, yield::net::sockets::SocketTestSuite<yield::net::sockets::UDPSocket>);
-
+TEST_SUITE_EX(UDPSocket, yield::sockets::SocketTestSuite<yield::sockets::UDPSocket>);
 
 namespace yield {
-namespace net {
 namespace sockets {
 TEST(UDPSocket, connect) {
   UDPSocket udp_socket;
   if (!udp_socket.connect(SocketAddress("localhost", 31000)))
     throw Exception();
-}
 }
 }
 }

@@ -39,7 +39,6 @@ typedef ssl_method_st SSL_METHOD;
 
 
 namespace yield {
-namespace net {
 namespace sockets {
 #ifdef YIELD_HAVE_OPENSSL
 namespace ssl {
@@ -114,7 +113,6 @@ private:
 };
 }
 #endif
-}
 }
 }
 

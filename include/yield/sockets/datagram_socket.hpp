@@ -30,11 +30,10 @@
 #ifndef _YIELD_SOCKETS_DATAGRAM_SOCKET_HPP_
 #define _YIELD_SOCKETS_DATAGRAM_SOCKET_HPP_
 
-#include "yield/net/sockets/socket.hpp"
+#include "yield/sockets/socket.hpp"
 
 
 namespace yield {
-namespace net {
 namespace sockets {
 class DatagramSocket : public Socket {
 public:
@@ -69,7 +68,6 @@ public:
     return Object::inc_ref(*this);
   }
 };
-}
 }
 }
 

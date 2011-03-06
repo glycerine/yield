@@ -1,4 +1,4 @@
-// yield/aio/net/sockets/recv_aiocb.hpp
+// yield/aio/sockets/recv_aiocb.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,17 +27,16 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_AIO_NET_SOCKETS_RECV_AIOCB_HPP_
-#define _YIELD_AIO_NET_SOCKETS_RECV_AIOCB_HPP_
+#ifndef _YIELD_AIO_SOCKETS_RECV_AIOCB_HPP_
+#define _YIELD_AIO_SOCKETS_RECV_AIOCB_HPP_
 
-#include "yield/aio/net/sockets/aiocb.hpp"
-#include "yield/net/sockets/socket.hpp"
-#include "yield/net/sockets/socket_address.hpp"
+#include "yield/aio/sockets/aiocb.hpp"
+#include "yield/sockets/socket.hpp"
+#include "yield/sockets/socket_address.hpp"
 
 
 namespace yield {
 namespace aio {
-namespace net {
 namespace sockets {
 class recvAIOCB : public AIOCB {
 public:
@@ -46,9 +45,9 @@ public:
 public:
   recvAIOCB
   (
-    yield::net::sockets::Socket& socket_,
+    yield::sockets::Socket& socket_,
     Buffer& buffer,
-    const yield::net::sockets::Socket::MessageFlags& flags
+    const yield::sockets::Socket::MessageFlags& flags
   );
 
   ~recvAIOCB();
@@ -56,9 +55,9 @@ public:
   Buffer& get_buffer() const {
     return buffer;
   }
-  const yield::net::sockets::Socket::MessageFlags& get_flags() const;
-  const yield::net::sockets::SocketAddress& get_peername() const;
-  yield::net::sockets::SocketAddress& get_peername() {
+  const yield::sockets::Socket::MessageFlags& get_flags() const;
+  const yield::sockets::SocketAddress& get_peername() const;
+  yield::sockets::SocketAddress& get_peername() {
     return peername;
   }
 
@@ -67,7 +66,7 @@ public:
     return TYPE_ID;
   }
   const char* get_type_name() const {
-    return "yield::aio::net::sockets::recvAIOCB";
+    return "yield::aio::sockets::recvAIOCB";
   }
 
   // yield::aio::AIOCB
@@ -83,10 +82,9 @@ private:
 
 private:
   Buffer& buffer;
-  yield::net::sockets::Socket::MessageFlags flags;
-  yield::net::sockets::SocketAddress peername;
+  yield::sockets::Socket::MessageFlags flags;
+  yield::sockets::SocketAddress peername;
 };
-}
 }
 }
 }

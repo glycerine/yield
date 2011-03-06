@@ -1,4 +1,4 @@
-// yield/aio/net/sockets/aio_queue_test.hpp
+// yield/aio/sockets/aio_queue_test.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,26 +27,25 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_AIO_NET_SOCKETS_AIO_QUEUE_TEST_HPP_
-#define _YIELD_AIO_NET_SOCKETS_AIO_QUEUE_TEST_HPP_
+#ifndef _YIELD_AIO_SOCKETS_AIO_QUEUE_TEST_HPP_
+#define _YIELD_AIO_SOCKETS_AIO_QUEUE_TEST_HPP_
 
-#include "../../../event_queue_test.hpp"
+#include "../../event_queue_test.hpp"
 #include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/buffer.hpp"
 #include "yield/exception.hpp"
 #include "yield/page.hpp"
-#include "yield/aio/net/sockets/recv_aiocb.hpp"
-#include "yield/aio/net/sockets/send_aiocb.hpp"
-#include "yield/net/sockets/socket_pair.hpp"
+#include "yield/aio/sockets/recv_aiocb.hpp"
+#include "yield/aio/sockets/send_aiocb.hpp"
+#include "yield/sockets/socket_pair.hpp"
 #include "yunit.hpp"
 
 
 namespace yield {
 namespace aio {
-namespace net {
 namespace sockets {
-using yield::net::sockets::SocketPair;
+using yield::sockets::SocketPair;
 
 
 template <class AIOQueueType>
@@ -150,7 +149,6 @@ public:
     );
   }
 };
-}
 }
 }
 }

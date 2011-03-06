@@ -30,7 +30,7 @@
 #ifndef _YIELD_SOCKETS_SSL_SSL_SOCKET_HPP_
 #define _YIELD_SOCKETS_SSL_SSL_SOCKET_HPP_
 
-#include "yield/net/sockets/tcp_socket.hpp"
+#include "yield/sockets/tcp_socket.hpp"
 
 
 #ifdef YIELD_HAVE_OPENSSL
@@ -40,7 +40,6 @@ typedef ssl_st SSL;
 
 
 namespace yield {
-namespace net {
 namespace sockets {
 #ifdef YIELD_HAVE_OPENSSL
 namespace ssl {
@@ -118,7 +117,6 @@ private:
 };
 }
 #endif
-}
 }
 }
 

@@ -27,11 +27,10 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifdef YIELD_HAVE_OPENSSL
-
 #include "yield/fs/path.hpp"
-#include "yield/net/sockets/ssl/ssl_context.hpp"
+#include "yield/sockets/ssl/ssl_context.hpp"
 
+#ifdef YIELD_HAVE_OPENSSL
 #include <openssl/pem.h>
 #include <openssl/pkcs12.h>
 #include <openssl/ssl.h>
@@ -40,11 +39,11 @@
 #pragma comment( lib, "libeay32.lib" )
 #pragma comment( lib, "ssleay32.lib" )
 #endif
-
+#endif
 
 namespace yield {
-namespace net {
 namespace sockets {
+#ifdef YIELD_HAVE_OPENSSL
 namespace ssl {
 const char* SSLContext::TEST_PEM_CERTIFICATE = \
     "-----BEGIN CERTIFICATE-----\n"
@@ -365,9 +364,6 @@ SSLContext::use_pkcs12
   throw SSLException();
 }
 }
-}
-}
-}
-
 #endif
-//
+}
+}

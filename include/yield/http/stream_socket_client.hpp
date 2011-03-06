@@ -33,7 +33,7 @@
 #include "yield/buffer.hpp"
 #include "yield/time.hpp"
 #include "yield/uri/uri.hpp"
-#include "yield/aio/net/sockets/connect_aiocb.hpp"
+#include "yield/aio/sockets/connect_aiocb.hpp"
 #include "yield/http/socket_client.hpp"
 #include "yield/http/stream_socket_peer.hpp"
 
@@ -98,7 +98,7 @@ public:
   const Configuration& get_configuration() const {
     return configuration;
   }
-  yield::net::sockets::SocketAddress& get_peername() {
+  yield::sockets::SocketAddress& get_peername() {
     return peername;
   }
 
@@ -111,7 +111,7 @@ protected:
     Connection
     (
       StreamSocketClient&,
-      YO_NEW_REF yield::net::sockets::StreamSocket&
+      YO_NEW_REF yield::sockets::StreamSocket&
     );
 
     virtual ~Connection() { }
@@ -175,7 +175,7 @@ protected:
 
 
   class connectAIOCB
-    : public yield::aio::net::sockets::connectAIOCB,
+    : public yield::aio::sockets::connectAIOCB,
       public StreamSocketPeer<SocketClient>::AIOCB {
   public:
     connectAIOCB
@@ -183,7 +183,7 @@ protected:
       Connection& connection,
       YO_NEW_REF Buffer* send_buffer = NULL
     )
-      : yield::aio::net::sockets::connectAIOCB
+      : yield::aio::sockets::connectAIOCB
       (
         connection.get_socket(),
         connection.get_peername(),
@@ -209,7 +209,7 @@ protected:
 
 private:
   Configuration configuration;
-  yield::net::sockets::SocketAddress& peername;
+  yield::sockets::SocketAddress& peername;
 };
 }
 }

@@ -1,4 +1,4 @@
-// yield/aio/net/sockets/win32/aio_queue.hpp
+// yield/aio/sockets/win32/aio_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,15 +27,14 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_AIO_NET_SOCKETS_WIN32_AIO_QUEUE_HPP_
-#define _YIELD_AIO_NET_SOCKETS_WIN32_AIO_QUEUE_HPP_
+#ifndef _YIELD_AIO_SOCKETS_WIN32_AIO_QUEUE_HPP_
+#define _YIELD_AIO_SOCKETS_WIN32_AIO_QUEUE_HPP_
 
-#include "../../../win32/aio_queue.hpp"
+#include "../../win32/aio_queue.hpp"
 
 
 namespace yield {
 namespace aio {
-namespace net {
 namespace sockets {
 namespace win32 {
 class AIOQueue : public yield::aio::win32::AIOQueue {
@@ -45,7 +44,6 @@ public:
   // yield::EventQueue
   bool enqueue(YO_NEW_REF Event& event);
 };
-}
 }
 }
 }
