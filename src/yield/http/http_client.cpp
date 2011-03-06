@@ -41,18 +41,16 @@
 
 #include <iostream> // for std::cout
 
-
 namespace yield {
 namespace http {
-using yield::uri::URI;
+using yield::clientserver::StreamSocketClient;
 using yield::sockets::SocketAddress;
 using yield::sockets::StreamSocket;
 using yield::sockets::TCPSocket;
 using yield::stage::SynchronizedResponseQueue;
-
+using yield::uri::URI;
 
 typedef SynchronizedResponseQueue<HTTPResponse> HTTPResponseQueue;
-
 
 class HTTPClient::Connection : public StreamSocketClient::Connection {
 public:

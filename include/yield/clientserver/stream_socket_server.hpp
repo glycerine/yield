@@ -1,4 +1,4 @@
-// yield/http/socket_server.hpp
+// yield/clientserver/stream_socket_server.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,25 +27,60 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_HTTP_SOCKET_SERVER_HPP_
-#define _YIELD_HTTP_SOCKET_SERVER_HPP_
+#ifndef _YIELD_CLIENTSERVER_STREAM_SOCKET_SERVER_HPP_
+#define _YIELD_CLIENTSERVER_STREAM_SOCKET_SERVER_HPP_
 
-#include "yield/sockets/socket_address.hpp"
-#include "yield/http/socket_peer.hpp"
-
+#include "yield/clientserver/socket_server.hpp"
+#include "yield/clientserver/stream_socket_peer.hpp"
 
 namespace yield {
-namespace http {
-class SocketServer : public SocketPeer {
-public:
-  void serve_forever();
+namespace aio {
+namespace sockets {
+class acceptAIOCB;
+}
+}
+
+namespace clientserver {
+class StreamSocketServer : public StreamSocketPeer<SocketServer> {
+protected:
+  class Connection : public StreamSocketPeer<SocketServer>::Connection {
+  public:
+    Connection(
+      StreamSocketServer&,
+      YO_NEW_REF yield::sockets::SocketAddress& peername,
+      YO_NEW_REF yield::sockets::StreamSocket& socket_
+    );
+
+    virtual void handle(YO_NEW_REF yield::aio::sockets::acceptAIOCB& accept_aiocb) = 0;
+  };
 
 protected:
-  SocketServer(Log* error_log, Log* trace_log)
-    : SocketPeer(error_log, trace_log)
-  { }
+  StreamSocketServer(
+    Log* error_log,
+    YO_NEW_REF yield::sockets::StreamSocket& socket_,
+    const yield::sockets::SocketAddress& sockname,
+    Log* trace_log
+  );
 
-  virtual ~SocketServer() { }
+  virtual ~StreamSocketServer();
+
+  virtual Connection&
+  create_connection(
+    yield::sockets::SocketAddress& peername,
+    yield::sockets::StreamSocket& socket_
+  ) = 0;
+
+  void enqueue(YO_NEW_REF yield::aio::sockets::acceptAIOCB& accept_aiocb);
+
+  yield::sockets::StreamSocket& get_socket() const {
+    return socket_;
+  }
+
+  // Stage
+  virtual void service(YO_NEW_REF Event& event);
+
+private:
+  yield::sockets::StreamSocket& socket_;
 };
 }
 }

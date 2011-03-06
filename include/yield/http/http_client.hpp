@@ -30,8 +30,7 @@
 #ifndef _YIELD_HTTP_HTTP_CLIENT_HPP_
 #define _YIELD_HTTP_HTTP_CLIENT_HPP_
 
-#include "yield/http/stream_socket_client.hpp"
-
+#include "yield/clientserver/stream_socket_client.hpp"
 
 namespace yield {
 class Log;
@@ -39,13 +38,11 @@ namespace stage {
 class Stage;
 }
 
-
 namespace http {
 class HTTPRequest;
 class HTTPResponse;
 
-
-class HTTPClient : public StreamSocketClient {
+class HTTPClient : public yield::clientserver::StreamSocketClient {
 public:
   HTTPClient
   (

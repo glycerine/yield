@@ -72,6 +72,7 @@ SOURCE_DIR_PATH = path_join(ROOT_DIR_PATH, "src")
 
 PROJECT_NAMES = (
     "aio",
+    "clientserver",
     "common",
     "fs",
     "http",
@@ -205,9 +206,10 @@ for project_name in PROJECT_NAMES:
 
 PROJECT_REFERENCES = {
     "aio": ("fs", "sockets", "poll", "stage"),
+    "clientserver": ("aio",),
     "common": tuple(),
     "fs": ("i18n",),
-    "http": ("aio", "stage", "uri"),
+    "http": ("clientserver", "uri"),
     "i18n": ("common",),
     "marshal": ("common",),
     "sockets": ("common",),

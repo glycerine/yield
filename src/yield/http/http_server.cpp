@@ -41,10 +41,10 @@
 namespace yield {
 namespace http {
 using yield::aio::sockets::acceptAIOCB;
+using yield::clientserver::StreamSocketServer;
 using yield::sockets::SocketAddress;
 using yield::sockets::StreamSocket;
 using yield::sockets::TCPSocket;
-
 
 class HTTPServer::Connection : public StreamSocketServer::Connection {
 public:
@@ -154,8 +154,7 @@ HTTPServer::HTTPServer(
   Log* error_log,
   Log* trace_log
 )
-  : StreamSocketServer
-  (
+  : StreamSocketServer(
     error_log,
     *new TCPSocket(sockname.get_family()),
     sockname,

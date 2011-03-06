@@ -1,4 +1,4 @@
-// yield/http/stream_socket_client.hpp
+// yield/clientserver/stream_socket_client.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,19 +27,19 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_HTTP_STREAM_SOCKET_CLIENT_HPP_
-#define _YIELD_HTTP_STREAM_SOCKET_CLIENT_HPP_
+#ifndef _YIELD_CLIENTSERVER_STREAM_SOCKET_CLIENT_HPP_
+#define _YIELD_CLIENTSERVER_STREAM_SOCKET_CLIENT_HPP_
 
 #include "yield/buffer.hpp"
 #include "yield/time.hpp"
 #include "yield/uri/uri.hpp"
 #include "yield/aio/sockets/connect_aiocb.hpp"
-#include "yield/http/socket_client.hpp"
-#include "yield/http/stream_socket_peer.hpp"
+#include "yield/clientserver/socket_client.hpp"
+#include "yield/clientserver/stream_socket_peer.hpp"
 
 
 namespace yield {
-namespace http {
+namespace clientserver {
 class StreamSocketClient : public StreamSocketPeer<SocketClient> {
 public:
   class Configuration {

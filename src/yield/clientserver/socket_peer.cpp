@@ -1,4 +1,4 @@
-// yield/http/socket_peer.hpp
+// yield/clientserver/socket_peer.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,39 +27,33 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_HTTP_SOCKET_PEER_HPP_
-#define _YIELD_HTTP_SOCKET_PEER_HPP_
+#include "yield/log.hpp"
+#include "yield/aio/sockets/aio_queue.hpp"
+#include "yield/clientserver/socket_peer.hpp"
 
-#include "yield/stage/stage.hpp"
 
 namespace yield {
-class Log;
+namespace clientserver {
+using yield::aio::sockets::AIOQueue;
 
-namespace aio {
-namespace sockets {
-class AIOQueue;
-}
-}
 
-namespace http {
-class SocketPeer : public yield::stage::Stage {
-protected:
-  SocketPeer(Log* error_log = NULL, Log* trace_log = NULL);
-  virtual ~SocketPeer();
+SocketPeer::SocketPeer
+(
+  Log* error_log,
+  Log* trace_log
+)
+  : yield::stage::Stage(*new AIOQueue),
+    error_log(Object::inc_ref(error_log)),
+    trace_log(Object::inc_ref(trace_log))
+{ }
 
-  yield::aio::sockets::AIOQueue& get_aio_queue();
-  Log* get_error_log() const {
-    return error_log;
-  }
-  Log* get_trace_log() const {
-    return trace_log;
-  }
-
-private:
-  Log* error_log;
-  Log* trace_log;
-};
-}
+SocketPeer::~SocketPeer() {
+  Log::dec_ref(error_log);
+  Log::dec_ref(trace_log);
 }
 
-#endif
+AIOQueue& SocketPeer::get_aio_queue() {
+  return static_cast<AIOQueue&>(get_event_queue());
+}
+}
+}

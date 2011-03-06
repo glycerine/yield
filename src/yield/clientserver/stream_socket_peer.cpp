@@ -1,4 +1,4 @@
-// yield/http/stream_socket_peer.cpp
+// yield/clientserver/stream_socket_peer.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -32,16 +32,16 @@
 #include "yield/buffer.hpp"
 #include "yield/log.hpp"
 #include "yield/aio/sockets/aio_queue.hpp"
-#include "yield/http/socket_client.hpp"
-#include "yield/http/socket_server.hpp"
+#include "yield/clientserver/socket_client.hpp"
+#include "yield/clientserver/socket_server.hpp"
 #include "yield/sockets/stream_socket.hpp"
-#include "yield/http/stream_socket_peer.hpp"
+#include "yield/clientserver/stream_socket_peer.hpp"
 
 #include <sstream> // for ostringstream
 
 
 namespace yield {
-namespace http {
+namespace clientserver {
 using yield::sockets::SocketAddress;
 using yield::sockets::StreamSocket;
 

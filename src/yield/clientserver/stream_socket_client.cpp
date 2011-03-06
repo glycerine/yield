@@ -1,4 +1,4 @@
-// yield/http/stream_socket_client.cpp
+// yield/clientserver/stream_socket_client.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -31,14 +31,14 @@
 #include "yield/exception.hpp"
 #include "yield/log.hpp"
 #include "yield/aio/sockets/aio_queue.hpp"
-#include "yield/http/stream_socket_client.hpp"
+#include "yield/clientserver/stream_socket_client.hpp"
 #include "yield/uri/uri.hpp"
 #include "yield/sockets/socket_address.hpp"
 #include "yield/sockets/stream_socket.hpp"
 
 
 namespace yield {
-namespace http {
+namespace clientserver {
 using yield::uri::URI;
 using yield::sockets::SocketAddress;
 using yield::sockets::StreamSocket;

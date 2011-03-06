@@ -12,20 +12,20 @@
   </ItemGroup>
 
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{6e13ec2a-7b66-44c5-ba5c-910ee415f912}</ProjectGuid>
+    <ProjectGuid>{798c48ee-9a0b-4157-bc66-d7ab8406ca01}</ProjectGuid>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <RootNamespace>http_test</RootNamespace>
+    <RootNamespace>clientserver</RootNamespace>
   </PropertyGroup>
 
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <UseDebugLibraries>true</UseDebugLibraries>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <UseDebugLibraries>false</UseDebugLibraries>
   </PropertyGroup>
@@ -42,14 +42,14 @@
   </ImportGroup>
 
   <PropertyGroup>
-    <IntDir Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">$(ProjectDir)..\..\..\build\yield\http_test\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">$(ProjectDir)..\..\..\bin\yield\</OutDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">yield_http_test</TargetName>
+    <IntDir Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">$(ProjectDir)..\..\..\build\yield\clientserver\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">$(ProjectDir)..\..\..\lib\yield\</OutDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">yield_clientserver</TargetName>
   </PropertyGroup>
   <PropertyGroup>
-    <IntDir Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">$(ProjectDir)..\..\..\build\yield\http_test\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">$(ProjectDir)..\..\..\bin\yield\</OutDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">yield_http_test</TargetName>
+    <IntDir Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">$(ProjectDir)..\..\..\build\yield\clientserver\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">$(ProjectDir)..\..\..\lib\yield\</OutDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">yield_clientserver</TargetName>
   </PropertyGroup>
 
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">
@@ -65,13 +65,12 @@
       <ProgramDataBaseFileName>$(TargetDir)$(TargetName).pdb</ProgramDataBaseFileName>
       <AdditionalOptions>/EHsc /GR- /nologo /wd"4100" /wd"4127" /wd"4290" /wd"4355" /wd"4512"</AdditionalOptions>
     </ClCompile>
-    <Link>
-      <AdditionalDependencies>yield_http.lib;yield_clientserver.lib;yield_aio.lib;yield_fs.lib;yield_i18n.lib;yield_poll.lib;yield_sockets.lib;yield_stage.lib;yield_thread.lib;yield_uri.lib;yield_common.lib</AdditionalDependencies>
+    <Lib>
+      <AdditionalDependencies>yield_aio.lib;yield_fs.lib;yield_i18n.lib;yield_poll.lib;yield_sockets.lib;yield_stage.lib;yield_thread.lib;yield_common.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>CONSOLE</SubSystem>
-    </Link>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">
     <ClCompile>
@@ -85,45 +84,45 @@
       <ProgramDataBaseFileName>$(TargetDir)$(TargetName).pdb</ProgramDataBaseFileName>
       <AdditionalOptions>/EHsc /GR- /nologo /wd"4100" /wd"4127" /wd"4290" /wd"4355" /wd"4512"</AdditionalOptions>
     </ClCompile>
-    <Link>
-      <AdditionalDependencies>yield_http.lib;yield_clientserver.lib;yield_aio.lib;yield_fs.lib;yield_i18n.lib;yield_poll.lib;yield_sockets.lib;yield_stage.lib;yield_thread.lib;yield_uri.lib;yield_common.lib</AdditionalDependencies>
+    <Lib>
+      <AdditionalDependencies>yield_aio.lib;yield_fs.lib;yield_i18n.lib;yield_poll.lib;yield_sockets.lib;yield_stage.lib;yield_thread.lib;yield_common.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <SubSystem>CONSOLE</SubSystem>
-    </Link>
+    </Lib>
   </ItemDefinitionGroup>
 
   <ItemGroup Label="ClIncludeItems">
-
+    <ClInclude Include="..\..\..\include\yield\clientserver\socket_client.hpp" />
+    <ClInclude Include="..\..\..\include\yield\clientserver\socket_peer.hpp" />
+    <ClInclude Include="..\..\..\include\yield\clientserver\socket_server.hpp" />
+    <ClInclude Include="..\..\..\include\yield\clientserver\stream_socket_client.hpp" />
+    <ClInclude Include="..\..\..\include\yield\clientserver\stream_socket_peer.hpp" />
+    <ClInclude Include="..\..\..\include\yield\clientserver\stream_socket_server.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
-    <ClCompile Include="..\..\..\src\yield\http\http_client_test.cpp">
+    <ClCompile Include="..\..\..\src\yield\clientserver\socket_client.cpp">
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\http\http_client_test.hpp" />
-    <ClCompile Include="..\..\..\src\yield\http\http_request_parser_test.cpp">
+    <ClCompile Include="..\..\..\src\yield\clientserver\socket_peer.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\http\http_request_parser_test.py">
+    <ClCompile Include="..\..\..\src\yield\clientserver\socket_server.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\clientserver\stream_socket_client.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\clientserver\stream_socket_peer.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\clientserver\stream_socket_server.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\clientserver\yield_clientserver_test_main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\http\http_response_parser_test.cpp">
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\http\http_response_parser_test.py">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\http\http_server_test.cpp">
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\http\test_http_request_handler.hpp" />
-    <ClCompile Include="..\..\..\src\yield\http\yield_http_test_main.cpp">
     </ClCompile>
   </ItemGroup>
 
   <ItemGroup Label="ProjectReferenceItems">
-    <ProjectReference Include="http.vcxproj">
-      <Project>{147916a2-6fbe-443b-a665-6f0a3d842c01}</Project>
+    <ProjectReference Include="..\aio\aio.vcxproj">
+      <Project>{d8811b28-56dc-4a90-879d-bd611df1142d}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>

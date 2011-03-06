@@ -1,4 +1,4 @@
-// yield/http/stream_socket_peer.hpp
+// yield/clientserver/stream_socket_peer.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,8 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_HTTP_STREAM_SOCKET_PEER_HPP_
-#define _YIELD_HTTP_STREAM_SOCKET_PEER_HPP_
+#ifndef _YIELD_CLIENTSERVER_STREAM_SOCKET_PEER_HPP_
+#define _YIELD_CLIENTSERVER_STREAM_SOCKET_PEER_HPP_
 
 #include "yield/aio/sockets/recv_aiocb.hpp"
 #include "yield/aio/sockets/send_aiocb.hpp"
@@ -38,7 +38,7 @@ namespace sockets {
 class StreamSocket;
 }
 
-namespace http {
+namespace clientserver {
 template <class SocketPeerType>
 class StreamSocketPeer : public SocketPeerType {
 protected:

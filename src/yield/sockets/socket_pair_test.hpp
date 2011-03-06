@@ -33,7 +33,6 @@
 #include "../channel_test.hpp"
 #include "yield/sockets/socket_pair.hpp"
 
-
 namespace yield {
 namespace sockets {
 class SocketPairFactory : public ChannelPairFactory {

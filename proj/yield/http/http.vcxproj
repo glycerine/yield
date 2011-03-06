@@ -66,7 +66,7 @@
       <AdditionalOptions>/EHsc /GR- /nologo /wd"4100" /wd"4127" /wd"4290" /wd"4355" /wd"4512"</AdditionalOptions>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>yield_aio.lib;yield_fs.lib;yield_i18n.lib;yield_poll.lib;yield_sockets.lib;yield_stage.lib;yield_thread.lib;yield_uri.lib;yield_common.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_clientserver.lib;yield_aio.lib;yield_fs.lib;yield_i18n.lib;yield_poll.lib;yield_sockets.lib;yield_stage.lib;yield_thread.lib;yield_uri.lib;yield_common.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -85,7 +85,7 @@
       <AdditionalOptions>/EHsc /GR- /nologo /wd"4100" /wd"4127" /wd"4290" /wd"4355" /wd"4512"</AdditionalOptions>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>yield_aio.lib;yield_fs.lib;yield_i18n.lib;yield_poll.lib;yield_sockets.lib;yield_stage.lib;yield_thread.lib;yield_uri.lib;yield_common.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_clientserver.lib;yield_aio.lib;yield_fs.lib;yield_i18n.lib;yield_poll.lib;yield_sockets.lib;yield_stage.lib;yield_thread.lib;yield_uri.lib;yield_common.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -104,12 +104,6 @@
     <ClInclude Include="..\..\..\include\yield\http\http_response.hpp" />
     <ClInclude Include="..\..\..\include\yield\http\http_response_parser.hpp" />
     <ClInclude Include="..\..\..\include\yield\http\http_server.hpp" />
-    <ClInclude Include="..\..\..\include\yield\http\socket_client.hpp" />
-    <ClInclude Include="..\..\..\include\yield\http\socket_peer.hpp" />
-    <ClInclude Include="..\..\..\include\yield\http\socket_server.hpp" />
-    <ClInclude Include="..\..\..\include\yield\http\stream_socket_client.hpp" />
-    <ClInclude Include="..\..\..\include\yield\http\stream_socket_peer.hpp" />
-    <ClInclude Include="..\..\..\include\yield\http\stream_socket_server.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
@@ -198,18 +192,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\http\socket_client.cpp">
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\http\socket_peer.cpp">
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\http\socket_server.cpp">
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\http\stream_socket_client.cpp">
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\http\stream_socket_peer.cpp">
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\http\stream_socket_server.cpp">
-    </ClCompile>
     <ClInclude Include="..\..\..\src\yield\http\test_http_request_handler.hpp" />
     <ClCompile Include="..\..\..\src\yield\http\yield_http_test_main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -218,12 +200,8 @@
   </ItemGroup>
 
   <ItemGroup Label="ProjectReferenceItems">
-    <ProjectReference Include="..\aio\aio.vcxproj">
-      <Project>{d8811b28-56dc-4a90-879d-bd611df1142d}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\stage\stage.vcxproj">
-      <Project>{daef679c-4597-41ba-a066-d721108c830f}</Project>
+    <ProjectReference Include="..\clientserver\clientserver.vcxproj">
+      <Project>{798c48ee-9a0b-4157-bc66-d7ab8406ca01}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\uri\uri.vcxproj">

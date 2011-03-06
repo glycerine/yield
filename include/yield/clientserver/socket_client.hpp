@@ -1,4 +1,4 @@
-// yield/http/socket_peer.cpp
+// yield/clientserver/socket_client.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,33 +27,23 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/log.hpp"
-#include "yield/aio/sockets/aio_queue.hpp"
-#include "yield/http/socket_peer.hpp"
+#ifndef _YIELD_CLIENTSERVER_SOCKET_CLIENT_HPP_
+#define _YIELD_CLIENTSERVER_SOCKET_CLIENT_HPP_
+
+#include "yield/clientserver/socket_peer.hpp"
 
 
 namespace yield {
-namespace http {
-using yield::aio::sockets::AIOQueue;
+namespace clientserver {
+class SocketClient : public SocketPeer {
+protected:
+  SocketClient(Log* error_log, Log* trace_log)
+    : SocketPeer(error_log, trace_log)
+  { }
 
-
-SocketPeer::SocketPeer
-(
-  Log* error_log,
-  Log* trace_log
-)
-  : yield::stage::Stage(*new AIOQueue),
-    error_log(Object::inc_ref(error_log)),
-    trace_log(Object::inc_ref(trace_log))
-{ }
-
-SocketPeer::~SocketPeer() {
-  Log::dec_ref(error_log);
-  Log::dec_ref(trace_log);
-}
-
-AIOQueue& SocketPeer::get_aio_queue() {
-  return static_cast<AIOQueue&>(get_event_queue());
+  virtual ~SocketClient() { }
+};
 }
 }
-}
+
+#endif

@@ -1,4 +1,4 @@
-// yield/http/http_server.hpp
+// yield/clientserver/socket_client.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -26,40 +26,3 @@
 // ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-#ifndef _YIELD_HTTP_HTTP_SERVER_HPP_
-#define _YIELD_HTTP_HTTP_SERVER_HPP_
-
-#include "yield/clientserver/stream_socket_server.hpp"
-
-namespace yield {
-namespace http {
-class HTTPServer : public yield::clientserver::StreamSocketServer {
-public:
-  HTTPServer(
-    YO_NEW_REF EventHandler& http_request_handler,
-    const yield::sockets::SocketAddress& sockname,
-    Log* error_log = NULL,
-    Log* trace_log = NULL
-  );
-
-  ~HTTPServer();
-
-private:
-  class Connection;
-
-private:
-  // yield::sockets::StreamSocketServer
-  StreamSocketServer::Connection&
-  create_connection(
-    yield::sockets::SocketAddress& peername,
-    yield::sockets::StreamSocket& socket_
-  );
-
-private:
-  EventHandler& http_request_handler;
-};
-}
-}
-
-#endif

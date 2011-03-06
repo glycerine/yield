@@ -1,4 +1,4 @@
-// yield/http/stream_socket_server.hpp
+// yield/clientserver/socket_peer.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,60 +27,37 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_HTTP_STREAM_SOCKET_SERVER_HPP_
-#define _YIELD_HTTP_STREAM_SOCKET_SERVER_HPP_
+#ifndef _YIELD_CLIENTSERVER_SOCKET_PEER_HPP_
+#define _YIELD_CLIENTSERVER_SOCKET_PEER_HPP_
 
-#include "yield/http/socket_server.hpp"
-#include "yield/http/stream_socket_peer.hpp"
+#include "yield/stage/stage.hpp"
 
 namespace yield {
+class Log;
+
 namespace aio {
 namespace sockets {
-class acceptAIOCB;
+class AIOQueue;
 }
 }
 
-namespace http {
-class StreamSocketServer : public StreamSocketPeer<SocketServer> {
+namespace clientserver {
+class SocketPeer : public yield::stage::Stage {
 protected:
-  class Connection : public StreamSocketPeer<SocketServer>::Connection {
-  public:
-    Connection(
-      StreamSocketServer&,
-      YO_NEW_REF yield::sockets::SocketAddress& peername,
-      YO_NEW_REF yield::sockets::StreamSocket& socket_
-    );
+  SocketPeer(Log* error_log = NULL, Log* trace_log = NULL);
+  virtual ~SocketPeer();
 
-    virtual void handle(YO_NEW_REF yield::aio::sockets::acceptAIOCB& accept_aiocb) = 0;
-  };
-
-protected:
-  StreamSocketServer(
-    Log* error_log,
-    YO_NEW_REF yield::sockets::StreamSocket& socket_,
-    const yield::sockets::SocketAddress& sockname,
-    Log* trace_log
-  );
-
-  virtual ~StreamSocketServer();
-
-  virtual Connection&
-  create_connection(
-    yield::sockets::SocketAddress& peername,
-    yield::sockets::StreamSocket& socket_
-  ) = 0;
-
-  void enqueue(YO_NEW_REF yield::aio::sockets::acceptAIOCB& accept_aiocb);
-
-  yield::sockets::StreamSocket& get_socket() const {
-    return socket_;
+  yield::aio::sockets::AIOQueue& get_aio_queue();
+  Log* get_error_log() const {
+    return error_log;
+  }
+  Log* get_trace_log() const {
+    return trace_log;
   }
 
-  // Stage
-  virtual void service(YO_NEW_REF Event& event);
-
 private:
-  yield::sockets::StreamSocket& socket_;
+  Log* error_log;
+  Log* trace_log;
 };
 }
 }

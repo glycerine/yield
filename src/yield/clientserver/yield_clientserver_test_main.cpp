@@ -1,4 +1,4 @@
-// yield/http/socket_server.cpp
+// yield/clientserver/yield_clientserver_test_main.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,14 +27,18 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/http/socket_server.hpp"
+#include "yunit.hpp"
+
+#include <iostream>
 
 
-namespace yield {
-namespace http {
-void SocketServer::serve_forever() {
-  for (;;)
-    visit();
-}
-}
+
+
+
+int main(int, char**) {
+  int failed_test_case_count = 0;
+
+
+
+  return failed_test_case_count;
 }
