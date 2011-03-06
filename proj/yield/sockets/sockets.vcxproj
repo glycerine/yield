@@ -12,9 +12,9 @@
   </ItemGroup>
 
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{4591cab4-ae14-472d-9895-c50893e33350}</ProjectGuid>
+    <ProjectGuid>{d2e2c6b1-a975-427b-b5da-98db61720d9d}</ProjectGuid>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <RootNamespace>poll</RootNamespace>
+    <RootNamespace>sockets</RootNamespace>
   </PropertyGroup>
 
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -42,14 +42,14 @@
   </ImportGroup>
 
   <PropertyGroup>
-    <IntDir Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">$(ProjectDir)..\..\..\build\yield\poll\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">$(ProjectDir)..\..\..\build\yield\sockets\</IntDir>
     <OutDir Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">$(ProjectDir)..\..\..\lib\yield\</OutDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">yield_poll</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">yield_sockets</TargetName>
   </PropertyGroup>
   <PropertyGroup>
-    <IntDir Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">$(ProjectDir)..\..\..\build\yield\poll\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">$(ProjectDir)..\..\..\build\yield\sockets\</IntDir>
     <OutDir Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">$(ProjectDir)..\..\..\lib\yield\</OutDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">yield_poll</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">yield_sockets</TargetName>
   </PropertyGroup>
 
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">
@@ -66,7 +66,7 @@
       <AdditionalOptions>/EHsc /GR- /nologo /wd"4100" /wd"4127" /wd"4290" /wd"4355" /wd"4512"</AdditionalOptions>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>yield_sockets.lib;yield_thread.lib;yield_common.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_common.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -85,7 +85,7 @@
       <AdditionalOptions>/EHsc /GR- /nologo /wd"4100" /wd"4127" /wd"4290" /wd"4355" /wd"4512"</AdditionalOptions>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>yield_sockets.lib;yield_thread.lib;yield_common.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_common.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -93,88 +93,100 @@
   </ItemDefinitionGroup>
 
   <ItemGroup Label="ClIncludeItems">
-    <ClInclude Include="..\..\..\include\yield\poll\fd_event.hpp" />
-    <ClInclude Include="..\..\..\include\yield\poll\fd_event_queue.hpp" />
-    <ClInclude Include="..\..\..\include\yield\poll\socket_event.hpp" />
-    <ClInclude Include="..\..\..\include\yield\poll\socket_event_queue.hpp" />
+    <ClInclude Include="..\..\..\include\yield\sockets\datagram_socket.hpp" />
+    <ClInclude Include="..\..\..\include\yield\sockets\socket.hpp" />
+    <ClInclude Include="..\..\..\include\yield\sockets\socket_address.hpp" />
+    <ClInclude Include="..\..\..\include\yield\sockets\socket_pair.hpp" />
+    <ClInclude Include="..\..\..\include\yield\sockets\ssl\ssl_context.hpp" />
+    <ClInclude Include="..\..\..\include\yield\sockets\ssl\ssl_exception.hpp" />
+    <ClInclude Include="..\..\..\include\yield\sockets\ssl\ssl_socket.hpp" />
+    <ClInclude Include="..\..\..\include\yield\sockets\stream_socket.hpp" />
+    <ClInclude Include="..\..\..\include\yield\sockets\tcp_socket.hpp" />
+    <ClInclude Include="..\..\..\include\yield\sockets\udp_socket.hpp" />
+    <ClInclude Include="..\..\..\include\yield\sockets\win32\winsock.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
-    <ClCompile Include="..\..\..\src\yield\poll\bsd\kqueue.cpp">
+    <ClCompile Include="..\..\..\src\yield\sockets\posix\datagram_socket.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\poll\bsd\kqueue.hpp" />
-    <ClCompile Include="..\..\..\src\yield\poll\bsd\kqueue_test.cpp">
+    <ClCompile Include="..\..\..\src\yield\sockets\posix\socket.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\poll\fd_event_queue.cpp">
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\poll\fd_event_queue_test.hpp" />
-    <ClCompile Include="..\..\..\src\yield\poll\linux\epoller.cpp">
+    <ClCompile Include="..\..\..\src\yield\sockets\posix\socket_address.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\poll\linux\epoller.hpp" />
-    <ClCompile Include="..\..\..\src\yield\poll\linux\epoller_test.cpp">
+    <ClCompile Include="..\..\..\src\yield\sockets\posix\stream_socket.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\poll\posix\poller.cpp">
+    <ClCompile Include="..\..\..\src\yield\sockets\posix\tcp_socket.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\poll\posix\poller.hpp" />
-    <ClCompile Include="..\..\..\src\yield\poll\posix\poller_test.cpp">
+    <ClCompile Include="..\..\..\src\yield\sockets\posix\udp_socket.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\poll\socket_event_queue.cpp">
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\poll\socket_event_queue_test.hpp" />
-    <ClCompile Include="..\..\..\src\yield\poll\sunos\event_port.cpp">
+    <ClCompile Include="..\..\..\src\yield\sockets\socket_address_test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\poll\sunos\event_port.hpp" />
-    <ClCompile Include="..\..\..\src\yield\poll\sunos\event_port_test.cpp">
+    <ClCompile Include="..\..\..\src\yield\sockets\socket_pair.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\socket_pair_test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\poll\win32\handle_event_queue.cpp">
-      <ObjectFileName>$(IntDir)win32\handle_event_queue.obj</ObjectFileName>
+    <ClInclude Include="..\..\..\src\yield\sockets\socket_pair_test.hpp" />
+    <ClInclude Include="..\..\..\src\yield\sockets\socket_test.hpp" />
+    <ClCompile Include="..\..\..\src\yield\sockets\ssl\ssl_context.cpp">
+      <ObjectFileName>$(IntDir)ssl\ssl_context.obj</ObjectFileName>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\poll\win32\handle_event_queue.hpp" />
-    <ClCompile Include="..\..\..\src\yield\poll\win32\handle_event_queue_test.cpp">
+    <ClCompile Include="..\..\..\src\yield\sockets\ssl\ssl_context_test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\poll\win32\selector.cpp">
-      <ObjectFileName>$(IntDir)win32\selector.obj</ObjectFileName>
+    <ClCompile Include="..\..\..\src\yield\sockets\ssl\ssl_exception.cpp">
+      <ObjectFileName>$(IntDir)ssl\ssl_exception.obj</ObjectFileName>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\poll\win32\selector.hpp" />
-    <ClCompile Include="..\..\..\src\yield\poll\win32\selector_test.cpp">
+    <ClCompile Include="..\..\..\src\yield\sockets\ssl\ssl_socket.cpp">
+      <ObjectFileName>$(IntDir)ssl\ssl_socket.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\tcp_socket_test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\poll\win32\wsapoller.cpp">
-      <ObjectFileName>$(IntDir)win32\wsapoller.obj</ObjectFileName>
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\poll\win32\wsapoller.hpp" />
-    <ClCompile Include="..\..\..\src\yield\poll\win32\wsapoller_test.cpp">
+    <ClCompile Include="..\..\..\src\yield\sockets\udp_socket_test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\poll\yield_poll_test_main.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    <ClCompile Include="..\..\..\src\yield\sockets\win32\datagram_socket.cpp">
+      <ObjectFileName>$(IntDir)win32\datagram_socket.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\win32\socket.cpp">
+      <ObjectFileName>$(IntDir)win32\socket.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\win32\socket_address.cpp">
+      <ObjectFileName>$(IntDir)win32\socket_address.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\win32\stream_socket.cpp">
+      <ObjectFileName>$(IntDir)win32\stream_socket.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\win32\tcp_socket.cpp">
+      <ObjectFileName>$(IntDir)win32\tcp_socket.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\win32\udp_socket.cpp">
+      <ObjectFileName>$(IntDir)win32\udp_socket.obj</ObjectFileName>
     </ClCompile>
   </ItemGroup>
 
   <ItemGroup Label="ProjectReferenceItems">
-    <ProjectReference Include="..\thread\thread.vcxproj">
-      <Project>{6922dc00-f3dd-4736-84a2-76235cf41f68}</Project>
+    <ProjectReference Include="..\common\common.vcxproj">
+      <Project>{959e1fd1-05b3-4af5-b637-a317ecfcd62f}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>

@@ -46,7 +46,7 @@ endif
 ifeq ($(UNAME), Solaris)
 	LIBS += -liconv -lnsl -lsocket -lcpc -lkstat -lm -lrt -lstdc++
 endif
-LIBS += -lyield_fs -lyield_i18n -lyield_poll -lyield_net -lyield_stage -lyield_thread -lyield_common
+LIBS += -lyield_fs -lyield_i18n -lyield_poll -lyield_sockets -lyield_stage -lyield_thread -lyield_common
 
 
 DEP_FILE_PATHS := $(shell find ../../../build/yield/aio -name "*.d")

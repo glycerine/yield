@@ -1,4 +1,4 @@
-all: aio aio_test common common_test fs fs_test http http_test i18n i18n_test marshal marshal_test net net_test poll poll_test process process_test stage stage_test thread thread_test uri uri_test uuid uuid_test
+all: aio aio_test common common_test fs fs_test http http_test i18n i18n_test marshal marshal_test poll poll_test process process_test sockets sockets_test stage stage_test thread thread_test uri uri_test uuid uuid_test
 
 clean:
 	$(MAKE) -C proj/yield/aio -f aio.Makefile clean
@@ -13,12 +13,12 @@ clean:
 	$(MAKE) -C proj/yield/i18n -f i18n_test.Makefile clean
 	$(MAKE) -C proj/yield/marshal -f marshal.Makefile clean
 	$(MAKE) -C proj/yield/marshal -f marshal_test.Makefile clean
-	$(MAKE) -C proj/yield/net -f net.Makefile clean
-	$(MAKE) -C proj/yield/net -f net_test.Makefile clean
 	$(MAKE) -C proj/yield/poll -f poll.Makefile clean
 	$(MAKE) -C proj/yield/poll -f poll_test.Makefile clean
 	$(MAKE) -C proj/yield/process -f process.Makefile clean
 	$(MAKE) -C proj/yield/process -f process_test.Makefile clean
+	$(MAKE) -C proj/yield/sockets -f sockets.Makefile clean
+	$(MAKE) -C proj/yield/sockets -f sockets_test.Makefile clean
 	$(MAKE) -C proj/yield/stage -f stage.Makefile clean
 	$(MAKE) -C proj/yield/stage -f stage_test.Makefile clean
 	$(MAKE) -C proj/yield/thread -f thread.Makefile clean
@@ -41,12 +41,12 @@ depclean:
 	$(MAKE) -C proj/yield/i18n -f i18n_test.Makefile depclean
 	$(MAKE) -C proj/yield/marshal -f marshal.Makefile depclean
 	$(MAKE) -C proj/yield/marshal -f marshal_test.Makefile depclean
-	$(MAKE) -C proj/yield/net -f net.Makefile depclean
-	$(MAKE) -C proj/yield/net -f net_test.Makefile depclean
 	$(MAKE) -C proj/yield/poll -f poll.Makefile depclean
 	$(MAKE) -C proj/yield/poll -f poll_test.Makefile depclean
 	$(MAKE) -C proj/yield/process -f process.Makefile depclean
 	$(MAKE) -C proj/yield/process -f process_test.Makefile depclean
+	$(MAKE) -C proj/yield/sockets -f sockets.Makefile depclean
+	$(MAKE) -C proj/yield/sockets -f sockets_test.Makefile depclean
 	$(MAKE) -C proj/yield/stage -f stage.Makefile depclean
 	$(MAKE) -C proj/yield/stage -f stage_test.Makefile depclean
 	$(MAKE) -C proj/yield/thread -f thread.Makefile depclean
@@ -57,7 +57,7 @@ depclean:
 	$(MAKE) -C proj/yield/uuid -f uuid_test.Makefile depclean
 
 
-aio: fs net poll stage
+aio: fs sockets poll stage
 	$(MAKE) -C proj/yield/aio -f aio.Makefile
 
 aio_test: aio
@@ -93,13 +93,7 @@ marshal: common
 marshal_test: marshal
 	$(MAKE) -C proj/yield/marshal -f marshal_test.Makefile
 
-net: common
-	$(MAKE) -C proj/yield/net -f net.Makefile
-
-net_test: net
-	$(MAKE) -C proj/yield/net -f net_test.Makefile
-
-poll: net thread
+poll: sockets thread
 	$(MAKE) -C proj/yield/poll -f poll.Makefile
 
 poll_test: poll
@@ -110,6 +104,12 @@ process: fs
 
 process_test: process
 	$(MAKE) -C proj/yield/process -f process_test.Makefile
+
+sockets: common
+	$(MAKE) -C proj/yield/sockets -f sockets.Makefile
+
+sockets_test: sockets
+	$(MAKE) -C proj/yield/sockets -f sockets_test.Makefile
 
 stage: thread
 	$(MAKE) -C proj/yield/stage -f stage.Makefile

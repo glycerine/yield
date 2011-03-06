@@ -66,7 +66,7 @@
       <AdditionalOptions>/EHsc /GR- /nologo /wd"4100" /wd"4127" /wd"4290" /wd"4355" /wd"4512"</AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>yield_poll.lib;yield_net.lib;yield_thread.lib;yield_common.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_poll.lib;yield_sockets.lib;yield_thread.lib;yield_common.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -86,7 +86,7 @@
       <AdditionalOptions>/EHsc /GR- /nologo /wd"4100" /wd"4127" /wd"4290" /wd"4355" /wd"4512"</AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>yield_poll.lib;yield_net.lib;yield_thread.lib;yield_common.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_poll.lib;yield_sockets.lib;yield_thread.lib;yield_common.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>

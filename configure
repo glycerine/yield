@@ -77,9 +77,9 @@ PROJECT_NAMES = (
     "http",
     "i18n",
     "marshal",
-    "net",
     "poll",
     "process",
+    "sockets",
     "stage",
     "thread",
     "uuid",
@@ -90,7 +90,7 @@ PROJECT_NAMES = (
 AUTHOR = "Minor Gordon"
 
 AUTOCONF = {
-    "net": {
+    "sockets": {
     #    "unix": { "YIELD_HAVE_OPENSSL": ( "crypto", "ssl", "ssl.h" ), },
     #    "win32": { "YIELD_HAVE_OPENSSL": ( "libeay32", "ssleay32", "ssl.h" ), },
     },
@@ -169,7 +169,7 @@ LIBS = {
         "sunos": ["iconv"],
     },
 
-    "net": {
+    "sockets": {
         "sunos": ["nsl", "socket"],
     },
 
@@ -204,14 +204,14 @@ for project_name in PROJECT_NAMES:
     PROJECT_DIR_PATHS[project_name + "_test"] = project_dir_path
 
 PROJECT_REFERENCES = {
-    "aio": ("fs", "net", "poll", "stage"),
+    "aio": ("fs", "sockets", "poll", "stage"),
     "common": tuple(),
     "fs": ("i18n",),
     "http": ("aio", "stage", "uri"),
     "i18n": ("common",),
     "marshal": ("common",),
-    "net": ("common",),
-    "poll": ("net", "thread",),
+    "sockets": ("common",),
+    "poll": ("sockets", "thread",),
     "process": ("fs",),
     "stage": ("thread",),
     "thread": ("common",),
@@ -324,7 +324,7 @@ INCLUDE_FILE_PATHS["aio"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "aio", "posix", "aiocb.hpp"),
     path_join(INCLUDE_DIR_PATH, "yield", "aio", "win32", "aiocb.hpp"),
     path_join(INCLUDE_DIR_PATH, "yield", "aio", "aiocb.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "aio", "net", "sockets", "aiocb.hpp"), # before accept_aiocb
+    path_join(INCLUDE_DIR_PATH, "yield", "aio", "sockets", "aiocb.hpp"), # before accept_aiocb
 ] + \
 INCLUDE_FILE_PATHS["aio"]
 
@@ -384,11 +384,11 @@ INCLUDE_FILE_PATHS["http"] = [
 ] + \
 INCLUDE_FILE_PATHS["http"]
 
-INCLUDE_FILE_PATHS["net"] = [
-    path_join(INCLUDE_DIR_PATH, "yield", "net", "uri.hpp"), # before socket_address
-    path_join(INCLUDE_DIR_PATH, "yield", "net", "sockets", "socket.hpp"), # before datagram_socket
+INCLUDE_FILE_PATHS["sockets"] = [
+    path_join(INCLUDE_DIR_PATH, "yield", "sockets", "uri.hpp"), # before socket_address
+    path_join(INCLUDE_DIR_PATH, "yield", "sockets", "socket.hpp"), # before datagram_socket
 ] + \
-INCLUDE_FILE_PATHS["net"]
+INCLUDE_FILE_PATHS["sockets"]
 
 INCLUDE_FILE_PATHS["stage"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "stage", "event.hpp"),
@@ -411,10 +411,10 @@ SOURCE_FILE_PATHS["fs"] = [
 ] + \
 SOURCE_FILE_PATHS["fs"]
 
-SOURCE_FILE_PATHS["net"] = [
-    path_join(SOURCE_DIR_PATH, "yield", "net", "sockets", "win32", "winsock.hpp"),
+SOURCE_FILE_PATHS["sockets"] = [
+    path_join(SOURCE_DIR_PATH, "yield", "sockets", "win32", "winsock.hpp"),
 ] + \
-SOURCE_FILE_PATHS["net"]
+SOURCE_FILE_PATHS["sockets"]
 
 SOURCE_FILE_PATHS["thread"] = [
     path_join(SOURCE_DIR_PATH, "yield", "thread", "win32", "mutex.hpp"), # before condition_variable
