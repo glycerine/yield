@@ -48,8 +48,7 @@ protected:
 
   class Connection : public EventHandler {
   public:
-    Connection
-    (
+    Connection(
       StreamSocketPeer&,
       yield::sockets::SocketAddress& peername,
       YO_NEW_REF yield::sockets::StreamSocket& socket_
@@ -60,9 +59,11 @@ protected:
     void close();
 
     const string& get_log_prefix();
+
     yield::sockets::SocketAddress& get_peername() const {
       return peername;
     }
+
     yield::sockets::StreamSocket& get_socket() const {
       return *socket_;
     }
@@ -86,9 +87,11 @@ protected:
     yield::aio::sockets::AIOQueue& get_aio_queue() const {
       return aio_queue;
     }
+
     Log* get_error_log() const {
       return error_log;
     }
+
     Log* get_trace_log() const {
       return trace_log;
     }

@@ -63,16 +63,21 @@ public:
   double ms() const {
     return static_cast<double>(_ns) / NS_IN_MS;
   }
+
   static Time now();
+
   uint64_t ns() const {
     return _ns;
   }
+
   double s() const {
     return static_cast<double>(_ns) / NS_IN_S;
   }
+
   double us() const {
     return static_cast<double>(_ns) / NS_IN_US;
   }
+
   operator uint64_t() const {
     return _ns;
   }
@@ -91,6 +96,7 @@ public:
     _ns = t._ns;
     return *this;
   }
+
   Time& operator=(uint64_t ns) {
     _ns = ns;
     return *this;
@@ -99,13 +105,16 @@ public:
   Time operator+(const Time& t) const {
     return Time(_ns + t._ns);
   }
+
   Time operator+(uint64_t ns) const {
     return Time(_ns + ns);
   }
+
   Time& operator+=(const Time& t) {
     _ns += t._ns;
     return *this;
   }
+
   Time& operator+=(uint64_t ns) {
     _ns += ns;
     return *this;
@@ -142,13 +151,16 @@ public:
   Time operator*(const Time& t) const {
     return Time(_ns * t._ns);
   }
+
   Time operator*(uint64_t ns) const {
     return Time(_ns * ns);
   }
+
   Time& operator*=(const Time& t) {
     _ns *= t._ns;
     return *this;
   }
+
   Time& operator*=(const uint64_t ns) {
     _ns *= ns;
     return *this;
@@ -157,6 +169,7 @@ public:
   bool operator==(const Time& t) const {
     return _ns == t._ns;
   }
+
   bool operator==(uint64_t ns) const {
     return _ns == ns;
   }
@@ -164,6 +177,7 @@ public:
   bool operator!=(const Time& t) const {
     return _ns != t._ns;
   }
+
   bool operator!=(uint64_t ns) const {
     return _ns != ns;
   }
@@ -171,6 +185,7 @@ public:
   bool operator<(const Time& t) const {
     return _ns < t._ns;
   }
+
   bool operator<(uint64_t ns) const {
     return _ns < ns;
   }
@@ -178,6 +193,7 @@ public:
   bool operator<=(const Time& t) const {
     return _ns <= t._ns;
   }
+
   bool operator<=(uint64_t ns) const {
     return _ns <= ns;
   }
@@ -185,6 +201,7 @@ public:
   bool operator>(const Time& t) const {
     return _ns > t._ns;
   }
+
   bool operator>(uint64_t ns) const {
     return _ns > ns;
   }
@@ -192,6 +209,7 @@ public:
   bool operator>=(const Time& t) const {
     return _ns >= t._ns;
   }
+
   bool operator>=(uint64_t ns) const {
     return _ns >= ns;
   }

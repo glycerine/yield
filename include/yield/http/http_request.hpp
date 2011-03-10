@@ -88,6 +88,7 @@ public:
   void respond(YO_NEW_REF HTTPResponse& http_response);
   void respond(uint16_t status_code);
   void respond(uint16_t status_code, const char* body);
+  void respond(uint16_t status_code, YO_NEW_REF Buffer* body);
   void respond(uint16_t status_code, YO_NEW_REF Buffer& body);
   void respond(YO_NEW_REF Exception& exception);
 

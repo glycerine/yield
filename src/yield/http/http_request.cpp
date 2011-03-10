@@ -186,6 +186,10 @@ void HTTPRequest::respond(uint16_t status_code, const char* body) {
   respond(status_code, *new StringBuffer(body));
 }
 
+void HTTPRequest::respond(uint16_t status_code, Buffer* body) {
+  respond(*new HTTPResponse(status_code, body, get_http_version()));
+}
+
 void HTTPRequest::respond(uint16_t status_code, Buffer& body) {
   respond(*new HTTPResponse(status_code, &body, get_http_version()));
 }
