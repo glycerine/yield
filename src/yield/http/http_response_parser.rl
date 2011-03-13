@@ -34,8 +34,8 @@
 #include <stdlib.h> // For atoi
 
 #ifdef _WIN32
-#pragma warning( push )
-#pragma warning( disable: 4702 )
+#pragma warning(push)
+#pragma warning(disable: 4702)
 #endif
 
 
@@ -63,7 +63,7 @@ Object& HTTPResponseParser::parse() {
                    fields_offset,
                    http_version,
                    status_code
-                 );
+                );
         } else {
           Buffer* next_buffer
           = new Page(p - ps + content_length, ps, eof - ps);
@@ -103,9 +103,9 @@ HTTPResponseParser::parse_status_line
     include basic_rules "basic_rules.rl";
 
     status_code = digit+
-                        >{ status_code = static_cast<uint16_t>( atoi( p ) ); };
+                        >{ status_code = static_cast<uint16_t>(atoi(p)); };
 
-    reason_phrase = ( alpha | ' ' )+;
+    reason_phrase = (alpha | ' ')+;
 
     status_line = http_version ' ' status_code ' ' reason_phrase crlf;
 
@@ -124,6 +124,6 @@ HTTPResponseParser::parse_status_line
 }
 
 #ifdef _WIN32
-  #pragma warning( pop )
+  #pragma warning(pop)
 #endif
 //

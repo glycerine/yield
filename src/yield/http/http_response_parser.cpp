@@ -64,8 +64,8 @@
 #include <stdlib.h> // For atoi
 
 #ifdef _WIN32
-#pragma warning( push )
-#pragma warning( disable: 4702 )
+#pragma warning(push)
+#pragma warning(disable: 4702)
 #endif
 
 
@@ -269,7 +269,7 @@ _match:
     while (_nacts-- > 0) {
       switch (*_acts++) {
       case 0:
-        /* #line 89 "src\\yield\\http\\basic_rules.rl" */
+        /* #line 33 "src\\yield\\http\\basic_rules.rl" */
       {
         http_version = static_cast<float>(atof(p));
       }
@@ -332,6 +332,6 @@ _out:
 }
 
 #ifdef _WIN32
-#pragma warning( pop )
+#pragma warning(pop)
 #endif
 //

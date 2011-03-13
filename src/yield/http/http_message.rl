@@ -36,8 +36,8 @@
 
 #ifdef _WIN32
 #include <Windows.h> // For SYSTEMTIME
-#pragma warning( push )
-#pragma warning( disable: 4702 )
+#pragma warning(push)
+#pragma warning(disable:4702)
 #else
 #include <stdio.h> // For snprintf
 #include <stdlib.h> // For atoi
@@ -46,8 +46,8 @@
 namespace yield {
 namespace http {
 template <class HTTPMessageType>
-HTTPMessage<HTTPMessageType>::HTTPMessage
-(
+HTTPMessage<HTTPMessageType>::
+HTTPMessage(
   void* body,
   Buffer& buffer,
   size_t content_length,
@@ -62,8 +62,8 @@ HTTPMessage<HTTPMessageType>::HTTPMessage
 { }
 
 template <class HTTPMessageType>
-HTTPMessage<HTTPMessageType>::HTTPMessage
-(
+HTTPMessage<HTTPMessageType>::
+HTTPMessage(
   YO_NEW_REF Buffer* body,
   float http_version
 )
@@ -89,18 +89,13 @@ HTTPMessage<HTTPMessageType>::~HTTPMessage() {
 template <class HTTPMessageType>
 void HTTPMessage<HTTPMessageType>::finalize() {
   if (!is_finalized()) {
-    set_field("Content-Length", content_length);
+    set_field("Content-Length", 14, content_length);
     buffer.put("\r\n", 2);
   }
 }
 
 template <class HTTPMessageType>
-DateTime
-HTTPMessage<HTTPMessageType>::
-get_date_field
-(
-  const char* name
-) const {
+DateTime HTTPMessage<HTTPMessageType>::get_date_field(const char* name) const {
   iovec value;
   if (get_field(name, value)) {
     int cs;
@@ -136,84 +131,86 @@ get_date_field
 
 template <class HTTPMessageType>
 bool
-HTTPMessage<HTTPMessageType>::get_field
-(
+HTTPMessage<HTTPMessageType>::
+get_field(
   const char* name,
+  size_t name_len,
   OUT iovec& value
 ) const {
   int cs;
   const char* eof = static_cast<char*>(buffer) + buffer.size();
   char* p = static_cast<char*>(buffer) + fields_offset;
+  const char* pe = eof;
 
-  iovec field_name = { 0 }, field_value = { 0 };
-  size_t name_len = strlen(name);
+  iovec field_name = {0}, field_value = {0};
 
+  // Don't look for the trailing CRLF before the body,
+  // since it may not be present yet.
   %%{
     machine field_parser;
     include field "field.rl";
 
-    main :=
-    (
-      field
-      %
-      {
-        if
-        (
+    main := (
+      field % {
+        if (
           field_name.iov_len == name_len
           &&
-          memcmp( field_name.iov_base, name, name_len ) == 0
-        )
-        {
+          memcmp(field_name.iov_base, name, name_len) == 0
+        ) {
           value = field_value;
           return true;
         }
       }
-    )* crlf
-    @{ fbreak; }
-    $err{ return false; };
+    )*;
 
     write data;
     write init;
-    write exec noend;
+    write exec;
   }%%
 
   return false;
 }
 
 template <class HTTPMessageType>
-string
-HTTPMessage<HTTPMessageType>::get_field
-(
-  const char* name,
-  const char* default_value
+void
+HTTPMessage<HTTPMessageType>::
+get_fields(
+  OUT vector<pair<iovec, iovec> >& fields
 ) const {
-  iovec value_iov;
-  if (get_field(name, value_iov)) {
-    return string
-           (
-             static_cast<char*>(value_iov.iov_base),
-             value_iov.iov_len
-           );
-  } else
-    return default_value;
-}
+  int cs;
+  const char* eof = static_cast<char*>(buffer) + buffer.size();
+  char* p = static_cast<char*>(buffer) + fields_offset;
+  const char* pe = eof;
 
-template <class HTTPMessageType>
-bool HTTPMessage<HTTPMessageType>::has_field(const char* name) const {
-  iovec value;
-  return get_field(name, value);
+  iovec field_name = {0}, field_value = {0};
+
+  // Don't look for the trailing CRLF before the body,
+  // since it may not be present yet.
+  %%{
+    machine fields_parser;
+    include field "field.rl";
+
+    main := (
+      field % { fields.push_back(make_pair(field_name, field_value)); }
+    )*
+    @{ fbreak; }
+    $err{ return; };
+
+    write data;
+    write init;
+    write exec;
+  }%%
 }
 
 template <class HTTPMessageType>
 bool HTTPMessage<HTTPMessageType>::is_finalized() const {
   debug_assert_gt(buffer.size(), 4);
 
-  return strncmp
-         (
+  return strncmp(
            static_cast<char*>(buffer) + buffer.size() - 4,
            "\r\n\r\n",
            4
-         )
+       )
          == 0;
 }
 
@@ -231,89 +228,16 @@ HTTPMessage<HTTPMessageType>::operator Buffer& () {
 template <class HTTPMessageType>
 HTTPMessageType&
 HTTPMessage<HTTPMessageType>::
-set_field
-(
-  const char* name,
-  const char* value
-) {
-  return set_field(name, strlen(name), value, strlen(value));
-}
-
-
-template <class HTTPMessageType>
-HTTPMessageType&
-HTTPMessage<HTTPMessageType>::
-set_field
-(
-  const char* name,
-  const iovec& value
-) {
-  return set_field
-         (
-           name,
-           strlen(name),
-           static_cast<char*>(value.iov_base),
-           value.iov_len
-         );
-}
-
-template <class HTTPMessageType>
-HTTPMessageType&
-HTTPMessage<HTTPMessageType>::
-set_field
-(
-  const string& name,
-  const string& value
-) {
-  return set_field(name.data(), name.size(), value.data(), value.size());
-}
-
-template <class HTTPMessageType>
-HTTPMessageType&
-HTTPMessage<HTTPMessageType>::set_field
-(
-  const char* name,
-  const char* value,
-  size_t value_len
-) {
-  return set_field(name, strlen(name), value, value_len);
-}
-
-template <class HTTPMessageType>
-HTTPMessageType&
-HTTPMessage<HTTPMessageType>::set_field
-(
+set_field(
   const char* name,
   size_t name_len,
-  const char* value,
-  size_t value_len
-) {
-  debug_assert_gt(fields_offset, 0);
-  debug_assert_gt(name_len, 0);
-  debug_assert_gt(value_len, 0);
-
-  if (!is_finalized()) {
-    buffer.put(name, name_len);
-    buffer.put(": ", 2);
-    buffer.put(value, value_len);
-    buffer.put("\r\n");
-  }
-
-  return static_cast<HTTPMessageType&>(*this);
-}
-
-template <class HTTPMessageType>
-HTTPMessageType&
-HTTPMessage<HTTPMessageType>::set_field
-(
-  const char* name,
   const DateTime& value
 ) {
-  static const char* HTTPWeekDays[]
-  = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
+  static const char* HTTPWeekDays[] = {
+    "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+  };
 
-  static const char* HTTPMonths[]
-  = {
+  static const char* HTTPMonths[] = {
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
   };
@@ -338,7 +262,7 @@ HTTPMessage<HTTPMessageType>::set_field
       utc_system_time.wHour,
       utc_system_time.wMinute,
       utc_system_time.wSecond
-    );
+  );
 #else
   tm utc_tm = value.as_utc_tm();
 
@@ -355,18 +279,18 @@ HTTPMessage<HTTPMessageType>::set_field
       utc_tm.tm_hour,
       utc_tm.tm_min,
       utc_tm.tm_sec
-    );
+  );
 #endif
 
-  return set_field(name, date, date_len);
+  return set_field(name, name_len, date, date_len);
 }
 
 template <class HTTPMessageType>
 HTTPMessageType&
 HTTPMessage<HTTPMessageType>::
-set_field
-(
+set_field(
   const char* name,
+  size_t name_len,
   size_t value
 ) {
   char value_str[64];
@@ -378,7 +302,30 @@ set_field
   value_str_len = snprintf(value_str, 64, "%zu", value);
 #endif
 
-  return set_field(name, value_str, value_str_len);
+  return set_field(name, name_len, value_str, value_str_len);
+}
+
+template <class HTTPMessageType>
+HTTPMessageType&
+HTTPMessage<HTTPMessageType>::
+set_field(
+  const char* name,
+  size_t name_len,
+  const void* value,
+  size_t value_len
+) {
+  debug_assert_gt(fields_offset, 0);
+  debug_assert_gt(name_len, 0);
+  debug_assert_gt(value_len, 0);
+
+  if (!is_finalized()) {
+    buffer.put(name, name_len);
+    buffer.put(": ", 2);
+    buffer.put(value, value_len);
+    buffer.put("\r\n");
+  }
+
+  return static_cast<HTTPMessageType&>(*this);
 }
 
 template class HTTPMessage<HTTPRequest>;
@@ -387,6 +334,6 @@ template class HTTPMessage<HTTPResponse>;
 }
 
 #ifdef _WIN32
-#pragma warning( pop )
+#pragma warning(pop)
 #endif
 //

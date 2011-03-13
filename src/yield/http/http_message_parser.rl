@@ -37,8 +37,8 @@
 
 
 #ifdef _WIN32
-#pragma warning( push )
-#pragma warning( disable: 4702 )
+#pragma warning(push)
+#pragma warning(disable: 4702)
 #endif
 
 
@@ -70,7 +70,7 @@ bool HTTPMessageParser::parse_body(size_t content_length, void*& body) {
     content_length == 0
     ||
     content_length == HTTPRequest::CONTENT_LENGTH_CHUNKED
-  ) {
+ ) {
     body = NULL;
     return true;
   } else if (static_cast<size_t>(eof - p) >= content_length) {
@@ -148,30 +148,30 @@ HTTPMessageParser::parse_fields
           field_name.iov_len == 14
           &&
           (
-            memcmp( field_name.iov_base, "Content-Length", 14 ) == 0
+            memcmp(field_name.iov_base, "Content-Length", 14) == 0
             ||
-            memcmp( field_name.iov_base, "Content-length", 14 ) == 0
-          )
-        ) {
-          char* nptr = static_cast<char*>( field_value.iov_base );
+            memcmp(field_name.iov_base, "Content-length", 14) == 0
+         )
+       ) {
+          char* nptr = static_cast<char*>(field_value.iov_base);
           char* endptr = nptr + field_value.iov_len;
-          content_length = static_cast<size_t>( strtol( nptr, &endptr, 10 ) );
+          content_length = static_cast<size_t>(strtol(nptr, &endptr, 10));
         }
         else if
         (
           field_name.iov_len == 17
           &&
           (
-            memcmp( field_name.iov_base, "Transfer-Encoding", 17 ) == 0
+            memcmp(field_name.iov_base, "Transfer-Encoding", 17) == 0
             ||
-            memcmp( field_name.iov_base, "Transfer-encoding", 17 ) == 0
-          )
+            memcmp(field_name.iov_base, "Transfer-encoding", 17) == 0
+         )
           &&
-          memcmp( field_value.iov_base, "chunked", 7 ) == 0
-        )
+          memcmp(field_value.iov_base, "chunked", 7) == 0
+       )
           content_length = HTTPRequest::CONTENT_LENGTH_CHUNKED;
       }
-    )* crlf
+   )* crlf
     @{ fbreak; }
     $err{ return false; };
 
@@ -186,6 +186,6 @@ HTTPMessageParser::parse_fields
 }
 
 #ifdef _WIN32
-#pragma warning( pop )
+#pragma warning(pop)
 #endif
 //

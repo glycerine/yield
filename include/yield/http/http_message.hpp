@@ -52,50 +52,169 @@ public:
     return content_length;
   }
 
+public:
   DateTime get_date_field(const char* name = "Date") const;
 
-  bool get_field(const char* name, OUT iovec& value) const;
+  string get_field(const char* name, const char* default_value = "") const {
+    iovec value_iov;
+    if (get_field(name, value_iov)) {
+      return string(
+               static_cast<char*>(value_iov.iov_base),
+               value_iov.iov_len
+             );
+    } else
+      return default_value;
+  }
 
-  string get_field(const char* name, const char* default_val = "") const;
+  bool get_field(const char* name, OUT iovec& value) const {
+    return get_field(name, strlen(name), value);
+  }
 
+  bool get_field(const char* name, size_t name_len, OUT iovec& value) const;
+
+  void get_fields(OUT vector<pair<iovec, iovec> >& fields) const;
+
+public:
   float get_http_version() const {
     return http_version;
   }
 
-  bool has_field(const char* name) const;
+public:
+  bool has_field(const char* name) const {
+    return has_field(name, strlen(name));
+  }
 
+  bool has_field(const char* name, size_t name_len) const {
+    iovec value;
+    return get_field(name, name_len, value);
+  }
+
+public:
   operator Buffer& ();
 
+public:
   string operator[](const char* name) {
     return get_field(name);
   }
 
-  HTTPMessageType& set_field(const char* name, const char* value);
-  HTTPMessageType& set_field(const string& name, const string& value);
-  HTTPMessageType& set_field(const char* name, const iovec& value);
-  HTTPMessageType& set_field(const char* name, const DateTime& value);
-  HTTPMessageType& set_field(const char* name, size_t value);
+public:
+  // set_field(..., const char* value)
+  HTTPMessageType& set_field(const char* name, const char* value) {
+    return set_field(name, strlen(name), value);
+  }
+
+  HTTPMessageType& set_field(const string& name, const char* value) {
+    return set_field(name.data(), name.size(), value);
+  }
 
   HTTPMessageType&
-  set_field
-  (
-    const char* name,
-    const char* value,
-    size_t value_len
-  );
-
-  HTTPMessageType&
-  set_field
-  (
+  set_field(
     const char* name,
     size_t name_len,
-    const char* value,
+    const char* value
+  ) {
+    return set_field(name, name_len, value, strlen(value));
+  }
+
+  // set_field(..., const iovec& value)
+  HTTPMessageType& set_field(const char* name, const iovec& value) {
+    return set_field(name, strlen(name), value);
+  }
+
+  HTTPMessageType& set_field(const string& name, const iovec& value) {
+    return set_field(name.data(), name.size(), value);
+  }
+
+  HTTPMessageType&
+  set_field(
+    const char* name,
+    size_t name_len,
+    const iovec& value
+  ) {
+    return set_field(
+             name,
+             static_cast<char*>(value.iov_base),
+             value.iov_len
+           );
+  }
+
+  // set_field(..., const string& value)
+  HTTPMessageType&
+  set_field(
+    const char* name,
+    const string& value
+  ) {
+    return set_field(name, strlen(name), value);
+  }
+
+  HTTPMessageType& set_field(const string& name, const string& value) {
+    return set_field(name.data(), name.size(), value);
+  }
+
+  HTTPMessageType&
+  set_field(
+    const char* name,
+    size_t name_len,
+    const string& value
+  ) {
+    return set_field(name, name_len, value.data(), value.size());
+  }
+
+  // set_field(..., size_t value)
+  HTTPMessageType& set_field(const char* name, size_t value) {
+    return set_field(name, strlen(name), value);
+  }
+
+  HTTPMessageType& set_field(const string& name, size_t value) {
+    return set_field(name.data(), name.size(), value);
+  }
+
+  HTTPMessageType& set_field(const char* name, size_t name_len, size_t value);
+
+  // set_field(..., const DateTime& value)
+  HTTPMessageType& set_field(const char* name, const DateTime& value) {
+    return set_field(name, strlen(name), value);
+  }
+
+  HTTPMessageType& set_field(const string& name, const DateTime& value) {
+    return set_field(name.data(), name.size(), value);
+  }
+
+  HTTPMessageType&
+  set_field(
+    const char* name,
+    size_t name_len,
+    const DateTime& value
+  );
+
+  // set_field(..., const void* value, size_t value_len)
+  HTTPMessageType&
+  set_field(
+    const char* name,
+    const void* value,
+    size_t value_len
+  ) {
+    return set_field(name, strlen(name), value, value_len);
+  }
+
+  HTTPMessageType& set_field(
+    const string& name,
+    const void* value,
+    size_t value_len
+  ) {
+    return set_field(name.data(), name.size(), value, value_len);
+  }
+
+  HTTPMessageType&
+  set_field(
+    const char* name,
+    size_t name_len,
+    const void* value,
     size_t value_len
   );
 
 protected:
-  HTTPMessage
-  (
+  HTTPMessage(
     void* body,
     Buffer& buffer,
     size_t content_length,
@@ -103,8 +222,7 @@ protected:
     float http_version
   );
 
-  HTTPMessage
-  (
+  HTTPMessage(
     YO_NEW_REF Buffer* body,
     float http_version
   );
@@ -112,9 +230,11 @@ protected:
   virtual ~HTTPMessage();
 
   void finalize();
+
   Buffer& get_buffer() {
     return buffer;
   }
+
   bool is_finalized() const;
   void mark_fields_offset();
 

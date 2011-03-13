@@ -32,12 +32,12 @@
   machine date;
   alphtype unsigned char;
 
-  hour = digit{2} >{ hour = atoi( p ); };
-  minute = digit{2} >{ minute = atoi( p ); };
-  second = digit{2} >{ second = atoi( p ); };
+  hour = digit{2} >{ hour = atoi(p); };
+  minute = digit{2} >{ minute = atoi(p); };
+  second = digit{2} >{ second = atoi(p); };
   time = hour ':' minute ':' second;
-  day1 = digit >{ day = atoi( p ); };
-  day2 = digit{2} >{ day = atoi( p ); };
+  day1 = digit >{ day = atoi(p); };
+  day2 = digit{2} >{ day = atoi(p); };
   wkday = "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" | "Sun";
   weekday = "Monday" | "Tuesday" | "Wednesday" | "Thursday" |
             "Friday" | "Saturday" | "Sunday";
@@ -45,7 +45,7 @@
           "Sep" | "Oct" | "Nov" | "Dec"
           %
           {
-            switch ( *( p - 1 ) )
+            switch (*(p - 1))
             {
               case 'b': month = 2; break;
               case 'c': month = 12; break;
@@ -53,7 +53,7 @@
               case 'g': month = 8; break;
               case 'n':
               {
-                switch ( ( *p - 2 ) )
+                switch ((*p - 2))
                 {
                   case 'a': month = 1; break;
                   case 'u': month = 6; break;
@@ -63,7 +63,7 @@
               case 'p': month = 9; break;
               case 'r':
               {
-                switch ( *( p - 2 ) )
+                switch (*(p - 2))
                 {
                   case 'a': month = 3; break;
                   case 'p': month = 4; break;
@@ -75,10 +75,10 @@
               case 'y': month = 5; break;
             }
           };
-  year2 = digit{2} >{ year = atoi( p ); year += ( year < 50 ? 2000 : 1900 ); };
-  year4 = digit{4} >{ year = atoi( p ); };
+  year2 = digit{2} >{ year = atoi(p); year += (year < 50 ? 2000 : 1900); };
+  year4 = digit{4} >{ year = atoi(p); };
   rfc1123_date = wkday ", " day2 ' ' month ' ' year4 ' ' time " GMT";
   rfc850_date  = weekday ", " day2 '-' month '-' year2 ' ' time " GMT";
-  asctime = wkday ' ' month ' ' ( day2 | ( ' ' day1 ) ) ' ' time ' ' year4;
+  asctime = wkday ' ' month ' ' (day2 | (' ' day1)) ' ' time ' ' year4;
   date = rfc1123_date | rfc850_date | asctime;
 }%%

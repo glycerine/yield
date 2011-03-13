@@ -46,8 +46,7 @@ HTTPRequest::HTTPRequest(
   Method method,
   const yield::uri::URI& uri
 )
-  : HTTPMessage<HTTPRequest>
-  (
+  : HTTPMessage<HTTPRequest>(
     body,
     buffer,
     content_length,
@@ -133,40 +132,40 @@ HTTPRequest::HTTPRequest(
 
   mark_fields_offset();
 
-  iovec uri_host;
-  uri.get_host(uri_host);
-  if (uri.get_port() == 80)
-    set_field("Host", uri_host);
-  else {
-    const char* uri_port_p
-    = static_cast<char*>(uri_host.iov_base) + uri_host.iov_len;
-    if
-    (
-      uri_port_p >= static_cast<char*>(uri_path.iov_base) - 6
-      &&
-      uri_port_p < uri_path.iov_base
-      &&
-      *uri_port_p == ':'
-    ) {
-      const char* uri_port_ps = uri_port_p;
-      uri_port_p++;
-      while (uri_port_p < uri_path.iov_base && isdigit(*uri_port_p))
+  if (uri.has_host()) {
+    iovec uri_host;
+    uri.get_host(uri_host);
+    if (uri.get_port() == 80)
+      set_field("Host", 4, uri_host);
+    else {
+      const char* uri_port_p
+      = static_cast<char*>(uri_host.iov_base) + uri_host.iov_len;
+      if(
+        uri_port_p >= static_cast<char*>(uri_path.iov_base) - 6
+        &&
+        uri_port_p < uri_path.iov_base
+        &&
+        *uri_port_p == ':'
+      ) {
+        const char* uri_port_ps = uri_port_p;
         uri_port_p++;
-      uri_host.iov_len += uri_port_p - uri_port_ps;
+        while (uri_port_p < uri_path.iov_base && isdigit(*uri_port_p))
+          uri_port_p++;
+        uri_host.iov_len += uri_port_p - uri_port_ps;
 
-      set_field("Host", uri_host);
-    } else {
-      std::ostringstream host;
-      host.write
-      (
-        static_cast<char*>(uri_host.iov_base),
-        uri_host.iov_len
-      );
-      host << ':';
-      host << uri.get_port();
+        set_field("Host", 4, uri_host);
+      } else {
+        std::ostringstream host;
+        host.write(
+          static_cast<char*>(uri_host.iov_base),
+          uri_host.iov_len
+        );
+        host << ':';
+        host << uri.get_port();
 
-      set_field("Host", host.str());
-    }
+        set_field("Host", 4, host.str());
+      }
+      }
   }
 }
 

@@ -29,8 +29,8 @@
 
 from cStringIO import StringIO
 from hashlib import md5
-from os import sep as os_sep
-from os.path import split, splitext
+from os.path import exists, join as path_join, sep as os_sep, split as path_split, splitext
+import subprocess
 from time import gmtime
 
 from yutil import bstrip, \
@@ -226,7 +226,19 @@ class SourceFile:
             new_file = open(self.get_path(), "wb")
             new_file.write("\n".join(lines))
             new_file.close()
-            print "wrote", self.get_path()
+            printed_wrote = False
+
+            if self.get_language() == "cpp":
+                astylerc_path = path_join("etc", "astylerc")
+                if exists(astylerc_path):
+                    try:
+                        subprocess.call(["AStyle", "--options=" + astylerc_path, self.get_path()])
+                        printed_wrote = True
+                    except:
+                        pass
+
+            if not printed_wrote:
+                print "wrote", self.get_path()
 
     def get_combined_repr(self):
         comment_prefix = self.__get_comment_prefix()
@@ -286,7 +298,7 @@ class SourceFile:
            if base_dir_name_pos != -1:
                return self.get_path()[base_dir_name_pos + len(base_dir_name) + 1:].\
                       replace(os_sep, '/')
-        return split(self.get_path())[1]
+        return path_split(self.get_path())[1]
 
     def get_language(self):
         return self.__language

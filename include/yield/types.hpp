@@ -32,8 +32,10 @@
 
 #include "yield/config.hpp"
 
+
 #define __STDC_LIMIT_MACROS 1
 #include <stdint.h>
+
 
 #ifndef _WIN32
 #include <sys/types.h>
@@ -64,6 +66,9 @@ using std::memcpy;
 #include <string>
 using std::string;
 using std::wstring;
+#include <utility>
+using std::make_pair;
+using std::pair;
 #include <vector>
 using std::vector;
 
@@ -91,6 +96,14 @@ using std::vector;
 #endif
 
 
+#ifdef _WIN32
+struct iovec {
+  size_t iov_len;
+  void* iov_base;
+};
+#endif
+
+
 namespace yield {
 #if defined(_WIN64)
 typedef __int64 atomic_t;
@@ -106,13 +119,6 @@ const static fd_t INVALID_FD = reinterpret_cast<fd_t>(-1);
 #else
 typedef int fd_t;
 const static fd_t INVALID_FD = -1;
-#endif
-
-#ifdef _WIN32
-struct iovec {
-  size_t iov_len;
-  void* iov_base;
-};
 #endif
 
 #if defined(_WIN64)
@@ -146,10 +152,10 @@ inline fd_t socket_to_fd(socket_t socket_) {
 #endif
 }
 
+
 #ifndef _WIN32
 inline void
-memcpy_s
-(
+memcpy_s(
   void* dest,
   size_t dest_len,
   const void* src,

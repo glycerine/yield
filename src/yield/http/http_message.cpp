@@ -66,8 +66,8 @@
 
 #ifdef _WIN32
 #include <Windows.h> // For SYSTEMTIME
-#pragma warning( push )
-#pragma warning( disable: 4702 )
+#pragma warning(push)
+#pragma warning(disable:4702)
 #else
 #include <stdio.h> // For snprintf
 #include <stdlib.h> // For atoi
@@ -76,8 +76,8 @@
 namespace yield {
 namespace http {
 template <class HTTPMessageType>
-HTTPMessage<HTTPMessageType>::HTTPMessage
-(
+HTTPMessage<HTTPMessageType>::
+HTTPMessage(
   void* body,
   Buffer& buffer,
   size_t content_length,
@@ -92,8 +92,8 @@ HTTPMessage<HTTPMessageType>::HTTPMessage
 { }
 
 template <class HTTPMessageType>
-HTTPMessage<HTTPMessageType>::HTTPMessage
-(
+HTTPMessage<HTTPMessageType>::
+HTTPMessage(
   YO_NEW_REF Buffer* body,
   float http_version
 )
@@ -119,18 +119,13 @@ HTTPMessage<HTTPMessageType>::~HTTPMessage() {
 template <class HTTPMessageType>
 void HTTPMessage<HTTPMessageType>::finalize() {
   if (!is_finalized()) {
-    set_field("Content-Length", content_length);
+    set_field("Content-Length", 14, content_length);
     buffer.put("\r\n", 2);
   }
 }
 
 template <class HTTPMessageType>
-DateTime
-HTTPMessage<HTTPMessageType>::
-get_date_field
-(
-  const char* name
-) const {
+DateTime HTTPMessage<HTTPMessageType>::get_date_field(const char* name) const {
   iovec value;
   if (get_field(name, value)) {
     int cs;
@@ -539,7 +534,7 @@ _match:
         }
         break;
         case 8:
-          /* #line 120 "src\\yield\\http\\http_message.rl" */
+          /* #line 115 "src\\yield\\http\\http_message.rl" */
         {
           return DateTime::INVALID_DATE_TIME;
         }
@@ -559,7 +554,7 @@ _again:
         while (__nacts-- > 0) {
           switch (*__acts++) {
           case 8:
-            /* #line 120 "src\\yield\\http\\http_message.rl" */
+            /* #line 115 "src\\yield\\http\\http_message.rl" */
           {
             return DateTime::INVALID_DATE_TIME;
           }
@@ -573,7 +568,7 @@ _out:
       {}
     }
 
-    /* #line 125 "src\\yield\\http\\http_message.rl" */
+    /* #line 120 "src\\yield\\http\\http_message.rl" */
 
 
     if (cs != date_parser_error) {
@@ -588,93 +583,91 @@ _out:
 
 template <class HTTPMessageType>
 bool
-HTTPMessage<HTTPMessageType>::get_field
-(
+HTTPMessage<HTTPMessageType>::
+get_field(
   const char* name,
+  size_t name_len,
   OUT iovec& value
 ) const {
   int cs;
   const char* eof = static_cast<char*>(buffer) + buffer.size();
   char* p = static_cast<char*>(buffer) + fields_offset;
+  const char* pe = eof;
 
-  iovec field_name = { 0 }, field_value = { 0 };
-  size_t name_len = strlen(name);
+  iovec field_name = {0}, field_value = {0};
 
+  // Don't look for the trailing CRLF before the body,
+  // since it may not be present yet.
 
   /* #line 380 "src\\yield\\http\\http_message.cpp" */
   static const char _field_parser_actions[] = {
     0, 1, 0, 1, 1, 1, 2, 1,
-    3, 1, 4, 1, 5, 1, 6, 2,
-    2, 3, 2, 4, 0
+    3, 1, 4, 2, 4, 0
   };
 
   static const char _field_parser_key_offsets[] = {
-    0, 0, 15, 16, 31, 33, 34, 35,
-    50
+    0, 0, 15, 19, 24, 25, 29, 43
   };
 
   static const unsigned char _field_parser_trans_keys[] = {
-    13u, 124u, 126u, 33u, 38u, 42u, 43u, 45u,
-    46u, 48u, 57u, 65u, 90u, 94u, 122u, 10u,
     58u, 124u, 126u, 33u, 38u, 42u, 43u, 45u,
-    46u, 48u, 57u, 65u, 90u, 94u, 122u, 13u,
-    32u, 13u, 10u, 13u, 124u, 126u, 33u, 38u,
-    42u, 43u, 45u, 46u, 48u, 57u, 65u, 90u,
-    94u, 122u, 0
+    46u, 48u, 57u, 65u, 90u, 94u, 122u, 32u,
+    127u, 0u, 31u, 13u, 32u, 127u, 0u, 31u,
+    10u, 13u, 127u, 0u, 31u, 124u, 126u, 33u,
+    38u, 42u, 43u, 45u, 46u, 48u, 57u, 65u,
+    90u, 94u, 122u, 124u, 126u, 33u, 38u, 42u,
+    43u, 45u, 46u, 48u, 57u, 65u, 90u, 94u,
+    122u, 0
   };
 
   static const char _field_parser_single_lengths[] = {
-    0, 3, 1, 3, 2, 1, 1, 3,
-    0
+    0, 3, 2, 3, 1, 2, 2, 2
   };
 
   static const char _field_parser_range_lengths[] = {
-    0, 6, 0, 6, 0, 0, 0, 6,
-    0
+    0, 6, 1, 1, 0, 1, 6, 6
   };
 
   static const char _field_parser_index_offsets[] = {
-    0, 0, 10, 12, 22, 25, 27, 29,
-    39
+    0, 0, 10, 14, 19, 21, 25, 34
   };
 
   static const char _field_parser_indicies[] = {
-    1, 2, 2, 2, 2, 2, 2, 2,
-    2, 0, 3, 0, 6, 4, 4, 4,
-    4, 4, 4, 4, 4, 5, 8, 9,
-    7, 11, 10, 12, 5, 13, 14, 14,
-    14, 14, 14, 14, 14, 14, 0, 0,
-    0
+    2, 0, 0, 0, 0, 0, 0, 0,
+    0, 1, 3, 1, 1, 4, 5, 3,
+    1, 1, 4, 6, 1, 5, 1, 1,
+    7, 8, 8, 8, 8, 8, 8, 8,
+    8, 1, 9, 9, 9, 9, 9, 9,
+    9, 9, 1, 0
   };
 
   static const char _field_parser_trans_targs[] = {
-    0, 2, 3, 8, 3, 0, 4, 5,
-    6, 4, 5, 6, 7, 2, 3
+    1, 0, 2, 3, 5, 4, 7, 5,
+    1, 1
   };
 
   static const char _field_parser_trans_actions[] = {
-    13, 0, 1, 11, 0, 0, 3, 5,
-    15, 5, 0, 7, 0, 9, 18
+    0, 0, 3, 5, 5, 7, 0, 0,
+    1, 11
   };
 
   static const char _field_parser_eof_actions[] = {
-    0, 13, 13, 0, 0, 0, 0, 13,
-    0
+    0, 0, 0, 0, 0, 0, 0, 9
   };
 
-  static const int field_parser_start = 1;
-  static const int field_parser_first_final = 8;
+  static const int field_parser_start = 6;
+  static const int field_parser_first_final = 6;
   static const int field_parser_error = 0;
 
-  static const int field_parser_en_main = 1;
+  static const int field_parser_en_main = 6;
 
 
-  /* #line 446 "src\\yield\\http\\http_message.cpp" */
+  /* #line 441 "src\\yield\\http\\http_message.cpp" */
   {
     cs = field_parser_start;
   }
 
-  /* #line 449 "src\\yield\\http\\http_message.cpp" */
+  /* #line 444 "src\\yield\\http\\http_message.cpp" */
   {
     int _klen;
     unsigned int _trans;
@@ -682,6 +675,8 @@ HTTPMessage<HTTPMessageType>::get_field
     unsigned int _nacts;
     const unsigned char* _keys;
 
+    if (p == pe)
+      goto _test_eof;
     if (cs == 0)
       goto _out;
 _resume:
@@ -745,34 +740,33 @@ _match:
     while (_nacts-- > 0) {
       switch (*_acts++) {
       case 0:
-        /* #line 30 "src\\yield\\http\\field.rl" */
+        /* #line 31 "src\\yield\\http\\field.rl" */
       {
         field_name.iov_base = p;
       }
       break;
       case 1:
-        /* #line 30 "src\\yield\\http\\field.rl" */
+        /* #line 31 "src\\yield\\http\\field.rl" */
       {
         field_name.iov_len = p - static_cast<char*>(field_name.iov_base);
       }
       break;
       case 2:
-        /* #line 30 "src\\yield\\http\\field.rl" */
+        /* #line 31 "src\\yield\\http\\field.rl" */
       {
         field_value.iov_base = p;
       }
       break;
       case 3:
-        /* #line 30 "src\\yield\\http\\field.rl" */
+        /* #line 31 "src\\yield\\http\\field.rl" */
       {
         field_value.iov_len = p - static_cast<char*>(field_value.iov_base);
       }
       break;
       case 4:
-        /* #line 159 "src\\yield\\http\\http_message.rl" */
+        /* #line 154 "src\\yield\\http\\http_message.rl" */
       {
-        if
-        (
+        if (
           field_name.iov_len == name_len
           &&
           memcmp(field_name.iov_base, name, name_len) == 0
@@ -782,41 +776,36 @@ _match:
         }
       }
       break;
-      case 5:
-        /* #line 172 "src\\yield\\http\\http_message.rl" */
-      { {
-          p++;
-          goto _out;
-        }
-      }
-      break;
-      case 6:
-        /* #line 173 "src\\yield\\http\\http_message.rl" */
-      {
-        return false;
-      }
-      break;
-      /* #line 552 "src\\yield\\http\\http_message.cpp" */
+      /* #line 541 "src\\yield\\http\\http_message.cpp" */
       }
     }
 
 _again:
     if (cs == 0)
       goto _out;
-    p += 1;
-    goto _resume;
+    if (++p != pe)
+      goto _resume;
+_test_eof:
+    {}
     if (p == eof) {
       const char* __acts = _field_parser_actions + _field_parser_eof_actions[cs];
       unsigned int __nacts = (unsigned int) * __acts++;
       while (__nacts-- > 0) {
         switch (*__acts++) {
-        case 6:
-          /* #line 173 "src\\yield\\http\\http_message.rl" */
+        case 4:
+          /* #line 154 "src\\yield\\http\\http_message.rl" */
         {
-          return false;
+          if (
+            field_name.iov_len == name_len
+            &&
+            memcmp(field_name.iov_base, name, name_len) == 0
+          ) {
+            value = field_value;
+            return true;
+          }
         }
         break;
-        /* #line 569 "src\\yield\\http\\http_message.cpp" */
+        /* #line 568 "src\\yield\\http\\http_message.cpp" */
         }
       }
     }
@@ -825,42 +814,267 @@ _out:
     {}
   }
 
-  /* #line 178 "src\\yield\\http\\http_message.rl" */
+  /* #line 169 "src\\yield\\http\\http_message.rl" */
 
 
-  return false;
-}
-
-template <class HTTPMessageType>
-string
-HTTPMessage<HTTPMessageType>::get_field
-(
-  const char* name,
-  const char* default_value
-) const {
-  iovec value_iov;
-  if (get_field(name, value_iov)) {
-    return string
-           (
-             static_cast<char*>(value_iov.iov_base),
-             value_iov.iov_len
-           );
+  if (
+    field_name.iov_len == name_len
+    &&
+    memcmp(field_name.iov_base, name, name_len) == 0
+  ) {
+    value = field_value;
+    return true;
   } else
-    return default_value;
+    return false;
 }
 
 template <class HTTPMessageType>
-bool HTTPMessage<HTTPMessageType>::has_field(const char* name) const {
-  iovec value;
-  return get_field(name, value);
+void
+HTTPMessage<HTTPMessageType>::
+get_fields(
+  OUT vector<pair<iovec, iovec> >& fields
+) const {
+  int cs;
+  const char* eof = static_cast<char*>(buffer) + buffer.size();
+  char* p = static_cast<char*>(buffer) + fields_offset;
+  const char* pe = eof;
+
+  iovec field_name = {0}, field_value = {0};
+
+  // Don't look for the trailing CRLF before the body,
+  // since it may not be present yet.
+
+  /* #line 574 "src\\yield\\http\\http_message.cpp" */
+  static const char _fields_parser_actions[] = {
+    0, 1, 0, 1, 1, 1, 2, 1,
+    3, 1, 4, 1, 5, 1, 6, 2,
+    4, 0
+  };
+
+  static const char _fields_parser_key_offsets[] = {
+    0, 0, 15, 19, 24, 25, 29, 43
+  };
+
+  static const unsigned char _fields_parser_trans_keys[] = {
+    58u, 124u, 126u, 33u, 38u, 42u, 43u, 45u,
+    46u, 48u, 57u, 65u, 90u, 94u, 122u, 32u,
+    127u, 0u, 31u, 13u, 32u, 127u, 0u, 31u,
+    10u, 13u, 127u, 0u, 31u, 124u, 126u, 33u,
+    38u, 42u, 43u, 45u, 46u, 48u, 57u, 65u,
+    90u, 94u, 122u, 124u, 126u, 33u, 38u, 42u,
+    43u, 45u, 46u, 48u, 57u, 65u, 90u, 94u,
+    122u, 0
+  };
+
+  static const char _fields_parser_single_lengths[] = {
+    0, 3, 2, 3, 1, 2, 2, 2
+  };
+
+  static const char _fields_parser_range_lengths[] = {
+    0, 6, 1, 1, 0, 1, 6, 6
+  };
+
+  static const char _fields_parser_index_offsets[] = {
+    0, 0, 10, 14, 19, 21, 25, 34
+  };
+
+  static const char _fields_parser_indicies[] = {
+    2, 1, 1, 1, 1, 1, 1, 1,
+    1, 0, 3, 0, 0, 4, 5, 3,
+    0, 0, 4, 6, 0, 5, 0, 0,
+    7, 8, 8, 8, 8, 8, 8, 8,
+    8, 0, 9, 9, 9, 9, 9, 9,
+    9, 9, 0, 0
+  };
+
+  static const char _fields_parser_trans_targs[] = {
+    0, 1, 2, 3, 5, 4, 7, 5,
+    1, 1
+  };
+
+  static const char _fields_parser_trans_actions[] = {
+    13, 0, 3, 5, 5, 7, 11, 0,
+    1, 15
+  };
+
+  static const char _fields_parser_eof_actions[] = {
+    0, 13, 13, 13, 13, 13, 0, 9
+  };
+
+  static const int fields_parser_start = 6;
+  static const int fields_parser_first_final = 6;
+  static const int fields_parser_error = 0;
+
+  static const int fields_parser_en_main = 6;
+
+
+  /* #line 636 "src\\yield\\http\\http_message.cpp" */
+  {
+    cs = fields_parser_start;
+  }
+
+  /* #line 639 "src\\yield\\http\\http_message.cpp" */
+  {
+    int _klen;
+    unsigned int _trans;
+    const char* _acts;
+    unsigned int _nacts;
+    const unsigned char* _keys;
+
+    if (p == pe)
+      goto _test_eof;
+    if (cs == 0)
+      goto _out;
+_resume:
+    _keys = _fields_parser_trans_keys + _fields_parser_key_offsets[cs];
+    _trans = _fields_parser_index_offsets[cs];
+
+    _klen = _fields_parser_single_lengths[cs];
+    if (_klen > 0) {
+      const unsigned char* _lower = _keys;
+      const unsigned char* _mid;
+      const unsigned char* _upper = _keys + _klen - 1;
+      while (1) {
+        if (_upper < _lower)
+          break;
+
+        _mid = _lower + ((_upper - _lower) >> 1);
+        if ((*p) < *_mid)
+          _upper = _mid - 1;
+        else if ((*p) > *_mid)
+          _lower = _mid + 1;
+        else {
+          _trans += (_mid - _keys);
+          goto _match;
+        }
+      }
+      _keys += _klen;
+      _trans += _klen;
+    }
+
+    _klen = _fields_parser_range_lengths[cs];
+    if (_klen > 0) {
+      const unsigned char* _lower = _keys;
+      const unsigned char* _mid;
+      const unsigned char* _upper = _keys + (_klen << 1) - 2;
+      while (1) {
+        if (_upper < _lower)
+          break;
+
+        _mid = _lower + (((_upper - _lower) >> 1) & ~1);
+        if ((*p) < _mid[0])
+          _upper = _mid - 2;
+        else if ((*p) > _mid[1])
+          _lower = _mid + 2;
+        else {
+          _trans += ((_mid - _keys) >> 1);
+          goto _match;
+        }
+      }
+      _trans += _klen;
+    }
+
+_match:
+    _trans = _fields_parser_indicies[_trans];
+    cs = _fields_parser_trans_targs[_trans];
+
+    if (_fields_parser_trans_actions[_trans] == 0)
+      goto _again;
+
+    _acts = _fields_parser_actions + _fields_parser_trans_actions[_trans];
+    _nacts = (unsigned int) * _acts++;
+    while (_nacts-- > 0) {
+      switch (*_acts++) {
+      case 0:
+        /* #line 31 "src\\yield\\http\\field.rl" */
+      {
+        field_name.iov_base = p;
+      }
+      break;
+      case 1:
+        /* #line 31 "src\\yield\\http\\field.rl" */
+      {
+        field_name.iov_len = p - static_cast<char*>(field_name.iov_base);
+      }
+      break;
+      case 2:
+        /* #line 31 "src\\yield\\http\\field.rl" */
+      {
+        field_value.iov_base = p;
+      }
+      break;
+      case 3:
+        /* #line 31 "src\\yield\\http\\field.rl" */
+      {
+        field_value.iov_len = p - static_cast<char*>(field_value.iov_base);
+      }
+      break;
+      case 4:
+        /* #line 202 "src\\yield\\http\\http_message.rl" */
+      {
+        fields.push_back(make_pair(field_name, field_value));
+      }
+      break;
+      case 5:
+        /* #line 204 "src\\yield\\http\\http_message.rl" */
+      { {
+          p++;
+          goto _out;
+        }
+      }
+      break;
+      case 6:
+        /* #line 205 "src\\yield\\http\\http_message.rl" */
+      {
+        return;
+      }
+      break;
+      /* #line 733 "src\\yield\\http\\http_message.cpp" */
+      }
+    }
+
+_again:
+    if (cs == 0)
+      goto _out;
+    if (++p != pe)
+      goto _resume;
+_test_eof:
+    {}
+    if (p == eof) {
+      const char* __acts = _fields_parser_actions + _fields_parser_eof_actions[cs];
+      unsigned int __nacts = (unsigned int) * __acts++;
+      while (__nacts-- > 0) {
+        switch (*__acts++) {
+        case 4:
+          /* #line 202 "src\\yield\\http\\http_message.rl" */
+        {
+          fields.push_back(make_pair(field_name, field_value));
+        }
+        break;
+        case 6:
+          /* #line 205 "src\\yield\\http\\http_message.rl" */
+        {
+          return;
+        }
+        break;
+        /* #line 754 "src\\yield\\http\\http_message.cpp" */
+        }
+      }
+    }
+
+_out:
+    {}
+  }
+
+  /* #line 210 "src\\yield\\http\\http_message.rl" */
+
 }
 
 template <class HTTPMessageType>
 bool HTTPMessage<HTTPMessageType>::is_finalized() const {
   debug_assert_gt(buffer.size(), 4);
 
-  return strncmp
-         (
+  return strncmp(
            static_cast<char*>(buffer) + buffer.size() - 4,
            "\r\n\r\n",
            4
@@ -882,89 +1096,16 @@ HTTPMessage<HTTPMessageType>::operator Buffer& () {
 template <class HTTPMessageType>
 HTTPMessageType&
 HTTPMessage<HTTPMessageType>::
-set_field
-(
-  const char* name,
-  const char* value
-) {
-  return set_field(name, strlen(name), value, strlen(value));
-}
-
-
-template <class HTTPMessageType>
-HTTPMessageType&
-HTTPMessage<HTTPMessageType>::
-set_field
-(
-  const char* name,
-  const iovec& value
-) {
-  return set_field
-         (
-           name,
-           strlen(name),
-           static_cast<char*>(value.iov_base),
-           value.iov_len
-         );
-}
-
-template <class HTTPMessageType>
-HTTPMessageType&
-HTTPMessage<HTTPMessageType>::
-set_field
-(
-  const string& name,
-  const string& value
-) {
-  return set_field(name.data(), name.size(), value.data(), value.size());
-}
-
-template <class HTTPMessageType>
-HTTPMessageType&
-HTTPMessage<HTTPMessageType>::set_field
-(
-  const char* name,
-  const char* value,
-  size_t value_len
-) {
-  return set_field(name, strlen(name), value, value_len);
-}
-
-template <class HTTPMessageType>
-HTTPMessageType&
-HTTPMessage<HTTPMessageType>::set_field
-(
+set_field(
   const char* name,
   size_t name_len,
-  const char* value,
-  size_t value_len
-) {
-  debug_assert_gt(fields_offset, 0);
-  debug_assert_gt(name_len, 0);
-  debug_assert_gt(value_len, 0);
-
-  if (!is_finalized()) {
-    buffer.put(name, name_len);
-    buffer.put(": ", 2);
-    buffer.put(value, value_len);
-    buffer.put("\r\n");
-  }
-
-  return static_cast<HTTPMessageType&>(*this);
-}
-
-template <class HTTPMessageType>
-HTTPMessageType&
-HTTPMessage<HTTPMessageType>::set_field
-(
-  const char* name,
   const DateTime& value
 ) {
-  static const char* HTTPWeekDays[]
-  = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
+  static const char* HTTPWeekDays[] = {
+    "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+  };
 
-  static const char* HTTPMonths[]
-  = {
+  static const char* HTTPMonths[] = {
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
   };
@@ -1009,15 +1150,15 @@ HTTPMessage<HTTPMessageType>::set_field
     );
 #endif
 
-  return set_field(name, date, date_len);
+  return set_field(name, name_len, date, date_len);
 }
 
 template <class HTTPMessageType>
 HTTPMessageType&
 HTTPMessage<HTTPMessageType>::
-set_field
-(
+set_field(
   const char* name,
+  size_t name_len,
   size_t value
 ) {
   char value_str[64];
@@ -1029,7 +1170,30 @@ set_field
   value_str_len = snprintf(value_str, 64, "%zu", value);
 #endif
 
-  return set_field(name, value_str, value_str_len);
+  return set_field(name, name_len, value_str, value_str_len);
+}
+
+template <class HTTPMessageType>
+HTTPMessageType&
+HTTPMessage<HTTPMessageType>::
+set_field(
+  const char* name,
+  size_t name_len,
+  const void* value,
+  size_t value_len
+) {
+  debug_assert_gt(fields_offset, 0);
+  debug_assert_gt(name_len, 0);
+  debug_assert_gt(value_len, 0);
+
+  if (!is_finalized()) {
+    buffer.put(name, name_len);
+    buffer.put(": ", 2);
+    buffer.put(value, value_len);
+    buffer.put("\r\n");
+  }
+
+  return static_cast<HTTPMessageType&>(*this);
 }
 
 template class HTTPMessage<HTTPRequest>;
@@ -1038,6 +1202,6 @@ template class HTTPMessage<HTTPResponse>;
 }
 
 #ifdef _WIN32
-#pragma warning( pop )
+#pragma warning(pop)
 #endif
 //

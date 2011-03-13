@@ -34,8 +34,8 @@
 #include <stdlib.h> // For atof
 
 #ifdef _WIN32
-#pragma warning( push )
-#pragma warning( disable: 4702 )
+#pragma warning(push)
+#pragma warning(disable: 4702)
 #endif
 
 
@@ -71,34 +71,34 @@ Object& HTTPRequestParser::parse() {
       include uri "../uri/uri.rl";
 
       method
-        = ( "CONNECT" % { method = HTTPRequest::METHOD_CONNECT; } ) |
-          ( "COPY" % { method = HTTPRequest::METHOD_COPY; } ) |
-          ( "DELETE" % { method = HTTPRequest::METHOD_DELETE; } ) |
-          ( "GET" % { method = HTTPRequest::METHOD_GET; } ) |
-          ( "HEAD" % { method = HTTPRequest::METHOD_HEAD; } ) |
-          ( "LOCK" % { method = HTTPRequest::METHOD_LOCK; } ) |
-          ( "MKCOL" % { method = HTTPRequest::METHOD_MKCOL; } ) |
-          ( "MOVE" % { method = HTTPRequest::METHOD_MOVE; } ) |
-          ( "OPTIONS" % { method = HTTPRequest::METHOD_OPTIONS; } ) |
-          ( "PATCH" % { method = HTTPRequest::METHOD_PATCH; } ) |
-          ( "POST" % { method = HTTPRequest::METHOD_POST; } ) |
-          ( "PROPFIND" % { method = HTTPRequest::METHOD_PROPFIND; } ) |
-          ( "PROPPATCH" % { method = HTTPRequest::METHOD_PROPPATCH; } ) |
-          ( "PUT" % { method = HTTPRequest::METHOD_PUT; } ) |
-          ( "TRACE" % { method = HTTPRequest::METHOD_TRACE; } ) |
-          ( "UNLOCK" % { method = HTTPRequest::METHOD_UNLOCK; } );
+        = ("CONNECT" % { method = HTTPRequest::METHOD_CONNECT; }) |
+          ("COPY" % { method = HTTPRequest::METHOD_COPY; }) |
+          ("DELETE" % { method = HTTPRequest::METHOD_DELETE; }) |
+          ("GET" % { method = HTTPRequest::METHOD_GET; }) |
+          ("HEAD" % { method = HTTPRequest::METHOD_HEAD; }) |
+          ("LOCK" % { method = HTTPRequest::METHOD_LOCK; }) |
+          ("MKCOL" % { method = HTTPRequest::METHOD_MKCOL; }) |
+          ("MOVE" % { method = HTTPRequest::METHOD_MOVE; }) |
+          ("OPTIONS" % { method = HTTPRequest::METHOD_OPTIONS; }) |
+          ("PATCH" % { method = HTTPRequest::METHOD_PATCH; }) |
+          ("POST" % { method = HTTPRequest::METHOD_POST; }) |
+          ("PROPFIND" % { method = HTTPRequest::METHOD_PROPFIND; }) |
+          ("PROPPATCH" % { method = HTTPRequest::METHOD_PROPPATCH; }) |
+          ("PUT" % { method = HTTPRequest::METHOD_PUT; }) |
+          ("TRACE" % { method = HTTPRequest::METHOD_TRACE; }) |
+          ("UNLOCK" % { method = HTTPRequest::METHOD_UNLOCK; });
 
       request_uri =
         (
           (
             '*'
             >{ path.iov_base = p; }
-            %{ path.iov_len = p - static_cast<char*>( path.iov_base ); }
-          ) |
+            %{ path.iov_len = p - static_cast<char*>(path.iov_base); }
+         ) |
           absolute_uri |
           path_absolute |
           authority
-        );
+       );
 
       request_line = method ' ' request_uri ' ' http_version crlf;
 
@@ -121,7 +121,7 @@ Object& HTTPRequestParser::parse() {
         query,
         scheme,
         userinfo
-      );
+     );
 
       uint16_t fields_offset;
       size_t content_length;
@@ -139,7 +139,7 @@ Object& HTTPRequestParser::parse() {
                    http_version,
                    method,
                    uri
-                 );
+                );
         } else {
           Buffer* next_buffer
           = new Page(p - ps + content_length, ps, eof - ps);
@@ -168,6 +168,6 @@ Object& HTTPRequestParser::parse() {
 
 
 #ifdef _WIN32
-#pragma warning( pop )
+#pragma warning(pop)
 #endif
 //

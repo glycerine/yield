@@ -89,8 +89,7 @@ void Buffer::put(const string& buf) {
 void Buffer::put(const void* buf, size_t len) {
   reserve(size() + len);
 
-  memcpy_s
-  (
+  memcpy_s(
     static_cast<char*>(*this) + size(),
     capacity() - size(),
     buf,

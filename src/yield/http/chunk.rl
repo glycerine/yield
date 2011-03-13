@@ -27,6 +27,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+# Adapted from the ABNF in RFC 2616 section 3.6.1
 %%{
   machine chunk;
   alphtype unsigned char;
@@ -41,23 +42,23 @@
               chunk_size
                 = static_cast<size_t>
                   (
-                    strtol( chunk_size_p, &chunk_size_pe, 16 )
-                  );
+                    strtol(chunk_size_p, &chunk_size_pe, 16)
+                 );
             };
 
   chunk_ext_name = token;
   chunk_ext_val = token | quoted_string;
   chunk_extension
-    = ( ';' chunk_ext_name ( '=' chunk_ext_val )? )*;
+    = (';' chunk_ext_name ('=' chunk_ext_val)?)*;
 
   body_chunk = chunk_size chunk_extension? crlf
                (
-               ( any when { seen_chunk_size++ < chunk_size } )*
+               (any when { seen_chunk_size++ < chunk_size })*
                >{ chunk_data_p = p; }
-               )
+              )
                crlf;
 
-  last_chunk = ( '0' %{ chunk_size = 0; } ) chunk_extension? crlf
+  last_chunk = ('0' %{ chunk_size = 0; }) chunk_extension? crlf
                field :> crlf*
                crlf;
 

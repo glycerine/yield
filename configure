@@ -28,7 +28,7 @@
 assert __name__ == "__main__"
 
 from copy import copy, deepcopy
-from os import chdir, listdir, makedirs, unlink
+from os import chdir, listdir, makedirs, stat, unlink
 from os.path import abspath, \
                     dirname, \
                     exists, \
@@ -594,16 +594,6 @@ if options.format_src:
             project=project,
         )
 
-        astylerc_path = path_join(ROOT_DIR_PATH, "etc", "astylerc")
-        assert exists(astylerc_path)
-        for source_file in source_files:
-            if splitext(source_file.get_path())[1] in (".cpp", ".hpp"):
-                try:
-                    call(["AStyle", "--options=" + astylerc_path, source_file.get_path()])
-                except:
-                    traceback.print_exc()
-
-
 if options.generate_proj:
     for project_name in PROJECT_NAMES:
         for project_name_suffix, project_type in (("", "lib"), ("_test", "exe")):
@@ -687,12 +677,18 @@ if options.generate_src or options.generate_src_rl:
             )
 
         if exists(cpp_file_path):
-            args = ["ragel"]
-            args.append("-L")
-            args.extend(("-o", cpp_file_path))
-            args.append(rl_file_path)
-            call(args)
-            print "wrote", cpp_file_path
+            if options.force or stat(rl_file_path).st_mtime > stat(cpp_file_path).st_mtime:
+                args = ["ragel"]
+                args.append("-L")
+                args.extend(("-o", cpp_file_path))
+                args.append(rl_file_path)
+                call(args)
+
+                SourceFiles(cpp_file_path).format(
+                    author=AUTHOR,
+                    force=options.force,
+                    project="Yield"
+                )
 
 
 if options.generate_src or options.generate_src_test_main_cpp:
