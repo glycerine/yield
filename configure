@@ -79,7 +79,7 @@ PROJECT_REFERENCES = {
     "yield.getopt": ("yield",),
     "yield.http": ("yield.uri",),
     "yield.http.client": ("yield.http", "yield.sockets.client"),
-    "yield.http.server": ("yield.http", "yield.sockets.server"),
+    "yield.http.server": ("yield.fs", "yield.http", "yield.sockets.server"),
     "yield.i18n": ("yield",),
     "yield.marshal": ("yield",),
     "yield.marshal.json": ("yield.marshal",),
@@ -271,24 +271,51 @@ INCLUDE_FILE_PATHS = {}
 SOURCE_FILE_PATHS = {}
 
 for project_name in PROJECT_NAMES:
+    project_include_dir_path = path_join(INCLUDE_DIR_PATH, path_sep.join(project_name.split('.')))
+    project_source_dir_path = path_join(SRC_DIR_PATH, path_sep.join(project_name.split('.')))
+    project_test_dir_path = path_join(TEST_DIR_PATH, path_sep.join(project_name.split('.')))
+
     INCLUDE_FILE_PATHS[project_name] = [
-        path_join(INCLUDE_DIR_PATH, path_sep.join(project_name.split('.')), fnmatch_pattern)
+        path_join(project_include_dir_path, fnmatch_pattern)
         for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS
     ]
+
+    for platform in PLATFORMS:
+        if exists(path_join(project_include_dir_path, platform)):
+            INCLUDE_FILE_PATHS[project_name].extend([
+                path_join(project_include_dir_path, platform, fnmatch_pattern)
+                for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS
+            ])
 
     INCLUDE_FILE_PATHS[project_name + "_test"] = []
 
     SOURCE_FILE_PATHS[project_name] = [
-         path_join(SRC_DIR_PATH, path_sep.join(project_name.split('.')), fnmatch_pattern)
+         path_join(project_source_dir_path, fnmatch_pattern)
          for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
                                 SOURCE_FILE_FNMATCH_PATTERNS
     ]
 
+    for platform in PLATFORMS:
+        if exists(path_join(project_source_dir_path, platform)):
+            SOURCE_FILE_PATHS[project_name].extend([
+                path_join(project_source_dir_path, platform, fnmatch_pattern)
+                for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
+                                       SOURCE_FILE_FNMATCH_PATTERNS
+            ])
+
     SOURCE_FILE_PATHS[project_name + "_test"] = [
-        path_join(TEST_DIR_PATH, path_sep.join(project_name.split('.')), fnmatch_pattern)
+        path_join(project_test_dir_path, fnmatch_pattern)
         for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
                                SOURCE_FILE_FNMATCH_PATTERNS
     ]
+
+    for platform in PLATFORMS:
+        if exists(path_join(project_test_dir_path, platform)):
+            SOURCE_FILE_PATHS[project_name + "_test"].extend([
+                path_join(project_test_dir_path, platform, fnmatch_pattern)
+                for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
+                                       SOURCE_FILE_FNMATCH_PATTERNS
+            ])
 
     #EXCLUDE_FILE_PATHS[project_name] = [] # SOURCE_FILE_PATHS[project_name + "_test"]
     #EXCLUDE_FILE_PATHS[project_name + "_test"] = []

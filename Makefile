@@ -1,157 +1,267 @@
-all: aio aio_test clientserver clientserver_test common common_test fs fs_test getopt getopt_test http http_test i18n i18n_test marshal marshal_test poll poll_test process process_test sockets sockets_test stage stage_test thread thread_test uri uri_test uuid uuid_test
+all: yield yield.aio yield.aio_test yield.fs yield.fs.aio yield.fs.aio_test yield.fs_test yield.getopt yield.getopt_test yield.http yield.http.client yield.http.client_test yield.http.server yield.http.server_test yield.http_test yield.i18n yield.i18n_test yield.marshal yield.marshal.json yield.marshal.json_test yield.marshal.xdr yield.marshal.xdr_test yield.marshal.xml yield.marshal.xml_test yield.marshal_test yield.poll yield.poll_test yield.process yield.process_test yield.sockets yield.sockets.aio yield.sockets.aio_test yield.sockets.client yield.sockets.client_test yield.sockets.peer yield.sockets.peer_test yield.sockets.poll yield.sockets.poll_test yield.sockets.server yield.sockets.server_test yield.sockets.ssl yield.sockets.ssl_test yield.sockets_test yield.stage yield.stage_test yield.thread yield.thread_test yield.uri yield.uri_test yield.uuid yield.uuid_test yield_test
 
 clean:
-	$(MAKE) -C proj/yield/aio -f aio.Makefile clean
-	$(MAKE) -C proj/yield/aio -f aio_test.Makefile clean
-	$(MAKE) -C proj/yield/clientserver -f clientserver.Makefile clean
-	$(MAKE) -C proj/yield/clientserver -f clientserver_test.Makefile clean
-	$(MAKE) -C proj/yield/common -f common.Makefile clean
-	$(MAKE) -C proj/yield/common -f common_test.Makefile clean
-	$(MAKE) -C proj/yield/fs -f fs.Makefile clean
-	$(MAKE) -C proj/yield/fs -f fs_test.Makefile clean
-	$(MAKE) -C proj/yield/getopt -f getopt.Makefile clean
-	$(MAKE) -C proj/yield/getopt -f getopt_test.Makefile clean
-	$(MAKE) -C proj/yield/http -f http.Makefile clean
-	$(MAKE) -C proj/yield/http -f http_test.Makefile clean
-	$(MAKE) -C proj/yield/i18n -f i18n.Makefile clean
-	$(MAKE) -C proj/yield/i18n -f i18n_test.Makefile clean
-	$(MAKE) -C proj/yield/marshal -f marshal.Makefile clean
-	$(MAKE) -C proj/yield/marshal -f marshal_test.Makefile clean
-	$(MAKE) -C proj/yield/poll -f poll.Makefile clean
-	$(MAKE) -C proj/yield/poll -f poll_test.Makefile clean
-	$(MAKE) -C proj/yield/process -f process.Makefile clean
-	$(MAKE) -C proj/yield/process -f process_test.Makefile clean
-	$(MAKE) -C proj/yield/sockets -f sockets.Makefile clean
-	$(MAKE) -C proj/yield/sockets -f sockets_test.Makefile clean
-	$(MAKE) -C proj/yield/stage -f stage.Makefile clean
-	$(MAKE) -C proj/yield/stage -f stage_test.Makefile clean
-	$(MAKE) -C proj/yield/thread -f thread.Makefile clean
-	$(MAKE) -C proj/yield/thread -f thread_test.Makefile clean
-	$(MAKE) -C proj/yield/uri -f uri.Makefile clean
-	$(MAKE) -C proj/yield/uri -f uri_test.Makefile clean
-	$(MAKE) -C proj/yield/uuid -f uuid.Makefile clean
-	$(MAKE) -C proj/yield/uuid -f uuid_test.Makefile clean
+	$(MAKE) -C proj/yield/yield -f yield.Makefile clean
+	$(MAKE) -C proj/yield/yield -f yield_test.Makefile clean
+	$(MAKE) -C proj/yield/yield.aio -f yield.aio.Makefile clean
+	$(MAKE) -C proj/yield/yield.aio -f yield.aio_test.Makefile clean
+	$(MAKE) -C proj/yield/yield.fs -f yield.fs.Makefile clean
+	$(MAKE) -C proj/yield/yield.fs -f yield.fs_test.Makefile clean
+	$(MAKE) -C proj/yield/yield.fs.aio -f yield.fs.aio.Makefile clean
+	$(MAKE) -C proj/yield/yield.fs.aio -f yield.fs.aio_test.Makefile clean
+	$(MAKE) -C proj/yield/yield.getopt -f yield.getopt.Makefile clean
+	$(MAKE) -C proj/yield/yield.getopt -f yield.getopt_test.Makefile clean
+	$(MAKE) -C proj/yield/yield.http -f yield.http.Makefile clean
+	$(MAKE) -C proj/yield/yield.http -f yield.http_test.Makefile clean
+	$(MAKE) -C proj/yield/yield.http.client -f yield.http.client.Makefile clean
+	$(MAKE) -C proj/yield/yield.http.client -f yield.http.client_test.Makefile clean
+	$(MAKE) -C proj/yield/yield.http.server -f yield.http.server.Makefile clean
+	$(MAKE) -C proj/yield/yield.http.server -f yield.http.server_test.Makefile clean
+	$(MAKE) -C proj/yield/yield.i18n -f yield.i18n.Makefile clean
+	$(MAKE) -C proj/yield/yield.i18n -f yield.i18n_test.Makefile clean
+	$(MAKE) -C proj/yield/yield.marshal -f yield.marshal.Makefile clean
+	$(MAKE) -C proj/yield/yield.marshal -f yield.marshal_test.Makefile clean
+	$(MAKE) -C proj/yield/yield.marshal.json -f yield.marshal.json.Makefile clean
+	$(MAKE) -C proj/yield/yield.marshal.json -f yield.marshal.json_test.Makefile clean
+	$(MAKE) -C proj/yield/yield.marshal.xdr -f yield.marshal.xdr.Makefile clean
+	$(MAKE) -C proj/yield/yield.marshal.xdr -f yield.marshal.xdr_test.Makefile clean
+	$(MAKE) -C proj/yield/yield.marshal.xml -f yield.marshal.xml.Makefile clean
+	$(MAKE) -C proj/yield/yield.marshal.xml -f yield.marshal.xml_test.Makefile clean
+	$(MAKE) -C proj/yield/yield.poll -f yield.poll.Makefile clean
+	$(MAKE) -C proj/yield/yield.poll -f yield.poll_test.Makefile clean
+	$(MAKE) -C proj/yield/yield.process -f yield.process.Makefile clean
+	$(MAKE) -C proj/yield/yield.process -f yield.process_test.Makefile clean
+	$(MAKE) -C proj/yield/yield.sockets -f yield.sockets.Makefile clean
+	$(MAKE) -C proj/yield/yield.sockets -f yield.sockets_test.Makefile clean
+	$(MAKE) -C proj/yield/yield.sockets.aio -f yield.sockets.aio.Makefile clean
+	$(MAKE) -C proj/yield/yield.sockets.aio -f yield.sockets.aio_test.Makefile clean
+	$(MAKE) -C proj/yield/yield.sockets.client -f yield.sockets.client.Makefile clean
+	$(MAKE) -C proj/yield/yield.sockets.client -f yield.sockets.client_test.Makefile clean
+	$(MAKE) -C proj/yield/yield.sockets.peer -f yield.sockets.peer.Makefile clean
+	$(MAKE) -C proj/yield/yield.sockets.peer -f yield.sockets.peer_test.Makefile clean
+	$(MAKE) -C proj/yield/yield.sockets.poll -f yield.sockets.poll.Makefile clean
+	$(MAKE) -C proj/yield/yield.sockets.poll -f yield.sockets.poll_test.Makefile clean
+	$(MAKE) -C proj/yield/yield.sockets.server -f yield.sockets.server.Makefile clean
+	$(MAKE) -C proj/yield/yield.sockets.server -f yield.sockets.server_test.Makefile clean
+	$(MAKE) -C proj/yield/yield.sockets.ssl -f yield.sockets.ssl.Makefile clean
+	$(MAKE) -C proj/yield/yield.sockets.ssl -f yield.sockets.ssl_test.Makefile clean
+	$(MAKE) -C proj/yield/yield.stage -f yield.stage.Makefile clean
+	$(MAKE) -C proj/yield/yield.stage -f yield.stage_test.Makefile clean
+	$(MAKE) -C proj/yield/yield.thread -f yield.thread.Makefile clean
+	$(MAKE) -C proj/yield/yield.thread -f yield.thread_test.Makefile clean
+	$(MAKE) -C proj/yield/yield.uri -f yield.uri.Makefile clean
+	$(MAKE) -C proj/yield/yield.uri -f yield.uri_test.Makefile clean
+	$(MAKE) -C proj/yield/yield.uuid -f yield.uuid.Makefile clean
+	$(MAKE) -C proj/yield/yield.uuid -f yield.uuid_test.Makefile clean
 
 depclean:
-	$(MAKE) -C proj/yield/aio -f aio.Makefile depclean
-	$(MAKE) -C proj/yield/aio -f aio_test.Makefile depclean
-	$(MAKE) -C proj/yield/clientserver -f clientserver.Makefile depclean
-	$(MAKE) -C proj/yield/clientserver -f clientserver_test.Makefile depclean
-	$(MAKE) -C proj/yield/common -f common.Makefile depclean
-	$(MAKE) -C proj/yield/common -f common_test.Makefile depclean
-	$(MAKE) -C proj/yield/fs -f fs.Makefile depclean
-	$(MAKE) -C proj/yield/fs -f fs_test.Makefile depclean
-	$(MAKE) -C proj/yield/getopt -f getopt.Makefile depclean
-	$(MAKE) -C proj/yield/getopt -f getopt_test.Makefile depclean
-	$(MAKE) -C proj/yield/http -f http.Makefile depclean
-	$(MAKE) -C proj/yield/http -f http_test.Makefile depclean
-	$(MAKE) -C proj/yield/i18n -f i18n.Makefile depclean
-	$(MAKE) -C proj/yield/i18n -f i18n_test.Makefile depclean
-	$(MAKE) -C proj/yield/marshal -f marshal.Makefile depclean
-	$(MAKE) -C proj/yield/marshal -f marshal_test.Makefile depclean
-	$(MAKE) -C proj/yield/poll -f poll.Makefile depclean
-	$(MAKE) -C proj/yield/poll -f poll_test.Makefile depclean
-	$(MAKE) -C proj/yield/process -f process.Makefile depclean
-	$(MAKE) -C proj/yield/process -f process_test.Makefile depclean
-	$(MAKE) -C proj/yield/sockets -f sockets.Makefile depclean
-	$(MAKE) -C proj/yield/sockets -f sockets_test.Makefile depclean
-	$(MAKE) -C proj/yield/stage -f stage.Makefile depclean
-	$(MAKE) -C proj/yield/stage -f stage_test.Makefile depclean
-	$(MAKE) -C proj/yield/thread -f thread.Makefile depclean
-	$(MAKE) -C proj/yield/thread -f thread_test.Makefile depclean
-	$(MAKE) -C proj/yield/uri -f uri.Makefile depclean
-	$(MAKE) -C proj/yield/uri -f uri_test.Makefile depclean
-	$(MAKE) -C proj/yield/uuid -f uuid.Makefile depclean
-	$(MAKE) -C proj/yield/uuid -f uuid_test.Makefile depclean
+	$(MAKE) -C proj/yield/yield -f yield.Makefile depclean
+	$(MAKE) -C proj/yield/yield -f yield_test.Makefile depclean
+	$(MAKE) -C proj/yield/yield.aio -f yield.aio.Makefile depclean
+	$(MAKE) -C proj/yield/yield.aio -f yield.aio_test.Makefile depclean
+	$(MAKE) -C proj/yield/yield.fs -f yield.fs.Makefile depclean
+	$(MAKE) -C proj/yield/yield.fs -f yield.fs_test.Makefile depclean
+	$(MAKE) -C proj/yield/yield.fs.aio -f yield.fs.aio.Makefile depclean
+	$(MAKE) -C proj/yield/yield.fs.aio -f yield.fs.aio_test.Makefile depclean
+	$(MAKE) -C proj/yield/yield.getopt -f yield.getopt.Makefile depclean
+	$(MAKE) -C proj/yield/yield.getopt -f yield.getopt_test.Makefile depclean
+	$(MAKE) -C proj/yield/yield.http -f yield.http.Makefile depclean
+	$(MAKE) -C proj/yield/yield.http -f yield.http_test.Makefile depclean
+	$(MAKE) -C proj/yield/yield.http.client -f yield.http.client.Makefile depclean
+	$(MAKE) -C proj/yield/yield.http.client -f yield.http.client_test.Makefile depclean
+	$(MAKE) -C proj/yield/yield.http.server -f yield.http.server.Makefile depclean
+	$(MAKE) -C proj/yield/yield.http.server -f yield.http.server_test.Makefile depclean
+	$(MAKE) -C proj/yield/yield.i18n -f yield.i18n.Makefile depclean
+	$(MAKE) -C proj/yield/yield.i18n -f yield.i18n_test.Makefile depclean
+	$(MAKE) -C proj/yield/yield.marshal -f yield.marshal.Makefile depclean
+	$(MAKE) -C proj/yield/yield.marshal -f yield.marshal_test.Makefile depclean
+	$(MAKE) -C proj/yield/yield.marshal.json -f yield.marshal.json.Makefile depclean
+	$(MAKE) -C proj/yield/yield.marshal.json -f yield.marshal.json_test.Makefile depclean
+	$(MAKE) -C proj/yield/yield.marshal.xdr -f yield.marshal.xdr.Makefile depclean
+	$(MAKE) -C proj/yield/yield.marshal.xdr -f yield.marshal.xdr_test.Makefile depclean
+	$(MAKE) -C proj/yield/yield.marshal.xml -f yield.marshal.xml.Makefile depclean
+	$(MAKE) -C proj/yield/yield.marshal.xml -f yield.marshal.xml_test.Makefile depclean
+	$(MAKE) -C proj/yield/yield.poll -f yield.poll.Makefile depclean
+	$(MAKE) -C proj/yield/yield.poll -f yield.poll_test.Makefile depclean
+	$(MAKE) -C proj/yield/yield.process -f yield.process.Makefile depclean
+	$(MAKE) -C proj/yield/yield.process -f yield.process_test.Makefile depclean
+	$(MAKE) -C proj/yield/yield.sockets -f yield.sockets.Makefile depclean
+	$(MAKE) -C proj/yield/yield.sockets -f yield.sockets_test.Makefile depclean
+	$(MAKE) -C proj/yield/yield.sockets.aio -f yield.sockets.aio.Makefile depclean
+	$(MAKE) -C proj/yield/yield.sockets.aio -f yield.sockets.aio_test.Makefile depclean
+	$(MAKE) -C proj/yield/yield.sockets.client -f yield.sockets.client.Makefile depclean
+	$(MAKE) -C proj/yield/yield.sockets.client -f yield.sockets.client_test.Makefile depclean
+	$(MAKE) -C proj/yield/yield.sockets.peer -f yield.sockets.peer.Makefile depclean
+	$(MAKE) -C proj/yield/yield.sockets.peer -f yield.sockets.peer_test.Makefile depclean
+	$(MAKE) -C proj/yield/yield.sockets.poll -f yield.sockets.poll.Makefile depclean
+	$(MAKE) -C proj/yield/yield.sockets.poll -f yield.sockets.poll_test.Makefile depclean
+	$(MAKE) -C proj/yield/yield.sockets.server -f yield.sockets.server.Makefile depclean
+	$(MAKE) -C proj/yield/yield.sockets.server -f yield.sockets.server_test.Makefile depclean
+	$(MAKE) -C proj/yield/yield.sockets.ssl -f yield.sockets.ssl.Makefile depclean
+	$(MAKE) -C proj/yield/yield.sockets.ssl -f yield.sockets.ssl_test.Makefile depclean
+	$(MAKE) -C proj/yield/yield.stage -f yield.stage.Makefile depclean
+	$(MAKE) -C proj/yield/yield.stage -f yield.stage_test.Makefile depclean
+	$(MAKE) -C proj/yield/yield.thread -f yield.thread.Makefile depclean
+	$(MAKE) -C proj/yield/yield.thread -f yield.thread_test.Makefile depclean
+	$(MAKE) -C proj/yield/yield.uri -f yield.uri.Makefile depclean
+	$(MAKE) -C proj/yield/yield.uri -f yield.uri_test.Makefile depclean
+	$(MAKE) -C proj/yield/yield.uuid -f yield.uuid.Makefile depclean
+	$(MAKE) -C proj/yield/yield.uuid -f yield.uuid_test.Makefile depclean
 
 
-aio: fs sockets poll stage
-	$(MAKE) -C proj/yield/aio -f aio.Makefile
+yield.aio: yield
+	$(MAKE) -C proj/yield/yield.aio -f yield.aio.Makefile
 
-aio_test: aio
-	$(MAKE) -C proj/yield/aio -f aio_test.Makefile
+yield.aio_test: yield.aio
+	$(MAKE) -C proj/yield/yield.aio -f yield.aio_test.Makefile
 
-clientserver: aio
-	$(MAKE) -C proj/yield/clientserver -f clientserver.Makefile
+yield.fs.aio: yield.aio yield.fs yield.thread
+	$(MAKE) -C proj/yield/yield.fs.aio -f yield.fs.aio.Makefile
 
-clientserver_test: clientserver
-	$(MAKE) -C proj/yield/clientserver -f clientserver_test.Makefile
+yield.fs.aio_test: yield.fs.aio
+	$(MAKE) -C proj/yield/yield.fs.aio -f yield.fs.aio_test.Makefile
 
-common: 
-	$(MAKE) -C proj/yield/common -f common.Makefile
+yield.fs: yield.i18n
+	$(MAKE) -C proj/yield/yield.fs -f yield.fs.Makefile
 
-common_test: common
-	$(MAKE) -C proj/yield/common -f common_test.Makefile
+yield.fs_test: yield.fs
+	$(MAKE) -C proj/yield/yield.fs -f yield.fs_test.Makefile
 
-fs: i18n
-	$(MAKE) -C proj/yield/fs -f fs.Makefile
+yield.getopt: yield
+	$(MAKE) -C proj/yield/yield.getopt -f yield.getopt.Makefile
 
-fs_test: fs
-	$(MAKE) -C proj/yield/fs -f fs_test.Makefile
+yield.getopt_test: yield.getopt
+	$(MAKE) -C proj/yield/yield.getopt -f yield.getopt_test.Makefile
 
-getopt: common
-	$(MAKE) -C proj/yield/getopt -f getopt.Makefile
+yield.http.client: yield.http yield.sockets.client
+	$(MAKE) -C proj/yield/yield.http.client -f yield.http.client.Makefile
 
-getopt_test: getopt
-	$(MAKE) -C proj/yield/getopt -f getopt_test.Makefile
+yield.http.client_test: yield.http.client
+	$(MAKE) -C proj/yield/yield.http.client -f yield.http.client_test.Makefile
 
-http: clientserver uri
-	$(MAKE) -C proj/yield/http -f http.Makefile
+yield.http.server: yield.fs yield.http yield.sockets.server
+	$(MAKE) -C proj/yield/yield.http.server -f yield.http.server.Makefile
 
-http_test: http
-	$(MAKE) -C proj/yield/http -f http_test.Makefile
+yield.http.server_test: yield.http.server
+	$(MAKE) -C proj/yield/yield.http.server -f yield.http.server_test.Makefile
 
-i18n: common
-	$(MAKE) -C proj/yield/i18n -f i18n.Makefile
+yield.http: yield.uri
+	$(MAKE) -C proj/yield/yield.http -f yield.http.Makefile
 
-i18n_test: i18n
-	$(MAKE) -C proj/yield/i18n -f i18n_test.Makefile
+yield.http_test: yield.http
+	$(MAKE) -C proj/yield/yield.http -f yield.http_test.Makefile
 
-marshal: common
-	$(MAKE) -C proj/yield/marshal -f marshal.Makefile
+yield.i18n: yield
+	$(MAKE) -C proj/yield/yield.i18n -f yield.i18n.Makefile
 
-marshal_test: marshal
-	$(MAKE) -C proj/yield/marshal -f marshal_test.Makefile
+yield.i18n_test: yield.i18n
+	$(MAKE) -C proj/yield/yield.i18n -f yield.i18n_test.Makefile
 
-poll: sockets thread
-	$(MAKE) -C proj/yield/poll -f poll.Makefile
+yield.marshal.json: yield.marshal
+	$(MAKE) -C proj/yield/yield.marshal.json -f yield.marshal.json.Makefile
 
-poll_test: poll
-	$(MAKE) -C proj/yield/poll -f poll_test.Makefile
+yield.marshal.json_test: yield.marshal.json
+	$(MAKE) -C proj/yield/yield.marshal.json -f yield.marshal.json_test.Makefile
 
-process: fs
-	$(MAKE) -C proj/yield/process -f process.Makefile
+yield.marshal.xdr: yield.marshal
+	$(MAKE) -C proj/yield/yield.marshal.xdr -f yield.marshal.xdr.Makefile
 
-process_test: process
-	$(MAKE) -C proj/yield/process -f process_test.Makefile
+yield.marshal.xdr_test: yield.marshal.xdr
+	$(MAKE) -C proj/yield/yield.marshal.xdr -f yield.marshal.xdr_test.Makefile
 
-sockets: common
-	$(MAKE) -C proj/yield/sockets -f sockets.Makefile
+yield.marshal.xml: yield.marshal
+	$(MAKE) -C proj/yield/yield.marshal.xml -f yield.marshal.xml.Makefile
 
-sockets_test: sockets
-	$(MAKE) -C proj/yield/sockets -f sockets_test.Makefile
+yield.marshal.xml_test: yield.marshal.xml
+	$(MAKE) -C proj/yield/yield.marshal.xml -f yield.marshal.xml_test.Makefile
 
-stage: thread
-	$(MAKE) -C proj/yield/stage -f stage.Makefile
+yield.marshal: yield
+	$(MAKE) -C proj/yield/yield.marshal -f yield.marshal.Makefile
 
-stage_test: stage
-	$(MAKE) -C proj/yield/stage -f stage_test.Makefile
+yield.marshal_test: yield.marshal
+	$(MAKE) -C proj/yield/yield.marshal -f yield.marshal_test.Makefile
 
-thread: common
-	$(MAKE) -C proj/yield/thread -f thread.Makefile
+yield.poll: yield
+	$(MAKE) -C proj/yield/yield.poll -f yield.poll.Makefile
 
-thread_test: thread
-	$(MAKE) -C proj/yield/thread -f thread_test.Makefile
+yield.poll_test: yield.poll
+	$(MAKE) -C proj/yield/yield.poll -f yield.poll_test.Makefile
 
-uri: common
-	$(MAKE) -C proj/yield/uri -f uri.Makefile
+yield.process: yield.fs
+	$(MAKE) -C proj/yield/yield.process -f yield.process.Makefile
 
-uri_test: uri
-	$(MAKE) -C proj/yield/uri -f uri_test.Makefile
+yield.process_test: yield.process
+	$(MAKE) -C proj/yield/yield.process -f yield.process_test.Makefile
 
-uuid: common
-	$(MAKE) -C proj/yield/uuid -f uuid.Makefile
+yield.sockets.aio: yield.sockets.poll yield.stage
+	$(MAKE) -C proj/yield/yield.sockets.aio -f yield.sockets.aio.Makefile
 
-uuid_test: uuid
-	$(MAKE) -C proj/yield/uuid -f uuid_test.Makefile
+yield.sockets.aio_test: yield.sockets.aio
+	$(MAKE) -C proj/yield/yield.sockets.aio -f yield.sockets.aio_test.Makefile
+
+yield.sockets.client: yield.sockets.peer
+	$(MAKE) -C proj/yield/yield.sockets.client -f yield.sockets.client.Makefile
+
+yield.sockets.client_test: yield.sockets.client
+	$(MAKE) -C proj/yield/yield.sockets.client -f yield.sockets.client_test.Makefile
+
+yield.sockets.peer: yield.sockets.aio
+	$(MAKE) -C proj/yield/yield.sockets.peer -f yield.sockets.peer.Makefile
+
+yield.sockets.peer_test: yield.sockets.peer
+	$(MAKE) -C proj/yield/yield.sockets.peer -f yield.sockets.peer_test.Makefile
+
+yield.sockets.poll: yield.poll yield.sockets
+	$(MAKE) -C proj/yield/yield.sockets.poll -f yield.sockets.poll.Makefile
+
+yield.sockets.poll_test: yield.sockets.poll
+	$(MAKE) -C proj/yield/yield.sockets.poll -f yield.sockets.poll_test.Makefile
+
+yield.sockets.server: yield.sockets.peer
+	$(MAKE) -C proj/yield/yield.sockets.server -f yield.sockets.server.Makefile
+
+yield.sockets.server_test: yield.sockets.server
+	$(MAKE) -C proj/yield/yield.sockets.server -f yield.sockets.server_test.Makefile
+
+yield.sockets.ssl: yield.sockets
+	$(MAKE) -C proj/yield/yield.sockets.ssl -f yield.sockets.ssl.Makefile
+
+yield.sockets.ssl_test: yield.sockets.ssl
+	$(MAKE) -C proj/yield/yield.sockets.ssl -f yield.sockets.ssl_test.Makefile
+
+yield.sockets: yield
+	$(MAKE) -C proj/yield/yield.sockets -f yield.sockets.Makefile
+
+yield.sockets_test: yield.sockets
+	$(MAKE) -C proj/yield/yield.sockets -f yield.sockets_test.Makefile
+
+yield.stage: yield.thread
+	$(MAKE) -C proj/yield/yield.stage -f yield.stage.Makefile
+
+yield.stage_test: yield.stage
+	$(MAKE) -C proj/yield/yield.stage -f yield.stage_test.Makefile
+
+yield.thread: yield
+	$(MAKE) -C proj/yield/yield.thread -f yield.thread.Makefile
+
+yield.thread_test: yield.thread
+	$(MAKE) -C proj/yield/yield.thread -f yield.thread_test.Makefile
+
+yield.uri: yield
+	$(MAKE) -C proj/yield/yield.uri -f yield.uri.Makefile
+
+yield.uri_test: yield.uri
+	$(MAKE) -C proj/yield/yield.uri -f yield.uri_test.Makefile
+
+yield.uuid: yield
+	$(MAKE) -C proj/yield/yield.uuid -f yield.uuid.Makefile
+
+yield.uuid_test: yield.uuid
+	$(MAKE) -C proj/yield/yield.uuid -f yield.uuid_test.Makefile
+
+yield: 
+	$(MAKE) -C proj/yield/yield -f yield.Makefile
+
+yield_test: yield
+	$(MAKE) -C proj/yield/yield -f yield_test.Makefile
 
