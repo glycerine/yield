@@ -27,7 +27,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "bio_queue.hpp"
+#include "yield/aio/fs/bio_queue.hpp"
 #include "yield/aio/fs/fsync_aiocb.hpp"
 #include "yield/aio/fs/pread_aiocb.hpp"
 #include "yield/aio/fs/pwrite_aiocb.hpp"

@@ -29,7 +29,7 @@
 
 #include "yield/assert.hpp"
 #include "yield/aio/aiocb.hpp"
-#include "bio_queue.hpp"
+#include "yield/aio/bio_queue.hpp"
 #include "yield/stage/synchronized_event_queue.hpp"
 
 

@@ -304,7 +304,7 @@ for project_name in PROJECT_NAMES:
         ]
     else:
         INCLUDE_FILE_PATHS[project_name] = [
-            path_join(INCLUDE_DIR_PATH, "yield", "**", fnmatch_pattern)
+            path_join(INCLUDE_DIR_PATH, "yield", project_name, "**", fnmatch_pattern)
             for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS
         ]
 
@@ -322,7 +322,7 @@ for project_name in PROJECT_NAMES:
                                    SOURCE_FILE_FNMATCH_PATTERNS
         ]
 
-    EXCLUDE_FILE_PATHS[project_name] = SOURCE_FILE_PATHS[project_name + "_test"]
+    EXCLUDE_FILE_PATHS[project_name] = [] # SOURCE_FILE_PATHS[project_name + "_test"]
     EXCLUDE_FILE_PATHS[project_name + "_test"] = []
 
 INCLUDE_FILE_PATHS["aio"] = [

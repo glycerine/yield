@@ -27,7 +27,6 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "bio_queue.hpp"
 #ifdef _WIN32
 #include "win32/aio_queue.hpp"
 #else
@@ -35,6 +34,7 @@
 #endif
 #include "yield/assert.hpp"
 #include "yield/time.hpp"
+#include "yield/aio/fs/bio_queue.hpp"
 #include "yield/aio/fs/aio_queue.hpp"
 
 

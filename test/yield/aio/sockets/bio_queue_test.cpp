@@ -28,7 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "aio_queue_test.hpp"
-#include "bio_queue.hpp"
+#include "yield/aio/sockets/bio_queue.hpp"
 
 
 TEST_SUITE_EX(SocketBIOQueue, yield::aio::sockets::AIOQueueTestSuite<yield::aio::sockets::BIOQueue>);

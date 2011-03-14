@@ -27,12 +27,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "nbio_queue.hpp"
 #include "yield/time.hpp"
 #ifdef _WIN32
 #include "win32/aio_queue.hpp"
 #endif
 #include "yield/aio/sockets/aio_queue.hpp"
+#include "yield/aio/sockets/nbio_queue.hpp"
 
 
 namespace yield {

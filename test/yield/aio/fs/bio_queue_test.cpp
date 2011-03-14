@@ -27,8 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "bio_queue.hpp"
 #include "aio_queue_test.hpp"
+#include "yield/aio/fs/bio_queue.hpp"
 
 
 TEST_SUITE_EX(FileBIOQueue, yield::aio::fs::AIOQueueTestSuite<yield::aio::fs::BIOQueue>);
