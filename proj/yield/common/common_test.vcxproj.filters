@@ -5,7 +5,7 @@
       <UniqueIdentifier>{95cdcd1c-2140-4b1d-9621-80a814ddec19}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{92c55d98-50f2-46cb-9367-c6df6614ca8f}</UniqueIdentifier>
+      <UniqueIdentifier>{0fd4b0e1-4a8b-4cf8-befa-a6b92df2fe88}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -14,58 +14,61 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\yield\atomic_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\atomic_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\auto_object_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\auto_object_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\buffer_test.hpp">
+    <ClInclude Include="..\..\..\test\yield\buffer_test.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\yield\channel_test.hpp">
+    <ClInclude Include="..\..\..\test\yield\channel_test.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\date_time_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\date_time_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\event_queue_test.hpp">
+    <ClInclude Include="..\..\..\test\yield\event_queue_test.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\event_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\event_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\exception_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\exception_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\fixed_buffer_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\fixed_buffer_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\log_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\log_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\message_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\message_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\object_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\object_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\page_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\page_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\request_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\request_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\response_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\response_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\string_buffer_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\string_buffer_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\time_test.cpp">
+    <ClInclude Include="..\..\..\test\yield\test_object.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\test\yield\time_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\yield_common_test_main.cpp">
+    <ClCompile Include="..\..\..\test\yield\yield_common_test_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

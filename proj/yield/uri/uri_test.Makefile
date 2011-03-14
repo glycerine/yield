@@ -62,12 +62,12 @@ depclean:
 -include $(DEP_FILE_PATHS)
 
 
-../../../build/yield/uri_test/uri_test.o: ../../../src/yield/uri/uri_test.cpp
+../../../build/yield/uri_test/uri_test.o: ../../../test/yield/uri/uri_test.cpp
 	-mkdir -p ../../../build/yield/uri_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/uri_test/uri_test.o -MD $(CXXFLAGS) ../../../src/yield/uri/uri_test.cpp
+	$(CXX) -c -o ../../../build/yield/uri_test/uri_test.o -MD $(CXXFLAGS) ../../../test/yield/uri/uri_test.cpp
 
-../../../build/yield/uri_test/yield_uri_test_main.o: ../../../src/yield/uri/yield_uri_test_main.cpp
+../../../build/yield/uri_test/yield_uri_test_main.o: ../../../test/yield/uri/yield_uri_test_main.cpp
 	-mkdir -p ../../../build/yield/uri_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/uri_test/yield_uri_test_main.o -MD $(CXXFLAGS) ../../../src/yield/uri/yield_uri_test_main.cpp
+	$(CXX) -c -o ../../../build/yield/uri_test/yield_uri_test_main.o -MD $(CXXFLAGS) ../../../test/yield/uri/yield_uri_test_main.cpp
 
 

@@ -62,28 +62,28 @@ depclean:
 -include $(DEP_FILE_PATHS)
 
 
-../../../build/yield/sockets_test/socket_address_test.o: ../../../src/yield/sockets/socket_address_test.cpp
+../../../build/yield/sockets_test/socket_address_test.o: ../../../test/yield/sockets/socket_address_test.cpp
 	-mkdir -p ../../../build/yield/sockets_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/sockets_test/socket_address_test.o -MD $(CXXFLAGS) ../../../src/yield/sockets/socket_address_test.cpp
+	$(CXX) -c -o ../../../build/yield/sockets_test/socket_address_test.o -MD $(CXXFLAGS) ../../../test/yield/sockets/socket_address_test.cpp
 
-../../../build/yield/sockets_test/socket_pair_test.o: ../../../src/yield/sockets/socket_pair_test.cpp
+../../../build/yield/sockets_test/socket_pair_test.o: ../../../test/yield/sockets/socket_pair_test.cpp
 	-mkdir -p ../../../build/yield/sockets_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/sockets_test/socket_pair_test.o -MD $(CXXFLAGS) ../../../src/yield/sockets/socket_pair_test.cpp
+	$(CXX) -c -o ../../../build/yield/sockets_test/socket_pair_test.o -MD $(CXXFLAGS) ../../../test/yield/sockets/socket_pair_test.cpp
 
-../../../build/yield/sockets_test/ssl/ssl_context_test.o: ../../../src/yield/sockets/ssl/ssl_context_test.cpp
+../../../build/yield/sockets_test/ssl/ssl_context_test.o: ../../../test/yield/sockets/ssl/ssl_context_test.cpp
 	-mkdir -p ../../../build/yield/sockets_test/ssl 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/sockets_test/ssl/ssl_context_test.o -MD $(CXXFLAGS) ../../../src/yield/sockets/ssl/ssl_context_test.cpp
+	$(CXX) -c -o ../../../build/yield/sockets_test/ssl/ssl_context_test.o -MD $(CXXFLAGS) ../../../test/yield/sockets/ssl/ssl_context_test.cpp
 
-../../../build/yield/sockets_test/tcp_socket_test.o: ../../../src/yield/sockets/tcp_socket_test.cpp
+../../../build/yield/sockets_test/tcp_socket_test.o: ../../../test/yield/sockets/tcp_socket_test.cpp
 	-mkdir -p ../../../build/yield/sockets_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/sockets_test/tcp_socket_test.o -MD $(CXXFLAGS) ../../../src/yield/sockets/tcp_socket_test.cpp
+	$(CXX) -c -o ../../../build/yield/sockets_test/tcp_socket_test.o -MD $(CXXFLAGS) ../../../test/yield/sockets/tcp_socket_test.cpp
 
-../../../build/yield/sockets_test/udp_socket_test.o: ../../../src/yield/sockets/udp_socket_test.cpp
+../../../build/yield/sockets_test/udp_socket_test.o: ../../../test/yield/sockets/udp_socket_test.cpp
 	-mkdir -p ../../../build/yield/sockets_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/sockets_test/udp_socket_test.o -MD $(CXXFLAGS) ../../../src/yield/sockets/udp_socket_test.cpp
+	$(CXX) -c -o ../../../build/yield/sockets_test/udp_socket_test.o -MD $(CXXFLAGS) ../../../test/yield/sockets/udp_socket_test.cpp
 
-../../../build/yield/sockets_test/yield_sockets_test_main.o: ../../../src/yield/sockets/yield_sockets_test_main.cpp
+../../../build/yield/sockets_test/yield_sockets_test_main.o: ../../../test/yield/sockets/yield_sockets_test_main.cpp
 	-mkdir -p ../../../build/yield/sockets_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/sockets_test/yield_sockets_test_main.o -MD $(CXXFLAGS) ../../../src/yield/sockets/yield_sockets_test_main.cpp
+	$(CXX) -c -o ../../../build/yield/sockets_test/yield_sockets_test_main.o -MD $(CXXFLAGS) ../../../test/yield/sockets/yield_sockets_test_main.cpp
 
 

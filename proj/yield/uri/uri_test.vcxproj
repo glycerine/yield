@@ -99,9 +99,9 @@
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
-    <ClCompile Include="..\..\..\src\yield\uri\uri_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\uri\uri_test.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\uri\yield_uri_test_main.cpp">
+    <ClCompile Include="..\..\..\test\yield\uri\yield_uri_test_main.cpp">
     </ClCompile>
   </ItemGroup>
 

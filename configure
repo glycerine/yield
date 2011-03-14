@@ -67,7 +67,8 @@ from yutil import deduplist, \
 
 ROOT_DIR_PATH = dirname(__file__)
 INCLUDE_DIR_PATH = path_join(ROOT_DIR_PATH, "include")
-SOURCE_DIR_PATH = path_join(ROOT_DIR_PATH, "src")
+SRC_DIR_PATH = path_join(ROOT_DIR_PATH, "src")
+TEST_DIR_PATH = path_join(ROOT_DIR_PATH, "test")
 
 
 PROJECT_NAMES = (
@@ -274,92 +275,62 @@ INCLUDE_FILE_PATHS = {}
 SOURCE_FILE_PATHS = {}
 
 for project_name in PROJECT_NAMES:
-    if project_name != "common":
-        project_include_dir_path = path_join(INCLUDE_DIR_PATH, "yield", project_name)
-        assert exists(project_include_dir_path), project_include_dir_path
-        project_source_dir_path = path_join(SOURCE_DIR_PATH, "yield", project_name)
-        assert exists(project_source_dir_path), project_source_dir_path
+    if project_name == "common":
+        INCLUDE_FILE_PATHS["common"] = [
+            path_join(INCLUDE_DIR_PATH, "yield", "types.hpp"), # before atomic
+            path_join(INCLUDE_DIR_PATH, "yield", "atomic.hpp"), # before object
+            path_join(INCLUDE_DIR_PATH, "yield", "object.hpp"), # before event
+            path_join(INCLUDE_DIR_PATH, "yield", "event.hpp"), # before message
+            path_join(INCLUDE_DIR_PATH, "yield", "message.hpp"), # before response
+            path_join(INCLUDE_DIR_PATH, "yield", "response.hpp"), # before exception
+            path_join(INCLUDE_DIR_PATH, "yield", "time.hpp"), # before event_queue
+        ] + [
+            path_join(INCLUDE_DIR_PATH, "yield", fnmatch_pattern)
+            for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS
+        ]
 
-        if not EXCLUDE_FILE_PATHS.has_key(project_name):
-            EXCLUDE_FILE_PATHS[project_name] = [
-                 path_join(project_source_dir_path, "**", "*_test" + fnmatch_pattern)
-                 for fnmatch_pattern in SOURCE_FILE_FNMATCH_PATTERNS
-            ]
+        INCLUDE_FILE_PATHS["common_test"] = [path_join(INCLUDE_DIR_PATH, "yunit.hpp")]
 
-        EXCLUDE_FILE_PATHS.setdefault(project_name + "_test", [])
+        SOURCE_FILE_PATHS["common"] = [
+            path_join(SRC_DIR_PATH, "yield", fnmatch_pattern)
+            for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
+                                   SOURCE_FILE_FNMATCH_PATTERNS
+        ]
 
-        if not INCLUDE_FILE_PATHS.has_key(project_name):
-            INCLUDE_FILE_PATHS[project_name] = [
-                path_join(project_include_dir_path, "**", fnmatch_pattern)
-                for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS
-            ]
+        SOURCE_FILE_PATHS["common_test"] = [
+            path_join(TEST_DIR_PATH, "yield", fnmatch_pattern)
+            for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
+                                   SOURCE_FILE_FNMATCH_PATTERNS
+        ]
+    else:
+        INCLUDE_FILE_PATHS[project_name] = [
+            path_join(INCLUDE_DIR_PATH, "yield", "**", fnmatch_pattern)
+            for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS
+        ]
 
-        INCLUDE_FILE_PATHS.setdefault(project_name + "_test", [])
+        INCLUDE_FILE_PATHS[project_name + "_test"] = []
 
-        if not SOURCE_FILE_PATHS.has_key(project_name):
-            SOURCE_FILE_PATHS[project_name] = [
-                 path_join(project_source_dir_path, "**", fnmatch_pattern)
-                 for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
-                                        SOURCE_FILE_FNMATCH_PATTERNS
-            ]
+        SOURCE_FILE_PATHS[project_name] = [
+             path_join(SRC_DIR_PATH, "yield", project_name, "**", fnmatch_pattern)
+             for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
+                                    SOURCE_FILE_FNMATCH_PATTERNS
+        ]
 
-        if not SOURCE_FILE_PATHS.has_key(project_name + "_test"):
-            SOURCE_FILE_PATHS[project_name + "_test"] = [
-                path_join(project_source_dir_path, "**", "*_test" + fnmatch_pattern)
-                for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
-                                       SOURCE_FILE_FNMATCH_PATTERNS
-            ]\
-            + [
-                path_join(project_source_dir_path, "**", "test_" + fnmatch_pattern)
-                for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
-                                       SOURCE_FILE_FNMATCH_PATTERNS
-            ]\
-            + \
-            [path_join(project_source_dir_path, "yield_" + project_name + "_test_main.cpp")]
+        SOURCE_FILE_PATHS[project_name + "_test"] = [
+            path_join(TEST_DIR_PATH, "yield", project_name, "**", fnmatch_pattern)
+            for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
+                                   SOURCE_FILE_FNMATCH_PATTERNS
+        ]
 
-EXCLUDE_FILE_PATHS["common"] = [
-    path_join(SOURCE_DIR_PATH, "yield", "*_test" + fnmatch_pattern)
-    for fnmatch_pattern in SOURCE_FILE_FNMATCH_PATTERNS
-]
-
-EXCLUDE_FILE_PATHS["common_test"] = []
+    EXCLUDE_FILE_PATHS[project_name] = SOURCE_FILE_PATHS[project_name + "_test"]
+    EXCLUDE_FILE_PATHS[project_name + "_test"] = []
 
 INCLUDE_FILE_PATHS["aio"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "aio", "posix", "aiocb.hpp"),
     path_join(INCLUDE_DIR_PATH, "yield", "aio", "win32", "aiocb.hpp"),
     path_join(INCLUDE_DIR_PATH, "yield", "aio", "aiocb.hpp"),
     path_join(INCLUDE_DIR_PATH, "yield", "aio", "sockets", "aiocb.hpp"), # before accept_aiocb
-] + \
-INCLUDE_FILE_PATHS["aio"]
-
-INCLUDE_FILE_PATHS["common"] = [
-    path_join(INCLUDE_DIR_PATH, "yield", "types.hpp"), # before atomic
-    path_join(INCLUDE_DIR_PATH, "yield", "atomic.hpp"), # before object
-    path_join(INCLUDE_DIR_PATH, "yield", "object.hpp"), # before event
-    path_join(INCLUDE_DIR_PATH, "yield", "event.hpp"), # before message
-    path_join(INCLUDE_DIR_PATH, "yield", "message.hpp"), # before response
-    path_join(INCLUDE_DIR_PATH, "yield", "response.hpp"), # before exception
-    path_join(INCLUDE_DIR_PATH, "yield", "time.hpp"), # before event_queue
-] + [
-    path_join(INCLUDE_DIR_PATH, "yield", fnmatch_pattern)
-    for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS
-]
-
-INCLUDE_FILE_PATHS["common_test"] = [path_join(INCLUDE_DIR_PATH, "yunit.hpp")]
-
-SOURCE_FILE_PATHS["common"] = [
-    path_join(SOURCE_DIR_PATH, "yield", fnmatch_pattern)
-    for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
-                           SOURCE_FILE_FNMATCH_PATTERNS
-]
-
-SOURCE_FILE_PATHS["common_test"] = [
-    path_join(SOURCE_DIR_PATH, "yield", "*_test" + fnmatch_pattern)
-    for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
-                           SOURCE_FILE_FNMATCH_PATTERNS
-]\
-+ \
-[path_join(SOURCE_DIR_PATH, "yield", "yield_common_test_main.cpp")]
+] + INCLUDE_FILE_PATHS["aio"]
 
 INCLUDE_FILE_PATHS["fs"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "fs", "file.hpp"), # before aiocb
@@ -411,19 +382,19 @@ INCLUDE_FILE_PATHS["thread"] = [
 INCLUDE_FILE_PATHS["thread"]
 
 SOURCE_FILE_PATHS["fs"] = [
-    path_join(SOURCE_DIR_PATH, "yield", "fs", "win32", "stat.hpp"), # before directory
+    path_join(SRC_DIR_PATH, "yield", "fs", "win32", "stat.hpp"), # before directory
 ] + \
 SOURCE_FILE_PATHS["fs"]
 
 SOURCE_FILE_PATHS["sockets"] = [
-    path_join(SOURCE_DIR_PATH, "yield", "sockets", "win32", "winsock.hpp"),
+    path_join(SRC_DIR_PATH, "yield", "sockets", "win32", "winsock.hpp"),
 ] + \
 SOURCE_FILE_PATHS["sockets"]
 
 SOURCE_FILE_PATHS["thread"] = [
-    path_join(SOURCE_DIR_PATH, "yield", "thread", "win32", "mutex.hpp"), # before condition_variable
-    path_join(SOURCE_DIR_PATH, "yield", "thread", "win32", "lightweight_mutex.hpp"), # before condition_variable
-    path_join(SOURCE_DIR_PATH, "yield", "thread", "win32", "semaphore.hpp"), # before condition_variable
+    path_join(SRC_DIR_PATH, "yield", "thread", "win32", "mutex.hpp"), # before condition_variable
+    path_join(SRC_DIR_PATH, "yield", "thread", "win32", "lightweight_mutex.hpp"), # before condition_variable
+    path_join(SRC_DIR_PATH, "yield", "thread", "win32", "semaphore.hpp"), # before condition_variable
 ] + \
 SOURCE_FILE_PATHS["thread"]
 
@@ -561,17 +532,19 @@ if options.check_src_namespace or \
 
 if options.format_src:
     source_paths = {
-        "Yield":
-            [
-                path_join(ROOT_DIR_PATH, "include"),
-                path_join(ROOT_DIR_PATH, "src", "yield"),
-            ],
-        "yutil":
-            [
-                path_join(ROOT_DIR_PATH, "src", "yutil.py"),
-                path_join(ROOT_DIR_PATH, "src", "yutil_test.py"),
-            ],
-        "yuild": [path_join(ROOT_DIR_PATH, "src", "yuild")],
+        "Yield": (
+            path_join(ROOT_DIR_PATH, "include"),
+            path_join(ROOT_DIR_PATH, "src", "yield"),
+            path_join(ROOT_DIR_PATH, "test", "yield")
+        ),
+        "yutil": (
+            path_join(ROOT_DIR_PATH, "src", "yutil.py"),
+            path_join(ROOT_DIR_PATH, "test", "yutil_test.py"),
+        ),
+        "yuild": (
+            path_join(ROOT_DIR_PATH, "src", "yuild"),
+            path_join(ROOT_DIR_PATH, "test", "yuild"),
+        )
     }
 
     for project, source_paths in source_paths.iteritems():
@@ -624,7 +597,7 @@ if options.generate_proj:
 
             if project_name != "common":
                 mirror_subdirectories(
-                    path_join(SOURCE_DIR_PATH, "yield", project_name),
+                    path_join(SRC_DIR_PATH, "yield", project_name),
                     project["build_dir_path"]
                 )
 

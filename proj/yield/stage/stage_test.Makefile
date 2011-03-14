@@ -65,28 +65,28 @@ depclean:
 -include $(DEP_FILE_PATHS)
 
 
-../../../build/yield/stage_test/seda_stage_scheduler_test.o: ../../../src/yield/stage/seda_stage_scheduler_test.cpp
+../../../build/yield/stage_test/seda_stage_scheduler_test.o: ../../../test/yield/stage/seda_stage_scheduler_test.cpp
 	-mkdir -p ../../../build/yield/stage_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/stage_test/seda_stage_scheduler_test.o -MD $(CXXFLAGS) ../../../src/yield/stage/seda_stage_scheduler_test.cpp
+	$(CXX) -c -o ../../../build/yield/stage_test/seda_stage_scheduler_test.o -MD $(CXXFLAGS) ../../../test/yield/stage/seda_stage_scheduler_test.cpp
 
-../../../build/yield/stage_test/stage_test.o: ../../../src/yield/stage/stage_test.cpp
+../../../build/yield/stage_test/stage_test.o: ../../../test/yield/stage/stage_test.cpp
 	-mkdir -p ../../../build/yield/stage_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/stage_test/stage_test.o -MD $(CXXFLAGS) ../../../src/yield/stage/stage_test.cpp
+	$(CXX) -c -o ../../../build/yield/stage_test/stage_test.o -MD $(CXXFLAGS) ../../../test/yield/stage/stage_test.cpp
 
-../../../build/yield/stage_test/synchronized_event_queue_test.o: ../../../src/yield/stage/synchronized_event_queue_test.cpp
+../../../build/yield/stage_test/synchronized_event_queue_test.o: ../../../test/yield/stage/synchronized_event_queue_test.cpp
 	-mkdir -p ../../../build/yield/stage_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/stage_test/synchronized_event_queue_test.o -MD $(CXXFLAGS) ../../../src/yield/stage/synchronized_event_queue_test.cpp
+	$(CXX) -c -o ../../../build/yield/stage_test/synchronized_event_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/stage/synchronized_event_queue_test.cpp
 
-../../../build/yield/stage_test/synchronized_response_queue_test.o: ../../../src/yield/stage/synchronized_response_queue_test.cpp
+../../../build/yield/stage_test/synchronized_response_queue_test.o: ../../../test/yield/stage/synchronized_response_queue_test.cpp
 	-mkdir -p ../../../build/yield/stage_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/stage_test/synchronized_response_queue_test.o -MD $(CXXFLAGS) ../../../src/yield/stage/synchronized_response_queue_test.cpp
+	$(CXX) -c -o ../../../build/yield/stage_test/synchronized_response_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/stage/synchronized_response_queue_test.cpp
 
-../../../build/yield/stage_test/wavefront_stage_scheduler_test.o: ../../../src/yield/stage/wavefront_stage_scheduler_test.cpp
+../../../build/yield/stage_test/wavefront_stage_scheduler_test.o: ../../../test/yield/stage/wavefront_stage_scheduler_test.cpp
 	-mkdir -p ../../../build/yield/stage_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/stage_test/wavefront_stage_scheduler_test.o -MD $(CXXFLAGS) ../../../src/yield/stage/wavefront_stage_scheduler_test.cpp
+	$(CXX) -c -o ../../../build/yield/stage_test/wavefront_stage_scheduler_test.o -MD $(CXXFLAGS) ../../../test/yield/stage/wavefront_stage_scheduler_test.cpp
 
-../../../build/yield/stage_test/yield_stage_test_main.o: ../../../src/yield/stage/yield_stage_test_main.cpp
+../../../build/yield/stage_test/yield_stage_test_main.o: ../../../test/yield/stage/yield_stage_test_main.cpp
 	-mkdir -p ../../../build/yield/stage_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/stage_test/yield_stage_test_main.o -MD $(CXXFLAGS) ../../../src/yield/stage/yield_stage_test_main.cpp
+	$(CXX) -c -o ../../../build/yield/stage_test/yield_stage_test_main.o -MD $(CXXFLAGS) ../../../test/yield/stage/yield_stage_test_main.cpp
 
 

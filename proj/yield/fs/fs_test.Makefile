@@ -83,48 +83,48 @@ depclean:
 -include $(DEP_FILE_PATHS)
 
 
-../../../build/yield/fs_test/directory_test.o: ../../../src/yield/fs/directory_test.cpp
+../../../build/yield/fs_test/directory_test.o: ../../../test/yield/fs/directory_test.cpp
 	-mkdir -p ../../../build/yield/fs_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/directory_test.o -MD $(CXXFLAGS) ../../../src/yield/fs/directory_test.cpp
+	$(CXX) -c -o ../../../build/yield/fs_test/directory_test.o -MD $(CXXFLAGS) ../../../test/yield/fs/directory_test.cpp
 
-../../../build/yield/fs_test/memory_mapped_file_test.o: ../../../src/yield/fs/memory_mapped_file_test.cpp
+../../../build/yield/fs_test/memory_mapped_file_test.o: ../../../test/yield/fs/memory_mapped_file_test.cpp
 	-mkdir -p ../../../build/yield/fs_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/memory_mapped_file_test.o -MD $(CXXFLAGS) ../../../src/yield/fs/memory_mapped_file_test.cpp
+	$(CXX) -c -o ../../../build/yield/fs_test/memory_mapped_file_test.o -MD $(CXXFLAGS) ../../../test/yield/fs/memory_mapped_file_test.cpp
 
-../../../build/yield/fs_test/named_pipe_test.o: ../../../src/yield/fs/named_pipe_test.cpp
+../../../build/yield/fs_test/named_pipe_test.o: ../../../test/yield/fs/named_pipe_test.cpp
 	-mkdir -p ../../../build/yield/fs_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/named_pipe_test.o -MD $(CXXFLAGS) ../../../src/yield/fs/named_pipe_test.cpp
+	$(CXX) -c -o ../../../build/yield/fs_test/named_pipe_test.o -MD $(CXXFLAGS) ../../../test/yield/fs/named_pipe_test.cpp
 
-../../../build/yield/fs_test/path_test.o: ../../../src/yield/fs/path_test.cpp
+../../../build/yield/fs_test/path_test.o: ../../../test/yield/fs/path_test.cpp
 	-mkdir -p ../../../build/yield/fs_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/path_test.o -MD $(CXXFLAGS) ../../../src/yield/fs/path_test.cpp
+	$(CXX) -c -o ../../../build/yield/fs_test/path_test.o -MD $(CXXFLAGS) ../../../test/yield/fs/path_test.cpp
 
-../../../build/yield/fs_test/posix/file_system_test.o: ../../../src/yield/fs/posix/file_system_test.cpp
+../../../build/yield/fs_test/posix/file_system_test.o: ../../../test/yield/fs/posix/file_system_test.cpp
 	-mkdir -p ../../../build/yield/fs_test/posix 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/posix/file_system_test.o -MD $(CXXFLAGS) ../../../src/yield/fs/posix/file_system_test.cpp
+	$(CXX) -c -o ../../../build/yield/fs_test/posix/file_system_test.o -MD $(CXXFLAGS) ../../../test/yield/fs/posix/file_system_test.cpp
 
-../../../build/yield/fs_test/posix/file_test.o: ../../../src/yield/fs/posix/file_test.cpp
+../../../build/yield/fs_test/posix/file_test.o: ../../../test/yield/fs/posix/file_test.cpp
 	-mkdir -p ../../../build/yield/fs_test/posix 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/posix/file_test.o -MD $(CXXFLAGS) ../../../src/yield/fs/posix/file_test.cpp
+	$(CXX) -c -o ../../../build/yield/fs_test/posix/file_test.o -MD $(CXXFLAGS) ../../../test/yield/fs/posix/file_test.cpp
 
-../../../build/yield/fs_test/posix/stat_test.o: ../../../src/yield/fs/posix/stat_test.cpp
+../../../build/yield/fs_test/posix/stat_test.o: ../../../test/yield/fs/posix/stat_test.cpp
 	-mkdir -p ../../../build/yield/fs_test/posix 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/posix/stat_test.o -MD $(CXXFLAGS) ../../../src/yield/fs/posix/stat_test.cpp
+	$(CXX) -c -o ../../../build/yield/fs_test/posix/stat_test.o -MD $(CXXFLAGS) ../../../test/yield/fs/posix/stat_test.cpp
 
-../../../build/yield/fs_test/win32/file_system_test.o: ../../../src/yield/fs/win32/file_system_test.cpp
+../../../build/yield/fs_test/win32/file_system_test.o: ../../../test/yield/fs/win32/file_system_test.cpp
 	-mkdir -p ../../../build/yield/fs_test/win32 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/win32/file_system_test.o -MD $(CXXFLAGS) ../../../src/yield/fs/win32/file_system_test.cpp
+	$(CXX) -c -o ../../../build/yield/fs_test/win32/file_system_test.o -MD $(CXXFLAGS) ../../../test/yield/fs/win32/file_system_test.cpp
 
-../../../build/yield/fs_test/win32/file_test.o: ../../../src/yield/fs/win32/file_test.cpp
+../../../build/yield/fs_test/win32/file_test.o: ../../../test/yield/fs/win32/file_test.cpp
 	-mkdir -p ../../../build/yield/fs_test/win32 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/win32/file_test.o -MD $(CXXFLAGS) ../../../src/yield/fs/win32/file_test.cpp
+	$(CXX) -c -o ../../../build/yield/fs_test/win32/file_test.o -MD $(CXXFLAGS) ../../../test/yield/fs/win32/file_test.cpp
 
-../../../build/yield/fs_test/win32/stat_test.o: ../../../src/yield/fs/win32/stat_test.cpp
+../../../build/yield/fs_test/win32/stat_test.o: ../../../test/yield/fs/win32/stat_test.cpp
 	-mkdir -p ../../../build/yield/fs_test/win32 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/win32/stat_test.o -MD $(CXXFLAGS) ../../../src/yield/fs/win32/stat_test.cpp
+	$(CXX) -c -o ../../../build/yield/fs_test/win32/stat_test.o -MD $(CXXFLAGS) ../../../test/yield/fs/win32/stat_test.cpp
 
-../../../build/yield/fs_test/yield_fs_test_main.o: ../../../src/yield/fs/yield_fs_test_main.cpp
+../../../build/yield/fs_test/yield_fs_test_main.o: ../../../test/yield/fs/yield_fs_test_main.cpp
 	-mkdir -p ../../../build/yield/fs_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/yield_fs_test_main.o -MD $(CXXFLAGS) ../../../src/yield/fs/yield_fs_test_main.cpp
+	$(CXX) -c -o ../../../build/yield/fs_test/yield_fs_test_main.o -MD $(CXXFLAGS) ../../../test/yield/fs/yield_fs_test_main.cpp
 
 

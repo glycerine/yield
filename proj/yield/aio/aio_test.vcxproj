@@ -99,28 +99,28 @@
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
-    <ClInclude Include="..\..\..\src\yield\aio\fs\aio_queue_test.hpp" />
-    <ClCompile Include="..\..\..\src\yield\aio\fs\bio_queue_test.cpp">
+    <ClInclude Include="..\..\..\test\yield\aio\fs\aio_queue_test.hpp" />
+    <ClCompile Include="..\..\..\test\yield\aio\fs\bio_queue_test.cpp">
       <ObjectFileName>$(IntDir)fs\bio_queue_test.obj</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\aio\fs\posix\aio_queue_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\aio\fs\posix\aio_queue_test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\aio\fs\win32\aio_queue_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\aio\fs\win32\aio_queue_test.cpp">
       <ObjectFileName>$(IntDir)fs\win32\aio_queue_test.obj</ObjectFileName>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\aio\sockets\aio_queue_test.hpp" />
-    <ClCompile Include="..\..\..\src\yield\aio\sockets\bio_queue_test.cpp">
+    <ClInclude Include="..\..\..\test\yield\aio\sockets\aio_queue_test.hpp" />
+    <ClCompile Include="..\..\..\test\yield\aio\sockets\bio_queue_test.cpp">
       <ObjectFileName>$(IntDir)sockets\bio_queue_test.obj</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\aio\sockets\nbio_queue_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\aio\sockets\nbio_queue_test.cpp">
       <ObjectFileName>$(IntDir)sockets\nbio_queue_test.obj</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\aio\sockets\win32\aio_queue_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\aio\sockets\win32\aio_queue_test.cpp">
       <ObjectFileName>$(IntDir)sockets\win32\aio_queue_test.obj</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\aio\yield_aio_test_main.cpp">
+    <ClCompile Include="..\..\..\test\yield\aio\yield_aio_test_main.cpp">
     </ClCompile>
   </ItemGroup>
 

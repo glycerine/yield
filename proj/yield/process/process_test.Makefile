@@ -68,16 +68,16 @@ depclean:
 -include $(DEP_FILE_PATHS)
 
 
-../../../build/yield/process_test/process_test.o: ../../../src/yield/process/process_test.cpp
+../../../build/yield/process_test/process_test.o: ../../../test/yield/process/process_test.cpp
 	-mkdir -p ../../../build/yield/process_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/process_test/process_test.o -MD $(CXXFLAGS) ../../../src/yield/process/process_test.cpp
+	$(CXX) -c -o ../../../build/yield/process_test/process_test.o -MD $(CXXFLAGS) ../../../test/yield/process/process_test.cpp
 
-../../../build/yield/process_test/shared_library_test.o: ../../../src/yield/process/shared_library_test.cpp
+../../../build/yield/process_test/shared_library_test.o: ../../../test/yield/process/shared_library_test.cpp
 	-mkdir -p ../../../build/yield/process_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/process_test/shared_library_test.o -MD $(CXXFLAGS) ../../../src/yield/process/shared_library_test.cpp
+	$(CXX) -c -o ../../../build/yield/process_test/shared_library_test.o -MD $(CXXFLAGS) ../../../test/yield/process/shared_library_test.cpp
 
-../../../build/yield/process_test/yield_process_test_main.o: ../../../src/yield/process/yield_process_test_main.cpp
+../../../build/yield/process_test/yield_process_test_main.o: ../../../test/yield/process/yield_process_test_main.cpp
 	-mkdir -p ../../../build/yield/process_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/process_test/yield_process_test_main.o -MD $(CXXFLAGS) ../../../src/yield/process/yield_process_test_main.cpp
+	$(CXX) -c -o ../../../build/yield/process_test/yield_process_test_main.o -MD $(CXXFLAGS) ../../../test/yield/process/yield_process_test_main.cpp
 
 

@@ -99,24 +99,24 @@
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
-    <ClCompile Include="..\..\..\src\yield\marshal\json\json_marshaller_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\marshal\json\json_marshaller_test.cpp">
       <ObjectFileName>$(IntDir)json\json_marshaller_test.obj</ObjectFileName>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\marshal\marshaller_test.hpp" />
-    <ClInclude Include="..\..\..\src\yield\marshal\marshaller_test_types.hpp" />
-    <ClCompile Include="..\..\..\src\yield\marshal\marshaller_test_types.idl">
+    <ClInclude Include="..\..\..\test\yield\marshal\marshaller_test.hpp" />
+    <ClInclude Include="..\..\..\test\yield\marshal\marshaller_test_types.hpp" />
+    <ClCompile Include="..\..\..\test\yield\marshal\marshaller_test_types.idl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\marshal\pretty_printer_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\marshal\pretty_printer_test.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\marshal\xdr\xdr_marshaller_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\marshal\xdr\xdr_marshaller_test.cpp">
       <ObjectFileName>$(IntDir)xdr\xdr_marshaller_test.obj</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\marshal\xml\xml_marshaller_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\marshal\xml\xml_marshaller_test.cpp">
       <ObjectFileName>$(IntDir)xml\xml_marshaller_test.obj</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\marshal\yield_marshal_test_main.cpp">
+    <ClCompile Include="..\..\..\test\yield\marshal\yield_marshal_test_main.cpp">
     </ClCompile>
   </ItemGroup>
 

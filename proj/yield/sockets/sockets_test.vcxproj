@@ -99,20 +99,20 @@
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
-    <ClCompile Include="..\..\..\src\yield\sockets\socket_address_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\sockets\socket_address_test.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\sockets\socket_pair_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\sockets\socket_pair_test.cpp">
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\sockets\socket_pair_test.hpp" />
-    <ClInclude Include="..\..\..\src\yield\sockets\socket_test.hpp" />
-    <ClCompile Include="..\..\..\src\yield\sockets\ssl\ssl_context_test.cpp">
+    <ClInclude Include="..\..\..\test\yield\sockets\socket_pair_test.hpp" />
+    <ClInclude Include="..\..\..\test\yield\sockets\socket_test.hpp" />
+    <ClCompile Include="..\..\..\test\yield\sockets\ssl\ssl_context_test.cpp">
       <ObjectFileName>$(IntDir)ssl\ssl_context_test.obj</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\sockets\tcp_socket_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\sockets\tcp_socket_test.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\sockets\udp_socket_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\sockets\udp_socket_test.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\sockets\yield_sockets_test_main.cpp">
+    <ClCompile Include="..\..\..\test\yield\sockets\yield_sockets_test_main.cpp">
     </ClCompile>
   </ItemGroup>
 

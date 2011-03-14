@@ -99,34 +99,34 @@
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
-    <ClCompile Include="..\..\..\src\yield\poll\bsd\kqueue_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\poll\bsd\kqueue_test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\poll\fd_event_queue_test.hpp" />
-    <ClCompile Include="..\..\..\src\yield\poll\linux\epoller_test.cpp">
+    <ClInclude Include="..\..\..\test\yield\poll\fd_event_queue_test.hpp" />
+    <ClCompile Include="..\..\..\test\yield\poll\linux\epoller_test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\poll\posix\poller_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\poll\posix\poller_test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\poll\socket_event_queue_test.hpp" />
-    <ClCompile Include="..\..\..\src\yield\poll\sunos\event_port_test.cpp">
+    <ClInclude Include="..\..\..\test\yield\poll\socket_event_queue_test.hpp" />
+    <ClCompile Include="..\..\..\test\yield\poll\sunos\event_port_test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\poll\win32\handle_event_queue_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\poll\win32\handle_event_queue_test.cpp">
       <ObjectFileName>$(IntDir)win32\handle_event_queue_test.obj</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\poll\win32\selector_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\poll\win32\selector_test.cpp">
       <ObjectFileName>$(IntDir)win32\selector_test.obj</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\poll\win32\wsapoller_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\poll\win32\wsapoller_test.cpp">
       <ObjectFileName>$(IntDir)win32\wsapoller_test.obj</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\poll\yield_poll_test_main.cpp">
+    <ClCompile Include="..\..\..\test\yield\poll\yield_poll_test_main.cpp">
     </ClCompile>
   </ItemGroup>
 

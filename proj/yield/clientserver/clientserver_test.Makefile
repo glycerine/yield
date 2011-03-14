@@ -68,8 +68,8 @@ depclean:
 -include $(DEP_FILE_PATHS)
 
 
-../../../build/yield/clientserver_test/yield_clientserver_test_main.o: ../../../src/yield/clientserver/yield_clientserver_test_main.cpp
+../../../build/yield/clientserver_test/yield_clientserver_test_main.o: ../../../test/yield/clientserver/yield_clientserver_test_main.cpp
 	-mkdir -p ../../../build/yield/clientserver_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/clientserver_test/yield_clientserver_test_main.o -MD $(CXXFLAGS) ../../../src/yield/clientserver/yield_clientserver_test_main.cpp
+	$(CXX) -c -o ../../../build/yield/clientserver_test/yield_clientserver_test_main.o -MD $(CXXFLAGS) ../../../test/yield/clientserver/yield_clientserver_test_main.cpp
 
 

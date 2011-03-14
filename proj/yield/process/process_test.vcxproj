@@ -99,11 +99,11 @@
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
-    <ClCompile Include="..\..\..\src\yield\process\process_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\process\process_test.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\process\shared_library_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\process\shared_library_test.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\process\yield_process_test_main.cpp">
+    <ClCompile Include="..\..\..\test\yield\process\yield_process_test_main.cpp">
     </ClCompile>
   </ItemGroup>
 

@@ -83,32 +83,32 @@ depclean:
 -include $(DEP_FILE_PATHS)
 
 
-../../../build/yield/aio_test/fs/bio_queue_test.o: ../../../src/yield/aio/fs/bio_queue_test.cpp
+../../../build/yield/aio_test/fs/bio_queue_test.o: ../../../test/yield/aio/fs/bio_queue_test.cpp
 	-mkdir -p ../../../build/yield/aio_test/fs 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/aio_test/fs/bio_queue_test.o -MD $(CXXFLAGS) ../../../src/yield/aio/fs/bio_queue_test.cpp
+	$(CXX) -c -o ../../../build/yield/aio_test/fs/bio_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/aio/fs/bio_queue_test.cpp
 
-../../../build/yield/aio_test/fs/posix/aio_queue_test.o: ../../../src/yield/aio/fs/posix/aio_queue_test.cpp
+../../../build/yield/aio_test/fs/posix/aio_queue_test.o: ../../../test/yield/aio/fs/posix/aio_queue_test.cpp
 	-mkdir -p ../../../build/yield/aio_test/fs/posix 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/aio_test/fs/posix/aio_queue_test.o -MD $(CXXFLAGS) ../../../src/yield/aio/fs/posix/aio_queue_test.cpp
+	$(CXX) -c -o ../../../build/yield/aio_test/fs/posix/aio_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/aio/fs/posix/aio_queue_test.cpp
 
-../../../build/yield/aio_test/fs/win32/aio_queue_test.o: ../../../src/yield/aio/fs/win32/aio_queue_test.cpp
+../../../build/yield/aio_test/fs/win32/aio_queue_test.o: ../../../test/yield/aio/fs/win32/aio_queue_test.cpp
 	-mkdir -p ../../../build/yield/aio_test/fs/win32 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/aio_test/fs/win32/aio_queue_test.o -MD $(CXXFLAGS) ../../../src/yield/aio/fs/win32/aio_queue_test.cpp
+	$(CXX) -c -o ../../../build/yield/aio_test/fs/win32/aio_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/aio/fs/win32/aio_queue_test.cpp
 
-../../../build/yield/aio_test/sockets/bio_queue_test.o: ../../../src/yield/aio/sockets/bio_queue_test.cpp
+../../../build/yield/aio_test/sockets/bio_queue_test.o: ../../../test/yield/aio/sockets/bio_queue_test.cpp
 	-mkdir -p ../../../build/yield/aio_test/sockets 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/aio_test/sockets/bio_queue_test.o -MD $(CXXFLAGS) ../../../src/yield/aio/sockets/bio_queue_test.cpp
+	$(CXX) -c -o ../../../build/yield/aio_test/sockets/bio_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/aio/sockets/bio_queue_test.cpp
 
-../../../build/yield/aio_test/sockets/nbio_queue_test.o: ../../../src/yield/aio/sockets/nbio_queue_test.cpp
+../../../build/yield/aio_test/sockets/nbio_queue_test.o: ../../../test/yield/aio/sockets/nbio_queue_test.cpp
 	-mkdir -p ../../../build/yield/aio_test/sockets 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/aio_test/sockets/nbio_queue_test.o -MD $(CXXFLAGS) ../../../src/yield/aio/sockets/nbio_queue_test.cpp
+	$(CXX) -c -o ../../../build/yield/aio_test/sockets/nbio_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/aio/sockets/nbio_queue_test.cpp
 
-../../../build/yield/aio_test/sockets/win32/aio_queue_test.o: ../../../src/yield/aio/sockets/win32/aio_queue_test.cpp
+../../../build/yield/aio_test/sockets/win32/aio_queue_test.o: ../../../test/yield/aio/sockets/win32/aio_queue_test.cpp
 	-mkdir -p ../../../build/yield/aio_test/sockets/win32 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/aio_test/sockets/win32/aio_queue_test.o -MD $(CXXFLAGS) ../../../src/yield/aio/sockets/win32/aio_queue_test.cpp
+	$(CXX) -c -o ../../../build/yield/aio_test/sockets/win32/aio_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/aio/sockets/win32/aio_queue_test.cpp
 
-../../../build/yield/aio_test/yield_aio_test_main.o: ../../../src/yield/aio/yield_aio_test_main.cpp
+../../../build/yield/aio_test/yield_aio_test_main.o: ../../../test/yield/aio/yield_aio_test_main.cpp
 	-mkdir -p ../../../build/yield/aio_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/aio_test/yield_aio_test_main.o -MD $(CXXFLAGS) ../../../src/yield/aio/yield_aio_test_main.cpp
+	$(CXX) -c -o ../../../build/yield/aio_test/yield_aio_test_main.o -MD $(CXXFLAGS) ../../../test/yield/aio/yield_aio_test_main.cpp
 
 

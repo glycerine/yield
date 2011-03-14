@@ -24,31 +24,31 @@
 
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\src\yield\aio\fs\aio_queue_test.hpp">
+    <ClInclude Include="..\..\..\test\yield\aio\fs\aio_queue_test.hpp">
       <Filter>Source Files\fs</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\aio\fs\bio_queue_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\aio\fs\bio_queue_test.cpp">
       <Filter>Source Files\fs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\aio\fs\posix\aio_queue_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\aio\fs\posix\aio_queue_test.cpp">
       <Filter>Source Files\fs\posix</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\aio\fs\win32\aio_queue_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\aio\fs\win32\aio_queue_test.cpp">
       <Filter>Source Files\fs\win32</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\aio\sockets\aio_queue_test.hpp">
+    <ClInclude Include="..\..\..\test\yield\aio\sockets\aio_queue_test.hpp">
       <Filter>Source Files\sockets</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\aio\sockets\bio_queue_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\aio\sockets\bio_queue_test.cpp">
       <Filter>Source Files\sockets</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\aio\sockets\nbio_queue_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\aio\sockets\nbio_queue_test.cpp">
       <Filter>Source Files\sockets</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\aio\sockets\win32\aio_queue_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\aio\sockets\win32\aio_queue_test.cpp">
       <Filter>Source Files\sockets\win32</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\aio\yield_aio_test_main.cpp">
+    <ClCompile Include="..\..\..\test\yield\aio\yield_aio_test_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

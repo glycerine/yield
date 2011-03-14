@@ -9,13 +9,13 @@
 
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\yield\i18n\iconv_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\i18n\iconv_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\i18n\tstring_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\i18n\tstring_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\i18n\yield_i18n_test_main.cpp">
+    <ClCompile Include="..\..\..\test\yield\i18n\yield_i18n_test_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

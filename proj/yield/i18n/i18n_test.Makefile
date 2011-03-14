@@ -68,16 +68,16 @@ depclean:
 -include $(DEP_FILE_PATHS)
 
 
-../../../build/yield/i18n_test/iconv_test.o: ../../../src/yield/i18n/iconv_test.cpp
+../../../build/yield/i18n_test/iconv_test.o: ../../../test/yield/i18n/iconv_test.cpp
 	-mkdir -p ../../../build/yield/i18n_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/i18n_test/iconv_test.o -MD $(CXXFLAGS) ../../../src/yield/i18n/iconv_test.cpp
+	$(CXX) -c -o ../../../build/yield/i18n_test/iconv_test.o -MD $(CXXFLAGS) ../../../test/yield/i18n/iconv_test.cpp
 
-../../../build/yield/i18n_test/tstring_test.o: ../../../src/yield/i18n/tstring_test.cpp
+../../../build/yield/i18n_test/tstring_test.o: ../../../test/yield/i18n/tstring_test.cpp
 	-mkdir -p ../../../build/yield/i18n_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/i18n_test/tstring_test.o -MD $(CXXFLAGS) ../../../src/yield/i18n/tstring_test.cpp
+	$(CXX) -c -o ../../../build/yield/i18n_test/tstring_test.o -MD $(CXXFLAGS) ../../../test/yield/i18n/tstring_test.cpp
 
-../../../build/yield/i18n_test/yield_i18n_test_main.o: ../../../src/yield/i18n/yield_i18n_test_main.cpp
+../../../build/yield/i18n_test/yield_i18n_test_main.o: ../../../test/yield/i18n/yield_i18n_test_main.cpp
 	-mkdir -p ../../../build/yield/i18n_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/i18n_test/yield_i18n_test_main.o -MD $(CXXFLAGS) ../../../src/yield/i18n/yield_i18n_test_main.cpp
+	$(CXX) -c -o ../../../build/yield/i18n_test/yield_i18n_test_main.o -MD $(CXXFLAGS) ../../../test/yield/i18n/yield_i18n_test_main.cpp
 
 

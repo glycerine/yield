@@ -1,28 +1,565 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="Header Files\aio">
+      <UniqueIdentifier>{b93b3da4-7b2c-4c5c-a208-482f7d68586c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\aio\fs">
+      <UniqueIdentifier>{cf967799-7edd-4d93-85f6-08ddb91d76e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\aio\posix">
+      <UniqueIdentifier>{55c26d2f-2b73-4427-8a65-d0fe5beb73ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\aio\sockets">
+      <UniqueIdentifier>{286cab65-e963-42de-a8c0-13523209f102}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\aio\win32">
+      <UniqueIdentifier>{3ebeec99-a4de-4aad-9d70-5538984d79be}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{bac0eb69-608a-4362-a8bf-52865c595544}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\clientserver">
+      <UniqueIdentifier>{e1749962-ede4-49c5-b6d0-456cb5ecc395}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\fs">
+      <UniqueIdentifier>{cc597b0e-2b78-469f-b4f5-aafc64e30002}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\fs\posix">
+      <UniqueIdentifier>{81f24db7-eba0-436c-8029-5f93f8267a21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\fs\win32">
+      <UniqueIdentifier>{1db5994f-44bf-4de5-9254-cf4d0ca5d4d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\getopt">
+      <UniqueIdentifier>{8a7b81b5-7350-4519-8a65-14bace956a7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\http">
+      <UniqueIdentifier>{c3766ec6-658c-4976-8fac-f7d121d9de4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\i18n">
+      <UniqueIdentifier>{e07fb8cb-c285-4f23-9a86-948ea1734a71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\i18n\posix">
+      <UniqueIdentifier>{35879725-c092-455d-b4c1-e8f090b17c35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\i18n\win32">
+      <UniqueIdentifier>{48cb1abe-a0a4-4290-8b8a-0cc4622a5466}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\marshal">
+      <UniqueIdentifier>{8f123cec-c016-43a7-99d8-36944043e371}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\marshal\json">
+      <UniqueIdentifier>{59ad1300-540f-4d63-b002-edf7fca9a98b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\marshal\xdr">
+      <UniqueIdentifier>{4a099370-ae37-4a76-a0ff-f617f8a54a6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\marshal\xml">
+      <UniqueIdentifier>{dbaea77b-3102-4f7d-9f66-6e71eb865406}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\poll">
+      <UniqueIdentifier>{df8e5bc6-17f6-4f8c-9f59-5518c2b89b1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\process">
+      <UniqueIdentifier>{f6072142-9228-4e15-8c9c-7b266ac9287a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\sockets">
+      <UniqueIdentifier>{25ebd72e-b588-4a92-a706-1df9d5c49f6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\sockets\ssl">
+      <UniqueIdentifier>{55031872-1b90-41c5-bd58-9793db460fb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\sockets\win32">
+      <UniqueIdentifier>{0953bdc5-264e-4a1e-8aaf-ca5b5412f4a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\stage">
+      <UniqueIdentifier>{a0ff8fe9-7cb0-4368-af9a-60919aff63fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\thread">
+      <UniqueIdentifier>{7c0c4817-c5b9-4b56-b9ef-95912591963f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\uri">
+      <UniqueIdentifier>{67a128a0-d6ca-4ed1-94d4-2c59ae04dcc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\uuid">
+      <UniqueIdentifier>{0f925781-0f35-41c8-9797-5978e74dde53}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files">
       <UniqueIdentifier>{bf3daac2-3948-4729-8ba6-e5ee6862f15d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\include\yield\getopt\option.hpp">
+    <ClInclude Include="..\..\..\include\yield\aio\aiocb.hpp">
+      <Filter>Header Files\aio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\fs\aio_queue.hpp">
+      <Filter>Header Files\aio\fs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\fs\aiocb.hpp">
+      <Filter>Header Files\aio\fs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\fs\fdatasync_aiocb.hpp">
+      <Filter>Header Files\aio\fs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\fs\fsync_aiocb.hpp">
+      <Filter>Header Files\aio\fs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\fs\pread_aiocb.hpp">
+      <Filter>Header Files\aio\fs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\fs\pwrite_aiocb.hpp">
+      <Filter>Header Files\aio\fs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\fs\setlk_aiocb.hpp">
+      <Filter>Header Files\aio\fs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\fs\unlk_aiocb.hpp">
+      <Filter>Header Files\aio\fs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\posix\aiocb.hpp">
+      <Filter>Header Files\aio\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\sockets\accept_aiocb.hpp">
+      <Filter>Header Files\aio\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\sockets\aio_queue.hpp">
+      <Filter>Header Files\aio\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\sockets\aiocb.hpp">
+      <Filter>Header Files\aio\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\sockets\connect_aiocb.hpp">
+      <Filter>Header Files\aio\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\sockets\recv_aiocb.hpp">
+      <Filter>Header Files\aio\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\sockets\send_aiocb.hpp">
+      <Filter>Header Files\aio\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\aio\win32\aiocb.hpp">
+      <Filter>Header Files\aio\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\assert.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\atomic.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\auto_object.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\buffer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\channel.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\channel_pair.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\clientserver\socket_client.hpp">
+      <Filter>Header Files\clientserver</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\clientserver\socket_peer.hpp">
+      <Filter>Header Files\clientserver</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\clientserver\socket_server.hpp">
+      <Filter>Header Files\clientserver</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\clientserver\stream_socket_client.hpp">
+      <Filter>Header Files\clientserver</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\clientserver\stream_socket_peer.hpp">
+      <Filter>Header Files\clientserver</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\clientserver\stream_socket_server.hpp">
+      <Filter>Header Files\clientserver</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\config.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\date_time.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\event.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\event_handler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\event_queue.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\exception.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fixed_buffer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\directory.hpp">
+      <Filter>Header Files\fs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\file.hpp">
+      <Filter>Header Files\fs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\file_log.hpp">
+      <Filter>Header Files\fs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\file_system.hpp">
+      <Filter>Header Files\fs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\memory_mapped_file.hpp">
+      <Filter>Header Files\fs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\path.hpp">
+      <Filter>Header Files\fs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\posix\directory.hpp">
+      <Filter>Header Files\fs\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\posix\extended_attributes.hpp">
+      <Filter>Header Files\fs\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\posix\file.hpp">
+      <Filter>Header Files\fs\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\posix\file_system.hpp">
+      <Filter>Header Files\fs\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\posix\memory_mapped_file.hpp">
+      <Filter>Header Files\fs\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\posix\stat.hpp">
+      <Filter>Header Files\fs\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\stat.hpp">
+      <Filter>Header Files\fs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\win32\directory.hpp">
+      <Filter>Header Files\fs\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\win32\file.hpp">
+      <Filter>Header Files\fs\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\win32\file_system.hpp">
+      <Filter>Header Files\fs\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\win32\memory_mapped_file.hpp">
+      <Filter>Header Files\fs\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\win32\stat.hpp">
+      <Filter>Header Files\fs\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\getopt\option.hpp">
+      <Filter>Header Files\getopt</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\yield\getopt\option_parser.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\getopt</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\yield\getopt\options.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\getopt</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\yield\getopt\parsed_option.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\getopt</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\yield\getopt\parsed_options.hpp">
+      <Filter>Header Files\getopt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\http\access_log.hpp">
+      <Filter>Header Files\http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\http\http_body_chunk.hpp">
+      <Filter>Header Files\http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\http\http_client.hpp">
+      <Filter>Header Files\http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\http\http_message.hpp">
+      <Filter>Header Files\http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\http\http_message_parser.hpp">
+      <Filter>Header Files\http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\http\http_request.hpp">
+      <Filter>Header Files\http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\http\http_request_handler.hpp">
+      <Filter>Header Files\http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\http\http_request_parser.hpp">
+      <Filter>Header Files\http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\http\http_response.hpp">
+      <Filter>Header Files\http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\http\http_response_parser.hpp">
+      <Filter>Header Files\http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\http\http_server.hpp">
+      <Filter>Header Files\http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\i18n\code.hpp">
+      <Filter>Header Files\i18n</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\i18n\iconv.hpp">
+      <Filter>Header Files\i18n</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\i18n\posix\code.hpp">
+      <Filter>Header Files\i18n\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\i18n\posix\iconv.hpp">
+      <Filter>Header Files\i18n\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\i18n\posix\tstring.hpp">
+      <Filter>Header Files\i18n\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\i18n\tstring.hpp">
+      <Filter>Header Files\i18n</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\i18n\win32\code.hpp">
+      <Filter>Header Files\i18n\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\i18n\win32\iconv.hpp">
+      <Filter>Header Files\i18n\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\i18n\win32\tstring.hpp">
+      <Filter>Header Files\i18n\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\log.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\boolean.hpp">
+      <Filter>Header Files\marshal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\double.hpp">
+      <Filter>Header Files\marshal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\integer.hpp">
+      <Filter>Header Files\marshal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\json\json_decoder.hpp">
+      <Filter>Header Files\marshal\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\json\json_encoder.hpp">
+      <Filter>Header Files\marshal\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\json\json_marshaller.hpp">
+      <Filter>Header Files\marshal\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\json\json_unmarshaller.hpp">
+      <Filter>Header Files\marshal\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\map.hpp">
+      <Filter>Header Files\marshal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\marshaller.hpp">
+      <Filter>Header Files\marshal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\null.hpp">
+      <Filter>Header Files\marshal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\object.hpp">
+      <Filter>Header Files\marshal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\pretty_printer.hpp">
+      <Filter>Header Files\marshal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\sequence.hpp">
+      <Filter>Header Files\marshal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\string.hpp">
+      <Filter>Header Files\marshal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\string_literal.hpp">
+      <Filter>Header Files\marshal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\unmarshaller.hpp">
+      <Filter>Header Files\marshal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\xdr\xdr_decoder.hpp">
+      <Filter>Header Files\marshal\xdr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\xdr\xdr_encoder.hpp">
+      <Filter>Header Files\marshal\xdr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\xdr\xdr_marshaller.hpp">
+      <Filter>Header Files\marshal\xdr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\xdr\xdr_unmarshaller.hpp">
+      <Filter>Header Files\marshal\xdr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\xml\xml_encoder.hpp">
+      <Filter>Header Files\marshal\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\xml\xml_marshaller.hpp">
+      <Filter>Header Files\marshal\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\marshal\xml\xml_unmarshaller.hpp">
+      <Filter>Header Files\marshal\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\message.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\object.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\page.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\poll\fd_event.hpp">
+      <Filter>Header Files\poll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\poll\fd_event_queue.hpp">
+      <Filter>Header Files\poll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\poll\socket_event.hpp">
+      <Filter>Header Files\poll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\poll\socket_event_queue.hpp">
+      <Filter>Header Files\poll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\process\process.hpp">
+      <Filter>Header Files\process</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\process\shared_library.hpp">
+      <Filter>Header Files\process</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\request.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\response.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\sockets\datagram_socket.hpp">
+      <Filter>Header Files\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\sockets\socket.hpp">
+      <Filter>Header Files\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\sockets\socket_address.hpp">
+      <Filter>Header Files\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\sockets\socket_pair.hpp">
+      <Filter>Header Files\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\sockets\ssl\ssl_context.hpp">
+      <Filter>Header Files\sockets\ssl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\sockets\ssl\ssl_exception.hpp">
+      <Filter>Header Files\sockets\ssl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\sockets\ssl\ssl_socket.hpp">
+      <Filter>Header Files\sockets\ssl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\sockets\stream_socket.hpp">
+      <Filter>Header Files\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\sockets\tcp_socket.hpp">
+      <Filter>Header Files\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\sockets\udp_socket.hpp">
+      <Filter>Header Files\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\sockets\win32\winsock.hpp">
+      <Filter>Header Files\sockets\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\stage\polling_stage_scheduler.hpp">
+      <Filter>Header Files\stage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\stage\seda_stage_scheduler.hpp">
+      <Filter>Header Files\stage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\stage\stage.hpp">
+      <Filter>Header Files\stage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\stage\stage_scheduler.hpp">
+      <Filter>Header Files\stage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\stage\synchronized_event_queue.hpp">
+      <Filter>Header Files\stage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\stage\synchronized_response_queue.hpp">
+      <Filter>Header Files\stage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\stage\wavefront_stage_scheduler.hpp">
+      <Filter>Header Files\stage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\string_buffer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\blocking_concurrent_queue.hpp">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\condition_variable.hpp">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\fiber.hpp">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\lightweight_mutex.hpp">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\mutex.hpp">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\mutex_holder.hpp">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\non_blocking_concurrent_queue.hpp">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\performance_counter_set.hpp">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\pipe.hpp">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\processor_set.hpp">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\reader_writer_lock.hpp">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\runnable.hpp">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\sampler.hpp">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\semaphore.hpp">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\static_runnable.hpp">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\synchronized_queue.hpp">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\system_configuration.hpp">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\thread.hpp">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\tls_concurrent_queue.hpp">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\unit_concurrent_queue.hpp">
+      <Filter>Header Files\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\time.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\types.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\uri\uri.hpp">
+      <Filter>Header Files\uri</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\uuid\uuid.hpp">
+      <Filter>Header Files\uuid</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -39,9 +576,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\getopt\parsed_option.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\getopt\yield_getopt_test_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

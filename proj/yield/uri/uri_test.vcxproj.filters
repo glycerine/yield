@@ -9,10 +9,10 @@
 
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\yield\uri\uri_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\uri\uri_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\uri\yield_uri_test_main.cpp">
+    <ClCompile Include="..\..\..\test\yield\uri\yield_uri_test_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

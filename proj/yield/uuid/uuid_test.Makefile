@@ -62,12 +62,12 @@ depclean:
 -include $(DEP_FILE_PATHS)
 
 
-../../../build/yield/uuid_test/uuid_test.o: ../../../src/yield/uuid/uuid_test.cpp
+../../../build/yield/uuid_test/uuid_test.o: ../../../test/yield/uuid/uuid_test.cpp
 	-mkdir -p ../../../build/yield/uuid_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/uuid_test/uuid_test.o -MD $(CXXFLAGS) ../../../src/yield/uuid/uuid_test.cpp
+	$(CXX) -c -o ../../../build/yield/uuid_test/uuid_test.o -MD $(CXXFLAGS) ../../../test/yield/uuid/uuid_test.cpp
 
-../../../build/yield/uuid_test/yield_uuid_test_main.o: ../../../src/yield/uuid/yield_uuid_test_main.cpp
+../../../build/yield/uuid_test/yield_uuid_test_main.o: ../../../test/yield/uuid/yield_uuid_test_main.cpp
 	-mkdir -p ../../../build/yield/uuid_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/uuid_test/yield_uuid_test_main.o -MD $(CXXFLAGS) ../../../src/yield/uuid/yield_uuid_test_main.cpp
+	$(CXX) -c -o ../../../build/yield/uuid_test/yield_uuid_test_main.o -MD $(CXXFLAGS) ../../../test/yield/uuid/yield_uuid_test_main.cpp
 
 

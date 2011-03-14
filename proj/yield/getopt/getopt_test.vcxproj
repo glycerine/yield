@@ -99,7 +99,7 @@
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
-    <ClCompile Include="..\..\..\src\yield\getopt\yield_getopt_test_main.cpp">
+    <ClCompile Include="..\..\..\test\yield\getopt\yield_getopt_test_main.cpp">
     </ClCompile>
   </ItemGroup>
 

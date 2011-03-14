@@ -12,28 +12,28 @@
 
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\yield\sockets\socket_address_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\sockets\socket_address_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\sockets\socket_pair_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\sockets\socket_pair_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\sockets\socket_pair_test.hpp">
+    <ClInclude Include="..\..\..\test\yield\sockets\socket_pair_test.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\yield\sockets\socket_test.hpp">
+    <ClInclude Include="..\..\..\test\yield\sockets\socket_test.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\sockets\ssl\ssl_context_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\sockets\ssl\ssl_context_test.cpp">
       <Filter>Source Files\ssl</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\sockets\tcp_socket_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\sockets\tcp_socket_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\sockets\udp_socket_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\sockets\udp_socket_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\sockets\yield_sockets_test_main.cpp">
+    <ClCompile Include="..\..\..\test\yield\sockets\yield_sockets_test_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -84,36 +84,36 @@ depclean:
 -include $(DEP_FILE_PATHS)
 
 
-../../../build/yield/poll_test/bsd/kqueue_test.o: ../../../src/yield/poll/bsd/kqueue_test.cpp
+../../../build/yield/poll_test/bsd/kqueue_test.o: ../../../test/yield/poll/bsd/kqueue_test.cpp
 	-mkdir -p ../../../build/yield/poll_test/bsd 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/poll_test/bsd/kqueue_test.o -MD $(CXXFLAGS) ../../../src/yield/poll/bsd/kqueue_test.cpp
+	$(CXX) -c -o ../../../build/yield/poll_test/bsd/kqueue_test.o -MD $(CXXFLAGS) ../../../test/yield/poll/bsd/kqueue_test.cpp
 
-../../../build/yield/poll_test/linux/epoller_test.o: ../../../src/yield/poll/linux/epoller_test.cpp
+../../../build/yield/poll_test/linux/epoller_test.o: ../../../test/yield/poll/linux/epoller_test.cpp
 	-mkdir -p ../../../build/yield/poll_test/linux 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/poll_test/linux/epoller_test.o -MD $(CXXFLAGS) ../../../src/yield/poll/linux/epoller_test.cpp
+	$(CXX) -c -o ../../../build/yield/poll_test/linux/epoller_test.o -MD $(CXXFLAGS) ../../../test/yield/poll/linux/epoller_test.cpp
 
-../../../build/yield/poll_test/posix/poller_test.o: ../../../src/yield/poll/posix/poller_test.cpp
+../../../build/yield/poll_test/posix/poller_test.o: ../../../test/yield/poll/posix/poller_test.cpp
 	-mkdir -p ../../../build/yield/poll_test/posix 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/poll_test/posix/poller_test.o -MD $(CXXFLAGS) ../../../src/yield/poll/posix/poller_test.cpp
+	$(CXX) -c -o ../../../build/yield/poll_test/posix/poller_test.o -MD $(CXXFLAGS) ../../../test/yield/poll/posix/poller_test.cpp
 
-../../../build/yield/poll_test/sunos/event_port_test.o: ../../../src/yield/poll/sunos/event_port_test.cpp
+../../../build/yield/poll_test/sunos/event_port_test.o: ../../../test/yield/poll/sunos/event_port_test.cpp
 	-mkdir -p ../../../build/yield/poll_test/sunos 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/poll_test/sunos/event_port_test.o -MD $(CXXFLAGS) ../../../src/yield/poll/sunos/event_port_test.cpp
+	$(CXX) -c -o ../../../build/yield/poll_test/sunos/event_port_test.o -MD $(CXXFLAGS) ../../../test/yield/poll/sunos/event_port_test.cpp
 
-../../../build/yield/poll_test/win32/handle_event_queue_test.o: ../../../src/yield/poll/win32/handle_event_queue_test.cpp
+../../../build/yield/poll_test/win32/handle_event_queue_test.o: ../../../test/yield/poll/win32/handle_event_queue_test.cpp
 	-mkdir -p ../../../build/yield/poll_test/win32 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/poll_test/win32/handle_event_queue_test.o -MD $(CXXFLAGS) ../../../src/yield/poll/win32/handle_event_queue_test.cpp
+	$(CXX) -c -o ../../../build/yield/poll_test/win32/handle_event_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/poll/win32/handle_event_queue_test.cpp
 
-../../../build/yield/poll_test/win32/selector_test.o: ../../../src/yield/poll/win32/selector_test.cpp
+../../../build/yield/poll_test/win32/selector_test.o: ../../../test/yield/poll/win32/selector_test.cpp
 	-mkdir -p ../../../build/yield/poll_test/win32 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/poll_test/win32/selector_test.o -MD $(CXXFLAGS) ../../../src/yield/poll/win32/selector_test.cpp
+	$(CXX) -c -o ../../../build/yield/poll_test/win32/selector_test.o -MD $(CXXFLAGS) ../../../test/yield/poll/win32/selector_test.cpp
 
-../../../build/yield/poll_test/win32/wsapoller_test.o: ../../../src/yield/poll/win32/wsapoller_test.cpp
+../../../build/yield/poll_test/win32/wsapoller_test.o: ../../../test/yield/poll/win32/wsapoller_test.cpp
 	-mkdir -p ../../../build/yield/poll_test/win32 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/poll_test/win32/wsapoller_test.o -MD $(CXXFLAGS) ../../../src/yield/poll/win32/wsapoller_test.cpp
+	$(CXX) -c -o ../../../build/yield/poll_test/win32/wsapoller_test.o -MD $(CXXFLAGS) ../../../test/yield/poll/win32/wsapoller_test.cpp
 
-../../../build/yield/poll_test/yield_poll_test_main.o: ../../../src/yield/poll/yield_poll_test_main.cpp
+../../../build/yield/poll_test/yield_poll_test_main.o: ../../../test/yield/poll/yield_poll_test_main.cpp
 	-mkdir -p ../../../build/yield/poll_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/poll_test/yield_poll_test_main.o -MD $(CXXFLAGS) ../../../src/yield/poll/yield_poll_test_main.cpp
+	$(CXX) -c -o ../../../build/yield/poll_test/yield_poll_test_main.o -MD $(CXXFLAGS) ../../../test/yield/poll/yield_poll_test_main.cpp
 
 

@@ -9,13 +9,13 @@
 
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\yield\process\process_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\process\process_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\process\shared_library_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\process\shared_library_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\process\yield_process_test_main.cpp">
+    <ClCompile Include="..\..\..\test\yield\process\yield_process_test_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

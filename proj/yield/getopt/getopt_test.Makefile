@@ -62,8 +62,8 @@ depclean:
 -include $(DEP_FILE_PATHS)
 
 
-../../../build/yield/getopt_test/yield_getopt_test_main.o: ../../../src/yield/getopt/yield_getopt_test_main.cpp
+../../../build/yield/getopt_test/yield_getopt_test_main.o: ../../../test/yield/getopt/yield_getopt_test_main.cpp
 	-mkdir -p ../../../build/yield/getopt_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/getopt_test/yield_getopt_test_main.o -MD $(CXXFLAGS) ../../../src/yield/getopt/yield_getopt_test_main.cpp
+	$(CXX) -c -o ../../../build/yield/getopt_test/yield_getopt_test_main.o -MD $(CXXFLAGS) ../../../test/yield/getopt/yield_getopt_test_main.cpp
 
 

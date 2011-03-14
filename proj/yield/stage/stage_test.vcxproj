@@ -99,19 +99,19 @@
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
-    <ClCompile Include="..\..\..\src\yield\stage\seda_stage_scheduler_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\stage\seda_stage_scheduler_test.cpp">
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\stage\stage_scheduler_test.hpp" />
-    <ClCompile Include="..\..\..\src\yield\stage\stage_test.cpp">
+    <ClInclude Include="..\..\..\test\yield\stage\stage_scheduler_test.hpp" />
+    <ClCompile Include="..\..\..\test\yield\stage\stage_test.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\stage\synchronized_event_queue_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\stage\synchronized_event_queue_test.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\stage\synchronized_response_queue_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\stage\synchronized_response_queue_test.cpp">
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\stage\test_event_handler.hpp" />
-    <ClCompile Include="..\..\..\src\yield\stage\wavefront_stage_scheduler_test.cpp">
+    <ClInclude Include="..\..\..\test\yield\stage\test_event_handler.hpp" />
+    <ClCompile Include="..\..\..\test\yield\stage\wavefront_stage_scheduler_test.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\stage\yield_stage_test_main.cpp">
+    <ClCompile Include="..\..\..\test\yield\stage\yield_stage_test_main.cpp">
     </ClCompile>
   </ItemGroup>
 

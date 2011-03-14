@@ -18,28 +18,28 @@
 
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\yield\marshal\json\json_marshaller_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\marshal\json\json_marshaller_test.cpp">
       <Filter>Source Files\json</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\marshal\marshaller_test.hpp">
+    <ClInclude Include="..\..\..\test\yield\marshal\marshaller_test.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\yield\marshal\marshaller_test_types.hpp">
+    <ClInclude Include="..\..\..\test\yield\marshal\marshaller_test_types.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\marshal\marshaller_test_types.idl">
+    <ClCompile Include="..\..\..\test\yield\marshal\marshaller_test_types.idl">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\marshal\pretty_printer_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\marshal\pretty_printer_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\marshal\xdr\xdr_marshaller_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\marshal\xdr\xdr_marshaller_test.cpp">
       <Filter>Source Files\xdr</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\marshal\xml\xml_marshaller_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\marshal\xml\xml_marshaller_test.cpp">
       <Filter>Source Files\xml</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\marshal\yield_marshal_test_main.cpp">
+    <ClCompile Include="..\..\..\test\yield\marshal\yield_marshal_test_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
