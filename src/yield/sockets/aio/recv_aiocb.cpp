@@ -1,4 +1,4 @@
-// yield/aio/sockets/recv_aiocb.cpp
+// yield/sockets/aio/recv_aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -29,18 +29,12 @@
 
 #include "yield/assert.hpp"
 #include "yield/buffer.hpp"
-#include "yield/aio/sockets/recv_aiocb.hpp"
-
+#include "yield/sockets/aio/recv_aiocb.hpp"
 
 namespace yield {
-namespace aio {
 namespace sockets {
-using yield::sockets::Socket;
-using yield::sockets::SocketAddress;
-
-
-recvAIOCB::recvAIOCB
-(
+namespace aio {
+recvAIOCB::recvAIOCB(
   Socket& socket_,
   Buffer& buffer,
   const Socket::MessageFlags& flags
@@ -51,8 +45,7 @@ recvAIOCB::recvAIOCB
 { }
 
 recvAIOCB::recvAIOCB(recvAIOCB& other)
-  : AIOCB
-  (
+  : AIOCB(
     other.get_socket(),
     other.buffer,
     other.buffer.capacity() - other.buffer.size()

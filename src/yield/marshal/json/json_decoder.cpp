@@ -49,7 +49,6 @@ extern "C"
 #include "yield/marshal/string_literal.hpp"
 #include "yield/marshal/json/json_decoder.hpp"
 
-
 namespace yield {
 namespace marshal {
 namespace json {

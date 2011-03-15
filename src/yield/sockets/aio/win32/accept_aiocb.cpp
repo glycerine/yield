@@ -1,4 +1,4 @@
-// yield/aio/sockets/win32/accept_aiocb.cpp
+// yield/sockets/aio/win32/accept_aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -29,19 +29,14 @@
 
 #include "yield/assert.hpp"
 #include "yield/page.hpp"
-#include "yield/aio/sockets/accept_aiocb.hpp"
 #include "yield/sockets/socket_address.hpp"
 #include "yield/sockets/stream_socket.hpp"
+#include "yield/sockets/aio/accept_aiocb.hpp"
 #include "yield/sockets/win32/winsock.hpp"
 
-
 namespace yield {
-namespace aio {
 namespace sockets {
-using yield::sockets::SocketAddress;
-using yield::sockets::StreamSocket;
-
-
+namespace aio {
 static LPFN_ACCEPTEX lpfnAcceptEx = NULL;
 static LPFN_GETACCEPTEXSOCKADDRS lpfnGetAcceptExSockaddrs = NULL;
 

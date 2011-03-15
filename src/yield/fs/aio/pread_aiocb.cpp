@@ -1,4 +1,4 @@
-// yield/aio/fs/pread_aiocb.cpp
+// yield/fs/aio/pread_aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -29,7 +29,7 @@
 
 #include "yield/exception.hpp"
 #include "yield/page.hpp"
-#include "yield/aio/fs/pread_aiocb.hpp"
+#include "yield/fs/aio/pread_aiocb.hpp"
 #include "yield/fs/file.hpp"
 
 

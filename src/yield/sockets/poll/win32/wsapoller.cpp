@@ -1,4 +1,4 @@
-// yield/poll/win32/wsapoller.cpp
+// yield/sockets/poll/win32/wsapoller.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -30,10 +30,10 @@
 #include "wsapoller.hpp"
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
-#include "yield/poll/socket_event.hpp"
-
+#include "yield/sockets/poll/socket_event.hpp"
 
 namespace yield {
+namespace sockets {
 namespace poll {
 namespace win32 {
 using yield::thread::NonBlockingConcurrentQueue;
@@ -45,8 +45,7 @@ WSAPoller::WSAPoller() {
 }
 
 bool
-WSAPoller::associate
-(
+WSAPoller::associate(
   socket_t socket_,
   int16_t events
 ) {
@@ -101,8 +100,7 @@ Event* WSAPoller::dequeue(const Time& timeout) {
 }
 
 bool WSAPoller::dissociate(socket_t socket_) {
-  for
-  (
+  for (
     vector<pollfd>::iterator pollfd_i = pollfds.begin();
     pollfd_i != pollfds.end();
     ++pollfd_i
@@ -123,6 +121,7 @@ bool WSAPoller::enqueue(Event& event) {
   return ret;
 }
 #endif
+}
 }
 }
 }

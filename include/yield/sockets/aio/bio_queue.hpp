@@ -1,4 +1,4 @@
-// yield/aio/sockets/bio_queue.hpp
+// yield/sockets/aio/bio_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,14 +27,14 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_AIO_SOCKETS_BIO_QUEUE_HPP_
-#define _YIELD_AIO_SOCKETS_BIO_QUEUE_HPP_
+#ifndef _YIELD_SOCKETS_AIO_BIO_QUEUE_HPP_
+#define _YIELD_SOCKETS_AIO_BIO_QUEUE_HPP_
 
-#include "../bio_queue.hpp"
+#include "yield/aio/bio_queue.hpp"
 
 namespace yield {
-namespace aio {
 namespace sockets {
+namespace aio {
 class BIOQueue : public yield::aio::BIOQueue {
 public:
   bool associate(socket_t) {

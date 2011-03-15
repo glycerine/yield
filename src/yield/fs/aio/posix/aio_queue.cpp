@@ -1,4 +1,4 @@
-// yield/aio/fs/posix/aio_queue.cpp
+// yield/fs/aio/posix/aio_queue.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -28,9 +28,9 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "aio_queue.hpp"
-#include "yield/aio/fs/fsync_aiocb.hpp"
-#include "yield/aio/fs/pread_aiocb.hpp"
-#include "yield/aio/fs/pwrite_aiocb.hpp"
+#include "yield/fs/aio/fsync_aiocb.hpp"
+#include "yield/fs/aio/pread_aiocb.hpp"
+#include "yield/fs/aio/pwrite_aiocb.hpp"
 #include "yield/stage/synchronized_event_queue.hpp"
 
 
@@ -38,7 +38,7 @@ namespace yield {
 namespace aio {
 namespace fs {
 namespace posix {
-using yield::aio::fs::AIOCB;
+using yield::fs::aio::AIOCB;
 using yield::stage::SynchronizedEventQueue;
 
 

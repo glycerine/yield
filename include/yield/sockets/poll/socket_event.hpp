@@ -1,4 +1,4 @@
-// yield/poll/socket_event.hpp
+// yield/sockets/poll/socket_event.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,13 +27,14 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_POLL_SOCKET_EVENT_HPP_
-#define _YIELD_POLL_SOCKET_EVENT_HPP_
+#ifndef _YIELD_SOCKETS_POLL_SOCKET_EVENT_HPP_
+#define _YIELD_SOCKETS_POLL_SOCKET_EVENT_HPP_
 
 #include "yield/poll/fd_event.hpp"
 
 
 namespace yield {
+namespace sockets {
 namespace poll {
 class SocketEvent : public yield::poll::FDEvent {
 public:
@@ -59,6 +60,7 @@ public:
     return "yield::poll::SocketEvent";
   }
 };
+}
 }
 }
 

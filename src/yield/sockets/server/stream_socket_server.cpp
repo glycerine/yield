@@ -1,4 +1,4 @@
-// yield/clientserver/stream_socket_server.cpp
+// yield/sockets/server/stream_socket_server.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -32,18 +32,16 @@
 #include "yield/exception.hpp"
 #include "yield/log.hpp"
 #include "yield/page.hpp"
-#include "yield/aio/sockets/accept_aiocb.hpp"
-#include "yield/aio/sockets/aio_queue.hpp"
-#include "yield/clientserver/stream_socket_server.hpp"
+#include "yield/sockets/aio/accept_aiocb.hpp"
+#include "yield/sockets/aio/aio_queue.hpp"
+#include "yield/sockets/server/stream_socket_server.hpp"
 #include "yield/sockets/stream_socket.hpp"
 
 
 namespace yield {
-namespace clientserver {
-using yield::aio::sockets::acceptAIOCB;
-using yield::sockets::SocketAddress;
-using yield::sockets::StreamSocket;
-
+namespace sockets {
+namespace server {
+using yield::sockets::aio::acceptAIOCB;
 
 StreamSocketServer::StreamSocketServer(
   Log* error_log,
@@ -136,5 +134,6 @@ StreamSocketServer::Connection::Connection
 )
   : StreamSocketPeer<SocketServer>::Connection(server, peername, socket_)
 { }
+}
 }
 }

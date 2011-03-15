@@ -40,7 +40,6 @@
 
 #include <stdlib.h> // For atof
 
-
 namespace yield {
 namespace marshal {
 namespace json {

@@ -32,7 +32,6 @@
 
 #include "yield/marshal/unmarshaller.hpp"
 
-
 namespace yield {
 namespace marshal {
 namespace json {
@@ -43,6 +42,7 @@ public:
   JSONUnmarshaller(Object& root_object);
   ~JSONUnmarshaller();
 
+public:
   // Unmarshaller
   bool read_bool(const Object& key);
   double read_double(const Object& key);

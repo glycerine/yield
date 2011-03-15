@@ -37,7 +37,6 @@
 
 #include <sstream> // For std::ostringstream
 
-
 namespace yield {
 namespace marshal {
 namespace json {

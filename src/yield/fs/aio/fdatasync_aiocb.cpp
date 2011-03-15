@@ -1,4 +1,4 @@
-// yield/aio/fs/fdatasync_aiocb.cpp
+// yield/fs/aio/fdatasync_aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -28,7 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/exception.hpp"
-#include "yield/aio/fs/fdatasync_aiocb.hpp"
+#include "yield/fs/aio/fdatasync_aiocb.hpp"
 #include "yield/fs/file.hpp"
 
 

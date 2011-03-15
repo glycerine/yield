@@ -1,4 +1,4 @@
-// yield/clientserver/stream_socket_client.hpp
+// yield/sockets/client/stream_socket_client.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,20 +27,21 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_CLIENTSERVER_STREAM_SOCKET_CLIENT_HPP_
-#define _YIELD_CLIENTSERVER_STREAM_SOCKET_CLIENT_HPP_
+#ifndef _YIELD_SOCKETS_CLIENT_STREAM_SOCKET_CLIENT_HPP_
+#define _YIELD_SOCKETS_CLIENT_STREAM_SOCKET_CLIENT_HPP_
 
 #include "yield/buffer.hpp"
 #include "yield/time.hpp"
 #include "yield/uri/uri.hpp"
-#include "yield/aio/sockets/connect_aiocb.hpp"
-#include "yield/clientserver/socket_client.hpp"
-#include "yield/clientserver/stream_socket_peer.hpp"
+#include "yield/sockets/aio/connect_aiocb.hpp"
+#include "yield/sockets/client/socket_client.hpp"
+#include "yield/sockets/peer/stream_socket_peer.hpp"
 
 
 namespace yield {
-namespace clientserver {
-class StreamSocketClient : public StreamSocketPeer<SocketClient> {
+namespace sockets {
+namespace client {
+class StreamSocketClient : public yield::sockets::peer::StreamSocketPeer<SocketClient> {
 public:
   class Configuration {
   public:
@@ -52,8 +53,7 @@ public:
     const static uint16_t SEND_TRIES_MAX_DEFAULT = 3;
 
   public:
-    Configuration
-    (
+    Configuration(
       uint16_t concurrency_level = CONCURRENCY_LEVEL_DEFAULT,
       const Time& connect_timeout = CONNECT_TIMEOUT_DEFAULT,
       const Time& recv_timeout = RECV_TIMEOUT_DEFAULT,
@@ -62,25 +62,32 @@ public:
       const uint16_t send_tries_max = SEND_TRIES_MAX_DEFAULT
     );
 
+  public:
     uint16_t get_concurrency_level() const {
       return concurrency_level;
     }
+
     const Time& get_connect_timeout() const {
       return connect_timeout;
     }
+
     const Time& get_recv_timeout() const {
       return recv_timeout;
     }
+
     uint16_t get_recv_tries_max() const {
       return recv_tries_max;
     }
+
     const Time& get_send_timeout() const {
       return send_timeout;
     }
+
     uint16_t get_send_tries_max() const {
       return send_tries_max;
     }
 
+  public:
     void set_connect_timeout(const Time& connect_timeout);
     void set_recv_timeout(const Time& recv_timeout);
     void set_send_timeout(const Time& send_timeout);
@@ -98,7 +105,7 @@ public:
   const Configuration& get_configuration() const {
     return configuration;
   }
-  yield::sockets::SocketAddress& get_peername() {
+  SocketAddress& get_peername() {
     return peername;
   }
 
@@ -106,12 +113,11 @@ protected:
   class connectAIOCB;
 
 
-  class Connection : public StreamSocketPeer<SocketClient>::Connection {
+  class Connection : public yield::sockets::peer::StreamSocketPeer<SocketClient>::Connection {
   public:
-    Connection
-    (
+    Connection(
       StreamSocketClient&,
-      YO_NEW_REF yield::sockets::StreamSocket&
+      YO_NEW_REF StreamSocket&
     );
 
     virtual ~Connection() { }
@@ -175,19 +181,16 @@ protected:
 
 
   class connectAIOCB
-    : public yield::aio::sockets::connectAIOCB,
+    : public yield::sockets::aio::connectAIOCB,
       public StreamSocketPeer<SocketClient>::AIOCB {
   public:
-    connectAIOCB
-    (
+    connectAIOCB(
       Connection& connection,
       YO_NEW_REF Buffer* send_buffer = NULL
-    )
-      : yield::aio::sockets::connectAIOCB
-      (
-        connection.get_socket(),
-        connection.get_peername(),
-        send_buffer
+    ) : yield::sockets::aio::connectAIOCB(
+          connection.get_socket(),
+          connection.get_peername(),
+          send_buffer
       ),
       StreamSocketPeer<SocketClient>::AIOCB(connection)
     { }
@@ -209,8 +212,9 @@ protected:
 
 private:
   Configuration configuration;
-  yield::sockets::SocketAddress& peername;
+  SocketAddress& peername;
 };
+}
 }
 }
 

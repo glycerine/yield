@@ -47,12 +47,6 @@ extern yunit::TestSuite& EventPortTestSuite();
 #ifdef _WIN32
 extern yunit::TestSuite& HandleEventQueueTestSuite();
 #endif
-#ifdef _WIN32
-extern yunit::TestSuite& SelectorTestSuite();
-#endif
-#ifdef _WIN32
-extern yunit::TestSuite& WSAPollerTestSuite();
-#endif
 
 
 int main(int, char**) {
@@ -90,20 +84,6 @@ int main(int, char**) {
   // HandleEventQueue
   std::cout << "HandleEventQueue:" << std::endl;
   failed_test_case_count += HandleEventQueueTestSuite().run();
-  std::cout << std::endl;
-#endif
-
-#ifdef _WIN32
-  // Selector
-  std::cout << "Selector:" << std::endl;
-  failed_test_case_count += SelectorTestSuite().run();
-  std::cout << std::endl;
-#endif
-
-#ifdef _WIN32
-  // WSAPoller
-  std::cout << "WSAPoller:" << std::endl;
-  failed_test_case_count += WSAPollerTestSuite().run();
   std::cout << std::endl;
 #endif
 

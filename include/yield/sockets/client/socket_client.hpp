@@ -1,4 +1,4 @@
-// yield/clientserver/socket_client.hpp
+// yield/sockets/client/socket_client.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,15 +27,16 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_CLIENTSERVER_SOCKET_CLIENT_HPP_
-#define _YIELD_CLIENTSERVER_SOCKET_CLIENT_HPP_
+#ifndef _YIELD_SOCKETS_CLIENT_SOCKET_CLIENT_HPP_
+#define _YIELD_SOCKETS_CLIENT_SOCKET_CLIENT_HPP_
 
-#include "yield/clientserver/socket_peer.hpp"
+#include "yield/sockets/peer/socket_peer.hpp"
 
 
 namespace yield {
-namespace clientserver {
-class SocketClient : public SocketPeer {
+namespace sockets {
+namespace client {
+class SocketClient : public ::yield::sockets::peer::SocketPeer {
 protected:
   SocketClient(Log* error_log, Log* trace_log)
     : SocketPeer(error_log, trace_log)
@@ -43,6 +44,7 @@ protected:
 
   virtual ~SocketClient() { }
 };
+}
 }
 }
 

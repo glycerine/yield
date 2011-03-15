@@ -53,11 +53,12 @@ public:
     return accept(peername);
   }
 
+public:
   virtual YO_NEW_REF StreamSocket* accept(SocketAddress& peername);
 
+public:
   static YO_NEW_REF StreamSocket*
-  create
-  (
+  create(
     int domain,
     int protocol = PROTOCOL_DEFAULT
   ) {
@@ -72,10 +73,14 @@ public:
     return create(get_domain(), get_protocol());
   }
 
+public:
   virtual bool listen();
+
+public:
   virtual bool want_accept() const;
   virtual bool want_connect() const;
 
+public:
   // Object
   StreamSocket& inc_ref() {
     return Object::inc_ref(*this);

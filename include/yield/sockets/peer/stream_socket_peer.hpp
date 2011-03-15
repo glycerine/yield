@@ -1,4 +1,4 @@
-// yield/clientserver/stream_socket_peer.hpp
+// yield/sockets/peer/stream_socket_peer.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,50 +27,88 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_CLIENTSERVER_STREAM_SOCKET_PEER_HPP_
-#define _YIELD_CLIENTSERVER_STREAM_SOCKET_PEER_HPP_
+#ifndef _YIELD_SOCKETS_PEER_STREAM_SOCKET_PEER_HPP_
+#define _YIELD_SOCKETS_PEER_STREAM_SOCKET_PEER_HPP_
 
-#include "yield/aio/sockets/recv_aiocb.hpp"
-#include "yield/aio/sockets/send_aiocb.hpp"
+#include "yield/assert.hpp"
+#include "yield/exception.hpp"
+#include "yield/buffer.hpp"
+#include "yield/log.hpp"
+#include "yield/sockets/stream_socket.hpp"
+#include "yield/sockets/aio/aio_queue.hpp"
+#include "yield/sockets/aio/recv_aiocb.hpp"
+#include "yield/sockets/aio/send_aiocb.hpp"
+
+#include <sstream> // for ostringstream
 
 namespace yield {
 namespace sockets {
+class SocketAddress;
 class StreamSocket;
-}
 
-namespace clientserver {
+namespace peer {
 template <class SocketPeerType>
 class StreamSocketPeer : public SocketPeerType {
 protected:
   class recvAIOCB;
   class sendAIOCB;
 
-
   class Connection : public EventHandler {
   public:
     Connection(
-      StreamSocketPeer&,
-      yield::sockets::SocketAddress& peername,
-      YO_NEW_REF yield::sockets::StreamSocket& socket_
-    );
+      StreamSocketPeer& peer,
+      SocketAddress& peername,
+      YO_NEW_REF StreamSocket& socket_
+    ) 
+    : aio_queue(peer.get_aio_queue().inc_ref()),
+      error_log(Object::inc_ref(peer.get_error_log())),
+      peername(peername),
+      socket_(&socket_),
+      trace_log(Object::inc_ref(peer.get_trace_log()))
+    { }
 
-    virtual ~Connection();
+    virtual ~Connection() {
+      close();
+      Log::dec_ref(error_log);
+      StreamSocket::dec_ref(socket_);
+      Log::dec_ref(trace_log);
+    }
 
-    void close();
+  public:
+    void close() {
+      get_socket().shutdown();
+      get_socket().close();
+    }
 
-    const string& get_log_prefix();
+  public:
+    const string& get_log_prefix() {
+      if (log_prefix.empty()) {
+        SocketAddress sockname;
+        get_socket().getsockname(sockname);
 
-    yield::sockets::SocketAddress& get_peername() const {
+        std::ostringstream log_prefix_oss;
+        log_prefix_oss << get_type_name() << "(";
+        log_prefix_oss << sockname << "/" << peername;
+        log_prefix_oss << ")";
+        log_prefix = log_prefix_oss.str();
+      }
+
+      return log_prefix;
+    }
+
+    SocketAddress& get_peername() const {
       return peername;
     }
 
-    yield::sockets::StreamSocket& get_socket() const {
+    StreamSocket& get_socket() const {
       return *socket_;
     }
 
+  public:
     virtual void handle(YO_NEW_REF recvAIOCB& recv_aiocb) = 0;
     virtual void handle(YO_NEW_REF sendAIOCB& send_aiocb) = 0;
 
+  public:
     // Object
     virtual const char* get_type_name() const {
       return "yield::sockets::StreamSocketPeer::Connection";
@@ -81,10 +119,22 @@ protected:
     }
 
   protected:
-    void enqueue(YO_NEW_REF recvAIOCB& recv_aiocb);
-    void enqueue(YO_NEW_REF sendAIOCB& send_aiocb);
+    void enqueue(YO_NEW_REF recvAIOCB& recv_aiocb) {
+      if (!get_aio_queue().enqueue(recv_aiocb)) {
+        recvAIOCB::dec_ref(recv_aiocb);
+        Connection::dec_ref(*this);
+      }
+    }
 
-    yield::aio::sockets::AIOQueue& get_aio_queue() const {
+    void enqueue(YO_NEW_REF sendAIOCB& send_aiocb) {
+      if (!get_aio_queue().enqueue(send_aiocb)) {
+        sendAIOCB::dec_ref(send_aiocb);
+        Connection::dec_ref(*this);
+      }
+    }
+
+  protected:
+    ::yield::sockets::aio::AIOQueue& get_aio_queue() const {
       return aio_queue;
     }
 
@@ -97,11 +147,11 @@ protected:
     }
 
   private:
-    yield::aio::sockets::AIOQueue& aio_queue;
+    ::yield::sockets::aio::AIOQueue& aio_queue;
     Log* error_log;
     string log_prefix;
-    yield::sockets::SocketAddress& peername;
-    yield::sockets::StreamSocket* socket_;
+    SocketAddress& peername;
+    StreamSocket* socket_;
     Log* trace_log;
   };
 
@@ -123,33 +173,95 @@ protected:
 
 
   class recvAIOCB
-    : public yield::aio::sockets::recvAIOCB,
+    : public yield::sockets::aio::recvAIOCB,
       public StreamSocketPeer::AIOCB {
   public:
     recvAIOCB(Connection& connection, YO_NEW_REF Buffer& buffer)
-      : yield::aio::sockets::recvAIOCB(connection.get_socket(), buffer, 0),
+      : yield::sockets::aio::recvAIOCB(connection.get_socket(), buffer, 0),
         StreamSocketPeer::AIOCB(connection)
     { }
   };
 
 
   class sendAIOCB
-    : public yield::aio::sockets::sendAIOCB,
+    : public ::yield::sockets::aio::sendAIOCB,
       public StreamSocketPeer::AIOCB {
   public:
     sendAIOCB(Connection& connection, YO_NEW_REF Buffer& buffer)
-      : yield::aio::sockets::sendAIOCB(connection.get_socket(), buffer, 0),
+      : yield::sockets::aio::sendAIOCB(connection.get_socket(), buffer, 0),
         StreamSocketPeer::AIOCB(connection)
     { }
   };
 
 protected:
-  StreamSocketPeer(Log* error_log, Log* trace_log);
+  StreamSocketPeer(Log* error_log, Log* trace_log)
+    : SocketPeerType(error_log, trace_log)
+  { }
+
   virtual ~StreamSocketPeer() { }
 
   // Stage
-  virtual void service(YO_NEW_REF Event& event);
+  virtual void service(YO_NEW_REF Event& event) {
+    switch (event.get_type_id()) {
+    case recvAIOCB::TYPE_ID: {
+      recvAIOCB& recv_aiocb = static_cast<recvAIOCB&>(event);
+      StreamSocketPeer<SocketPeerType>::Connection& connection
+      = static_cast<Connection&>(recv_aiocb.get_connection());
+
+      if (recv_aiocb.get_error() == 0) {
+        if (this->get_trace_log() != NULL) {
+          this->get_trace_log()->get_stream(Log::INFO) <<
+              connection.get_log_prefix() << ": received ";
+          this->get_trace_log()->write(recv_aiocb.get_buffer(), Log::INFO);
+        }
+
+        connection.handle(recv_aiocb);
+      } else {
+        if (this->get_error_log() != NULL) {
+          this->get_error_log()->get_stream(Log::ERR) <<
+              connection.get_log_prefix() << ": " <<
+              "error in " << recv_aiocb.get_type_name() << ": " <<
+              Exception(recv_aiocb.get_error());
+        }
+
+        connection.handle(recv_aiocb);
+
+        Connection::dec_ref(connection);
+      }
+    }
+    break;
+
+    case sendAIOCB::TYPE_ID: {
+      sendAIOCB& send_aiocb = static_cast<sendAIOCB&>(event);
+      StreamSocketPeer<SocketPeerType>::Connection& connection
+      = send_aiocb.get_connection();
+
+      if (send_aiocb.get_error() == 0) {
+        if (this->get_trace_log() != NULL) {
+          this->get_trace_log()->get_stream(Log::INFO) <<
+              connection.get_log_prefix() << ": sent ";
+          this->get_trace_log()->write(send_aiocb.get_buffer(), Log::INFO);
+        }
+
+        connection.handle(send_aiocb);
+      } else {
+        if (this->get_error_log() != NULL) {
+          this->get_error_log()->get_stream(Log::ERR) <<
+              connection.get_log_prefix() << ": " <<
+              "error in " << send_aiocb.get_type_name() << ":" <<
+              Exception(send_aiocb.get_error());
+        }
+
+        connection.handle(send_aiocb);
+
+        Connection::dec_ref(connection);
+      }
+    }
+    break;
+    }
+  }
 };
+}
 }
 }
 

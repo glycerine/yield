@@ -1,4 +1,4 @@
-// yield/aio/sockets/aio_queue.hpp
+// yield/sockets/aio/aio_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,44 +27,23 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_AIO_SOCKETS_AIO_QUEUE_HPP_
-#define _YIELD_AIO_SOCKETS_AIO_QUEUE_HPP_
+#ifndef _YIELD_SOCKETS_AIO_AIO_QUEUE_HPP_
+#define _YIELD_SOCKETS_AIO_AIO_QUEUE_HPP_
 
-#include "yield/event_queue.hpp"
+#ifdef _WIN32
+#include "yield/sockets/aio/win32/aio_queue.hpp"
+#else
+#include "yield/sockets/aio/nbio_queue.hpp"
+#endif
 
 namespace yield {
-namespace aio {
 namespace sockets {
-class NBIOQueue;
+namespace aio {
 #ifdef _WIN32
-namespace win32 {
-class AIOQueue;
-}
-#endif
-
-class AIOQueue : public EventQueue {
-public:
-  AIOQueue();
-  ~AIOQueue();
-
-  bool associate(socket_t socket_);
-
-  // yield::Object
-  AIOQueue& inc_ref() {
-    return Object::inc_ref(*this);
-  }
-
-  // yield::EventQueue
-  YO_NEW_REF Event* dequeue(const Time& timeout);
-  bool enqueue(YO_NEW_REF Event& event);
-
-private:
-#ifdef _WIN32
-  win32::AIOQueue* pimpl;
+typedef win32::AIOQueue AIOQueue;
 #else
-  NBIOQueue* pimpl;
+typedef NBIOQueue AIOQueue;
 #endif
-};
 }
 }
 }

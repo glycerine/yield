@@ -1,4 +1,4 @@
-// yield/aio/fs/posix/pread_aiocb.cpp
+// yield/fs/aio/posix/pread_aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,7 +27,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/aio/fs/pread_aiocb.hpp"
+#include "yield/fs/aio/pread_aiocb.hpp"
 
 
 namespace yield {

@@ -1,4 +1,4 @@
-// yield/aio/sockets/send_aiocb.cpp
+// yield/sockets/aio/send_aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -28,19 +28,13 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/buffer.hpp"
-#include "yield/aio/sockets/send_aiocb.hpp"
 #include "yield/sockets/socket_address.hpp"
-
+#include "yield/sockets/aio/send_aiocb.hpp"
 
 namespace yield {
-namespace aio {
 namespace sockets {
-using yield::sockets::Socket;
-using yield::sockets::SocketAddress;
-
-
-sendAIOCB::sendAIOCB
-(
+namespace aio {
+sendAIOCB::sendAIOCB(
   Socket& socket_,
   YO_NEW_REF Buffer& buffer,
   const Socket::MessageFlags& flags,

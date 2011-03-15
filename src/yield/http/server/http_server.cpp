@@ -1,4 +1,4 @@
-// yield/http/http_server.cpp
+// yield/http/server/http_server.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -32,19 +32,19 @@
 #include "yield/http/http_request.hpp"
 #include "yield/http/http_request_parser.hpp"
 #include "yield/http/http_response.hpp"
-#include "yield/http/http_server.hpp"
-#include "yield/aio/sockets/accept_aiocb.hpp"
-#include "yield/aio/sockets/aio_queue.hpp"
+#include "yield/http/server/http_server.hpp"
 #include "yield/sockets/tcp_socket.hpp"
-
+#include "yield/sockets/aio/accept_aiocb.hpp"
+#include "yield/sockets/aio/aio_queue.hpp"
 
 namespace yield {
 namespace http {
-using yield::aio::sockets::acceptAIOCB;
-using yield::clientserver::StreamSocketServer;
+namespace server {
 using yield::sockets::SocketAddress;
 using yield::sockets::StreamSocket;
 using yield::sockets::TCPSocket;
+using yield::sockets::aio::acceptAIOCB;
+using yield::sockets::server::StreamSocketServer;
 
 class HTTPServer::Connection : public StreamSocketServer::Connection {
 public:
@@ -170,6 +170,7 @@ HTTPServer::~HTTPServer() {
 StreamSocketServer::Connection&
 HTTPServer::create_connection(SocketAddress& peername, StreamSocket& socket_) {
   return *new Connection(*this, peername, socket_);
+}
 }
 }
 }

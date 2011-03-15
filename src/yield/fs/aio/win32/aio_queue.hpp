@@ -1,4 +1,4 @@
-// yield/aio/fs/win32/aio_queue.hpp
+// yield/fs/aio/win32/aio_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,8 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_AIO_FS_WIN32_AIO_QUEUE_HPP_
-#define _YIELD_AIO_FS_WIN32_AIO_QUEUE_HPP_
+#ifndef _YIELD_FS_AIO_WIN32_AIO_QUEUE_HPP_
+#define _YIELD_FS_AIO_WIN32_AIO_QUEUE_HPP_
 
 #include "../../win32/aio_queue.hpp"
 

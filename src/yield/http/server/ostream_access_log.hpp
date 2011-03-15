@@ -1,4 +1,4 @@
-// yield/http/ostream_access_log.hpp
+// yield/http/server/ostream_access_log.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,14 +27,14 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_HTTP_OSTREAM_ACCESS_LOG_HPP_
-#define _YIELD_HTTP_OSTREAM_ACCESS_LOG_HPP_
+#ifndef _YIELD_HTTP_SERVER_OSTREAM_ACCESS_LOG_HPP_
+#define _YIELD_HTTP_SERVER_OSTREAM_ACCESS_LOG_HPP_
 
-#include "yield/http/access_log.hpp"
-
+#include "yield/http/server/access_log.hpp"
 
 namespace yield {
 namespace http {
+namespace server {
 class ostreamAccessLog : public AccessLog {
 public:
   ostreamAccessLog(std::ostream& os, Format& format)
@@ -55,6 +55,7 @@ public:
 private:
   std::ostream& os;
 };
+}
 }
 }
 

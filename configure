@@ -88,11 +88,11 @@ PROJECT_REFERENCES = {
     "yield.poll": ("yield",),
     "yield.process": ("yield.fs",),
     "yield.sockets": ("yield",),
-    "yield.sockets.aio": ("yield.sockets.poll", "yield.stage"),
-    "yield.sockets.client": ("yield.sockets.peer",),
+    "yield.sockets.aio": ("yield.aio", "yield.sockets.poll", "yield.stage"),
+    "yield.sockets.client": ("yield.sockets.aio",),
     "yield.sockets.peer": ("yield.sockets.aio",),
     "yield.sockets.poll": ("yield.poll", "yield.sockets"),
-    "yield.sockets.server": ("yield.sockets.peer",),
+    "yield.sockets.server": ("yield.sockets.aio",),
     "yield.sockets.ssl": ("yield.sockets",),
     "yield.stage": ("yield.thread",),
     "yield.thread": ("yield",),
@@ -209,16 +209,15 @@ for project_name in LIBS.iterkeys():
 OUTPUT_FILE_PATHS = {}
 for project_name in PROJECT_NAMES:
     OUTPUT_FILE_PATHS[project_name] = \
-        path_join(ROOT_DIR_PATH, "lib", "yield", "yield_" + project_name)
+        path_join(ROOT_DIR_PATH, "lib", "yield", '_'.join(project_name.split('.')))
     OUTPUT_FILE_PATHS[project_name + "_test"] = \
-        path_join(ROOT_DIR_PATH, "bin", "yield", "yield_" + project_name + "_test")
+        path_join(ROOT_DIR_PATH, "bin", "yield", '_'.join(project_name.split('.')) + "_test")
 
 PROJECT_DIR_PATHS = {}
 for project_name in PROJECT_NAMES:
-    project_dir_path = path_join(ROOT_DIR_PATH, "proj", "yield", project_name)
+    project_dir_path = path_join(ROOT_DIR_PATH, "proj", path_sep.join(project_name.split('.')))
     PROJECT_DIR_PATHS[project_name] = project_dir_path
     PROJECT_DIR_PATHS[project_name + "_test"] = project_dir_path
-
 
 for project_name in PROJECT_NAMES:
     PROJECT_REFERENCES[project_name + "_test"] = (project_name,)
@@ -255,7 +254,7 @@ for project_name, project_references in PROJECT_REFERENCES_EXPANDED.iteritems():
 
     # Add the project references' outputs to the project's libs
     for project_reference in project_references:
-        project_reference_lib = "yield_" + project_reference
+        project_reference_lib = path_split(OUTPUT_FILE_PATHS[project_reference])[-1]
         LIBS_EXPANDED[project_name].setdefault('*', [])
         assert project_reference_lib not in LIBS_EXPANDED[project_name]['*'], LIBS_EXPANDED[project_name]['*']
         LIBS_EXPANDED[project_name]['*'].append(project_reference_lib)
@@ -614,9 +613,9 @@ if options.generate_proj:
         "yield.sln",
         str(
             VCXSln(
-                [path_join("proj", "yield", project_name, project_name)
+                [path_join(PROJECT_DIR_PATHS[project_name], project_name)
                  for project_name in PROJECT_NAMES] + \
-                [path_join("proj", "yield", project_name, project_name + "_test")
+                [path_join(PROJECT_DIR_PATHS[project_name], project_name + "_test")
                  for project_name in PROJECT_NAMES],
                 "yield.sln"
             )
@@ -657,10 +656,17 @@ if options.generate_src or options.generate_src_rl:
 
 if options.generate_src or options.generate_src_test_main_cpp:
     for project_name in PROJECT_NAMES:
+        project_test_dir_path = None
         test_suite_decls = []
         test_suite_runs = []
 
         for test_cpp_file in SourceFiles(SOURCE_FILE_PATHS[project_name + "_test"]):
+            test_cpp_dir_path = dirname(test_cpp_file.get_path())
+            if project_test_dir_path is None:
+                project_test_dir_path = test_cpp_dir_path
+            else:
+                assert test_cpp_dir_path.startswith(project_test_dir_path), test_cpp_dir_path + " vs. " + project_test_dir_path
+
             test_suite_names = []
             test_cpp_file_lines = open(test_cpp_file.get_path()).readlines()
             test_cpp_file_line_i = 0
@@ -717,8 +723,12 @@ std::cout << std::endl;""" % locals()
         test_suite_runs = \
             indent(INDENT_SPACES["cpp"], '\n\n'.join(test_suite_runs))
 
-        write_file(
-            path_join(project_src_dir_path, "yield_" + project_name + "_test_main.cpp"),
+        if project_test_dir_path is not None:
+            test_main_cpp_file_path = \
+                path_join(project_test_dir_path, '_'.join(project_name.split('.')) + "_test_main.cpp")
+
+            write_file(
+                test_main_cpp_file_path,
         """\
 #include "yunit.hpp"
 
@@ -737,6 +747,12 @@ int main(int, char**) {
 }
 
 """ % locals(), force=options.force)
+
+            SourceFiles(test_main_cpp_file_path).format(
+                author=AUTHOR,
+                force=options.force,
+                project="Yield"
+            )
 
 
 if options.generate_src or options.generate_src_test_py:

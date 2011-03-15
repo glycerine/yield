@@ -1,4 +1,4 @@
-// yield/aio/sockets/win32/aiocb.cpp
+// yield/sockets/aio/win32/aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -29,15 +29,13 @@
 
 #include "yield/assert.hpp"
 #include "yield/event_handler.hpp"
-#include "yield/aio/sockets/aiocb.hpp"
-
+#include "yield/sockets/aio/aiocb.hpp"
 
 namespace yield {
-namespace aio {
 namespace sockets {
+namespace aio {
 void __stdcall
-AIOCB::CompletionRoutine
-(
+AIOCB::CompletionRoutine(
   unsigned long dwErrorCode,
   unsigned long dwNumberOfBytesTransfered,
   ::OVERLAPPED* lpOverlapped,

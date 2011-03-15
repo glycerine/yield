@@ -35,7 +35,6 @@
 
 #include <map>
 
-
 namespace yield {
 namespace marshal {
 namespace json {

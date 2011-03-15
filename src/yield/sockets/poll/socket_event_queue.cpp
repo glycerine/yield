@@ -1,4 +1,4 @@
-// yield/poll/socket_event_queue.cpp
+// yield/sockets/poll/socket_event_queue.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -33,10 +33,11 @@
 #else
 #include "yield/poll/fd_event_queue.hpp"
 #endif
-#include "yield/poll/socket_event_queue.hpp"
+#include "yield/sockets/poll/socket_event_queue.hpp"
 
 
 namespace yield {
+namespace sockets {
 namespace poll {
 SocketEventQueue::SocketEventQueue() {
 #ifdef _WIN32
@@ -68,6 +69,7 @@ Event* SocketEventQueue::dequeue(const Time& timeout) {
 
 bool SocketEventQueue::enqueue(Event& event) {
   return pimpl->enqueue(event);
+}
 }
 }
 }

@@ -1,4 +1,4 @@
-// yield/aio/fs/posix/fdatasync_aiocb.cpp
+// yield/fs/aio/posix/fdatasync_aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,7 +27,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/aio/fs/fdatasync_aiocb.hpp"
+#include "yield/fs/aio/fdatasync_aiocb.hpp"
 
 
 namespace yield {

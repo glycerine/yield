@@ -35,7 +35,6 @@
 
 #include <stack>
 
-
 namespace yield {
 namespace marshal {
 namespace json {
@@ -64,8 +63,8 @@ private:
 private:
   std::stack<bool> in_object_stack;
 };
-};
-};
-};
+}
+}
+}
 
 #endif

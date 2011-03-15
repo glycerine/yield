@@ -1,4 +1,4 @@
-// yield/aio/fs/posix/pwrite_aiocb.cpp
+// yield/fs/aio/posix/pwrite_aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -28,7 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/page.hpp"
-#include "yield/aio/fs/pwrite_aiocb.hpp"
+#include "yield/fs/aio/pwrite_aiocb.hpp"
 
 
 namespace yield {

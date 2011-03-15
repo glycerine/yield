@@ -1,4 +1,4 @@
-// yield/http/file_access_log.hpp
+// yield/http/server/file_access_log.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,15 +27,16 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_HTTP_FILE_ACCESS_LOG_HPP_
-#define _YIELD_HTTP_FILE_ACCESS_LOG_HPP_
+#ifndef _YIELD_HTTP_SERVER_FILE_ACCESS_LOG_HPP_
+#define _YIELD_HTTP_SERVER_FILE_ACCESS_LOG_HPP_
 
 #include "yield/fs/file.hpp"
 #include "yield/fs/path.hpp"
-#include "yield/http/access_log.hpp"
+#include "yield/http/server/access_log.hpp"
 
 namespace yield {
 namespace http {
+namespace server {
 class FileAccessLog : public AccessLog {
 public:
   FileAccessLog(const yield::fs::Path& file_path, Format& format);
@@ -48,6 +49,7 @@ private:
   yield::fs::File* file;
   yield::fs::Path file_path;
 };
+}
 }
 }
 

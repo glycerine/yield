@@ -1,4 +1,4 @@
-// yield/aio/fs/pwrite_aiocb.cpp
+// yield/fs/aio/pwrite_aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -29,7 +29,7 @@
 
 #include "yield/exception.hpp"
 #include "yield/page.hpp"
-#include "yield/aio/fs/pwrite_aiocb.hpp"
+#include "yield/fs/aio/pwrite_aiocb.hpp"
 #include "yield/fs/file.hpp"
 
 

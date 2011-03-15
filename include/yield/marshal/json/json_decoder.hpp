@@ -34,18 +34,14 @@
 
 #include <stack>
 
-
 struct yajl_handle_t;
 typedef struct yajl_handle_t* yajl_handle;
-
 
 namespace yield {
 class Buffer;
 
-
 namespace marshal {
 class String;
-
 
 namespace json {
 class JSONDecoder {
@@ -87,8 +83,8 @@ private:
   String* next_map_key;
   yajl_handle reader;
 };
-};
-};
-};
+}
+}
+}
 
 #endif

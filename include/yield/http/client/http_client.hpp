@@ -1,4 +1,4 @@
-// yield/http/http_client.hpp
+// yield/http/client/http_client.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,10 +27,10 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_HTTP_HTTP_CLIENT_HPP_
-#define _YIELD_HTTP_HTTP_CLIENT_HPP_
+#ifndef _YIELD_HTTP_CLIENT_HTTP_CLIENT_HPP_
+#define _YIELD_HTTP_CLIENT_HTTP_CLIENT_HPP_
 
-#include "yield/clientserver/stream_socket_client.hpp"
+#include "yield/sockets/client/stream_socket_client.hpp"
 
 namespace yield {
 class Log;
@@ -42,17 +42,16 @@ namespace http {
 class HTTPRequest;
 class HTTPResponse;
 
-class HTTPClient : public yield::clientserver::StreamSocketClient {
+namespace client {
+class HTTPClient : public yield::sockets::client::StreamSocketClient {
 public:
-  HTTPClient
-  (
+  HTTPClient(
     const yield::uri::URI& uri,
     Log* error_log = NULL,
     Log* trace_log = NULL
   );
 
-  HTTPClient
-  (
+  HTTPClient(
     const Configuration& configuration,
     const yield::uri::URI& uri,
     Log* reror_log = NULL,
@@ -61,6 +60,7 @@ public:
 
   ~HTTPClient();
 
+public:
   static YO_NEW_REF HTTPResponse& GET(const yield::uri::URI& uri);
 
   //static
@@ -71,6 +71,7 @@ public:
   //  YO_NEW_REF Buffer& body
   //);
 
+public:
   // Object
   HTTPClient& inc_ref() {
     return Object::inc_ref(*this);
@@ -82,12 +83,14 @@ private:
 private:
   void init();
 
+private:
   // Stage
   void service(YO_NEW_REF Event& event);
 
 private:
   vector<Connection*> connections;
 };
+}
 }
 }
 

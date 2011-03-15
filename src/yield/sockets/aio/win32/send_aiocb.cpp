@@ -1,4 +1,4 @@
-// yield/aio/sockets/win32/send_aiocb.cpp
+// yield/sockets/aio/win32/send_aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -28,21 +28,15 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/buffer.hpp"
-#include "yield/aio/sockets/send_aiocb.hpp"
 #include "yield/sockets/socket_address.hpp"
+#include "yield/sockets/aio/send_aiocb.hpp"
 #include "yield/sockets/win32/winsock.hpp"
 
-
 namespace yield {
-namespace aio {
 namespace sockets {
-using yield::sockets::Socket;
-using yield::sockets::SocketAddress;
-
-
+namespace aio {
 static int
-WSASendTo
-(
+WSASendTo(
   Socket& socket_,
   Buffer& buffer,
   const Socket::MessageFlags& flags,

@@ -34,7 +34,6 @@
 #include "yield/marshal/null.hpp"
 #include "yield/marshal/sequence.hpp"
 
-
 namespace yield {
 namespace marshal {
 namespace json {

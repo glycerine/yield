@@ -1,4 +1,4 @@
-// yield/poll/win32/selector.cpp
+// yield/sockets/poll/win32/selector.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -30,10 +30,10 @@
 #include "selector.hpp"
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
-#include "yield/poll/socket_event.hpp"
-
+#include "yield/sockets/poll/socket_event.hpp"
 
 namespace yield {
+namespace sockets {
 namespace poll {
 namespace win32 {
 using yield::thread::NonBlockingConcurrentQueue;
@@ -197,6 +197,7 @@ bool Selector::enqueue(Event& event) {
   debug_assert(ret);
   wake_socket_pair.second().write("m", 1);
   return ret;
+}
 }
 }
 }

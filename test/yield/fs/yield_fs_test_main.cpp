@@ -32,6 +32,7 @@
 #include <iostream>
 
 
+extern yunit::TestSuite& StatTestSuite();
 extern yunit::TestSuite& DirectoryTestSuite();
 extern yunit::TestSuite& MemoryMappedFileTestSuite();
 extern yunit::TestSuite& NamedPipeTestSuite();
@@ -58,6 +59,11 @@ extern yunit::TestSuite& Win32StatTestSuite();
 
 int main(int, char**) {
   int failed_test_case_count = 0;
+
+  // Stat
+  std::cout << "Stat:" << std::endl;
+  failed_test_case_count += StatTestSuite().run();
+  std::cout << std::endl;
 
   // Directory
   std::cout << "Directory:" << std::endl;

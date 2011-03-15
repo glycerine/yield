@@ -1,4 +1,4 @@
-// yield/poll/win32/selector.hpp
+// yield/sockets/poll/win32/selector.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,8 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_POLL_WIN32_SELECTOR_HPP_
-#define _YIELD_POLL_WIN32_SELECTOR_HPP_
+#ifndef _YIELD_SOCKETS_POLL_WIN32_SELECTOR_HPP_
+#define _YIELD_SOCKETS_POLL_WIN32_SELECTOR_HPP_
 
 #include "yield/event_queue.hpp"
 #include "yield/sockets/socket_pair.hpp"
@@ -37,6 +37,7 @@
 
 
 namespace yield {
+namespace sockets {
 namespace poll {
 class SocketPair;
 
@@ -66,6 +67,7 @@ private:
   fd_set except_fd_set, read_fd_set, write_fd_set;
   yield::sockets::SocketPair wake_socket_pair;
 };
+}
 }
 }
 }

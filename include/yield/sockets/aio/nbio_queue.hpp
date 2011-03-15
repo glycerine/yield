@@ -1,4 +1,4 @@
-// yield/aio/sockets/nbio_queue.hpp
+// yield/sockets/aio/nbio_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,20 +27,19 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_AIO_SOCKETS_NBIO_QUEUE_HPP_
-#define _YIELD_AIO_SOCKETS_NBIO_QUEUE_HPP_
+#ifndef _YIELD_SOCKETS_AIO_NBIO_QUEUE_HPP_
+#define _YIELD_SOCKETS_AIO_NBIO_QUEUE_HPP_
 
 #include "yield/event_queue.hpp"
-#include "yield/poll/socket_event_queue.hpp"
+#include "yield/sockets/poll/socket_event_queue.hpp"
 
 #include <map>
 
 
 namespace yield {
-namespace aio {
 namespace sockets {
+namespace aio {
 class AIOCB;
-
 
 class NBIOQueue : public EventQueue {
 public:
@@ -48,19 +47,28 @@ public:
     return true;
   }
 
+public:
+  // yield::Object
+  NBIOQueue& inc_ref() {
+    return Object::inc_ref(*this);
+  }
+
+public:
   // yield::EventQueue
   YO_NEW_REF Event& dequeue() {
     return EventQueue::dequeue();
   }
   YO_NEW_REF Event* dequeue(const Time& timeout);
+
   bool enqueue(YO_NEW_REF Event&);
+
   YO_NEW_REF Event* trydequeue() {
     return EventQueue::trydequeue();
   }
 
 private:
   std::map<socket_t, AIOCB*> issued_aiocbs;
-  yield::poll::SocketEventQueue socket_event_queue;
+  yield::sockets::poll::SocketEventQueue socket_event_queue;
 };
 }
 }

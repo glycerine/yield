@@ -1,4 +1,4 @@
-// yield/http/http_client.cpp
+// yield/http/client/http_client.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -31,10 +31,10 @@
 #include "yield/assert.hpp"
 #include "yield/log.hpp"
 #include "yield/page.hpp"
-#include "yield/http/http_client.hpp"
 #include "yield/http/http_request.hpp"
 #include "yield/http/http_response.hpp"
 #include "yield/http/http_response_parser.hpp"
+#include "yield/http/client/http_client.hpp"
 #include "yield/sockets/socket_address.hpp"
 #include "yield/sockets/tcp_socket.hpp"
 #include "yield/stage/synchronized_response_queue.hpp"
@@ -43,7 +43,7 @@
 
 namespace yield {
 namespace http {
-using yield::clientserver::StreamSocketClient;
+namespace client {
 using yield::sockets::SocketAddress;
 using yield::sockets::StreamSocket;
 using yield::sockets::TCPSocket;
@@ -242,6 +242,7 @@ void HTTPClient::service(YO_NEW_REF Event& event) {
     StreamSocketClient::service(event);
     break;
   }
+}
 }
 }
 }

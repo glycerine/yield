@@ -1,4 +1,4 @@
-// yield/http/file_access_log.cpp
+// yield/http/server/file_access_log.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -32,9 +32,9 @@
 
 #include <fcntl.h>
 
-
 namespace yield {
 namespace http {
+namespace server {
 using yield::fs::File;
 using yield::fs::Path;
 using yield::fs::FileSystem;
@@ -64,6 +64,7 @@ FileAccessLog::write
   string entry = get_format()(http_request, http_response);
 
   file->write(entry.c_str(), entry.size());
+}
 }
 }
 }

@@ -1,4 +1,4 @@
-// yield/aio/fs/win32/aiocb.cpp
+// yield/fs/aio/win32/aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -29,7 +29,7 @@
 
 #include "yield/assert.hpp"
 #include "yield/event_handler.hpp"
-#include "yield/aio/fs/aiocb.hpp"
+#include "yield/fs/aio/aiocb.hpp"
 
 #include <Windows.h>
 

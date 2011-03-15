@@ -1,4 +1,4 @@
-// yield/http/access_log.cpp
+// yield/http/server/access_log.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -30,9 +30,9 @@
 #include "file_access_log.hpp"
 #include "ostream_access_log.hpp"
 #include "yield/assert.hpp"
-#include "yield/http/access_log.hpp"
 #include "yield/http/http_request.hpp"
 #include "yield/http/http_response.hpp"
+#include "yield/http/server/access_log.hpp"
 #include "yield/sockets/socket_address.hpp"
 
 #include <sstream> // for std::ostringstream
@@ -40,11 +40,10 @@
 #include <Windows.h>
 #endif
 
-
 namespace yield {
 namespace http {
+namespace server {
 using yield::sockets::SocketAddress;
-
 
 AccessLog::AccessLog(Format& format)
   : format(format)
@@ -151,6 +150,7 @@ AccessLog::CommonFormat::operator()
   entry << "\r\n";
 
   return entry.str();
+}
 }
 }
 }

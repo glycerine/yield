@@ -1,4 +1,4 @@
-// yield/clientserver/stream_socket_server.hpp
+// yield/sockets/server/stream_socket_server.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,21 +27,20 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_CLIENTSERVER_STREAM_SOCKET_SERVER_HPP_
-#define _YIELD_CLIENTSERVER_STREAM_SOCKET_SERVER_HPP_
+#ifndef _YIELD_SOCKETS_SERVER_STREAM_SOCKET_SERVER_HPP_
+#define _YIELD_SOCKETS_SERVER_STREAM_SOCKET_SERVER_HPP_
 
-#include "yield/clientserver/socket_server.hpp"
-#include "yield/clientserver/stream_socket_peer.hpp"
+#include "yield/sockets/server/socket_server.hpp"
+#include "yield/sockets/peer/stream_socket_peer.hpp"
 
 namespace yield {
-namespace aio {
 namespace sockets {
+namespace aio {
 class acceptAIOCB;
 }
-}
 
-namespace clientserver {
-class StreamSocketServer : public StreamSocketPeer<SocketServer> {
+namespace server {
+class StreamSocketServer : public yield::sockets::peer::StreamSocketPeer<SocketServer> {
 protected:
   class Connection : public StreamSocketPeer<SocketServer>::Connection {
   public:
@@ -51,7 +50,7 @@ protected:
       YO_NEW_REF yield::sockets::StreamSocket& socket_
     );
 
-    virtual void handle(YO_NEW_REF yield::aio::sockets::acceptAIOCB& accept_aiocb) = 0;
+    virtual void handle(YO_NEW_REF yield::sockets::aio::acceptAIOCB& accept_aiocb) = 0;
   };
 
 protected:
@@ -70,7 +69,7 @@ protected:
     yield::sockets::StreamSocket& socket_
   ) = 0;
 
-  void enqueue(YO_NEW_REF yield::aio::sockets::acceptAIOCB& accept_aiocb);
+  void enqueue(YO_NEW_REF yield::sockets::aio::acceptAIOCB& accept_aiocb);
 
   yield::sockets::StreamSocket& get_socket() const {
     return socket_;
@@ -82,6 +81,7 @@ protected:
 private:
   yield::sockets::StreamSocket& socket_;
 };
+}
 }
 }
 

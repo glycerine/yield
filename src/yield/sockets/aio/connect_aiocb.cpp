@@ -1,4 +1,4 @@
-// yield/aio/sockets/connect_aiocb.cpp
+// yield/sockets/aio/connect_aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -29,20 +29,14 @@
 
 #include "yield/assert.hpp"
 #include "yield/buffer.hpp"
-#include "yield/aio/sockets/connect_aiocb.hpp"
 #include "yield/sockets/socket_address.hpp"
 #include "yield/sockets/stream_socket.hpp"
-
+#include "yield/sockets/aio/connect_aiocb.hpp"
 
 namespace yield {
-namespace aio {
 namespace sockets {
-using yield::sockets::SocketAddress;
-using yield::sockets::StreamSocket;
-
-
-connectAIOCB::connectAIOCB
-(
+namespace aio {
+connectAIOCB::connectAIOCB(
   StreamSocket& socket_,
   SocketAddress& peername,
   YO_NEW_REF Buffer* send_buffer

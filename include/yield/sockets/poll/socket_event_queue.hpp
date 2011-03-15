@@ -1,4 +1,4 @@
-// yield/poll/socket_event_queue.hpp
+// yield/sockets/poll/socket_event_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,18 +27,17 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_POLL_SOCKET_EVENT_QUEUE_HPP_
-#define _YIELD_POLL_SOCKET_EVENT_QUEUE_HPP_
+#ifndef _YIELD_SOCKETS_POLL_SOCKET_EVENT_QUEUE_HPP_
+#define _YIELD_SOCKETS_POLL_SOCKET_EVENT_QUEUE_HPP_
 
 #include "yield/event_queue.hpp"
-
 
 namespace yield {
 namespace poll {
 class FDEventQueue;
 }
 
-
+namespace sockets {
 namespace poll {
 #ifdef _WIN32
 namespace win32 {
@@ -46,7 +45,6 @@ class WSAPoller;
 class Selector;
 }
 #endif
-
 
 class SocketEventQueue : public EventQueue {
 public:
@@ -74,6 +72,7 @@ private:
   yield::poll::FDEventQueue* pimpl;
 #endif
 };
+}
 }
 }
 

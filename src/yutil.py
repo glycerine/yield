@@ -232,19 +232,19 @@ def merge_dicts(a, b):
 
 
 def mirror_subdirectories(source_dir_path, target_dir_path):
-    assert exists(source_dir_path), source_dir_path
-    if not exists(target_dir_path):
-        makedirs(target_dir_path)
+    if exists(source_dir_path):
+        if not exists(target_dir_path):
+            makedirs(target_dir_path)
 
-    for root_dir_path, dir_names, _ in _walk(source_dir_path):
-        if not ishidden(root_dir_path):
-            for dir_name in dir_names:
-                source_subdir_path = join(root_dir_path, dir_name)
-                if not ishidden(source_subdir_path):
-                    source_subdir_path = relpath(source_subdir_path, source_dir_path)
-                    target_subdir_path = join(target_dir_path, source_subdir_path)
-                    if not exists(target_subdir_path):
-                        makedirs(target_subdir_path)
+        for root_dir_path, dir_names, _ in _walk(source_dir_path):
+            if not ishidden(root_dir_path):
+                for dir_name in dir_names:
+                    source_subdir_path = join(root_dir_path, dir_name)
+                    if not ishidden(source_subdir_path):
+                        source_subdir_path = relpath(source_subdir_path, source_dir_path)
+                        target_subdir_path = join(target_dir_path, source_subdir_path)
+                        if not exists(target_subdir_path):
+                            makedirs(target_subdir_path)
 
 
 def ntpath(path):

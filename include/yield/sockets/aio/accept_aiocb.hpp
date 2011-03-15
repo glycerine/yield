@@ -1,4 +1,4 @@
-// yield/aio/sockets/accept_aiocb.hpp
+// yield/sockets/aio/accept_aiocb.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,11 +27,10 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_AIO_SOCKETS_ACCEPT_AIOCB_HPP_
-#define _YIELD_AIO_SOCKETS_ACCEPT_AIOCB_HPP_
+#ifndef _YIELD_SOCKETS_AIO_ACCEPT_AIOCB_HPP_
+#define _YIELD_SOCKETS_AIO_ACCEPT_AIOCB_HPP_
 
-#include "yield/aio/sockets/aiocb.hpp"
-
+#include "yield/sockets/aio/aiocb.hpp"
 
 namespace yield {
 class Buffer;
@@ -39,36 +38,37 @@ class Buffer;
 namespace sockets {
 class SocketAddress;
 class StreamSocket;
-}
 
 namespace aio {
-namespace sockets {
 class acceptAIOCB : public AIOCB {
 public:
   const static uint32_t TYPE_ID = 3895043741UL;
 
 public:
-  acceptAIOCB
-  (
-    yield::sockets::StreamSocket& socket_,
+  acceptAIOCB(
+    StreamSocket& socket_,
     YO_NEW_REF Buffer* recv_buffer = NULL
   );
   ~acceptAIOCB();
 
-  yield::sockets::StreamSocket* get_accepted_socket() const;
-  yield::sockets::SocketAddress& get_peername() const;
+public:
+  StreamSocket* get_accepted_socket() const;
+  SocketAddress& get_peername() const;
+
   Buffer* get_recv_buffer() const {
     return recv_buffer;
   }
 
+public:
   // yield::Object
   uint32_t get_type_id() const {
     return TYPE_ID;
   }
   const char* get_type_name() const {
-    return "yield::aio::sockets::acceptAIOCB";
+    return "aio::acceptAIOCB";
   }
 
+public:
   // yield::aio::AIOCB
 #ifdef _WIN32
   bool issue(yield::aio::win32::AIOQueue&);
@@ -87,8 +87,8 @@ private:
 #endif
 
 private:
-  yield::sockets::StreamSocket* accepted_socket;
-  yield::sockets::SocketAddress& peername;
+  StreamSocket* accepted_socket;
+  SocketAddress& peername;
   Buffer* recv_buffer;
 };
 }

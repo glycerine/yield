@@ -1,4 +1,4 @@
-// yield/http/access_log.hpp
+// yield/http/server/access_log.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,8 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_HTTP_ACCESS_LOG_HPP_
-#define _YIELD_HTTP_ACCESS_LOG_HPP_
+#ifndef _YIELD_HTTP_SERVER_ACCESS_LOG_HPP_
+#define _YIELD_HTTP_SERVER_ACCESS_LOG_HPP_
 
 #include "yield/object.hpp"
 #include "yield/fs/path.hpp"
@@ -40,6 +40,7 @@ namespace http {
 class HTTPRequest;
 class HTTPResponse;
 
+namespace server {
 class AccessLog : public Object {
 public:
   class Format {
@@ -85,6 +86,7 @@ protected:
 private:
   Format& format;
 };
+}
 }
 }
 

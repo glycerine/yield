@@ -1,4 +1,4 @@
-// yield/aio/sockets/win32/recv_aiocb.cpp
+// yield/sockets/aio/win32/recv_aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -28,15 +28,12 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/buffer.hpp"
-#include "yield/aio/sockets/recv_aiocb.hpp"
+#include "yield/sockets/aio/recv_aiocb.hpp"
 #include "yield/sockets/win32/winsock.hpp"
 
 namespace yield {
-namespace aio {
 namespace sockets {
-using yield::sockets::Socket;
-using yield::sockets::SocketAddress;
-
+namespace aio {
 static int
 WSARecvFrom(
   Socket& socket_,

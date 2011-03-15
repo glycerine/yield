@@ -1,4 +1,4 @@
-// yield/clientserver/socket_client.cpp
+// yield/sockets/client/socket_client.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved

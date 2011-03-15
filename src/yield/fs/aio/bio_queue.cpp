@@ -1,4 +1,4 @@
-// yield/aio/fs/bio_queue.cpp
+// yield/fs/aio/bio_queue.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,12 +27,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/aio/fs/bio_queue.hpp"
-#include "yield/aio/fs/fsync_aiocb.hpp"
-#include "yield/aio/fs/pread_aiocb.hpp"
-#include "yield/aio/fs/pwrite_aiocb.hpp"
-#include "yield/aio/fs/setlk_aiocb.hpp"
-#include "yield/aio/fs/unlk_aiocb.hpp"
+#include "yield/fs/aio/bio_queue.hpp"
+#include "yield/fs/aio/fsync_aiocb.hpp"
+#include "yield/fs/aio/pread_aiocb.hpp"
+#include "yield/fs/aio/pwrite_aiocb.hpp"
+#include "yield/fs/aio/setlk_aiocb.hpp"
+#include "yield/fs/aio/unlk_aiocb.hpp"
 
 
 namespace yield {

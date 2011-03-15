@@ -1,4 +1,4 @@
-// yield/aio/sockets/win32/aio_queue.cpp
+// yield/sockets/aio/win32/aio_queue.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,16 +27,15 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "aio_queue.hpp"
-#include "yield/aio/sockets/accept_aiocb.hpp"
-#include "yield/aio/sockets/connect_aiocb.hpp"
-#include "yield/aio/sockets/recv_aiocb.hpp"
-#include "yield/aio/sockets/send_aiocb.hpp"
-
+#include "yield/sockets/aio/accept_aiocb.hpp"
+#include "yield/sockets/aio/connect_aiocb.hpp"
+#include "yield/sockets/aio/recv_aiocb.hpp"
+#include "yield/sockets/aio/send_aiocb.hpp"
+#include "yield/sockets/aio/win32/aio_queue.hpp"
 
 namespace yield {
-namespace aio {
 namespace sockets {
+namespace aio {
 namespace win32 {
 bool AIOQueue::associate(socket_t socket_) {
   return yield::aio::win32::AIOQueue::associate(socket_to_fd(socket_));

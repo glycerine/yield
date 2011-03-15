@@ -1,4 +1,4 @@
-// yield/aio/sockets/recv_aiocb.hpp
+// yield/sockets/aio/recv_aiocb.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,17 +27,16 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_AIO_SOCKETS_RECV_AIOCB_HPP_
-#define _YIELD_AIO_SOCKETS_RECV_AIOCB_HPP_
+#ifndef _YIELD_SOCKETS_AIO_RECV_AIOCB_HPP_
+#define _YIELD_SOCKETS_AIO_RECV_AIOCB_HPP_
 
-#include "yield/aio/sockets/aiocb.hpp"
 #include "yield/sockets/socket.hpp"
 #include "yield/sockets/socket_address.hpp"
-
+#include "yield/sockets/aio/aiocb.hpp"
 
 namespace yield {
-namespace aio {
 namespace sockets {
+namespace aio {
 class recvAIOCB : public AIOCB {
 public:
   const static uint32_t TYPE_ID = 3045195539UL;
@@ -45,9 +44,9 @@ public:
 public:
   recvAIOCB
   (
-    yield::sockets::Socket& socket_,
+    Socket& socket_,
     Buffer& buffer,
-    const yield::sockets::Socket::MessageFlags& flags
+    const Socket::MessageFlags& flags
   );
 
   ~recvAIOCB();
@@ -55,9 +54,9 @@ public:
   Buffer& get_buffer() const {
     return buffer;
   }
-  const yield::sockets::Socket::MessageFlags& get_flags() const;
-  const yield::sockets::SocketAddress& get_peername() const;
-  yield::sockets::SocketAddress& get_peername() {
+  const Socket::MessageFlags& get_flags() const;
+  const SocketAddress& get_peername() const;
+  SocketAddress& get_peername() {
     return peername;
   }
 
@@ -66,7 +65,7 @@ public:
     return TYPE_ID;
   }
   const char* get_type_name() const {
-    return "yield::aio::sockets::recvAIOCB";
+    return "aio::recvAIOCB";
   }
 
   // yield::aio::AIOCB
@@ -82,8 +81,8 @@ private:
 
 private:
   Buffer& buffer;
-  yield::sockets::Socket::MessageFlags flags;
-  yield::sockets::SocketAddress peername;
+  Socket::MessageFlags flags;
+  SocketAddress peername;
 };
 }
 }

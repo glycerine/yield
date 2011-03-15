@@ -1,4 +1,4 @@
-// yield/http/http_server.hpp
+// yield/http/server/http_server.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,14 +27,15 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_HTTP_HTTP_SERVER_HPP_
-#define _YIELD_HTTP_HTTP_SERVER_HPP_
+#ifndef _YIELD_HTTP_SERVER_HTTP_SERVER_HPP_
+#define _YIELD_HTTP_SERVER_HTTP_SERVER_HPP_
 
-#include "yield/clientserver/stream_socket_server.hpp"
+#include "yield/sockets/server/stream_socket_server.hpp"
 
 namespace yield {
 namespace http {
-class HTTPServer : public yield::clientserver::StreamSocketServer {
+namespace server {
+class HTTPServer : public yield::sockets::server::StreamSocketServer {
 public:
   HTTPServer(
     YO_NEW_REF EventHandler& http_request_handler,
@@ -59,6 +60,7 @@ private:
 private:
   EventHandler& http_request_handler;
 };
+}
 }
 }
 

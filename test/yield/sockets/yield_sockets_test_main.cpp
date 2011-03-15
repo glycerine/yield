@@ -36,7 +36,6 @@ extern yunit::TestSuite& SocketAddressTestSuite();
 extern yunit::TestSuite& SocketPairTestSuite();
 extern yunit::TestSuite& TCPSocketTestSuite();
 extern yunit::TestSuite& UDPSocketTestSuite();
-extern yunit::TestSuite& SSLContextTestSuite();
 
 
 int main(int, char**) {
@@ -60,11 +59,6 @@ int main(int, char**) {
   // UDPSocket
   std::cout << "UDPSocket:" << std::endl;
   failed_test_case_count += UDPSocketTestSuite().run();
-  std::cout << std::endl;
-
-  // SSLContext
-  std::cout << "SSLContext:" << std::endl;
-  failed_test_case_count += SSLContextTestSuite().run();
   std::cout << std::endl;
 
   return failed_test_case_count;

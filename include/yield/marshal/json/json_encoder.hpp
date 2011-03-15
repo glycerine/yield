@@ -32,10 +32,8 @@
 
 #include "yield/buffer.hpp"
 
-
 struct yajl_gen_t;
 typedef struct yajl_gen_t* yajl_gen;
-
 
 namespace yield {
 namespace marshal {

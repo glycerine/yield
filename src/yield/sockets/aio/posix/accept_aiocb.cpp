@@ -1,4 +1,4 @@
-// yield/aio/sockets/posix/accept_aiocb.cpp
+// yield/sockets/aio/posix/accept_aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -28,7 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/buffer.hpp"
-#include "yield/aio/sockets/accept_aiocb.hpp"
+#include "yield/sockets/aio/accept_aiocb.hpp"
 #include "yield/sockets/socket_address.hpp"
 #include "yield/sockets/stream_socket.hpp"
 
@@ -36,8 +36,8 @@
 namespace yield {
 namespace aio {
 namespace sockets {
-using yield::sockets::SocketAddress;
-using yield::sockets::StreamSocket;
+using SocketAddress;
+using StreamSocket;
 
 acceptAIOCB::acceptAIOCB
 (

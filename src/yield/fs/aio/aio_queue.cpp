@@ -1,4 +1,4 @@
-// yield/aio/fs/aio_queue.cpp
+// yield/fs/aio/aio_queue.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -34,8 +34,8 @@
 #endif
 #include "yield/assert.hpp"
 #include "yield/time.hpp"
-#include "yield/aio/fs/bio_queue.hpp"
-#include "yield/aio/fs/aio_queue.hpp"
+#include "yield/fs/aio/bio_queue.hpp"
+#include "yield/fs/aio/aio_queue.hpp"
 
 
 namespace yield {
