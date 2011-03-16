@@ -36,14 +36,11 @@
 #include "yield/sockets/client/stream_socket_client.hpp"
 #include "yield/uri/uri.hpp"
 
-
 namespace yield {
 namespace sockets {
 namespace client {
+using yield::sockets::peer::StreamSocketPeer;
 using yield::uri::URI;
-using yield::sockets::SocketAddress;
-using yield::sockets::StreamSocket;
-
 
 StreamSocketClient::StreamSocketClient(
   const Configuration& configuration,

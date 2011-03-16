@@ -42,12 +42,12 @@ class acceptAIOCB;
 namespace server {
 class StreamSocketServer : public yield::sockets::peer::StreamSocketPeer<SocketServer> {
 protected:
-  class Connection : public StreamSocketPeer<SocketServer>::Connection {
+  class Connection : public yield::sockets::peer::StreamSocketPeer<SocketServer>::Connection {
   public:
     Connection(
       StreamSocketServer&,
-      YO_NEW_REF yield::sockets::SocketAddress& peername,
-      YO_NEW_REF yield::sockets::StreamSocket& socket_
+      YO_NEW_REF SocketAddress& peername,
+      YO_NEW_REF StreamSocket& socket_
     );
 
     virtual void handle(YO_NEW_REF yield::sockets::aio::acceptAIOCB& accept_aiocb) = 0;
@@ -56,8 +56,8 @@ protected:
 protected:
   StreamSocketServer(
     Log* error_log,
-    YO_NEW_REF yield::sockets::StreamSocket& socket_,
-    const yield::sockets::SocketAddress& sockname,
+    YO_NEW_REF StreamSocket& socket_,
+    const SocketAddress& sockname,
     Log* trace_log
   );
 
@@ -65,13 +65,13 @@ protected:
 
   virtual Connection&
   create_connection(
-    yield::sockets::SocketAddress& peername,
-    yield::sockets::StreamSocket& socket_
+    SocketAddress& peername,
+    StreamSocket& socket_
   ) = 0;
 
   void enqueue(YO_NEW_REF yield::sockets::aio::acceptAIOCB& accept_aiocb);
 
-  yield::sockets::StreamSocket& get_socket() const {
+  StreamSocket& get_socket() const {
     return socket_;
   }
 
@@ -79,7 +79,7 @@ protected:
   virtual void service(YO_NEW_REF Event& event);
 
 private:
-  yield::sockets::StreamSocket& socket_;
+  StreamSocket& socket_;
 };
 }
 }

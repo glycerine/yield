@@ -30,10 +30,9 @@
 #include "yield/page.hpp"
 #include "yield/fs/aio/pwrite_aiocb.hpp"
 
-
 namespace yield {
-namespace aio {
 namespace fs {
+namespace aio {
 bool pwriteAIOCB::issue(EventHandler& completion_handler) {
   set_completion_handler(completion_handler);
   return aio_write(*this) == 0;

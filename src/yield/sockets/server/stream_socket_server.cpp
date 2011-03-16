@@ -42,6 +42,7 @@ namespace yield {
 namespace sockets {
 namespace server {
 using yield::sockets::aio::acceptAIOCB;
+using yield::sockets::peer::StreamSocketPeer;
 
 StreamSocketServer::StreamSocketServer(
   Log* error_log,

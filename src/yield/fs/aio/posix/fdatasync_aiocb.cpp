@@ -29,10 +29,9 @@
 
 #include "yield/fs/aio/fdatasync_aiocb.hpp"
 
-
 namespace yield {
-namespace aio {
 namespace fs {
+namespace aio {
 bool fdatasyncAIOCB::issue(EventHandler& completion_handler) {
   set_completion_handler(completion_handler);
   return aio_fsync(O_DSYNC, *this) == 0;

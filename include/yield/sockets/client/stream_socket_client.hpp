@@ -190,7 +190,7 @@ protected:
 
   class connectAIOCB
     : public yield::sockets::aio::connectAIOCB,
-      public StreamSocketPeer<SocketClient>::AIOCB {
+      public yield::sockets::peer::StreamSocketPeer<SocketClient>::AIOCB {
   public:
     connectAIOCB(
       Connection& connection,
@@ -200,13 +200,12 @@ protected:
           connection.get_peername(),
           send_buffer
       ),
-      StreamSocketPeer<SocketClient>::AIOCB(connection)
+      yield::sockets::peer::StreamSocketPeer<SocketClient>::AIOCB(connection)
     { }
   };
 
 protected:
-  StreamSocketClient
-  (
+  StreamSocketClient(
     const Configuration& configuration,
     Log* error_log,
     Log* trace_log,

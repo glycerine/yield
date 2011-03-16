@@ -37,8 +37,8 @@ namespace thread {
 class SynchronizedEventQueue;
 }
 
-namespace aio {
 namespace fs {
+namespace aio {
 class AIOCB;
 
 namespace posix {

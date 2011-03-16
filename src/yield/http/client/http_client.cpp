@@ -47,6 +47,8 @@ namespace client {
 using yield::sockets::SocketAddress;
 using yield::sockets::StreamSocket;
 using yield::sockets::TCPSocket;
+using yield::sockets::client::StreamSocketClient;
+using yield::sockets::peer::StreamSocketPeer;
 using yield::uri::URI;
 
 typedef yield::thread::SynchronizedResponseQueue<HTTPResponse> HTTPResponseQueue;

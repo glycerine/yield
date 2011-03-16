@@ -28,19 +28,14 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/buffer.hpp"
-#include "yield/sockets/aio/accept_aiocb.hpp"
 #include "yield/sockets/socket_address.hpp"
 #include "yield/sockets/stream_socket.hpp"
-
+#include "yield/sockets/aio/accept_aiocb.hpp"
 
 namespace yield {
-namespace aio {
 namespace sockets {
-using SocketAddress;
-using StreamSocket;
-
-acceptAIOCB::acceptAIOCB
-(
+namespace aio {
+acceptAIOCB::acceptAIOCB(
   StreamSocket& socket_,
   YO_NEW_REF Buffer* recv_buffer
 )

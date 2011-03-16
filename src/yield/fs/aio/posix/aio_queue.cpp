@@ -34,8 +34,8 @@
 #include "yield/thread/synchronized_event_queue.hpp"
 
 namespace yield {
-namespace aio {
 namespace fs {
+namespace aio {
 namespace posix {
 using yield::fs::aio::AIOCB;
 using yield::thread::SynchronizedEventQueue;
