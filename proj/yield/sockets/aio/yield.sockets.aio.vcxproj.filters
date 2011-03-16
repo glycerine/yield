@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{61a86ccf-0c5e-4092-9565-2069c163d744}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\win32">
+      <UniqueIdentifier>{9437af09-0935-448a-aefa-5eeaeadf704d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{c54989f0-a3bc-4f67-9bfa-39d0e25392ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\posix">
+      <UniqueIdentifier>{2ce37865-2e71-4938-bbaf-3f40cba7aee0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\win32">
+      <UniqueIdentifier>{c2dc7a76-de01-4462-b955-0fb1e912d9c0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\include\yield\sockets\aio\accept_aiocb.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\yield\sockets\aio\aio_queue.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\yield\sockets\aio\aiocb.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\yield\sockets\aio\connect_aiocb.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\yield\sockets\aio\nbio_queue.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\yield\sockets\aio\recv_aiocb.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\yield\sockets\aio\send_aiocb.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\yield\sockets\aio\win32\aio_queue.hpp">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\accept_aiocb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\aiocb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\connect_aiocb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\nbio_queue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\posix\accept_aiocb.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\recv_aiocb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\send_aiocb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\win32\accept_aiocb.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\win32\aio_queue.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\win32\aiocb.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\win32\connect_aiocb.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\win32\recv_aiocb.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\win32\send_aiocb.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

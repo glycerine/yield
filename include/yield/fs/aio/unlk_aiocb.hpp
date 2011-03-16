@@ -30,13 +30,12 @@
 #ifndef _YIELD_FS_AIO_UNLK_AIOCB_HPP_
 #define _YIELD_FS_AIO_UNLK_AIOCB_HPP_
 
-#include "yield/aio/fs/aiocb.hpp"
+#include "yield/fs/aio/aiocb.hpp"
 #include "yield/fs/file.hpp"
 
-
 namespace yield {
-namespace aio {
 namespace fs {
+namespace aio {
 class unlkAIOCB : public AIOCB {
 public:
   const static uint32_t TYPE_ID = 3391600163UL;
@@ -51,14 +50,17 @@ public:
     return flock_;
   }
 
+public:
   // yield::Object
   uint32_t get_type_id() const {
     return TYPE_ID;
   }
+
   const char* get_type_name() const {
-    return "yield::aio::fs::unlkAIOCB";
+    return "yield::fs::aio::unlkAIOCB";
   }
 
+public:
   // yield::aio::AIOCB
 #ifdef _WIN32
   bool issue(yield::aio::win32::AIOQueue&);

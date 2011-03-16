@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{47c7f151-9d0f-4d67-9fe0-14bdc5dbeaf3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\posix">
+      <UniqueIdentifier>{b4dfa49a-df23-4950-a670-d33677cd9451}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\win32">
+      <UniqueIdentifier>{07222036-a013-40b3-afd6-0a88c76ac5a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\bsd">
+      <UniqueIdentifier>{d01e593f-9a01-4d57-b966-0dfcb438dfe1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\darwin">
+      <UniqueIdentifier>{6d4f3c18-0eb0-4e76-8021-17f12fbdeb05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{f22efe6e-da43-4bee-9030-db12b5031927}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\freebsd">
+      <UniqueIdentifier>{d1229cfc-7fb8-433e-bebd-37ce6f5e8009}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\linux">
+      <UniqueIdentifier>{79fe3073-9ae1-4469-a72d-6bfd28fa1d53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\posix">
+      <UniqueIdentifier>{7ac2ba72-519b-495b-91cb-24c4e47cfbdf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\win32">
+      <UniqueIdentifier>{8a31ec08-9b42-462f-a3c4-003778991646}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\include\yield\fs\directory.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\file.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\file_log.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\file_system.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\memory_mapped_file.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\path.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\posix\directory.hpp">
+      <Filter>Header Files\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\posix\extended_attributes.hpp">
+      <Filter>Header Files\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\posix\file.hpp">
+      <Filter>Header Files\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\posix\file_system.hpp">
+      <Filter>Header Files\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\posix\memory_mapped_file.hpp">
+      <Filter>Header Files\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\posix\stat.hpp">
+      <Filter>Header Files\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\stat.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\win32\directory.hpp">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\win32\file.hpp">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\win32\file_system.hpp">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\win32\memory_mapped_file.hpp">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\fs\win32\stat.hpp">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\yield\fs\bsd\directory.cpp">
+      <Filter>Source Files\bsd</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\bsd\directory.hpp">
+      <Filter>Source Files\bsd</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\fs\darwin\extended_attributes.cpp">
+      <Filter>Source Files\darwin</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\darwin\extended_attributes.hpp">
+      <Filter>Source Files\darwin</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\fs\darwin\file.cpp">
+      <Filter>Source Files\darwin</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\darwin\file.hpp">
+      <Filter>Source Files\darwin</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\fs\file_log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\freebsd\extended_attributes.cpp">
+      <Filter>Source Files\freebsd</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\freebsd\extended_attributes.hpp">
+      <Filter>Source Files\freebsd</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\fs\freebsd\file.cpp">
+      <Filter>Source Files\freebsd</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\freebsd\file.hpp">
+      <Filter>Source Files\freebsd</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\fs\linux\directory.cpp">
+      <Filter>Source Files\linux</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\linux\directory.hpp">
+      <Filter>Source Files\linux</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\fs\linux\extended_attributes.cpp">
+      <Filter>Source Files\linux</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\linux\extended_attributes.hpp">
+      <Filter>Source Files\linux</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\fs\linux\file.cpp">
+      <Filter>Source Files\linux</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\linux\file.hpp">
+      <Filter>Source Files\linux</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\fs\posix\directory.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\posix\extended_attributes.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\posix\file.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\posix\file_system.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\posix\memory_mapped_file.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\posix\path.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\posix\stat.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\win32\directory.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\win32\file.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\win32\file_system.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\win32\memory_mapped_file.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\win32\named_pipe.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\fs\win32\named_pipe.hpp">
+      <Filter>Source Files\win32</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\fs\win32\path.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\fs\win32\stat.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

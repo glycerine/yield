@@ -28,13 +28,12 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/exception.hpp"
-#include "yield/fs/aio/setlk_aiocb.hpp"
 #include "yield/fs/file.hpp"
-
+#include "yield/fs/aio/setlk_aiocb.hpp"
 
 namespace yield {
-namespace aio {
 namespace fs {
+namespace aio {
 setlkAIOCB::RetryStatus setlkAIOCB::retry() {
   if (get_file().setlk(get_flock())) {
     set_return(0);

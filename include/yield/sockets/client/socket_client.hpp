@@ -32,7 +32,6 @@
 
 #include "yield/sockets/peer/socket_peer.hpp"
 
-
 namespace yield {
 namespace sockets {
 namespace client {

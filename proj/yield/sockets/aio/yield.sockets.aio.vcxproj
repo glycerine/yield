@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{45e844f8-0362-4466-8701-6ed06dc1f0e7}</ProjectGuid>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <RootNamespace>yield.sockets.aio</RootNamespace>
+  </PropertyGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  
+  <ImportGroup Label="ExtensionSettings" />
+
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+
+  <PropertyGroup>
+    <IntDir Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">$(ProjectDir)..\..\..\..\build\yield\sockets\aio\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">$(ProjectDir)..\..\..\..\lib\yield\</OutDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">yield_sockets_aio</TargetName>
+  </PropertyGroup>
+  <PropertyGroup>
+    <IntDir Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">$(ProjectDir)..\..\..\..\build\yield\sockets\aio\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">$(ProjectDir)..\..\..\..\lib\yield\</OutDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">yield_sockets_aio</TargetName>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\..\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions></PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ProgramDataBaseFileName>$(TargetDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <AdditionalOptions>/EHsc /GR- /nologo /wd"4100" /wd"4127" /wd"4290" /wd"4355" /wd"4512"</AdditionalOptions>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>yield_aio.lib;yield_sockets_poll.lib;yield_poll.lib;yield_sockets.lib;yield.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\..\lib\yield</AdditionalLibraryDirectories>
+      <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\..\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions></PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <ProgramDataBaseFileName>$(TargetDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <AdditionalOptions>/EHsc /GR- /nologo /wd"4100" /wd"4127" /wd"4290" /wd"4355" /wd"4512"</AdditionalOptions>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>yield_aio.lib;yield_sockets_poll.lib;yield_poll.lib;yield_sockets.lib;yield.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\..\lib\yield</AdditionalLibraryDirectories>
+      <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </Lib>
+  </ItemDefinitionGroup>
+
+  <ItemGroup Label="ClIncludeItems">
+    <ClInclude Include="..\..\..\..\include\yield\sockets\aio\accept_aiocb.hpp" />
+    <ClInclude Include="..\..\..\..\include\yield\sockets\aio\aio_queue.hpp" />
+    <ClInclude Include="..\..\..\..\include\yield\sockets\aio\aiocb.hpp" />
+    <ClInclude Include="..\..\..\..\include\yield\sockets\aio\connect_aiocb.hpp" />
+    <ClInclude Include="..\..\..\..\include\yield\sockets\aio\nbio_queue.hpp" />
+    <ClInclude Include="..\..\..\..\include\yield\sockets\aio\recv_aiocb.hpp" />
+    <ClInclude Include="..\..\..\..\include\yield\sockets\aio\send_aiocb.hpp" />
+    <ClInclude Include="..\..\..\..\include\yield\sockets\aio\win32\aio_queue.hpp" />
+  </ItemGroup>
+
+  <ItemGroup Label="ClCompileItems">
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\accept_aiocb.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\aiocb.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\connect_aiocb.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\nbio_queue.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\posix\accept_aiocb.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\recv_aiocb.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\send_aiocb.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\win32\accept_aiocb.cpp">
+      <ObjectFileName>$(IntDir)win32\accept_aiocb.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\win32\aio_queue.cpp">
+      <ObjectFileName>$(IntDir)win32\aio_queue.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\win32\aiocb.cpp">
+      <ObjectFileName>$(IntDir)win32\aiocb.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\win32\connect_aiocb.cpp">
+      <ObjectFileName>$(IntDir)win32\connect_aiocb.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\win32\recv_aiocb.cpp">
+      <ObjectFileName>$(IntDir)win32\recv_aiocb.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\win32\send_aiocb.cpp">
+      <ObjectFileName>$(IntDir)win32\send_aiocb.obj</ObjectFileName>
+    </ClCompile>
+  </ItemGroup>
+
+  <ItemGroup Label="ProjectReferenceItems">
+    <ProjectReference Include="..\..\aio\yield.aio.vcxproj">
+      <Project>{b6c03d16-2fa8-439c-ae71-3e908ad2cf02}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\poll\yield.sockets.poll.vcxproj">
+      <Project>{72c0c117-7a3e-41f2-a898-942cfec39d7f}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

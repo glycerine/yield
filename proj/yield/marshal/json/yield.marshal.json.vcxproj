@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{e7eeb99f-da97-423a-a3ae-8b1d2c608837}</ProjectGuid>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <RootNamespace>yield.marshal.json</RootNamespace>
+  </PropertyGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  
+  <ImportGroup Label="ExtensionSettings" />
+
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+
+  <PropertyGroup>
+    <IntDir Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">$(ProjectDir)..\..\..\..\build\yield\marshal\json\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">$(ProjectDir)..\..\..\..\lib\yield\</OutDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">yield_marshal_json</TargetName>
+  </PropertyGroup>
+  <PropertyGroup>
+    <IntDir Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">$(ProjectDir)..\..\..\..\build\yield\marshal\json\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">$(ProjectDir)..\..\..\..\lib\yield\</OutDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">yield_marshal_json</TargetName>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\..\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions></PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ProgramDataBaseFileName>$(TargetDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <AdditionalOptions>/EHsc /GR- /nologo /wd"4100" /wd"4127" /wd"4290" /wd"4355" /wd"4512"</AdditionalOptions>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>yield_marshal.lib;yield.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\..\lib\yield</AdditionalLibraryDirectories>
+      <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\..\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions></PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <ProgramDataBaseFileName>$(TargetDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <AdditionalOptions>/EHsc /GR- /nologo /wd"4100" /wd"4127" /wd"4290" /wd"4355" /wd"4512"</AdditionalOptions>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>yield_marshal.lib;yield.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\..\lib\yield</AdditionalLibraryDirectories>
+      <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </Lib>
+  </ItemDefinitionGroup>
+
+  <ItemGroup Label="ClIncludeItems">
+    <ClInclude Include="..\..\..\..\include\yield\marshal\json\json_decoder.hpp" />
+    <ClInclude Include="..\..\..\..\include\yield\marshal\json\json_encoder.hpp" />
+    <ClInclude Include="..\..\..\..\include\yield\marshal\json\json_marshaller.hpp" />
+    <ClInclude Include="..\..\..\..\include\yield\marshal\json\json_unmarshaller.hpp" />
+  </ItemGroup>
+
+  <ItemGroup Label="ClCompileItems">
+    <ClCompile Include="..\..\..\..\src\yield\marshal\json\json_decoder.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\marshal\json\json_encoder.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\marshal\json\json_marshaller.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\marshal\json\json_unmarshaller.cpp">
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\src\yield\marshal\json\object_map.hpp" />
+    <ClInclude Include="..\..\..\..\src\yield\marshal\json\object_vector.hpp" />
+    <ClCompile Include="..\..\..\..\src\yield\marshal\json\yajl.c">
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\src\yield\marshal\json\yajl.h" />
+  </ItemGroup>
+
+  <ItemGroup Label="ProjectReferenceItems">
+    <ProjectReference Include="..\yield.marshal.vcxproj">
+      <Project>{2e39e868-7ae6-473f-827c-c8f5667ee482}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{2d2a6c92-1289-42a9-bad2-e4d1492bf64a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\win32">
+      <UniqueIdentifier>{224ac911-255e-4e03-8685-333830a4ef5e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\test\yield\sockets\aio\aio_queue_test.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\..\test\yield\sockets\aio\nbio_queue_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\test\yield\sockets\aio\win32\aio_queue_test.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\test\yield\sockets\aio\yield_sockets_aio_test_main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

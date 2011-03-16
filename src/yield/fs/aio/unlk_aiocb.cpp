@@ -30,10 +30,9 @@
 #include "yield/exception.hpp"
 #include "yield/fs/aio/unlk_aiocb.hpp"
 
-
 namespace yield {
-namespace aio {
 namespace fs {
+namespace aio {
 unlkAIOCB::RetryStatus unlkAIOCB::retry() {
   if (get_file().unlk(get_flock())) {
     set_return(0);

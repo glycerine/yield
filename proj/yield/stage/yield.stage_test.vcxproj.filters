@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{93778ce4-1310-49c9-922f-42555d0c52a1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\test\yield\stage\seda_stage_scheduler_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\test\yield\stage\stage_scheduler_test.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\test\yield\stage\stage_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\test\yield\stage\synchronized_event_queue_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\test\yield\stage\synchronized_response_queue_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\test\yield\stage\test_event_handler.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\test\yield\stage\wavefront_stage_scheduler_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\test\yield\stage\yield_stage_test_main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

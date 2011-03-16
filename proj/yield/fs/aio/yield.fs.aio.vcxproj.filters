@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{202d4520-40dd-45c2-8f27-02a1dfc0d749}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\posix">
+      <UniqueIdentifier>{fff121bb-aaf4-473b-862e-7d7cacca69c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\win32">
+      <UniqueIdentifier>{5f2855d4-4c94-4aec-afcf-4e4ba868100d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{b087566d-10e2-4fb9-b272-bc759fd8a627}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\posix">
+      <UniqueIdentifier>{7e5baf2f-817b-4669-84cf-340a87e1c4a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\win32">
+      <UniqueIdentifier>{8529d304-8c35-44cf-ab6b-88ba3ae084b5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\include\yield\fs\aio\aio_queue.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\yield\fs\aio\aiocb.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\yield\fs\aio\bio_queue.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\yield\fs\aio\fdatasync_aiocb.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\yield\fs\aio\fsync_aiocb.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\yield\fs\aio\posix\aio_queue.hpp">
+      <Filter>Header Files\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\yield\fs\aio\pread_aiocb.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\yield\fs\aio\pwrite_aiocb.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\yield\fs\aio\setlk_aiocb.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\yield\fs\aio\unlk_aiocb.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\yield\fs\aio\win32\aio_queue.hpp">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\yield\fs\aio\aiocb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\fs\aio\bio_queue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\fs\aio\fdatasync_aiocb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\fs\aio\fsync_aiocb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\fs\aio\posix\aio_queue.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\fs\aio\posix\fdatasync_aiocb.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\fs\aio\posix\fsync_aiocb.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\fs\aio\posix\pread_aiocb.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\fs\aio\posix\pwrite_aiocb.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\fs\aio\pread_aiocb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\fs\aio\pwrite_aiocb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\fs\aio\setlk_aiocb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\fs\aio\unlk_aiocb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\fs\aio\win32\aio_queue.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\fs\aio\win32\aiocb.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\fs\aio\win32\pread_aiocb.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\fs\aio\win32\pwrite_aiocb.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\fs\aio\win32\setlk_aiocb.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\fs\aio\win32\unlk_aiocb.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files\client">
+      <UniqueIdentifier>{15e39b9c-e85a-4d8d-a05c-ab823c9d3dde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\peer">
+      <UniqueIdentifier>{a086a009-a933-408b-8f32-921f7ed0856f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{ec9971fe-1739-40cf-bd50-6dcb50510d6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{5b381268-f181-4289-b221-5f9049713b46}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\include\yield\sockets\client\socket_client.hpp">
+      <Filter>Header Files\client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\yield\sockets\client\stream_socket_client.hpp">
+      <Filter>Header Files\client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\yield\sockets\peer\socket_peer.hpp">
+      <Filter>Header Files\peer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\yield\sockets\peer\stream_socket_peer.hpp">
+      <Filter>Header Files\peer</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\client\socket_client.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\client\stream_socket_client.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

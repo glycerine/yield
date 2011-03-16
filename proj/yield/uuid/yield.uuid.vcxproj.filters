@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{88455832-aabe-4543-acaa-915cb0c92777}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\linux">
+      <UniqueIdentifier>{8375f5c3-a350-4183-93c9-2b3a1ce04a9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\sunos">
+      <UniqueIdentifier>{262f28f9-aa25-4716-bbbe-f6be2a338569}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{07b0364c-a7f9-40ad-a168-40069f94be80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\win32">
+      <UniqueIdentifier>{a4cbfb8d-b41c-4022-bd83-88b64e599894}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\include\yield\uuid\uuid.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\yield\uuid\linux\uuid.cpp">
+      <Filter>Source Files\linux</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\uuid\linux\uuid.hpp">
+      <Filter>Source Files\linux</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\uuid\sunos\uuid.cpp">
+      <Filter>Source Files\sunos</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\uuid\sunos\uuid.hpp">
+      <Filter>Source Files\sunos</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\yield\uuid\uuid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\uuid\win32\uuid.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\uuid\win32\uuid.hpp">
+      <Filter>Source Files\win32</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

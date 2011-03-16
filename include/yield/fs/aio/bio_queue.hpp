@@ -30,20 +30,38 @@
 #ifndef _YIELD_FS_AIO_BIO_QUEUE_HPP_
 #define _YIELD_FS_AIO_BIO_QUEUE_HPP_
 
-#include "yield/aio/bio_queue.hpp"
-
+#include "yield/event_queue.hpp"
 
 namespace yield {
-namespace aio {
+namespace thread {
+class SynchronizedEventQueue;
+}
+
 namespace fs {
-class BIOQueue : public yield::aio::BIOQueue {
+namespace aio {
+class AIOCB;
+
+class BIOQueue : public EventQueue {
+public:
+  BIOQueue();
+  ~BIOQueue();
+
 public:
   bool associate(fd_t) {
     return true;
   }
 
+  bool enqueue(YO_NEW_REF AIOCB& aiocb);
+
+public:
   // yield::EventQueue
+  YO_NEW_REF Event& dequeue();
+  YO_NEW_REF Event* dequeue(const Time& timeout);
   bool enqueue(YO_NEW_REF Event& event);
+  YO_NEW_REF Event* trydequeue();
+
+private:
+  yield::thread::SynchronizedEventQueue* completed_event_queue;
 };
 }
 }

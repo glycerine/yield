@@ -27,20 +27,18 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "aio_queue.hpp"
 #include "yield/fs/aio/fsync_aiocb.hpp"
 #include "yield/fs/aio/pread_aiocb.hpp"
 #include "yield/fs/aio/pwrite_aiocb.hpp"
-#include "yield/stage/synchronized_event_queue.hpp"
-
+#include "yield/fs/aio/posix/aio_queue.hpp"
+#include "yield/thread/synchronized_event_queue.hpp"
 
 namespace yield {
 namespace aio {
 namespace fs {
 namespace posix {
 using yield::fs::aio::AIOCB;
-using yield::stage::SynchronizedEventQueue;
-
+using yield::thread::SynchronizedEventQueue;
 
 AIOQueue::AIOQueue() {
   completed_event_queue = new SynchronizedEventQueue;

@@ -33,13 +33,11 @@
 
 #include <Windows.h>
 
-
 namespace yield {
-namespace aio {
 namespace fs {
+namespace aio {
 void __stdcall
-AIOCB::CompletionRoutine
-(
+AIOCB::CompletionRoutine(
   unsigned long dwErrorCode,
   unsigned long dwNumberOfBytesTransfered,
   ::OVERLAPPED* lpOverlapped

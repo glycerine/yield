@@ -33,10 +33,9 @@
 
 #include <Windows.h>
 
-
 namespace yield {
-namespace aio {
 namespace fs {
+namespace aio {
 bool pwriteAIOCB::issue(EventHandler& completion_handler) {
   if (page.get_next_page() == NULL) {
     set_completion_handler(completion_handler);

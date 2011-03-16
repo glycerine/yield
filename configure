@@ -88,11 +88,10 @@ PROJECT_REFERENCES = {
     "yield.poll": ("yield",),
     "yield.process": ("yield.fs",),
     "yield.sockets": ("yield",),
-    "yield.sockets.aio": ("yield.aio", "yield.sockets.poll", "yield.stage"),
-    "yield.sockets.client": ("yield.sockets.aio",),
-    "yield.sockets.peer": ("yield.sockets.aio",),
+    "yield.sockets.aio": ("yield.aio", "yield.sockets.poll"),
+    "yield.sockets.client": ("yield.sockets.aio", "yield.stage"),
     "yield.sockets.poll": ("yield.poll", "yield.sockets"),
-    "yield.sockets.server": ("yield.sockets.aio",),
+    "yield.sockets.server": ("yield.sockets.aio", "yield.stage"),
     "yield.sockets.ssl": ("yield.sockets",),
     "yield.stage": ("yield.thread",),
     "yield.thread": ("yield",),
@@ -220,7 +219,9 @@ for project_name in PROJECT_NAMES:
     PROJECT_DIR_PATHS[project_name + "_test"] = project_dir_path
 
 for project_name in PROJECT_NAMES:
-    PROJECT_REFERENCES[project_name + "_test"] = (project_name,)
+    PROJECT_REFERENCES[project_name + "_test"] = [project_name]
+    if project_name == "yield.http.client":
+        PROJECT_REFERENCES[project_name + "_test"].append("yield.http.server")
 
 # Expand project references so that the list has dependencies going left -> right, e.g.
 # if project A depends on project B depends on project C, the order will be [A, B, C]
@@ -360,6 +361,12 @@ INCLUDE_FILE_PATHS["yield.sockets"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "sockets", "socket.hpp"), # before datagram_socket
 ] + \
 INCLUDE_FILE_PATHS["yield.sockets"]
+
+INCLUDE_FILE_PATHS["yield.sockets.client"] = [
+    path_join(INCLUDE_DIR_PATH, "yield", "sockets", "peer", "socket_peer.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "sockets", "peer", "stream_socket_peer.hpp"),
+] + \
+INCLUDE_FILE_PATHS["yield.sockets.client"]
 
 INCLUDE_FILE_PATHS["yield.stage"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "stage", "event.hpp"),

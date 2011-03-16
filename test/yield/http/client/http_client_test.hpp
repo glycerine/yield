@@ -38,16 +38,16 @@
 #include "yield/http/server/http_server.hpp"
 #include "yield/uri/uri.hpp"
 #include "yield/stage/seda_stage_scheduler.hpp"
-#include "yield/stage/synchronized_response_queue.hpp"
+#include "yield/thread/synchronized_response_queue.hpp"
 #include "yunit.hpp"
-
 
 namespace yield {
 namespace http {
+namespace client {
+using yield::http::server::HTTPServer;
 using yield::uri::URI;
+using yield::thread::SynchronizedResponseQueue;
 using yield::stage::SEDAStageScheduler;
-using yield::stage::SynchronizedResponseQueue;
-
 
 class HTTPClientTest : public yunit::Test {
 protected:
@@ -276,7 +276,8 @@ protected:
     //add( "HTTPClient::PUT", new HTTPClientPUTTest( uri ) );
   }
 };
-};
-};
+}
+}
+}
 
 #endif

@@ -37,7 +37,7 @@
 #include "yield/http/client/http_client.hpp"
 #include "yield/sockets/socket_address.hpp"
 #include "yield/sockets/tcp_socket.hpp"
-#include "yield/stage/synchronized_response_queue.hpp"
+#include "yield/thread/synchronized_response_queue.hpp"
 
 #include <iostream> // for std::cout
 
@@ -47,10 +47,9 @@ namespace client {
 using yield::sockets::SocketAddress;
 using yield::sockets::StreamSocket;
 using yield::sockets::TCPSocket;
-using yield::stage::SynchronizedResponseQueue;
 using yield::uri::URI;
 
-typedef SynchronizedResponseQueue<HTTPResponse> HTTPResponseQueue;
+typedef yield::thread::SynchronizedResponseQueue<HTTPResponse> HTTPResponseQueue;
 
 class HTTPClient::Connection : public StreamSocketClient::Connection {
 public:

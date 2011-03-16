@@ -27,19 +27,18 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "aio_queue.hpp"
 #include "yield/fs/aio/fsync_aiocb.hpp"
 #include "yield/fs/aio/pread_aiocb.hpp"
 #include "yield/fs/aio/pwrite_aiocb.hpp"
 #include "yield/fs/aio/setlk_aiocb.hpp"
 #include "yield/fs/aio/unlk_aiocb.hpp"
+#include "yield/fs/aio/win32/aio_queue.hpp"
 
 #include <Windows.h>
 
-
 namespace yield {
-namespace aio {
 namespace fs {
+namespace aio {
 namespace win32 {
 bool AIOQueue::enqueue(Event& event) {
   switch (event.get_type_id()) {

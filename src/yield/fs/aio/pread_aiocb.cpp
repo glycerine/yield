@@ -29,15 +29,13 @@
 
 #include "yield/exception.hpp"
 #include "yield/page.hpp"
-#include "yield/fs/aio/pread_aiocb.hpp"
 #include "yield/fs/file.hpp"
-
+#include "yield/fs/aio/pread_aiocb.hpp"
 
 namespace yield {
-namespace aio {
 namespace fs {
-preadAIOCB::preadAIOCB
-(
+namespace aio {
+preadAIOCB::preadAIOCB(
   yield::fs::File& file,
   YO_NEW_REF Page& page,
   size_t nbytes,

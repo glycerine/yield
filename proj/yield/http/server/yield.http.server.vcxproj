@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{1ece31c0-8ce4-46b6-bd9b-163493c29144}</ProjectGuid>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <RootNamespace>yield.http.server</RootNamespace>
+  </PropertyGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  
+  <ImportGroup Label="ExtensionSettings" />
+
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+
+  <PropertyGroup>
+    <IntDir Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">$(ProjectDir)..\..\..\..\build\yield\http\server\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">$(ProjectDir)..\..\..\..\lib\yield\</OutDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">yield_http_server</TargetName>
+  </PropertyGroup>
+  <PropertyGroup>
+    <IntDir Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">$(ProjectDir)..\..\..\..\build\yield\http\server\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">$(ProjectDir)..\..\..\..\lib\yield\</OutDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">yield_http_server</TargetName>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\..\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions></PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ProgramDataBaseFileName>$(TargetDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <AdditionalOptions>/EHsc /GR- /nologo /wd"4100" /wd"4127" /wd"4290" /wd"4355" /wd"4512"</AdditionalOptions>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>yield_fs.lib;yield_i18n.lib;yield_http.lib;yield_uri.lib;yield_sockets_server.lib;yield_sockets_aio.lib;yield_aio.lib;yield_sockets_poll.lib;yield_poll.lib;yield_sockets.lib;yield_stage.lib;yield_thread.lib;yield.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\..\lib\yield</AdditionalLibraryDirectories>
+      <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\..\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions></PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <WarningLevel>Level4</WarningLevel>
+      <ProgramDataBaseFileName>$(TargetDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <AdditionalOptions>/EHsc /GR- /nologo /wd"4100" /wd"4127" /wd"4290" /wd"4355" /wd"4512"</AdditionalOptions>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>yield_fs.lib;yield_i18n.lib;yield_http.lib;yield_uri.lib;yield_sockets_server.lib;yield_sockets_aio.lib;yield_aio.lib;yield_sockets_poll.lib;yield_poll.lib;yield_sockets.lib;yield_stage.lib;yield_thread.lib;yield.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\..\lib\yield</AdditionalLibraryDirectories>
+      <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </Lib>
+  </ItemDefinitionGroup>
+
+  <ItemGroup Label="ClIncludeItems">
+    <ClInclude Include="..\..\..\..\include\yield\http\server\access_log.hpp" />
+    <ClInclude Include="..\..\..\..\include\yield\http\server\http_server.hpp" />
+  </ItemGroup>
+
+  <ItemGroup Label="ClCompileItems">
+    <ClCompile Include="..\..\..\..\src\yield\http\server\access_log.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\http\server\file_access_log.cpp">
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\src\yield\http\server\file_access_log.hpp" />
+    <ClCompile Include="..\..\..\..\src\yield\http\server\http_server.cpp">
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\src\yield\http\server\ostream_access_log.hpp" />
+  </ItemGroup>
+
+  <ItemGroup Label="ProjectReferenceItems">
+    <ProjectReference Include="..\..\fs\yield.fs.vcxproj">
+      <Project>{56fed322-dc66-4b39-a033-20d7e90acf26}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\yield.http.vcxproj">
+      <Project>{3993b27c-2dae-4899-8d95-b17d37a2c6de}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\sockets\server\yield.sockets.server.vcxproj">
+      <Project>{6deccf61-2140-45e4-8aef-308a155345a7}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

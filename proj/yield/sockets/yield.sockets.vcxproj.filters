@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{6a5be5f5-afe6-425b-9f28-12f7245560c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\win32">
+      <UniqueIdentifier>{b8211ba1-1373-46e0-a171-4262543aec40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\posix">
+      <UniqueIdentifier>{04104846-4249-4dbe-b711-12994a6fb4b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{174fe3d4-334d-4473-8049-445328aa9fbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\win32">
+      <UniqueIdentifier>{c1fcc902-0abf-4147-8658-70e4fdc1d15f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\include\yield\sockets\datagram_socket.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\sockets\socket.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\sockets\socket_address.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\sockets\socket_pair.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\sockets\stream_socket.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\sockets\tcp_socket.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\sockets\udp_socket.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\sockets\win32\winsock.hpp">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\yield\sockets\posix\datagram_socket.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\posix\socket.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\posix\socket_address.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\posix\stream_socket.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\posix\tcp_socket.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\posix\udp_socket.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\socket_pair.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\win32\datagram_socket.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\win32\socket.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\win32\socket_address.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\win32\stream_socket.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\win32\tcp_socket.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\win32\udp_socket.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

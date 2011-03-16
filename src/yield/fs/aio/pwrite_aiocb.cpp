@@ -29,15 +29,13 @@
 
 #include "yield/exception.hpp"
 #include "yield/page.hpp"
-#include "yield/fs/aio/pwrite_aiocb.hpp"
 #include "yield/fs/file.hpp"
-
+#include "yield/fs/aio/pwrite_aiocb.hpp"
 
 namespace yield {
-namespace aio {
 namespace fs {
-pwriteAIOCB::pwriteAIOCB
-(
+namespace aio {
+pwriteAIOCB::pwriteAIOCB(
   yield::fs::File& file,
   YO_NEW_REF Page& page,
   size_t nbytes,

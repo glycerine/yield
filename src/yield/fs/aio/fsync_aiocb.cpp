@@ -28,13 +28,12 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/exception.hpp"
-#include "yield/fs/aio/fsync_aiocb.hpp"
 #include "yield/fs/file.hpp"
-
+#include "yield/fs/aio/fsync_aiocb.hpp"
 
 namespace yield {
-namespace aio {
 namespace fs {
+namespace aio {
 fsyncAIOCB::RetryStatus fsyncAIOCB::retry() {
   if (get_file().sync()) {
     set_return(0);

@@ -30,19 +30,17 @@
 #ifndef _YIELD_FS_AIO_PREAD_AIOCB_HPP_
 #define _YIELD_FS_AIO_PREAD_AIOCB_HPP_
 
-#include "yield/aio/fs/aiocb.hpp"
-
+#include "yield/fs/aio/aiocb.hpp"
 
 namespace yield {
-namespace aio {
 namespace fs {
+namespace aio {
 class preadAIOCB : public AIOCB {
 public:
   const static uint32_t TYPE_ID = 2917461772UL;
 
 public:
-  preadAIOCB
-  (
+  preadAIOCB(
     yield::fs::File& file,
     YO_NEW_REF Page& page,
     size_t nbytes,
@@ -51,18 +49,22 @@ public:
 
   ~preadAIOCB();
 
+public:
   Page& get_page() const {
     return page;
   }
 
+public:
   // yield::Object
   uint32_t get_type_id() const {
     return TYPE_ID;
   }
+
   const char* get_type_name() const {
-    return "yield::aio::fs::preadAIOCB";
+    return "yield::fs::aio::preadAIOCB";
   }
 
+public:
   // yield::aio::AIOCB
   bool issue(EventHandler& completion_handler);
 #ifdef _WIN32

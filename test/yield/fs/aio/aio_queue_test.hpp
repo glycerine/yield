@@ -35,24 +35,19 @@
 #include "yield/auto_object.hpp"
 #include "yield/page.hpp"
 #include "yield/exception.hpp"
-#include "yield/aio/fs/pread_aiocb.hpp"
-#include "yield/aio/fs/pwrite_aiocb.hpp"
 #include "yield/fs/file.hpp"
 #include "yield/fs/file_system.hpp"
 #include "yield/fs/path.hpp"
+#include "yield/fs/aio/pread_aiocb.hpp"
+#include "yield/fs/aio/pwrite_aiocb.hpp"
 #include "yunit.hpp"
 
 #include <fcntl.h>
 
 
 namespace yield {
-namespace aio {
 namespace fs {
-using yield::fs::File;
-using yield::fs::Path;
-using yield::fs::FileSystem;
-
-
+namespace aio {
 template <class AIOQueueType>
 class AIOQueueTest : public yunit::Test {
 public:

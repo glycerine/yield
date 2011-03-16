@@ -122,8 +122,7 @@ StreamSocketClient::Configuration::Configuration
 
 void
 StreamSocketClient::Configuration::
-set_connect_timeout
-(
+set_connect_timeout(
   const Time& connect_timeout
 ) {
   this->connect_timeout = connect_timeout;

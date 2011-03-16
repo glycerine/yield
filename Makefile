@@ -1,4 +1,4 @@
-all: yield yield.aio yield.aio_test yield.fs yield.fs.aio yield.fs.aio_test yield.fs_test yield.getopt yield.getopt_test yield.http yield.http.client yield.http.client_test yield.http.server yield.http.server_test yield.http_test yield.i18n yield.i18n_test yield.marshal yield.marshal.json yield.marshal.json_test yield.marshal.xdr yield.marshal.xdr_test yield.marshal.xml yield.marshal.xml_test yield.marshal_test yield.poll yield.poll_test yield.process yield.process_test yield.sockets yield.sockets.aio yield.sockets.aio_test yield.sockets.client yield.sockets.client_test yield.sockets.peer yield.sockets.peer_test yield.sockets.poll yield.sockets.poll_test yield.sockets.server yield.sockets.server_test yield.sockets.ssl yield.sockets.ssl_test yield.sockets_test yield.stage yield.stage_test yield.thread yield.thread_test yield.uri yield.uri_test yield.uuid yield.uuid_test yield_test
+all: yield yield.aio yield.aio_test yield.fs yield.fs.aio yield.fs.aio_test yield.fs_test yield.getopt yield.getopt_test yield.http yield.http.client yield.http.client_test yield.http.server yield.http.server_test yield.http_test yield.i18n yield.i18n_test yield.marshal yield.marshal.json yield.marshal.json_test yield.marshal.xdr yield.marshal.xdr_test yield.marshal.xml yield.marshal.xml_test yield.marshal_test yield.poll yield.poll_test yield.process yield.process_test yield.sockets yield.sockets.aio yield.sockets.aio_test yield.sockets.client yield.sockets.client_test yield.sockets.poll yield.sockets.poll_test yield.sockets.server yield.sockets.server_test yield.sockets.ssl yield.sockets.ssl_test yield.sockets_test yield.stage yield.stage_test yield.thread yield.thread_test yield.uri yield.uri_test yield.uuid yield.uuid_test yield_test
 
 clean:
 	$(MAKE) -C proj/yield -f yield.Makefile clean
@@ -37,8 +37,6 @@ clean:
 	$(MAKE) -C proj/yield/sockets/aio -f yield.sockets.aio_test.Makefile clean
 	$(MAKE) -C proj/yield/sockets/client -f yield.sockets.client.Makefile clean
 	$(MAKE) -C proj/yield/sockets/client -f yield.sockets.client_test.Makefile clean
-	$(MAKE) -C proj/yield/sockets/peer -f yield.sockets.peer.Makefile clean
-	$(MAKE) -C proj/yield/sockets/peer -f yield.sockets.peer_test.Makefile clean
 	$(MAKE) -C proj/yield/sockets/poll -f yield.sockets.poll.Makefile clean
 	$(MAKE) -C proj/yield/sockets/poll -f yield.sockets.poll_test.Makefile clean
 	$(MAKE) -C proj/yield/sockets/server -f yield.sockets.server.Makefile clean
@@ -91,8 +89,6 @@ depclean:
 	$(MAKE) -C proj/yield/sockets/aio -f yield.sockets.aio_test.Makefile depclean
 	$(MAKE) -C proj/yield/sockets/client -f yield.sockets.client.Makefile depclean
 	$(MAKE) -C proj/yield/sockets/client -f yield.sockets.client_test.Makefile depclean
-	$(MAKE) -C proj/yield/sockets/peer -f yield.sockets.peer.Makefile depclean
-	$(MAKE) -C proj/yield/sockets/peer -f yield.sockets.peer_test.Makefile depclean
 	$(MAKE) -C proj/yield/sockets/poll -f yield.sockets.poll.Makefile depclean
 	$(MAKE) -C proj/yield/sockets/poll -f yield.sockets.poll_test.Makefile depclean
 	$(MAKE) -C proj/yield/sockets/server -f yield.sockets.server.Makefile depclean
@@ -136,7 +132,7 @@ yield.getopt_test: yield.getopt
 yield.http.client: yield.http yield.sockets.client
 	$(MAKE) -C proj/yield/http/client -f yield.http.client.Makefile
 
-yield.http.client_test: yield.http.client
+yield.http.client_test: yield.http.client yield.http.server
 	$(MAKE) -C proj/yield/http/client -f yield.http.client_test.Makefile
 
 yield.http.server: yield.fs yield.http yield.sockets.server
@@ -193,23 +189,17 @@ yield.process: yield.fs
 yield.process_test: yield.process
 	$(MAKE) -C proj/yield/process -f yield.process_test.Makefile
 
-yield.sockets.aio: yield.aio yield.sockets.poll yield.stage
+yield.sockets.aio: yield.aio yield.sockets.poll
 	$(MAKE) -C proj/yield/sockets/aio -f yield.sockets.aio.Makefile
 
 yield.sockets.aio_test: yield.sockets.aio
 	$(MAKE) -C proj/yield/sockets/aio -f yield.sockets.aio_test.Makefile
 
-yield.sockets.client: yield.sockets.aio
+yield.sockets.client: yield.sockets.aio yield.stage
 	$(MAKE) -C proj/yield/sockets/client -f yield.sockets.client.Makefile
 
 yield.sockets.client_test: yield.sockets.client
 	$(MAKE) -C proj/yield/sockets/client -f yield.sockets.client_test.Makefile
-
-yield.sockets.peer: yield.sockets.aio
-	$(MAKE) -C proj/yield/sockets/peer -f yield.sockets.peer.Makefile
-
-yield.sockets.peer_test: yield.sockets.peer
-	$(MAKE) -C proj/yield/sockets/peer -f yield.sockets.peer_test.Makefile
 
 yield.sockets.poll: yield.poll yield.sockets
 	$(MAKE) -C proj/yield/sockets/poll -f yield.sockets.poll.Makefile
@@ -217,7 +207,7 @@ yield.sockets.poll: yield.poll yield.sockets
 yield.sockets.poll_test: yield.sockets.poll
 	$(MAKE) -C proj/yield/sockets/poll -f yield.sockets.poll_test.Makefile
 
-yield.sockets.server: yield.sockets.aio
+yield.sockets.server: yield.sockets.aio yield.stage
 	$(MAKE) -C proj/yield/sockets/server -f yield.sockets.server.Makefile
 
 yield.sockets.server_test: yield.sockets.server

@@ -30,45 +30,20 @@
 #ifndef _YIELD_FS_AIO_AIO_QUEUE_HPP_
 #define _YIELD_FS_AIO_AIO_QUEUE_HPP_
 
-#include "yield/event_queue.hpp"
-
+#ifdef _WIN32
+#include "win32/aio_queue.hpp"
+#else
+#include "posix/aio_queue.hpp"
+#endif
 
 namespace yield {
-namespace aio {
 namespace fs {
+namespace aio {
 #ifdef _WIN32
-namespace win32 {
-class AIOQueue;
-}
+typedef win32::AIOQueue AIOQueue;
 #else
-namespace posix {
-class AIOQueue;
-}
+typedef posix::AIOQueue AIOQueue;
 #endif
-
-
-class AIOQueue : public EventQueue {
-public:
-  AIOQueue();
-  ~AIOQueue();
-
-  bool associate(fd_t fd);
-
-  // yield::Object
-  AIOQueue& inc_ref() {
-    return Object::inc_ref(*this);
-  }
-  // yield::EventQueue
-  YO_NEW_REF Event* dequeue(const Time& timeout);
-  bool enqueue(YO_NEW_REF Event& event);
-
-private:
-#if defined(_WIN32)
-  win32::AIOQueue* pimpl;
-#else
-  posix::AIOQueue* pimpl;
-#endif
-};
 }
 }
 }

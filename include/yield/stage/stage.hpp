@@ -34,10 +34,8 @@
 #include "yield/event_handler.hpp"
 #include "yield/time.hpp"
 
-
 namespace yield {
 class EventQueue;
-
 
 namespace stage {
 class Stage : public EventHandler {
@@ -46,7 +44,7 @@ public:
   public:
     const static uint32_t TYPE_ID = 1809111020UL;
 
-    // Object
+    // yield::Object
     uint32_t get_type_id() const {
       return TYPE_ID;
     }
@@ -61,12 +59,15 @@ public:
   Stage(YO_NEW_REF EventHandler&, YO_NEW_REF EventQueue&);
   ~Stage();
 
+public:
   double get_arrival_rate_s() const {
     return arrival_rate_s;
   }
+
   double get_rho() const {
     return rho;
   }
+
   double get_service_rate_s() const {
     return service_rate_s;
   }
@@ -74,12 +75,14 @@ public:
   void visit(); // Blocking
   bool visit(const Time& timeout);
 
-  // Object
+public:
+  // yield::Object
   Stage& inc_ref() {
     return Object::inc_ref(*this);
   }
 
-  // EventHandler
+public:
+  // yield::EventHandler
   void handle(YO_NEW_REF Event& event) {
     enqueue(event);
   }

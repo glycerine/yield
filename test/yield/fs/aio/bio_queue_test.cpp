@@ -28,7 +28,6 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "aio_queue_test.hpp"
-#include "yield/aio/fs/bio_queue.hpp"
+#include "yield/fs/aio/bio_queue.hpp"
 
-
-TEST_SUITE_EX(FileBIOQueue, yield::aio::fs::AIOQueueTestSuite<yield::aio::fs::BIOQueue>);
+TEST_SUITE_EX(FileBIOQueue, yield::fs::aio::AIOQueueTestSuite<yield::fs::aio::BIOQueue>);

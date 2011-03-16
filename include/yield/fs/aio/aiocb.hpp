@@ -36,8 +36,8 @@
 namespace yield {
 class Page;
 
-namespace aio {
 namespace fs {
+namespace aio {
 class AIOCB : public yield::aio::AIOCB {
 public:
   virtual ~AIOCB() { }

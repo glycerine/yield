@@ -30,12 +30,11 @@
 #ifndef _YIELD_FS_AIO_FSYNC_AIOCB_HPP_
 #define _YIELD_FS_AIO_FSYNC_AIOCB_HPP_
 
-#include "yield/aio/fs/aiocb.hpp"
-
+#include "yield/fs/aio/aiocb.hpp"
 
 namespace yield {
-namespace aio {
 namespace fs {
+namespace aio {
 class fsyncAIOCB : public AIOCB {
 public:
   const static uint32_t TYPE_ID = 1349938901UL;
@@ -45,14 +44,17 @@ public:
     : AIOCB(file)
   { }
 
+public:
   // yield::Object
   uint32_t get_type_id() const {
     return TYPE_ID;
   }
+
   const char* get_type_name() const {
-    return "yield::aio::fs::fsyncAIOCB";
+    return "yield::fs::aio::fsyncAIOCB";
   }
 
+public:
   // yield::aio::AIOCB
 #ifndef _WIN32
   bool issue(EventHandler& completion_handler);

@@ -31,13 +31,9 @@
 #include "yield/fs/aio/aiocb.hpp"
 #include "yield/fs/file.hpp"
 
-
 namespace yield {
-namespace aio {
 namespace fs {
-using yield::fs::File;
-
-
+namespace aio {
 AIOCB::AIOCB(File& file)
   : yield::aio::AIOCB(file, NULL, 0, 0)
 { }

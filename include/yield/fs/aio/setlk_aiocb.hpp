@@ -30,13 +30,12 @@
 #ifndef _YIELD_FS_AIO_SETLK_AIOCB_HPP_
 #define _YIELD_FS_AIO_SETLK_AIOCB_HPP_
 
-#include "yield/aio/fs/aiocb.hpp"
+#include "yield/fs/aio/aiocb.hpp"
 #include "yield/fs/file.hpp"
 
-
 namespace yield {
-namespace aio {
 namespace fs {
+namespace aio {
 class setlkAIOCB : public AIOCB {
 public:
   const static uint32_t TYPE_ID = 2934085911UL;
@@ -59,7 +58,7 @@ public:
     return TYPE_ID;
   }
   const char* get_type_name() const {
-    return "yield::aio::fs::setlkAIOCB";
+    return "yield::fs::aio::setlkAIOCB";
   }
 
   // yield::aio::AIOCB

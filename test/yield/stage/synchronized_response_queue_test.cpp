@@ -31,7 +31,7 @@
 #include "yield/auto_object.hpp"
 #include "yield/exception.hpp"
 #include "yield/response.hpp"
-#include "yield/stage/synchronized_response_queue.hpp"
+#include "yield/thread/synchronized_response_queue.hpp"
 #include "yunit.hpp"
 
 

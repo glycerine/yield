@@ -32,7 +32,6 @@
 #include <iostream>
 
 
-extern yunit::TestSuite& SocketBIOQueueTestSuite();
 extern yunit::TestSuite& SocketNBIOQueueTestSuite();
 #ifdef _WIN32
 extern yunit::TestSuite& Win32SocketAIOQueueTestSuite();
@@ -41,11 +40,6 @@ extern yunit::TestSuite& Win32SocketAIOQueueTestSuite();
 
 int main(int, char**) {
   int failed_test_case_count = 0;
-
-  // SocketBIOQueue
-  std::cout << "SocketBIOQueue:" << std::endl;
-  failed_test_case_count += SocketBIOQueueTestSuite().run();
-  std::cout << std::endl;
 
   // SocketNBIOQueue
   std::cout << "SocketNBIOQueue:" << std::endl;

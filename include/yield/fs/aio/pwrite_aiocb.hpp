@@ -30,12 +30,11 @@
 #ifndef _YIELD_FS_AIO_PWRITE_AIOCB_HPP_
 #define _YIELD_FS_AIO_PWRITE_AIOCB_HPP_
 
-#include "yield/aio/fs/aiocb.hpp"
-
+#include "yield/fs/aio/aiocb.hpp"
 
 namespace yield {
-namespace aio {
 namespace fs {
+namespace aio {
 class pwriteAIOCB : public AIOCB {
 public:
   const static uint32_t TYPE_ID = 1080008554UL;
@@ -60,7 +59,7 @@ public:
     return TYPE_ID;
   }
   const char* get_type_name() const {
-    return "yield::aio::fs::pwriteAIOCB";
+    return "yield::fs::aio::pwriteAIOCB";
   }
 
   // yield::aio::AIOCB

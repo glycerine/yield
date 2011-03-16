@@ -31,10 +31,9 @@
 
 #include <Windows.h>
 
-
 namespace yield {
-namespace aio {
 namespace fs {
+namespace aio {
 bool unlkAIOCB::issue(yield::aio::win32::AIOQueue&) {
   return UnlockFileEx
          (
