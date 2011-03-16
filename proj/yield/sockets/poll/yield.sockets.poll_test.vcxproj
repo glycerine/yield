@@ -101,12 +101,6 @@
   <ItemGroup Label="ClCompileItems">
     <ClCompile Include="..\..\..\..\test\yield\sockets\poll\socket_event_queue_test.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\..\test\yield\sockets\poll\win32\selector_test.cpp">
-      <ObjectFileName>$(IntDir)win32\selector_test.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\test\yield\sockets\poll\win32\wsapoller_test.cpp">
-      <ObjectFileName>$(IntDir)win32\wsapoller_test.obj</ObjectFileName>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\test\yield\sockets\poll\yield_sockets_poll_test_main.cpp">
     </ClCompile>
   </ItemGroup>

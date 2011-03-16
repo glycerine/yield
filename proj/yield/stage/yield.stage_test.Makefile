@@ -49,7 +49,7 @@ LIBS += -lyield_stage -lyield_thread -lyield
 DEP_FILE_PATHS := $(shell find ../../../build/yield/stage_test -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../build/yield/stage_test/seda_stage_scheduler_test.o ../../../build/yield/stage_test/stage_test.o ../../../build/yield/stage_test/synchronized_event_queue_test.o ../../../build/yield/stage_test/synchronized_response_queue_test.o ../../../build/yield/stage_test/wavefront_stage_scheduler_test.o ../../../build/yield/stage_test/yield_stage_test_main.o
+OBJECT_FILE_PATHS += ../../../build/yield/stage_test/seda_stage_scheduler_test.o ../../../build/yield/stage_test/stage_test.o ../../../build/yield/stage_test/wavefront_stage_scheduler_test.o ../../../build/yield/stage_test/yield_stage_test_main.o
 
 
 ../../../bin/yield/yield_stage_test: $(OBJECT_FILE_PATHS)
@@ -72,14 +72,6 @@ depclean:
 ../../../build/yield/stage_test/stage_test.o: ../../../test/yield/stage/stage_test.cpp
 	-mkdir -p ../../../build/yield/stage_test 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/stage_test/stage_test.o -MD $(CXXFLAGS) ../../../test/yield/stage/stage_test.cpp
-
-../../../build/yield/stage_test/synchronized_event_queue_test.o: ../../../test/yield/stage/synchronized_event_queue_test.cpp
-	-mkdir -p ../../../build/yield/stage_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/stage_test/synchronized_event_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/stage/synchronized_event_queue_test.cpp
-
-../../../build/yield/stage_test/synchronized_response_queue_test.o: ../../../test/yield/stage/synchronized_response_queue_test.cpp
-	-mkdir -p ../../../build/yield/stage_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/stage_test/synchronized_response_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/stage/synchronized_response_queue_test.cpp
 
 ../../../build/yield/stage_test/wavefront_stage_scheduler_test.o: ../../../test/yield/stage/wavefront_stage_scheduler_test.cpp
 	-mkdir -p ../../../build/yield/stage_test 2>/dev/null

@@ -32,30 +32,13 @@
 #include <iostream>
 
 
-#ifdef _WIN32
-extern yunit::TestSuite& SelectorTestSuite();
-#endif
-#ifdef _WIN32
-extern yunit::TestSuite& WSAPollerTestSuite();
-#endif
+
 
 
 int main(int, char**) {
   int failed_test_case_count = 0;
 
-#ifdef _WIN32
-  // Selector
-  std::cout << "Selector:" << std::endl;
-  failed_test_case_count += SelectorTestSuite().run();
-  std::cout << std::endl;
-#endif
 
-#ifdef _WIN32
-  // WSAPoller
-  std::cout << "WSAPoller:" << std::endl;
-  failed_test_case_count += WSAPollerTestSuite().run();
-  std::cout << std::endl;
-#endif
 
   return failed_test_case_count;
 }

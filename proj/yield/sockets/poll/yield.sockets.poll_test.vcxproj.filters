@@ -4,9 +4,6 @@
     <Filter Include="Source Files">
       <UniqueIdentifier>{3c4b8e5c-bebb-4215-ae6f-e7a459861056}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\win32">
-      <UniqueIdentifier>{467e7288-eddf-4408-8014-bcea912c870e}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
 
@@ -14,12 +11,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\..\test\yield\sockets\poll\socket_event_queue_test.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\test\yield\sockets\poll\win32\selector_test.cpp">
-      <Filter>Source Files\win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\test\yield\sockets\poll\win32\wsapoller_test.cpp">
-      <Filter>Source Files\win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\test\yield\sockets\poll\yield_sockets_poll_test_main.cpp">
       <Filter>Source Files</Filter>

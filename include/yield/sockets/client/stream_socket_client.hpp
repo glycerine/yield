@@ -37,11 +37,11 @@
 #include "yield/sockets/client/socket_client.hpp"
 #include "yield/sockets/peer/stream_socket_peer.hpp"
 
-
 namespace yield {
 namespace sockets {
 namespace client {
-class StreamSocketClient : public yield::sockets::peer::StreamSocketPeer<SocketClient> {
+class StreamSocketClient
+  : public yield::sockets::peer::StreamSocketPeer<SocketClient> {
 public:
   class Configuration {
   public:
@@ -105,6 +105,7 @@ public:
   const Configuration& get_configuration() const {
     return configuration;
   }
+
   SocketAddress& get_peername() {
     return peername;
   }
@@ -113,7 +114,8 @@ protected:
   class connectAIOCB;
 
 
-  class Connection : public yield::sockets::peer::StreamSocketPeer<SocketClient>::Connection {
+  class Connection
+    : public yield::sockets::peer::StreamSocketPeer<SocketClient>::Connection {
   public:
     Connection(
       StreamSocketClient&,
@@ -128,8 +130,7 @@ protected:
     template <class RequestType>
     class RequestState {
     public:
-      RequestState
-      (
+      RequestState(
         YO_NEW_REF RequestType& request,
         YO_NEW_REF Buffer& request_buffer
       )
@@ -143,21 +144,28 @@ protected:
         Buffer::dec_ref(request_buffer);
       }
 
+    public:
       RequestType& get_request() {
         return request;
       }
+
       Buffer& get_request_buffer() {
         return request_buffer;
       }
+
       uint16_t get_recv_tries() const {
         return recv_tries;
       }
+
       uint16_t get_send_tries() const {
         return send_tries;
       }
+
+    public:
       uint16_t inc_recv_tries() {
         return ++recv_tries;
       }
+
       uint16_t inc_send_tries() {
         return ++send_tries;
       }

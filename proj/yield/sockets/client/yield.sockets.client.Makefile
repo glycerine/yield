@@ -49,7 +49,7 @@ LIBS += -lyield_sockets_aio -lyield_aio -lyield_sockets_poll -lyield_poll -lyiel
 DEP_FILE_PATHS := $(shell find ../../../../build/yield/sockets/client -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../../build/yield/sockets/client/socket_client.o ../../../../build/yield/sockets/client/stream_socket_client.o
+OBJECT_FILE_PATHS += ../../../../build/yield/sockets/client/stream_socket_client.o
 
 
 ../../../../lib/yield/libyield_sockets_client.a: $(OBJECT_FILE_PATHS)
@@ -64,10 +64,6 @@ depclean:
 
 -include $(DEP_FILE_PATHS)
 
-
-../../../../build/yield/sockets/client/socket_client.o: ../../../../src/yield/sockets/client/socket_client.cpp
-	-mkdir -p ../../../../build/yield/sockets/client 2>/dev/null
-	$(CXX) -c -o ../../../../build/yield/sockets/client/socket_client.o -MD $(CXXFLAGS) ../../../../src/yield/sockets/client/socket_client.cpp
 
 ../../../../build/yield/sockets/client/stream_socket_client.o: ../../../../src/yield/sockets/client/stream_socket_client.cpp
 	-mkdir -p ../../../../build/yield/sockets/client 2>/dev/null

@@ -566,6 +566,10 @@ if options.format_src:
 if options.generate_proj:
     for project_name in PROJECT_NAMES:
         for project_name_suffix, project_type in (("", "lib"), ("_test", "exe")):
+            if (project_name == "yield.sockets.client" or project_name == "yield.sockets.server") and\
+               project_name_suffix == "_test":
+                continue
+
             project = {
                "autoconf": AUTOCONF.get(project_name + project_name_suffix, None),
                "build_dir_path": path_join(ROOT_DIR_PATH, "build", path_sep.join(project_name.split('.'))) + project_name_suffix,
@@ -623,7 +627,9 @@ if options.generate_proj:
                 [path_join(PROJECT_DIR_PATHS[project_name], project_name)
                  for project_name in PROJECT_NAMES] + \
                 [path_join(PROJECT_DIR_PATHS[project_name], project_name + "_test")
-                 for project_name in PROJECT_NAMES],
+                 for project_name in PROJECT_NAMES
+                 if project_name != "yield.sockets.client" and \
+                    project_name != "yield.sockets.server"],
                 "yield.sln"
             )
         ),

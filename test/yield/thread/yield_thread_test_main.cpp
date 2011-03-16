@@ -43,7 +43,9 @@ extern yunit::TestSuite& ProcessorSetTestSuite();
 extern yunit::TestSuite& ReaderWriterLockTestSuite();
 extern yunit::TestSuite& SamplerTestSuite();
 extern yunit::TestSuite& SemaphoreTestSuite();
+extern yunit::TestSuite& SynchronizedEventQueueTestSuite();
 extern yunit::TestSuite& SynchronizedQueueTestSuite();
+extern yunit::TestSuite& SynchronizedResponseQueueTestSuite();
 extern yunit::TestSuite& ThreadTestSuite();
 extern yunit::TestSuite& TLSConcurrentQueueTestSuite();
 extern yunit::TestSuite& UnitConcurrentQueueTestSuite();
@@ -107,9 +109,19 @@ int main(int, char**) {
   failed_test_case_count += SemaphoreTestSuite().run();
   std::cout << std::endl;
 
+  // SynchronizedEventQueue
+  std::cout << "SynchronizedEventQueue:" << std::endl;
+  failed_test_case_count += SynchronizedEventQueueTestSuite().run();
+  std::cout << std::endl;
+
   // SynchronizedQueue
   std::cout << "SynchronizedQueue:" << std::endl;
   failed_test_case_count += SynchronizedQueueTestSuite().run();
+  std::cout << std::endl;
+
+  // SynchronizedResponseQueue
+  std::cout << "SynchronizedResponseQueue:" << std::endl;
+  failed_test_case_count += SynchronizedResponseQueueTestSuite().run();
   std::cout << std::endl;
 
   // Thread

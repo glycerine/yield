@@ -18,12 +18,6 @@
     <ClCompile Include="..\..\..\test\yield\stage\stage_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\stage\synchronized_event_queue_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\stage\synchronized_response_queue_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClInclude Include="..\..\..\test\yield\stage\test_event_handler.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>

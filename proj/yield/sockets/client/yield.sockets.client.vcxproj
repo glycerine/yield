@@ -100,8 +100,6 @@
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
-    <ClCompile Include="..\..\..\..\src\yield\sockets\client\socket_client.cpp">
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\sockets\client\stream_socket_client.cpp">
     </ClCompile>
   </ItemGroup>

@@ -1,4 +1,4 @@
-// wsapoller_test.cpp
+// synchronized_event_queue_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,8 +27,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "../socket_event_queue_test.hpp"
-#include "wsapoller.hpp"
+#include "../event_queue_test.hpp"
+#include "yield/thread/synchronized_event_queue.hpp"
 
-
-TEST_SUITE_EX(WSAPoller, yield::poll::SocketEventQueueTestSuite<yield::poll::win32::WSAPoller>);
+TEST_SUITE_EX(SynchronizedEventQueue, yield::EventQueueTestSuite<yield::thread::SynchronizedEventQueue>);

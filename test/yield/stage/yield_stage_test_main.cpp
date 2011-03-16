@@ -34,8 +34,6 @@
 
 extern yunit::TestSuite& SEDAStageSchedulerTestSuite();
 extern yunit::TestSuite& StageTestSuite();
-extern yunit::TestSuite& SynchronizedEventQueueTestSuite();
-extern yunit::TestSuite& SynchronizedResponseQueueTestSuite();
 extern yunit::TestSuite& WavefrontStageSchedulerTestSuite();
 
 
@@ -50,16 +48,6 @@ int main(int, char**) {
   // Stage
   std::cout << "Stage:" << std::endl;
   failed_test_case_count += StageTestSuite().run();
-  std::cout << std::endl;
-
-  // SynchronizedEventQueue
-  std::cout << "SynchronizedEventQueue:" << std::endl;
-  failed_test_case_count += SynchronizedEventQueueTestSuite().run();
-  std::cout << std::endl;
-
-  // SynchronizedResponseQueue
-  std::cout << "SynchronizedResponseQueue:" << std::endl;
-  failed_test_case_count += SynchronizedResponseQueueTestSuite().run();
   std::cout << std::endl;
 
   // WavefrontStageScheduler

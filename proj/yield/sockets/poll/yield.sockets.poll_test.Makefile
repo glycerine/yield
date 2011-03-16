@@ -47,9 +47,6 @@ DEP_FILE_PATHS := $(shell find ../../../../build/yield/sockets/poll_test -name "
 
 
 OBJECT_FILE_PATHS += ../../../../build/yield/sockets/poll_test/socket_event_queue_test.o ../../../../build/yield/sockets/poll_test/yield_sockets_poll_test_main.o
-ifeq ($(UNAME), MINGW32)
-	OBJECT_FILE_PATHS += ../../../../build/yield/sockets/poll_test/win32/selector_test.o ../../../../build/yield/sockets/poll_test/win32/wsapoller_test.o
-endif
 
 
 ../../../../bin/yield/yield_sockets_poll_test: $(OBJECT_FILE_PATHS)
@@ -68,14 +65,6 @@ depclean:
 ../../../../build/yield/sockets/poll_test/socket_event_queue_test.o: ../../../../test/yield/sockets/poll/socket_event_queue_test.cpp
 	-mkdir -p ../../../../build/yield/sockets/poll_test 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/sockets/poll_test/socket_event_queue_test.o -MD $(CXXFLAGS) ../../../../test/yield/sockets/poll/socket_event_queue_test.cpp
-
-../../../../build/yield/sockets/poll_test/win32/selector_test.o: ../../../../test/yield/sockets/poll/win32/selector_test.cpp
-	-mkdir -p ../../../../build/yield/sockets/poll_test/win32 2>/dev/null
-	$(CXX) -c -o ../../../../build/yield/sockets/poll_test/win32/selector_test.o -MD $(CXXFLAGS) ../../../../test/yield/sockets/poll/win32/selector_test.cpp
-
-../../../../build/yield/sockets/poll_test/win32/wsapoller_test.o: ../../../../test/yield/sockets/poll/win32/wsapoller_test.cpp
-	-mkdir -p ../../../../build/yield/sockets/poll_test/win32 2>/dev/null
-	$(CXX) -c -o ../../../../build/yield/sockets/poll_test/win32/wsapoller_test.o -MD $(CXXFLAGS) ../../../../test/yield/sockets/poll/win32/wsapoller_test.cpp
 
 ../../../../build/yield/sockets/poll_test/yield_sockets_poll_test_main.o: ../../../../test/yield/sockets/poll/yield_sockets_poll_test_main.cpp
 	-mkdir -p ../../../../build/yield/sockets/poll_test 2>/dev/null
