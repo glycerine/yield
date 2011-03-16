@@ -28,7 +28,7 @@
 assert __name__ == "__main__"
 
 from copy import copy, deepcopy
-from os import chdir, listdir, makedirs, stat, unlink
+from os import chdir, getcwd, listdir, makedirs, stat, unlink
 from os.path import abspath, \
                     dirname, \
                     exists, \
@@ -424,9 +424,10 @@ option_parser.add_option("--format-src", action="store_true")
 option_parser.add_option("-p", "--project")
 option_parser.add_option("--generate-proj", action="store_true")
 option_parser.add_option("--generate-src", action="store_true")
-option_parser.add_option("--generate-src-test_main_cpp", action="store_true")
-option_parser.add_option("--generate-src-test_py", action="store_true")
 option_parser.add_option("--generate-src-rl", action="store_true")
+option_parser.add_option("--generate-test", action="store_true")
+option_parser.add_option("--generate-test_main_cpp", action="store_true")
+option_parser.add_option("--generate-test_py", action="store_true")
 
 options, _ = option_parser.parse_args()
 
@@ -667,7 +668,7 @@ if options.generate_src or options.generate_src_rl:
                 )
 
 
-if options.generate_src or options.generate_src_test_main_cpp:
+if options.generate_test or options.generate_test_main_cpp:
     for project_name in PROJECT_NAMES:
         project_test_dir_path = None
         test_suite_decls = []
@@ -768,17 +769,19 @@ int main(int, char**) {
             )
 
 
-if options.generate_src or options.generate_src_test_py:
+if options.generate_test or options.generate_test_py:
     if not '.' in sys.path:
         sys.path.append('.')
 
-    for py_file_path in rglob(path_join(ROOT_DIR_PATH, "src", "yield", "**", "*_test.py")):
+    for py_file_path in rglob(path_join(TEST_DIR_PATH, "yield", "**", "*_test.py")):
         py_dir_path, py_module_name = path_split(py_file_path)
+        cwd = getcwd()
         chdir(py_dir_path)
         py_module_name = splitext(py_module_name)[0]
         try: unlink(py_module_name + ".pyc")
         except: pass
         __import__(py_module_name)
+        chdir(cwd)
 
 
 #if options.generate_src or options.generate_src_idl:
