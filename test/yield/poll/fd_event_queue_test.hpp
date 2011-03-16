@@ -27,8 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _TEST_YIELD_POLL_FD_EVENT_QUEUE_TEST_HPP_
-#define _TEST_YIELD_POLL_FD_EVENT_QUEUE_TEST_HPP_
+#ifndef _YIELD_POLL_FD_EVENT_QUEUE_TEST_HPP_
+#define _YIELD_POLL_FD_EVENT_QUEUE_TEST_HPP_
 
 #include "yield/auto_object.hpp"
 #include "yield/assert.hpp"
@@ -41,7 +41,6 @@
 #else
 #include <unistd.h>
 #endif
-
 
 namespace yield {
 namespace poll {
@@ -238,50 +237,43 @@ template <class FDEventQueueType>
 class FDEventQueueTestSuite : public yunit::TestSuite {
 public:
   FDEventQueueTestSuite() {
-    add
-    (
+    add(
       "FDEventQueue::associate( fd )",
       new FDEventQueueAssociateOneTest<FDEventQueue>
     );
 
-    add
-    (
+    add(
       "FDEventQueue::associate( fd ) x 2",
       new FDEventQueueAssociateTwoTest<FDEventQueue>
     );
 
-    add
-    (
+    add(
       "FDEventQueue::dissociate( fd )",
       new FDEventQueueDissociateOneTest<FDEventQueue>
     );
 
-    add
-    (
+    add(
       "FDEventQueue::poll()",
       new FDEventQueuePollOneBlockingTest<FDEventQueue>
     );
 
-    add
-    (
+    add(
       "FDEventQueue::poll( timeout )",
       new FDEventQueuePollOneTimedTest<FDEventQueue>
     );
 
-    add
-    (
+    add(
       "FDEventQueue::toggle",
       new FDEventQueueToggleOneTest<FDEventQueue>
     );
 
-    add
-    (
+    add(
       "FDEventQueue::want_write",
       new FDEventQueueWantWriteTest<FDEventQueue>
     );
   }
 };
-};
-};
+}
+}
 
 #endif

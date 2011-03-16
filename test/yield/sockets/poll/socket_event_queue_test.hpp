@@ -27,19 +27,19 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _TEST_YIELD_SOCKETS_POLL_SOCKET_EVENT_QUEUE_TEST_HPP_
-#define _TEST_YIELD_SOCKETS_POLL_SOCKET_EVENT_QUEUE_TEST_HPP_
+#ifndef _YIELD_SOCKETS_POLL_SOCKET_EVENT_QUEUE_TEST_HPP_
+#define _YIELD_SOCKETS_POLL_SOCKET_EVENT_QUEUE_TEST_HPP_
 
 #include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/exception.hpp"
-#include "yield/poll/socket_event.hpp"
+#include "yield/sockets/poll/socket_event.hpp"
+#include "yield/sockets/poll/socket_event_queue.hpp"
 #include "yield/sockets/socket_pair.hpp"
-#include "yield/poll/socket_event_queue.hpp"
 #include "yunit.hpp"
 
-
 namespace yield {
+namespace sockets {
 namespace poll {
 template <class SocketEventQueueType>
 class SocketEventQueueTest : public yunit::Test {
@@ -65,11 +65,11 @@ protected:
     return *socket_event_queue;
   }
 
-  socket_t get_read_socket() const {
+  Socket& get_read_socket() const {
     return sockets->first();
   }
 
-  socket_t get_write_socket() const {
+  Socket& get_write_socket() const {
     return sockets->second();
   }
 
@@ -115,7 +115,7 @@ public:
     if (!get_socket_event_queue().dissociate(get_read_socket()))
       throw Exception();
 
-    send(get_read_socket(), "m", 1, 0);
+    get_read_socket().send("m", 1, 0);
 
     Event* event = get_socket_event_queue().trydequeue();
     throw_assert_eq(event, NULL);
@@ -139,8 +139,8 @@ public:
     if (!get_socket_event_queue().dissociate(get_read_socket()))
       throw Exception();
 
-    send(get_read_socket(), "m", 1, 0);
-    send(get_write_socket(), "m", 1, 0);
+    get_read_socket().send("m", 1, 0);
+    get_write_socket().send("m", 1, 0);
 
     auto_Object<SocketEvent> socket_event
     = object_cast<SocketEvent>(get_socket_event_queue().dequeue());
@@ -161,7 +161,7 @@ public:
     if (!get_socket_event_queue().associate(get_read_socket(), POLLIN))
       throw Exception();
 
-    send(get_write_socket(), "m", 1, 0);
+    get_write_socket().send("m", 1, 0);
 
     auto_Object<SocketEvent> socket_event
     = object_cast<SocketEvent>(get_socket_event_queue().dequeue());
@@ -177,7 +177,7 @@ public:
     if (!get_socket_event_queue().associate(get_read_socket(), POLLIN))
       throw Exception();
 
-    send(get_write_socket(), "m", 1, 0);
+    get_write_socket().send("m", 1, 0);
 
     Time start_time(Time::now());
     auto_Object<SocketEvent> socket_event
@@ -198,8 +198,8 @@ public:
     if (!get_socket_event_queue().associate(get_write_socket(), POLLIN))
       throw Exception();
 
-    send(get_read_socket(), "m", 1, 0);
-    send(get_write_socket(), "m", 1, 0);
+    get_read_socket().send("m", 1, 0);
+    get_write_socket().send("m", 1, 0);
 
     for (uint8_t socket_i = 0; socket_i < 2; socket_i++) {
       auto_Object<SocketEvent> socket_event
@@ -228,7 +228,7 @@ public:
     if (!get_socket_event_queue().associate(get_read_socket(), POLLIN))
       throw Exception();
 
-    send(get_write_socket(), "m", 1, 0);
+    get_write_socket().send("m", 1, 0);
 
     auto_Object<SocketEvent> socket_event
     = object_cast<SocketEvent>(get_socket_event_queue().dequeue());
@@ -256,61 +256,53 @@ template <class SocketEventQueueType>
 class SocketEventQueueTestSuite : public yunit::TestSuite {
 public:
   SocketEventQueueTestSuite() {
-    add
-    (
+    add(
       "SocketEventQueue::associate( socket )",
       new SocketEventQueueAssociateOneTest<SocketEventQueueType>
     );
 
-    add
-    (
+    add(
       "SocketEventQueue::associate( socket ) x 2",
       new SocketEventQueueAssociateTwoTest<SocketEventQueueType>
     );
 
-    add
-    (
+    add(
       "SocketEventQueue::dissociate( socket )",
       new SocketEventQueueDissociateOneTest<SocketEventQueueType>
     );
 
-    add
-    (
+    add(
       "SocketEventQueue::dissociate( socket ) x 2",
       new SocketEventQueueDissociateTwoTest<SocketEventQueueType>
     );
 
-    add
-    (
+    add(
       "SocketEventQueue::poll()",
       new SocketEventQueuePollOneBlockingTest<SocketEventQueueType>
     );
 
-    add
-    (
+    add(
       "SocketEventQueue::poll( timeout )",
       new SocketEventQueuePollOneTimedTest<SocketEventQueueType>
     );
 
-    add
-    (
+    add(
       "SocketEventQueue::poll() x 2",
       new SocketEventQueuePollTwoTest<SocketEventQueueType>
     );
 
-    add
-    (
+    add(
       "SocketEventQueue::toggle",
       new SocketEventQueueToggleOneTest<SocketEventQueueType>
     );
 
-    add
-    (
+    add(
       "SocketEventQueue::want_send",
       new SocketEventQueueWantSendTest<SocketEventQueueType>
     );
   }
 };
+}
 }
 }
 

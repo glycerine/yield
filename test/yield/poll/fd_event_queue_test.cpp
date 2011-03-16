@@ -1,4 +1,4 @@
-// test_event_handler.hpp
+// fd_event_queue_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,35 +27,9 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_STAGE_TEST_EVENT_HANDLER_HPP_
-#define _YIELD_STAGE_TEST_EVENT_HANDLER_HPP_
+#include "fd_event_queue_test.hpp"
 
-#include "yield/event.hpp"
-#include "yield/event_handler.hpp"
-
-
-namespace yield {
-namespace stage {
-class TestEventHandler : public EventHandler {
-public:
-  TestEventHandler() {
-    seen_events_count = 0;
-  }
-
-  uint8_t get_seen_events_count() const {
-    return seen_events_count;
-  }
-
-  // EventHandler
-  void handle(Event& event) {
-    seen_events_count++;
-    Event::dec_ref(event);
-  }
-
-private:
-  uint8_t seen_events_count;
-};
-}
-}
-
-#endif
+TEST_SUITE_EX(
+  FDEventQueue,
+  yield::poll::FDEventQueueTestSuite<yield::poll::FDEventQueue>
+);

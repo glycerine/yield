@@ -140,7 +140,6 @@ OPTIONS_ITEM_DEFINITION_GROUP = """\
     <RuntimeLibrary>%(RuntimeLibrary)s</RuntimeLibrary>
     <RuntimeTypeInfo>false</RuntimeTypeInfo>
     <WarningLevel>Level4</WarningLevel>%(DebugInformationFormat)s
-    <ProgramDataBaseFileName>$(TargetDir)$(TargetName).pdb</ProgramDataBaseFileName>
     <AdditionalOptions>%(AdditionalOptions)s</AdditionalOptions>
   </ClCompile>
 %(LibLink)s
@@ -282,10 +281,12 @@ class VCXProj(VCProj):
                 # Options item definition group
                 if Configuration == "Debug":
                     RuntimeLibrary = "MultiThreadedDebugDLL"
+                    # DebugInformationFormat = "EditAndContinue"
+                    DebugInformationFormat = "OldStyle"
                     DebugInformationFormat = '\n' + \
                         indent(
                             INDENT_SPACES * 2,
-                            "<DebugInformationFormat>EditAndContinue</DebugInformationFormat>"
+                            "<DebugInformationFormat>%(DebugInformationFormat)s</DebugInformationFormat>" % locals()
                         )
                     GenerateDebugInformation = "true"
                 else:

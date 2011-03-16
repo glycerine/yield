@@ -280,7 +280,7 @@ class SourceFile:
         return COMMENT_SUFFIXES.get(self.get_language(), '')
 
     def __get_c_cpp_header_guard(self):
-        for base_dir_name in ("include", "src"):
+        for base_dir_name in ("include", "src", "test"):
             base_dir_name_pos = self.get_path().find(base_dir_name + os_sep)
             if base_dir_name_pos != -1:
                return self.get_path()[base_dir_name_pos + len(base_dir_name) + 1:].\
