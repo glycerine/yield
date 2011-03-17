@@ -1,4 +1,4 @@
-// yield/auto_object.hpp
+// http_response_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,67 +27,24 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_AUTO_OBJECT_HPP_
-#define _YIELD_AUTO_OBJECT_HPP_
+#include "yield/assert.hpp"
+#include "yield/string_buffer.hpp"
+#include "yield/http/http_response.hpp"
+#include "yunit.hpp"
 
-#include "yield/exception.hpp"
-#include "yield/object.hpp"
-
+TEST_SUITE(HTTPResponse);
 
 namespace yield {
-// Similar to auto_ptr, but using object references instead of delete
-// Unlike auto_ptr auto_Object is immutable, so there is no release(),
-// reset(), or operator=().
-// The class is primarily intended for use in testing, where an object
-// should be deleted when it goes out of scope because of an exception.
-// The *object constructor throws an Exception if object is NULL.
-// That's why this is here and not in yidl.
-template <class ObjectType = Object>
-class auto_Object {
-public:
-  auto_Object(YO_NEW_REF ObjectType* object)
-    : object(*object) {
-    if (object == NULL)
-      throw Exception();
-  }
-
-  auto_Object(YO_NEW_REF ObjectType& object)
-    : object(object)
-  { }
-
-  ~auto_Object() {
-    Object::dec_ref(object);
-  }
-
-  auto_Object(const auto_Object<ObjectType>& other)
-    : object(Object::inc_ref(other.object))
-  { }
-
-public:
-  inline ObjectType& get() const {
-    return object;
-  }
-
-  inline ObjectType* operator->() const {
-    return &get();
-  }
-
-  inline ObjectType& operator*() const {
-    return get();
-  }
-
-public:
-  inline bool operator==(const auto_Object<ObjectType>& other) const {
-    return &get() == &other.get();
-  }
-
-  inline bool operator!=(const auto_Object<ObjectType>& other) const {
-    return &get() != &other.get();
-  }
-
-private:
-  ObjectType& object;
-};
+namespace http {
+TEST(HTTPResponse, constructor) {
+  HTTPResponse(404);
+  HTTPResponse(404, new StringBuffer("test"));
+  HTTPResponse(404, new StringBuffer("test"), 1.1f);
 }
 
-#endif
+TEST(HTTPResponse, get_status_code) {
+  throw_assert_eq(HTTPResponse(200).get_status_code(), 200);
+  throw_assert_eq(HTTPResponse(404).get_status_code(), 404);
+}
+}
+}

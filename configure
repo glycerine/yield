@@ -674,7 +674,10 @@ if options.generate_test or options.generate_test_main_cpp:
         test_suite_decls = []
         test_suite_runs = []
 
-        for test_cpp_file in SourceFiles(SOURCE_FILE_PATHS[project_name + "_test"]):
+        for test_cpp_file in [source_file
+            for source_file in SourceFiles(SOURCE_FILE_PATHS[project_name + "_test"])
+            if source_file.get_language() == "cpp"]:
+
             test_cpp_dir_path = dirname(test_cpp_file.get_path())
             if project_test_dir_path is None:
                 project_test_dir_path = test_cpp_dir_path

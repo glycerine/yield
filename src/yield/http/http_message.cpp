@@ -817,15 +817,7 @@ _out:
   /* #line 169 "src\\yield\\http\\http_message.rl" */
 
 
-  if (
-    field_name.iov_len == name_len
-    &&
-    memcmp(field_name.iov_base, name, name_len) == 0
-  ) {
-    value = field_value;
-    return true;
-  } else
-    return false;
+  return false;
 }
 
 template <class HTTPMessageType>
@@ -847,8 +839,8 @@ get_fields(
   /* #line 574 "src\\yield\\http\\http_message.cpp" */
   static const char _fields_parser_actions[] = {
     0, 1, 0, 1, 1, 1, 2, 1,
-    3, 1, 4, 1, 5, 1, 6, 2,
-    4, 0
+    3, 1, 4, 1, 5, 2, 4, 0
+
   };
 
   static const char _fields_parser_key_offsets[] = {
@@ -893,12 +885,12 @@ get_fields(
   };
 
   static const char _fields_parser_trans_actions[] = {
-    13, 0, 3, 5, 5, 7, 11, 0,
-    1, 15
+    11, 0, 3, 5, 5, 7, 0, 0,
+    1, 13
   };
 
   static const char _fields_parser_eof_actions[] = {
-    0, 13, 13, 13, 13, 13, 0, 9
+    0, 11, 11, 11, 11, 11, 0, 9
   };
 
   static const int fields_parser_start = 6;
@@ -1010,26 +1002,18 @@ _match:
       }
       break;
       case 4:
-        /* #line 202 "src\\yield\\http\\http_message.rl" */
+        /* #line 194 "src\\yield\\http\\http_message.rl" */
       {
         fields.push_back(make_pair(field_name, field_value));
       }
       break;
       case 5:
-        /* #line 204 "src\\yield\\http\\http_message.rl" */
-      { {
-          p++;
-          goto _out;
-        }
-      }
-      break;
-      case 6:
-        /* #line 205 "src\\yield\\http\\http_message.rl" */
+        /* #line 196 "src\\yield\\http\\http_message.rl" */
       {
         return;
       }
       break;
-      /* #line 733 "src\\yield\\http\\http_message.cpp" */
+      /* #line 730 "src\\yield\\http\\http_message.cpp" */
       }
     }
 
@@ -1046,18 +1030,18 @@ _test_eof:
       while (__nacts-- > 0) {
         switch (*__acts++) {
         case 4:
-          /* #line 202 "src\\yield\\http\\http_message.rl" */
+          /* #line 194 "src\\yield\\http\\http_message.rl" */
         {
           fields.push_back(make_pair(field_name, field_value));
         }
         break;
-        case 6:
-          /* #line 205 "src\\yield\\http\\http_message.rl" */
+        case 5:
+          /* #line 196 "src\\yield\\http\\http_message.rl" */
         {
           return;
         }
         break;
-        /* #line 754 "src\\yield\\http\\http_message.cpp" */
+        /* #line 751 "src\\yield\\http\\http_message.cpp" */
         }
       }
     }
@@ -1066,7 +1050,7 @@ _out:
     {}
   }
 
-  /* #line 210 "src\\yield\\http\\http_message.rl" */
+  /* #line 201 "src\\yield\\http\\http_message.rl" */
 
 }
 

@@ -152,6 +152,8 @@ public:
 public:
   operator string() const;
 
+  bool operator==(const URI&) const;
+
   URI operator+(const char*) const;
   URI operator+(const string&) const;
 

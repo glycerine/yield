@@ -49,16 +49,19 @@ public:
 
   virtual ~HTTPResponse() { }
 
+public:
   uint16_t get_status_code() const {
     return status_code;
   }
 
-  // Object
+public:
+  // yield::Object
   HTTPResponse& inc_ref() {
     return Object::inc_ref(*this);
   }
 
-  // Event
+public:
+  // yield::Event
   uint32_t get_type_id() const {
     return TYPE_ID;
   }

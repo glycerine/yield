@@ -9,16 +9,25 @@
 
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\test\yield\http\http_message_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\test\yield\http\http_request_parser_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\test\yield\http\http_request_parser_test.py">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\test\yield\http\http_request_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\test\yield\http\http_response_parser_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\test\yield\http\http_response_parser_test.py">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\test\yield\http\http_response_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClInclude Include="..\..\..\test\yield\http\test_http_request_handler.hpp">

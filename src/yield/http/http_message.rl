@@ -193,7 +193,6 @@ get_fields(
     main := (
       field % { fields.push_back(make_pair(field_name, field_value)); }
     )*
-    @{ fbreak; }
     $err{ return; };
 
     write data;

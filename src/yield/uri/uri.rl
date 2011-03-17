@@ -280,6 +280,35 @@ URI::operator string() const {
   return uri.str();
 }
 
+bool URI::operator==(const URI& other) const {
+  return
+    fragment.iov_len == other.fragment.iov_len
+    &&
+    memcmp(fragment.iov_base, other.fragment.iov_base, fragment.iov_len) == 0
+    &&
+    host.iov_len == other.host.iov_len
+    &&
+    memcmp(host.iov_base, other.host.iov_base, host.iov_len) == 0
+    &&
+    path.iov_len == other.path.iov_len
+    &&
+    memcmp(path.iov_base, other.path.iov_base, path.iov_len) == 0
+    &&
+    query.iov_len == other.query.iov_len
+    &&
+    port == other.port
+    &&
+    memcmp(query.iov_base, other.query.iov_base, query.iov_len) == 0
+    &&
+    scheme.iov_len == other.scheme.iov_len
+    &&
+    memcmp(scheme.iov_base, other.scheme.iov_base, scheme.iov_len) == 0
+    &&
+    userinfo.iov_len == other.userinfo.iov_len
+    &&
+    memcmp(userinfo.iov_base, other.userinfo.iov_base, userinfo.iov_len) == 0;
+}
+
 URI URI::operator+(const char* s) const {
   std::ostringstream uri;
   uri << *this;

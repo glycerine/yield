@@ -1,4 +1,4 @@
-// yield/auto_object.hpp
+// http_request_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,67 +27,59 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_AUTO_OBJECT_HPP_
-#define _YIELD_AUTO_OBJECT_HPP_
+#include "yield/auto_object.hpp"
+#include "yield/assert.hpp"
+#include "yield/date_time.hpp"
+#include "yield/string_buffer.hpp"
+#include "yield/http/http_request.hpp"
+#include "yield/http/http_response.hpp"
+#include "yunit.hpp"
 
-#include "yield/exception.hpp"
-#include "yield/object.hpp"
-
+TEST_SUITE(HTTPRequest);
 
 namespace yield {
-// Similar to auto_ptr, but using object references instead of delete
-// Unlike auto_ptr auto_Object is immutable, so there is no release(),
-// reset(), or operator=().
-// The class is primarily intended for use in testing, where an object
-// should be deleted when it goes out of scope because of an exception.
-// The *object constructor throws an Exception if object is NULL.
-// That's why this is here and not in yidl.
-template <class ObjectType = Object>
-class auto_Object {
-public:
-  auto_Object(YO_NEW_REF ObjectType* object)
-    : object(*object) {
-    if (object == NULL)
-      throw Exception();
-  }
-
-  auto_Object(YO_NEW_REF ObjectType& object)
-    : object(object)
-  { }
-
-  ~auto_Object() {
-    Object::dec_ref(object);
-  }
-
-  auto_Object(const auto_Object<ObjectType>& other)
-    : object(Object::inc_ref(other.object))
-  { }
-
-public:
-  inline ObjectType& get() const {
-    return object;
-  }
-
-  inline ObjectType* operator->() const {
-    return &get();
-  }
-
-  inline ObjectType& operator*() const {
-    return get();
-  }
-
-public:
-  inline bool operator==(const auto_Object<ObjectType>& other) const {
-    return &get() == &other.get();
-  }
-
-  inline bool operator!=(const auto_Object<ObjectType>& other) const {
-    return &get() != &other.get();
-  }
-
-private:
-  ObjectType& object;
-};
+namespace http {
+TEST(HTTPRequest, constructor) {
+  HTTPRequest(HTTPRequest::METHOD_GET, "/");
+  HTTPRequest(HTTPRequest::METHOD_GET, "/", new StringBuffer("test"));
+  HTTPRequest(HTTPRequest::METHOD_GET, "/", new StringBuffer("test"), 1.0f);
 }
 
-#endif
+TEST(HTTPRequest, get_creation_date_time) {
+  DateTime now = DateTime::now();
+  throw_assert_ge(
+    HTTPRequest(HTTPRequest::METHOD_GET, "/").get_creation_date_time(),
+    now
+  );  
+}
+
+TEST(HTTPRequest, get_method) {
+  throw_assert_eq(
+    HTTPRequest(HTTPRequest::METHOD_GET, "/").get_method(),
+    HTTPRequest::METHOD_GET
+  );
+
+  throw_assert_eq(
+    HTTPRequest(HTTPRequest::METHOD_PUT, "/").get_method(),
+    HTTPRequest::METHOD_PUT
+  );
+}
+
+TEST(HTTPRequest, get_uri) {
+  yield::uri::URI uri("/test");
+  throw_assert_eq(HTTPRequest(HTTPRequest::METHOD_GET, uri).get_uri(), uri);
+}
+
+TEST(HTTPRequest, respond) {
+  auto_Object<HTTPRequest> http_request
+    = new HTTPRequest(HTTPRequest::METHOD_GET, "/");
+
+  http_request->respond(*new HTTPResponse(200));
+  http_request->respond(404);
+  http_request->respond(404, "test");
+  http_request->respond(404, new StringBuffer("test"));
+  http_request->respond(404, *new StringBuffer("test"));
+  http_request->respond(*new Exception("exception"));
+}
+}
+}

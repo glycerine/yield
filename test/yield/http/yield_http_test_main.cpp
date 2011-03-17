@@ -32,33 +32,39 @@
 #include <iostream>
 
 
+extern yunit::TestSuite& HTTPMessageTestSuite();
 extern yunit::TestSuite& HTTPRequestParserTestSuite();
+extern yunit::TestSuite& HTTPRequestTestSuite();
 extern yunit::TestSuite& HTTPResponseParserTestSuite();
-extern yunit::TestSuite& HTTPRequestParserTestSuite();
-extern yunit::TestSuite& HTTPResponseParserTestSuite();
+extern yunit::TestSuite& HTTPResponseTestSuite();
 
 
 int main(int, char**) {
   int failed_test_case_count = 0;
 
-  // HTTPRequestParser
-  std::cout << "HTTPRequestParser:" << std::endl;
-  failed_test_case_count += HTTPRequestParserTestSuite().run();
-  std::cout << std::endl;
-
-  // HTTPResponseParser
-  std::cout << "HTTPResponseParser:" << std::endl;
-  failed_test_case_count += HTTPResponseParserTestSuite().run();
+  // HTTPMessage
+  std::cout << "HTTPMessage:" << std::endl;
+  failed_test_case_count += HTTPMessageTestSuite().run();
   std::cout << std::endl;
 
   // HTTPRequestParser
-  std::cout << "HTTPRequestParser:" << std::endl;
-  failed_test_case_count += HTTPRequestParserTestSuite().run();
+  //std::cout << "HTTPRequestParser:" << std::endl;
+  //failed_test_case_count += HTTPRequestParserTestSuite().run();
+  //std::cout << std::endl;
+
+  // HTTPRequest
+  std::cout << "HTTPRequest:" << std::endl;
+  failed_test_case_count += HTTPRequestTestSuite().run();
   std::cout << std::endl;
 
   // HTTPResponseParser
-  std::cout << "HTTPResponseParser:" << std::endl;
-  failed_test_case_count += HTTPResponseParserTestSuite().run();
+  //std::cout << "HTTPResponseParser:" << std::endl;
+  //failed_test_case_count += HTTPResponseParserTestSuite().run();
+  //std::cout << std::endl;
+
+  // HTTPResponse
+  std::cout << "HTTPResponse:" << std::endl;
+  failed_test_case_count += HTTPResponseTestSuite().run();
   std::cout << std::endl;
 
   return failed_test_case_count;
