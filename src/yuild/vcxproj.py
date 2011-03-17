@@ -133,14 +133,15 @@ LINK_ITEM_DEFINITION = """\
 OPTIONS_ITEM_DEFINITION_GROUP = """\
 <ItemDefinitionGroup %(Condition)s>
   <ClCompile>
-    <Optimization>Disabled</Optimization>
     <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)s</AdditionalIncludeDirectories>
-    <PreprocessorDefinitions>%(PreprocessorDefinitions)s</PreprocessorDefinitions>
+    <AdditionalOptions>%(AdditionalOptions)s</AdditionalOptions>
     <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+    <MinimalRebuild>false</MinimalRebuild>    
+    <Optimization>Disabled</Optimization>
+    <PreprocessorDefinitions>%(PreprocessorDefinitions)s</PreprocessorDefinitions>
     <RuntimeLibrary>%(RuntimeLibrary)s</RuntimeLibrary>
     <RuntimeTypeInfo>false</RuntimeTypeInfo>
     <WarningLevel>Level4</WarningLevel>%(DebugInformationFormat)s
-    <AdditionalOptions>%(AdditionalOptions)s</AdditionalOptions>
   </ClCompile>
 %(LibLink)s
 </ItemDefinitionGroup>

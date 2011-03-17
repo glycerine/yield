@@ -51,7 +51,6 @@ class Project(object):
         self,
         output_file_path,
         source_file_paths,
-        autoconf=None,
         build_dir_path=None,
         cxxdefines=None,
         cxxflags=None,
@@ -67,7 +66,6 @@ class Project(object):
         *args,
         **kwds
     ):
-        self.__autoconf = PlatformDict(autoconf)
         self.__cxxdefines = PlatformDict(cxxdefines)
         self.__cxxflags = PlatformDict(cxxflags)
         self.__libs = PlatformDict(libs)
@@ -160,7 +158,6 @@ class Project(object):
         else:
             raise NotImplementedError, source_file_tree.keys()
 
-    def get_autoconf(self): return self.__autoconf
     def get_build_dir_path(self): return self._build_dir_path
     def get_cxxdefines(self): return self.__cxxdefines
     def get_cxxflags(self): return self.__cxxflags

@@ -1,0 +1,8 @@
+syntax: glob
+bin/**
+build/**
+lib/**
+ipch/**
+*.pyc
+yield.sdf
+yield.suo

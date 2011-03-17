@@ -76,15 +76,10 @@ PROJECT_REFERENCES = {
     "yield.aio": ("yield",),
     "yield.fs": ("yield.i18n",),
     "yield.fs.aio": ("yield.aio", "yield.fs", "yield.thread"),
-    "yield.getopt": ("yield",),
     "yield.http": ("yield.uri",),
     "yield.http.client": ("yield.http", "yield.sockets.client"),
     "yield.http.server": ("yield.fs", "yield.http", "yield.sockets.server"),
     "yield.i18n": ("yield",),
-    "yield.marshal": ("yield",),
-    "yield.marshal.json": ("yield.marshal",),
-    "yield.marshal.xml": ("yield.marshal",),
-    "yield.marshal.xdr": ("yield.marshal",),
     "yield.poll": ("yield",),
     "yield.process": ("yield.fs",),
     "yield.sockets": ("yield",),
@@ -96,14 +91,12 @@ PROJECT_REFERENCES = {
     "yield.stage": ("yield.thread",),
     "yield.thread": ("yield",),
     "yield.uri": ("yield",),
-    "yield.uuid": ("yield",),
 }
 
 PROJECT_NAMES = PROJECT_REFERENCES.keys()
 
 AUTHOR = "Minor Gordon"
 
-AUTOCONF = {}
 #AUTOCONF = {
 #    "sockets.ssl": {
 #    #    "unix": { "YIELD_HAVE_OPENSSL": ( "crypto", "ssl", "ssl.h" ), },
@@ -130,6 +123,7 @@ CXXFLAGS = {
     "win32": [
       "/EHsc", # Enable exceptions
       "/GR-", # Disable RTTI
+      "/MP", # Multiprocess compilation
       "/nologo",
       "/wd\"4100\"",
       "/wd\"4127\"",
@@ -198,9 +192,9 @@ LIBS = {
         "sunos": ["cpc", "kstat"],
     },
 
-    "yield.uuid": {
-        "sunos": ["uuid"],
-    },
+#    "yield.uuid": {
+#        "sunos": ["uuid"],
+#    },
 }
 for project_name in LIBS.iterkeys():
     assert project_name in PROJECT_NAMES, project_names
@@ -572,7 +566,6 @@ if options.generate_proj:
                 continue
 
             project = {
-               "autoconf": AUTOCONF.get(project_name + project_name_suffix, None),
                "build_dir_path": path_join(ROOT_DIR_PATH, "build", path_sep.join(project_name.split('.'))) + project_name_suffix,
                "cxxflags": CXXFLAGS,
                "cxxpath": CXXPATH,
