@@ -12,6 +12,9 @@
 
   </ItemGroup>
   <ItemGroup>
+
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="..\..\..\..\test\yield\sockets\aio\aio_queue_test.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>

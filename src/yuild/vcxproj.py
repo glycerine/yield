@@ -30,11 +30,11 @@
 from copy import copy
 from cStringIO import StringIO
 from os import getcwd
-from os.path import dirname, exists, join, split, splitext
+from os.path import commonprefix, dirname, exists, join, relpath, split, splitext
 import traceback
 from uuid import UUID, uuid4
 
-from yutil import abspath, deduplist, fnmatch, indent, ntpath, ntpaths, relpath, strlist, strlistprefix, treepaths
+from yutil import abspath, deduplist, fnmatch, indent, ntpath, ntpaths, relpath, strlist, treepaths
 
 from yuild.constant import C_CXX_INCLUDE_FILE_EXTENSIONS, \
                            C_CXX_SOURCE_FILE_EXTENSIONS
@@ -413,44 +413,6 @@ class VCXProjFilters(object):
 
         return str(uuid4())
 
-    def __get_filters(
-        self,
-        FilterHead,
-        source_file_tree
-    ):
-        def visit_source_file(source_file):
-            FilterTail = \
-                ntpath(
-                    relpath(
-                        dirname(source_file.get_path()),
-                        self.get_root_source_dir_path()
-                    )
-                )
-            if FilterTail != "." :
-                if not FilterTail.startswith('\\'): FilterTail = "\\" + FilterTail
-            else: FilterTail = ""
-
-            Filter = FilterHead + FilterTail
-            Include = ntpath(source_file.get_path())
-
-            if splitext(source_file.get_path())[1] in C_CXX_INCLUDE_FILE_EXTENSIONS:
-                item_template = CL_INCLUDE_FILTERS_ITEM
-            else:
-                item_template = CL_COMPILE_SOURCE_FILTERS_ITEM
-
-            return (Filter, item_template % locals())
-
-        filters_items = \
-            visit_source_file_tree(
-                source_file_tree,
-                visit_source_file
-            )
-
-        filters = deduplist([parts[0] for parts in filters_items])
-        items = [parts[1] for parts in filters_items]
-
-        return filters, items
-
     def get_include_file_tree(self):
         return self.__vcxproj.get_include_file_tree()
 
@@ -466,40 +428,60 @@ class VCXProjFilters(object):
     def get_source_file_tree(self):
         return self.__vcxproj.get_source_file_tree()
 
-    def __replace_Filters(self, old_Filter, new_Filter, items):
-        old_Filter_line = INDENT_SPACES + "<Filter>" + old_Filter + "</Filter>\n"
-        new_Filter_line = INDENT_SPACES + "<Filter>" + new_Filter + "</Filter>\n"
-        for item_i in xrange(len(items)):
-            item_lines = StringIO(items[item_i]).readlines()
-            if len(item_lines) == 3 and item_lines[1] == old_Filter_line:
-                items[item_i] = "".join([item_lines[0], new_Filter_line, item_lines[2]])
-        return items
-
     def __str__(self):
-        header_filters, header_items = \
-            self.__get_filters(
-                "Header Files",
-                self.get_include_file_tree()
-        )
+        filters_by_FilterHead = {}
+        items_by_FilterHead = {}
 
-        source_filters, source_items = \
-            self.__get_filters(
-                "Source Files",
-                self.get_source_file_tree()
-            )
+        for FilterHead, source_file_tree in (
+            ("Header Files", self.get_include_file_tree()),
+            ("Source Files", self.get_source_file_tree())
+        ):
+            def visit_source_file(source_file):
+                FilterTail = \
+                    ntpath(
+                        relpath(
+                            dirname(source_file.get_path()),
+                            self.get_root_source_dir_path()
+                        )
+                    )
+                if FilterTail != "." :
+                    if not FilterTail.startswith('\\'): FilterTail = "\\" + FilterTail
+                else: FilterTail = ""
 
-        for filters, items in \
-            (
-                (header_filters, header_items),
-                (source_filters, source_items)
-            ):
+                Filter = FilterHead + FilterTail
+                Include = ntpath(source_file.get_path())
+
+                if splitext(source_file.get_path())[1] in C_CXX_INCLUDE_FILE_EXTENSIONS:
+                    item_template = CL_INCLUDE_FILTERS_ITEM
+                else:
+                    item_template = CL_COMPILE_SOURCE_FILTERS_ITEM
+
+                return (Filter, item_template % locals())
+
+            filters_items = \
+                visit_source_file_tree(
+                    source_file_tree,
+                    visit_source_file
+                )
+
+            filters_by_FilterHead[FilterHead] = deduplist([parts[0] for parts in filters_items])
+            items_by_FilterHead[FilterHead] = [parts[1] for parts in filters_items]
+
+        for FilterHead, filters in filters_by_FilterHead.iteritems():
+            def replace_Filters(old_Filter, new_Filter, items):
+                old_Filter_line = INDENT_SPACES + "<Filter>" + old_Filter + "</Filter>\n"
+                new_Filter_line = INDENT_SPACES + "<Filter>" + new_Filter + "</Filter>\n"
+                for item_i in xrange(len(items)):
+                    item_lines = StringIO(items[item_i]).readlines()
+                    if len(item_lines) == 3 and item_lines[1] == old_Filter_line:
+                        items[item_i] = "".join([item_lines[0], new_Filter_line, item_lines[2]])
 
             if len(filters) == 1:
-                self.__replace_Filters(filters[0], filters[0].split('\\')[0], items)
+                replace_Filters(filters[0], filters[0].split('\\')[0], items_by_FilterHead[FilterHead])
                 filters[0] = filters[0].split('\\')[0]
             elif len(filters) > 1:
-                filter_prefix = strlistprefix(filters).rstrip('\\')
-                if len(filter_prefix) > 0:
+                filter_prefix = commonprefix(filters).rstrip('\\')
+                if len(filter_prefix) > len(FilterHead):
                     for filter_i in xrange(len(filters)):
                         old_Filter = filters[filter_i]
                         new_FilterHead = old_Filter.split('\\')[0]
@@ -509,8 +491,7 @@ class VCXProjFilters(object):
                         else:
                             new_Filter = new_FilterHead
                         filters[filter_i] = new_Filter
-                        items = self.__replace_Filters(old_Filter, new_Filter, items)
-
+                        replace_Filters(old_Filter, new_Filter, items_by_FilterHead[FilterHead])
 
                 for filter in filters:
                     filter_parts = filter.split('\\')
@@ -524,31 +505,26 @@ class VCXProjFilters(object):
             vcxproj_filters_file_path = \
                 join(self.get_project_dir_path(), vcxproj_filters_file_path)
 
-        filter_items = []
-        for filter in header_filters + source_filters:
-            Include = filter
-            UniqueIdentifier = \
-                self.__get_FilterUniqueIdentifier(vcxproj_filters_file_path, Include)
-            filter_items.append(FILTER_ITEM % locals())
-        filter_items = indent(INDENT_SPACES * 2, "".join(filter_items))
+        item_groups = []
 
-        header_items = indent(INDENT_SPACES * 2, "".join(header_items))
-        source_items = indent(INDENT_SPACES * 2, "".join(source_items))
+        for FilterHead, filters in filters_by_FilterHead.iteritems():
+            filter_items = []
+            for filter in filters:
+                Include = filter
+                UniqueIdentifier = \
+                    self.__get_FilterUniqueIdentifier(vcxproj_filters_file_path, Include)
+                filter_items.append(FILTER_ITEM % locals())
+            item_groups.append("""<ItemGroup>\n%s\n</ItemGroup>""" % indent(INDENT_SPACES, "".join(filter_items)))
+
+        for FilterHead in sorted(items_by_FilterHead.iterkeys()):
+            item_groups.append("""<ItemGroup>\n%s\n</ItemGroup>""" % indent(INDENT_SPACES, "".join(items_by_FilterHead[FilterHead])))
 
         return """\
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ItemGroup>
-%(filter_items)s
-  </ItemGroup>
-  <ItemGroup>
-%(header_items)s
-  </ItemGroup>
-  <ItemGroup>
-%(source_items)s
-  </ItemGroup>
+%s
 </Project>
-""" % locals()
+""" % indent(INDENT_SPACES, '\n'.join(item_groups))
 
 
 class VCXProjUser(object):

@@ -9,6 +9,9 @@
 
   </ItemGroup>
   <ItemGroup>
+
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="..\..\..\..\test\yield\http\server\http_server_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

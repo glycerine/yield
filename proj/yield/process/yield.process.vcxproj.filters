@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{ad3a35cb-c532-4192-bfdd-9c18be9d85a5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\darwin">
       <UniqueIdentifier>{e2e84c03-76a9-4c75-81f4-cd3fe9f80db5}</UniqueIdentifier>
     </Filter>
@@ -21,6 +18,11 @@
     </Filter>
     <Filter Include="Source Files\win32">
       <UniqueIdentifier>{e0fcfa9f-6d84-47b3-aa26-0325cea896ae}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{ad3a35cb-c532-4192-bfdd-9c18be9d85a5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

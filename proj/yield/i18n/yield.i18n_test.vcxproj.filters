@@ -9,6 +9,9 @@
 
   </ItemGroup>
   <ItemGroup>
+
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="..\..\..\test\yield\i18n\iconv_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

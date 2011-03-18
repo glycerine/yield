@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{ae74aeb4-fda0-4fc4-a415-97fb0825ab27}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files">
       <UniqueIdentifier>{77683e51-f7b6-4a79-9db1-690661af83b8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\win32">
       <UniqueIdentifier>{cdb7feec-ef9c-4032-9a0d-84577825175b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{ae74aeb4-fda0-4fc4-a415-97fb0825ab27}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

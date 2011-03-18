@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{47c7f151-9d0f-4d67-9fe0-14bdc5dbeaf3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\posix">
-      <UniqueIdentifier>{b4dfa49a-df23-4950-a670-d33677cd9451}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\win32">
-      <UniqueIdentifier>{07222036-a013-40b3-afd6-0a88c76ac5a2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\bsd">
       <UniqueIdentifier>{d01e593f-9a01-4d57-b966-0dfcb438dfe1}</UniqueIdentifier>
     </Filter>
@@ -30,6 +21,17 @@
     </Filter>
     <Filter Include="Source Files\win32">
       <UniqueIdentifier>{8a31ec08-9b42-462f-a3c4-003778991646}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{47c7f151-9d0f-4d67-9fe0-14bdc5dbeaf3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\posix">
+      <UniqueIdentifier>{cbefc4f5-df46-4eb6-9d36-23e97e146a74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\win32">
+      <UniqueIdentifier>{be0d996a-da37-4d29-9a29-269d38b9f23c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

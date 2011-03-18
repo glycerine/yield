@@ -48,23 +48,24 @@ from yuild import Makefile, TopLevelMakefile, \
                   SourceFiles, \
                   VCXProj, VCXProjFilters, VCXProjUser, VCXSln
 from yuild.constant import C_CXX_INCLUDE_FILE_FNMATCH_PATTERNS, \
+                           C_CXX_FILE_FNMATCH_PATTERNS, \
                            CXX_SOURCE_FILE_FNMATCH_PATTERNS, \
                            INCLUDE_FILE_FNMATCH_PATTERNS, \
                            INDENT_SPACES, \
                            PLATFORMS, \
                            PLATFORM_GUARDS, \
                            SOURCE_FILE_FNMATCH_PATTERNS
-from yutil import deduplist, \
+from yutil import copy_file, \
+                  deduplist, \
                   fnmatch, \
                   indent, \
                   list_subdirectories, \
                   mirror_subdirectories, \
                   rglob, \
-                  strlistsort, \
                   write_file
 
 
-
+# Constants
 ROOT_DIR_PATH = dirname(__file__)
 INCLUDE_DIR_PATH = path_join(ROOT_DIR_PATH, "include")
 SRC_DIR_PATH = path_join(ROOT_DIR_PATH, "src")
@@ -335,8 +336,15 @@ INCLUDE_FILE_PATHS["yield.aio"] = [
 ] + INCLUDE_FILE_PATHS["yield.aio"]
 
 INCLUDE_FILE_PATHS["yield.fs"] = [
+    path_join(INCLUDE_DIR_PATH, "yield", "fs", "path.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "fs", "posix", "directory.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "fs", "posix", "file.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "fs", "posix", "file_system.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "fs", "win32", "stat.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "fs", "win32", "directory.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "fs", "win32", "file.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "fs", "win32", "file_system.hpp"),
     path_join(INCLUDE_DIR_PATH, "yield", "fs", "file.hpp"), # before aiocb
-    path_join(INCLUDE_DIR_PATH, "yield", "fs", "path.hpp"), # before file_log
     path_join(INCLUDE_DIR_PATH, "yield", "fs", "stat.hpp"), # before directory
 ] + \
 INCLUDE_FILE_PATHS["yield.fs"]
@@ -356,11 +364,23 @@ INCLUDE_FILE_PATHS["yield.sockets"] = [
 ] + \
 INCLUDE_FILE_PATHS["yield.sockets"]
 
+INCLUDE_FILE_PATHS["yield.sockets.aio"] = [
+    path_join(INCLUDE_DIR_PATH, "yield", "sockets", "aio", "aiocb.hpp"), # before accept_aiocb
+    path_join(INCLUDE_DIR_PATH, "yield", "sockets", "aio", "win32", "aio_queue.hpp"), # before aio_queue
+] + \
+INCLUDE_FILE_PATHS["yield.sockets.aio"]
+
 INCLUDE_FILE_PATHS["yield.sockets.client"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "sockets", "peer", "socket_peer.hpp"),
     path_join(INCLUDE_DIR_PATH, "yield", "sockets", "peer", "stream_socket_peer.hpp"),
 ] + \
 INCLUDE_FILE_PATHS["yield.sockets.client"]
+
+INCLUDE_FILE_PATHS["yield.sockets.server"] = [
+    path_join(INCLUDE_DIR_PATH, "yield", "sockets", "peer", "socket_peer.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "sockets", "peer", "stream_socket_peer.hpp"),
+] + \
+INCLUDE_FILE_PATHS["yield.sockets.server"]
 
 INCLUDE_FILE_PATHS["yield.stage"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "stage", "event.hpp"),
@@ -415,7 +435,8 @@ option_parser.add_option("--check-src-width", action="store_true")
 option_parser.add_option("--check-src-yunit", action="store_true")
 option_parser.add_option("-f", "--force", action="store_true")
 option_parser.add_option("--format-src", action="store_true")
-option_parser.add_option("-p", "--project")
+option_parser.add_option("-p", "--project", action="append", dest="project_names")
+option_parser.add_option("--generate-dist", action="store_true")
 option_parser.add_option("--generate-proj", action="store_true")
 option_parser.add_option("--generate-src", action="store_true")
 option_parser.add_option("--generate-src-rl", action="store_true")
@@ -425,12 +446,11 @@ option_parser.add_option("--generate-test_py", action="store_true")
 
 options, _ = option_parser.parse_args()
 
-
-if options.project:
-    assert options.project in PROJECT_NAMES, options.project
-    project_names = [options.project]
+if options.project_names is not None and len(options.project_names) > 0:
+    for project_name in options.project_names:
+        assert project_name in PROJECT_NAMES, project_name
 else:
-    project_names = PROJECT_NAMES
+    options.project_names = PROJECT_NAMES
 
 
 if options.check_src_namespace or \
@@ -440,7 +460,7 @@ if options.check_src_namespace or \
 
     include_file_paths = []
     source_file_paths = []
-    for project_name in project_names:
+    for project_name in options.project_names:
         for include_file_paths_ in INCLUDE_FILE_PATHS[project_name]:
             include_file_paths.extend(list(rglob(include_file_paths_)))
         for source_file_paths_ in SOURCE_FILE_PATHS[project_name]:
@@ -521,6 +541,64 @@ if options.check_src_namespace or \
                     print "missing", test_file_path[len(YIELD_SRC_ROOT_DIR_PATH) + 1:]
 
 
+if options.generate_dist:
+    PROJECT_BUILD_ORDER = []
+    def __fill_project_build_order(project_name):
+        for project_reference in PROJECT_REFERENCES[project_name]:
+            __fill_project_build_order(project_reference)
+
+        if project_name not in PROJECT_BUILD_ORDER:
+            PROJECT_BUILD_ORDER.append(project_name)
+    for project_name in options.project_names:
+        __fill_project_build_order(project_name)
+
+    ypy_dir_path = path_join(ROOT_DIR_PATH, "..", "ypy")
+    if not exists(ypy_dir_path):
+        ypy_dir_path = None
+
+    for project_name in options.project_names:
+        hpp = []
+        cpp = ['#include "%s.hpp"\n\n\n' % '_'.join(project_name.split('.'))]
+
+        for project_reference in PROJECT_BUILD_ORDER[:PROJECT_BUILD_ORDER.index(project_name) + 1]:
+            include_files = SourceFiles(INCLUDE_FILE_PATHS[project_reference])
+            include_files = include_files.filter(C_CXX_INCLUDE_FILE_FNMATCH_PATTERNS)
+            hpp.append(include_files.get_combined_repr())
+            source_files = SourceFiles(SOURCE_FILE_PATHS[project_reference])
+            source_files = source_files.filter(C_CXX_FILE_FNMATCH_PATTERNS)
+            source_files = source_files.exclude("test_*")
+            source_files = source_files.exclude("*_test*")
+            cpp.append(source_files.get_combined_repr())
+
+        project_dist_dir_path = \
+            path_join(ROOT_DIR_PATH, "dist", path_sep.join(project_name.split('.')))
+        if not exists(project_dist_dir_path):
+            makedirs(project_dist_dir_path)
+
+        for file_ext in ("cpp", "hpp"):
+            file_path = \
+                path_join(
+                    project_dist_dir_path,
+                    '_'.join(project_name.split('.')) + '.' + file_ext
+                )
+
+            write_file(file_path, locals()[file_ext], force=options.force)
+
+            if ypy_dir_path is not None:
+                ypy_file_path = \
+                    path_join(
+                        ypy_dir_path,
+                        "share",
+                        "yield",
+                        "dist",
+                        path_sep.join(project_name.split('.')),
+                        path_split(file_path)[1]
+                    )
+
+                if exists(ypy_file_path):
+                    copy_file(file_path, ypy_file_path)
+
+
 if options.format_src:
     source_paths = {
         "Yield": (
@@ -558,8 +636,9 @@ if options.format_src:
             project=project,
         )
 
+
 if options.generate_proj:
-    for project_name in PROJECT_NAMES:
+    for project_name in options.project_names:
         for project_name_suffix, project_type in (("", "lib"), ("_test", "exe")):
             if (project_name == "yield.sockets.client" or project_name == "yield.sockets.server") and\
                project_name_suffix == "_test":
@@ -612,30 +691,30 @@ if options.generate_proj:
                     force=options.force
                 )
 
+    if len(options.project_names) == len(PROJECT_NAMES):
+        # Generate Visual Studio solution
+        write_file(
+            "yield.sln",
+            str(
+                VCXSln(
+                    [path_join(PROJECT_DIR_PATHS[project_name], project_name)
+                     for project_name in PROJECT_NAMES] + \
+                    [path_join(PROJECT_DIR_PATHS[project_name], project_name + "_test")
+                     for project_name in PROJECT_NAMES
+                     if project_name != "yield.sockets.client" and \
+                        project_name != "yield.sockets.server"],
+                    "yield.sln"
+                )
+            ),
+            newline="\r\n"
+        )
 
-    # Generate Visual Studio solution
-    write_file(
-        "yield.sln",
-        str(
-            VCXSln(
-                [path_join(PROJECT_DIR_PATHS[project_name], project_name)
-                 for project_name in PROJECT_NAMES] + \
-                [path_join(PROJECT_DIR_PATHS[project_name], project_name + "_test")
-                 for project_name in PROJECT_NAMES
-                 if project_name != "yield.sockets.client" and \
-                    project_name != "yield.sockets.server"],
-                "yield.sln"
-            )
-        ),
-        newline="\r\n"
-    )
-
-    # Generate top-level Makefile
-    write_file(
-        "Makefile",
-        str(TopLevelMakefile(PROJECT_DIR_PATHS, PROJECT_REFERENCES)),
-        force=options.force
-    )
+        # Generate top-level Makefile
+        write_file(
+            "Makefile",
+            str(TopLevelMakefile(PROJECT_DIR_PATHS, PROJECT_REFERENCES)),
+            force=options.force
+        )
 
 
 if options.generate_src or options.generate_src_rl:
@@ -662,7 +741,7 @@ if options.generate_src or options.generate_src_rl:
 
 
 if options.generate_test or options.generate_test_main_cpp:
-    for project_name in PROJECT_NAMES:
+    for project_name in options.project_names:
         project_test_dir_path = None
         test_suite_decls = []
         test_suite_runs = []
@@ -702,7 +781,7 @@ if options.generate_test or options.generate_test_main_cpp:
                     continue
 
             if len(test_suite_names) > 0:
-                test_suite_names = strlistsort(test_suite_names)
+                test_suite_names = sorted(test_suite_names)
 
                 for test_suite_name in test_suite_names:
                     assert test_suite_name.endswith("TestSuite")
@@ -778,90 +857,3 @@ if options.generate_test or options.generate_test_py:
         except: pass
         __import__(py_module_name)
         chdir(cwd)
-
-
-#if options.generate_src or options.generate_src_idl:
-#    from yidl.compiler import compile
-#    from yidl.target.yield_cpp_target import YieldCXXTarget
-#
-#    # Generate source from IDL definitions
-#    for dir_path in\
-#        (
-#            path_join(ROOT_DIR_PATH, "include"),
-#            path_join(ROOT_DIR_PATH, "src", "yield"),
-#        ):
-#
-#        for idl_file_path in rglob(path_join(dir_path, "**", "*.idl")):
-#            hpp_file_path = \
-#                path_join(
-#                    dirname(idl_file_path),
-#                    path_split(idl_file_path)[1][:-3] + "hpp"
-#                )
-#
-#            if options.debug:
-#                print "compiling", idl_file_path, "into", hpp_file_path
-#
-#            compile(
-#                idl_file_path,
-#                YieldCXXTarget(
-#                    force=options.force,
-#                    output_file_path=hpp_file_path
-#                )
-#            )
-
-#if options.generate_src or options.public:
-#    PROJECT_BUILD_ORDER = []
-#    def __fill_project_build_order(project_name):
-#        for project_reference in PROJECT_REFERENCES[project_name]:
-#            __fill_project_build_order(project_reference)
-#    
-#        if project_name not in PROJECT_BUILD_ORDER:
-#            PROJECT_BUILD_ORDER.append(project_name)
-#    __fill_project_build_order("http")
-#    __fill_project_build_order("marshal")
-#    __fill_project_build_order("process")
-#    assert len(PROJECT_BUILD_ORDER) == len(PROJECT_NAMES)
-#    YIELD_PUBLIC_DIR_PATH = \
-#        abspath(path_join(ROOT_DIR_PATH, "..", "yield_public"))
-#    if exists(YIELD_PUBLIC_DIR_PATH):
-#        assert exists(path_join(YIELD_PUBLIC_DIR_PATH, "include", "yield"))
-#        assert exists(path_join(YIELD_PUBLIC_DIR_PATH, "src", "yield"))
-#
-#        for project_name in listdir(path_join(YIELD_PUBLIC_DIR_PATH, "include", "yield")):
-#            if project_name.endswith(".hpp"):
-#                project_name = splitext(project_name)[0]
-#
-#                hpp = []
-#                cpp = ['#include "yield/%(project_name)s.hpp"\n\n\n' % locals()]
-#
-#                for project_reference in PROJECT_BUILD_ORDER[:PROJECT_BUILD_ORDER.index(project_name) + 1]:
-#                    include_files = SourceFiles(INCLUDE_FILE_PATHS[project_reference])
-#                    include_files = include_files.filter(C_CXX_INCLUDE_FILE_FNMATCH_PATTERNS)
-#                    hpp.append(include_files.get_combined_repr())
-#                    source_files = SourceFiles(SOURCE_FILE_PATHS[project_reference])
-#                    source_files = source_files.filter(C_CXX_FILE_FNMATCH_PATTERNS)
-#                    source_files = source_files.exclude("test_*")
-#                    source_files = source_files.exclude("*_test*")
-#                    cpp.append(source_files.get_combined_repr())
-#
-#                write_file(
-#                    path_join(
-#                        YIELD_PUBLIC_DIR_PATH,
-#                        "include",
-#                        "yield",
-#                        project_name + ".hpp"
-#                    ),
-#                    hpp,
-#                    force=options.force
-#                )
-#
-#                write_file(
-#                    path_join(
-#                        YIELD_PUBLIC_DIR_PATH,
-#                        "src",
-#                        "yield",
-#                        project_name + ".cpp"
-#                    ),
-#                    cpp,
-#                    force=options.force
-#                )

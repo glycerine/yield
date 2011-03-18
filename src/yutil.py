@@ -65,8 +65,6 @@ __all__ = \
   "spacify",
   "static_cast",
   "strlist",
-  "strlistprefix",
-  "strlistsort",
   "touch",
   "treepaths",
   "tstrip",
@@ -441,32 +439,6 @@ def static_cast(x, expected_type):
 
 def strlist(x):
     return typelist(x, str)
-
-
-def strlistprefix(x):
-    prefix = []
-    while True:
-        len_prefix = len(prefix)
-        test_char = None
-        for test_string in strlist(x):
-            if len(test_string) > len_prefix:
-                if test_char is None:
-                    test_char = test_string[len_prefix]
-                elif test_string[len_prefix] == test_char:
-                    pass
-                else:
-                    return "".join(prefix)
-            else:
-                return "".join(prefix)
-        prefix.append(test_char)
-    return "".join(prefix)
-
-
-def strlistsort(x):
-    y_lower = dict((y.lower(), y) for y in x)
-    y_lower_keys = copy(y_lower.keys())
-    y_lower_keys.sort()
-    return [y_lower[key] for key in y_lower_keys]
 
 
 def touch(file_path):

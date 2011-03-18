@@ -9,6 +9,9 @@
 
   </ItemGroup>
   <ItemGroup>
+
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="..\..\..\test\yield\aio\yield_aio_test_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
