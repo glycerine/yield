@@ -119,8 +119,7 @@ Object& HTTPResponseParser::parse() {
 }
 
 bool
-HTTPResponseParser::parse_status_line
-(
+HTTPResponseParser::parse_status_line(
   float& http_version,
   uint16_t& status_code
 ) {
@@ -135,20 +134,20 @@ HTTPResponseParser::parse_status_line
 
   static const char _status_line_parser_key_offsets[] = {
     0, 0, 1, 2, 3, 4, 5, 7,
-    10, 12, 15, 17, 20, 25, 31, 32
+    10, 12, 15, 18, 21, 26, 32, 33
   };
 
   static const unsigned char _status_line_parser_trans_keys[] = {
     72u, 84u, 84u, 80u, 47u, 48u, 57u, 46u,
-    48u, 57u, 48u, 57u, 32u, 48u, 57u, 48u,
-    57u, 32u, 48u, 57u, 32u, 65u, 90u, 97u,
-    122u, 13u, 32u, 65u, 90u, 97u, 122u, 10u,
-    0
+    48u, 57u, 48u, 57u, 32u, 48u, 57u, 32u,
+    48u, 57u, 32u, 48u, 57u, 32u, 65u, 90u,
+    97u, 122u, 13u, 32u, 65u, 90u, 97u, 122u,
+    10u, 0
   };
 
   static const char _status_line_parser_single_lengths[] = {
     0, 1, 1, 1, 1, 1, 0, 1,
-    0, 1, 0, 1, 1, 2, 1, 0
+    0, 1, 1, 1, 1, 2, 1, 0
   };
 
   static const char _status_line_parser_range_lengths[] = {
@@ -158,15 +157,15 @@ HTTPResponseParser::parse_status_line
 
   static const char _status_line_parser_index_offsets[] = {
     0, 0, 2, 4, 6, 8, 10, 12,
-    15, 17, 20, 22, 25, 29, 34, 36
+    15, 17, 20, 23, 26, 30, 35, 37
   };
 
   static const char _status_line_parser_indicies[] = {
     1, 0, 2, 0, 3, 0, 4, 0,
     5, 0, 6, 0, 7, 8, 0, 9,
-    0, 10, 9, 0, 11, 0, 12, 13,
-    0, 14, 14, 14, 0, 15, 14, 14,
-    14, 0, 16, 0, 0, 0
+    0, 10, 9, 0, 10, 11, 0, 12,
+    13, 0, 14, 14, 14, 0, 15, 14,
+    14, 14, 0, 16, 0, 0, 0
   };
 
   static const char _status_line_parser_trans_targs[] = {
@@ -275,13 +274,13 @@ _match:
       }
       break;
       case 1:
-        /* #line 106 "src\\yield\\http\\http_response_parser.rl" */
+        /* #line 105 "src\\yield\\http\\http_response_parser.rl" */
       {
         status_code = static_cast<uint16_t>(atoi(p));
       }
       break;
       case 2:
-        /* #line 113 "src\\yield\\http\\http_response_parser.rl" */
+        /* #line 112 "src\\yield\\http\\http_response_parser.rl" */
       { {
           p++;
           goto _out;
@@ -289,7 +288,7 @@ _match:
       }
       break;
       case 3:
-        /* #line 114 "src\\yield\\http\\http_response_parser.rl" */
+        /* #line 113 "src\\yield\\http\\http_response_parser.rl" */
       {
         return false;
       }
@@ -309,7 +308,7 @@ _again:
       while (__nacts-- > 0) {
         switch (*__acts++) {
         case 3:
-          /* #line 114 "src\\yield\\http\\http_response_parser.rl" */
+          /* #line 113 "src\\yield\\http\\http_response_parser.rl" */
         {
           return false;
         }
@@ -323,7 +322,7 @@ _out:
     {}
   }
 
-  /* #line 119 "src\\yield\\http\\http_response_parser.rl" */
+  /* #line 118 "src\\yield\\http\\http_response_parser.rl" */
 
 
   return cs != status_line_parser_error;

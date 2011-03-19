@@ -33,12 +33,7 @@ from yutil import indent
 
 __all__ = [
     "BODY2",
-    "CL0_FIELD",
-    "CL2_FIELD",
     "CRLF",
-    "DATE",
-    "DATE_FIELD",
-    "HOST",
     "HOST_FIELD",
     "HTTP_VERSION",
     "HTTPMessageParserTest",
@@ -53,8 +48,6 @@ BODY2 = "12"
 CRLF = "\\r\\n"
 CL0_FIELD = "Content-Length: 0" + CRLF
 CL2_FIELD = "Content-Length: 2" + CRLF
-DATE = "Fri, 31 Dec 1999 23:59:59 GMT"
-DATE_FIELD = "Date: %(DATE)s" % locals() + CRLF
 HOST = "localhost"
 HOST_FIELD = "Host: localhost" + CRLF
 HTTP_VERSION = "HTTP/1.1"
@@ -80,11 +73,6 @@ class HTTPMessageParserTest(list):
 
     def ASSERT_1_BODY_NULL(self):
         self.append("throw_assert_eq(%(http_message_type_lower_case)s->get_body(), NULL);" % self)
-
-    def ASSERT_1_DATE_FIELD(self):
-        DATE = globals()["DATE"]
-        http_message_type_lower_case = self.http_message_type_lower_case
-        self.append("""throw_assert_eq((*%(http_message_type_lower_case)s)["Date"], "%(DATE)s");""" % locals())
 
     def ASSERT_1_HOST_FIELD(self):
         HOST = globals()["HOST"]
@@ -115,11 +103,6 @@ class HTTPMessageParserTest(list):
     def ASSERT_N_BODY_NULL(self, n):
         http_message_type_lower_case = self.http_message_type_lower_case
         self.append("""for (size_t i = 0; i < %(n)u; i++) { throw_assert_eq(%(http_message_type_lower_case)ss[i]->get_body(), NULL); }""" % locals())
-
-    def ASSERT_N_DATE_FIELD(self, n):
-        DATE = globals()["DATE"]
-        http_message_type_lower_case = self.http_message_type_lower_case
-        self.append("""for (size_t i = 0; i < %(n)u; i++) { throw_assert_eq((*%(http_message_type_lower_case)ss[i])["Date"], "%(DATE)s"); }""" % locals())
 
     def ASSERT_N_HOST_FIELD(self, n):
         HOST = globals()["HOST"]

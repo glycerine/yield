@@ -33,7 +33,6 @@
 #include "yield/http/http_message_parser.hpp"
 #include "yield/http/http_response.hpp"
 
-
 namespace yield {
 namespace http {
 class HTTPResponseParser : public HTTPMessageParser {

@@ -88,19 +88,18 @@ Object& HTTPRequestParser::parse() {
           ("TRACE" % { method = HTTPRequest::METHOD_TRACE; }) |
           ("UNLOCK" % { method = HTTPRequest::METHOD_UNLOCK; });
 
-      request_uri =
-        (
+      request_uri = (
           (
             '*'
             >{ path.iov_base = p; }
             %{ path.iov_len = p - static_cast<char*>(path.iov_base); }
-         ) |
+          ) |
           absolute_uri |
           path_absolute |
           authority
        );
 
-      request_line = method ' ' request_uri ' ' http_version crlf;
+      request_line = method ' '+ request_uri ' '+ http_version crlf;
 
       main := request_line
               @{ fbreak; };

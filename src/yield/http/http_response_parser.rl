@@ -79,7 +79,7 @@ Object& HTTPResponseParser::parse() {
 
     if (p == eof) { // EOF parsing
       Buffer* next_buffer
-      = new Page(eof - ps + Page::getpagesize(), ps, eof - ps);
+        = new Page(eof - ps + Page::getpagesize(), ps, eof - ps);
       p = ps;
       return *next_buffer;
     } else // Error parsing
@@ -89,8 +89,7 @@ Object& HTTPResponseParser::parse() {
 }
 
 bool
-HTTPResponseParser::parse_status_line
-(
+HTTPResponseParser::parse_status_line(
   float& http_version,
   uint16_t& status_code
 ) {
@@ -103,11 +102,11 @@ HTTPResponseParser::parse_status_line
     include basic_rules "basic_rules.rl";
 
     status_code = digit+
-                        >{ status_code = static_cast<uint16_t>(atoi(p)); };
+                  >{ status_code = static_cast<uint16_t>(atoi(p)); };
 
     reason_phrase = (alpha | ' ')+;
 
-    status_line = http_version ' ' status_code ' ' reason_phrase crlf;
+    status_line = http_version ' '+ status_code ' '+ reason_phrase crlf;
 
     main := status_line
             @{ fbreak; }

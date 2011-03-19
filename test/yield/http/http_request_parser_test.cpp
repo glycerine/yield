@@ -73,19 +73,10 @@ TEST(HTTPRequestParser, MalformedURIMissing) {
   throw_assert_eq(http_request, NULL);
 }
 
-TEST(HTTPRequestParser, WellFormedNoBody) {
-  HTTPRequest* http_request = object_cast<HTTPRequest>(HTTPRequestParser("GET / HTTP/1.1\r\nHost: localhost\r\n\r\n").parse());
-  throw_assert_ne(http_request, NULL);
-  throw_assert_eq(http_request->get_method(), HTTPRequest::METHOD_GET);
-  throw_assert_eq(http_request->get_http_version(), 1.1F);
-  throw_assert_eq((*http_request)["Host"], "localhost");
-  throw_assert_eq(http_request->get_body(), NULL);
-  HTTPRequest::dec_ref(*http_request);
-}
-
-TEST(HTTPRequestParser, WellFormedNoFields) {
+TEST(HTTPRequestParser, WellFormedRequestLineOnly) {
   HTTPRequest* http_request = object_cast<HTTPRequest>(HTTPRequestParser("GET / HTTP/1.1\r\n\r\n").parse());
   throw_assert_ne(http_request, NULL);
+  throw_assert_eq(http_request->get_method(), HTTPRequest::METHOD_GET);
   throw_assert_eq(http_request->get_http_version(), 1.1F);
   throw_assert_eq(http_request->get_body(), NULL);
   HTTPRequest::dec_ref(*http_request);

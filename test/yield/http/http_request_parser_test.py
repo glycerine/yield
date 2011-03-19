@@ -96,28 +96,15 @@ class MalformedURIMissingHTTPRequestParserTest(HTTPRequestParserTest):
         self.ASSERT_1_NULL()
 
 
-class WellFormedNoBodyHTTPRequestParserTest(HTTPRequestParserTest):
-    def __init__(self):
-        HTTPRequestParserTest.__init__(self)
-        self.PARSE_1("GET", ' ', URI, ' ', HTTP_VERSION, CRLF, HOST_FIELD, CRLF)
-        self.ASSERT_1_NONNULL()
-        self.ASSERT_1_METHOD()
-        self.ASSERT_1_HTTP_VERSION()
-        self.ASSERT_1_HOST_FIELD()
-        self.ASSERT_1_BODY_NULL()
-        self.DEC_REF_1()
-
-
-class WellFormedNoFieldsHTTPRequestParserTest(HTTPRequestParserTest):
+class WellFormedRequestLineOnlyHTTPRequestParserTest(HTTPRequestParserTest):
     def __init__(self):
         HTTPRequestParserTest.__init__(self)
         self.PARSE_1("GET", ' ', URI, ' ', HTTP_VERSION, CRLF, CRLF)
         self.ASSERT_1_NONNULL()
+        self.ASSERT_1_METHOD()
         self.ASSERT_1_HTTP_VERSION()
         self.ASSERT_1_BODY_NULL()
         self.DEC_REF_1()
-
-
 
 
 class HTTPRequestParserTestSuite(HTTPMessageParserTestSuite):
@@ -130,8 +117,7 @@ class HTTPRequestParserTestSuite(HTTPMessageParserTestSuite):
         self.append(MalformedMethodMissingHTTPRequestParserTest())
         self.append(MalformedURIEmbeddedLFHTTPRequestParserTest())
         self.append(MalformedURIMissingHTTPRequestParserTest())
-        self.append(WellFormedNoBodyHTTPRequestParserTest())
-        self.append(WellFormedNoFieldsHTTPRequestParserTest())
+        self.append(WellFormedRequestLineOnlyHTTPRequestParserTest())
 
 
 if __name__ == "__main__":

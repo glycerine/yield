@@ -39,38 +39,37 @@ TEST_SUITE(HTTPResponseParser);
 namespace yield {
 namespace http {
 TEST(HTTPResponseParser, MalformedReasonPhraseMissing) {
-  HTTPResponse* http_response = object_cast<HTTPResponse>(HTTPResponseParser("HTTP/1.1 200\r\nDate: Fri, 31 Dec 1999 23:59:59 GMT\r\n\r\n").parse());
-  throw_assert_eq(http_response, NULL);
-}
-
-TEST(HTTPResponseParser, MalformedStatusCodeAlpha) {
-  HTTPResponse* http_response = object_cast<HTTPResponse>(HTTPResponseParser("HTTP/1.1 XX OK\r\nDate: Fri, 31 Dec 1999 23:59:59 GMT\r\n\r\n").parse());
-  throw_assert_eq(http_response, NULL);
-}
-
-TEST(HTTPResponseParser, MalformedStatusCodeMissing) {
-  HTTPResponse* http_response = object_cast<HTTPResponse>(HTTPResponseParser("HTTP/1.1 OK\r\nDate: Fri, 31 Dec 1999 23:59:59 GMT\r\n\r\n").parse());
-  throw_assert_eq(http_response, NULL);
-}
-
-TEST(HTTPResponseParser, MalformedStatusLineMissing) {
-  HTTPResponse* http_response = object_cast<HTTPResponse>(HTTPResponseParser("Date: Fri, 31 Dec 1999 23:59:59 GMT\r\n\r\n").parse());
-  throw_assert_eq(http_response, NULL);
-}
-
-TEST(HTTPResponseParser, WellFormedNoBody) {
-  HTTPResponse* http_response = object_cast<HTTPResponse>(HTTPResponseParser("HTTP/1.1 200 OK\r\nDate: Fri, 31 Dec 1999 23:59:59 GMT\r\n\r\n").parse());
+  HTTPResponse* http_response = object_cast<HTTPResponse>(HTTPResponseParser("HTTP/1.1 200\r\n\r\n").parse());
   throw_assert_ne(http_response, NULL);
-  throw_assert_eq(http_response->get_status_code(), 200);
-  throw_assert_eq((*http_response)["Date"], "Fri, 31 Dec 1999 23:59:59 GMT");
-  throw_assert_eq(http_response->get_body(), NULL);
+  throw_assert_eq(http_response->get_status_code(), 400);
   HTTPResponse::dec_ref(*http_response);
 }
 
-TEST(HTTPResponseParser, WellFormedNoFields) {
+TEST(HTTPResponseParser, MalformedStatusCodeAlpha) {
+  HTTPResponse* http_response = object_cast<HTTPResponse>(HTTPResponseParser("HTTP/1.1 XX OK\r\n\r\n").parse());
+  throw_assert_ne(http_response, NULL);
+  throw_assert_eq(http_response->get_status_code(), 400);
+  HTTPResponse::dec_ref(*http_response);
+}
+
+TEST(HTTPResponseParser, MalformedStatusCodeMissing) {
+  HTTPResponse* http_response = object_cast<HTTPResponse>(HTTPResponseParser("HTTP/1.1 OK\r\n\r\n").parse());
+  throw_assert_ne(http_response, NULL);
+  throw_assert_eq(http_response->get_status_code(), 400);
+  HTTPResponse::dec_ref(*http_response);
+}
+
+TEST(HTTPResponseParser, MalformedStatusLineMissing) {
+  HTTPResponse* http_response = object_cast<HTTPResponse>(HTTPResponseParser("Host: localhost\r\n\r\n").parse());
+  throw_assert_ne(http_response, NULL);
+  throw_assert_eq(http_response->get_status_code(), 400);
+  HTTPResponse::dec_ref(*http_response);
+}
+
+TEST(HTTPResponseParser, WellFormedStatusLineOnly) {
   HTTPResponse* http_response = object_cast<HTTPResponse>(HTTPResponseParser("HTTP/1.1 200 OK\r\n\r\n").parse());
   throw_assert_ne(http_response, NULL);
-  throw_assert_eq(http_response->get_http_version(), 1.1F);
+  throw_assert_eq(http_response->get_status_code(), 200);
   throw_assert_eq(http_response->get_body(), NULL);
   HTTPResponse::dec_ref(*http_response);
 }
