@@ -27,278 +27,207 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from yuild.constant import INDENT_SPACES
-from yutil import indent, write_file
+from http_message_parser_test import *
 
 
 # Constants
-CRLF = "\\r\\n"
-INDENT_SPACES = INDENT_SPACES["cpp"]
 URI = "/"
-VERSION = "HTTP/1.1"
-
-# Fields
-CL0_FIELD = "Content-Length: 0" + CRLF
-CL2_FIELD = "Content-Length: 2" + CRLF
-HOST = "localhost"
-HOST_FIELD = "Host: localhost" + CRLF
-TE_CHUNKED_FIELD = "Transfer-Encoding: chunked" + CRLF
-
-# Bodies
-BODY2 = "12"
-
-# Assertions
-ASSERT_1_BODY_NONNULL = "throw_assert_ne(http_request->get_body(), NULL);"
-ASSERT_1_BODY_NULL = "throw_assert_eq(http_request->get_body(), NULL);"
-ASSERT_1_BODY2 = "throw_assert_eq(http_request->get_content_length(), 2);"
-ASSERT_1_HOST_FIELD = """throw_assert_eq((*http_request)["Host"], "%(HOST)s");""" % locals()
-ASSERT_1_METHOD = """throw_assert_eq(http_request->get_method(), HTTPRequest::METHOD_GET);""" % locals()
-ASSERT_1_NONNULL = "throw_assert_ne(http_request, NULL);"
-ASSERT_1_NULL = "throw_assert_eq(http_request, NULL);"
-ASSERT_1_URI = """throw_assert_eq(strcmp(http_request->get_uri(), "%(URI)s"), 0);""" % locals()
-ASSERT_1_VERSION = "throw_assert_eq(http_request->get_http_version(), 1.1F);"
-
-def ASSERT_N(n):
-    return "throw_assert_eq(http_requests.size(), %(n)u);" % locals()
-def ASSERT_N_BODY_NONNULL(n):
-    return """for (size_t i = 0; i < %(n)u; i++) { throw_assert_ne(http_requests[i]->get_body(), NULL); }""" % locals()
-def ASSERT_N_BODY_NULL(n):
-    return """for (size_t i = 0; i < %(n)u; i++) { throw_assert_eq(http_requests[i]->get_body(), NULL); }""" % locals()
-def ASSERT_N_BODY2(n):
-    return "for (size_t i = 0; i < %(n)u; i++) { throw_assert_eq(http_requests[i]->get_content_length(), 2); }" % locals()
-def ASSERT_N_METHOD(n):
-    return """for (size_t i = 0; i < %(n)u; i++) { throw_assert_eq(http_requests[i]->get_method(), HTTPRequest::METHOD_GET); }""" % locals()
-def ASSERT_N_URI(n):
-    URI = globals()["URI"]
-    return """for (size_t i = 0; i < %(n)u; i++) { throw_assert_eq(strcmp(http_requests[i]->get_uri(), "%(URI)s"), 0); }""" % locals()
-def ASSERT_N_VERSION(n):
-    return "for (size_t i = 0; i < %(n)u; i++) { throw_assert_eq(http_requests[i]->get_http_version(), 1.1F); }" % locals()
-def ASSERT_N_HOST_FIELD(n):
-    HOST = globals()["HOST"]
-    return """for (size_t i = 0; i < %(n)u; i++) { throw_assert_eq((*http_requests[i])["Host"], "%(HOST)s"); }""" % locals()
-
-# Read calls
-def PARSE_1(*args):
-    args = "".join(args)
-    return """HTTPRequest* http_request = object_cast<HTTPRequest>(HTTPRequestParser(\"%(args)s\").parse());""" % locals()
-
-def PARSE_N(n, *args):
-    args = "".join(args)
-    return """\
-HTTPRequestParser http_request_parser(\"%(args)s\");
-vector<HTTPRequest*> http_requests;
-
-for (uint32_t i = 0; i < %(n)u; i++) {
-  HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
-
-  if (http_request != NULL)
-    http_requests.push_back(http_request);
-  else {
-    while (!http_requests.empty()) {
-      HTTPRequest::dec_ref(*http_requests.back());
-      http_requests.pop_back();
-    }
-
-    throw_assert(false);
-  }
-}
-""" % locals()
-
-# dec_ref calls
-DEC_REF_1 = "HTTPRequest::dec_ref(*http_request);"
-def DEC_REF_N(n):
-    return "for (size_t i = 0; i < %(n)u; i++) HTTPRequest::dec_ref(*http_requests[i]);" % locals()
 
 
+class HTTPRequestParserTest(HTTPMessageParserTest):
+    def ASSERT_1_METHOD(self, method="GET"):
+        self.append("""throw_assert_eq(http_request->get_method(), HTTPRequest::METHOD_%(method)s);""" % locals())
+
+    def ASSERT_1_URI(self):
+        URI = globals()["URI"]
+        self.append("""throw_assert_eq(strcmp(http_request->get_uri(), "%(URI)s"), 0);""" % locals())
+
+    def ASSERT_N_METHOD(self, n, method="GET"):
+        self.append("""for (size_t i = 0; i < %(n)u; i++) { throw_assert_eq(http_requests[i]->get_method(), HTTPRequest::METHOD_%(method)s); }""" % locals())
+
+    def ASSERT_N_URI(n):
+        URI = globals()["URI"]
+        self.append("""for (size_t i = 0; i < %(n)u; i++) { throw_assert_eq(strcmp(http_requests[i]->get_uri(), "%(URI)s"), 0); }""" % locals())
 
 
-# Test cases
-test_cases = {}
-
-test_cases["malformed_method_missing"] = \
-(
-    PARSE_1(URI, " HTTP/1.0", CRLF, HOST_FIELD, CRLF),
-    ASSERT_1_NULL
-)
-
-test_cases["malformed_uri_embedded_lf"] = \
-(
-    PARSE_1("GET", " /\\r ", VERSION, CRLF, HOST_FIELD, CRLF),
-    ASSERT_1_NULL
-)
-
-test_cases["malformed_uri_missing"] = \
-(
-    PARSE_1("GET", ' ', VERSION, CRLF, HOST_FIELD, CRLF),
-    ASSERT_1_NULL
-)
-
-test_cases["malformed_version_missing"] = \
-(
-    PARSE_1("GET", ' ', URI, CRLF, HOST_FIELD, CRLF),
-    ASSERT_1_NULL
-)
-
-test_cases["malformed_version_missing_http"] = \
-(
-    PARSE_1("GET", ' ', URI, ' ', "/1.0", CRLF, HOST_FIELD, CRLF),
-    ASSERT_1_NULL
-)
-
-test_cases["malformed_version_missing_minor_version"] = \
-(
-    PARSE_1("GET", ' ', URI, " HTTP/1.", CRLF, HOST_FIELD, CRLF),
-    ASSERT_1_NULL
-)
-
-test_cases["malformed_version_missing_trailing_crlf"] = \
-(
-    PARSE_1("GET", ' ', URI, ' ', VERSION, HOST_FIELD, CRLF),
-    ASSERT_1_NULL
-)
-
-test_cases["well_formed_chunk_1_body"] = \
-(
-    PARSE_N
-    (
-        2,
-        "GET", ' ', URI, ' ', VERSION, CRLF,
-        HOST_FIELD,
-        TE_CHUNKED_FIELD,
-        CRLF,
-        "1" + CRLF + "x" + CRLF + "0" + CRLF * 2
-   ),
-    ASSERT_N(2),
-    ASSERT_N_METHOD(2),
-    # ASSERT_N_URI(2),
-    ASSERT_N_VERSION(2),
-    ASSERT_N_BODY_NONNULL(2),
-    "throw_assert_eq(http_requests[0]->get_content_length(), 1);",
-    "throw_assert_eq(http_requests[1]->get_content_length(), 0);",
-    DEC_REF_N(2)
-)
-
-test_cases["well_formed_chunk_2_body"] = \
-(
-    PARSE_N
-    (
-        3,
-        "GET", ' ', URI, ' ', VERSION, CRLF,
-        HOST_FIELD,
-        TE_CHUNKED_FIELD,
-        CRLF,
-        "1" + CRLF + "x" + CRLF + "1" + CRLF + "y" + CRLF + "0" + CRLF * 2
-   ),
-    ASSERT_N(3),
-    ASSERT_N_METHOD(3),
-    # ASSERT_N_URI(3),
-    ASSERT_N_VERSION(3),
-    ASSERT_N_HOST_FIELD(3),
-    ASSERT_N_BODY_NONNULL(3),
-    "throw_assert_eq(http_requests[0]->get_content_length(), 1);",
-    "throw_assert_eq(http_requests[1]->get_content_length(), 1);",
-    "throw_assert_eq(http_requests[2]->get_content_length(), 0);",
-    DEC_REF_N(3)
-)
-
-test_cases["well_formed_no_body"] = \
-(
-    PARSE_1("GET", ' ', URI, ' ', VERSION, CRLF, HOST_FIELD, CRLF),
-    ASSERT_1_NONNULL,
-    ASSERT_1_METHOD,
-    ASSERT_1_VERSION,
-    ASSERT_1_HOST_FIELD,
-    ASSERT_1_BODY_NULL,
-    DEC_REF_1
-)
-
-test_cases["well_formed_no_fields"] = \
-(
-    PARSE_1("GET", ' ', URI, ' ', VERSION, CRLF, CRLF),
-    ASSERT_1_NONNULL,
-    ASSERT_1_VERSION,
-    ASSERT_1_BODY_NULL,
-    DEC_REF_1
-)
-
-test_cases["well_formed_normal_body"] = \
-(
-    PARSE_1("GET", ' ', URI, ' ', VERSION, CRLF, HOST_FIELD, CL2_FIELD, CRLF, BODY2),
-    ASSERT_1_NONNULL,
-    ASSERT_1_BODY_NONNULL,
-    ASSERT_1_BODY2,
-    DEC_REF_1
-)
+class MalformedHTTPVersionMissingHTTPRequestParserTest(HTTPRequestParserTest):
+    def __init__(self):
+        HTTPRequestParserTest.__init__(self)
+        self.PARSE_1("GET", ' ', URI, CRLF, HOST_FIELD, CRLF)
+        self.ASSERT_1_NULL()
 
 
-test_cases["well_formed_pipelined_no_body"] = \
-(
-    PARSE_N
-    (
-        2,
-        "GET", ' ', URI, ' ', VERSION, CRLF, HOST_FIELD, CRLF,
-        "GET", ' ', URI, ' ', VERSION, CRLF, HOST_FIELD, CRLF,
-   ),
-    ASSERT_N(2),
-    ASSERT_N_METHOD(2),
-    # ASSERT_N_URI(2),
-    ASSERT_N_VERSION(2),
-    ASSERT_N_HOST_FIELD(2),
-    ASSERT_N_BODY_NULL(2),
-    DEC_REF_N(2)
-)
-
-test_cases["well_formed_pipelined_normal_body"] = \
-(
-    PARSE_N
-    (
-        2,
-        "GET", ' ', URI, ' ', VERSION, CRLF, HOST_FIELD, CL2_FIELD, CRLF, BODY2,
-        "GET", ' ', URI, ' ', VERSION, CRLF, HOST_FIELD, CL2_FIELD, CRLF, BODY2,
-   ),
-    ASSERT_N(2),
-    ASSERT_N_METHOD(2),
-    # ASSERT_N_URI(2),
-    ASSERT_N_VERSION(2),
-    ASSERT_N_HOST_FIELD(2),
-    ASSERT_N_BODY_NONNULL(2),
-    ASSERT_N_BODY2(2),
-    DEC_REF_N(2)
-)
+class MalformedHTTPVersionMissingHTTPHTTPRequestParserTest(HTTPRequestParserTest):
+    def __init__(self):
+        HTTPRequestParserTest.__init__(self)
+        self.PARSE_1("GET", ' ', URI, ' ', "/1.0", CRLF, HOST_FIELD, CRLF)
+        self.ASSERT_1_NULL()
 
 
-test_case_names = test_cases.keys()
-test_case_names.sort()
-test_case_names.reverse()
-for test_case_name in test_case_names:
-    test_case = '\n'.join(test_cases[test_case_name])
-    test_case = indent(INDENT_SPACES, test_case)
-    test_cases[test_case_name] = """\
-TEST(HTTPRequestParser, %(test_case_name)s) {
-%(test_case)s
-}
-""" % locals()
-test_cases = \
-    '\n'.join(
-        [test_cases[test_case_name]
-        for test_case_name in test_case_names]
-   )
+class MalformedHTTPVersionMissingMinorVersionHTTPRequestParserTest(HTTPRequestParserTest):
+    def __init__(self):
+        HTTPRequestParserTest.__init__(self)
+        self.PARSE_1("GET", ' ', URI, " HTTP/1.", CRLF, HOST_FIELD, CRLF)
+        self.ASSERT_1_NULL()
 
-write_file(
-    "http_request_parser_test.cpp",
-    """\
-#include "yield/assert.hpp"
-#include "yield/auto_object.hpp"
-#include "yield/buffer.hpp"
-#include "yield/http/http_request.hpp"
-#include "yield/http/http_request_parser.hpp"
-#include "yunit.hpp"
 
-TEST_SUITE(HTTPRequestParser);
+class MalformedHTTPVersionMissingTrailingCRLFHTTPRequestParserTest(HTTPRequestParserTest):
+    def __init__(self):
+        HTTPRequestParserTest.__init__(self)
+        self.PARSE_1("GET", ' ', URI, ' ', HTTP_VERSION, HOST_FIELD, CRLF)
+        self.ASSERT_1_NULL()
 
-namespace yield {
-namespace http {
-%(test_cases)s
-}
-}
-""" % locals())
+
+class MalformedMethodMissingHTTPRequestParserTest(HTTPRequestParserTest):
+    def __init__(self):
+        HTTPRequestParserTest.__init__(self)
+        self.PARSE_1(URI, " HTTP/1.0", CRLF, HOST_FIELD, CRLF)
+        self.ASSERT_1_NULL()
+
+
+class MalformedURIEmbeddedLFHTTPRequestParserTest(HTTPRequestParserTest):
+    def __init__(self):
+        HTTPRequestParserTest.__init__(self)
+        self.PARSE_1("GET", " /\\r ", HTTP_VERSION, CRLF, HOST_FIELD, CRLF)
+        self.ASSERT_1_NULL()
+
+
+class MalformedURIMissingHTTPRequestParserTest(HTTPRequestParserTest):
+    def __init__(self):
+        HTTPRequestParserTest.__init__(self)
+        self.PARSE_1("GET", ' ', HTTP_VERSION, CRLF, HOST_FIELD, CRLF)
+        self.ASSERT_1_NULL()
+
+
+class WellFormedChunk1BodyHTTPRequestParserTest(HTTPRequestParserTest):
+    def __init__(self):
+        HTTPRequestParserTest.__init__(self)
+        self.PARSE_N(
+            2,
+            "GET", ' ', URI, ' ', HTTP_VERSION, CRLF,
+            HOST_FIELD,
+            TE_CHUNKED_FIELD,
+            CRLF,
+            "1" + CRLF + "x" + CRLF + "0" + CRLF * 2
+        )
+        self.ASSERT_N(2)
+        self.ASSERT_N_METHOD(2)
+        # ASSERT_N_URI(2)
+        self.ASSERT_N_HTTP_VERSION(2)
+        self.ASSERT_N_BODY_NONNULL(2)
+        self.append("throw_assert_eq(http_requests[0]->get_content_length(), 1);")
+        self.append("throw_assert_eq(http_requests[1]->get_content_length(), 0);")
+        self.DEC_REF_N(2)
+
+
+class WellFormedChunk2BodyHTTPRequestParserTest(HTTPRequestParserTest):
+    def __init__(self):
+        HTTPRequestParserTest.__init__(self)
+        self.PARSE_N(
+            3,
+            "GET", ' ', URI, ' ', HTTP_VERSION, CRLF,
+            HOST_FIELD,
+            TE_CHUNKED_FIELD,
+            CRLF,
+            "1" + CRLF + "x" + CRLF + "1" + CRLF + "y" + CRLF + "0" + CRLF * 2
+        )
+        self.ASSERT_N(3)
+        self.ASSERT_N_METHOD(3)
+        # ASSERT_N_URI(3)
+        self.ASSERT_N_HTTP_VERSION(3)
+        self.ASSERT_N_HOST_FIELD(3)
+        self.ASSERT_N_BODY_NONNULL(3)
+        self.append("throw_assert_eq(http_requests[0]->get_content_length(), 1);")
+        self.append("throw_assert_eq(http_requests[1]->get_content_length(), 1);")
+        self.append("throw_assert_eq(http_requests[2]->get_content_length(), 0);")
+        self.DEC_REF_N(3)
+
+
+class WellFormedNoBodyHTTPRequestParserTest(HTTPRequestParserTest):
+    def __init__(self):
+        HTTPRequestParserTest.__init__(self)
+        self.PARSE_1("GET", ' ', URI, ' ', HTTP_VERSION, CRLF, HOST_FIELD, CRLF)
+        self.ASSERT_1_NONNULL()
+        self.ASSERT_1_METHOD()
+        self.ASSERT_1_HTTP_VERSION()
+        self.ASSERT_1_HOST_FIELD()
+        self.ASSERT_1_BODY_NULL()
+        self.DEC_REF_1()
+
+
+class WellFormedNoFieldsHTTPRequestParserTest(HTTPRequestParserTest):
+    def __init__(self):
+        HTTPRequestParserTest.__init__(self)
+        self.PARSE_1("GET", ' ', URI, ' ', HTTP_VERSION, CRLF, CRLF)
+        self.ASSERT_1_NONNULL()
+        self.ASSERT_1_HTTP_VERSION()
+        self.ASSERT_1_BODY_NULL()
+        self.DEC_REF_1()
+
+
+class WellFormedNormalBodyHTTPRequestParserTest(HTTPRequestParserTest):
+    def __init__(self):
+        HTTPRequestParserTest.__init__(self)
+        self.PARSE_1("GET", ' ', URI, ' ', HTTP_VERSION, CRLF, HOST_FIELD, CL2_FIELD, CRLF, BODY2)
+        self.ASSERT_1_NONNULL()
+        self.ASSERT_1_BODY_NONNULL()
+        self.ASSERT_1_BODY2()
+        self.DEC_REF_1()
+
+
+class WellFormedPipelinedNoBodyHTTPRequestParserTest(HTTPRequestParserTest):
+    def __init__(self):
+        HTTPRequestParserTest.__init__(self)
+        self.PARSE_N(
+            2,
+            "GET", ' ', URI, ' ', HTTP_VERSION, CRLF, HOST_FIELD, CRLF,
+            "GET", ' ', URI, ' ', HTTP_VERSION, CRLF, HOST_FIELD, CRLF,
+        )
+        self.ASSERT_N(2)
+        self.ASSERT_N_METHOD(2)
+        # ASSERT_N_URI(2)
+        self.ASSERT_N_HTTP_VERSION(2)
+        self.ASSERT_N_HOST_FIELD(2)
+        self.ASSERT_N_BODY_NULL(2)
+        self.DEC_REF_N(2)
+
+
+class WellFormedPipelinedNormalBodyHTTPRequestParserTest(HTTPRequestParserTest):
+    def __init__(self):
+        HTTPRequestParserTest.__init__(self)
+        self.PARSE_N(
+            2,
+            "GET", ' ', URI, ' ', HTTP_VERSION, CRLF, HOST_FIELD, CL2_FIELD, CRLF, BODY2,
+            "GET", ' ', URI, ' ', HTTP_VERSION, CRLF, HOST_FIELD, CL2_FIELD, CRLF, BODY2,
+        )
+        self.ASSERT_N(2)
+        self.ASSERT_N_METHOD(2)
+        # ASSERT_N_URI(2)
+        self.ASSERT_N_HTTP_VERSION(2)
+        self.ASSERT_N_HOST_FIELD(2)
+        self.ASSERT_N_BODY_NONNULL(2)
+        self.ASSERT_N_BODY2(2)
+        self.DEC_REF_N(2)
+
+
+class HTTPRequestParserTestSuite(HTTPMessageParserTestSuite):
+    def __init__(self):
+        HTTPMessageParserTestSuite.__init__(self)
+        self.append(MalformedHTTPVersionMissingHTTPRequestParserTest())
+        self.append(MalformedHTTPVersionMissingHTTPHTTPRequestParserTest())
+        self.append(MalformedHTTPVersionMissingMinorVersionHTTPRequestParserTest())
+        self.append(MalformedHTTPVersionMissingTrailingCRLFHTTPRequestParserTest())
+        self.append(MalformedMethodMissingHTTPRequestParserTest())
+        self.append(MalformedURIEmbeddedLFHTTPRequestParserTest())
+        self.append(MalformedURIMissingHTTPRequestParserTest())
+        self.append(WellFormedChunk1BodyHTTPRequestParserTest())
+        self.append(WellFormedChunk2BodyHTTPRequestParserTest())
+        self.append(WellFormedNoBodyHTTPRequestParserTest())
+        self.append(WellFormedNoFieldsHTTPRequestParserTest())
+        self.append(WellFormedNormalBodyHTTPRequestParserTest())
+        self.append(WellFormedPipelinedNoBodyHTTPRequestParserTest())
+        self.append(WellFormedPipelinedNormalBodyHTTPRequestParserTest())
+
+
+if __name__ == "__main__":
+    print HTTPRequestParserTestSuite()

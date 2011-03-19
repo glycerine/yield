@@ -40,7 +40,7 @@ from os.path import abspath, \
                     splitext
 from optparse import OptionParser
 import re
-from subprocess import call
+import subprocess
 import sys
 import traceback
 
@@ -731,7 +731,7 @@ if options.generate_src or options.generate_src_rl:
                 args.append("-L")
                 args.extend(("-o", cpp_file_path))
                 args.append(rl_file_path)
-                call(args)
+                subprocess.call(args)
 
                 SourceFiles(cpp_file_path).format(
                     author=AUTHOR,
@@ -849,11 +849,20 @@ if options.generate_test or options.generate_test_py:
         sys.path.append('.')
 
     for py_file_path in rglob(path_join(TEST_DIR_PATH, "yield", "**", "*_test.py")):
-        py_dir_path, py_module_name = path_split(py_file_path)
-        cwd = getcwd()
-        chdir(py_dir_path)
-        py_module_name = splitext(py_module_name)[0]
-        try: unlink(py_module_name + ".pyc")
+        try: unlink(splitext(py_file_path)[0] + ".pyc")
         except: pass
-        __import__(py_module_name)
-        chdir(cwd)
+        stdoutdata, stderrdata = \
+            subprocess.Popen(
+                [sys.executable, py_file_path],
+                stdout=subprocess.PIPE
+            ).communicate()
+        if len(stdoutdata) > 0:
+            write_file(
+                splitext(py_file_path)[0] + ".cpp",
+                stdoutdata,
+                force=options.force
+            )
+
+
+
+
