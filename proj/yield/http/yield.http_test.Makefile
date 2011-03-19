@@ -46,7 +46,7 @@ LIBS += -lyield_http -lyield_uri -lyield
 DEP_FILE_PATHS := $(shell find ../../../build/yield/http_test -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../build/yield/http_test/http_message_test.o ../../../build/yield/http_test/http_request_parser_test.o ../../../build/yield/http_test/http_request_test.o ../../../build/yield/http_test/http_response_parser_test.o ../../../build/yield/http_test/http_response_test.o ../../../build/yield/http_test/yield_http_test_main.o
+OBJECT_FILE_PATHS += ../../../build/yield/http_test/http_message_parser_test.o ../../../build/yield/http_test/http_message_test.o ../../../build/yield/http_test/http_request_parser_test.o ../../../build/yield/http_test/http_request_test.o ../../../build/yield/http_test/http_response_parser_test.o ../../../build/yield/http_test/http_response_test.o ../../../build/yield/http_test/yield_http_test_main.o
 
 
 ../../../bin/yield/yield_http_test: $(OBJECT_FILE_PATHS)
@@ -61,6 +61,10 @@ depclean:
 
 -include $(DEP_FILE_PATHS)
 
+
+../../../build/yield/http_test/http_message_parser_test.o: ../../../test/yield/http/http_message_parser_test.cpp
+	-mkdir -p ../../../build/yield/http_test 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/http_test/http_message_parser_test.o -MD $(CXXFLAGS) ../../../test/yield/http/http_message_parser_test.cpp
 
 ../../../build/yield/http_test/http_message_test.o: ../../../test/yield/http/http_message_test.cpp
 	-mkdir -p ../../../build/yield/http_test 2>/dev/null

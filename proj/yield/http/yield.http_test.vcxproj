@@ -99,6 +99,12 @@
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
+    <ClCompile Include="..\..\..\test\yield\http\http_message_parser_test.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\test\yield\http\http_message_parser_test.py">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\test\yield\http\http_message_test.cpp">
     </ClCompile>
     <ClCompile Include="..\..\..\test\yield\http\http_request_parser_test.cpp">

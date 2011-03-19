@@ -43,7 +43,8 @@ __all__ = [
     "HTTP_VERSION",
     "HTTPMessageParserTest",
     "HTTPMessageParserTestSuite",
-    "TE_CHUNKED_FIELD"
+    "TE_CHUNKED_FIELD",
+    "URI"
 ]
 
 
@@ -59,13 +60,17 @@ HOST_FIELD = "Host: localhost" + CRLF
 HTTP_VERSION = "HTTP/1.1"
 INDENT_SPACES = INDENT_SPACES["cpp"]
 TE_CHUNKED_FIELD = "Transfer-Encoding: chunked" + CRLF
+URI = "/"
 
 
 class HTTPMessageParserTest(list):
     def __init__(self):
         list.__init__(self)
-        assert self.__class__.__name__.endswith("ParserTest")
-        self.__http_message_type = self.__class__.__name__[self.__class__.__name__.rindex("HTTP"):self.__class__.__name__.index("ParserTest")]
+        if self.__class__.__name__.endswith("HTTPMessageParserTest"):
+            self.__http_message_type = "HTTPRequest"
+        else:
+            assert self.__class__.__name__.endswith("ParserTest")
+            self.__http_message_type = self.__class__.__name__[self.__class__.__name__.rindex("HTTP"):self.__class__.__name__.index("ParserTest")]
 
     def ASSERT_1_BODY2(self):
         self.append("throw_assert_eq(%(http_message_type_lower_case)s->get_content_length(), 2);" % self)
@@ -180,34 +185,121 @@ for (uint32_t i = 0; i < %(n)u; i++) {
 """ % locals())
 
     def __str__(self):
+        if self.__class__.__name__.endswith("HTTPMessageParserTest"):
+            http_message_parser_type = "HTTPMessageParser"
+            test_name = self.__class__.__name__[:self.__class__.__name__.index("HTTPMessageParserTest")]
+        else:
+            http_message_parser_type = self.http_message_type + "Parser"
+            test_name = self.__class__.__name__[:self.__class__.__name__.index(self.http_message_type + "ParserTest")]
+        test = indent(INDENT_SPACES, '\n'.join(self))
         return """\
-TEST(%sParser, %s) {
-%s
+TEST(%(http_message_parser_type)s, %(test_name)s) {
+%(test)s
 }
-""" % (
-    self.http_message_type,
-    self.__class__.__name__[:self.__class__.__name__.index(self.http_message_type + "ParserTest")],
-    indent(INDENT_SPACES, '\n'.join(self))
-)
+""" % locals()
+
+
+class WellFormedChunk1BodyHTTPMessageParserTest(HTTPMessageParserTest):
+    def __init__(self):
+        HTTPMessageParserTest.__init__(self)
+        self.PARSE_N(
+            2,
+            "GET", ' ', URI, ' ', HTTP_VERSION, CRLF,
+            HOST_FIELD,
+            TE_CHUNKED_FIELD,
+            CRLF,
+            "1" + CRLF + "x" + CRLF + "0" + CRLF * 2
+        )
+        self.ASSERT_N(2)
+        self.ASSERT_N_HTTP_VERSION(2)
+        self.ASSERT_N_BODY_NONNULL(2)
+        self.append("throw_assert_eq(http_requests[0]->get_content_length(), 1);")
+        self.append("throw_assert_eq(http_requests[1]->get_content_length(), 0);")
+        self.DEC_REF_N(2)
+
+
+class WellFormedChunk2BodyHTTPMessageParserTest(HTTPMessageParserTest):
+    def __init__(self):
+        HTTPMessageParserTest.__init__(self)
+        self.PARSE_N(
+            3,
+            "GET", ' ', URI, ' ', HTTP_VERSION, CRLF,
+            HOST_FIELD,
+            TE_CHUNKED_FIELD,
+            CRLF,
+            "1" + CRLF + "x" + CRLF + "1" + CRLF + "y" + CRLF + "0" + CRLF * 2
+        )
+        self.ASSERT_N(3)
+        self.ASSERT_N_HTTP_VERSION(3)
+        self.ASSERT_N_HOST_FIELD(3)
+        self.ASSERT_N_BODY_NONNULL(3)
+        self.append("throw_assert_eq(http_requests[0]->get_content_length(), 1);")
+        self.append("throw_assert_eq(http_requests[1]->get_content_length(), 1);")
+        self.append("throw_assert_eq(http_requests[2]->get_content_length(), 0);")
+        self.DEC_REF_N(3)
+
+
+class WellFormedNormalBodyHTTPMessageParserTest(HTTPMessageParserTest):
+    def __init__(self):
+        HTTPMessageParserTest.__init__(self)
+        self.PARSE_1("GET", ' ', URI, ' ', HTTP_VERSION, CRLF, HOST_FIELD, CL2_FIELD, CRLF, BODY2)
+        self.ASSERT_1_NONNULL()
+        self.ASSERT_1_BODY_NONNULL()
+        self.ASSERT_1_BODY2()
+        self.DEC_REF_1()
+
+
+class WellFormedPipelinedNoBodyHTTPMessageParserTest(HTTPMessageParserTest):
+    def __init__(self):
+        HTTPMessageParserTest.__init__(self)
+        self.PARSE_N(
+            2,
+            "GET", ' ', URI, ' ', HTTP_VERSION, CRLF, HOST_FIELD, CRLF,
+            "GET", ' ', URI, ' ', HTTP_VERSION, CRLF, HOST_FIELD, CRLF,
+        )
+        self.ASSERT_N(2)
+        self.ASSERT_N_HTTP_VERSION(2)
+        self.ASSERT_N_HOST_FIELD(2)
+        self.ASSERT_N_BODY_NULL(2)
+        self.DEC_REF_N(2)
+
+
+class WellFormedPipelinedNormalBodyHTTPMessageParserTest(HTTPMessageParserTest):
+    def __init__(self):
+        HTTPMessageParserTest.__init__(self)
+        self.PARSE_N(
+            2,
+            "GET", ' ', URI, ' ', HTTP_VERSION, CRLF, HOST_FIELD, CL2_FIELD, CRLF, BODY2,
+            "GET", ' ', URI, ' ', HTTP_VERSION, CRLF, HOST_FIELD, CL2_FIELD, CRLF, BODY2,
+        )
+        self.ASSERT_N(2)
+        self.ASSERT_N_HTTP_VERSION(2)
+        self.ASSERT_N_HOST_FIELD(2)
+        self.ASSERT_N_BODY_NONNULL(2)
+        self.ASSERT_N_BODY2(2)
+        self.DEC_REF_N(2)
 
 
 class HTTPMessageParserTestSuite(list):
-    def __init__(self):
-        list.__init__(self)
-        assert self.__class__.__name__.endswith("ParserTestSuite")
-        self.__http_message_type = self.__class__.__name__[:self.__class__.__name__.index("ParserTestSuite")]
-
-    @property
-    def http_message_type(self):
-        return self.__http_message_type
-
-    @property
-    def http_message_type_lower_case(self):
-        return "http_" + self.__http_message_type[4:].lower()
+    def __init__(self, *args):
+        list.__init__(self, *args)
+        if self.__class__ == HTTPMessageParserTestSuite:
+            self.append(WellFormedChunk1BodyHTTPMessageParserTest())
+            self.append(WellFormedChunk2BodyHTTPMessageParserTest())
+            self.append(WellFormedNormalBodyHTTPMessageParserTest())
+            self.append(WellFormedPipelinedNoBodyHTTPMessageParserTest())
+            self.append(WellFormedPipelinedNormalBodyHTTPMessageParserTest())
+        else:
+            assert self.__class__.__name__.endswith("ParserTestSuite")
 
     def __str__(self):
-        http_message_type = self.http_message_type
-        http_message_type_lower_case = self.http_message_type_lower_case
+        if self.__class__ == HTTPMessageParserTestSuite:
+            http_message_type = "HTTPRequest"
+            http_message_parser_type = "HTTPMessageParser"
+        else:
+            http_message_type = self.__class__.__name__[:self.__class__.__name__.index("ParserTestSuite")]
+            http_message_parser_type = http_message_type + "Parser"
+        http_message_type_lower_case = "http_" + http_message_type[4:].lower()
         tests = '\n'.join([str(test) for test in self])
         return """\
 #include "yield/assert.hpp"
@@ -217,7 +309,7 @@ class HTTPMessageParserTestSuite(list):
 #include "yield/http/%(http_message_type_lower_case)s_parser.hpp"
 #include "yunit.hpp"
 
-TEST_SUITE(%(http_message_type)sParser);
+TEST_SUITE(%(http_message_parser_type)s);
 
 namespace yield {
 namespace http {
@@ -225,3 +317,7 @@ namespace http {
 }
 }
 """ % locals()
+
+
+if __name__ == "__main__":
+    print HTTPMessageParserTestSuite()

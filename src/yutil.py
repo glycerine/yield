@@ -549,7 +549,7 @@ def walk(root_dir_path, abspaths=False, include_hidden=True):
                 yield root_dir_path, dir_names, file_names
 
 
-def write_file(path, contents, force=False, newline='\n'):
+def write_file(path, contents, force=False, newline='\n', quiet=False):
     if isinstance(contents, basestring):
         pass
     elif isinstance(contents, tuple) or isinstance(contents, list):
@@ -581,5 +581,6 @@ def write_file(path, contents, force=False, newline='\n'):
             pass
 
     open(path, "wb").write(contents)
-    print "wrote", path
+    if not quiet:
+        print "wrote", path
     return True

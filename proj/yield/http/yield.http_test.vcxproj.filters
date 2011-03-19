@@ -12,6 +12,12 @@
 
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\test\yield\http\http_message_parser_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\test\yield\http\http_message_parser_test.py">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\test\yield\http\http_message_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

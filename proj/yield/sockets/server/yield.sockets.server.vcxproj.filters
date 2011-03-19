@@ -6,16 +6,28 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <Filter Include="Header Files\peer">
+      <UniqueIdentifier>{63cc6289-e4a2-4fb1-8932-5e27aaaa485c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\server">
+      <UniqueIdentifier>{69c9cdbf-6b20-47d5-b1ed-87bcfc7057d3}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{ce542630-3062-45c9-87ad-7ea58b8db0da}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\include\yield\sockets\peer\socket_peer.hpp">
+      <Filter>Header Files\peer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\yield\sockets\peer\stream_socket_peer.hpp">
+      <Filter>Header Files\peer</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\include\yield\sockets\server\socket_server.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\server</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\yield\sockets\server\stream_socket_server.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\server</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

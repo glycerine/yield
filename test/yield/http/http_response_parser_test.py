@@ -32,8 +32,6 @@ from http_message_parser_test import *
 
 # Constants
 OK = "200 OK"
-URI = "/"
-VERSION = "HTTP/1.1"
 
 
 class HTTPResponseParserTest(HTTPMessageParserTest):
@@ -47,21 +45,21 @@ class HTTPResponseParserTest(HTTPMessageParserTest):
 class MalformedReasonPhraseMissingHTTPResponseParserTest(HTTPResponseParserTest):
     def __init__(self):
         HTTPResponseParserTest.__init__(self)
-        self.PARSE_1(VERSION, " 200", CRLF, DATE_FIELD, CRLF)
+        self.PARSE_1(HTTP_VERSION, " 200", CRLF, DATE_FIELD, CRLF)
         self.ASSERT_1_NULL()
 
 
 class MalformedStatusCodeAlphaHTTPResponseParserTest(HTTPResponseParserTest):
     def __init__(self):
         HTTPResponseParserTest.__init__(self)
-        self.PARSE_1(VERSION, " XX OK", CRLF, DATE_FIELD, CRLF)
+        self.PARSE_1(HTTP_VERSION, " XX OK", CRLF, DATE_FIELD, CRLF)
         self.ASSERT_1_NULL()
 
 
 class MalformedStatusCodeMissingHTTPResponseParserTest(HTTPResponseParserTest):
     def __init__(self):
         HTTPResponseParserTest.__init__(self)
-        self.PARSE_1(VERSION, " OK", CRLF, DATE_FIELD, CRLF)
+        self.PARSE_1(HTTP_VERSION, " OK", CRLF, DATE_FIELD, CRLF)
         self.ASSERT_1_NULL()
 
 
@@ -75,7 +73,7 @@ class MalformedStatusLineMissingHTTPResponseParserTest(HTTPResponseParserTest):
 class WellFormedNoBodyHTTPResponseParserTest(HTTPResponseParserTest):
     def __init__(self):
         HTTPResponseParserTest.__init__(self)
-        self.PARSE_1(VERSION, ' ', OK, CRLF, DATE_FIELD, CRLF)
+        self.PARSE_1(HTTP_VERSION, ' ', OK, CRLF, DATE_FIELD, CRLF)
         self.ASSERT_1_NONNULL()
         self.ASSERT_1_STATUS_CODE(200)
         self.ASSERT_1_DATE_FIELD()
@@ -83,58 +81,15 @@ class WellFormedNoBodyHTTPResponseParserTest(HTTPResponseParserTest):
         self.DEC_REF_1()
 
 
-class WellFormedNormalBodyHTTPResponseParserTest(HTTPResponseParserTest):
+class WellFormedNoFieldsHTTPResponseParserTest(HTTPResponseParserTest):
     def __init__(self):
         HTTPResponseParserTest.__init__(self)
-        self.PARSE_1(VERSION, ' ', OK, CRLF, DATE_FIELD, CL2_FIELD, CRLF, BODY2)
+        self.PARSE_1(HTTP_VERSION, ' ', OK, CRLF, CRLF)
         self.ASSERT_1_NONNULL()
-        self.ASSERT_1_STATUS_CODE(200)
-        self.ASSERT_1_DATE_FIELD()
-        self.ASSERT_1_BODY_NONNULL()
-        self.ASSERT_1_BODY2()
-        self.DEC_REF_1()
-
-
-class WellFormedPipelinedNoBodyHTTPResponseParserTest(HTTPResponseParserTest):
-    def __init__(self):
-        HTTPResponseParserTest.__init__(self)
-        self.PARSE_N(
-            2,
-            VERSION, ' ', OK, CRLF, DATE_FIELD, CRLF,
-            VERSION, ' ', OK, CRLF, DATE_FIELD, CRLF,
-        )
-        self.ASSERT_N(2)
-        self.ASSERT_N_STATUS_CODE(2, 200)
-        self.ASSERT_N_DATE_FIELD(2)
-        self.ASSERT_N_BODY_NULL(2)
-        self.DEC_REF_N(2)
-
-
-class WellFormedPipelinedNormalBodyHTTPResponseParserTest(HTTPResponseParserTest):
-    def __init__(self):
-        HTTPResponseParserTest.__init__(self)
-        self.PARSE_N(
-            2,
-            VERSION, ' ', OK, CRLF, DATE_FIELD, CL2_FIELD, CRLF, BODY2,
-            VERSION, ' ', OK, CRLF, DATE_FIELD, CL2_FIELD, CRLF, BODY2,
-        )
-        self.ASSERT_N(2)
-        self.ASSERT_N_STATUS_CODE(2, 200)
-        self.ASSERT_N_DATE_FIELD(2)
-        self.ASSERT_N_BODY_NONNULL(2)
-        self.ASSERT_N_BODY2(2)
-        self.DEC_REF_N(2)
-
-
-class WellFormedReasonPhraseSplitHTTPResponseParserTest(HTTPResponseParserTest):
-    def __init__(self):
-        HTTPResponseParserTest.__init__(self)
-        self.PARSE_1(VERSION, ' ', "415 Unsupported Media Type", CRLF, DATE_FIELD, CRLF)
-        self.ASSERT_1_NONNULL()
-        self.ASSERT_1_STATUS_CODE(415)
-        self.ASSERT_1_DATE_FIELD()
+        self.ASSERT_1_HTTP_VERSION()
         self.ASSERT_1_BODY_NULL()
         self.DEC_REF_1()
+
 
 
 class HTTPResponseParserTestSuite(HTTPMessageParserTestSuite):
@@ -145,10 +100,7 @@ class HTTPResponseParserTestSuite(HTTPMessageParserTestSuite):
         self.append(MalformedStatusCodeMissingHTTPResponseParserTest())
         self.append(MalformedStatusLineMissingHTTPResponseParserTest())
         self.append(WellFormedNoBodyHTTPResponseParserTest())
-        self.append(WellFormedNormalBodyHTTPResponseParserTest())
-        self.append(WellFormedPipelinedNoBodyHTTPResponseParserTest())
-        self.append(WellFormedPipelinedNormalBodyHTTPResponseParserTest())
-        self.append(WellFormedReasonPhraseSplitHTTPResponseParserTest())
+        self.append(WellFormedNoFieldsHTTPResponseParserTest())
 
 
 if __name__ == "__main__":

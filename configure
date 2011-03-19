@@ -848,20 +848,27 @@ if options.generate_test or options.generate_test_py:
     if not '.' in sys.path:
         sys.path.append('.')
 
-    for py_file_path in rglob(path_join(TEST_DIR_PATH, "yield", "**", "*_test.py")):
-        try: unlink(splitext(py_file_path)[0] + ".pyc")
+    for test_py_file_path in rglob(path_join(TEST_DIR_PATH, "yield", "**", "*_test.py")):
+        try: unlink(splitext(test_py_file_path)[0] + ".pyc")
         except: pass
         stdoutdata, stderrdata = \
             subprocess.Popen(
-                [sys.executable, py_file_path],
+                [sys.executable, test_py_file_path],
                 stdout=subprocess.PIPE
             ).communicate()
         if len(stdoutdata) > 0:
-            write_file(
-                splitext(py_file_path)[0] + ".cpp",
-                stdoutdata,
-                force=options.force
-            )
+            test_cpp_file_path = splitext(test_py_file_path)[0] + ".cpp"
+            if write_file(
+                    test_cpp_file_path,
+                    stdoutdata,
+                    force=options.force,
+                    quiet=True
+                ):
+                SourceFiles(test_cpp_file_path).format(
+                    author=AUTHOR,
+                    force=options.force,
+                    project="Yield"
+                )
 
 
 
