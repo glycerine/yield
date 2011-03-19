@@ -1,4 +1,4 @@
-all: yield yield.aio yield.aio_test yield.fs yield.fs.aio yield.fs.aio_test yield.fs_test yield.http yield.http.client yield.http.client_test yield.http.server yield.http.server_test yield.http_test yield.i18n yield.i18n_test yield.poll yield.poll_test yield.process yield.process_test yield.sockets yield.sockets.aio yield.sockets.aio_test yield.sockets.client yield.sockets.client_test yield.sockets.poll yield.sockets.poll_test yield.sockets.server yield.sockets.server_test yield.sockets.ssl yield.sockets.ssl_test yield.sockets_test yield.stage yield.stage_test yield.thread yield.thread_test yield.uri yield.uri_test yield_test
+all: yield yield.aio yield.aio_test yield.fs yield.fs.aio yield.fs.aio_test yield.fs_test yield.http yield.http.client yield.http.client_test yield.http.server yield.http.server_test yield.http_test yield.i18n yield.i18n_test yield.poll yield.poll_test yield.process yield.process_test yield.sockets yield.sockets.aio yield.sockets.aio_test yield.sockets.client yield.sockets.poll yield.sockets.poll_test yield.sockets.server yield.sockets.ssl yield.sockets.ssl_test yield.sockets_test yield.stage yield.stage_test yield.thread yield.thread_test yield.uri yield.uri_test yield_test
 
 clean:
 	$(MAKE) -C proj/yield -f yield.Makefile clean
@@ -26,11 +26,9 @@ clean:
 	$(MAKE) -C proj/yield/sockets/aio -f yield.sockets.aio.Makefile clean
 	$(MAKE) -C proj/yield/sockets/aio -f yield.sockets.aio_test.Makefile clean
 	$(MAKE) -C proj/yield/sockets/client -f yield.sockets.client.Makefile clean
-	$(MAKE) -C proj/yield/sockets/client -f yield.sockets.client_test.Makefile clean
 	$(MAKE) -C proj/yield/sockets/poll -f yield.sockets.poll.Makefile clean
 	$(MAKE) -C proj/yield/sockets/poll -f yield.sockets.poll_test.Makefile clean
 	$(MAKE) -C proj/yield/sockets/server -f yield.sockets.server.Makefile clean
-	$(MAKE) -C proj/yield/sockets/server -f yield.sockets.server_test.Makefile clean
 	$(MAKE) -C proj/yield/sockets/ssl -f yield.sockets.ssl.Makefile clean
 	$(MAKE) -C proj/yield/sockets/ssl -f yield.sockets.ssl_test.Makefile clean
 	$(MAKE) -C proj/yield/stage -f yield.stage.Makefile clean
@@ -66,11 +64,9 @@ depclean:
 	$(MAKE) -C proj/yield/sockets/aio -f yield.sockets.aio.Makefile depclean
 	$(MAKE) -C proj/yield/sockets/aio -f yield.sockets.aio_test.Makefile depclean
 	$(MAKE) -C proj/yield/sockets/client -f yield.sockets.client.Makefile depclean
-	$(MAKE) -C proj/yield/sockets/client -f yield.sockets.client_test.Makefile depclean
 	$(MAKE) -C proj/yield/sockets/poll -f yield.sockets.poll.Makefile depclean
 	$(MAKE) -C proj/yield/sockets/poll -f yield.sockets.poll_test.Makefile depclean
 	$(MAKE) -C proj/yield/sockets/server -f yield.sockets.server.Makefile depclean
-	$(MAKE) -C proj/yield/sockets/server -f yield.sockets.server_test.Makefile depclean
 	$(MAKE) -C proj/yield/sockets/ssl -f yield.sockets.ssl.Makefile depclean
 	$(MAKE) -C proj/yield/sockets/ssl -f yield.sockets.ssl_test.Makefile depclean
 	$(MAKE) -C proj/yield/stage -f yield.stage.Makefile depclean
@@ -144,9 +140,6 @@ yield.sockets.aio_test: yield.sockets.aio
 yield.sockets.client: yield.sockets.aio yield.stage
 	$(MAKE) -C proj/yield/sockets/client -f yield.sockets.client.Makefile
 
-yield.sockets.client_test: yield.sockets.client
-	$(MAKE) -C proj/yield/sockets/client -f yield.sockets.client_test.Makefile
-
 yield.sockets.poll: yield.poll yield.sockets
 	$(MAKE) -C proj/yield/sockets/poll -f yield.sockets.poll.Makefile
 
@@ -155,9 +148,6 @@ yield.sockets.poll_test: yield.sockets.poll
 
 yield.sockets.server: yield.sockets.aio yield.stage
 	$(MAKE) -C proj/yield/sockets/server -f yield.sockets.server.Makefile
-
-yield.sockets.server_test: yield.sockets.server
-	$(MAKE) -C proj/yield/sockets/server -f yield.sockets.server_test.Makefile
 
 yield.sockets.ssl: yield.sockets
 	$(MAKE) -C proj/yield/sockets/ssl -f yield.sockets.ssl.Makefile

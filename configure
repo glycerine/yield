@@ -712,7 +712,17 @@ if options.generate_proj:
         # Generate top-level Makefile
         write_file(
             "Makefile",
-            str(TopLevelMakefile(PROJECT_DIR_PATHS, PROJECT_REFERENCES)),
+            str(
+                TopLevelMakefile(
+                    PROJECT_DIR_PATHS,
+                    dict(
+                        (project_name, project_references)
+                        for project_name, project_references in PROJECT_REFERENCES.iteritems()
+                        if project_name != "yield.sockets.client_test" and \
+                           project_name != "yield.sockets.server_test"
+                    )
+                )
+            ),
             force=options.force
         )
 
@@ -869,7 +879,3 @@ if options.generate_test or options.generate_test_py:
                     force=options.force,
                     project="Yield"
                 )
-
-
-
-
