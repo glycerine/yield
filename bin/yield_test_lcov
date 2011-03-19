@@ -6,12 +6,17 @@ fi
 
 TIMESTAMP=`date +%Y%m%dT%H%M%S`
 lcov --directory . --zerocounters
-bin/$1
-lcov -b . --directory . --capture --output-file $1_lcov-$TIMESTAMP
+bin/yield/$1
+lcov --base-directory . --directory . --capture --output-file $1_lcov-$TIMESTAMP
 mkdir $1_lcov_html-$TIMESTAMP
 genhtml -o $1_lcov_html-$TIMESTAMP $1_lcov-$TIMESTAMP
 rm $1_lcov-$TIMESTAMP
 #tar cf $1_lcov_html-$TIMESTAMP.tar $1_lcov_html-$TIMESTAMP
 #gzip $1_lcov_html-$TIMESTAMP.tar
-zip -qr $1_lcov_html-$TIMESTAMP.zip $1_lcov_html-$TIMESTAMP/*
-rm -fr $1_lcov_html-$TIMESTAMP
+if [ -d /mnt/hgfs/minorg/Desktop ]; then
+  cp -R $1_lcov_html-$TIMESTAMP /mnt/hgfs/minorg/Desktop
+  rm -fr $1_lcov_html-$TIMESTAMP
+else
+  zip -qr $1_lcov_html-$TIMESTAMP.zip $1_lcov_html-$TIMESTAMP/*
+  rm -fr $1_lcov_html-$TIMESTAMP
+fi

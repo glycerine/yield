@@ -40,13 +40,7 @@ using yield::fs::FileSystem;
 
 Path Process::get_current_executable_file_path() {
   Path current_executable_file_path;
-
-  FileSystem* file_system = FileSystem::create();
-  if (file_system != NULL) {
-    file_system->readlink(Path("/proc/self/exe"), current_executable_file_path);
-    FileSystem::dec_ref(*file_system);
-  }
-
+  FileSystem().readlink(Path("/proc/self/exe"), current_executable_file_path);
   return current_executable_file_path;
 }
 }
