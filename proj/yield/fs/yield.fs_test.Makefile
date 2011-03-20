@@ -1,5 +1,6 @@
-# SHELL = /bin/bash
+TIMESTAMP=$(shell date +%Y%m%dT%H%M%S)
 UNAME := $(shell uname)
+
 
 CXXFLAGS += -I../../../include
 ifeq ($(UNAME), Linux)
@@ -49,21 +50,21 @@ endif
 LIBS += -lyield_fs -lyield_i18n -lyield
 
 
-D_FILE_PATHS := $(shell find ../../../build/yield/fs_test -name "*.d")
+D_FILE_PATHS := $(shell find ../../../build/yield/fs -name "*.d")
 
 
-O_FILE_PATHS += ../../../build/yield/fs_test/directory_test.o ../../../build/yield/fs_test/memory_mapped_file_test.o ../../../build/yield/fs_test/named_pipe_test.o ../../../build/yield/fs_test/path_test.o ../../../build/yield/fs_test/yield_fs_test_main.o
+O_FILE_PATHS += ../../../build/yield/fs/directory_test.o ../../../build/yield/fs/memory_mapped_file_test.o ../../../build/yield/fs/named_pipe_test.o ../../../build/yield/fs/path_test.o ../../../build/yield/fs/yield_fs_test_main.o
 ifeq ($(UNAME), Darwin)
-	O_FILE_PATHS += ../../../build/yield/fs_test/posix/file_system_test.o ../../../build/yield/fs_test/posix/file_test.o ../../../build/yield/fs_test/posix/stat_test.o
+	O_FILE_PATHS += ../../../build/yield/fs/posix/file_system_test.o ../../../build/yield/fs/posix/file_test.o ../../../build/yield/fs/posix/stat_test.o
 endif
 ifeq ($(UNAME), FreeBSD)
-	O_FILE_PATHS += ../../../build/yield/fs_test/posix/file_system_test.o ../../../build/yield/fs_test/posix/file_test.o ../../../build/yield/fs_test/posix/stat_test.o
+	O_FILE_PATHS += ../../../build/yield/fs/posix/file_system_test.o ../../../build/yield/fs/posix/file_test.o ../../../build/yield/fs/posix/stat_test.o
 endif
 ifeq ($(UNAME), Linux)
-	O_FILE_PATHS += ../../../build/yield/fs_test/posix/file_system_test.o ../../../build/yield/fs_test/posix/file_test.o ../../../build/yield/fs_test/posix/stat_test.o
+	O_FILE_PATHS += ../../../build/yield/fs/posix/file_system_test.o ../../../build/yield/fs/posix/file_test.o ../../../build/yield/fs/posix/stat_test.o
 endif
 ifeq ($(UNAME), Solaris)
-	O_FILE_PATHS += ../../../build/yield/fs_test/posix/file_system_test.o ../../../build/yield/fs_test/posix/file_test.o ../../../build/yield/fs_test/posix/stat_test.o
+	O_FILE_PATHS += ../../../build/yield/fs/posix/file_system_test.o ../../../build/yield/fs/posix/file_test.o ../../../build/yield/fs/posix/stat_test.o
 endif
 ifeq ($(UNAME), MINGW32)
 	O_FILE_PATHS += ../../../build/yield/fs_test/win32/file_system_test.o ../../../build/yield/fs_test/win32/file_test.o ../../../build/yield/fs_test/win32/stat_test.o
@@ -80,53 +81,52 @@ depclean:
 
 -include $(D_FILE_PATHS)
 			
-lcov: ..\..\..\bin\yield\yield_fs_test TIMESTAMP=`date +%Y%m%dT%H%M%S`
-	lcov --directory ../../../build/yield/fs_test --zerocounters
-	..\..\..\bin\yield\yield_fs_test
-	lcov --base-directory . --directory ../../../build/yield/fs_test --capture --output-file yield.fs_test_lcov-$TIMESTAMP
-	mkdir yield.fs_test_lcov_html-$TIMESTAMP
-	genhtml -o yield.fs_test_lcov_html-$TIMESTAMP yield.fs_test_lcov-$TIMESTAMP
-	#tar cf yield.fs_test_lcov_html-$TIMESTAMP.tar yield.fs_test_lcov_html-$TIMESTAMP
-	#gzip yield.fs_test_lcov_html-$TIMESTAMP.tar
-	if [ -d /mnt/hgfs/minorg/Desktop ]; then
-	  cp -R yield.fs_test_lcov_html-$TIMESTAMP /mnt/hgfs/minorg/Desktop
-	else
-	  zip -qr yield.fs_test_lcov_html-$TIMESTAMP.zip yield.fs_test_lcov_html-$TIMESTAMP/*
-	fi
-	rm -fr yield.fs_test_lcov_html-$TIMESTAMP
+lcov: ../../../bin/yield/yield_fs_test
+	lcov --directory ../../../build/yield/fs --zerocounters
+	../../../bin/yield/yield_fs_test
+	lcov --base-directory . --directory ../../../build/yield/fs --capture --output-file yield.fs_test_lcov-$(TIMESTAMP)
+	mkdir yield.fs_test_lcov_html-$(TIMESTAMP)
+	genhtml -o yield.fs_test_lcov_html-$(TIMESTAMP) yield.fs_test_lcov-$(TIMESTAMP)
+	-cp -R yield.fs_test_lcov_html-$(TIMESTAMP) /mnt/hgfs/minorg/Desktop
+	zip -qr yield.fs_test_lcov_html-$(TIMESTAMP).zip yield.fs_test_lcov_html-$(TIMESTAMP)/*
+	rm -fr yield.fs_test_lcov_html-$(TIMESTAMP)
 
 
 ../../../bin/yield/yield_fs_test: $(O_FILE_PATHS)
 	-mkdir -p ../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 
-../../../build/yield/fs_test/directory_test.o: ../../../test/yield/fs/directory_test.cpp
-	-mkdir -p ../../../build/yield/fs_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/directory_test.o -MD $(CXXFLAGS) ../../../test/yield/fs/directory_test.cpp
+../../../build/yield/fs/directory_test.o: ../../../test/yield/fs/directory_test.cpp
+	-mkdir -p ../../../build/yield/fs 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/fs/directory_test.o -MD $(CXXFLAGS) ../../../test/yield/fs/directory_test.cpp
 
-../../../build/yield/fs_test/memory_mapped_file_test.o: ../../../test/yield/fs/memory_mapped_file_test.cpp
-	-mkdir -p ../../../build/yield/fs_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/memory_mapped_file_test.o -MD $(CXXFLAGS) ../../../test/yield/fs/memory_mapped_file_test.cpp
+../../../build/yield/fs/memory_mapped_file_test.o: ../../../test/yield/fs/memory_mapped_file_test.cpp
+	-mkdir -p ../../../build/yield/fs 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/fs/memory_mapped_file_test.o -MD $(CXXFLAGS) ../../../test/yield/fs/memory_mapped_file_test.cpp
 
-../../../build/yield/fs_test/named_pipe_test.o: ../../../test/yield/fs/named_pipe_test.cpp
-	-mkdir -p ../../../build/yield/fs_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/named_pipe_test.o -MD $(CXXFLAGS) ../../../test/yield/fs/named_pipe_test.cpp
+../../../build/yield/fs/named_pipe_test.o: ../../../test/yield/fs/named_pipe_test.cpp
+	-mkdir -p ../../../build/yield/fs 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/fs/named_pipe_test.o -MD $(CXXFLAGS) ../../../test/yield/fs/named_pipe_test.cpp
 
-../../../build/yield/fs_test/path_test.o: ../../../test/yield/fs/path_test.cpp
-	-mkdir -p ../../../build/yield/fs_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/path_test.o -MD $(CXXFLAGS) ../../../test/yield/fs/path_test.cpp
+../../../build/yield/fs/path_test.o: ../../../test/yield/fs/path_test.cpp
+	-mkdir -p ../../../build/yield/fs 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/fs/path_test.o -MD $(CXXFLAGS) ../../../test/yield/fs/path_test.cpp
 
-../../../build/yield/fs_test/posix/file_system_test.o: ../../../test/yield/fs/posix/file_system_test.cpp
-	-mkdir -p ../../../build/yield/fs_test/posix 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/posix/file_system_test.o -MD $(CXXFLAGS) ../../../test/yield/fs/posix/file_system_test.cpp
+../../../build/yield/fs/posix/file_system_test.o: ../../../test/yield/fs/posix/file_system_test.cpp
+	-mkdir -p ../../../build/yield/fs/posix 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/fs/posix/file_system_test.o -MD $(CXXFLAGS) ../../../test/yield/fs/posix/file_system_test.cpp
 
-../../../build/yield/fs_test/posix/file_test.o: ../../../test/yield/fs/posix/file_test.cpp
-	-mkdir -p ../../../build/yield/fs_test/posix 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/posix/file_test.o -MD $(CXXFLAGS) ../../../test/yield/fs/posix/file_test.cpp
+../../../build/yield/fs/posix/file_test.o: ../../../test/yield/fs/posix/file_test.cpp
+	-mkdir -p ../../../build/yield/fs/posix 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/fs/posix/file_test.o -MD $(CXXFLAGS) ../../../test/yield/fs/posix/file_test.cpp
 
-../../../build/yield/fs_test/posix/stat_test.o: ../../../test/yield/fs/posix/stat_test.cpp
-	-mkdir -p ../../../build/yield/fs_test/posix 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/posix/stat_test.o -MD $(CXXFLAGS) ../../../test/yield/fs/posix/stat_test.cpp
+../../../build/yield/fs/posix/stat_test.o: ../../../test/yield/fs/posix/stat_test.cpp
+	-mkdir -p ../../../build/yield/fs/posix 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/fs/posix/stat_test.o -MD $(CXXFLAGS) ../../../test/yield/fs/posix/stat_test.cpp
+
+../../../build/yield/fs/yield_fs_test_main.o: ../../../test/yield/fs/yield_fs_test_main.cpp
+	-mkdir -p ../../../build/yield/fs 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/fs/yield_fs_test_main.o -MD $(CXXFLAGS) ../../../test/yield/fs/yield_fs_test_main.cpp
 
 ../../../build/yield/fs_test/win32/file_system_test.o: ../../../test/yield/fs/win32/file_system_test.cpp
 	-mkdir -p ../../../build/yield/fs_test/win32 2>/dev/null
@@ -139,7 +139,3 @@ lcov: ..\..\..\bin\yield\yield_fs_test TIMESTAMP=`date +%Y%m%dT%H%M%S`
 ../../../build/yield/fs_test/win32/stat_test.o: ../../../test/yield/fs/win32/stat_test.cpp
 	-mkdir -p ../../../build/yield/fs_test/win32 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/fs_test/win32/stat_test.o -MD $(CXXFLAGS) ../../../test/yield/fs/win32/stat_test.cpp
-
-../../../build/yield/fs_test/yield_fs_test_main.o: ../../../test/yield/fs/yield_fs_test_main.cpp
-	-mkdir -p ../../../build/yield/fs_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs_test/yield_fs_test_main.o -MD $(CXXFLAGS) ../../../test/yield/fs/yield_fs_test_main.cpp

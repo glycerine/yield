@@ -27,7 +27,10 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from os.path import dirname, join, sep as path_sep, split, splitext
+from os.path import dirname, \
+                    join as path_join, \
+                    split as path_split, \
+                    splitext
 
 from yutil import deduplist, indent, posixpath, posixpaths, pad, relpath, rpad
 
@@ -87,7 +90,6 @@ class Makefile(Project):
     def __str__(self):
         my_dir_path = "" # "$(dir $(lastword $(MAKEFILE_LIST)))"
 
-        assert len(self.get_build_dir_path()) == 1 and self.get_build_dir_path().keys()[0] == '*'
         build_dir_path = posixpath(self.get_build_dir_path()['*'])
 
         # CXXFLAGS
@@ -153,7 +155,7 @@ endif""")
 
                     o_file_path = \
                         my_dir_path + \
-                        join(
+                        path_join(
                             self.get_build_dir_path()[platform],
                             splitext(
                                 relpath(source_file_path, self.get_root_source_dir_path())
@@ -191,44 +193,38 @@ endif""")
         source_file_rules = '\n'.join(source_file_rules)
 
         # output_file_path
-#        assert len(self.get_output_file_path()) == 1 and\
-#               self.get_output_file_path().keys()[0] == '*'
         output_file_path = self.get_output_file_path()['*']
-        output_dir_path, output_file_name = split(output_file_path)
+        output_dir_path, output_file_name = path_split(output_file_path)
         if self.get_type() == "dll":
             if len(splitext(output_file_name)[1]) == 0:
                 if not output_file_name.startswith("lib"):
                     output_file_name = "lib" + output_file_name
                 if not output_file_name.endswith(".so"):
                     output_file_name += ".so"
-            output_file_path = join(output_dir_path, output_file_name)
+            output_file_path = path_join(output_dir_path, output_file_name)
             output_file_path_recipe = "$(LINK.cpp) -shared $(O_FILE_PATHS) -o $@ $(LIBS)"
         elif self.get_type() == "exe":
             name = self.get_name()
+            output_file_path = posixpath(output_file_path)
             output_file_path_recipe = "$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)"
             lcov_rule = """
             
-lcov: %(output_file_path)s TIMESTAMP=`date +%%Y%%m%%dT%%H%%M%%S`
+lcov: %(output_file_path)s
     lcov --directory %(build_dir_path)s --zerocounters
     %(output_file_path)s
-    lcov --base-directory . --directory %(build_dir_path)s --capture --output-file %(name)s_lcov-$TIMESTAMP
-    mkdir %(name)s_lcov_html-$TIMESTAMP
-    genhtml -o %(name)s_lcov_html-$TIMESTAMP %(name)s_lcov-$TIMESTAMP
-    #tar cf %(name)s_lcov_html-$TIMESTAMP.tar %(name)s_lcov_html-$TIMESTAMP
-    #gzip %(name)s_lcov_html-$TIMESTAMP.tar
-    if [ -d /mnt/hgfs/minorg/Desktop ]; then
-      cp -R %(name)s_lcov_html-$TIMESTAMP /mnt/hgfs/minorg/Desktop
-    else
-      zip -qr %(name)s_lcov_html-$TIMESTAMP.zip %(name)s_lcov_html-$TIMESTAMP/*
-    fi
-    rm -fr %(name)s_lcov_html-$TIMESTAMP""" % locals()
+    lcov --base-directory . --directory %(build_dir_path)s --capture --output-file %(name)s_lcov-$(TIMESTAMP)
+    mkdir %(name)s_lcov_html-$(TIMESTAMP)
+    genhtml -o %(name)s_lcov_html-$(TIMESTAMP) %(name)s_lcov-$(TIMESTAMP)
+    -cp -R %(name)s_lcov_html-$(TIMESTAMP) /mnt/hgfs/minorg/Desktop
+    zip -qr %(name)s_lcov_html-$(TIMESTAMP).zip %(name)s_lcov_html-$(TIMESTAMP)/*
+    rm -fr %(name)s_lcov_html-$(TIMESTAMP)""" % locals()
         elif self.get_type() == "lib":
             if len(splitext(output_file_name)[1]) == 0:
                 if not output_file_name.startswith("lib"):
                     output_file_name = "lib" + output_file_name
                 if not output_file_name.endswith(".a"):
                     output_file_name += ".a"
-                output_file_path = join(output_dir_path, output_file_name)
+                output_file_path = path_join(output_dir_path, output_file_name)
             output_file_path_recipe = "$(AR) -r $@ $(O_FILE_PATHS)"
         else:
             raise NotImplementedError, self.get_type()
@@ -236,8 +232,9 @@ lcov: %(output_file_path)s TIMESTAMP=`date +%%Y%%m%%dT%%H%%M%%S`
         output_file_path = my_dir_path + posixpath(output_file_path)
 
         return ("""\
-# SHELL = /bin/bash
-UNAME := $(shell uname)%(CXXFLAGS)s%(LDFLAGS)s%(LIBS)s
+TIMESTAMP=$(shell date +%%Y%%m%%dT%%H%%M%%S)
+UNAME := $(shell uname)
+%(CXXFLAGS)s%(LDFLAGS)s%(LIBS)s
 
 D_FILE_PATHS := $(shell find %(my_dir_path)s%(build_dir_path)s -name "*.d")
 
@@ -275,7 +272,7 @@ class TopLevelMakefile(object):
         project_targets = []
 
         for project_name in sorted(self.__project_references.keys()):
-            project_dir_path = self.__project_dir_paths[project_name].replace(path_sep, '/')
+            project_dir_path = posixpath(self.__project_dir_paths[project_name])
 
             for recipe_type in ("clean", "depclean"):
                 locals()[recipe_type + "_recipes"].append(
@@ -284,7 +281,7 @@ class TopLevelMakefile(object):
 
             project_references = \
                 ' '.join([
-                    split(project_reference)[1]
+                    path_split(project_reference)[1]
                     for project_reference in self.__project_references.get(project_name, [])]
                 )
 

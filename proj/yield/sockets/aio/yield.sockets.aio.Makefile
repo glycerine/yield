@@ -1,5 +1,6 @@
-# SHELL = /bin/bash
+TIMESTAMP=$(shell date +%Y%m%dT%H%M%S)
 UNAME := $(shell uname)
+
 
 CXXFLAGS += -I../../../../include
 ifeq ($(UNAME), Linux)
@@ -130,5 +131,3 @@ depclean:
 ../../../../build/yield/sockets/aio/win32/send_aiocb.o: ../../../../src/yield/sockets/aio/win32/send_aiocb.cpp
 	-mkdir -p ../../../../build/yield/sockets/aio/win32 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/sockets/aio/win32/send_aiocb.o -MD $(CXXFLAGS) ../../../../src/yield/sockets/aio/win32/send_aiocb.cpp
-
-

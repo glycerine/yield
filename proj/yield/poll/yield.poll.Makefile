@@ -1,5 +1,6 @@
-# SHELL = /bin/bash
+TIMESTAMP=$(shell date +%Y%m%dT%H%M%S)
 UNAME := $(shell uname)
+
 
 CXXFLAGS += -I../../../include
 ifeq ($(UNAME), Linux)
@@ -106,5 +107,3 @@ depclean:
 ../../../build/yield/poll/win32/handle_event_queue.o: ../../../src/yield/poll/win32/handle_event_queue.cpp
 	-mkdir -p ../../../build/yield/poll/win32 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/poll/win32/handle_event_queue.o -MD $(CXXFLAGS) ../../../src/yield/poll/win32/handle_event_queue.cpp
-
-

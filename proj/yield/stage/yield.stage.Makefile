@@ -1,5 +1,6 @@
-# SHELL = /bin/bash
+TIMESTAMP=$(shell date +%Y%m%dT%H%M%S)
 UNAME := $(shell uname)
+
 
 CXXFLAGS += -I../../../include
 ifeq ($(UNAME), Linux)
@@ -86,5 +87,3 @@ depclean:
 ../../../build/yield/stage/wavefront_stage_scheduler.o: ../../../src/yield/stage/wavefront_stage_scheduler.cpp
 	-mkdir -p ../../../build/yield/stage 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/stage/wavefront_stage_scheduler.o -MD $(CXXFLAGS) ../../../src/yield/stage/wavefront_stage_scheduler.cpp
-
-

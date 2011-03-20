@@ -1,5 +1,6 @@
-# SHELL = /bin/bash
+TIMESTAMP=$(shell date +%Y%m%dT%H%M%S)
 UNAME := $(shell uname)
+
 
 CXXFLAGS += -I../../../../include
 ifeq ($(UNAME), Linux)
@@ -78,5 +79,3 @@ depclean:
 ../../../../build/yield/sockets/poll/win32/wsapoller.o: ../../../../src/yield/sockets/poll/win32/wsapoller.cpp
 	-mkdir -p ../../../../build/yield/sockets/poll/win32 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/sockets/poll/win32/wsapoller.o -MD $(CXXFLAGS) ../../../../src/yield/sockets/poll/win32/wsapoller.cpp
-
-

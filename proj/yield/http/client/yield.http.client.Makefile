@@ -1,5 +1,6 @@
-# SHELL = /bin/bash
+TIMESTAMP=$(shell date +%Y%m%dT%H%M%S)
 UNAME := $(shell uname)
+
 
 CXXFLAGS += -I../../../../include
 ifeq ($(UNAME), Linux)
@@ -70,5 +71,3 @@ depclean:
 ../../../../build/yield/http/client/http_client.o: ../../../../src/yield/http/client/http_client.cpp
 	-mkdir -p ../../../../build/yield/http/client 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/http/client/http_client.o -MD $(CXXFLAGS) ../../../../src/yield/http/client/http_client.cpp
-
-

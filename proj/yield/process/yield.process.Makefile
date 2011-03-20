@@ -1,5 +1,6 @@
-# SHELL = /bin/bash
+TIMESTAMP=$(shell date +%Y%m%dT%H%M%S)
 UNAME := $(shell uname)
+
 
 CXXFLAGS += -I../../../include
 ifeq ($(UNAME), Linux)
@@ -119,5 +120,3 @@ depclean:
 ../../../build/yield/process/win32/shared_library.o: ../../../src/yield/process/win32/shared_library.cpp
 	-mkdir -p ../../../build/yield/process/win32 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/process/win32/shared_library.o -MD $(CXXFLAGS) ../../../src/yield/process/win32/shared_library.cpp
-
-

@@ -1,5 +1,6 @@
-# SHELL = /bin/bash
+TIMESTAMP=$(shell date +%Y%m%dT%H%M%S)
 UNAME := $(shell uname)
+
 
 CXXFLAGS += -I../../../include
 ifeq ($(UNAME), Linux)
@@ -46,10 +47,10 @@ endif
 LIBS += -lyield_stage -lyield_thread -lyield
 
 
-D_FILE_PATHS := $(shell find ../../../build/yield/stage_test -name "*.d")
+D_FILE_PATHS := $(shell find ../../../build/yield/stage -name "*.d")
 
 
-O_FILE_PATHS += ../../../build/yield/stage_test/seda_stage_scheduler_test.o ../../../build/yield/stage_test/stage_test.o ../../../build/yield/stage_test/wavefront_stage_scheduler_test.o ../../../build/yield/stage_test/yield_stage_test_main.o
+O_FILE_PATHS += ../../../build/yield/stage/seda_stage_scheduler_test.o ../../../build/yield/stage/stage_test.o ../../../build/yield/stage/wavefront_stage_scheduler_test.o ../../../build/yield/stage/yield_stage_test_main.o
 
 
 all: ../../../bin/yield/yield_stage_test
@@ -62,38 +63,33 @@ depclean:
 
 -include $(D_FILE_PATHS)
 			
-lcov: ..\..\..\bin\yield\yield_stage_test TIMESTAMP=`date +%Y%m%dT%H%M%S`
-	lcov --directory ../../../build/yield/stage_test --zerocounters
-	..\..\..\bin\yield\yield_stage_test
-	lcov --base-directory . --directory ../../../build/yield/stage_test --capture --output-file yield.stage_test_lcov-$TIMESTAMP
-	mkdir yield.stage_test_lcov_html-$TIMESTAMP
-	genhtml -o yield.stage_test_lcov_html-$TIMESTAMP yield.stage_test_lcov-$TIMESTAMP
-	#tar cf yield.stage_test_lcov_html-$TIMESTAMP.tar yield.stage_test_lcov_html-$TIMESTAMP
-	#gzip yield.stage_test_lcov_html-$TIMESTAMP.tar
-	if [ -d /mnt/hgfs/minorg/Desktop ]; then
-	  cp -R yield.stage_test_lcov_html-$TIMESTAMP /mnt/hgfs/minorg/Desktop
-	else
-	  zip -qr yield.stage_test_lcov_html-$TIMESTAMP.zip yield.stage_test_lcov_html-$TIMESTAMP/*
-	fi
-	rm -fr yield.stage_test_lcov_html-$TIMESTAMP
+lcov: ../../../bin/yield/yield_stage_test
+	lcov --directory ../../../build/yield/stage --zerocounters
+	../../../bin/yield/yield_stage_test
+	lcov --base-directory . --directory ../../../build/yield/stage --capture --output-file yield.stage_test_lcov-$(TIMESTAMP)
+	mkdir yield.stage_test_lcov_html-$(TIMESTAMP)
+	genhtml -o yield.stage_test_lcov_html-$(TIMESTAMP) yield.stage_test_lcov-$(TIMESTAMP)
+	-cp -R yield.stage_test_lcov_html-$(TIMESTAMP) /mnt/hgfs/minorg/Desktop
+	zip -qr yield.stage_test_lcov_html-$(TIMESTAMP).zip yield.stage_test_lcov_html-$(TIMESTAMP)/*
+	rm -fr yield.stage_test_lcov_html-$(TIMESTAMP)
 
 
 ../../../bin/yield/yield_stage_test: $(O_FILE_PATHS)
 	-mkdir -p ../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 
-../../../build/yield/stage_test/seda_stage_scheduler_test.o: ../../../test/yield/stage/seda_stage_scheduler_test.cpp
-	-mkdir -p ../../../build/yield/stage_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/stage_test/seda_stage_scheduler_test.o -MD $(CXXFLAGS) ../../../test/yield/stage/seda_stage_scheduler_test.cpp
+../../../build/yield/stage/seda_stage_scheduler_test.o: ../../../test/yield/stage/seda_stage_scheduler_test.cpp
+	-mkdir -p ../../../build/yield/stage 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/stage/seda_stage_scheduler_test.o -MD $(CXXFLAGS) ../../../test/yield/stage/seda_stage_scheduler_test.cpp
 
-../../../build/yield/stage_test/stage_test.o: ../../../test/yield/stage/stage_test.cpp
-	-mkdir -p ../../../build/yield/stage_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/stage_test/stage_test.o -MD $(CXXFLAGS) ../../../test/yield/stage/stage_test.cpp
+../../../build/yield/stage/stage_test.o: ../../../test/yield/stage/stage_test.cpp
+	-mkdir -p ../../../build/yield/stage 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/stage/stage_test.o -MD $(CXXFLAGS) ../../../test/yield/stage/stage_test.cpp
 
-../../../build/yield/stage_test/wavefront_stage_scheduler_test.o: ../../../test/yield/stage/wavefront_stage_scheduler_test.cpp
-	-mkdir -p ../../../build/yield/stage_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/stage_test/wavefront_stage_scheduler_test.o -MD $(CXXFLAGS) ../../../test/yield/stage/wavefront_stage_scheduler_test.cpp
+../../../build/yield/stage/wavefront_stage_scheduler_test.o: ../../../test/yield/stage/wavefront_stage_scheduler_test.cpp
+	-mkdir -p ../../../build/yield/stage 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/stage/wavefront_stage_scheduler_test.o -MD $(CXXFLAGS) ../../../test/yield/stage/wavefront_stage_scheduler_test.cpp
 
-../../../build/yield/stage_test/yield_stage_test_main.o: ../../../test/yield/stage/yield_stage_test_main.cpp
-	-mkdir -p ../../../build/yield/stage_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/stage_test/yield_stage_test_main.o -MD $(CXXFLAGS) ../../../test/yield/stage/yield_stage_test_main.cpp
+../../../build/yield/stage/yield_stage_test_main.o: ../../../test/yield/stage/yield_stage_test_main.cpp
+	-mkdir -p ../../../build/yield/stage 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/stage/yield_stage_test_main.o -MD $(CXXFLAGS) ../../../test/yield/stage/yield_stage_test_main.cpp

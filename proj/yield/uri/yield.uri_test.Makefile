@@ -1,5 +1,6 @@
-# SHELL = /bin/bash
+TIMESTAMP=$(shell date +%Y%m%dT%H%M%S)
 UNAME := $(shell uname)
+
 
 CXXFLAGS += -I../../../include
 ifeq ($(UNAME), Linux)
@@ -43,10 +44,10 @@ endif
 LIBS += -lyield_uri -lyield
 
 
-D_FILE_PATHS := $(shell find ../../../build/yield/uri_test -name "*.d")
+D_FILE_PATHS := $(shell find ../../../build/yield/uri -name "*.d")
 
 
-O_FILE_PATHS += ../../../build/yield/uri_test/uri_test.o ../../../build/yield/uri_test/yield_uri_test_main.o
+O_FILE_PATHS += ../../../build/yield/uri/uri_test.o ../../../build/yield/uri/yield_uri_test_main.o
 
 
 all: ../../../bin/yield/yield_uri_test
@@ -59,30 +60,25 @@ depclean:
 
 -include $(D_FILE_PATHS)
 			
-lcov: ..\..\..\bin\yield\yield_uri_test TIMESTAMP=`date +%Y%m%dT%H%M%S`
-	lcov --directory ../../../build/yield/uri_test --zerocounters
-	..\..\..\bin\yield\yield_uri_test
-	lcov --base-directory . --directory ../../../build/yield/uri_test --capture --output-file yield.uri_test_lcov-$TIMESTAMP
-	mkdir yield.uri_test_lcov_html-$TIMESTAMP
-	genhtml -o yield.uri_test_lcov_html-$TIMESTAMP yield.uri_test_lcov-$TIMESTAMP
-	#tar cf yield.uri_test_lcov_html-$TIMESTAMP.tar yield.uri_test_lcov_html-$TIMESTAMP
-	#gzip yield.uri_test_lcov_html-$TIMESTAMP.tar
-	if [ -d /mnt/hgfs/minorg/Desktop ]; then
-	  cp -R yield.uri_test_lcov_html-$TIMESTAMP /mnt/hgfs/minorg/Desktop
-	else
-	  zip -qr yield.uri_test_lcov_html-$TIMESTAMP.zip yield.uri_test_lcov_html-$TIMESTAMP/*
-	fi
-	rm -fr yield.uri_test_lcov_html-$TIMESTAMP
+lcov: ../../../bin/yield/yield_uri_test
+	lcov --directory ../../../build/yield/uri --zerocounters
+	../../../bin/yield/yield_uri_test
+	lcov --base-directory . --directory ../../../build/yield/uri --capture --output-file yield.uri_test_lcov-$(TIMESTAMP)
+	mkdir yield.uri_test_lcov_html-$(TIMESTAMP)
+	genhtml -o yield.uri_test_lcov_html-$(TIMESTAMP) yield.uri_test_lcov-$(TIMESTAMP)
+	-cp -R yield.uri_test_lcov_html-$(TIMESTAMP) /mnt/hgfs/minorg/Desktop
+	zip -qr yield.uri_test_lcov_html-$(TIMESTAMP).zip yield.uri_test_lcov_html-$(TIMESTAMP)/*
+	rm -fr yield.uri_test_lcov_html-$(TIMESTAMP)
 
 
 ../../../bin/yield/yield_uri_test: $(O_FILE_PATHS)
 	-mkdir -p ../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 
-../../../build/yield/uri_test/uri_test.o: ../../../test/yield/uri/uri_test.cpp
-	-mkdir -p ../../../build/yield/uri_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/uri_test/uri_test.o -MD $(CXXFLAGS) ../../../test/yield/uri/uri_test.cpp
+../../../build/yield/uri/uri_test.o: ../../../test/yield/uri/uri_test.cpp
+	-mkdir -p ../../../build/yield/uri 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/uri/uri_test.o -MD $(CXXFLAGS) ../../../test/yield/uri/uri_test.cpp
 
-../../../build/yield/uri_test/yield_uri_test_main.o: ../../../test/yield/uri/yield_uri_test_main.cpp
-	-mkdir -p ../../../build/yield/uri_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/uri_test/yield_uri_test_main.o -MD $(CXXFLAGS) ../../../test/yield/uri/yield_uri_test_main.cpp
+../../../build/yield/uri/yield_uri_test_main.o: ../../../test/yield/uri/yield_uri_test_main.cpp
+	-mkdir -p ../../../build/yield/uri 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/uri/yield_uri_test_main.o -MD $(CXXFLAGS) ../../../test/yield/uri/yield_uri_test_main.cpp

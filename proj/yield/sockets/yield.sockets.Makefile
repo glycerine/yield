@@ -1,5 +1,6 @@
-# SHELL = /bin/bash
+TIMESTAMP=$(shell date +%Y%m%dT%H%M%S)
 UNAME := $(shell uname)
+
 
 CXXFLAGS += -I../../../include
 ifeq ($(UNAME), Linux)
@@ -130,5 +131,3 @@ depclean:
 ../../../build/yield/sockets/win32/udp_socket.o: ../../../src/yield/sockets/win32/udp_socket.cpp
 	-mkdir -p ../../../build/yield/sockets/win32 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/sockets/win32/udp_socket.o -MD $(CXXFLAGS) ../../../src/yield/sockets/win32/udp_socket.cpp
-
-

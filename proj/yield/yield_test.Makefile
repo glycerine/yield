@@ -1,5 +1,6 @@
-# SHELL = /bin/bash
+TIMESTAMP=$(shell date +%Y%m%dT%H%M%S)
 UNAME := $(shell uname)
+
 
 CXXFLAGS += -I../../include
 ifeq ($(UNAME), Linux)
@@ -43,10 +44,10 @@ endif
 LIBS += -lyield
 
 
-D_FILE_PATHS := $(shell find ../../build/yield_test -name "*.d")
+D_FILE_PATHS := $(shell find ../../build/yield -name "*.d")
 
 
-O_FILE_PATHS += ../../build/yield_test/atomic_test.o ../../build/yield_test/auto_object_test.o ../../build/yield_test/date_time_test.o ../../build/yield_test/event_test.o ../../build/yield_test/exception_test.o ../../build/yield_test/fixed_buffer_test.o ../../build/yield_test/log_test.o ../../build/yield_test/message_test.o ../../build/yield_test/object_test.o ../../build/yield_test/page_test.o ../../build/yield_test/request_test.o ../../build/yield_test/response_test.o ../../build/yield_test/string_buffer_test.o ../../build/yield_test/time_test.o ../../build/yield_test/yield_test_main.o
+O_FILE_PATHS += ../../build/yield/atomic_test.o ../../build/yield/auto_object_test.o ../../build/yield/date_time_test.o ../../build/yield/event_test.o ../../build/yield/exception_test.o ../../build/yield/fixed_buffer_test.o ../../build/yield/log_test.o ../../build/yield/message_test.o ../../build/yield/object_test.o ../../build/yield/page_test.o ../../build/yield/request_test.o ../../build/yield/response_test.o ../../build/yield/string_buffer_test.o ../../build/yield/time_test.o ../../build/yield/yield_test_main.o
 
 
 all: ../../bin/yield/yield_test
@@ -59,82 +60,77 @@ depclean:
 
 -include $(D_FILE_PATHS)
 			
-lcov: ..\..\bin\yield\yield_test TIMESTAMP=`date +%Y%m%dT%H%M%S`
-	lcov --directory ../../build/yield_test --zerocounters
-	..\..\bin\yield\yield_test
-	lcov --base-directory . --directory ../../build/yield_test --capture --output-file yield_test_lcov-$TIMESTAMP
-	mkdir yield_test_lcov_html-$TIMESTAMP
-	genhtml -o yield_test_lcov_html-$TIMESTAMP yield_test_lcov-$TIMESTAMP
-	#tar cf yield_test_lcov_html-$TIMESTAMP.tar yield_test_lcov_html-$TIMESTAMP
-	#gzip yield_test_lcov_html-$TIMESTAMP.tar
-	if [ -d /mnt/hgfs/minorg/Desktop ]; then
-	  cp -R yield_test_lcov_html-$TIMESTAMP /mnt/hgfs/minorg/Desktop
-	else
-	  zip -qr yield_test_lcov_html-$TIMESTAMP.zip yield_test_lcov_html-$TIMESTAMP/*
-	fi
-	rm -fr yield_test_lcov_html-$TIMESTAMP
+lcov: ../../bin/yield/yield_test
+	lcov --directory ../../build/yield --zerocounters
+	../../bin/yield/yield_test
+	lcov --base-directory . --directory ../../build/yield --capture --output-file yield_test_lcov-$(TIMESTAMP)
+	mkdir yield_test_lcov_html-$(TIMESTAMP)
+	genhtml -o yield_test_lcov_html-$(TIMESTAMP) yield_test_lcov-$(TIMESTAMP)
+	-cp -R yield_test_lcov_html-$(TIMESTAMP) /mnt/hgfs/minorg/Desktop
+	zip -qr yield_test_lcov_html-$(TIMESTAMP).zip yield_test_lcov_html-$(TIMESTAMP)/*
+	rm -fr yield_test_lcov_html-$(TIMESTAMP)
 
 
 ../../bin/yield/yield_test: $(O_FILE_PATHS)
 	-mkdir -p ../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 
-../../build/yield_test/atomic_test.o: ../../test/yield/atomic_test.cpp
-	-mkdir -p ../../build/yield_test 2>/dev/null
-	$(CXX) -c -o ../../build/yield_test/atomic_test.o -MD $(CXXFLAGS) ../../test/yield/atomic_test.cpp
+../../build/yield/atomic_test.o: ../../test/yield/atomic_test.cpp
+	-mkdir -p ../../build/yield 2>/dev/null
+	$(CXX) -c -o ../../build/yield/atomic_test.o -MD $(CXXFLAGS) ../../test/yield/atomic_test.cpp
 
-../../build/yield_test/auto_object_test.o: ../../test/yield/auto_object_test.cpp
-	-mkdir -p ../../build/yield_test 2>/dev/null
-	$(CXX) -c -o ../../build/yield_test/auto_object_test.o -MD $(CXXFLAGS) ../../test/yield/auto_object_test.cpp
+../../build/yield/auto_object_test.o: ../../test/yield/auto_object_test.cpp
+	-mkdir -p ../../build/yield 2>/dev/null
+	$(CXX) -c -o ../../build/yield/auto_object_test.o -MD $(CXXFLAGS) ../../test/yield/auto_object_test.cpp
 
-../../build/yield_test/date_time_test.o: ../../test/yield/date_time_test.cpp
-	-mkdir -p ../../build/yield_test 2>/dev/null
-	$(CXX) -c -o ../../build/yield_test/date_time_test.o -MD $(CXXFLAGS) ../../test/yield/date_time_test.cpp
+../../build/yield/date_time_test.o: ../../test/yield/date_time_test.cpp
+	-mkdir -p ../../build/yield 2>/dev/null
+	$(CXX) -c -o ../../build/yield/date_time_test.o -MD $(CXXFLAGS) ../../test/yield/date_time_test.cpp
 
-../../build/yield_test/event_test.o: ../../test/yield/event_test.cpp
-	-mkdir -p ../../build/yield_test 2>/dev/null
-	$(CXX) -c -o ../../build/yield_test/event_test.o -MD $(CXXFLAGS) ../../test/yield/event_test.cpp
+../../build/yield/event_test.o: ../../test/yield/event_test.cpp
+	-mkdir -p ../../build/yield 2>/dev/null
+	$(CXX) -c -o ../../build/yield/event_test.o -MD $(CXXFLAGS) ../../test/yield/event_test.cpp
 
-../../build/yield_test/exception_test.o: ../../test/yield/exception_test.cpp
-	-mkdir -p ../../build/yield_test 2>/dev/null
-	$(CXX) -c -o ../../build/yield_test/exception_test.o -MD $(CXXFLAGS) ../../test/yield/exception_test.cpp
+../../build/yield/exception_test.o: ../../test/yield/exception_test.cpp
+	-mkdir -p ../../build/yield 2>/dev/null
+	$(CXX) -c -o ../../build/yield/exception_test.o -MD $(CXXFLAGS) ../../test/yield/exception_test.cpp
 
-../../build/yield_test/fixed_buffer_test.o: ../../test/yield/fixed_buffer_test.cpp
-	-mkdir -p ../../build/yield_test 2>/dev/null
-	$(CXX) -c -o ../../build/yield_test/fixed_buffer_test.o -MD $(CXXFLAGS) ../../test/yield/fixed_buffer_test.cpp
+../../build/yield/fixed_buffer_test.o: ../../test/yield/fixed_buffer_test.cpp
+	-mkdir -p ../../build/yield 2>/dev/null
+	$(CXX) -c -o ../../build/yield/fixed_buffer_test.o -MD $(CXXFLAGS) ../../test/yield/fixed_buffer_test.cpp
 
-../../build/yield_test/log_test.o: ../../test/yield/log_test.cpp
-	-mkdir -p ../../build/yield_test 2>/dev/null
-	$(CXX) -c -o ../../build/yield_test/log_test.o -MD $(CXXFLAGS) ../../test/yield/log_test.cpp
+../../build/yield/log_test.o: ../../test/yield/log_test.cpp
+	-mkdir -p ../../build/yield 2>/dev/null
+	$(CXX) -c -o ../../build/yield/log_test.o -MD $(CXXFLAGS) ../../test/yield/log_test.cpp
 
-../../build/yield_test/message_test.o: ../../test/yield/message_test.cpp
-	-mkdir -p ../../build/yield_test 2>/dev/null
-	$(CXX) -c -o ../../build/yield_test/message_test.o -MD $(CXXFLAGS) ../../test/yield/message_test.cpp
+../../build/yield/message_test.o: ../../test/yield/message_test.cpp
+	-mkdir -p ../../build/yield 2>/dev/null
+	$(CXX) -c -o ../../build/yield/message_test.o -MD $(CXXFLAGS) ../../test/yield/message_test.cpp
 
-../../build/yield_test/object_test.o: ../../test/yield/object_test.cpp
-	-mkdir -p ../../build/yield_test 2>/dev/null
-	$(CXX) -c -o ../../build/yield_test/object_test.o -MD $(CXXFLAGS) ../../test/yield/object_test.cpp
+../../build/yield/object_test.o: ../../test/yield/object_test.cpp
+	-mkdir -p ../../build/yield 2>/dev/null
+	$(CXX) -c -o ../../build/yield/object_test.o -MD $(CXXFLAGS) ../../test/yield/object_test.cpp
 
-../../build/yield_test/page_test.o: ../../test/yield/page_test.cpp
-	-mkdir -p ../../build/yield_test 2>/dev/null
-	$(CXX) -c -o ../../build/yield_test/page_test.o -MD $(CXXFLAGS) ../../test/yield/page_test.cpp
+../../build/yield/page_test.o: ../../test/yield/page_test.cpp
+	-mkdir -p ../../build/yield 2>/dev/null
+	$(CXX) -c -o ../../build/yield/page_test.o -MD $(CXXFLAGS) ../../test/yield/page_test.cpp
 
-../../build/yield_test/request_test.o: ../../test/yield/request_test.cpp
-	-mkdir -p ../../build/yield_test 2>/dev/null
-	$(CXX) -c -o ../../build/yield_test/request_test.o -MD $(CXXFLAGS) ../../test/yield/request_test.cpp
+../../build/yield/request_test.o: ../../test/yield/request_test.cpp
+	-mkdir -p ../../build/yield 2>/dev/null
+	$(CXX) -c -o ../../build/yield/request_test.o -MD $(CXXFLAGS) ../../test/yield/request_test.cpp
 
-../../build/yield_test/response_test.o: ../../test/yield/response_test.cpp
-	-mkdir -p ../../build/yield_test 2>/dev/null
-	$(CXX) -c -o ../../build/yield_test/response_test.o -MD $(CXXFLAGS) ../../test/yield/response_test.cpp
+../../build/yield/response_test.o: ../../test/yield/response_test.cpp
+	-mkdir -p ../../build/yield 2>/dev/null
+	$(CXX) -c -o ../../build/yield/response_test.o -MD $(CXXFLAGS) ../../test/yield/response_test.cpp
 
-../../build/yield_test/string_buffer_test.o: ../../test/yield/string_buffer_test.cpp
-	-mkdir -p ../../build/yield_test 2>/dev/null
-	$(CXX) -c -o ../../build/yield_test/string_buffer_test.o -MD $(CXXFLAGS) ../../test/yield/string_buffer_test.cpp
+../../build/yield/string_buffer_test.o: ../../test/yield/string_buffer_test.cpp
+	-mkdir -p ../../build/yield 2>/dev/null
+	$(CXX) -c -o ../../build/yield/string_buffer_test.o -MD $(CXXFLAGS) ../../test/yield/string_buffer_test.cpp
 
-../../build/yield_test/time_test.o: ../../test/yield/time_test.cpp
-	-mkdir -p ../../build/yield_test 2>/dev/null
-	$(CXX) -c -o ../../build/yield_test/time_test.o -MD $(CXXFLAGS) ../../test/yield/time_test.cpp
+../../build/yield/time_test.o: ../../test/yield/time_test.cpp
+	-mkdir -p ../../build/yield 2>/dev/null
+	$(CXX) -c -o ../../build/yield/time_test.o -MD $(CXXFLAGS) ../../test/yield/time_test.cpp
 
-../../build/yield_test/yield_test_main.o: ../../test/yield/yield_test_main.cpp
-	-mkdir -p ../../build/yield_test 2>/dev/null
-	$(CXX) -c -o ../../build/yield_test/yield_test_main.o -MD $(CXXFLAGS) ../../test/yield/yield_test_main.cpp
+../../build/yield/yield_test_main.o: ../../test/yield/yield_test_main.cpp
+	-mkdir -p ../../build/yield 2>/dev/null
+	$(CXX) -c -o ../../build/yield/yield_test_main.o -MD $(CXXFLAGS) ../../test/yield/yield_test_main.cpp

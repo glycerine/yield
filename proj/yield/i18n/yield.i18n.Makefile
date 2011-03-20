@@ -1,5 +1,6 @@
-# SHELL = /bin/bash
+TIMESTAMP=$(shell date +%Y%m%dT%H%M%S)
 UNAME := $(shell uname)
+
 
 CXXFLAGS += -I../../../include
 ifeq ($(UNAME), Linux)
@@ -107,5 +108,3 @@ depclean:
 ../../../build/yield/i18n/win32/tstring.o: ../../../src/yield/i18n/win32/tstring.cpp
 	-mkdir -p ../../../build/yield/i18n/win32 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/i18n/win32/tstring.o -MD $(CXXFLAGS) ../../../src/yield/i18n/win32/tstring.cpp
-
-

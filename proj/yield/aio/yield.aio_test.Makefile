@@ -1,5 +1,6 @@
-# SHELL = /bin/bash
+TIMESTAMP=$(shell date +%Y%m%dT%H%M%S)
 UNAME := $(shell uname)
+
 
 CXXFLAGS += -I../../../include
 ifeq ($(UNAME), Linux)
@@ -43,10 +44,10 @@ endif
 LIBS += -lyield_aio -lyield
 
 
-D_FILE_PATHS := $(shell find ../../../build/yield/aio_test -name "*.d")
+D_FILE_PATHS := $(shell find ../../../build/yield/aio -name "*.d")
 
 
-O_FILE_PATHS += ../../../build/yield/aio_test/yield_aio_test_main.o
+O_FILE_PATHS += ../../../build/yield/aio/yield_aio_test_main.o
 
 
 all: ../../../bin/yield/yield_aio_test
@@ -59,26 +60,21 @@ depclean:
 
 -include $(D_FILE_PATHS)
 			
-lcov: ..\..\..\bin\yield\yield_aio_test TIMESTAMP=`date +%Y%m%dT%H%M%S`
-	lcov --directory ../../../build/yield/aio_test --zerocounters
-	..\..\..\bin\yield\yield_aio_test
-	lcov --base-directory . --directory ../../../build/yield/aio_test --capture --output-file yield.aio_test_lcov-$TIMESTAMP
-	mkdir yield.aio_test_lcov_html-$TIMESTAMP
-	genhtml -o yield.aio_test_lcov_html-$TIMESTAMP yield.aio_test_lcov-$TIMESTAMP
-	#tar cf yield.aio_test_lcov_html-$TIMESTAMP.tar yield.aio_test_lcov_html-$TIMESTAMP
-	#gzip yield.aio_test_lcov_html-$TIMESTAMP.tar
-	if [ -d /mnt/hgfs/minorg/Desktop ]; then
-	  cp -R yield.aio_test_lcov_html-$TIMESTAMP /mnt/hgfs/minorg/Desktop
-	else
-	  zip -qr yield.aio_test_lcov_html-$TIMESTAMP.zip yield.aio_test_lcov_html-$TIMESTAMP/*
-	fi
-	rm -fr yield.aio_test_lcov_html-$TIMESTAMP
+lcov: ../../../bin/yield/yield_aio_test
+	lcov --directory ../../../build/yield/aio --zerocounters
+	../../../bin/yield/yield_aio_test
+	lcov --base-directory . --directory ../../../build/yield/aio --capture --output-file yield.aio_test_lcov-$(TIMESTAMP)
+	mkdir yield.aio_test_lcov_html-$(TIMESTAMP)
+	genhtml -o yield.aio_test_lcov_html-$(TIMESTAMP) yield.aio_test_lcov-$(TIMESTAMP)
+	-cp -R yield.aio_test_lcov_html-$(TIMESTAMP) /mnt/hgfs/minorg/Desktop
+	zip -qr yield.aio_test_lcov_html-$(TIMESTAMP).zip yield.aio_test_lcov_html-$(TIMESTAMP)/*
+	rm -fr yield.aio_test_lcov_html-$(TIMESTAMP)
 
 
 ../../../bin/yield/yield_aio_test: $(O_FILE_PATHS)
 	-mkdir -p ../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 
-../../../build/yield/aio_test/yield_aio_test_main.o: ../../../test/yield/aio/yield_aio_test_main.cpp
-	-mkdir -p ../../../build/yield/aio_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/aio_test/yield_aio_test_main.o -MD $(CXXFLAGS) ../../../test/yield/aio/yield_aio_test_main.cpp
+../../../build/yield/aio/yield_aio_test_main.o: ../../../test/yield/aio/yield_aio_test_main.cpp
+	-mkdir -p ../../../build/yield/aio 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/aio/yield_aio_test_main.o -MD $(CXXFLAGS) ../../../test/yield/aio/yield_aio_test_main.cpp

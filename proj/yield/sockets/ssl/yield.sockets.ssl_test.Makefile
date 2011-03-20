@@ -1,5 +1,6 @@
-# SHELL = /bin/bash
+TIMESTAMP=$(shell date +%Y%m%dT%H%M%S)
 UNAME := $(shell uname)
+
 
 CXXFLAGS += -I../../../../include
 ifeq ($(UNAME), Linux)
@@ -43,10 +44,10 @@ endif
 LIBS += -lyield_sockets_ssl -lyield_sockets -lyield
 
 
-D_FILE_PATHS := $(shell find ../../../../build/yield/sockets/ssl_test -name "*.d")
+D_FILE_PATHS := $(shell find ../../../../build/yield/sockets/ssl -name "*.d")
 
 
-O_FILE_PATHS += ../../../../build/yield/sockets/ssl_test/ssl_context_test.o ../../../../build/yield/sockets/ssl_test/yield_sockets_ssl_test_main.o
+O_FILE_PATHS += ../../../../build/yield/sockets/ssl/ssl_context_test.o ../../../../build/yield/sockets/ssl/yield_sockets_ssl_test_main.o
 
 
 all: ../../../../bin/yield/yield_sockets_ssl_test
@@ -59,30 +60,25 @@ depclean:
 
 -include $(D_FILE_PATHS)
 			
-lcov: ..\..\..\..\bin\yield\yield_sockets_ssl_test TIMESTAMP=`date +%Y%m%dT%H%M%S`
-	lcov --directory ../../../../build/yield/sockets/ssl_test --zerocounters
-	..\..\..\..\bin\yield\yield_sockets_ssl_test
-	lcov --base-directory . --directory ../../../../build/yield/sockets/ssl_test --capture --output-file yield.sockets.ssl_test_lcov-$TIMESTAMP
-	mkdir yield.sockets.ssl_test_lcov_html-$TIMESTAMP
-	genhtml -o yield.sockets.ssl_test_lcov_html-$TIMESTAMP yield.sockets.ssl_test_lcov-$TIMESTAMP
-	#tar cf yield.sockets.ssl_test_lcov_html-$TIMESTAMP.tar yield.sockets.ssl_test_lcov_html-$TIMESTAMP
-	#gzip yield.sockets.ssl_test_lcov_html-$TIMESTAMP.tar
-	if [ -d /mnt/hgfs/minorg/Desktop ]; then
-	  cp -R yield.sockets.ssl_test_lcov_html-$TIMESTAMP /mnt/hgfs/minorg/Desktop
-	else
-	  zip -qr yield.sockets.ssl_test_lcov_html-$TIMESTAMP.zip yield.sockets.ssl_test_lcov_html-$TIMESTAMP/*
-	fi
-	rm -fr yield.sockets.ssl_test_lcov_html-$TIMESTAMP
+lcov: ../../../../bin/yield/yield_sockets_ssl_test
+	lcov --directory ../../../../build/yield/sockets/ssl --zerocounters
+	../../../../bin/yield/yield_sockets_ssl_test
+	lcov --base-directory . --directory ../../../../build/yield/sockets/ssl --capture --output-file yield.sockets.ssl_test_lcov-$(TIMESTAMP)
+	mkdir yield.sockets.ssl_test_lcov_html-$(TIMESTAMP)
+	genhtml -o yield.sockets.ssl_test_lcov_html-$(TIMESTAMP) yield.sockets.ssl_test_lcov-$(TIMESTAMP)
+	-cp -R yield.sockets.ssl_test_lcov_html-$(TIMESTAMP) /mnt/hgfs/minorg/Desktop
+	zip -qr yield.sockets.ssl_test_lcov_html-$(TIMESTAMP).zip yield.sockets.ssl_test_lcov_html-$(TIMESTAMP)/*
+	rm -fr yield.sockets.ssl_test_lcov_html-$(TIMESTAMP)
 
 
 ../../../../bin/yield/yield_sockets_ssl_test: $(O_FILE_PATHS)
 	-mkdir -p ../../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 
-../../../../build/yield/sockets/ssl_test/ssl_context_test.o: ../../../../test/yield/sockets/ssl/ssl_context_test.cpp
-	-mkdir -p ../../../../build/yield/sockets/ssl_test 2>/dev/null
-	$(CXX) -c -o ../../../../build/yield/sockets/ssl_test/ssl_context_test.o -MD $(CXXFLAGS) ../../../../test/yield/sockets/ssl/ssl_context_test.cpp
+../../../../build/yield/sockets/ssl/ssl_context_test.o: ../../../../test/yield/sockets/ssl/ssl_context_test.cpp
+	-mkdir -p ../../../../build/yield/sockets/ssl 2>/dev/null
+	$(CXX) -c -o ../../../../build/yield/sockets/ssl/ssl_context_test.o -MD $(CXXFLAGS) ../../../../test/yield/sockets/ssl/ssl_context_test.cpp
 
-../../../../build/yield/sockets/ssl_test/yield_sockets_ssl_test_main.o: ../../../../test/yield/sockets/ssl/yield_sockets_ssl_test_main.cpp
-	-mkdir -p ../../../../build/yield/sockets/ssl_test 2>/dev/null
-	$(CXX) -c -o ../../../../build/yield/sockets/ssl_test/yield_sockets_ssl_test_main.o -MD $(CXXFLAGS) ../../../../test/yield/sockets/ssl/yield_sockets_ssl_test_main.cpp
+../../../../build/yield/sockets/ssl/yield_sockets_ssl_test_main.o: ../../../../test/yield/sockets/ssl/yield_sockets_ssl_test_main.cpp
+	-mkdir -p ../../../../build/yield/sockets/ssl 2>/dev/null
+	$(CXX) -c -o ../../../../build/yield/sockets/ssl/yield_sockets_ssl_test_main.o -MD $(CXXFLAGS) ../../../../test/yield/sockets/ssl/yield_sockets_ssl_test_main.cpp

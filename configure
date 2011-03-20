@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # Copyright (c) 2011 Minor Gordon
 # All rights reserved
 
@@ -645,7 +647,10 @@ if options.generate_proj:
                 continue
 
             project = {
-               "build_dir_path": path_join(ROOT_DIR_PATH, "build", path_sep.join(project_name.split('.'))) + project_name_suffix,
+               "build_dir_path": {
+                   "*": path_join(ROOT_DIR_PATH, "build", path_sep.join(project_name.split('.'))),
+                   "win32": path_join(ROOT_DIR_PATH, "build", path_sep.join(project_name.split('.'))) + project_name_suffix,
+               },
                "cxxflags": CXXFLAGS,
                "cxxpath": CXXPATH,
                # "exclude_file_paths": EXCLUDE_FILE_PATHS[project_name + project_name_suffix],
@@ -665,16 +670,18 @@ if options.generate_proj:
                "type": project_type
             }
 
-            for key in ("build_dir_path", "project_dir_path"):
-                if not exists(project[key]):
-                    makedirs(project[key])
+            if sys.platform == "win32":
+                try: makedirs(project["build_dir_path"]["win32"])
+                except: pass
+                if project_name != "yield":
+                    mirror_subdirectories(
+                        project["source_dir_path"],
+                        project["build_dir_path"]["win32"]
+                    )
+                del project["source_dir_path"]
 
-            if project_name != "yield":
-                mirror_subdirectories(
-                    project["source_dir_path"],
-                    project["build_dir_path"]
-                )
-            del project["source_dir_path"]
+                try: makedirs(project["project_dir_path"])
+                except: pass
 
             for project_class, file_ext in (
                 (Makefile, ".Makefile"),

@@ -1,5 +1,6 @@
-# SHELL = /bin/bash
+TIMESTAMP=$(shell date +%Y%m%dT%H%M%S)
 UNAME := $(shell uname)
+
 
 CXXFLAGS += -I../../../include
 ifeq ($(UNAME), Linux)
@@ -91,5 +92,3 @@ depclean:
 ../../../build/yield/http/http_response_parser.o: ../../../src/yield/http/http_response_parser.cpp
 	-mkdir -p ../../../build/yield/http 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/http/http_response_parser.o -MD $(CXXFLAGS) ../../../src/yield/http/http_response_parser.cpp
-
-

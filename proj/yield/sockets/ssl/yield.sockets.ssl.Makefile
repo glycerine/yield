@@ -1,5 +1,6 @@
-# SHELL = /bin/bash
+TIMESTAMP=$(shell date +%Y%m%dT%H%M%S)
 UNAME := $(shell uname)
+
 
 CXXFLAGS += -I../../../../include
 ifeq ($(UNAME), Linux)
@@ -75,5 +76,3 @@ depclean:
 ../../../../build/yield/sockets/ssl/ssl_socket.o: ../../../../src/yield/sockets/ssl/ssl_socket.cpp
 	-mkdir -p ../../../../build/yield/sockets/ssl 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/sockets/ssl/ssl_socket.o -MD $(CXXFLAGS) ../../../../src/yield/sockets/ssl/ssl_socket.cpp
-
-

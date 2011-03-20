@@ -1,5 +1,6 @@
-# SHELL = /bin/bash
+TIMESTAMP=$(shell date +%Y%m%dT%H%M%S)
 UNAME := $(shell uname)
+
 
 CXXFLAGS += -I../../../../include
 ifeq ($(UNAME), Linux)
@@ -70,5 +71,3 @@ depclean:
 ../../../../build/yield/sockets/client/stream_socket_client.o: ../../../../src/yield/sockets/client/stream_socket_client.cpp
 	-mkdir -p ../../../../build/yield/sockets/client 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/sockets/client/stream_socket_client.o -MD $(CXXFLAGS) ../../../../src/yield/sockets/client/stream_socket_client.cpp
-
-

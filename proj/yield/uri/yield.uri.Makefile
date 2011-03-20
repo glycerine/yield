@@ -1,5 +1,6 @@
-# SHELL = /bin/bash
+TIMESTAMP=$(shell date +%Y%m%dT%H%M%S)
 UNAME := $(shell uname)
+
 
 CXXFLAGS += -I../../../include
 ifeq ($(UNAME), Linux)
@@ -67,5 +68,3 @@ depclean:
 ../../../build/yield/uri/uri.o: ../../../src/yield/uri/uri.cpp
 	-mkdir -p ../../../build/yield/uri 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/uri/uri.o -MD $(CXXFLAGS) ../../../src/yield/uri/uri.cpp
-
-

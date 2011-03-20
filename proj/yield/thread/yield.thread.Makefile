@@ -1,5 +1,6 @@
-# SHELL = /bin/bash
+TIMESTAMP=$(shell date +%Y%m%dT%H%M%S)
 UNAME := $(shell uname)
+
 
 CXXFLAGS += -I../../../include
 ifeq ($(UNAME), Linux)
@@ -236,5 +237,3 @@ depclean:
 ../../../build/yield/thread/win32/thread.o: ../../../src/yield/thread/win32/thread.cpp
 	-mkdir -p ../../../build/yield/thread/win32 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/thread/win32/thread.o -MD $(CXXFLAGS) ../../../src/yield/thread/win32/thread.cpp
-
-

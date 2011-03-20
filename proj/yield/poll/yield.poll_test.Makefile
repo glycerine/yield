@@ -1,5 +1,6 @@
-# SHELL = /bin/bash
+TIMESTAMP=$(shell date +%Y%m%dT%H%M%S)
 UNAME := $(shell uname)
+
 
 CXXFLAGS += -I../../../include
 ifeq ($(UNAME), Linux)
@@ -43,10 +44,10 @@ endif
 LIBS += -lyield_poll -lyield
 
 
-D_FILE_PATHS := $(shell find ../../../build/yield/poll_test -name "*.d")
+D_FILE_PATHS := $(shell find ../../../build/yield/poll -name "*.d")
 
 
-O_FILE_PATHS += ../../../build/yield/poll_test/fd_event_queue_test.o ../../../build/yield/poll_test/yield_poll_test_main.o
+O_FILE_PATHS += ../../../build/yield/poll/fd_event_queue_test.o ../../../build/yield/poll/yield_poll_test_main.o
 
 
 all: ../../../bin/yield/yield_poll_test
@@ -59,30 +60,25 @@ depclean:
 
 -include $(D_FILE_PATHS)
 			
-lcov: ..\..\..\bin\yield\yield_poll_test TIMESTAMP=`date +%Y%m%dT%H%M%S`
-	lcov --directory ../../../build/yield/poll_test --zerocounters
-	..\..\..\bin\yield\yield_poll_test
-	lcov --base-directory . --directory ../../../build/yield/poll_test --capture --output-file yield.poll_test_lcov-$TIMESTAMP
-	mkdir yield.poll_test_lcov_html-$TIMESTAMP
-	genhtml -o yield.poll_test_lcov_html-$TIMESTAMP yield.poll_test_lcov-$TIMESTAMP
-	#tar cf yield.poll_test_lcov_html-$TIMESTAMP.tar yield.poll_test_lcov_html-$TIMESTAMP
-	#gzip yield.poll_test_lcov_html-$TIMESTAMP.tar
-	if [ -d /mnt/hgfs/minorg/Desktop ]; then
-	  cp -R yield.poll_test_lcov_html-$TIMESTAMP /mnt/hgfs/minorg/Desktop
-	else
-	  zip -qr yield.poll_test_lcov_html-$TIMESTAMP.zip yield.poll_test_lcov_html-$TIMESTAMP/*
-	fi
-	rm -fr yield.poll_test_lcov_html-$TIMESTAMP
+lcov: ../../../bin/yield/yield_poll_test
+	lcov --directory ../../../build/yield/poll --zerocounters
+	../../../bin/yield/yield_poll_test
+	lcov --base-directory . --directory ../../../build/yield/poll --capture --output-file yield.poll_test_lcov-$(TIMESTAMP)
+	mkdir yield.poll_test_lcov_html-$(TIMESTAMP)
+	genhtml -o yield.poll_test_lcov_html-$(TIMESTAMP) yield.poll_test_lcov-$(TIMESTAMP)
+	-cp -R yield.poll_test_lcov_html-$(TIMESTAMP) /mnt/hgfs/minorg/Desktop
+	zip -qr yield.poll_test_lcov_html-$(TIMESTAMP).zip yield.poll_test_lcov_html-$(TIMESTAMP)/*
+	rm -fr yield.poll_test_lcov_html-$(TIMESTAMP)
 
 
 ../../../bin/yield/yield_poll_test: $(O_FILE_PATHS)
 	-mkdir -p ../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 
-../../../build/yield/poll_test/fd_event_queue_test.o: ../../../test/yield/poll/fd_event_queue_test.cpp
-	-mkdir -p ../../../build/yield/poll_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/poll_test/fd_event_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/poll/fd_event_queue_test.cpp
+../../../build/yield/poll/fd_event_queue_test.o: ../../../test/yield/poll/fd_event_queue_test.cpp
+	-mkdir -p ../../../build/yield/poll 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/poll/fd_event_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/poll/fd_event_queue_test.cpp
 
-../../../build/yield/poll_test/yield_poll_test_main.o: ../../../test/yield/poll/yield_poll_test_main.cpp
-	-mkdir -p ../../../build/yield/poll_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/poll_test/yield_poll_test_main.o -MD $(CXXFLAGS) ../../../test/yield/poll/yield_poll_test_main.cpp
+../../../build/yield/poll/yield_poll_test_main.o: ../../../test/yield/poll/yield_poll_test_main.cpp
+	-mkdir -p ../../../build/yield/poll 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/poll/yield_poll_test_main.o -MD $(CXXFLAGS) ../../../test/yield/poll/yield_poll_test_main.cpp
