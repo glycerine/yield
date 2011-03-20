@@ -46,24 +46,26 @@ endif
 LIBS += -lyield_thread -lyield
 
 
-DEP_FILE_PATHS := $(shell find ../../../build/yield/stage -name "*.d")
+D_FILE_PATHS := $(shell find ../../../build/yield/stage -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../build/yield/stage/polling_stage_scheduler.o ../../../build/yield/stage/seda_stage_scheduler.o ../../../build/yield/stage/stage.o ../../../build/yield/stage/stage_scheduler.o ../../../build/yield/stage/wavefront_stage_scheduler.o
+O_FILE_PATHS += ../../../build/yield/stage/polling_stage_scheduler.o ../../../build/yield/stage/seda_stage_scheduler.o ../../../build/yield/stage/stage.o ../../../build/yield/stage/stage_scheduler.o ../../../build/yield/stage/wavefront_stage_scheduler.o
 
 
-../../../lib/yield/libyield_stage.a: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../lib/yield 2>/dev/null
-	$(AR) -r $@ $(OBJECT_FILE_PATHS)
+all: ../../../lib/yield/libyield_stage.a
 
 clean:
-	$(RM) ../../../lib/yield/libyield_stage.a $(OBJECT_FILE_PATHS)
+	$(RM) ../../../lib/yield/libyield_stage.a $(O_FILE_PATHS)
 
 depclean:
-	$(RM) $(DEP_FILE_PATHS)
+	$(RM) $(D_FILE_PATHS)
 
--include $(DEP_FILE_PATHS)
+-include $(D_FILE_PATHS)
 
+
+../../../lib/yield/libyield_stage.a: $(O_FILE_PATHS)
+	-mkdir -p ../../../lib/yield 2>/dev/null
+	$(AR) -r $@ $(O_FILE_PATHS)
 
 ../../../build/yield/stage/polling_stage_scheduler.o: ../../../src/yield/stage/polling_stage_scheduler.cpp
 	-mkdir -p ../../../build/yield/stage 2>/dev/null

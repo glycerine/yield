@@ -43,24 +43,26 @@ endif
 LIBS += -lyield
 
 
-DEP_FILE_PATHS := $(shell find ../../../build/yield/uri -name "*.d")
+D_FILE_PATHS := $(shell find ../../../build/yield/uri -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../build/yield/uri/uri.o
+O_FILE_PATHS += ../../../build/yield/uri/uri.o
 
 
-../../../lib/yield/libyield_uri.a: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../lib/yield 2>/dev/null
-	$(AR) -r $@ $(OBJECT_FILE_PATHS)
+all: ../../../lib/yield/libyield_uri.a
 
 clean:
-	$(RM) ../../../lib/yield/libyield_uri.a $(OBJECT_FILE_PATHS)
+	$(RM) ../../../lib/yield/libyield_uri.a $(O_FILE_PATHS)
 
 depclean:
-	$(RM) $(DEP_FILE_PATHS)
+	$(RM) $(D_FILE_PATHS)
 
--include $(DEP_FILE_PATHS)
+-include $(D_FILE_PATHS)
 
+
+../../../lib/yield/libyield_uri.a: $(O_FILE_PATHS)
+	-mkdir -p ../../../lib/yield 2>/dev/null
+	$(AR) -r $@ $(O_FILE_PATHS)
 
 ../../../build/yield/uri/uri.o: ../../../src/yield/uri/uri.cpp
 	-mkdir -p ../../../build/yield/uri 2>/dev/null

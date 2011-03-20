@@ -49,38 +49,40 @@ endif
 LIBS += -lyield
 
 
-DEP_FILE_PATHS := $(shell find ../../../build/yield/i18n -name "*.d")
+D_FILE_PATHS := $(shell find ../../../build/yield/i18n -name "*.d")
 
 
 ifeq ($(UNAME), Darwin)
-	OBJECT_FILE_PATHS += ../../../build/yield/i18n/posix/code.o ../../../build/yield/i18n/posix/iconv.o ../../../build/yield/i18n/posix/tstring.o
+	O_FILE_PATHS += ../../../build/yield/i18n/posix/code.o ../../../build/yield/i18n/posix/iconv.o ../../../build/yield/i18n/posix/tstring.o
 endif
 ifeq ($(UNAME), FreeBSD)
-	OBJECT_FILE_PATHS += ../../../build/yield/i18n/posix/code.o ../../../build/yield/i18n/posix/iconv.o ../../../build/yield/i18n/posix/tstring.o
+	O_FILE_PATHS += ../../../build/yield/i18n/posix/code.o ../../../build/yield/i18n/posix/iconv.o ../../../build/yield/i18n/posix/tstring.o
 endif
 ifeq ($(UNAME), Linux)
-	OBJECT_FILE_PATHS += ../../../build/yield/i18n/posix/code.o ../../../build/yield/i18n/posix/iconv.o ../../../build/yield/i18n/posix/tstring.o
+	O_FILE_PATHS += ../../../build/yield/i18n/posix/code.o ../../../build/yield/i18n/posix/iconv.o ../../../build/yield/i18n/posix/tstring.o
 endif
 ifeq ($(UNAME), Solaris)
-	OBJECT_FILE_PATHS += ../../../build/yield/i18n/posix/code.o ../../../build/yield/i18n/posix/iconv.o ../../../build/yield/i18n/posix/tstring.o
+	O_FILE_PATHS += ../../../build/yield/i18n/posix/code.o ../../../build/yield/i18n/posix/iconv.o ../../../build/yield/i18n/posix/tstring.o
 endif
 ifeq ($(UNAME), MINGW32)
-	OBJECT_FILE_PATHS += ../../../build/yield/i18n/win32/code.o ../../../build/yield/i18n/win32/iconv.o ../../../build/yield/i18n/win32/tstring.o
+	O_FILE_PATHS += ../../../build/yield/i18n/win32/code.o ../../../build/yield/i18n/win32/iconv.o ../../../build/yield/i18n/win32/tstring.o
 endif
 
 
-../../../lib/yield/libyield_i18n.a: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../lib/yield 2>/dev/null
-	$(AR) -r $@ $(OBJECT_FILE_PATHS)
+all: ../../../lib/yield/libyield_i18n.a
 
 clean:
-	$(RM) ../../../lib/yield/libyield_i18n.a $(OBJECT_FILE_PATHS)
+	$(RM) ../../../lib/yield/libyield_i18n.a $(O_FILE_PATHS)
 
 depclean:
-	$(RM) $(DEP_FILE_PATHS)
+	$(RM) $(D_FILE_PATHS)
 
--include $(DEP_FILE_PATHS)
+-include $(D_FILE_PATHS)
 
+
+../../../lib/yield/libyield_i18n.a: $(O_FILE_PATHS)
+	-mkdir -p ../../../lib/yield 2>/dev/null
+	$(AR) -r $@ $(O_FILE_PATHS)
 
 ../../../build/yield/i18n/posix/code.o: ../../../src/yield/i18n/posix/code.cpp
 	-mkdir -p ../../../build/yield/i18n/posix 2>/dev/null

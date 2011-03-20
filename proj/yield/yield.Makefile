@@ -42,24 +42,26 @@ ifeq ($(UNAME), Solaris)
 endif
 
 
-DEP_FILE_PATHS := $(shell find ../../build/yield -name "*.d")
+D_FILE_PATHS := $(shell find ../../build/yield -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../build/yield/buffer.o ../../build/yield/date_time.o ../../build/yield/exception.o ../../build/yield/log.o ../../build/yield/page.o ../../build/yield/request.o ../../build/yield/string_buffer.o ../../build/yield/time.o
+O_FILE_PATHS += ../../build/yield/buffer.o ../../build/yield/date_time.o ../../build/yield/exception.o ../../build/yield/log.o ../../build/yield/page.o ../../build/yield/request.o ../../build/yield/string_buffer.o ../../build/yield/time.o
 
 
-../../lib/yield/libyield.a: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../lib/yield 2>/dev/null
-	$(AR) -r $@ $(OBJECT_FILE_PATHS)
+all: ../../lib/yield/libyield.a
 
 clean:
-	$(RM) ../../lib/yield/libyield.a $(OBJECT_FILE_PATHS)
+	$(RM) ../../lib/yield/libyield.a $(O_FILE_PATHS)
 
 depclean:
-	$(RM) $(DEP_FILE_PATHS)
+	$(RM) $(D_FILE_PATHS)
 
--include $(DEP_FILE_PATHS)
+-include $(D_FILE_PATHS)
 
+
+../../lib/yield/libyield.a: $(O_FILE_PATHS)
+	-mkdir -p ../../lib/yield 2>/dev/null
+	$(AR) -r $@ $(O_FILE_PATHS)
 
 ../../build/yield/buffer.o: ../../src/yield/buffer.cpp
 	-mkdir -p ../../build/yield 2>/dev/null

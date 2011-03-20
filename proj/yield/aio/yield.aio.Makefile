@@ -43,38 +43,40 @@ endif
 LIBS += -lyield
 
 
-DEP_FILE_PATHS := $(shell find ../../../build/yield/aio -name "*.d")
+D_FILE_PATHS := $(shell find ../../../build/yield/aio -name "*.d")
 
 
 ifeq ($(UNAME), Darwin)
-	OBJECT_FILE_PATHS += ../../../build/yield/aio/posix/aiocb.o
+	O_FILE_PATHS += ../../../build/yield/aio/posix/aiocb.o
 endif
 ifeq ($(UNAME), FreeBSD)
-	OBJECT_FILE_PATHS += ../../../build/yield/aio/posix/aiocb.o
+	O_FILE_PATHS += ../../../build/yield/aio/posix/aiocb.o
 endif
 ifeq ($(UNAME), Linux)
-	OBJECT_FILE_PATHS += ../../../build/yield/aio/posix/aiocb.o
+	O_FILE_PATHS += ../../../build/yield/aio/posix/aiocb.o
 endif
 ifeq ($(UNAME), Solaris)
-	OBJECT_FILE_PATHS += ../../../build/yield/aio/posix/aiocb.o
+	O_FILE_PATHS += ../../../build/yield/aio/posix/aiocb.o
 endif
 ifeq ($(UNAME), MINGW32)
-	OBJECT_FILE_PATHS += ../../../build/yield/aio/win32/aio_queue.o ../../../build/yield/aio/win32/aiocb.o
+	O_FILE_PATHS += ../../../build/yield/aio/win32/aio_queue.o ../../../build/yield/aio/win32/aiocb.o
 endif
 
 
-../../../lib/yield/libyield_aio.a: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../lib/yield 2>/dev/null
-	$(AR) -r $@ $(OBJECT_FILE_PATHS)
+all: ../../../lib/yield/libyield_aio.a
 
 clean:
-	$(RM) ../../../lib/yield/libyield_aio.a $(OBJECT_FILE_PATHS)
+	$(RM) ../../../lib/yield/libyield_aio.a $(O_FILE_PATHS)
 
 depclean:
-	$(RM) $(DEP_FILE_PATHS)
+	$(RM) $(D_FILE_PATHS)
 
--include $(DEP_FILE_PATHS)
+-include $(D_FILE_PATHS)
 
+
+../../../lib/yield/libyield_aio.a: $(O_FILE_PATHS)
+	-mkdir -p ../../../lib/yield 2>/dev/null
+	$(AR) -r $@ $(O_FILE_PATHS)
 
 ../../../build/yield/aio/posix/aiocb.o: ../../../src/yield/aio/posix/aiocb.cpp
 	-mkdir -p ../../../build/yield/aio/posix 2>/dev/null

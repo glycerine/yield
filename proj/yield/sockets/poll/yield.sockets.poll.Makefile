@@ -43,27 +43,29 @@ endif
 LIBS += -lyield_poll -lyield_sockets -lyield
 
 
-DEP_FILE_PATHS := $(shell find ../../../../build/yield/sockets/poll -name "*.d")
+D_FILE_PATHS := $(shell find ../../../../build/yield/sockets/poll -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../../build/yield/sockets/poll/socket_event_queue.o
+O_FILE_PATHS += ../../../../build/yield/sockets/poll/socket_event_queue.o
 ifeq ($(UNAME), MINGW32)
-	OBJECT_FILE_PATHS += ../../../../build/yield/sockets/poll/win32/selector.o ../../../../build/yield/sockets/poll/win32/wsapoller.o
+	O_FILE_PATHS += ../../../../build/yield/sockets/poll/win32/selector.o ../../../../build/yield/sockets/poll/win32/wsapoller.o
 endif
 
 
-../../../../lib/yield/libyield_sockets_poll.a: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../../lib/yield 2>/dev/null
-	$(AR) -r $@ $(OBJECT_FILE_PATHS)
+all: ../../../../lib/yield/libyield_sockets_poll.a
 
 clean:
-	$(RM) ../../../../lib/yield/libyield_sockets_poll.a $(OBJECT_FILE_PATHS)
+	$(RM) ../../../../lib/yield/libyield_sockets_poll.a $(O_FILE_PATHS)
 
 depclean:
-	$(RM) $(DEP_FILE_PATHS)
+	$(RM) $(D_FILE_PATHS)
 
--include $(DEP_FILE_PATHS)
+-include $(D_FILE_PATHS)
 
+
+../../../../lib/yield/libyield_sockets_poll.a: $(O_FILE_PATHS)
+	-mkdir -p ../../../../lib/yield 2>/dev/null
+	$(AR) -r $@ $(O_FILE_PATHS)
 
 ../../../../build/yield/sockets/poll/socket_event_queue.o: ../../../../src/yield/sockets/poll/socket_event_queue.cpp
 	-mkdir -p ../../../../build/yield/sockets/poll 2>/dev/null

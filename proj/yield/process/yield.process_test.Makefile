@@ -49,24 +49,41 @@ endif
 LIBS += -lyield_process -lyield_fs -lyield_i18n -lyield
 
 
-DEP_FILE_PATHS := $(shell find ../../../build/yield/process_test -name "*.d")
+D_FILE_PATHS := $(shell find ../../../build/yield/process_test -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../build/yield/process_test/process_test.o ../../../build/yield/process_test/shared_library_test.o ../../../build/yield/process_test/yield_process_test_main.o
+O_FILE_PATHS += ../../../build/yield/process_test/process_test.o ../../../build/yield/process_test/shared_library_test.o ../../../build/yield/process_test/yield_process_test_main.o
 
 
-../../../bin/yield/yield_process_test: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../bin/yield 2>/dev/null
-	$(LINK.cpp) $(OBJECT_FILE_PATHS) -o $@ $(LIBS)
+all: ../../../bin/yield/yield_process_test
 
 clean:
-	$(RM) ../../../bin/yield/yield_process_test $(OBJECT_FILE_PATHS)
+	$(RM) ../../../bin/yield/yield_process_test $(O_FILE_PATHS)
 
 depclean:
-	$(RM) $(DEP_FILE_PATHS)
+	$(RM) $(D_FILE_PATHS)
 
--include $(DEP_FILE_PATHS)
+-include $(D_FILE_PATHS)
+			
+lcov: ..\..\..\bin\yield\yield_process_test TIMESTAMP=`date +%Y%m%dT%H%M%S`
+	lcov --directory ../../../build/yield/process_test --zerocounters
+	..\..\..\bin\yield\yield_process_test
+	lcov --base-directory . --directory ../../../build/yield/process_test --capture --output-file yield.process_test_lcov-$TIMESTAMP
+	mkdir yield.process_test_lcov_html-$TIMESTAMP
+	genhtml -o yield.process_test_lcov_html-$TIMESTAMP yield.process_test_lcov-$TIMESTAMP
+	#tar cf yield.process_test_lcov_html-$TIMESTAMP.tar yield.process_test_lcov_html-$TIMESTAMP
+	#gzip yield.process_test_lcov_html-$TIMESTAMP.tar
+	if [ -d /mnt/hgfs/minorg/Desktop ]; then
+	  cp -R yield.process_test_lcov_html-$TIMESTAMP /mnt/hgfs/minorg/Desktop
+	else
+	  zip -qr yield.process_test_lcov_html-$TIMESTAMP.zip yield.process_test_lcov_html-$TIMESTAMP/*
+	fi
+	rm -fr yield.process_test_lcov_html-$TIMESTAMP
 
+
+../../../bin/yield/yield_process_test: $(O_FILE_PATHS)
+	-mkdir -p ../../../bin/yield 2>/dev/null
+	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 
 ../../../build/yield/process_test/process_test.o: ../../../test/yield/process/process_test.cpp
 	-mkdir -p ../../../build/yield/process_test 2>/dev/null
@@ -79,5 +96,3 @@ depclean:
 ../../../build/yield/process_test/yield_process_test_main.o: ../../../test/yield/process/yield_process_test_main.cpp
 	-mkdir -p ../../../build/yield/process_test 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/process_test/yield_process_test_main.o -MD $(CXXFLAGS) ../../../test/yield/process/yield_process_test_main.cpp
-
-

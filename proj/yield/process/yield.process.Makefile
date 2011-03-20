@@ -49,42 +49,44 @@ endif
 LIBS += -lyield_fs -lyield_i18n -lyield
 
 
-DEP_FILE_PATHS := $(shell find ../../../build/yield/process -name "*.d")
+D_FILE_PATHS := $(shell find ../../../build/yield/process -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../build/yield/process/process.o
+O_FILE_PATHS += ../../../build/yield/process/process.o
 ifeq ($(UNAME), Darwin)
-	OBJECT_FILE_PATHS += ../../../build/yield/process/darwin/process.o
-	OBJECT_FILE_PATHS += ../../../build/yield/process/posix/process.o ../../../build/yield/process/posix/shared_library.o
+	O_FILE_PATHS += ../../../build/yield/process/darwin/process.o
+	O_FILE_PATHS += ../../../build/yield/process/posix/process.o ../../../build/yield/process/posix/shared_library.o
 endif
 ifeq ($(UNAME), FreeBSD)
-	OBJECT_FILE_PATHS += ../../../build/yield/process/posix/process.o ../../../build/yield/process/posix/shared_library.o
+	O_FILE_PATHS += ../../../build/yield/process/posix/process.o ../../../build/yield/process/posix/shared_library.o
 endif
 ifeq ($(UNAME), Linux)
-	OBJECT_FILE_PATHS += ../../../build/yield/process/linux/process.o
-	OBJECT_FILE_PATHS += ../../../build/yield/process/posix/process.o ../../../build/yield/process/posix/shared_library.o
+	O_FILE_PATHS += ../../../build/yield/process/linux/process.o
+	O_FILE_PATHS += ../../../build/yield/process/posix/process.o ../../../build/yield/process/posix/shared_library.o
 endif
 ifeq ($(UNAME), Solaris)
-	OBJECT_FILE_PATHS += ../../../build/yield/process/posix/process.o ../../../build/yield/process/posix/shared_library.o
-	OBJECT_FILE_PATHS += ../../../build/yield/process/sunos/process.o
+	O_FILE_PATHS += ../../../build/yield/process/posix/process.o ../../../build/yield/process/posix/shared_library.o
+	O_FILE_PATHS += ../../../build/yield/process/sunos/process.o
 endif
 ifeq ($(UNAME), MINGW32)
-	OBJECT_FILE_PATHS += ../../../build/yield/process/win32/process.o ../../../build/yield/process/win32/shared_library.o
+	O_FILE_PATHS += ../../../build/yield/process/win32/process.o ../../../build/yield/process/win32/shared_library.o
 endif
 
 
-../../../lib/yield/libyield_process.a: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../lib/yield 2>/dev/null
-	$(AR) -r $@ $(OBJECT_FILE_PATHS)
+all: ../../../lib/yield/libyield_process.a
 
 clean:
-	$(RM) ../../../lib/yield/libyield_process.a $(OBJECT_FILE_PATHS)
+	$(RM) ../../../lib/yield/libyield_process.a $(O_FILE_PATHS)
 
 depclean:
-	$(RM) $(DEP_FILE_PATHS)
+	$(RM) $(D_FILE_PATHS)
 
--include $(DEP_FILE_PATHS)
+-include $(D_FILE_PATHS)
 
+
+../../../lib/yield/libyield_process.a: $(O_FILE_PATHS)
+	-mkdir -p ../../../lib/yield 2>/dev/null
+	$(AR) -r $@ $(O_FILE_PATHS)
 
 ../../../build/yield/process/darwin/process.o: ../../../src/yield/process/darwin/process.cpp
 	-mkdir -p ../../../build/yield/process/darwin 2>/dev/null

@@ -43,39 +43,41 @@ endif
 LIBS += -lyield
 
 
-DEP_FILE_PATHS := $(shell find ../../../build/yield/sockets -name "*.d")
+D_FILE_PATHS := $(shell find ../../../build/yield/sockets -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../build/yield/sockets/socket_pair.o
+O_FILE_PATHS += ../../../build/yield/sockets/socket_pair.o
 ifeq ($(UNAME), Darwin)
-	OBJECT_FILE_PATHS += ../../../build/yield/sockets/posix/datagram_socket.o ../../../build/yield/sockets/posix/socket.o ../../../build/yield/sockets/posix/socket_address.o ../../../build/yield/sockets/posix/stream_socket.o ../../../build/yield/sockets/posix/tcp_socket.o ../../../build/yield/sockets/posix/udp_socket.o
+	O_FILE_PATHS += ../../../build/yield/sockets/posix/datagram_socket.o ../../../build/yield/sockets/posix/socket.o ../../../build/yield/sockets/posix/socket_address.o ../../../build/yield/sockets/posix/stream_socket.o ../../../build/yield/sockets/posix/tcp_socket.o ../../../build/yield/sockets/posix/udp_socket.o
 endif
 ifeq ($(UNAME), FreeBSD)
-	OBJECT_FILE_PATHS += ../../../build/yield/sockets/posix/datagram_socket.o ../../../build/yield/sockets/posix/socket.o ../../../build/yield/sockets/posix/socket_address.o ../../../build/yield/sockets/posix/stream_socket.o ../../../build/yield/sockets/posix/tcp_socket.o ../../../build/yield/sockets/posix/udp_socket.o
+	O_FILE_PATHS += ../../../build/yield/sockets/posix/datagram_socket.o ../../../build/yield/sockets/posix/socket.o ../../../build/yield/sockets/posix/socket_address.o ../../../build/yield/sockets/posix/stream_socket.o ../../../build/yield/sockets/posix/tcp_socket.o ../../../build/yield/sockets/posix/udp_socket.o
 endif
 ifeq ($(UNAME), Linux)
-	OBJECT_FILE_PATHS += ../../../build/yield/sockets/posix/datagram_socket.o ../../../build/yield/sockets/posix/socket.o ../../../build/yield/sockets/posix/socket_address.o ../../../build/yield/sockets/posix/stream_socket.o ../../../build/yield/sockets/posix/tcp_socket.o ../../../build/yield/sockets/posix/udp_socket.o
+	O_FILE_PATHS += ../../../build/yield/sockets/posix/datagram_socket.o ../../../build/yield/sockets/posix/socket.o ../../../build/yield/sockets/posix/socket_address.o ../../../build/yield/sockets/posix/stream_socket.o ../../../build/yield/sockets/posix/tcp_socket.o ../../../build/yield/sockets/posix/udp_socket.o
 endif
 ifeq ($(UNAME), Solaris)
-	OBJECT_FILE_PATHS += ../../../build/yield/sockets/posix/datagram_socket.o ../../../build/yield/sockets/posix/socket.o ../../../build/yield/sockets/posix/socket_address.o ../../../build/yield/sockets/posix/stream_socket.o ../../../build/yield/sockets/posix/tcp_socket.o ../../../build/yield/sockets/posix/udp_socket.o
+	O_FILE_PATHS += ../../../build/yield/sockets/posix/datagram_socket.o ../../../build/yield/sockets/posix/socket.o ../../../build/yield/sockets/posix/socket_address.o ../../../build/yield/sockets/posix/stream_socket.o ../../../build/yield/sockets/posix/tcp_socket.o ../../../build/yield/sockets/posix/udp_socket.o
 endif
 ifeq ($(UNAME), MINGW32)
-	OBJECT_FILE_PATHS += ../../../build/yield/sockets/win32/datagram_socket.o ../../../build/yield/sockets/win32/socket.o ../../../build/yield/sockets/win32/socket_address.o ../../../build/yield/sockets/win32/stream_socket.o ../../../build/yield/sockets/win32/tcp_socket.o ../../../build/yield/sockets/win32/udp_socket.o
+	O_FILE_PATHS += ../../../build/yield/sockets/win32/datagram_socket.o ../../../build/yield/sockets/win32/socket.o ../../../build/yield/sockets/win32/socket_address.o ../../../build/yield/sockets/win32/stream_socket.o ../../../build/yield/sockets/win32/tcp_socket.o ../../../build/yield/sockets/win32/udp_socket.o
 endif
 
 
-../../../lib/yield/libyield_sockets.a: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../lib/yield 2>/dev/null
-	$(AR) -r $@ $(OBJECT_FILE_PATHS)
+all: ../../../lib/yield/libyield_sockets.a
 
 clean:
-	$(RM) ../../../lib/yield/libyield_sockets.a $(OBJECT_FILE_PATHS)
+	$(RM) ../../../lib/yield/libyield_sockets.a $(O_FILE_PATHS)
 
 depclean:
-	$(RM) $(DEP_FILE_PATHS)
+	$(RM) $(D_FILE_PATHS)
 
--include $(DEP_FILE_PATHS)
+-include $(D_FILE_PATHS)
 
+
+../../../lib/yield/libyield_sockets.a: $(O_FILE_PATHS)
+	-mkdir -p ../../../lib/yield 2>/dev/null
+	$(AR) -r $@ $(O_FILE_PATHS)
 
 ../../../build/yield/sockets/posix/datagram_socket.o: ../../../src/yield/sockets/posix/datagram_socket.cpp
 	-mkdir -p ../../../build/yield/sockets/posix 2>/dev/null

@@ -43,24 +43,26 @@ endif
 LIBS += -lyield_sockets -lyield
 
 
-DEP_FILE_PATHS := $(shell find ../../../../build/yield/sockets/ssl -name "*.d")
+D_FILE_PATHS := $(shell find ../../../../build/yield/sockets/ssl -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../../build/yield/sockets/ssl/ssl_context.o ../../../../build/yield/sockets/ssl/ssl_exception.o ../../../../build/yield/sockets/ssl/ssl_socket.o
+O_FILE_PATHS += ../../../../build/yield/sockets/ssl/ssl_context.o ../../../../build/yield/sockets/ssl/ssl_exception.o ../../../../build/yield/sockets/ssl/ssl_socket.o
 
 
-../../../../lib/yield/libyield_sockets_ssl.a: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../../lib/yield 2>/dev/null
-	$(AR) -r $@ $(OBJECT_FILE_PATHS)
+all: ../../../../lib/yield/libyield_sockets_ssl.a
 
 clean:
-	$(RM) ../../../../lib/yield/libyield_sockets_ssl.a $(OBJECT_FILE_PATHS)
+	$(RM) ../../../../lib/yield/libyield_sockets_ssl.a $(O_FILE_PATHS)
 
 depclean:
-	$(RM) $(DEP_FILE_PATHS)
+	$(RM) $(D_FILE_PATHS)
 
--include $(DEP_FILE_PATHS)
+-include $(D_FILE_PATHS)
 
+
+../../../../lib/yield/libyield_sockets_ssl.a: $(O_FILE_PATHS)
+	-mkdir -p ../../../../lib/yield 2>/dev/null
+	$(AR) -r $@ $(O_FILE_PATHS)
 
 ../../../../build/yield/sockets/ssl/ssl_context.o: ../../../../src/yield/sockets/ssl/ssl_context.cpp
 	-mkdir -p ../../../../build/yield/sockets/ssl 2>/dev/null

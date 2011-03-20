@@ -46,24 +46,26 @@ endif
 LIBS += -lyield_http -lyield_uri -lyield_sockets_client -lyield_sockets_aio -lyield_aio -lyield_sockets_poll -lyield_poll -lyield_sockets -lyield_stage -lyield_thread -lyield
 
 
-DEP_FILE_PATHS := $(shell find ../../../../build/yield/http/client -name "*.d")
+D_FILE_PATHS := $(shell find ../../../../build/yield/http/client -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../../build/yield/http/client/http_client.o
+O_FILE_PATHS += ../../../../build/yield/http/client/http_client.o
 
 
-../../../../lib/yield/libyield_http_client.a: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../../lib/yield 2>/dev/null
-	$(AR) -r $@ $(OBJECT_FILE_PATHS)
+all: ../../../../lib/yield/libyield_http_client.a
 
 clean:
-	$(RM) ../../../../lib/yield/libyield_http_client.a $(OBJECT_FILE_PATHS)
+	$(RM) ../../../../lib/yield/libyield_http_client.a $(O_FILE_PATHS)
 
 depclean:
-	$(RM) $(DEP_FILE_PATHS)
+	$(RM) $(D_FILE_PATHS)
 
--include $(DEP_FILE_PATHS)
+-include $(D_FILE_PATHS)
 
+
+../../../../lib/yield/libyield_http_client.a: $(O_FILE_PATHS)
+	-mkdir -p ../../../../lib/yield 2>/dev/null
+	$(AR) -r $@ $(O_FILE_PATHS)
 
 ../../../../build/yield/http/client/http_client.o: ../../../../src/yield/http/client/http_client.cpp
 	-mkdir -p ../../../../build/yield/http/client 2>/dev/null

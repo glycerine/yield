@@ -43,39 +43,41 @@ endif
 LIBS += -lyield_aio -lyield_sockets_poll -lyield_poll -lyield_sockets -lyield
 
 
-DEP_FILE_PATHS := $(shell find ../../../../build/yield/sockets/aio -name "*.d")
+D_FILE_PATHS := $(shell find ../../../../build/yield/sockets/aio -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../../build/yield/sockets/aio/accept_aiocb.o ../../../../build/yield/sockets/aio/aiocb.o ../../../../build/yield/sockets/aio/connect_aiocb.o ../../../../build/yield/sockets/aio/nbio_queue.o ../../../../build/yield/sockets/aio/recv_aiocb.o ../../../../build/yield/sockets/aio/send_aiocb.o
+O_FILE_PATHS += ../../../../build/yield/sockets/aio/accept_aiocb.o ../../../../build/yield/sockets/aio/aiocb.o ../../../../build/yield/sockets/aio/connect_aiocb.o ../../../../build/yield/sockets/aio/nbio_queue.o ../../../../build/yield/sockets/aio/recv_aiocb.o ../../../../build/yield/sockets/aio/send_aiocb.o
 ifeq ($(UNAME), Darwin)
-	OBJECT_FILE_PATHS += ../../../../build/yield/sockets/aio/posix/accept_aiocb.o
+	O_FILE_PATHS += ../../../../build/yield/sockets/aio/posix/accept_aiocb.o
 endif
 ifeq ($(UNAME), FreeBSD)
-	OBJECT_FILE_PATHS += ../../../../build/yield/sockets/aio/posix/accept_aiocb.o
+	O_FILE_PATHS += ../../../../build/yield/sockets/aio/posix/accept_aiocb.o
 endif
 ifeq ($(UNAME), Linux)
-	OBJECT_FILE_PATHS += ../../../../build/yield/sockets/aio/posix/accept_aiocb.o
+	O_FILE_PATHS += ../../../../build/yield/sockets/aio/posix/accept_aiocb.o
 endif
 ifeq ($(UNAME), Solaris)
-	OBJECT_FILE_PATHS += ../../../../build/yield/sockets/aio/posix/accept_aiocb.o
+	O_FILE_PATHS += ../../../../build/yield/sockets/aio/posix/accept_aiocb.o
 endif
 ifeq ($(UNAME), MINGW32)
-	OBJECT_FILE_PATHS += ../../../../build/yield/sockets/aio/win32/accept_aiocb.o ../../../../build/yield/sockets/aio/win32/aio_queue.o ../../../../build/yield/sockets/aio/win32/aiocb.o ../../../../build/yield/sockets/aio/win32/connect_aiocb.o ../../../../build/yield/sockets/aio/win32/recv_aiocb.o ../../../../build/yield/sockets/aio/win32/send_aiocb.o
+	O_FILE_PATHS += ../../../../build/yield/sockets/aio/win32/accept_aiocb.o ../../../../build/yield/sockets/aio/win32/aio_queue.o ../../../../build/yield/sockets/aio/win32/aiocb.o ../../../../build/yield/sockets/aio/win32/connect_aiocb.o ../../../../build/yield/sockets/aio/win32/recv_aiocb.o ../../../../build/yield/sockets/aio/win32/send_aiocb.o
 endif
 
 
-../../../../lib/yield/libyield_sockets_aio.a: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../../lib/yield 2>/dev/null
-	$(AR) -r $@ $(OBJECT_FILE_PATHS)
+all: ../../../../lib/yield/libyield_sockets_aio.a
 
 clean:
-	$(RM) ../../../../lib/yield/libyield_sockets_aio.a $(OBJECT_FILE_PATHS)
+	$(RM) ../../../../lib/yield/libyield_sockets_aio.a $(O_FILE_PATHS)
 
 depclean:
-	$(RM) $(DEP_FILE_PATHS)
+	$(RM) $(D_FILE_PATHS)
 
--include $(DEP_FILE_PATHS)
+-include $(D_FILE_PATHS)
 
+
+../../../../lib/yield/libyield_sockets_aio.a: $(O_FILE_PATHS)
+	-mkdir -p ../../../../lib/yield 2>/dev/null
+	$(AR) -r $@ $(O_FILE_PATHS)
 
 ../../../../build/yield/sockets/aio/accept_aiocb.o: ../../../../src/yield/sockets/aio/accept_aiocb.cpp
 	-mkdir -p ../../../../build/yield/sockets/aio 2>/dev/null

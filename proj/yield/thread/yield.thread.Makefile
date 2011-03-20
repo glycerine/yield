@@ -46,46 +46,48 @@ endif
 LIBS += -lyield
 
 
-DEP_FILE_PATHS := $(shell find ../../../build/yield/thread -name "*.d")
+D_FILE_PATHS := $(shell find ../../../build/yield/thread -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../build/yield/thread/condition_variable.o ../../../build/yield/thread/fiber.o ../../../build/yield/thread/lightweight_mutex.o ../../../build/yield/thread/mutex.o ../../../build/yield/thread/performance_counter_set.o ../../../build/yield/thread/processor_set.o ../../../build/yield/thread/reader_writer_lock.o ../../../build/yield/thread/semaphore.o ../../../build/yield/thread/thread.o
+O_FILE_PATHS += ../../../build/yield/thread/condition_variable.o ../../../build/yield/thread/fiber.o ../../../build/yield/thread/lightweight_mutex.o ../../../build/yield/thread/mutex.o ../../../build/yield/thread/performance_counter_set.o ../../../build/yield/thread/processor_set.o ../../../build/yield/thread/reader_writer_lock.o ../../../build/yield/thread/semaphore.o ../../../build/yield/thread/thread.o
 ifeq ($(UNAME), Darwin)
-	OBJECT_FILE_PATHS += ../../../build/yield/thread/darwin/semaphore.o ../../../build/yield/thread/darwin/system_configuration.o ../../../build/yield/thread/darwin/thread.o
-	OBJECT_FILE_PATHS += ../../../build/yield/thread/posix/condition_variable.o ../../../build/yield/thread/posix/mutex.o ../../../build/yield/thread/posix/pipe.o ../../../build/yield/thread/posix/reader_writer_lock.o ../../../build/yield/thread/posix/semaphore.o ../../../build/yield/thread/posix/thread.o
-	OBJECT_FILE_PATHS += ../../../build/yield/thread/unix/fiber.o ../../../build/yield/thread/unix/papi_performance_counter_set.o
+	O_FILE_PATHS += ../../../build/yield/thread/darwin/semaphore.o ../../../build/yield/thread/darwin/system_configuration.o ../../../build/yield/thread/darwin/thread.o
+	O_FILE_PATHS += ../../../build/yield/thread/posix/condition_variable.o ../../../build/yield/thread/posix/mutex.o ../../../build/yield/thread/posix/pipe.o ../../../build/yield/thread/posix/reader_writer_lock.o ../../../build/yield/thread/posix/semaphore.o ../../../build/yield/thread/posix/thread.o
+	O_FILE_PATHS += ../../../build/yield/thread/unix/fiber.o ../../../build/yield/thread/unix/papi_performance_counter_set.o
 endif
 ifeq ($(UNAME), FreeBSD)
-	OBJECT_FILE_PATHS += ../../../build/yield/thread/posix/condition_variable.o ../../../build/yield/thread/posix/mutex.o ../../../build/yield/thread/posix/pipe.o ../../../build/yield/thread/posix/reader_writer_lock.o ../../../build/yield/thread/posix/semaphore.o ../../../build/yield/thread/posix/thread.o
-	OBJECT_FILE_PATHS += ../../../build/yield/thread/unix/fiber.o ../../../build/yield/thread/unix/papi_performance_counter_set.o
+	O_FILE_PATHS += ../../../build/yield/thread/posix/condition_variable.o ../../../build/yield/thread/posix/mutex.o ../../../build/yield/thread/posix/pipe.o ../../../build/yield/thread/posix/reader_writer_lock.o ../../../build/yield/thread/posix/semaphore.o ../../../build/yield/thread/posix/thread.o
+	O_FILE_PATHS += ../../../build/yield/thread/unix/fiber.o ../../../build/yield/thread/unix/papi_performance_counter_set.o
 endif
 ifeq ($(UNAME), Linux)
-	OBJECT_FILE_PATHS += ../../../build/yield/thread/linux/processor_set.o ../../../build/yield/thread/linux/system_configuration.o ../../../build/yield/thread/linux/thread.o
-	OBJECT_FILE_PATHS += ../../../build/yield/thread/posix/condition_variable.o ../../../build/yield/thread/posix/mutex.o ../../../build/yield/thread/posix/pipe.o ../../../build/yield/thread/posix/reader_writer_lock.o ../../../build/yield/thread/posix/semaphore.o ../../../build/yield/thread/posix/thread.o
-	OBJECT_FILE_PATHS += ../../../build/yield/thread/unix/fiber.o ../../../build/yield/thread/unix/papi_performance_counter_set.o
+	O_FILE_PATHS += ../../../build/yield/thread/linux/processor_set.o ../../../build/yield/thread/linux/system_configuration.o ../../../build/yield/thread/linux/thread.o
+	O_FILE_PATHS += ../../../build/yield/thread/posix/condition_variable.o ../../../build/yield/thread/posix/mutex.o ../../../build/yield/thread/posix/pipe.o ../../../build/yield/thread/posix/reader_writer_lock.o ../../../build/yield/thread/posix/semaphore.o ../../../build/yield/thread/posix/thread.o
+	O_FILE_PATHS += ../../../build/yield/thread/unix/fiber.o ../../../build/yield/thread/unix/papi_performance_counter_set.o
 endif
 ifeq ($(UNAME), Solaris)
-	OBJECT_FILE_PATHS += ../../../build/yield/thread/posix/condition_variable.o ../../../build/yield/thread/posix/mutex.o ../../../build/yield/thread/posix/pipe.o ../../../build/yield/thread/posix/reader_writer_lock.o ../../../build/yield/thread/posix/semaphore.o ../../../build/yield/thread/posix/thread.o
-	OBJECT_FILE_PATHS += ../../../build/yield/thread/sunos/cpc_performance_counter_set.o ../../../build/yield/thread/sunos/processor_set.o ../../../build/yield/thread/sunos/system_configuration.o ../../../build/yield/thread/sunos/thread.o
-	OBJECT_FILE_PATHS += ../../../build/yield/thread/unix/fiber.o ../../../build/yield/thread/unix/papi_performance_counter_set.o
+	O_FILE_PATHS += ../../../build/yield/thread/posix/condition_variable.o ../../../build/yield/thread/posix/mutex.o ../../../build/yield/thread/posix/pipe.o ../../../build/yield/thread/posix/reader_writer_lock.o ../../../build/yield/thread/posix/semaphore.o ../../../build/yield/thread/posix/thread.o
+	O_FILE_PATHS += ../../../build/yield/thread/sunos/cpc_performance_counter_set.o ../../../build/yield/thread/sunos/processor_set.o ../../../build/yield/thread/sunos/system_configuration.o ../../../build/yield/thread/sunos/thread.o
+	O_FILE_PATHS += ../../../build/yield/thread/unix/fiber.o ../../../build/yield/thread/unix/papi_performance_counter_set.o
 endif
 ifeq ($(UNAME), MINGW32)
-	OBJECT_FILE_PATHS += ../../../build/yield/thread/win32/condition_variable.o ../../../build/yield/thread/win32/fiber.o ../../../build/yield/thread/win32/lightweight_mutex.o ../../../build/yield/thread/win32/mutex.o ../../../build/yield/thread/win32/pipe.o ../../../build/yield/thread/win32/processor_set.o ../../../build/yield/thread/win32/reader_writer_lock.o ../../../build/yield/thread/win32/semaphore.o ../../../build/yield/thread/win32/system_configuration.o ../../../build/yield/thread/win32/thread.o
+	O_FILE_PATHS += ../../../build/yield/thread/win32/condition_variable.o ../../../build/yield/thread/win32/fiber.o ../../../build/yield/thread/win32/lightweight_mutex.o ../../../build/yield/thread/win32/mutex.o ../../../build/yield/thread/win32/pipe.o ../../../build/yield/thread/win32/processor_set.o ../../../build/yield/thread/win32/reader_writer_lock.o ../../../build/yield/thread/win32/semaphore.o ../../../build/yield/thread/win32/system_configuration.o ../../../build/yield/thread/win32/thread.o
 endif
 
 
-../../../lib/yield/libyield_thread.a: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../lib/yield 2>/dev/null
-	$(AR) -r $@ $(OBJECT_FILE_PATHS)
+all: ../../../lib/yield/libyield_thread.a
 
 clean:
-	$(RM) ../../../lib/yield/libyield_thread.a $(OBJECT_FILE_PATHS)
+	$(RM) ../../../lib/yield/libyield_thread.a $(O_FILE_PATHS)
 
 depclean:
-	$(RM) $(DEP_FILE_PATHS)
+	$(RM) $(D_FILE_PATHS)
 
--include $(DEP_FILE_PATHS)
+-include $(D_FILE_PATHS)
 
+
+../../../lib/yield/libyield_thread.a: $(O_FILE_PATHS)
+	-mkdir -p ../../../lib/yield 2>/dev/null
+	$(AR) -r $@ $(O_FILE_PATHS)
 
 ../../../build/yield/thread/condition_variable.o: ../../../src/yield/thread/condition_variable.cpp
 	-mkdir -p ../../../build/yield/thread 2>/dev/null

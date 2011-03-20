@@ -43,43 +43,45 @@ endif
 LIBS += -lyield
 
 
-DEP_FILE_PATHS := $(shell find ../../../build/yield/poll -name "*.d")
+D_FILE_PATHS := $(shell find ../../../build/yield/poll -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../build/yield/poll/fd_event_queue.o
+O_FILE_PATHS += ../../../build/yield/poll/fd_event_queue.o
 ifeq ($(UNAME), Darwin)
-	OBJECT_FILE_PATHS += ../../../build/yield/poll/bsd/kqueue.o
-	OBJECT_FILE_PATHS += ../../../build/yield/poll/posix/poller.o
+	O_FILE_PATHS += ../../../build/yield/poll/bsd/kqueue.o
+	O_FILE_PATHS += ../../../build/yield/poll/posix/poller.o
 endif
 ifeq ($(UNAME), FreeBSD)
-	OBJECT_FILE_PATHS += ../../../build/yield/poll/bsd/kqueue.o
-	OBJECT_FILE_PATHS += ../../../build/yield/poll/posix/poller.o
+	O_FILE_PATHS += ../../../build/yield/poll/bsd/kqueue.o
+	O_FILE_PATHS += ../../../build/yield/poll/posix/poller.o
 endif
 ifeq ($(UNAME), Linux)
-	OBJECT_FILE_PATHS += ../../../build/yield/poll/linux/epoller.o
-	OBJECT_FILE_PATHS += ../../../build/yield/poll/posix/poller.o
+	O_FILE_PATHS += ../../../build/yield/poll/linux/epoller.o
+	O_FILE_PATHS += ../../../build/yield/poll/posix/poller.o
 endif
 ifeq ($(UNAME), Solaris)
-	OBJECT_FILE_PATHS += ../../../build/yield/poll/posix/poller.o
-	OBJECT_FILE_PATHS += ../../../build/yield/poll/sunos/event_port.o
+	O_FILE_PATHS += ../../../build/yield/poll/posix/poller.o
+	O_FILE_PATHS += ../../../build/yield/poll/sunos/event_port.o
 endif
 ifeq ($(UNAME), MINGW32)
-	OBJECT_FILE_PATHS += ../../../build/yield/poll/win32/handle_event_queue.o
+	O_FILE_PATHS += ../../../build/yield/poll/win32/handle_event_queue.o
 endif
 
 
-../../../lib/yield/libyield_poll.a: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../lib/yield 2>/dev/null
-	$(AR) -r $@ $(OBJECT_FILE_PATHS)
+all: ../../../lib/yield/libyield_poll.a
 
 clean:
-	$(RM) ../../../lib/yield/libyield_poll.a $(OBJECT_FILE_PATHS)
+	$(RM) ../../../lib/yield/libyield_poll.a $(O_FILE_PATHS)
 
 depclean:
-	$(RM) $(DEP_FILE_PATHS)
+	$(RM) $(D_FILE_PATHS)
 
--include $(DEP_FILE_PATHS)
+-include $(D_FILE_PATHS)
 
+
+../../../lib/yield/libyield_poll.a: $(O_FILE_PATHS)
+	-mkdir -p ../../../lib/yield 2>/dev/null
+	$(AR) -r $@ $(O_FILE_PATHS)
 
 ../../../build/yield/poll/bsd/kqueue.o: ../../../src/yield/poll/bsd/kqueue.cpp
 	-mkdir -p ../../../build/yield/poll/bsd 2>/dev/null

@@ -43,24 +43,41 @@ endif
 LIBS += -lyield_sockets_poll -lyield_poll -lyield_sockets -lyield
 
 
-DEP_FILE_PATHS := $(shell find ../../../../build/yield/sockets/poll_test -name "*.d")
+D_FILE_PATHS := $(shell find ../../../../build/yield/sockets/poll_test -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../../build/yield/sockets/poll_test/socket_event_queue_test.o ../../../../build/yield/sockets/poll_test/yield_sockets_poll_test_main.o
+O_FILE_PATHS += ../../../../build/yield/sockets/poll_test/socket_event_queue_test.o ../../../../build/yield/sockets/poll_test/yield_sockets_poll_test_main.o
 
 
-../../../../bin/yield/yield_sockets_poll_test: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../../bin/yield 2>/dev/null
-	$(LINK.cpp) $(OBJECT_FILE_PATHS) -o $@ $(LIBS)
+all: ../../../../bin/yield/yield_sockets_poll_test
 
 clean:
-	$(RM) ../../../../bin/yield/yield_sockets_poll_test $(OBJECT_FILE_PATHS)
+	$(RM) ../../../../bin/yield/yield_sockets_poll_test $(O_FILE_PATHS)
 
 depclean:
-	$(RM) $(DEP_FILE_PATHS)
+	$(RM) $(D_FILE_PATHS)
 
--include $(DEP_FILE_PATHS)
+-include $(D_FILE_PATHS)
+			
+lcov: ..\..\..\..\bin\yield\yield_sockets_poll_test TIMESTAMP=`date +%Y%m%dT%H%M%S`
+	lcov --directory ../../../../build/yield/sockets/poll_test --zerocounters
+	..\..\..\..\bin\yield\yield_sockets_poll_test
+	lcov --base-directory . --directory ../../../../build/yield/sockets/poll_test --capture --output-file yield.sockets.poll_test_lcov-$TIMESTAMP
+	mkdir yield.sockets.poll_test_lcov_html-$TIMESTAMP
+	genhtml -o yield.sockets.poll_test_lcov_html-$TIMESTAMP yield.sockets.poll_test_lcov-$TIMESTAMP
+	#tar cf yield.sockets.poll_test_lcov_html-$TIMESTAMP.tar yield.sockets.poll_test_lcov_html-$TIMESTAMP
+	#gzip yield.sockets.poll_test_lcov_html-$TIMESTAMP.tar
+	if [ -d /mnt/hgfs/minorg/Desktop ]; then
+	  cp -R yield.sockets.poll_test_lcov_html-$TIMESTAMP /mnt/hgfs/minorg/Desktop
+	else
+	  zip -qr yield.sockets.poll_test_lcov_html-$TIMESTAMP.zip yield.sockets.poll_test_lcov_html-$TIMESTAMP/*
+	fi
+	rm -fr yield.sockets.poll_test_lcov_html-$TIMESTAMP
 
+
+../../../../bin/yield/yield_sockets_poll_test: $(O_FILE_PATHS)
+	-mkdir -p ../../../../bin/yield 2>/dev/null
+	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 
 ../../../../build/yield/sockets/poll_test/socket_event_queue_test.o: ../../../../test/yield/sockets/poll/socket_event_queue_test.cpp
 	-mkdir -p ../../../../build/yield/sockets/poll_test 2>/dev/null
@@ -69,5 +86,3 @@ depclean:
 ../../../../build/yield/sockets/poll_test/yield_sockets_poll_test_main.o: ../../../../test/yield/sockets/poll/yield_sockets_poll_test_main.cpp
 	-mkdir -p ../../../../build/yield/sockets/poll_test 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/sockets/poll_test/yield_sockets_poll_test_main.o -MD $(CXXFLAGS) ../../../../test/yield/sockets/poll/yield_sockets_poll_test_main.cpp
-
-

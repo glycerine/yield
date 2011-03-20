@@ -52,9 +52,9 @@ UNAME_CHECKS = \
 }
 
 SOURCE_FILE_RULE = """\
-%(object_file_path)s: %(source_file_path)s
+%(o_file_path)s: %(source_file_path)s
     -mkdir -p %(object_dir_path)s 2>/dev/null
-    $(CXX) -c -o %(object_file_path)s -MD $(CXXFLAGS) %(source_file_path)s
+    $(CXX) -c -o %(o_file_path)s -MD $(CXXFLAGS) %(source_file_path)s
 """
 
 
@@ -135,7 +135,7 @@ endif""")
         LIBS = pad("\n\n", '\n'.join(LIBS), "\n")
 
         # source_files
-        platform_object_file_paths = {}
+        platform_o_file_paths = {}
         source_file_rules = []
         source_files = self.get_source_files()
         source_files = source_files.exclude(self.get_exclude_files())
@@ -146,12 +146,12 @@ endif""")
             assert len(source_files) > 0
 
             for platform in expand_platform(platform):
-                object_file_paths = []
+                o_file_paths = []
 
                 for source_file in source_files:
                     source_file_path = my_dir_path + source_file
 
-                    object_file_path = \
+                    o_file_path = \
                         my_dir_path + \
                         join(
                             self.get_build_dir_path()[platform],
@@ -159,41 +159,36 @@ endif""")
                                 relpath(source_file_path, self.get_root_source_dir_path())
                             )[0] + ".o"
                         )
-                    object_dir_path = posixpath(dirname(object_file_path))
-                    object_file_path = posixpath(object_file_path)
-                    object_file_paths.append(object_file_path)
+                    object_dir_path = posixpath(dirname(o_file_path))
+                    o_file_path = posixpath(o_file_path)
+                    o_file_paths.append(o_file_path)
 
                     source_file_path = posixpath(source_file_path)
                     source_file_rules.append(SOURCE_FILE_RULE % locals())
 
-                object_file_paths.sort()
-                platform_object_file_paths.setdefault(platform, []).append(
-                    "OBJECT_FILE_PATHS += " + \
-                    ' '.join(object_file_paths)
+                o_file_paths.sort()
+                platform_o_file_paths.setdefault(platform, []).append(
+                    "O_FILE_PATHS += " + \
+                    ' '.join(o_file_paths)
                 )
 
-        object_file_paths = []
-        platforms = list(platform_object_file_paths.keys()); platforms.sort()
+        o_file_paths = []
+        platforms = list(platform_o_file_paths.keys()); platforms.sort()
         for platform in platforms:
-            platform_object_file_paths[platform].sort()
-            object_file_paths.append(
+            platform_o_file_paths[platform].sort()
+            o_file_paths.append(
                 uname_check(
                     platform,
-                    '\n'.join(platform_object_file_paths[platform])
+                    '\n'.join(platform_o_file_paths[platform])
                 )
             )
-        object_file_paths = '\n'.join(object_file_paths)
+        o_file_paths = '\n'.join(o_file_paths)
+
+        lcov_rule = ""
 
         source_file_rules = deduplist(source_file_rules)
         source_file_rules.sort()
         source_file_rules = '\n'.join(source_file_rules)
-
-        # project_references
-        project_references = []
-        # for project_reference in self.get_project_references().get( '*', default=[] ):
-        #     Makefile = posixpath( project_reference + ".Makefile" )
-        #    project_references.append( 'include %(Makefile)s' % locals() )
-        project_references = rpad('\n'.join(project_references), "\n\n\n")
 
         # output_file_path
 #        assert len(self.get_output_file_path()) == 1 and\
@@ -207,9 +202,26 @@ endif""")
                 if not output_file_name.endswith(".so"):
                     output_file_name += ".so"
             output_file_path = join(output_dir_path, output_file_name)
-            output_file_path_recipe = "$(LINK.cpp) -shared $(OBJECT_FILE_PATHS) -o $@ $(LIBS)"
+            output_file_path_recipe = "$(LINK.cpp) -shared $(O_FILE_PATHS) -o $@ $(LIBS)"
         elif self.get_type() == "exe":
-            output_file_path_recipe = "$(LINK.cpp) $(OBJECT_FILE_PATHS) -o $@ $(LIBS)"
+            name = self.get_name()
+            output_file_path_recipe = "$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)"
+            lcov_rule = """
+            
+lcov: %(output_file_path)s TIMESTAMP=`date +%%Y%%m%%dT%%H%%M%%S`
+    lcov --directory %(build_dir_path)s --zerocounters
+    %(output_file_path)s
+    lcov --base-directory . --directory %(build_dir_path)s --capture --output-file %(name)s_lcov-$TIMESTAMP
+    mkdir %(name)s_lcov_html-$TIMESTAMP
+    genhtml -o %(name)s_lcov_html-$TIMESTAMP %(name)s_lcov-$TIMESTAMP
+    #tar cf %(name)s_lcov_html-$TIMESTAMP.tar %(name)s_lcov_html-$TIMESTAMP
+    #gzip %(name)s_lcov_html-$TIMESTAMP.tar
+    if [ -d /mnt/hgfs/minorg/Desktop ]; then
+      cp -R %(name)s_lcov_html-$TIMESTAMP /mnt/hgfs/minorg/Desktop
+    else
+      zip -qr %(name)s_lcov_html-$TIMESTAMP.zip %(name)s_lcov_html-$TIMESTAMP/*
+    fi
+    rm -fr %(name)s_lcov_html-$TIMESTAMP""" % locals()
         elif self.get_type() == "lib":
             if len(splitext(output_file_name)[1]) == 0:
                 if not output_file_name.startswith("lib"):
@@ -217,7 +229,7 @@ endif""")
                 if not output_file_name.endswith(".a"):
                     output_file_name += ".a"
                 output_file_path = join(output_dir_path, output_file_name)
-            output_file_path_recipe = "$(AR) -r $@ $(OBJECT_FILE_PATHS)"
+            output_file_path_recipe = "$(AR) -r $@ $(O_FILE_PATHS)"
         else:
             raise NotImplementedError, self.get_type()
         output_dir_path = my_dir_path + posixpath(output_dir_path)
@@ -227,28 +239,28 @@ endif""")
 # SHELL = /bin/bash
 UNAME := $(shell uname)%(CXXFLAGS)s%(LDFLAGS)s%(LIBS)s
 
-DEP_FILE_PATHS := $(shell find %(my_dir_path)s%(build_dir_path)s -name "*.d")
+D_FILE_PATHS := $(shell find %(my_dir_path)s%(build_dir_path)s -name "*.d")
 
 
-%(object_file_paths)s
+%(o_file_paths)s
 
 
-%(project_references)s%(output_file_path)s: $(OBJECT_FILE_PATHS)
+all: %(output_file_path)s
+
+clean:
+    $(RM) %(output_file_path)s $(O_FILE_PATHS)
+
+depclean:
+    $(RM) $(D_FILE_PATHS)
+
+-include $(D_FILE_PATHS)%(lcov_rule)s
+
+
+%(output_file_path)s: $(O_FILE_PATHS)
     -mkdir -p %(output_dir_path)s 2>/dev/null
     %(output_file_path_recipe)s
 
-clean:
-    $(RM) %(output_file_path)s $(OBJECT_FILE_PATHS)
-
-depclean:
-    $(RM) $(DEP_FILE_PATHS)
-
--include $(DEP_FILE_PATHS)
-
-
-%(source_file_rules)s
-
-""" % locals()).replace(' ' * 4, '\t')
+%(source_file_rules)s""" % locals()).replace(' ' * 4, '\t')
 
 
 class TopLevelMakefile(object):

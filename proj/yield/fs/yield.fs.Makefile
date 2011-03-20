@@ -49,44 +49,46 @@ endif
 LIBS += -lyield_i18n -lyield
 
 
-DEP_FILE_PATHS := $(shell find ../../../build/yield/fs -name "*.d")
+D_FILE_PATHS := $(shell find ../../../build/yield/fs -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../build/yield/fs/file_log.o
+O_FILE_PATHS += ../../../build/yield/fs/file_log.o
 ifeq ($(UNAME), Darwin)
-	OBJECT_FILE_PATHS += ../../../build/yield/fs/bsd/directory.o
-	OBJECT_FILE_PATHS += ../../../build/yield/fs/darwin/extended_attributes.o ../../../build/yield/fs/darwin/file.o
-	OBJECT_FILE_PATHS += ../../../build/yield/fs/posix/directory.o ../../../build/yield/fs/posix/extended_attributes.o ../../../build/yield/fs/posix/file.o ../../../build/yield/fs/posix/file_system.o ../../../build/yield/fs/posix/memory_mapped_file.o ../../../build/yield/fs/posix/path.o ../../../build/yield/fs/posix/stat.o
+	O_FILE_PATHS += ../../../build/yield/fs/bsd/directory.o
+	O_FILE_PATHS += ../../../build/yield/fs/darwin/extended_attributes.o ../../../build/yield/fs/darwin/file.o
+	O_FILE_PATHS += ../../../build/yield/fs/posix/directory.o ../../../build/yield/fs/posix/extended_attributes.o ../../../build/yield/fs/posix/file.o ../../../build/yield/fs/posix/file_system.o ../../../build/yield/fs/posix/memory_mapped_file.o ../../../build/yield/fs/posix/path.o ../../../build/yield/fs/posix/stat.o
 endif
 ifeq ($(UNAME), FreeBSD)
-	OBJECT_FILE_PATHS += ../../../build/yield/fs/bsd/directory.o
-	OBJECT_FILE_PATHS += ../../../build/yield/fs/freebsd/extended_attributes.o ../../../build/yield/fs/freebsd/file.o
-	OBJECT_FILE_PATHS += ../../../build/yield/fs/posix/directory.o ../../../build/yield/fs/posix/extended_attributes.o ../../../build/yield/fs/posix/file.o ../../../build/yield/fs/posix/file_system.o ../../../build/yield/fs/posix/memory_mapped_file.o ../../../build/yield/fs/posix/path.o ../../../build/yield/fs/posix/stat.o
+	O_FILE_PATHS += ../../../build/yield/fs/bsd/directory.o
+	O_FILE_PATHS += ../../../build/yield/fs/freebsd/extended_attributes.o ../../../build/yield/fs/freebsd/file.o
+	O_FILE_PATHS += ../../../build/yield/fs/posix/directory.o ../../../build/yield/fs/posix/extended_attributes.o ../../../build/yield/fs/posix/file.o ../../../build/yield/fs/posix/file_system.o ../../../build/yield/fs/posix/memory_mapped_file.o ../../../build/yield/fs/posix/path.o ../../../build/yield/fs/posix/stat.o
 endif
 ifeq ($(UNAME), Linux)
-	OBJECT_FILE_PATHS += ../../../build/yield/fs/linux/directory.o ../../../build/yield/fs/linux/extended_attributes.o ../../../build/yield/fs/linux/file.o
-	OBJECT_FILE_PATHS += ../../../build/yield/fs/posix/directory.o ../../../build/yield/fs/posix/extended_attributes.o ../../../build/yield/fs/posix/file.o ../../../build/yield/fs/posix/file_system.o ../../../build/yield/fs/posix/memory_mapped_file.o ../../../build/yield/fs/posix/path.o ../../../build/yield/fs/posix/stat.o
+	O_FILE_PATHS += ../../../build/yield/fs/linux/directory.o ../../../build/yield/fs/linux/extended_attributes.o ../../../build/yield/fs/linux/file.o
+	O_FILE_PATHS += ../../../build/yield/fs/posix/directory.o ../../../build/yield/fs/posix/extended_attributes.o ../../../build/yield/fs/posix/file.o ../../../build/yield/fs/posix/file_system.o ../../../build/yield/fs/posix/memory_mapped_file.o ../../../build/yield/fs/posix/path.o ../../../build/yield/fs/posix/stat.o
 endif
 ifeq ($(UNAME), Solaris)
-	OBJECT_FILE_PATHS += ../../../build/yield/fs/posix/directory.o ../../../build/yield/fs/posix/extended_attributes.o ../../../build/yield/fs/posix/file.o ../../../build/yield/fs/posix/file_system.o ../../../build/yield/fs/posix/memory_mapped_file.o ../../../build/yield/fs/posix/path.o ../../../build/yield/fs/posix/stat.o
+	O_FILE_PATHS += ../../../build/yield/fs/posix/directory.o ../../../build/yield/fs/posix/extended_attributes.o ../../../build/yield/fs/posix/file.o ../../../build/yield/fs/posix/file_system.o ../../../build/yield/fs/posix/memory_mapped_file.o ../../../build/yield/fs/posix/path.o ../../../build/yield/fs/posix/stat.o
 endif
 ifeq ($(UNAME), MINGW32)
-	OBJECT_FILE_PATHS += ../../../build/yield/fs/win32/directory.o ../../../build/yield/fs/win32/file.o ../../../build/yield/fs/win32/file_system.o ../../../build/yield/fs/win32/memory_mapped_file.o ../../../build/yield/fs/win32/named_pipe.o ../../../build/yield/fs/win32/path.o ../../../build/yield/fs/win32/stat.o
+	O_FILE_PATHS += ../../../build/yield/fs/win32/directory.o ../../../build/yield/fs/win32/file.o ../../../build/yield/fs/win32/file_system.o ../../../build/yield/fs/win32/memory_mapped_file.o ../../../build/yield/fs/win32/named_pipe.o ../../../build/yield/fs/win32/path.o ../../../build/yield/fs/win32/stat.o
 endif
 
 
-../../../lib/yield/libyield_fs.a: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../lib/yield 2>/dev/null
-	$(AR) -r $@ $(OBJECT_FILE_PATHS)
+all: ../../../lib/yield/libyield_fs.a
 
 clean:
-	$(RM) ../../../lib/yield/libyield_fs.a $(OBJECT_FILE_PATHS)
+	$(RM) ../../../lib/yield/libyield_fs.a $(O_FILE_PATHS)
 
 depclean:
-	$(RM) $(DEP_FILE_PATHS)
+	$(RM) $(D_FILE_PATHS)
 
--include $(DEP_FILE_PATHS)
+-include $(D_FILE_PATHS)
 
+
+../../../lib/yield/libyield_fs.a: $(O_FILE_PATHS)
+	-mkdir -p ../../../lib/yield 2>/dev/null
+	$(AR) -r $@ $(O_FILE_PATHS)
 
 ../../../build/yield/fs/bsd/directory.o: ../../../src/yield/fs/bsd/directory.cpp
 	-mkdir -p ../../../build/yield/fs/bsd 2>/dev/null

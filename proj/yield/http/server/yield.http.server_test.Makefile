@@ -49,24 +49,41 @@ endif
 LIBS += -lyield_http_server -lyield_fs -lyield_i18n -lyield_http -lyield_uri -lyield_sockets_server -lyield_sockets_aio -lyield_aio -lyield_sockets_poll -lyield_poll -lyield_sockets -lyield_stage -lyield_thread -lyield
 
 
-DEP_FILE_PATHS := $(shell find ../../../../build/yield/http/server_test -name "*.d")
+D_FILE_PATHS := $(shell find ../../../../build/yield/http/server_test -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../../build/yield/http/server_test/http_server_test.o ../../../../build/yield/http/server_test/yield_http_server_test_main.o
+O_FILE_PATHS += ../../../../build/yield/http/server_test/http_server_test.o ../../../../build/yield/http/server_test/yield_http_server_test_main.o
 
 
-../../../../bin/yield/yield_http_server_test: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../../bin/yield 2>/dev/null
-	$(LINK.cpp) $(OBJECT_FILE_PATHS) -o $@ $(LIBS)
+all: ../../../../bin/yield/yield_http_server_test
 
 clean:
-	$(RM) ../../../../bin/yield/yield_http_server_test $(OBJECT_FILE_PATHS)
+	$(RM) ../../../../bin/yield/yield_http_server_test $(O_FILE_PATHS)
 
 depclean:
-	$(RM) $(DEP_FILE_PATHS)
+	$(RM) $(D_FILE_PATHS)
 
--include $(DEP_FILE_PATHS)
+-include $(D_FILE_PATHS)
+			
+lcov: ..\..\..\..\bin\yield\yield_http_server_test TIMESTAMP=`date +%Y%m%dT%H%M%S`
+	lcov --directory ../../../../build/yield/http/server_test --zerocounters
+	..\..\..\..\bin\yield\yield_http_server_test
+	lcov --base-directory . --directory ../../../../build/yield/http/server_test --capture --output-file yield.http.server_test_lcov-$TIMESTAMP
+	mkdir yield.http.server_test_lcov_html-$TIMESTAMP
+	genhtml -o yield.http.server_test_lcov_html-$TIMESTAMP yield.http.server_test_lcov-$TIMESTAMP
+	#tar cf yield.http.server_test_lcov_html-$TIMESTAMP.tar yield.http.server_test_lcov_html-$TIMESTAMP
+	#gzip yield.http.server_test_lcov_html-$TIMESTAMP.tar
+	if [ -d /mnt/hgfs/minorg/Desktop ]; then
+	  cp -R yield.http.server_test_lcov_html-$TIMESTAMP /mnt/hgfs/minorg/Desktop
+	else
+	  zip -qr yield.http.server_test_lcov_html-$TIMESTAMP.zip yield.http.server_test_lcov_html-$TIMESTAMP/*
+	fi
+	rm -fr yield.http.server_test_lcov_html-$TIMESTAMP
 
+
+../../../../bin/yield/yield_http_server_test: $(O_FILE_PATHS)
+	-mkdir -p ../../../../bin/yield 2>/dev/null
+	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 
 ../../../../build/yield/http/server_test/http_server_test.o: ../../../../test/yield/http/server/http_server_test.cpp
 	-mkdir -p ../../../../build/yield/http/server_test 2>/dev/null
@@ -75,5 +92,3 @@ depclean:
 ../../../../build/yield/http/server_test/yield_http_server_test_main.o: ../../../../test/yield/http/server/yield_http_server_test_main.cpp
 	-mkdir -p ../../../../build/yield/http/server_test 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/http/server_test/yield_http_server_test_main.o -MD $(CXXFLAGS) ../../../../test/yield/http/server/yield_http_server_test_main.cpp
-
-

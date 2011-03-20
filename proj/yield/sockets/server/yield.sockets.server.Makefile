@@ -46,24 +46,26 @@ endif
 LIBS += -lyield_sockets_aio -lyield_aio -lyield_sockets_poll -lyield_poll -lyield_sockets -lyield_stage -lyield_thread -lyield
 
 
-DEP_FILE_PATHS := $(shell find ../../../../build/yield/sockets/server -name "*.d")
+D_FILE_PATHS := $(shell find ../../../../build/yield/sockets/server -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../../build/yield/sockets/server/stream_socket_server.o
+O_FILE_PATHS += ../../../../build/yield/sockets/server/stream_socket_server.o
 
 
-../../../../lib/yield/libyield_sockets_server.a: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../../lib/yield 2>/dev/null
-	$(AR) -r $@ $(OBJECT_FILE_PATHS)
+all: ../../../../lib/yield/libyield_sockets_server.a
 
 clean:
-	$(RM) ../../../../lib/yield/libyield_sockets_server.a $(OBJECT_FILE_PATHS)
+	$(RM) ../../../../lib/yield/libyield_sockets_server.a $(O_FILE_PATHS)
 
 depclean:
-	$(RM) $(DEP_FILE_PATHS)
+	$(RM) $(D_FILE_PATHS)
 
--include $(DEP_FILE_PATHS)
+-include $(D_FILE_PATHS)
 
+
+../../../../lib/yield/libyield_sockets_server.a: $(O_FILE_PATHS)
+	-mkdir -p ../../../../lib/yield 2>/dev/null
+	$(AR) -r $@ $(O_FILE_PATHS)
 
 ../../../../build/yield/sockets/server/stream_socket_server.o: ../../../../src/yield/sockets/server/stream_socket_server.cpp
 	-mkdir -p ../../../../build/yield/sockets/server 2>/dev/null

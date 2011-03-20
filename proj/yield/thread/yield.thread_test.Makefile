@@ -46,24 +46,41 @@ endif
 LIBS += -lyield_thread -lyield
 
 
-DEP_FILE_PATHS := $(shell find ../../../build/yield/thread_test -name "*.d")
+D_FILE_PATHS := $(shell find ../../../build/yield/thread_test -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../build/yield/thread_test/blocking_concurrent_queue_test.o ../../../build/yield/thread_test/condition_variable_test.o ../../../build/yield/thread_test/lightweight_mutex_test.o ../../../build/yield/thread_test/mutex_test.o ../../../build/yield/thread_test/non_blocking_concurrent_queue_test.o ../../../build/yield/thread_test/performance_counter_set_test.o ../../../build/yield/thread_test/pipe_test.o ../../../build/yield/thread_test/processor_set_test.o ../../../build/yield/thread_test/reader_writer_lock_test.o ../../../build/yield/thread_test/sampler_test.o ../../../build/yield/thread_test/semaphore_test.o ../../../build/yield/thread_test/synchronized_event_queue_test.o ../../../build/yield/thread_test/synchronized_queue_test.o ../../../build/yield/thread_test/synchronized_response_queue_test.o ../../../build/yield/thread_test/thread_test.o ../../../build/yield/thread_test/tls_concurrent_queue_test.o ../../../build/yield/thread_test/unit_concurrent_queue_test.o ../../../build/yield/thread_test/yield_thread_test_main.o
+O_FILE_PATHS += ../../../build/yield/thread_test/blocking_concurrent_queue_test.o ../../../build/yield/thread_test/condition_variable_test.o ../../../build/yield/thread_test/lightweight_mutex_test.o ../../../build/yield/thread_test/mutex_test.o ../../../build/yield/thread_test/non_blocking_concurrent_queue_test.o ../../../build/yield/thread_test/performance_counter_set_test.o ../../../build/yield/thread_test/pipe_test.o ../../../build/yield/thread_test/processor_set_test.o ../../../build/yield/thread_test/reader_writer_lock_test.o ../../../build/yield/thread_test/sampler_test.o ../../../build/yield/thread_test/semaphore_test.o ../../../build/yield/thread_test/synchronized_event_queue_test.o ../../../build/yield/thread_test/synchronized_queue_test.o ../../../build/yield/thread_test/synchronized_response_queue_test.o ../../../build/yield/thread_test/thread_test.o ../../../build/yield/thread_test/tls_concurrent_queue_test.o ../../../build/yield/thread_test/unit_concurrent_queue_test.o ../../../build/yield/thread_test/yield_thread_test_main.o
 
 
-../../../bin/yield/yield_thread_test: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../bin/yield 2>/dev/null
-	$(LINK.cpp) $(OBJECT_FILE_PATHS) -o $@ $(LIBS)
+all: ../../../bin/yield/yield_thread_test
 
 clean:
-	$(RM) ../../../bin/yield/yield_thread_test $(OBJECT_FILE_PATHS)
+	$(RM) ../../../bin/yield/yield_thread_test $(O_FILE_PATHS)
 
 depclean:
-	$(RM) $(DEP_FILE_PATHS)
+	$(RM) $(D_FILE_PATHS)
 
--include $(DEP_FILE_PATHS)
+-include $(D_FILE_PATHS)
+			
+lcov: ..\..\..\bin\yield\yield_thread_test TIMESTAMP=`date +%Y%m%dT%H%M%S`
+	lcov --directory ../../../build/yield/thread_test --zerocounters
+	..\..\..\bin\yield\yield_thread_test
+	lcov --base-directory . --directory ../../../build/yield/thread_test --capture --output-file yield.thread_test_lcov-$TIMESTAMP
+	mkdir yield.thread_test_lcov_html-$TIMESTAMP
+	genhtml -o yield.thread_test_lcov_html-$TIMESTAMP yield.thread_test_lcov-$TIMESTAMP
+	#tar cf yield.thread_test_lcov_html-$TIMESTAMP.tar yield.thread_test_lcov_html-$TIMESTAMP
+	#gzip yield.thread_test_lcov_html-$TIMESTAMP.tar
+	if [ -d /mnt/hgfs/minorg/Desktop ]; then
+	  cp -R yield.thread_test_lcov_html-$TIMESTAMP /mnt/hgfs/minorg/Desktop
+	else
+	  zip -qr yield.thread_test_lcov_html-$TIMESTAMP.zip yield.thread_test_lcov_html-$TIMESTAMP/*
+	fi
+	rm -fr yield.thread_test_lcov_html-$TIMESTAMP
 
+
+../../../bin/yield/yield_thread_test: $(O_FILE_PATHS)
+	-mkdir -p ../../../bin/yield 2>/dev/null
+	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 
 ../../../build/yield/thread_test/blocking_concurrent_queue_test.o: ../../../test/yield/thread/blocking_concurrent_queue_test.cpp
 	-mkdir -p ../../../build/yield/thread_test 2>/dev/null
@@ -136,5 +153,3 @@ depclean:
 ../../../build/yield/thread_test/yield_thread_test_main.o: ../../../test/yield/thread/yield_thread_test_main.cpp
 	-mkdir -p ../../../build/yield/thread_test 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/thread_test/yield_thread_test_main.o -MD $(CXXFLAGS) ../../../test/yield/thread/yield_thread_test_main.cpp
-
-

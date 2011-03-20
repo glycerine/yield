@@ -49,6 +49,7 @@ __all__ = ["Project"]
 class Project(object):
     def __init__(
         self,
+        name,
         output_file_path,
         source_file_paths,
         build_dir_path=None,
@@ -70,6 +71,7 @@ class Project(object):
         self.__cxxflags = PlatformDict(cxxflags)
         self.__libs = PlatformDict(libs)
         self.__ldflags = PlatformDict(ldflags)
+        self.__name = static_cast(name, str)
         self.__type = static_cast(type, str)
 
         if project_dir_path is not None:
@@ -168,6 +170,7 @@ class Project(object):
     def get_libpath(self): return self._libpath
     def get_libs(self): return self.__libs
     def get_ldflags(self): return self.__ldflags
+    def get_name(self): return self.__name
     def get_output_file_path(self): return self._output_file_path
     def get_project_dir_path(self): return self.__project_dir_path
     def get_project_references(self): return self._project_references

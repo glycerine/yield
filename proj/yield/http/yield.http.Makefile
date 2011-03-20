@@ -43,24 +43,26 @@ endif
 LIBS += -lyield_uri -lyield
 
 
-DEP_FILE_PATHS := $(shell find ../../../build/yield/http -name "*.d")
+D_FILE_PATHS := $(shell find ../../../build/yield/http -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../build/yield/http/http_message.o ../../../build/yield/http/http_message_parser.o ../../../build/yield/http/http_request.o ../../../build/yield/http/http_request_handler.o ../../../build/yield/http/http_request_parser.o ../../../build/yield/http/http_response.o ../../../build/yield/http/http_response_parser.o
+O_FILE_PATHS += ../../../build/yield/http/http_message.o ../../../build/yield/http/http_message_parser.o ../../../build/yield/http/http_request.o ../../../build/yield/http/http_request_handler.o ../../../build/yield/http/http_request_parser.o ../../../build/yield/http/http_response.o ../../../build/yield/http/http_response_parser.o
 
 
-../../../lib/yield/libyield_http.a: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../lib/yield 2>/dev/null
-	$(AR) -r $@ $(OBJECT_FILE_PATHS)
+all: ../../../lib/yield/libyield_http.a
 
 clean:
-	$(RM) ../../../lib/yield/libyield_http.a $(OBJECT_FILE_PATHS)
+	$(RM) ../../../lib/yield/libyield_http.a $(O_FILE_PATHS)
 
 depclean:
-	$(RM) $(DEP_FILE_PATHS)
+	$(RM) $(D_FILE_PATHS)
 
--include $(DEP_FILE_PATHS)
+-include $(D_FILE_PATHS)
 
+
+../../../lib/yield/libyield_http.a: $(O_FILE_PATHS)
+	-mkdir -p ../../../lib/yield 2>/dev/null
+	$(AR) -r $@ $(O_FILE_PATHS)
 
 ../../../build/yield/http/http_message.o: ../../../src/yield/http/http_message.cpp
 	-mkdir -p ../../../build/yield/http 2>/dev/null

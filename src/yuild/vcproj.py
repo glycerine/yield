@@ -146,10 +146,6 @@ VC_LINKER_TOOL = """\
 
 
 class VCProj(Project):
-    def __init__(self, name, *args, **kwds):
-        Project.__init__(self, *args, **kwds)
-        self.__name = name
-
     def get_AdditionalDependencies(self, sep=' '):
         AdditionalDependencies = []
         for lib in self.get_libs().get("win32", combine_platforms=True, default=[]):
@@ -182,9 +178,6 @@ class VCProj(Project):
             if not IntermediateDirectory.endswith('\\'):
                 IntermediateDirectory += '\\'
         return IntermediateDirectory
-
-    def get_name(self):
-        return self.__name
 
     def get_Name(self):
         return self.get_name()

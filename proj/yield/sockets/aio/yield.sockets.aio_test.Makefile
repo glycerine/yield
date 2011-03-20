@@ -43,27 +43,44 @@ endif
 LIBS += -lyield_sockets_aio -lyield_aio -lyield_sockets_poll -lyield_poll -lyield_sockets -lyield
 
 
-DEP_FILE_PATHS := $(shell find ../../../../build/yield/sockets/aio_test -name "*.d")
+D_FILE_PATHS := $(shell find ../../../../build/yield/sockets/aio_test -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../../build/yield/sockets/aio_test/nbio_queue_test.o ../../../../build/yield/sockets/aio_test/yield_sockets_aio_test_main.o
+O_FILE_PATHS += ../../../../build/yield/sockets/aio_test/nbio_queue_test.o ../../../../build/yield/sockets/aio_test/yield_sockets_aio_test_main.o
 ifeq ($(UNAME), MINGW32)
-	OBJECT_FILE_PATHS += ../../../../build/yield/sockets/aio_test/win32/aio_queue_test.o
+	O_FILE_PATHS += ../../../../build/yield/sockets/aio_test/win32/aio_queue_test.o
 endif
 
 
-../../../../bin/yield/yield_sockets_aio_test: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../../bin/yield 2>/dev/null
-	$(LINK.cpp) $(OBJECT_FILE_PATHS) -o $@ $(LIBS)
+all: ../../../../bin/yield/yield_sockets_aio_test
 
 clean:
-	$(RM) ../../../../bin/yield/yield_sockets_aio_test $(OBJECT_FILE_PATHS)
+	$(RM) ../../../../bin/yield/yield_sockets_aio_test $(O_FILE_PATHS)
 
 depclean:
-	$(RM) $(DEP_FILE_PATHS)
+	$(RM) $(D_FILE_PATHS)
 
--include $(DEP_FILE_PATHS)
+-include $(D_FILE_PATHS)
+			
+lcov: ..\..\..\..\bin\yield\yield_sockets_aio_test TIMESTAMP=`date +%Y%m%dT%H%M%S`
+	lcov --directory ../../../../build/yield/sockets/aio_test --zerocounters
+	..\..\..\..\bin\yield\yield_sockets_aio_test
+	lcov --base-directory . --directory ../../../../build/yield/sockets/aio_test --capture --output-file yield.sockets.aio_test_lcov-$TIMESTAMP
+	mkdir yield.sockets.aio_test_lcov_html-$TIMESTAMP
+	genhtml -o yield.sockets.aio_test_lcov_html-$TIMESTAMP yield.sockets.aio_test_lcov-$TIMESTAMP
+	#tar cf yield.sockets.aio_test_lcov_html-$TIMESTAMP.tar yield.sockets.aio_test_lcov_html-$TIMESTAMP
+	#gzip yield.sockets.aio_test_lcov_html-$TIMESTAMP.tar
+	if [ -d /mnt/hgfs/minorg/Desktop ]; then
+	  cp -R yield.sockets.aio_test_lcov_html-$TIMESTAMP /mnt/hgfs/minorg/Desktop
+	else
+	  zip -qr yield.sockets.aio_test_lcov_html-$TIMESTAMP.zip yield.sockets.aio_test_lcov_html-$TIMESTAMP/*
+	fi
+	rm -fr yield.sockets.aio_test_lcov_html-$TIMESTAMP
 
+
+../../../../bin/yield/yield_sockets_aio_test: $(O_FILE_PATHS)
+	-mkdir -p ../../../../bin/yield 2>/dev/null
+	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 
 ../../../../build/yield/sockets/aio_test/nbio_queue_test.o: ../../../../test/yield/sockets/aio/nbio_queue_test.cpp
 	-mkdir -p ../../../../build/yield/sockets/aio_test 2>/dev/null
@@ -76,5 +93,3 @@ depclean:
 ../../../../build/yield/sockets/aio_test/yield_sockets_aio_test_main.o: ../../../../test/yield/sockets/aio/yield_sockets_aio_test_main.cpp
 	-mkdir -p ../../../../build/yield/sockets/aio_test 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/sockets/aio_test/yield_sockets_aio_test_main.o -MD $(CXXFLAGS) ../../../../test/yield/sockets/aio/yield_sockets_aio_test_main.cpp
-
-

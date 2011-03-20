@@ -43,24 +43,41 @@ endif
 LIBS += -lyield_sockets -lyield
 
 
-DEP_FILE_PATHS := $(shell find ../../../build/yield/sockets_test -name "*.d")
+D_FILE_PATHS := $(shell find ../../../build/yield/sockets_test -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../build/yield/sockets_test/socket_address_test.o ../../../build/yield/sockets_test/socket_pair_test.o ../../../build/yield/sockets_test/tcp_socket_test.o ../../../build/yield/sockets_test/udp_socket_test.o ../../../build/yield/sockets_test/yield_sockets_test_main.o
+O_FILE_PATHS += ../../../build/yield/sockets_test/socket_address_test.o ../../../build/yield/sockets_test/socket_pair_test.o ../../../build/yield/sockets_test/tcp_socket_test.o ../../../build/yield/sockets_test/udp_socket_test.o ../../../build/yield/sockets_test/yield_sockets_test_main.o
 
 
-../../../bin/yield/yield_sockets_test: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../bin/yield 2>/dev/null
-	$(LINK.cpp) $(OBJECT_FILE_PATHS) -o $@ $(LIBS)
+all: ../../../bin/yield/yield_sockets_test
 
 clean:
-	$(RM) ../../../bin/yield/yield_sockets_test $(OBJECT_FILE_PATHS)
+	$(RM) ../../../bin/yield/yield_sockets_test $(O_FILE_PATHS)
 
 depclean:
-	$(RM) $(DEP_FILE_PATHS)
+	$(RM) $(D_FILE_PATHS)
 
--include $(DEP_FILE_PATHS)
+-include $(D_FILE_PATHS)
+			
+lcov: ..\..\..\bin\yield\yield_sockets_test TIMESTAMP=`date +%Y%m%dT%H%M%S`
+	lcov --directory ../../../build/yield/sockets_test --zerocounters
+	..\..\..\bin\yield\yield_sockets_test
+	lcov --base-directory . --directory ../../../build/yield/sockets_test --capture --output-file yield.sockets_test_lcov-$TIMESTAMP
+	mkdir yield.sockets_test_lcov_html-$TIMESTAMP
+	genhtml -o yield.sockets_test_lcov_html-$TIMESTAMP yield.sockets_test_lcov-$TIMESTAMP
+	#tar cf yield.sockets_test_lcov_html-$TIMESTAMP.tar yield.sockets_test_lcov_html-$TIMESTAMP
+	#gzip yield.sockets_test_lcov_html-$TIMESTAMP.tar
+	if [ -d /mnt/hgfs/minorg/Desktop ]; then
+	  cp -R yield.sockets_test_lcov_html-$TIMESTAMP /mnt/hgfs/minorg/Desktop
+	else
+	  zip -qr yield.sockets_test_lcov_html-$TIMESTAMP.zip yield.sockets_test_lcov_html-$TIMESTAMP/*
+	fi
+	rm -fr yield.sockets_test_lcov_html-$TIMESTAMP
 
+
+../../../bin/yield/yield_sockets_test: $(O_FILE_PATHS)
+	-mkdir -p ../../../bin/yield 2>/dev/null
+	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 
 ../../../build/yield/sockets_test/socket_address_test.o: ../../../test/yield/sockets/socket_address_test.cpp
 	-mkdir -p ../../../build/yield/sockets_test 2>/dev/null
@@ -81,5 +98,3 @@ depclean:
 ../../../build/yield/sockets_test/yield_sockets_test_main.o: ../../../test/yield/sockets/yield_sockets_test_main.cpp
 	-mkdir -p ../../../build/yield/sockets_test 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/sockets_test/yield_sockets_test_main.o -MD $(CXXFLAGS) ../../../test/yield/sockets/yield_sockets_test_main.cpp
-
-

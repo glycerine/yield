@@ -49,24 +49,26 @@ endif
 LIBS += -lyield_fs -lyield_i18n -lyield_http -lyield_uri -lyield_sockets_server -lyield_sockets_aio -lyield_aio -lyield_sockets_poll -lyield_poll -lyield_sockets -lyield_stage -lyield_thread -lyield
 
 
-DEP_FILE_PATHS := $(shell find ../../../../build/yield/http/server -name "*.d")
+D_FILE_PATHS := $(shell find ../../../../build/yield/http/server -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../../build/yield/http/server/access_log.o ../../../../build/yield/http/server/file_access_log.o ../../../../build/yield/http/server/http_server.o
+O_FILE_PATHS += ../../../../build/yield/http/server/access_log.o ../../../../build/yield/http/server/file_access_log.o ../../../../build/yield/http/server/http_server.o
 
 
-../../../../lib/yield/libyield_http_server.a: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../../lib/yield 2>/dev/null
-	$(AR) -r $@ $(OBJECT_FILE_PATHS)
+all: ../../../../lib/yield/libyield_http_server.a
 
 clean:
-	$(RM) ../../../../lib/yield/libyield_http_server.a $(OBJECT_FILE_PATHS)
+	$(RM) ../../../../lib/yield/libyield_http_server.a $(O_FILE_PATHS)
 
 depclean:
-	$(RM) $(DEP_FILE_PATHS)
+	$(RM) $(D_FILE_PATHS)
 
--include $(DEP_FILE_PATHS)
+-include $(D_FILE_PATHS)
 
+
+../../../../lib/yield/libyield_http_server.a: $(O_FILE_PATHS)
+	-mkdir -p ../../../../lib/yield 2>/dev/null
+	$(AR) -r $@ $(O_FILE_PATHS)
 
 ../../../../build/yield/http/server/access_log.o: ../../../../src/yield/http/server/access_log.cpp
 	-mkdir -p ../../../../build/yield/http/server 2>/dev/null

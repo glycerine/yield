@@ -49,24 +49,41 @@ endif
 LIBS += -lyield_i18n -lyield
 
 
-DEP_FILE_PATHS := $(shell find ../../../build/yield/i18n_test -name "*.d")
+D_FILE_PATHS := $(shell find ../../../build/yield/i18n_test -name "*.d")
 
 
-OBJECT_FILE_PATHS += ../../../build/yield/i18n_test/iconv_test.o ../../../build/yield/i18n_test/tstring_test.o ../../../build/yield/i18n_test/yield_i18n_test_main.o
+O_FILE_PATHS += ../../../build/yield/i18n_test/iconv_test.o ../../../build/yield/i18n_test/tstring_test.o ../../../build/yield/i18n_test/yield_i18n_test_main.o
 
 
-../../../bin/yield/yield_i18n_test: $(OBJECT_FILE_PATHS)
-	-mkdir -p ../../../bin/yield 2>/dev/null
-	$(LINK.cpp) $(OBJECT_FILE_PATHS) -o $@ $(LIBS)
+all: ../../../bin/yield/yield_i18n_test
 
 clean:
-	$(RM) ../../../bin/yield/yield_i18n_test $(OBJECT_FILE_PATHS)
+	$(RM) ../../../bin/yield/yield_i18n_test $(O_FILE_PATHS)
 
 depclean:
-	$(RM) $(DEP_FILE_PATHS)
+	$(RM) $(D_FILE_PATHS)
 
--include $(DEP_FILE_PATHS)
+-include $(D_FILE_PATHS)
+			
+lcov: ..\..\..\bin\yield\yield_i18n_test TIMESTAMP=`date +%Y%m%dT%H%M%S`
+	lcov --directory ../../../build/yield/i18n_test --zerocounters
+	..\..\..\bin\yield\yield_i18n_test
+	lcov --base-directory . --directory ../../../build/yield/i18n_test --capture --output-file yield.i18n_test_lcov-$TIMESTAMP
+	mkdir yield.i18n_test_lcov_html-$TIMESTAMP
+	genhtml -o yield.i18n_test_lcov_html-$TIMESTAMP yield.i18n_test_lcov-$TIMESTAMP
+	#tar cf yield.i18n_test_lcov_html-$TIMESTAMP.tar yield.i18n_test_lcov_html-$TIMESTAMP
+	#gzip yield.i18n_test_lcov_html-$TIMESTAMP.tar
+	if [ -d /mnt/hgfs/minorg/Desktop ]; then
+	  cp -R yield.i18n_test_lcov_html-$TIMESTAMP /mnt/hgfs/minorg/Desktop
+	else
+	  zip -qr yield.i18n_test_lcov_html-$TIMESTAMP.zip yield.i18n_test_lcov_html-$TIMESTAMP/*
+	fi
+	rm -fr yield.i18n_test_lcov_html-$TIMESTAMP
 
+
+../../../bin/yield/yield_i18n_test: $(O_FILE_PATHS)
+	-mkdir -p ../../../bin/yield 2>/dev/null
+	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 
 ../../../build/yield/i18n_test/iconv_test.o: ../../../test/yield/i18n/iconv_test.cpp
 	-mkdir -p ../../../build/yield/i18n_test 2>/dev/null
@@ -79,5 +96,3 @@ depclean:
 ../../../build/yield/i18n_test/yield_i18n_test_main.o: ../../../test/yield/i18n/yield_i18n_test_main.cpp
 	-mkdir -p ../../../build/yield/i18n_test 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/i18n_test/yield_i18n_test_main.o -MD $(CXXFLAGS) ../../../test/yield/i18n/yield_i18n_test_main.cpp
-
-
