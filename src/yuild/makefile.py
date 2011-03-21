@@ -106,7 +106,7 @@ class Makefile(Project):
             CXXFLAGS.append(uname_check(platform, "CXXFLAGS += " + ' '.join(platform_cxxflags[platform])))
         CXXFLAGS.sort()
         CXXFLAGS.append("""\
-ifneq ($COVERAGE,)
+ifneq ($(COVERAGE),)
     CXXFLAGS += -fprofile-arcs -ftest-coverage
     LDFLAGS += -fprofile-arcs -ftest-coverage -lgcov
 endif

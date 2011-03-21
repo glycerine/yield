@@ -18,7 +18,7 @@ endif
 ifeq ($(UNAME), MINGW32)
 	CXXFLAGS += /EHsc /GR- /MP /nologo /wd"4100" /wd"4127" /wd"4290" /wd"4355" /wd"4512"
 endif
-ifneq ($COVERAGE,)
+ifneq ($(COVERAGE),)
 	CXXFLAGS += -fprofile-arcs -ftest-coverage
 	LDFLAGS += -fprofile-arcs -ftest-coverage -lgcov
 endif

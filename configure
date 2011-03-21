@@ -171,10 +171,6 @@ LIBS = {
         "sunos": ["m", "rt", "stdc++"],
     },
 
-    "yield.fs.aio": {
-        "linux": ["aio"],
-    },
-
     "yield.i18n": {
         "darwin": ["iconv"],
         "freebsd": ["iconv", "intl"],
