@@ -32,6 +32,8 @@
 #include "yield/http/http_request_parser.hpp"
 #include "yield/http/http_response.hpp"
 
+#include <stdlib.h> // For atof and atoi
+
 #ifdef _WIN32
 #pragma warning(push)
 #pragma warning(disable: 4702)

@@ -62,6 +62,8 @@
 #include "yield/http/http_request_parser.hpp"
 #include "yield/http/http_response.hpp"
 
+#include <stdlib.h> // For atof and atoi
+
 #ifdef _WIN32
 #pragma warning(push)
 #pragma warning(disable: 4702)
@@ -3324,115 +3326,115 @@ _match:
       }
       break;
       case 12:
-        /* #line 144 "src\\yield\\http\\http_request_parser.rl" */
+        /* #line 146 "src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::METHOD_CONNECT;
       }
       break;
       case 13:
-        /* #line 145 "src\\yield\\http\\http_request_parser.rl" */
+        /* #line 147 "src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::METHOD_COPY;
       }
       break;
       case 14:
-        /* #line 146 "src\\yield\\http\\http_request_parser.rl" */
+        /* #line 148 "src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::METHOD_DELETE;
       }
       break;
       case 15:
-        /* #line 147 "src\\yield\\http\\http_request_parser.rl" */
+        /* #line 149 "src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::METHOD_GET;
       }
       break;
       case 16:
-        /* #line 148 "src\\yield\\http\\http_request_parser.rl" */
+        /* #line 150 "src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::METHOD_HEAD;
       }
       break;
       case 17:
-        /* #line 149 "src\\yield\\http\\http_request_parser.rl" */
+        /* #line 151 "src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::METHOD_LOCK;
       }
       break;
       case 18:
-        /* #line 150 "src\\yield\\http\\http_request_parser.rl" */
+        /* #line 152 "src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::METHOD_MKCOL;
       }
       break;
       case 19:
-        /* #line 151 "src\\yield\\http\\http_request_parser.rl" */
+        /* #line 153 "src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::METHOD_MOVE;
       }
       break;
       case 20:
-        /* #line 152 "src\\yield\\http\\http_request_parser.rl" */
+        /* #line 154 "src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::METHOD_OPTIONS;
       }
       break;
       case 21:
-        /* #line 153 "src\\yield\\http\\http_request_parser.rl" */
+        /* #line 155 "src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::METHOD_PATCH;
       }
       break;
       case 22:
-        /* #line 154 "src\\yield\\http\\http_request_parser.rl" */
+        /* #line 156 "src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::METHOD_POST;
       }
       break;
       case 23:
-        /* #line 155 "src\\yield\\http\\http_request_parser.rl" */
+        /* #line 157 "src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::METHOD_PROPFIND;
       }
       break;
       case 24:
-        /* #line 156 "src\\yield\\http\\http_request_parser.rl" */
+        /* #line 158 "src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::METHOD_PROPPATCH;
       }
       break;
       case 25:
-        /* #line 157 "src\\yield\\http\\http_request_parser.rl" */
+        /* #line 159 "src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::METHOD_PUT;
       }
       break;
       case 26:
-        /* #line 158 "src\\yield\\http\\http_request_parser.rl" */
+        /* #line 160 "src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::METHOD_TRACE;
       }
       break;
       case 27:
-        /* #line 159 "src\\yield\\http\\http_request_parser.rl" */
+        /* #line 161 "src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::METHOD_UNLOCK;
       }
       break;
       case 28:
-        /* #line 164 "src\\yield\\http\\http_request_parser.rl" */
+        /* #line 166 "src\\yield\\http\\http_request_parser.rl" */
       {
         path.iov_base = p;
       }
       break;
       case 29:
-        /* #line 165 "src\\yield\\http\\http_request_parser.rl" */
+        /* #line 167 "src\\yield\\http\\http_request_parser.rl" */
       {
         path.iov_len = p - static_cast<char*>(path.iov_base);
       }
       break;
       case 30:
-        /* #line 175 "src\\yield\\http\\http_request_parser.rl" */
+        /* #line 177 "src\\yield\\http\\http_request_parser.rl" */
       { {
           p++;
           goto _out;
@@ -3452,7 +3454,7 @@ _out:
     {}
   }
 
-  /* #line 180 "src\\yield\\http\\http_request_parser.rl" */
+  /* #line 182 "src\\yield\\http\\http_request_parser.rl" */
 
 
   return cs != request_line_parser_error;
