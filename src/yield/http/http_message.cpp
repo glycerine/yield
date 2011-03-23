@@ -607,65 +607,63 @@ get_field(
   /* #line 383 "src\\yield\\http\\http_message.cpp" */
   static const char _field_parser_actions[] = {
     0, 1, 0, 1, 1, 1, 2, 1,
-    3, 1, 4
+    3, 1, 4, 2, 2, 3
   };
 
   static const char _field_parser_key_offsets[] = {
-    0, 0, 15, 19, 24, 25, 29
+    0, 0, 15, 20, 21, 25
   };
 
   static const unsigned char _field_parser_trans_keys[] = {
     58u, 124u, 126u, 33u, 38u, 42u, 43u, 45u,
-    46u, 48u, 57u, 65u, 90u, 94u, 122u, 32u,
-    127u, 0u, 31u, 13u, 32u, 127u, 0u, 31u,
-    10u, 13u, 127u, 0u, 31u, 124u, 126u, 33u,
-    38u, 42u, 43u, 45u, 46u, 48u, 57u, 65u,
-    90u, 94u, 122u, 0
+    46u, 48u, 57u, 65u, 90u, 94u, 122u, 13u,
+    32u, 127u, 0u, 31u, 10u, 13u, 127u, 0u,
+    31u, 124u, 126u, 33u, 38u, 42u, 43u, 45u,
+    46u, 48u, 57u, 65u, 90u, 94u, 122u, 0
   };
 
   static const char _field_parser_single_lengths[] = {
-    0, 3, 2, 3, 1, 2, 2
+    0, 3, 3, 1, 2, 2
   };
 
   static const char _field_parser_range_lengths[] = {
-    0, 6, 1, 1, 0, 1, 6
+    0, 6, 1, 0, 1, 6
   };
 
   static const char _field_parser_index_offsets[] = {
-    0, 0, 10, 14, 19, 21, 25
+    0, 0, 10, 15, 17, 21
   };
 
   static const char _field_parser_indicies[] = {
     2, 0, 0, 0, 0, 0, 0, 0,
-    0, 1, 3, 1, 1, 4, 5, 3,
-    1, 1, 4, 6, 1, 5, 1, 1,
-    7, 8, 8, 8, 8, 8, 8, 8,
-    8, 1, 0
+    0, 1, 3, 4, 1, 1, 5, 6,
+    1, 7, 1, 1, 8, 9, 9, 9,
+    9, 9, 9, 9, 9, 1, 0
   };
 
   static const char _field_parser_trans_targs[] = {
-    1, 0, 2, 3, 5, 4, 6, 5,
-    1
+    1, 0, 2, 3, 2, 4, 5, 3,
+    4, 1
   };
 
   static const char _field_parser_trans_actions[] = {
-    0, 0, 3, 5, 5, 7, 9, 0,
-    1
+    0, 0, 3, 11, 5, 5, 9, 7,
+    0, 1
   };
 
-  static const int field_parser_start = 6;
-  static const int field_parser_first_final = 6;
+  static const int field_parser_start = 5;
+  static const int field_parser_first_final = 5;
   static const int field_parser_error = 0;
 
-  static const int field_parser_en_main = 6;
+  static const int field_parser_en_main = 5;
 
 
-  /* #line 437 "src\\yield\\http\\http_message.cpp" */
+  /* #line 435 "src\\yield\\http\\http_message.cpp" */
   {
     cs = field_parser_start;
   }
 
-  /* #line 440 "src\\yield\\http\\http_message.cpp" */
+  /* #line 438 "src\\yield\\http\\http_message.cpp" */
   {
     int _klen;
     unsigned int _trans;
@@ -774,7 +772,7 @@ _match:
         }
       }
       break;
-      /* #line 537 "src\\yield\\http\\http_message.cpp" */
+      /* #line 535 "src\\yield\\http\\http_message.cpp" */
       }
     }
 
@@ -811,68 +809,66 @@ get_fields(
   // Don't look for the trailing CRLF before the body,
   // since it may not be present yet.
 
-  /* #line 548 "src\\yield\\http\\http_message.cpp" */
+  /* #line 546 "src\\yield\\http\\http_message.cpp" */
   static const char _fields_parser_actions[] = {
     0, 1, 0, 1, 1, 1, 2, 1,
-    3, 1, 4
+    3, 1, 4, 2, 2, 3
   };
 
   static const char _fields_parser_key_offsets[] = {
-    0, 0, 15, 19, 24, 25, 29
+    0, 0, 15, 20, 21, 25
   };
 
   static const unsigned char _fields_parser_trans_keys[] = {
     58u, 124u, 126u, 33u, 38u, 42u, 43u, 45u,
-    46u, 48u, 57u, 65u, 90u, 94u, 122u, 32u,
-    127u, 0u, 31u, 13u, 32u, 127u, 0u, 31u,
-    10u, 13u, 127u, 0u, 31u, 124u, 126u, 33u,
-    38u, 42u, 43u, 45u, 46u, 48u, 57u, 65u,
-    90u, 94u, 122u, 0
+    46u, 48u, 57u, 65u, 90u, 94u, 122u, 13u,
+    32u, 127u, 0u, 31u, 10u, 13u, 127u, 0u,
+    31u, 124u, 126u, 33u, 38u, 42u, 43u, 45u,
+    46u, 48u, 57u, 65u, 90u, 94u, 122u, 0
   };
 
   static const char _fields_parser_single_lengths[] = {
-    0, 3, 2, 3, 1, 2, 2
+    0, 3, 3, 1, 2, 2
   };
 
   static const char _fields_parser_range_lengths[] = {
-    0, 6, 1, 1, 0, 1, 6
+    0, 6, 1, 0, 1, 6
   };
 
   static const char _fields_parser_index_offsets[] = {
-    0, 0, 10, 14, 19, 21, 25
+    0, 0, 10, 15, 17, 21
   };
 
   static const char _fields_parser_indicies[] = {
     2, 0, 0, 0, 0, 0, 0, 0,
-    0, 1, 3, 1, 1, 4, 5, 3,
-    1, 1, 4, 6, 1, 5, 1, 1,
-    7, 8, 8, 8, 8, 8, 8, 8,
-    8, 1, 0
+    0, 1, 3, 4, 1, 1, 5, 6,
+    1, 7, 1, 1, 8, 9, 9, 9,
+    9, 9, 9, 9, 9, 1, 0
   };
 
   static const char _fields_parser_trans_targs[] = {
-    1, 0, 2, 3, 5, 4, 6, 5,
-    1
+    1, 0, 2, 3, 2, 4, 5, 3,
+    4, 1
   };
 
   static const char _fields_parser_trans_actions[] = {
-    0, 0, 3, 5, 5, 7, 9, 0,
-    1
+    0, 0, 3, 11, 5, 5, 9, 7,
+    0, 1
   };
 
-  static const int fields_parser_start = 6;
-  static const int fields_parser_first_final = 6;
+  static const int fields_parser_start = 5;
+  static const int fields_parser_first_final = 5;
   static const int fields_parser_error = 0;
 
-  static const int fields_parser_en_main = 6;
+  static const int fields_parser_en_main = 5;
 
 
-  /* #line 602 "src\\yield\\http\\http_message.cpp" */
+  /* #line 598 "src\\yield\\http\\http_message.cpp" */
   {
     cs = fields_parser_start;
   }
 
-  /* #line 605 "src\\yield\\http\\http_message.cpp" */
+  /* #line 601 "src\\yield\\http\\http_message.cpp" */
   {
     int _klen;
     unsigned int _trans;
@@ -974,7 +970,7 @@ _match:
         fields.push_back(make_pair(field_name, field_value));
       }
       break;
-      /* #line 693 "src\\yield\\http\\http_message.cpp" */
+      /* #line 689 "src\\yield\\http\\http_message.cpp" */
       }
     }
 

@@ -97,11 +97,10 @@ public:
 private:
   void handle(YO_NEW_REF HTTPResponse& http_response) {
     sendAIOCB* send_aiocb
-    = new sendAIOCB
-    (
-      *this,
-      static_cast<Buffer&>(http_response).inc_ref()
-    );
+      = new sendAIOCB(
+        *this,
+        static_cast<Buffer&>(http_response).inc_ref()
+      );
 
     enqueue(*send_aiocb);
 
@@ -132,7 +131,10 @@ private:
       break;
 
       case HTTPResponse::TYPE_ID: {
-        handle(static_cast<HTTPResponse&>(object));
+        HTTPResponse& http_response = static_cast<HTTPResponse&>(object);
+        debug_assert_eq(http_response.get_status_code(), 400);
+        handle(http_response);
+        return;
       }
       break;
 

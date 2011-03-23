@@ -153,6 +153,30 @@ TEST(%(http_message_parser_type)s, %(test_name)s) {
 """ % locals()
 
 
+class MalformedFieldMissingColonHTTPMessageParserTest(HTTPMessageParserTest):
+    def __init__(self):
+        HTTPMessageParserTest.__init__(self)
+        self.PARSER(
+            "GET", ' ', URI, ' ', HTTP_VERSION, CRLF,
+            "Host", CRLF,
+            CRLF
+        )
+        self.PARSE()
+        self.ASSERT_NULL()
+
+
+class MalformedFieldMissingNameHTTPMessageParserTest(HTTPMessageParserTest):
+    def __init__(self):
+        HTTPMessageParserTest.__init__(self)
+        self.PARSER(
+            "GET", ' ', URI, ' ', HTTP_VERSION, CRLF,
+            ": localhost", CRLF,
+            CRLF
+        )
+        self.PARSE()
+        self.ASSERT_NULL()
+
+
 class WellFormedChunk1BodyHTTPMessageParserTest(HTTPMessageParserTest):
     def __init__(self):
         HTTPMessageParserTest.__init__(self)
@@ -198,6 +222,22 @@ class WellFormedChunk2BodyHTTPMessageParserTest(HTTPMessageParserTest):
             self.append("throw_assert_eq(http_body_chunk->size(), %(http_body_chunk_size)u);" % locals())
             self.DEC_REF("HTTPBodyChunk", "http_body_chunk")
             self.append('}')
+        self.DEC_REF()
+
+
+class WellFormedFieldMissingValueHTTPMessageParserTest(HTTPMessageParserTest):
+    def __init__(self):
+        HTTPMessageParserTest.__init__(self)
+        self.PARSER(
+            "GET", ' ', URI, ' ', HTTP_VERSION, CRLF,
+            "Host:", CRLF,
+            CRLF
+        )
+        self.PARSE()
+        self.ASSERT_NONNULL()
+        self.ASSERT_HTTP_VERSION()
+        http_message_instance = decamel(self.http_message_type)
+        self.append("""throw_assert_eq((*%(http_message_instance)s)["Host"], "");""" % locals())
         self.DEC_REF()
 
 
@@ -263,8 +303,11 @@ class HTTPMessageParserTestSuite(list):
     def __init__(self, *args):
         list.__init__(self, *args)
         if self.__class__ == HTTPMessageParserTestSuite:
+            self.append(MalformedFieldMissingColonHTTPMessageParserTest())
+            self.append(MalformedFieldMissingNameHTTPMessageParserTest())
             self.append(WellFormedChunk1BodyHTTPMessageParserTest())
             self.append(WellFormedChunk2BodyHTTPMessageParserTest())
+            self.append(WellFormedFieldMissingValueHTTPMessageParserTest())
             self.append(WellFormedNoBodyHTTPMessageParserTest())
             self.append(WellFormedNormalBodyHTTPMessageParserTest())
             self.append(WellFormedPipelinedNoBodyHTTPMessageParserTest())

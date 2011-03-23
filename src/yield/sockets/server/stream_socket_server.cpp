@@ -69,6 +69,7 @@ StreamSocketServer::StreamSocketServer(
 }
 
 StreamSocketServer::~StreamSocketServer() {
+  socket_.close();
   StreamSocket::dec_ref(socket_);
 }
 

@@ -28,4 +28,4 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Adapted from the ABNF in RFC 2616 section 4.2
-# Ignores field value folding for the time being.%%{  machine field;  alphtype unsigned char;  include basic_rules "basic_rules.rl";  field_name    = token      >{ field_name.iov_base = p; }      %{ field_name.iov_len = p - static_cast<char*>(field_name.iov_base); };  field_content = text+;  field_value    = field_content      >{ field_value.iov_base = p; }      %{ field_value.iov_len = p - static_cast<char*>(field_value.iov_base); };  field = field_name ':' ' '* field_value :> crlf;}%%
+# Ignores field value folding for the time being.%%{  machine field;  alphtype unsigned char;  include basic_rules "basic_rules.rl";  field_name    = token      >{ field_name.iov_base = p; }      %{ field_name.iov_len = p - static_cast<char*>(field_name.iov_base); };  field_content = text*;  field_value    = field_content      >{ field_value.iov_base = p; }      %{ field_value.iov_len = p - static_cast<char*>(field_value.iov_base); };  field = field_name ':' ' '* field_value :> crlf;}%%

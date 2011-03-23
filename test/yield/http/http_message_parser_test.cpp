@@ -39,6 +39,18 @@ TEST_SUITE(HTTPMessageParser);
 
 namespace yield {
 namespace http {
+TEST(HTTPMessageParser, MalformedFieldMissingColon) {
+  HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\nHost\r\n\r\n");
+  HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
+  throw_assert_eq(http_request, NULL);
+}
+
+TEST(HTTPMessageParser, MalformedFieldMissingName) {
+  HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\n: localhost\r\n\r\n");
+  HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
+  throw_assert_eq(http_request, NULL);
+}
+
 TEST(HTTPMessageParser, WellFormedChunk1Body) {
   HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n1\r\nx\r\n0\r\n\r\n");
   HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
@@ -84,6 +96,15 @@ TEST(HTTPMessageParser, WellFormedChunk2Body) {
     throw_assert_eq(http_body_chunk->size(), 0);
     HTTPBodyChunk::dec_ref(http_body_chunk);
   }
+  HTTPRequest::dec_ref(http_request);
+}
+
+TEST(HTTPMessageParser, WellFormedFieldMissingValue) {
+  HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\nHost:\r\n\r\n");
+  HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
+  throw_assert_ne(http_request, NULL);
+  throw_assert_eq(http_request->get_http_version(), 1.1F);
+  throw_assert_eq((*http_request)["Host"], "");
   HTTPRequest::dec_ref(http_request);
 }
 

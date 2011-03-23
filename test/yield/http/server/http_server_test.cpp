@@ -38,10 +38,14 @@ TEST_SUITE(HTTPServer);
 namespace yield {
 namespace http {
 namespace server {
-using yield::sockets::SocketAddress;
+TEST(HTTPServer, constructor) {
+  HTTPServer(*new TestHTTPRequestHandler, 8000);
+}
 
-TEST(HTTPServer, create) {
-  HTTPServer(*new TestHTTPRequestHandler, 8000).serve_forever();
+TEST(HTTPServer, visit) {
+  HTTPServer http_server(*new TestHTTPRequestHandler, 8000);
+  for (;;)
+    http_server.visit();
 }
 }
 }
