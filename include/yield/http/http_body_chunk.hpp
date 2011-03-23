@@ -49,14 +49,17 @@ public:
     is_last_ = false;
   }
 
+public:
   bool is_last() const {
     return is_last_;
   }
 
-  // Object
+public:
+  // yield::Object
   uint32_t get_type_id() const {
     return TYPE_ID;
   }
+
   const char* get_type_name() const {
     return "yield::http::HTTPBodyChunk";
   }

@@ -30,6 +30,7 @@
 #include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/buffer.hpp"
+#include "yield/http/http_body_chunk.hpp"
 #include "yield/http/http_request.hpp"
 #include "yield/http/http_request_parser.hpp"
 #include "yunit.hpp"
@@ -40,123 +41,109 @@ namespace yield {
 namespace http {
 TEST(HTTPMessageParser, WellFormedChunk1Body) {
   HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n1\r\nx\r\n0\r\n\r\n");
-  vector<HTTPRequest*> http_requests;
-
-  for (uint32_t i = 0; i < 2; i++) {
-    HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
-
-    if (http_request != NULL)
-      http_requests.push_back(http_request);
-    else {
-      while (!http_requests.empty()) {
-        HTTPRequest::dec_ref(*http_requests.back());
-        http_requests.pop_back();
-      }
-
-      throw_assert(false);
-    }
+  HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
+  throw_assert_ne(http_request, NULL);
+  throw_assert_eq(http_request->get_http_version(), 1.1F);
+  throw_assert_eq((*http_request)["Host"], "localhost");
+  {
+    HTTPBodyChunk* http_body_chunk = object_cast<HTTPBodyChunk>(http_request_parser.parse());
+    throw_assert_ne(http_body_chunk, NULL);
+    throw_assert_eq(http_body_chunk->size(), 1);
+    HTTPBodyChunk::dec_ref(http_body_chunk);
   }
-
-  throw_assert_eq(http_requests.size(), 2);
-  for (size_t i = 0; i < 2; i++) {
-    throw_assert_ne(http_requests[i]->get_body(), NULL);
+  {
+    HTTPBodyChunk* http_body_chunk = object_cast<HTTPBodyChunk>(http_request_parser.parse());
+    throw_assert_ne(http_body_chunk, NULL);
+    throw_assert_eq(http_body_chunk->size(), 0);
+    HTTPBodyChunk::dec_ref(http_body_chunk);
   }
-  throw_assert_eq(http_requests[0]->get_content_length(), 1);
-  throw_assert_eq(http_requests[1]->get_content_length(), 0);
-  for (size_t i = 0; i < 2; i++) HTTPRequest::dec_ref(*http_requests[i]);
+  HTTPRequest::dec_ref(http_request);
 }
 
 TEST(HTTPMessageParser, WellFormedChunk2Body) {
   HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n1\r\nx\r\n1\r\ny\r\n0\r\n\r\n");
-  vector<HTTPRequest*> http_requests;
-
-  for (uint32_t i = 0; i < 3; i++) {
-    HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
-
-    if (http_request != NULL)
-      http_requests.push_back(http_request);
-    else {
-      while (!http_requests.empty()) {
-        HTTPRequest::dec_ref(*http_requests.back());
-        http_requests.pop_back();
-      }
-
-      throw_assert(false);
-    }
+  HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
+  throw_assert_ne(http_request, NULL);
+  throw_assert_eq(http_request->get_http_version(), 1.1F);
+  throw_assert_eq((*http_request)["Host"], "localhost");
+  {
+    HTTPBodyChunk* http_body_chunk = object_cast<HTTPBodyChunk>(http_request_parser.parse());
+    throw_assert_ne(http_body_chunk, NULL);
+    throw_assert_eq(http_body_chunk->size(), 1);
+    HTTPBodyChunk::dec_ref(http_body_chunk);
   }
-
-  throw_assert_eq(http_requests.size(), 3);
-  for (size_t i = 0; i < 3; i++) {
-    throw_assert_ne(http_requests[i]->get_body(), NULL);
+  {
+    HTTPBodyChunk* http_body_chunk = object_cast<HTTPBodyChunk>(http_request_parser.parse());
+    throw_assert_ne(http_body_chunk, NULL);
+    throw_assert_eq(http_body_chunk->size(), 1);
+    HTTPBodyChunk::dec_ref(http_body_chunk);
   }
-  throw_assert_eq(http_requests[0]->get_content_length(), 1);
-  throw_assert_eq(http_requests[1]->get_content_length(), 1);
-  throw_assert_eq(http_requests[2]->get_content_length(), 0);
-  for (size_t i = 0; i < 3; i++) HTTPRequest::dec_ref(*http_requests[i]);
+  {
+    HTTPBodyChunk* http_body_chunk = object_cast<HTTPBodyChunk>(http_request_parser.parse());
+    throw_assert_ne(http_body_chunk, NULL);
+    throw_assert_eq(http_body_chunk->size(), 0);
+    HTTPBodyChunk::dec_ref(http_body_chunk);
+  }
+  HTTPRequest::dec_ref(http_request);
+}
+
+TEST(HTTPMessageParser, WellFormedNoBody) {
+  HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\nHost: localhost\r\n\r\n");
+  HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
+  throw_assert_ne(http_request, NULL);
+  throw_assert_eq(http_request->get_body(), NULL);
+  HTTPRequest::dec_ref(http_request);
 }
 
 TEST(HTTPMessageParser, WellFormedNormalBody) {
-  HTTPRequest* http_request = object_cast<HTTPRequest>(HTTPRequestParser("GET / HTTP/1.1\r\nHost: localhost\r\nContent-Length: 2\r\n\r\n12").parse());
+  HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\nHost: localhost\r\nContent-Length: 2\r\n\r\n12");
+  HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
   throw_assert_ne(http_request, NULL);
   throw_assert_ne(http_request->get_body(), NULL);
   throw_assert_eq(http_request->get_content_length(), 2);
-  HTTPRequest::dec_ref(*http_request);
+  HTTPRequest::dec_ref(http_request);
 }
 
 TEST(HTTPMessageParser, WellFormedPipelinedNoBody) {
   HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\nHost: localhost\r\n\r\nGET / HTTP/1.1\r\nHost: localhost\r\n\r\n");
-  vector<HTTPRequest*> http_requests;
-
-  for (uint32_t i = 0; i < 2; i++) {
+  {
     HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
-
-    if (http_request != NULL)
-      http_requests.push_back(http_request);
-    else {
-      while (!http_requests.empty()) {
-        HTTPRequest::dec_ref(*http_requests.back());
-        http_requests.pop_back();
-      }
-
-      throw_assert(false);
-    }
+    throw_assert_ne(http_request, NULL);
+    throw_assert_eq(http_request->get_http_version(), 1.1F);
+    throw_assert_eq((*http_request)["Host"], "localhost");
+    throw_assert_eq(http_request->get_body(), NULL);
+    HTTPRequest::dec_ref(http_request);
   }
-
-  throw_assert_eq(http_requests.size(), 2);
-  for (size_t i = 0; i < 2; i++) {
-    throw_assert_eq(http_requests[i]->get_body(), NULL);
+  {
+    HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
+    throw_assert_ne(http_request, NULL);
+    throw_assert_eq(http_request->get_http_version(), 1.1F);
+    throw_assert_eq((*http_request)["Host"], "localhost");
+    throw_assert_eq(http_request->get_body(), NULL);
+    HTTPRequest::dec_ref(http_request);
   }
-  for (size_t i = 0; i < 2; i++) HTTPRequest::dec_ref(*http_requests[i]);
 }
 
 TEST(HTTPMessageParser, WellFormedPipelinedNormalBody) {
   HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\nHost: localhost\r\nContent-Length: 2\r\n\r\n12GET / HTTP/1.1\r\nHost: localhost\r\nContent-Length: 2\r\n\r\n12");
-  vector<HTTPRequest*> http_requests;
-
-  for (uint32_t i = 0; i < 2; i++) {
+  {
     HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
-
-    if (http_request != NULL)
-      http_requests.push_back(http_request);
-    else {
-      while (!http_requests.empty()) {
-        HTTPRequest::dec_ref(*http_requests.back());
-        http_requests.pop_back();
-      }
-
-      throw_assert(false);
-    }
+    throw_assert_ne(http_request, NULL);
+    throw_assert_eq(http_request->get_http_version(), 1.1F);
+    throw_assert_eq((*http_request)["Host"], "localhost");
+    throw_assert_ne(http_request->get_body(), NULL);
+    throw_assert_eq(http_request->get_content_length(), 2);
+    HTTPRequest::dec_ref(http_request);
   }
-
-  throw_assert_eq(http_requests.size(), 2);
-  for (size_t i = 0; i < 2; i++) {
-    throw_assert_ne(http_requests[i]->get_body(), NULL);
+  {
+    HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
+    throw_assert_ne(http_request, NULL);
+    throw_assert_eq(http_request->get_http_version(), 1.1F);
+    throw_assert_eq((*http_request)["Host"], "localhost");
+    throw_assert_ne(http_request->get_body(), NULL);
+    throw_assert_eq(http_request->get_content_length(), 2);
+    HTTPRequest::dec_ref(http_request);
   }
-  for (size_t i = 0; i < 2; i++) {
-    throw_assert_eq(http_requests[i]->get_content_length(), 2);
-  }
-  for (size_t i = 0; i < 2; i++) HTTPRequest::dec_ref(*http_requests[i]);
 }
-
 }
 }

@@ -101,6 +101,7 @@ DateTime HTTPMessage<HTTPMessageType>::get_date_field(const char* name) const {
     int cs;
     const char* eof = static_cast<char*>(value.iov_base) + value.iov_len;
     char* p = static_cast<char*>(value.iov_base);
+    const char* pe = eof;
 
     int hour = 0, minute = 0, second = 0;
     int day = 0, month = 0, year = 0;
@@ -116,7 +117,7 @@ DateTime HTTPMessage<HTTPMessageType>::get_date_field(const char* name) const {
 
       write data;
       write init;
-      write exec noend;
+      write exec;
     }%%
 
     if (cs != date_parser_error) {
@@ -151,7 +152,7 @@ get_field(
     include field "field.rl";
 
     main := (
-      field % {
+      field @ {
         if (
           field_name.iov_len == name_len
           &&
@@ -191,9 +192,8 @@ get_fields(
     include field "field.rl";
 
     main := (
-      field % { fields.push_back(make_pair(field_name, field_value)); }
-    )*
-    $err{ return; };
+      field @ { fields.push_back(make_pair(field_name, field_value)); }
+    )*;
 
     write data;
     write init;
@@ -248,8 +248,7 @@ set_field(
   SYSTEMTIME utc_system_time = value.as_utc_SYSTEMTIME();
 
   date_len
-  = _snprintf_s
-    (
+  = _snprintf_s(
       date,
       30,
       _TRUNCATE,
@@ -261,13 +260,12 @@ set_field(
       utc_system_time.wHour,
       utc_system_time.wMinute,
       utc_system_time.wSecond
-  );
+    );
 #else
   tm utc_tm = value.as_utc_tm();
 
   date_len
-  = snprintf
-    (
+  = snprintf(
       date,
       30,
       "%s, %02d %s %04d %02d:%02d:%02d GMT",
@@ -278,7 +276,7 @@ set_field(
       utc_tm.tm_hour,
       utc_tm.tm_min,
       utc_tm.tm_sec
-  );
+    );
 #endif
 
   return set_field(name, name_len, date, date_len);

@@ -57,9 +57,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/assert.hpp"
-#include "yield/string_buffer.hpp"
 #include "yield/exception.hpp"
+#include "yield/string_buffer.hpp"
 #include "yield/uri/uri.hpp"
 
 #include <sstream> // or std::ostringstream
@@ -71,7 +70,7 @@
 #endif
 
 
-/* #line 136 "src\\yield\\uri\\uri.rl" */
+/* #line 134 "src\\yield\\uri\\uri.rl" */
 
 
 namespace yield {
@@ -94,11 +93,6 @@ URI::URI(
     query(query),
     scheme(scheme),
     userinfo(userinfo) {
-  debug_assert_ne(host.iov_base, NULL);
-  debug_assert_gt(host.iov_len, 0);
-  debug_assert_ne(path.iov_base, NULL);
-  debug_assert_ne(scheme.iov_base, NULL);
-  debug_assert_gt(scheme.iov_len, 0);
 }
 
 URI::URI(const char* uri) throw(Exception)
@@ -1803,73 +1797,73 @@ _match:
     while (_nacts-- > 0) {
       switch (*_acts++) {
       case 0:
-        /* #line 81 "src\\yield\\uri\\uri.rl" */
+        /* #line 79 "src\\yield\\uri\\uri.rl" */
       {
         scheme.iov_base = p;
       }
       break;
       case 1:
-        /* #line 82 "src\\yield\\uri\\uri.rl" */
+        /* #line 80 "src\\yield\\uri\\uri.rl" */
       {
         scheme.iov_len =  p - static_cast<char*>(scheme.iov_base);
       }
       break;
       case 2:
-        /* #line 86 "src\\yield\\uri\\uri.rl" */
+        /* #line 84 "src\\yield\\uri\\uri.rl" */
       {
         userinfo.iov_base = p;
       }
       break;
       case 3:
-        /* #line 87 "src\\yield\\uri\\uri.rl" */
+        /* #line 85 "src\\yield\\uri\\uri.rl" */
       {
         userinfo.iov_len = p - static_cast<char*>(userinfo.iov_base);
       }
       break;
       case 4:
-        /* #line 91 "src\\yield\\uri\\uri.rl" */
+        /* #line 89 "src\\yield\\uri\\uri.rl" */
       {
         host.iov_base = p;
       }
       break;
       case 5:
-        /* #line 92 "src\\yield\\uri\\uri.rl" */
+        /* #line 90 "src\\yield\\uri\\uri.rl" */
       {
         host.iov_len = p - static_cast<char*>(host.iov_base);
       }
       break;
       case 6:
-        /* #line 95 "src\\yield\\uri\\uri.rl" */
+        /* #line 93 "src\\yield\\uri\\uri.rl" */
       {
         port = static_cast<uint16_t>(atoi(p));
       }
       break;
       case 7:
-        /* #line 100 "src\\yield\\uri\\uri.rl" */
+        /* #line 98 "src\\yield\\uri\\uri.rl" */
       {
         path.iov_base = p;
       }
       break;
       case 8:
-        /* #line 101 "src\\yield\\uri\\uri.rl" */
+        /* #line 99 "src\\yield\\uri\\uri.rl" */
       {
         path.iov_len = p - static_cast<char*>(path.iov_base);
       }
       break;
       case 9:
-        /* #line 119 "src\\yield\\uri\\uri.rl" */
+        /* #line 117 "src\\yield\\uri\\uri.rl" */
       {
         query.iov_base = p;
       }
       break;
       case 10:
-        /* #line 120 "src\\yield\\uri\\uri.rl" */
+        /* #line 118 "src\\yield\\uri\\uri.rl" */
       {
         query.iov_len = p - static_cast<char*>(query.iov_base);
       }
       break;
       case 11:
-        /* #line 122 "src\\yield\\uri\\uri.rl" */
+        /* #line 120 "src\\yield\\uri\\uri.rl" */
       {
         fragment.iov_base = p;
       }
@@ -1891,55 +1885,55 @@ _test_eof:
       while (__nacts-- > 0) {
         switch (*__acts++) {
         case 4:
-          /* #line 91 "src\\yield\\uri\\uri.rl" */
+          /* #line 89 "src\\yield\\uri\\uri.rl" */
         {
           host.iov_base = p;
         }
         break;
         case 5:
-          /* #line 92 "src\\yield\\uri\\uri.rl" */
+          /* #line 90 "src\\yield\\uri\\uri.rl" */
         {
           host.iov_len = p - static_cast<char*>(host.iov_base);
         }
         break;
         case 6:
-          /* #line 95 "src\\yield\\uri\\uri.rl" */
+          /* #line 93 "src\\yield\\uri\\uri.rl" */
         {
           port = static_cast<uint16_t>(atoi(p));
         }
         break;
         case 7:
-          /* #line 100 "src\\yield\\uri\\uri.rl" */
+          /* #line 98 "src\\yield\\uri\\uri.rl" */
         {
           path.iov_base = p;
         }
         break;
         case 8:
-          /* #line 101 "src\\yield\\uri\\uri.rl" */
+          /* #line 99 "src\\yield\\uri\\uri.rl" */
         {
           path.iov_len = p - static_cast<char*>(path.iov_base);
         }
         break;
         case 9:
-          /* #line 119 "src\\yield\\uri\\uri.rl" */
+          /* #line 117 "src\\yield\\uri\\uri.rl" */
         {
           query.iov_base = p;
         }
         break;
         case 10:
-          /* #line 120 "src\\yield\\uri\\uri.rl" */
+          /* #line 118 "src\\yield\\uri\\uri.rl" */
         {
           query.iov_len = p - static_cast<char*>(query.iov_base);
         }
         break;
         case 11:
-          /* #line 122 "src\\yield\\uri\\uri.rl" */
+          /* #line 120 "src\\yield\\uri\\uri.rl" */
         {
           fragment.iov_base = p;
         }
         break;
         case 12:
-          /* #line 123 "src\\yield\\uri\\uri.rl" */
+          /* #line 121 "src\\yield\\uri\\uri.rl" */
         {
           fragment.iov_len = p - static_cast<char*>(fragment.iov_base);
         }
@@ -1953,7 +1947,7 @@ _out:
     {}
   }
 
-  /* #line 236 "src\\yield\\uri\\uri.rl" */
+  /* #line 229 "src\\yield\\uri\\uri.rl" */
 
 
   if (cs == init_error)

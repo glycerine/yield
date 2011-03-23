@@ -131,6 +131,7 @@ DateTime HTTPMessage<HTTPMessageType>::get_date_field(const char* name) const {
     int cs;
     const char* eof = static_cast<char*>(value.iov_base) + value.iov_len;
     char* p = static_cast<char*>(value.iov_base);
+    const char* pe = eof;
 
     int hour = 0, minute = 0, second = 0;
     int day = 0, month = 0, year = 0;
@@ -375,6 +376,8 @@ DateTime HTTPMessage<HTTPMessageType>::get_date_field(const char* name) const {
       unsigned int _nacts;
       const unsigned char* _keys;
 
+      if (p == pe)
+        goto _test_eof;
       if (cs == 0)
         goto _out;
 _resume:
@@ -534,32 +537,34 @@ _match:
         }
         break;
         case 8:
-          /* #line 115 "src\\yield\\http\\http_message.rl" */
+          /* #line 116 "src\\yield\\http\\http_message.rl" */
         {
           return DateTime::INVALID_DATE_TIME;
         }
         break;
-        /* #line 357 "src\\yield\\http\\http_message.cpp" */
+        /* #line 359 "src\\yield\\http\\http_message.cpp" */
         }
       }
 
 _again:
       if (cs == 0)
         goto _out;
-      p += 1;
-      goto _resume;
+      if (++p != pe)
+        goto _resume;
+_test_eof:
+      {}
       if (p == eof) {
         const char* __acts = _date_parser_actions + _date_parser_eof_actions[cs];
         unsigned int __nacts = (unsigned int) * __acts++;
         while (__nacts-- > 0) {
           switch (*__acts++) {
           case 8:
-            /* #line 115 "src\\yield\\http\\http_message.rl" */
+            /* #line 116 "src\\yield\\http\\http_message.rl" */
           {
             return DateTime::INVALID_DATE_TIME;
           }
           break;
-          /* #line 374 "src\\yield\\http\\http_message.cpp" */
+          /* #line 377 "src\\yield\\http\\http_message.cpp" */
           }
         }
       }
@@ -568,7 +573,7 @@ _out:
       {}
     }
 
-    /* #line 120 "src\\yield\\http\\http_message.rl" */
+    /* #line 121 "src\\yield\\http\\http_message.rl" */
 
 
     if (cs != date_parser_error) {
@@ -599,14 +604,14 @@ get_field(
   // Don't look for the trailing CRLF before the body,
   // since it may not be present yet.
 
-  /* #line 380 "src\\yield\\http\\http_message.cpp" */
+  /* #line 383 "src\\yield\\http\\http_message.cpp" */
   static const char _field_parser_actions[] = {
     0, 1, 0, 1, 1, 1, 2, 1,
-    3, 1, 4, 2, 4, 0
+    3, 1, 4
   };
 
   static const char _field_parser_key_offsets[] = {
-    0, 0, 15, 19, 24, 25, 29, 43
+    0, 0, 15, 19, 24, 25, 29
   };
 
   static const unsigned char _field_parser_trans_keys[] = {
@@ -615,21 +620,19 @@ get_field(
     127u, 0u, 31u, 13u, 32u, 127u, 0u, 31u,
     10u, 13u, 127u, 0u, 31u, 124u, 126u, 33u,
     38u, 42u, 43u, 45u, 46u, 48u, 57u, 65u,
-    90u, 94u, 122u, 124u, 126u, 33u, 38u, 42u,
-    43u, 45u, 46u, 48u, 57u, 65u, 90u, 94u,
-    122u, 0
+    90u, 94u, 122u, 0
   };
 
   static const char _field_parser_single_lengths[] = {
-    0, 3, 2, 3, 1, 2, 2, 2
+    0, 3, 2, 3, 1, 2, 2
   };
 
   static const char _field_parser_range_lengths[] = {
-    0, 6, 1, 1, 0, 1, 6, 6
+    0, 6, 1, 1, 0, 1, 6
   };
 
   static const char _field_parser_index_offsets[] = {
-    0, 0, 10, 14, 19, 21, 25, 34
+    0, 0, 10, 14, 19, 21, 25
   };
 
   static const char _field_parser_indicies[] = {
@@ -637,22 +640,17 @@ get_field(
     0, 1, 3, 1, 1, 4, 5, 3,
     1, 1, 4, 6, 1, 5, 1, 1,
     7, 8, 8, 8, 8, 8, 8, 8,
-    8, 1, 9, 9, 9, 9, 9, 9,
-    9, 9, 1, 0
+    8, 1, 0
   };
 
   static const char _field_parser_trans_targs[] = {
-    1, 0, 2, 3, 5, 4, 7, 5,
-    1, 1
+    1, 0, 2, 3, 5, 4, 6, 5,
+    1
   };
 
   static const char _field_parser_trans_actions[] = {
-    0, 0, 3, 5, 5, 7, 0, 0,
-    1, 11
-  };
-
-  static const char _field_parser_eof_actions[] = {
-    0, 0, 0, 0, 0, 0, 0, 9
+    0, 0, 3, 5, 5, 7, 9, 0,
+    1
   };
 
   static const int field_parser_start = 6;
@@ -662,12 +660,12 @@ get_field(
   static const int field_parser_en_main = 6;
 
 
-  /* #line 441 "src\\yield\\http\\http_message.cpp" */
+  /* #line 437 "src\\yield\\http\\http_message.cpp" */
   {
     cs = field_parser_start;
   }
 
-  /* #line 444 "src\\yield\\http\\http_message.cpp" */
+  /* #line 440 "src\\yield\\http\\http_message.cpp" */
   {
     int _klen;
     unsigned int _trans;
@@ -764,7 +762,7 @@ _match:
       }
       break;
       case 4:
-        /* #line 154 "src\\yield\\http\\http_message.rl" */
+        /* #line 155 "src\\yield\\http\\http_message.rl" */
       {
         if (
           field_name.iov_len == name_len
@@ -776,7 +774,7 @@ _match:
         }
       }
       break;
-      /* #line 541 "src\\yield\\http\\http_message.cpp" */
+      /* #line 537 "src\\yield\\http\\http_message.cpp" */
       }
     }
 
@@ -787,34 +785,11 @@ _again:
       goto _resume;
 _test_eof:
     {}
-    if (p == eof) {
-      const char* __acts = _field_parser_actions + _field_parser_eof_actions[cs];
-      unsigned int __nacts = (unsigned int) * __acts++;
-      while (__nacts-- > 0) {
-        switch (*__acts++) {
-        case 4:
-          /* #line 154 "src\\yield\\http\\http_message.rl" */
-        {
-          if (
-            field_name.iov_len == name_len
-            &&
-            memcmp(field_name.iov_base, name, name_len) == 0
-          ) {
-            value = field_value;
-            return true;
-          }
-        }
-        break;
-        /* #line 568 "src\\yield\\http\\http_message.cpp" */
-        }
-      }
-    }
-
 _out:
     {}
   }
 
-  /* #line 169 "src\\yield\\http\\http_message.rl" */
+  /* #line 170 "src\\yield\\http\\http_message.rl" */
 
 
   return false;
@@ -836,15 +811,14 @@ get_fields(
   // Don't look for the trailing CRLF before the body,
   // since it may not be present yet.
 
-  /* #line 574 "src\\yield\\http\\http_message.cpp" */
+  /* #line 548 "src\\yield\\http\\http_message.cpp" */
   static const char _fields_parser_actions[] = {
     0, 1, 0, 1, 1, 1, 2, 1,
-    3, 1, 4, 1, 5, 2, 4, 0
-
+    3, 1, 4
   };
 
   static const char _fields_parser_key_offsets[] = {
-    0, 0, 15, 19, 24, 25, 29, 43
+    0, 0, 15, 19, 24, 25, 29
   };
 
   static const unsigned char _fields_parser_trans_keys[] = {
@@ -853,44 +827,37 @@ get_fields(
     127u, 0u, 31u, 13u, 32u, 127u, 0u, 31u,
     10u, 13u, 127u, 0u, 31u, 124u, 126u, 33u,
     38u, 42u, 43u, 45u, 46u, 48u, 57u, 65u,
-    90u, 94u, 122u, 124u, 126u, 33u, 38u, 42u,
-    43u, 45u, 46u, 48u, 57u, 65u, 90u, 94u,
-    122u, 0
+    90u, 94u, 122u, 0
   };
 
   static const char _fields_parser_single_lengths[] = {
-    0, 3, 2, 3, 1, 2, 2, 2
+    0, 3, 2, 3, 1, 2, 2
   };
 
   static const char _fields_parser_range_lengths[] = {
-    0, 6, 1, 1, 0, 1, 6, 6
+    0, 6, 1, 1, 0, 1, 6
   };
 
   static const char _fields_parser_index_offsets[] = {
-    0, 0, 10, 14, 19, 21, 25, 34
+    0, 0, 10, 14, 19, 21, 25
   };
 
   static const char _fields_parser_indicies[] = {
-    2, 1, 1, 1, 1, 1, 1, 1,
-    1, 0, 3, 0, 0, 4, 5, 3,
-    0, 0, 4, 6, 0, 5, 0, 0,
+    2, 0, 0, 0, 0, 0, 0, 0,
+    0, 1, 3, 1, 1, 4, 5, 3,
+    1, 1, 4, 6, 1, 5, 1, 1,
     7, 8, 8, 8, 8, 8, 8, 8,
-    8, 0, 9, 9, 9, 9, 9, 9,
-    9, 9, 0, 0
+    8, 1, 0
   };
 
   static const char _fields_parser_trans_targs[] = {
-    0, 1, 2, 3, 5, 4, 7, 5,
-    1, 1
+    1, 0, 2, 3, 5, 4, 6, 5,
+    1
   };
 
   static const char _fields_parser_trans_actions[] = {
-    11, 0, 3, 5, 5, 7, 0, 0,
-    1, 13
-  };
-
-  static const char _fields_parser_eof_actions[] = {
-    0, 11, 11, 11, 11, 11, 0, 9
+    0, 0, 3, 5, 5, 7, 9, 0,
+    1
   };
 
   static const int fields_parser_start = 6;
@@ -900,12 +867,12 @@ get_fields(
   static const int fields_parser_en_main = 6;
 
 
-  /* #line 636 "src\\yield\\http\\http_message.cpp" */
+  /* #line 602 "src\\yield\\http\\http_message.cpp" */
   {
     cs = fields_parser_start;
   }
 
-  /* #line 639 "src\\yield\\http\\http_message.cpp" */
+  /* #line 605 "src\\yield\\http\\http_message.cpp" */
   {
     int _klen;
     unsigned int _trans;
@@ -1002,18 +969,12 @@ _match:
       }
       break;
       case 4:
-        /* #line 194 "src\\yield\\http\\http_message.rl" */
+        /* #line 195 "src\\yield\\http\\http_message.rl" */
       {
         fields.push_back(make_pair(field_name, field_value));
       }
       break;
-      case 5:
-        /* #line 196 "src\\yield\\http\\http_message.rl" */
-      {
-        return;
-      }
-      break;
-      /* #line 730 "src\\yield\\http\\http_message.cpp" */
+      /* #line 693 "src\\yield\\http\\http_message.cpp" */
       }
     }
 
@@ -1024,28 +985,6 @@ _again:
       goto _resume;
 _test_eof:
     {}
-    if (p == eof) {
-      const char* __acts = _fields_parser_actions + _fields_parser_eof_actions[cs];
-      unsigned int __nacts = (unsigned int) * __acts++;
-      while (__nacts-- > 0) {
-        switch (*__acts++) {
-        case 4:
-          /* #line 194 "src\\yield\\http\\http_message.rl" */
-        {
-          fields.push_back(make_pair(field_name, field_value));
-        }
-        break;
-        case 5:
-          /* #line 196 "src\\yield\\http\\http_message.rl" */
-        {
-          return;
-        }
-        break;
-        /* #line 751 "src\\yield\\http\\http_message.cpp" */
-        }
-      }
-    }
-
 _out:
     {}
   }
@@ -1101,8 +1040,7 @@ set_field(
   SYSTEMTIME utc_system_time = value.as_utc_SYSTEMTIME();
 
   date_len
-  = _snprintf_s
-    (
+  = _snprintf_s(
       date,
       30,
       _TRUNCATE,
@@ -1119,8 +1057,7 @@ set_field(
   tm utc_tm = value.as_utc_tm();
 
   date_len
-  = snprintf
-    (
+  = snprintf(
       date,
       30,
       "%s, %02d %s %04d %02d:%02d:%02d GMT",

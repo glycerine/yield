@@ -30,6 +30,7 @@
 #include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/buffer.hpp"
+#include "yield/http/http_body_chunk.hpp"
 #include "yield/http/http_response.hpp"
 #include "yield/http/http_response_parser.hpp"
 #include "yunit.hpp"
@@ -39,40 +40,44 @@ TEST_SUITE(HTTPResponseParser);
 namespace yield {
 namespace http {
 TEST(HTTPResponseParser, MalformedReasonPhraseMissing) {
-  HTTPResponse* http_response = object_cast<HTTPResponse>(HTTPResponseParser("HTTP/1.1 200\r\n\r\n").parse());
+  HTTPResponseParser http_response_parser("HTTP/1.1 200\r\n\r\n");
+  HTTPResponse* http_response = object_cast<HTTPResponse>(http_response_parser.parse());
   throw_assert_ne(http_response, NULL);
   throw_assert_eq(http_response->get_status_code(), 400);
-  HTTPResponse::dec_ref(*http_response);
+  HTTPResponse::dec_ref(http_response);
 }
 
 TEST(HTTPResponseParser, MalformedStatusCodeAlpha) {
-  HTTPResponse* http_response = object_cast<HTTPResponse>(HTTPResponseParser("HTTP/1.1 XX OK\r\n\r\n").parse());
+  HTTPResponseParser http_response_parser("HTTP/1.1 XX OK\r\n\r\n");
+  HTTPResponse* http_response = object_cast<HTTPResponse>(http_response_parser.parse());
   throw_assert_ne(http_response, NULL);
   throw_assert_eq(http_response->get_status_code(), 400);
-  HTTPResponse::dec_ref(*http_response);
+  HTTPResponse::dec_ref(http_response);
 }
 
 TEST(HTTPResponseParser, MalformedStatusCodeMissing) {
-  HTTPResponse* http_response = object_cast<HTTPResponse>(HTTPResponseParser("HTTP/1.1 OK\r\n\r\n").parse());
+  HTTPResponseParser http_response_parser("HTTP/1.1 OK\r\n\r\n");
+  HTTPResponse* http_response = object_cast<HTTPResponse>(http_response_parser.parse());
   throw_assert_ne(http_response, NULL);
   throw_assert_eq(http_response->get_status_code(), 400);
-  HTTPResponse::dec_ref(*http_response);
+  HTTPResponse::dec_ref(http_response);
 }
 
 TEST(HTTPResponseParser, MalformedStatusLineMissing) {
-  HTTPResponse* http_response = object_cast<HTTPResponse>(HTTPResponseParser("Host: localhost\r\n\r\n").parse());
+  HTTPResponseParser http_response_parser("Host: localhost\r\n\r\n");
+  HTTPResponse* http_response = object_cast<HTTPResponse>(http_response_parser.parse());
   throw_assert_ne(http_response, NULL);
   throw_assert_eq(http_response->get_status_code(), 400);
-  HTTPResponse::dec_ref(*http_response);
+  HTTPResponse::dec_ref(http_response);
 }
 
 TEST(HTTPResponseParser, WellFormedStatusLineOnly) {
-  HTTPResponse* http_response = object_cast<HTTPResponse>(HTTPResponseParser("HTTP/1.1 200 OK\r\n\r\n").parse());
+  HTTPResponseParser http_response_parser("HTTP/1.1 200 OK\r\n\r\n");
+  HTTPResponse* http_response = object_cast<HTTPResponse>(http_response_parser.parse());
   throw_assert_ne(http_response, NULL);
   throw_assert_eq(http_response->get_status_code(), 200);
   throw_assert_eq(http_response->get_body(), NULL);
-  HTTPResponse::dec_ref(*http_response);
+  HTTPResponse::dec_ref(http_response);
 }
-
 }
 }

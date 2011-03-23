@@ -32,79 +32,79 @@ from http_message_parser_test import *
 
 
 class HTTPRequestParserTest(HTTPMessageParserTest):
-    def ASSERT_1_METHOD(self, method="GET"):
+    def ASSERT_METHOD(self, method="GET"):
         self.append("""throw_assert_eq(http_request->get_method(), HTTPRequest::METHOD_%(method)s);""" % locals())
 
-    def ASSERT_1_URI(self):
-        URI = globals()["URI"]
-        self.append("""throw_assert_eq(strcmp(http_request->get_uri(), "%(URI)s"), 0);""" % locals())
-
-    def ASSERT_N_METHOD(self, n, method="GET"):
-        self.append("""for (size_t i = 0; i < %(n)u; i++) { throw_assert_eq(http_requests[i]->get_method(), HTTPRequest::METHOD_%(method)s); }""" % locals())
-
-    def ASSERT_N_URI(n):
-        URI = globals()["URI"]
-        self.append("""for (size_t i = 0; i < %(n)u; i++) { throw_assert_eq(strcmp(http_requests[i]->get_uri(), "%(URI)s"), 0); }""" % locals())
+    def ASSERT_URI(self):
+        self.append("""throw_assert_eq(strcmp(http_request->get_uri(), "%(URI)s"), 0);""" % globals())
 
 
 class MalformedHTTPVersionMissingHTTPRequestParserTest(HTTPRequestParserTest):
     def __init__(self):
         HTTPRequestParserTest.__init__(self)
-        self.PARSE_1("GET", ' ', URI, CRLF, HOST_FIELD, CRLF)
-        self.ASSERT_1_NULL()
+        self.PARSER("GET", ' ', URI, CRLF, HOST_FIELD, CRLF)
+        self.PARSE()
+        self.ASSERT_NULL()
 
 
 class MalformedHTTPVersionMissingHTTPHTTPRequestParserTest(HTTPRequestParserTest):
     def __init__(self):
         HTTPRequestParserTest.__init__(self)
-        self.PARSE_1("GET", ' ', URI, ' ', "/1.0", CRLF, HOST_FIELD, CRLF)
-        self.ASSERT_1_NULL()
+        self.PARSER("GET", ' ', URI, ' ', "/1.0", CRLF, HOST_FIELD, CRLF)
+        self.PARSE()
+        self.ASSERT_NULL()
 
 
 class MalformedHTTPVersionMissingMinorVersionHTTPRequestParserTest(HTTPRequestParserTest):
     def __init__(self):
         HTTPRequestParserTest.__init__(self)
-        self.PARSE_1("GET", ' ', URI, " HTTP/1.", CRLF, HOST_FIELD, CRLF)
-        self.ASSERT_1_NULL()
+        self.PARSER("GET", ' ', URI, " HTTP/1.", CRLF, HOST_FIELD, CRLF)
+        self.PARSE()
+        self.ASSERT_NULL()
 
 
 class MalformedHTTPVersionMissingTrailingCRLFHTTPRequestParserTest(HTTPRequestParserTest):
     def __init__(self):
         HTTPRequestParserTest.__init__(self)
-        self.PARSE_1("GET", ' ', URI, ' ', HTTP_VERSION, HOST_FIELD, CRLF)
-        self.ASSERT_1_NULL()
+        self.PARSER("GET", ' ', URI, ' ', HTTP_VERSION, HOST_FIELD, CRLF)
+        self.PARSE()
+        self.ASSERT_NULL()
 
 
 class MalformedMethodMissingHTTPRequestParserTest(HTTPRequestParserTest):
     def __init__(self):
         HTTPRequestParserTest.__init__(self)
-        self.PARSE_1(URI, " HTTP/1.0", CRLF, HOST_FIELD, CRLF)
-        self.ASSERT_1_NULL()
+        self.PARSER(URI, " HTTP/1.0", CRLF, HOST_FIELD, CRLF)
+        self.PARSE()
+        self.ASSERT_NULL()
 
 
 class MalformedURIEmbeddedLFHTTPRequestParserTest(HTTPRequestParserTest):
     def __init__(self):
         HTTPRequestParserTest.__init__(self)
-        self.PARSE_1("GET", " /\\r ", HTTP_VERSION, CRLF, HOST_FIELD, CRLF)
-        self.ASSERT_1_NULL()
+        self.PARSER("GET", " /\\r ", HTTP_VERSION, CRLF, HOST_FIELD, CRLF)
+        self.PARSE()
+        self.ASSERT_NULL()
 
 
 class MalformedURIMissingHTTPRequestParserTest(HTTPRequestParserTest):
     def __init__(self):
         HTTPRequestParserTest.__init__(self)
-        self.PARSE_1("GET", ' ', HTTP_VERSION, CRLF, HOST_FIELD, CRLF)
-        self.ASSERT_1_NULL()
+        self.PARSER("GET", ' ', HTTP_VERSION, CRLF, HOST_FIELD, CRLF)
+        self.PARSE()
+        self.ASSERT_NULL()
 
 
 class WellFormedRequestLineOnlyHTTPRequestParserTest(HTTPRequestParserTest):
     def __init__(self):
         HTTPRequestParserTest.__init__(self)
-        self.PARSE_1("GET", ' ', URI, ' ', HTTP_VERSION, CRLF, CRLF)
-        self.ASSERT_1_NONNULL()
-        self.ASSERT_1_METHOD()
-        self.ASSERT_1_HTTP_VERSION()
-        self.ASSERT_1_BODY_NULL()
-        self.DEC_REF_1()
+        self.PARSER("GET", ' ', URI, ' ', HTTP_VERSION, CRLF, CRLF)
+        self.PARSE()
+        self.ASSERT_NONNULL()
+        self.ASSERT_METHOD()
+        self.ASSERT_HTTP_VERSION()
+        self.ASSERT_BODY_NULL()
+        self.DEC_REF()
 
 
 class HTTPRequestParserTestSuite(HTTPMessageParserTestSuite):

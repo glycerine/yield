@@ -31,7 +31,6 @@
 
 #include <iostream>
 
-
 namespace yield {
 namespace http {
 void HTTPRequestHandler::handle(YO_NEW_REF Event& event) {
@@ -42,10 +41,11 @@ void HTTPRequestHandler::handle(YO_NEW_REF Event& event) {
   break;
 
   default: {
-    std::cerr << "yield::http::HTTPRequestHandler: " <<
-              "dropping unrecognized Event type " <<
-              event.get_type_name() <<
-              std::endl;
+    std::cerr <<
+      "yield::http::HTTPRequestHandler: " <<
+      "dropping unrecognized Event type " <<
+      event.get_type_name() <<
+      std::endl;
     Event::dec_ref(event);
   }
   break;

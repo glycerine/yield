@@ -41,13 +41,15 @@ class HTTPBodyChunk;
 class HTTPMessageParser {
 protected:
   HTTPMessageParser(Buffer& buffer);
-  HTTPMessageParser(const string& buffer);
+  HTTPMessageParser(const string& buffer); // For testing
   ~HTTPMessageParser();
 
+protected:
   Buffer& get_buffer() {
     return buffer;
   }
 
+protected:
   bool parse_body(size_t content_length, OUT void*& body);
   Object* parse_body_chunk();
   bool parse_fields(OUT uint16_t& fields_offset, OUT size_t& content_length);

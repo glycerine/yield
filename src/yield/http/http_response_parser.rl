@@ -38,7 +38,6 @@
 #pragma warning(disable: 4702)
 #endif
 
-
 namespace yield {
 namespace http {
 Object& HTTPResponseParser::parse() {

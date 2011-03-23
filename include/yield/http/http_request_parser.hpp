@@ -32,13 +32,8 @@
 
 #include "yield/http/http_message_parser.hpp"
 #include "yield/http/http_request.hpp"
-#include "yield/http/http_response.hpp"
 
 namespace yield {
-namespace uri {
-class URI;
-}
-
 namespace http {
 class HTTPRequestParser : public HTTPMessageParser {
 public:
@@ -50,7 +45,21 @@ public:
     : HTTPMessageParser(buffer)
   { }
 
+public:
   YO_NEW_REF Object& parse();
+
+private:
+  bool parse_request_line(
+    OUT float& http_version,
+    OUT HTTPRequest::Method& method,
+    OUT iovec& uri_fragment,
+    OUT iovec& uri_host,
+    OUT iovec& uri_path,
+    OUT uint16_t& uri_port,
+    OUT iovec& uri_query,
+    OUT iovec& uri_scheme,
+    OUT iovec& uri_userinfo
+  );
 };
 }
 }

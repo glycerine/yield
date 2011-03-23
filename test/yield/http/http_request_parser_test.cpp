@@ -30,6 +30,7 @@
 #include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/buffer.hpp"
+#include "yield/http/http_body_chunk.hpp"
 #include "yield/http/http_request.hpp"
 #include "yield/http/http_request_parser.hpp"
 #include "yunit.hpp"
@@ -39,48 +40,55 @@ TEST_SUITE(HTTPRequestParser);
 namespace yield {
 namespace http {
 TEST(HTTPRequestParser, MalformedHTTPVersionMissing) {
-  HTTPRequest* http_request = object_cast<HTTPRequest>(HTTPRequestParser("GET /\r\nHost: localhost\r\n\r\n").parse());
+  HTTPRequestParser http_request_parser("GET /\r\nHost: localhost\r\n\r\n");
+  HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
   throw_assert_eq(http_request, NULL);
 }
 
 TEST(HTTPRequestParser, MalformedHTTPVersionMissingHTTP) {
-  HTTPRequest* http_request = object_cast<HTTPRequest>(HTTPRequestParser("GET / /1.0\r\nHost: localhost\r\n\r\n").parse());
+  HTTPRequestParser http_request_parser("GET / /1.0\r\nHost: localhost\r\n\r\n");
+  HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
   throw_assert_eq(http_request, NULL);
 }
 
 TEST(HTTPRequestParser, MalformedHTTPVersionMissingMinorVersion) {
-  HTTPRequest* http_request = object_cast<HTTPRequest>(HTTPRequestParser("GET / HTTP/1.\r\nHost: localhost\r\n\r\n").parse());
+  HTTPRequestParser http_request_parser("GET / HTTP/1.\r\nHost: localhost\r\n\r\n");
+  HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
   throw_assert_eq(http_request, NULL);
 }
 
 TEST(HTTPRequestParser, MalformedHTTPVersionMissingTrailingCRLF) {
-  HTTPRequest* http_request = object_cast<HTTPRequest>(HTTPRequestParser("GET / HTTP/1.1Host: localhost\r\n\r\n").parse());
+  HTTPRequestParser http_request_parser("GET / HTTP/1.1Host: localhost\r\n\r\n");
+  HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
   throw_assert_eq(http_request, NULL);
 }
 
 TEST(HTTPRequestParser, MalformedMethodMissing) {
-  HTTPRequest* http_request = object_cast<HTTPRequest>(HTTPRequestParser("/ HTTP/1.0\r\nHost: localhost\r\n\r\n").parse());
+  HTTPRequestParser http_request_parser("/ HTTP/1.0\r\nHost: localhost\r\n\r\n");
+  HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
   throw_assert_eq(http_request, NULL);
 }
 
 TEST(HTTPRequestParser, MalformedURIEmbeddedLF) {
-  HTTPRequest* http_request = object_cast<HTTPRequest>(HTTPRequestParser("GET /\r HTTP/1.1\r\nHost: localhost\r\n\r\n").parse());
+  HTTPRequestParser http_request_parser("GET /\r HTTP/1.1\r\nHost: localhost\r\n\r\n");
+  HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
   throw_assert_eq(http_request, NULL);
 }
 
 TEST(HTTPRequestParser, MalformedURIMissing) {
-  HTTPRequest* http_request = object_cast<HTTPRequest>(HTTPRequestParser("GET HTTP/1.1\r\nHost: localhost\r\n\r\n").parse());
+  HTTPRequestParser http_request_parser("GET HTTP/1.1\r\nHost: localhost\r\n\r\n");
+  HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
   throw_assert_eq(http_request, NULL);
 }
 
 TEST(HTTPRequestParser, WellFormedRequestLineOnly) {
-  HTTPRequest* http_request = object_cast<HTTPRequest>(HTTPRequestParser("GET / HTTP/1.1\r\n\r\n").parse());
+  HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\n\r\n");
+  HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
   throw_assert_ne(http_request, NULL);
   throw_assert_eq(http_request->get_method(), HTTPRequest::METHOD_GET);
   throw_assert_eq(http_request->get_http_version(), 1.1F);
   throw_assert_eq(http_request->get_body(), NULL);
-  HTTPRequest::dec_ref(*http_request);
+  HTTPRequest::dec_ref(http_request);
 }
-
 }
 }

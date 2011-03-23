@@ -27,9 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/assert.hpp"
-#include "yield/string_buffer.hpp"
 #include "yield/exception.hpp"
+#include "yield/string_buffer.hpp"
 #include "yield/uri/uri.hpp"
 
 #include <sstream> // or std::ostringstream
@@ -43,7 +42,6 @@
 %%{
   machine uri;
   alphtype unsigned char;
-
 
   gen_delims    = ":" | "|" | "?" | "#" | "[" | "]" | "@";
   sub_delims    = "!" | "$" | "&" | "'" | "(" | ")" | "*" | "+" | "," | ";" | "=";
@@ -155,11 +153,6 @@ URI::URI(
     query(query),
     scheme(scheme),
     userinfo(userinfo) {
-  debug_assert_ne(host.iov_base, NULL);
-  debug_assert_gt(host.iov_len, 0);
-  debug_assert_ne(path.iov_base, NULL);
-  debug_assert_ne(scheme.iov_base, NULL);
-  debug_assert_gt(scheme.iov_len, 0);
 }
 
 URI::URI(const char* uri) throw(Exception)

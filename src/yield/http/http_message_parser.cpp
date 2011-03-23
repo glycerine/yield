@@ -65,12 +65,10 @@
 
 #include <stdlib.h> // For strtol
 
-
 #ifdef _WIN32
 #pragma warning(push)
 #pragma warning(disable: 4702)
 #endif
-
 
 namespace yield {
 namespace http {
@@ -522,7 +520,7 @@ _match:
       }
       break;
       case 8:
-        /* #line 101 "src\\yield\\http\\http_message_parser.rl" */
+        /* #line 99 "src\\yield\\http\\http_message_parser.rl" */
       { {
           p++;
           goto _out;
@@ -530,7 +528,7 @@ _match:
       }
       break;
       case 9:
-        /* #line 102 "src\\yield\\http\\http_message_parser.rl" */
+        /* #line 100 "src\\yield\\http\\http_message_parser.rl" */
       {
         return NULL;
       }
@@ -550,7 +548,7 @@ _again:
       while (__nacts-- > 0) {
         switch (*__acts++) {
         case 9:
-          /* #line 102 "src\\yield\\http\\http_message_parser.rl" */
+          /* #line 100 "src\\yield\\http\\http_message_parser.rl" */
         {
           return NULL;
         }
@@ -564,7 +562,7 @@ _out:
     {}
   }
 
-  /* #line 107 "src\\yield\\http\\http_message_parser.rl" */
+  /* #line 105 "src\\yield\\http\\http_message_parser.rl" */
 
 
   if (cs != chunk_parser_error) {
@@ -581,8 +579,7 @@ _out:
 }
 
 bool
-HTTPMessageParser::parse_fields
-(
+HTTPMessageParser::parse_fields(
   OUT uint16_t& fields_offset,
   OUT size_t& content_length
 ) {
@@ -764,7 +761,7 @@ _match:
       }
       break;
       case 4:
-        /* #line 145 "src\\yield\\http\\http_message_parser.rl" */
+        /* #line 140 "src\\yield\\http\\http_message_parser.rl" */
       {
         if
         (
@@ -795,7 +792,7 @@ _match:
       }
       break;
       case 5:
-        /* #line 175 "src\\yield\\http\\http_message_parser.rl" */
+        /* #line 170 "src\\yield\\http\\http_message_parser.rl" */
       { {
           p++;
           goto _out;
@@ -803,7 +800,7 @@ _match:
       }
       break;
       case 6:
-        /* #line 176 "src\\yield\\http\\http_message_parser.rl" */
+        /* #line 171 "src\\yield\\http\\http_message_parser.rl" */
       {
         return false;
       }
@@ -823,7 +820,7 @@ _again:
       while (__nacts-- > 0) {
         switch (*__acts++) {
         case 6:
-          /* #line 176 "src\\yield\\http\\http_message_parser.rl" */
+          /* #line 171 "src\\yield\\http\\http_message_parser.rl" */
         {
           return false;
         }
@@ -837,7 +834,7 @@ _out:
     {}
   }
 
-  /* #line 181 "src\\yield\\http\\http_message_parser.rl" */
+  /* #line 176 "src\\yield\\http\\http_message_parser.rl" */
 
 
   return cs != fields_parser_error;

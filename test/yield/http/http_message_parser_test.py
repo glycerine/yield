@@ -28,7 +28,7 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from yuild.constant import INDENT_SPACES
-from yutil import indent
+from yutil import decamel, indent
 
 
 __all__ = [
@@ -65,107 +65,78 @@ class HTTPMessageParserTest(list):
             assert self.__class__.__name__.endswith("ParserTest")
             self.__http_message_type = self.__class__.__name__[self.__class__.__name__.rindex("HTTP"):self.__class__.__name__.index("ParserTest")]
 
-    def ASSERT_1_BODY2(self):
-        self.append("throw_assert_eq(%(http_message_type_lower_case)s->get_content_length(), 2);" % self)
+    def ASSERT_BODY2(self, http_message_instance=None):
+        if http_message_instance is None:
+            http_message_instance = decamel(self.http_message_type)
 
-    def ASSERT_1_BODY_NONNULL(self):
-        self.append("throw_assert_ne(%(http_message_type_lower_case)s->get_body(), NULL);" % self)
+        self.append("throw_assert_eq(%(http_message_instance)s->get_content_length(), 2);" % locals())
 
-    def ASSERT_1_BODY_NULL(self):
-        self.append("throw_assert_eq(%(http_message_type_lower_case)s->get_body(), NULL);" % self)
+    def ASSERT_BODY_NONNULL(self, http_message_instance=None):
+        if http_message_instance is None:
+            http_message_instance = decamel(self.http_message_type)
 
-    def ASSERT_1_HOST_FIELD(self):
+        self.append("throw_assert_ne(%(http_message_instance)s->get_body(), NULL);" % locals())
+
+    def ASSERT_BODY_NULL(self, http_message_instance=None):
+        if http_message_instance is None:
+            http_message_instance = decamel(self.http_message_type)
+
+        self.append("throw_assert_eq(%(http_message_instance)s->get_body(), NULL);" % locals())
+
+    def ASSERT_HOST_FIELD(self, http_message_instance=None):
+        if http_message_instance is None:
+            http_message_instance = decamel(self.http_message_type)
+
         HOST = globals()["HOST"]
-        http_message_type_lower_case = self.http_message_type_lower_case
-        self.append("""throw_assert_eq((*%(http_message_type_lower_case)s)["Host"], "%(HOST)s");""" % locals())
+        self.append("""throw_assert_eq((*%(http_message_instance)s)["Host"], "%(HOST)s");""" % locals())
 
-    def ASSERT_1_HTTP_VERSION(self):
-        self.append("throw_assert_eq(%(http_message_type_lower_case)s->get_http_version(), 1.1F);" % self)
+    def ASSERT_HTTP_VERSION(self, http_message_instance=None, http_version="1.1F"):
+        if http_message_instance is None:
+            http_message_instance = decamel(self.http_message_type)
 
-    def ASSERT_1_NONNULL(self):
-        self.append("throw_assert_ne(%(http_message_type_lower_case)s, NULL);" % self)
+        self.append("throw_assert_eq(%(http_message_instance)s->get_http_version(), %(http_version)s);" % locals())
 
-    def ASSERT_1_NULL(self):
-        self.append("throw_assert_eq(%(http_message_type_lower_case)s, NULL);" % self)
+    def ASSERT_NONNULL(self, object_instance=None):
+        if object_instance is None:
+            object_instance = decamel(self.http_message_type)
 
-    def ASSERT_N(self, n):
-        http_message_type_lower_case = self.http_message_type_lower_case
-        self.append("throw_assert_eq(%(http_message_type_lower_case)ss.size(), %(n)u);" % locals())
+        self.append("throw_assert_ne(%(object_instance)s, NULL);" % locals())
 
-    def ASSERT_N_BODY2(self, n):
-        http_message_type_lower_case = self.http_message_type_lower_case
-        self.append("for (size_t i = 0; i < %(n)u; i++) { throw_assert_eq(%(http_message_type_lower_case)ss[i]->get_content_length(), 2); }" % locals())
+    def ASSERT_NULL(self, object_instance=None):
+        if object_instance is None:
+            object_instance = decamel(self.http_message_type)
 
-    def ASSERT_N_BODY_NONNULL(self, n):
-        http_message_type_lower_case = self.http_message_type_lower_case
-        self.append("""for (size_t i = 0; i < %(n)u; i++) { throw_assert_ne(%(http_message_type_lower_case)ss[i]->get_body(), NULL); }""" % locals())
+        self.append("throw_assert_eq(%(object_instance)s, NULL);" % locals())
 
-    def ASSERT_N_BODY_NULL(self, n):
-        http_message_type_lower_case = self.http_message_type_lower_case
-        self.append("""for (size_t i = 0; i < %(n)u; i++) { throw_assert_eq(%(http_message_type_lower_case)ss[i]->get_body(), NULL); }""" % locals())
+    def DEC_REF(self, object_type=None, object_instance=None):
+        if object_type is None:
+            object_type = self.http_message_type
 
-    def ASSERT_N_HOST_FIELD(self, n):
-        HOST = globals()["HOST"]
-        http_message_type_lower_case = self.http_message_type_lower_case
-        return """for (size_t i = 0; i < %(n)u; i++) { throw_assert_eq((*%(http_message_type_lower_case)ss[i])["Host"], "%(HOST)s"); }""" % locals()
+        if object_instance is None:
+            object_instance = decamel(object_type)
 
-    def ASSERT_N_HTTP_VERSION(self, n):
-        http_message_type_lower_case = self.http_message_type_lower_case
-        return "for (size_t i = 0; i < %(n)u; i++) { throw_assert_eq(%(http_message_type_lower_case)ss[i]->get_http_version(), 1.1F); }" % locals()
-
-    def DEC_REF_1(self):
-        self.append("%(http_message_type)s::dec_ref(*%(http_message_type_lower_case)s);" % self)
-
-    def DEC_REF_N(self, n):
-        http_message_type = self.http_message_type
-        http_message_type_lower_case = self.http_message_type_lower_case
-        self.append("for (size_t i = 0; i < %(n)u; i++) %(http_message_type)s::dec_ref(*%(http_message_type_lower_case)ss[i]);" % locals())
-
-    def __getitem__(self, key):
-        if key == "http_message_type":
-            return self.http_message_type
-        elif key == "http_message_type_lower_case":
-            return self.http_message_type_lower_case
-        else:
-            raise KeyError, key
+        self.append("%(object_type)s::dec_ref(%(object_instance)s);" % locals())
 
     @property
     def http_message_type(self):
         return self.__http_message_type
 
-    @property
-    def http_message_type_lower_case(self):
-        return "http_" + self.__http_message_type[4:].lower()
+    def PARSE(self, object_type=None, object_instance=None):
+        if object_type is None:
+            object_type = self.http_message_type
 
-    def PARSE_1(self, *args):
+        if object_instance is None:
+            object_instance = decamel(object_type)
+
+        http_message_type_lower = decamel(self.http_message_type)
+
+        self.append("""%(object_type)s* %(object_instance)s = object_cast<%(object_type)s>(%(http_message_type_lower)s_parser.parse());""" % locals())
+
+    def PARSER(self, *args):
         args = "".join(args)
         http_message_type = self.http_message_type
-        http_message_type_lower_case = self.http_message_type_lower_case
-        self.append("""%(http_message_type)s* %(http_message_type_lower_case)s = object_cast<%(http_message_type)s>(%(http_message_type)sParser(\"%(args)s\").parse());""" % locals())
-
-    def PARSE_N(self, n, *args):
-        args = "".join(args)
-        http_message_type = self.http_message_type
-        http_message_type_lower_case = self.http_message_type_lower_case
-        self.append("""\
-%(http_message_type)sParser %(http_message_type_lower_case)s_parser(\"%(args)s\");
-vector<%(http_message_type)s*> %(http_message_type_lower_case)ss;
-
-for (uint32_t i = 0; i < %(n)u; i++) {
-  %(http_message_type)s* %(http_message_type_lower_case)s = object_cast<%(http_message_type)s>(%(http_message_type_lower_case)s_parser.parse());
-
-  if (%(http_message_type_lower_case)s != NULL)
-    %(http_message_type_lower_case)ss.push_back(%(http_message_type_lower_case)s);
-  else {
-    while (!%(http_message_type_lower_case)ss.empty()) {
-      %(http_message_type)s::dec_ref(*%(http_message_type_lower_case)ss.back());
-      %(http_message_type_lower_case)ss.pop_back();
-    }
-
-    throw_assert(false);
-  }
-}
-""" % locals())
+        http_message_type_lower_case = decamel(self.http_message_type)
+        self.append("""%(http_message_type)sParser %(http_message_type_lower_case)s_parser(\"%(args)s\");""" % locals())
 
     def __str__(self):
         if self.__class__.__name__.endswith("HTTPMessageParserTest"):
@@ -185,82 +156,107 @@ TEST(%(http_message_parser_type)s, %(test_name)s) {
 class WellFormedChunk1BodyHTTPMessageParserTest(HTTPMessageParserTest):
     def __init__(self):
         HTTPMessageParserTest.__init__(self)
-        self.PARSE_N(
-            2,
+        self.PARSER(
             "GET", ' ', URI, ' ', HTTP_VERSION, CRLF,
             HOST_FIELD,
             TE_CHUNKED_FIELD,
             CRLF,
             "1" + CRLF + "x" + CRLF + "0" + CRLF * 2
         )
-        self.ASSERT_N(2)
-        self.ASSERT_N_HTTP_VERSION(2)
-        self.ASSERT_N_BODY_NONNULL(2)
-        self.append("throw_assert_eq(http_requests[0]->get_content_length(), 1);")
-        self.append("throw_assert_eq(http_requests[1]->get_content_length(), 0);")
-        self.DEC_REF_N(2)
+        self.PARSE()
+        self.ASSERT_NONNULL()
+        self.ASSERT_HTTP_VERSION()
+        self.ASSERT_HOST_FIELD()
+        for http_body_chunk_size in (1, 0):
+            self.append('{')
+            self.PARSE("HTTPBodyChunk", "http_body_chunk")
+            self.ASSERT_NONNULL("http_body_chunk")
+            self.append("throw_assert_eq(http_body_chunk->size(), %(http_body_chunk_size)u);" % locals())
+            self.DEC_REF("HTTPBodyChunk", "http_body_chunk")
+            self.append('}')
+        self.DEC_REF()
 
 
 class WellFormedChunk2BodyHTTPMessageParserTest(HTTPMessageParserTest):
     def __init__(self):
         HTTPMessageParserTest.__init__(self)
-        self.PARSE_N(
-            3,
+        self.PARSER(
             "GET", ' ', URI, ' ', HTTP_VERSION, CRLF,
             HOST_FIELD,
             TE_CHUNKED_FIELD,
             CRLF,
             "1" + CRLF + "x" + CRLF + "1" + CRLF + "y" + CRLF + "0" + CRLF * 2
         )
-        self.ASSERT_N(3)
-        self.ASSERT_N_HTTP_VERSION(3)
-        self.ASSERT_N_HOST_FIELD(3)
-        self.ASSERT_N_BODY_NONNULL(3)
-        self.append("throw_assert_eq(http_requests[0]->get_content_length(), 1);")
-        self.append("throw_assert_eq(http_requests[1]->get_content_length(), 1);")
-        self.append("throw_assert_eq(http_requests[2]->get_content_length(), 0);")
-        self.DEC_REF_N(3)
+        self.PARSE()
+        self.ASSERT_NONNULL()
+        self.ASSERT_HTTP_VERSION()
+        self.ASSERT_HOST_FIELD()
+        for http_body_chunk_size in (1, 1, 0):
+            self.append('{')
+            self.PARSE("HTTPBodyChunk", "http_body_chunk")
+            self.ASSERT_NONNULL("http_body_chunk")
+            self.append("throw_assert_eq(http_body_chunk->size(), %(http_body_chunk_size)u);" % locals())
+            self.DEC_REF("HTTPBodyChunk", "http_body_chunk")
+            self.append('}')
+        self.DEC_REF()
+
+
+class WellFormedNoBodyHTTPMessageParserTest(HTTPMessageParserTest):
+    def __init__(self):
+        HTTPMessageParserTest.__init__(self)
+        self.PARSER("GET", ' ', URI, ' ', HTTP_VERSION, CRLF, HOST_FIELD, CRLF)
+        self.PARSE()
+        self.ASSERT_NONNULL()
+        self.ASSERT_BODY_NULL()
+        self.DEC_REF()
 
 
 class WellFormedNormalBodyHTTPMessageParserTest(HTTPMessageParserTest):
     def __init__(self):
         HTTPMessageParserTest.__init__(self)
-        self.PARSE_1("GET", ' ', URI, ' ', HTTP_VERSION, CRLF, HOST_FIELD, CL2_FIELD, CRLF, BODY2)
-        self.ASSERT_1_NONNULL()
-        self.ASSERT_1_BODY_NONNULL()
-        self.ASSERT_1_BODY2()
-        self.DEC_REF_1()
+        self.PARSER("GET", ' ', URI, ' ', HTTP_VERSION, CRLF, HOST_FIELD, CL2_FIELD, CRLF, BODY2)
+        self.PARSE()
+        self.ASSERT_NONNULL()
+        self.ASSERT_BODY_NONNULL()
+        self.ASSERT_BODY2()
+        self.DEC_REF()
 
 
 class WellFormedPipelinedNoBodyHTTPMessageParserTest(HTTPMessageParserTest):
     def __init__(self):
         HTTPMessageParserTest.__init__(self)
-        self.PARSE_N(
-            2,
+        self.PARSER(
             "GET", ' ', URI, ' ', HTTP_VERSION, CRLF, HOST_FIELD, CRLF,
             "GET", ' ', URI, ' ', HTTP_VERSION, CRLF, HOST_FIELD, CRLF,
         )
-        self.ASSERT_N(2)
-        self.ASSERT_N_HTTP_VERSION(2)
-        self.ASSERT_N_HOST_FIELD(2)
-        self.ASSERT_N_BODY_NULL(2)
-        self.DEC_REF_N(2)
+        for i in xrange(2):
+            self.append('{')
+            self.PARSE()
+            self.ASSERT_NONNULL()
+            self.ASSERT_HTTP_VERSION()
+            self.ASSERT_HOST_FIELD()
+            self.ASSERT_BODY_NULL()
+            self.DEC_REF()
+            self.append('}')
 
 
 class WellFormedPipelinedNormalBodyHTTPMessageParserTest(HTTPMessageParserTest):
     def __init__(self):
         HTTPMessageParserTest.__init__(self)
-        self.PARSE_N(
-            2,
+        self.PARSER(
             "GET", ' ', URI, ' ', HTTP_VERSION, CRLF, HOST_FIELD, CL2_FIELD, CRLF, BODY2,
             "GET", ' ', URI, ' ', HTTP_VERSION, CRLF, HOST_FIELD, CL2_FIELD, CRLF, BODY2,
         )
-        self.ASSERT_N(2)
-        self.ASSERT_N_HTTP_VERSION(2)
-        self.ASSERT_N_HOST_FIELD(2)
-        self.ASSERT_N_BODY_NONNULL(2)
-        self.ASSERT_N_BODY2(2)
-        self.DEC_REF_N(2)
+        for i in xrange(2):
+            self.append('{')
+            self.PARSE()
+            self.ASSERT_NONNULL()
+            self.ASSERT_HTTP_VERSION()
+            self.ASSERT_HOST_FIELD()
+            self.ASSERT_BODY_NONNULL()
+            self.ASSERT_BODY2()
+            self.DEC_REF()
+            self.append('}')
 
 
 class HTTPMessageParserTestSuite(list):
@@ -269,6 +265,7 @@ class HTTPMessageParserTestSuite(list):
         if self.__class__ == HTTPMessageParserTestSuite:
             self.append(WellFormedChunk1BodyHTTPMessageParserTest())
             self.append(WellFormedChunk2BodyHTTPMessageParserTest())
+            self.append(WellFormedNoBodyHTTPMessageParserTest())
             self.append(WellFormedNormalBodyHTTPMessageParserTest())
             self.append(WellFormedPipelinedNoBodyHTTPMessageParserTest())
             self.append(WellFormedPipelinedNormalBodyHTTPMessageParserTest())
@@ -288,6 +285,7 @@ class HTTPMessageParserTestSuite(list):
 #include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/buffer.hpp"
+#include "yield/http/http_body_chunk.hpp"
 #include "yield/http/%(http_message_type_lower_case)s.hpp"
 #include "yield/http/%(http_message_type_lower_case)s_parser.hpp"
 #include "yunit.hpp"
@@ -296,8 +294,7 @@ TEST_SUITE(%(http_message_parser_type)s);
 
 namespace yield {
 namespace http {
-%(tests)s
-}
+%(tests)s}
 }
 """ % locals()
 

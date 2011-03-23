@@ -35,6 +35,7 @@ from hashlib import md5
 from inspect import isclass
 from os import curdir, getcwd, listdir, makedirs, pardir, walk as _walk, sep as os_sep
 from os.path import abspath, exists, isdir, isfile, join, normcase, relpath, split
+import re
 import shutil
 
 
@@ -43,12 +44,13 @@ __all__ = \
   "abspath", "abspaths",
   "bstrip",
   "copy_file",
+  "decamel",
   "deduplist",
   "fnmatch",
   "indent",
   "ishidden",
   "istype",
- "list_files",
+  "list_files",
   "list_subdirectories",
   "lpad",
   "merge_dicts",
@@ -125,6 +127,10 @@ def copy_file(from_path, to_path):
         return True
     else:
         return False
+
+
+def decamel(x):
+    return re.sub('(((?<=[a-z])[A-Z])|([A-Z](?![A-Z]|$)))', '_\\1', x).lower().strip('_')
 
 
 def deduplist(x):

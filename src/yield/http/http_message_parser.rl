@@ -35,12 +35,10 @@
 
 #include <stdlib.h> // For strtol
 
-
 #ifdef _WIN32
 #pragma warning(push)
 #pragma warning(disable: 4702)
 #endif
-
 
 namespace yield {
 namespace http {
@@ -120,8 +118,7 @@ Object* HTTPMessageParser::parse_body_chunk() {
 }
 
 bool
-HTTPMessageParser::parse_fields
-(
+HTTPMessageParser::parse_fields(
   OUT uint16_t& fields_offset,
   OUT size_t& content_length
 ) {
@@ -140,9 +137,7 @@ HTTPMessageParser::parse_fields
 
     main :=
     (
-      field
-      %
-      {
+      field % {
         if
         (
           field_name.iov_len == 14
@@ -151,8 +146,8 @@ HTTPMessageParser::parse_fields
             memcmp(field_name.iov_base, "Content-Length", 14) == 0
             ||
             memcmp(field_name.iov_base, "Content-length", 14) == 0
-         )
-       ) {
+          )
+        ) {
           char* nptr = static_cast<char*>(field_value.iov_base);
           char* endptr = nptr + field_value.iov_len;
           content_length = static_cast<size_t>(strtol(nptr, &endptr, 10));
@@ -168,7 +163,7 @@ HTTPMessageParser::parse_fields
          )
           &&
           memcmp(field_value.iov_base, "chunked", 7) == 0
-       )
+        )
           content_length = HTTPRequest::CONTENT_LENGTH_CHUNKED;
       }
    )* crlf

@@ -37,43 +37,46 @@ TEST_SUITE(HTTPMessage);
 
 namespace yield {
 namespace http {
-//TEST(HTTPMessage, get_body) {
-//  throw_assert_eq(HTTPRequest(HTTPRequest::METHOD_GET, "/").get_body(), NULL);
-//
-//  auto_Object<Buffer> body = new StringBuffer("body");
-//  throw_assert_eq(
-//    memcmp(
-//      HTTPRequest(HTTPRequest::METHOD_GET, "/", &body->inc_ref()).get_body(),
-//      "body",
-//      4
-//    ),
-//    0
-//  );
-//}
-//
-//TEST(HTTPMessage, get_content_length) {
-//  throw_assert_eq(
-//    HTTPRequest(HTTPRequest::METHOD_GET, "/").get_content_length(),
-//    0
-//  );
-//
-//  auto_Object<Buffer> body = new StringBuffer("body");
-//  throw_assert_eq(
-//    HTTPRequest(HTTPRequest::METHOD_GET, "/", &body->inc_ref()).get_content_length(),
-//    4
-//  );
-//}
-//
-//TEST(HTTPMessage, get_date_field) {
-//  auto_Object<HTTPRequest> http_request
-//    = new HTTPRequest(HTTPRequest::METHOD_GET, "/");
-//  http_request->set_field("Date", "Wed, 15 Nov 1995 06:25:24 GMT");
-//  DateTime date = http_request->get_date_field("Date");
-//}
-//
+TEST(HTTPMessage, get_body) {
+  throw_assert_eq(HTTPRequest(HTTPRequest::METHOD_GET, "/").get_body(), NULL);
+
+  auto_Object<Buffer> body = new StringBuffer("body");
+  throw_assert_eq(
+    memcmp(
+      HTTPRequest(HTTPRequest::METHOD_GET, "/", &body->inc_ref()).get_body(),
+      "body",
+      4
+    ),
+    0
+  );
+}
+
+TEST(HTTPMessage, get_content_length) {
+  throw_assert_eq(
+    HTTPRequest(HTTPRequest::METHOD_GET, "/").get_content_length(),
+    0
+  );
+
+  auto_Object<Buffer> body = new StringBuffer("body");
+  throw_assert_eq(
+    HTTPRequest(HTTPRequest::METHOD_GET, "/", &body->inc_ref()).get_content_length(),
+    4
+  );
+}
+
+TEST(HTTPMessage, get_date_field) {
+  auto_Object<HTTPRequest> http_request
+    = new HTTPRequest(HTTPRequest::METHOD_GET, "/");
+  http_request->set_field("Date", "Wed, 15 Nov 1995 06:25:24 GMT");
+  DateTime date = http_request->get_date_field("Date");
+  throw_assert_ne(date, DateTime::INVALID_DATE_TIME);
+}
+
 TEST(HTTPMessage, get_field) {
   auto_Object<HTTPRequest> http_request
     = new HTTPRequest(HTTPRequest::METHOD_GET, "/");
+  // Set a field before the desired field
+  http_request->set_field("Host", "localhost");
   http_request->set_field("Date", "Wed, 15 Nov 1995 06:25:24 GMT");
 
   {
@@ -89,6 +92,9 @@ TEST(HTTPMessage, get_field) {
     throw_assert_eq(date.iov_len, 29);
     throw_assert_eq(memcmp(date.iov_base, "Wed, 15 Nov 1995 06:25:24 GMT", 29), 0);
   }
+
+  // Set a field after the desired field
+  http_request->set_field("User-Agent", "Yield");
 
   {
     string date = http_request->get_field("Date");

@@ -45,12 +45,13 @@ public:
     : HTTPMessageParser(buffer)
   { }
 
+public:
   Object& parse();
 
 private:
   bool parse_status_line(float& http_version, uint16_t& status_code);
 };
-};
-};
+}
+}
 
 #endif

@@ -35,57 +35,59 @@ OK = "200 OK"
 
 
 class HTTPResponseParserTest(HTTPMessageParserTest):
-    def ASSERT_1_STATUS_CODE(self, status_code):
+    def ASSERT_STATUS_CODE(self, status_code):
         self.append("throw_assert_eq(http_response->get_status_code(), %(status_code)u);" % locals())
-
-    def ASSERT_N_STATUS_CODE(self, n, status_code):
-        self.append("for (size_t i = 0; i < %(n)u; i++) { throw_assert_eq(http_responses[i]->get_status_code(), %(status_code)u); }" % locals())
 
 
 class MalformedReasonPhraseMissingHTTPResponseParserTest(HTTPResponseParserTest):
     def __init__(self):
         HTTPResponseParserTest.__init__(self)
-        self.PARSE_1(HTTP_VERSION, " 200", CRLF, CRLF)
-        self.ASSERT_1_NONNULL()
-        self.ASSERT_1_STATUS_CODE(400)
-        self.DEC_REF_1()
+        self.PARSER(HTTP_VERSION, " 200", CRLF, CRLF)
+        self.PARSE()
+        self.ASSERT_NONNULL()
+        self.ASSERT_STATUS_CODE(400)
+        self.DEC_REF()
 
 
 class MalformedStatusCodeAlphaHTTPResponseParserTest(HTTPResponseParserTest):
     def __init__(self):
         HTTPResponseParserTest.__init__(self)
-        self.PARSE_1(HTTP_VERSION, " XX OK", CRLF, CRLF)
-        self.ASSERT_1_NONNULL()
-        self.ASSERT_1_STATUS_CODE(400)
-        self.DEC_REF_1()
+        self.PARSER(HTTP_VERSION, " XX OK", CRLF, CRLF)
+        self.PARSE()
+        self.ASSERT_NONNULL()
+        self.ASSERT_STATUS_CODE(400)
+        self.DEC_REF()
 
 
 class MalformedStatusCodeMissingHTTPResponseParserTest(HTTPResponseParserTest):
     def __init__(self):
         HTTPResponseParserTest.__init__(self)
-        self.PARSE_1(HTTP_VERSION, " OK", CRLF, CRLF)
-        self.ASSERT_1_NONNULL()
-        self.ASSERT_1_STATUS_CODE(400)
-        self.DEC_REF_1()
+        self.PARSER(HTTP_VERSION, " OK", CRLF, CRLF)
+        self.PARSE()
+        self.ASSERT_NONNULL()
+        self.ASSERT_STATUS_CODE(400)
+        self.DEC_REF()
 
 
 class MalformedStatusLineMissingHTTPResponseParserTest(HTTPResponseParserTest):
     def __init__(self):
         HTTPResponseParserTest.__init__(self)
-        self.PARSE_1(HOST_FIELD, CRLF)
-        self.ASSERT_1_NONNULL()
-        self.ASSERT_1_STATUS_CODE(400)
-        self.DEC_REF_1()
+        self.PARSER(HOST_FIELD, CRLF)
+        self.PARSE()
+        self.ASSERT_NONNULL()
+        self.ASSERT_STATUS_CODE(400)
+        self.DEC_REF()
 
 
 class WellFormedStatusLineOnlyHTTPResponseParserTest(HTTPResponseParserTest):
     def __init__(self):
         HTTPResponseParserTest.__init__(self)
-        self.PARSE_1(HTTP_VERSION, ' ', OK, CRLF, CRLF)
-        self.ASSERT_1_NONNULL()
-        self.ASSERT_1_STATUS_CODE(200)
-        self.ASSERT_1_BODY_NULL()
-        self.DEC_REF_1()
+        self.PARSER(HTTP_VERSION, ' ', OK, CRLF, CRLF)
+        self.PARSE()
+        self.ASSERT_NONNULL()
+        self.ASSERT_STATUS_CODE(200)
+        self.ASSERT_BODY_NULL()
+        self.DEC_REF()
 
 
 class HTTPResponseParserTestSuite(HTTPMessageParserTestSuite):

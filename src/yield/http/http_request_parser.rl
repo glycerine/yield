@@ -30,14 +30,12 @@
 #include "yield/assert.hpp"
 #include "yield/page.hpp"
 #include "yield/http/http_request_parser.hpp"
-
-#include <stdlib.h> // For atof
+#include "yield/http/http_response.hpp"
 
 #ifdef _WIN32
 #pragma warning(push)
 #pragma warning(disable: 4702)
 #endif
-
 
 namespace yield {
 namespace http {
@@ -47,21 +45,93 @@ Object& HTTPRequestParser::parse() {
   if (p < eof) {
     ps = p;
 
+    float http_version;
+    HTTPRequest::Method method;
+    iovec uri_fragment = { 0 };
+    iovec uri_host = { 0 };
+    iovec uri_path = { 0 };
+    uint16_t uri_port = 0;
+    iovec uri_query = { 0 };
+    iovec uri_scheme = { 0 };
+    iovec uri_userinfo = { 0 };
+
+    if 
+    (
+      parse_request_line(
+        http_version,
+        method,
+        uri_fragment,
+        uri_host,
+        uri_path,
+        uri_port,
+        uri_query,
+        uri_scheme,
+        uri_userinfo
+      )
+    ) {
+      URI uri(
+        get_buffer(),
+        uri_fragment,
+        uri_host,
+        uri_path,
+        uri_port,
+        uri_query,
+        uri_scheme,
+        uri_userinfo
+      );
+
+      uint16_t fields_offset;
+      size_t content_length;
+
+      if (parse_fields(fields_offset, content_length)) {
+        void* body;
+
+        if (parse_body(content_length, body)) {
+          return *new HTTPRequest(
+                   body,
+                   get_buffer(),
+                   content_length,
+                   fields_offset,
+                   http_version,
+                   method,
+                   uri
+                );
+        } else {
+          Buffer* next_buffer
+          = new Page(p - ps + content_length, ps, eof - ps);
+          ps = p;
+          return *next_buffer;
+        }
+      }
+    } else { // cs == request_line_parser_error
+      Object* object = parse_body_chunk();
+      if (object != NULL)
+        return *object;
+    }
+
+    if (p == eof) { // EOF parsing
+      Buffer* next_buffer
+      = new Page(eof - ps + Page::getpagesize(), ps, eof - ps);
+      p = ps;
+      return *next_buffer;
+    } else // Error parsing
+      return *new HTTPResponse(400, NULL, http_version);
+  } else // p == eof
+    return *new Page;
+}
+
+bool HTTPRequestParser::parse_request_line(
+  OUT float& http_version,
+  OUT HTTPRequest::Method& method,
+  OUT iovec& fragment,
+  OUT iovec& host,
+  OUT iovec& path,
+  OUT uint16_t& port,
+  OUT iovec& query,
+  OUT iovec& scheme,
+  OUT iovec& userinfo
+) {
     int cs;
-    HTTPRequest::Method method = HTTPRequest::METHOD_GET;
-    float http_version = 1.1F;
-    // URI variables
-    iovec fragment = { 0 };
-    iovec host;
-    host.iov_base = const_cast<char*>("localhost");
-    host.iov_len = 9;
-    iovec path = { 0 };
-    uint16_t port = 80;
-    iovec query = { 0 };
-    iovec scheme;
-    scheme.iov_base = const_cast<char*>("http");
-    scheme.iov_len = 4;
-    iovec userinfo = { 0 };
 
     %%{
       machine request_line_parser;
@@ -109,62 +179,10 @@ Object& HTTPRequestParser::parse() {
       write exec noend;
     }%%
 
-    if (cs != request_line_parser_error) {
-      URI uri
-      (
-        get_buffer(),
-        fragment,
-        host,
-        path,
-        port,
-        query,
-        scheme,
-        userinfo
-     );
-
-      uint16_t fields_offset;
-      size_t content_length;
-
-      if (parse_fields(fields_offset, content_length)) {
-        void* body;
-
-        if (parse_body(content_length, body)) {
-          return *new HTTPRequest
-                 (
-                   body,
-                   get_buffer(),
-                   content_length,
-                   fields_offset,
-                   http_version,
-                   method,
-                   uri
-                );
-        } else {
-          Buffer* next_buffer
-          = new Page(p - ps + content_length, ps, eof - ps);
-          ps = p;
-          return *next_buffer;
-        }
-      }
-    } else { // cs == request_line_parser_error
-      Object* object = parse_body_chunk();
-      if (object != NULL)
-        return *object;
-    }
-
-    if (p == eof) { // EOF parsing
-      Buffer* next_buffer
-      = new Page(eof - ps + Page::getpagesize(), ps, eof - ps);
-      p = ps;
-      return *next_buffer;
-    } else // Error parsing
-      return *new HTTPResponse(400, NULL, http_version);
-  } else // p == eof
-    return *new Page;
+    return cs != request_line_parser_error;
 }
 }
 }
-
 
 #ifdef _WIN32
 #pragma warning(pop)
