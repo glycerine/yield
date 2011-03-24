@@ -32,7 +32,6 @@
 
 #include "yield/buffer.hpp"
 
-
 namespace yield {
 class Page : public Buffer {
 public:
@@ -45,19 +44,15 @@ public:
   Page(const Page&);
   virtual ~Page();
 
-  Page* get_next_page() const;
+public:
   static size_t getpagesize();
+
+public:
   static bool is_page_aligned(const void* ptr);
   static bool is_page_aligned(const iovec& iov);
-  void set_next_page(YO_NEW_REF Page* page);
-  void set_next_page(YO_NEW_REF Page& page);
 
-  // Object
-  Page& inc_ref() {
-    return Object::inc_ref(*this);
-  }
-
-  // Buffer
+public:
+  // yield::Buffer
   void* data() {
     return data_;
   }

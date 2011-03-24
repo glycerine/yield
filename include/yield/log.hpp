@@ -34,10 +34,8 @@
 
 #include <sstream> // For std::ostringstream
 
-
 namespace yield {
 class Buffer;
-
 
 class Log : public Object {
 public:
@@ -107,18 +105,23 @@ public:
 public:
   virtual ~Log() { }
 
+public:
   const Level& get_level() const {
     return level;
   }
+
   Stream get_stream() {
     return Stream(inc_ref(), level);
   }
+
   Stream get_stream(Level level) {
     return Stream(inc_ref(), level);
   }
 
+public:
   static YO_NEW_REF Log& open(std::ostream&, const Level& = ERR);
 
+public:
   void write(const char*, const Level&);
   void write(const string&, const Level&);
   void write(const void*, size_t, const Level&);
@@ -126,7 +129,8 @@ public:
   void write(const char*, size_t, const Level&);
   void write(const Buffer&, const Level&);
 
-  // Object
+public:
+  // yield::Object
   Log& inc_ref() {
     return Object::inc_ref(*this);
   }

@@ -32,7 +32,6 @@
 
 #include "yield/message.hpp"
 
-
 namespace yield {
 class Response : public Message {
 public:
@@ -42,26 +41,31 @@ public:
   Response() { }
   virtual ~Response() { }
 
+public:
   virtual bool is_exception() const {
     return false;
   }
 
-  // Object
+public:
+  // yield::Object
   virtual uint32_t get_type_id() const {
     return TYPE_ID;
   }
+
   virtual const char* get_type_name() const {
     return "yield::Response";
   }
+
   Response& inc_ref() {
     return Object::inc_ref(*this);
   }
 
-  // Message
+public:
+  // yield::Message
   bool is_request() const {
     return false;
   }
 };
-};
+}
 
 #endif

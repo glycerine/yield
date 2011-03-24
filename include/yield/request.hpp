@@ -32,11 +32,9 @@
 
 #include "yield/message.hpp"
 
-
 namespace yield {
 class EventHandler;
 class Response;
-
 
 class Request : public Message {
 public:
@@ -46,38 +44,46 @@ public:
   Request();
   virtual ~Request();
 
+public:
   virtual YO_NEW_REF Response* createDefaultResponse() {
     return NULL;
   }
-  // MarshallableObject* get_credentials() const { return credentials; }
+
+public:
   EventHandler* get_response_handler() const {
     return response_handler;
   }
+
+public:
   virtual void respond(Response& response);
-  // void set_credentials( YO_NEW_REF MarshallableObject* credentials );
+
+public:
   void set_response_handler(YO_NEW_REF EventHandler* response_handler);
   void set_response_handler(EventHandler& response_handler);
 
-  // Object
+public:
+  // yield::Object
   virtual uint32_t get_type_id() const {
     return TYPE_ID;
   }
+
   virtual const char* get_type_name() const {
     return "yield::Request";
   }
+
   Request& inc_ref() {
     return Object::inc_ref(*this);
   }
 
-  // Message
+public:
+  // yield::Message
   bool is_request() const {
     return true;
   }
 
 private:
-  // MarshallableObject* credentials;
   EventHandler* response_handler;
 };
-};
+}
 
 #endif

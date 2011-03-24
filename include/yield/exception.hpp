@@ -34,7 +34,6 @@
 
 #include <exception>
 
-
 namespace yield {
 class Exception : public Response, public std::exception {
 public:
@@ -51,33 +50,41 @@ public:
   Exception(const Exception& other);
   virtual ~Exception() throw();
 
+public:
   virtual Exception& clone() const {
     return *new Exception(*this);
   }
 
+public:
   virtual uint32_t get_error_code() const {
     return error_code;
   }
+
   virtual const char* get_error_message() const throw();
   static uint32_t get_last_error_code();
+
   operator const char* () const throw() {
     return get_error_message();
   }
 
+public:
   virtual void rethrow() const {
     throw Exception(*this);
   }
 
+public:
   void set_error_code(uint32_t error_code);
   void set_error_message(const char* error_message);
   void set_error_message(const string& error_message);
   static void set_last_error_code(uint32_t error_code);
 
-  // Response
+public:
+  // yield::Response
   bool is_exception() const {
     return true;
   }
 
+public:
   // std::exception
   const char* what() const throw();
 

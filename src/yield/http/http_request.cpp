@@ -40,6 +40,7 @@ namespace http {
 HTTPRequest::HTTPRequest(
   void* body,
   Buffer& buffer,
+  uint32_t connection_id,
   size_t content_length,
   uint16_t fields_offset,
   float http_version,
@@ -47,12 +48,13 @@ HTTPRequest::HTTPRequest(
   const yield::uri::URI& uri
 )
   : HTTPMessage<HTTPRequest>(
-    body,
-    buffer,
-    content_length,
-    fields_offset,
-    http_version
+      body,
+      buffer,
+      content_length,
+      fields_offset,
+      http_version
   ),
+  connection_id(connection_id),
   creation_date_time(DateTime::now()),
   method(method),
   uri(uri)
@@ -62,9 +64,11 @@ HTTPRequest::HTTPRequest(
   Method method,
   const yield::uri::URI& uri,
   YO_NEW_REF Buffer* body,
+  uint32_t connection_id,
   float http_version
 )
   : HTTPMessage<HTTPRequest>(body, http_version),
+    connection_id(connection_id),
     creation_date_time(DateTime::now()),
     method(method),
     uri(uri) {
@@ -167,10 +171,6 @@ HTTPRequest::HTTPRequest(
       }
       }
   }
-}
-
-const DateTime& HTTPRequest::get_creation_date_time() const {
-  return creation_date_time;
 }
 
 void HTTPRequest::respond(HTTPResponse& http_response) {

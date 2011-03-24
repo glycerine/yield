@@ -59,6 +59,6 @@ public:
     enqueue(event);
   }
 };
-};
+}
 
 #endif

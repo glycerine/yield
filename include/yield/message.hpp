@@ -32,20 +32,22 @@
 
 #include "yield/event.hpp"
 
-
 namespace yield {
 class Message : public Event {
 public:
   virtual ~Message() { }
 
+public:
   virtual bool is_request() const = 0;
 
-  // Object
+public:
+  // yield::Object
   Message& inc_ref() {
     return Object::inc_ref(*this);
   }
 
-  // Event
+public:
+  // yield::Event
   bool is_message() const {
     return true;
   }
@@ -53,6 +55,6 @@ public:
 protected:
   Message() { }
 };
-};
+}
 
 #endif

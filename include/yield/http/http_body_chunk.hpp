@@ -35,7 +35,7 @@
 
 namespace yield {
 namespace http {
-class HTTPBodyChunk : public Page {
+class HTTPBodyChunk : public Response {
 public:
   const static uint32_t TYPE_ID = 3435197009UL;
 

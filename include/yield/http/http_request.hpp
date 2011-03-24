@@ -35,14 +35,12 @@
 #include "yield/http/http_message.hpp"
 #include "yield/uri/uri.hpp"
 
-
 namespace yield {
 class Exception;
 
 
 namespace http {
 class HTTPResponse;
-
 
 class HTTPRequest : public Request, public HTTPMessage<HTTPRequest> {
 public:
@@ -72,11 +70,18 @@ public:
     Method method,
     const yield::uri::URI& uri,
     YO_NEW_REF Buffer* body = NULL,
+    uint32_t connection_id = 0,
     float http_version = 1.1f
   );
 
 public:
-  const DateTime& get_creation_date_time() const;
+  uint32_t get_connection_id() const {
+    return connection_id;
+  }
+
+  const DateTime& get_creation_date_time() const {
+    return creation_date_time;
+  }
 
   Method get_method() const {
     return method;
@@ -116,6 +121,7 @@ private:
   HTTPRequest(
     void* body,
     Buffer& buffer,
+    uint32_t connection_id,
     size_t content_length,
     uint16_t fields_offset,
     float http_version,
@@ -124,6 +130,7 @@ private:
   );
 
 private:
+  uint32_t connection_id;
   DateTime creation_date_time;
   Method method;
   yield::uri::URI uri;

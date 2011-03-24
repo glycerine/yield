@@ -33,13 +33,13 @@
 #include "yield/atomic.hpp"
 #include "yield/types.hpp"
 
-
 namespace yield {
 class Object {
 public:
   Object() : refcnt(1)
   { }
 
+public:
   static inline void dec_ref(Object& object) {
     if (atomic_dec(&object.refcnt) == 0)
       delete &object;
@@ -50,13 +50,16 @@ public:
       Object::dec_ref(*object);
   }
 
+public:
   virtual uint32_t get_type_id() const {
     return 0;
   }
+
   virtual const char* get_type_name() const {
     return "";
   }
 
+public:
   template <class ObjectType>
   static inline ObjectType& inc_ref(ObjectType& object) {
     atomic_inc(&object.refcnt);

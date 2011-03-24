@@ -41,9 +41,8 @@ public:
 public:
   virtual ~Buffer();
 
-  size_t capacity() const {
-    return capacity_;
-  }
+public:
+  virtual size_t capacity() const;
 
   virtual void* data() = 0;
 
@@ -57,6 +56,7 @@ public:
     return next_buffer;
   }
 
+public:
   operator char* () {
     return static_cast<char*>(data());
   }
@@ -84,6 +84,7 @@ public:
   bool operator==(const Buffer&) const;
   bool operator!=(const Buffer& other) const;
 
+public:
   void put(const Buffer&);
   void put(char buf, size_t repeat_count);
   void put(const iovec& iov);
@@ -91,17 +92,21 @@ public:
   void put(const string& buf);
   virtual void put(const void* buf, size_t len);
 
-  virtual void reserve(size_t new_capacity) = 0;
+public:
+  virtual void reserve(size_t capacity) = 0;
   void resize(size_t new_size);
 
+public:
   void set_next_buffer(YO_NEW_REF Buffer* next_buffer);
   void set_next_buffer(YO_NEW_REF Buffer& next_buffer);
 
+public:
   size_t size() const {
     return size_;
   }
 
-  // Object
+public:
+  // yield::Object
   virtual uint32_t get_type_id() const {
     return TYPE_ID;
   }
@@ -113,12 +118,6 @@ public:
   Buffer& inc_ref() {
     return Object::inc_ref(*this);
   }
-
-protected:
-  Buffer(size_t capacity);
-
-protected:
-  size_t capacity_;
 
 private:
   Buffer* next_buffer;

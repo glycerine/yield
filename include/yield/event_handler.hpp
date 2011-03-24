@@ -48,6 +48,6 @@ public:
     return Object::inc_ref(*this);
   }
 };
-};
+}
 
 #endif

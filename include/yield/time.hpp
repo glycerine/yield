@@ -37,7 +37,6 @@ struct mach_timespec;
 typedef mach_timespec mach_timespec_t;
 #endif
 
-
 namespace yield {
 class Time {
 public:
@@ -60,6 +59,7 @@ public:
   Time(const timeval&);
 #endif
 
+public:
   double ms() const {
     return static_cast<double>(_ns) / NS_IN_MS;
   }
@@ -78,6 +78,7 @@ public:
     return static_cast<double>(_ns) / NS_IN_US;
   }
 
+public:
   operator uint64_t() const {
     return _ns;
   }

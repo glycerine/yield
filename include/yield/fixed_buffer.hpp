@@ -64,7 +64,8 @@ public:
 
   virtual ~FixedBuffer() { }
 
-  // Buffer
+public:
+  // yield::Buffer
   void* data() {
     return &data_[0];
   }

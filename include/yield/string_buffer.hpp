@@ -45,7 +45,8 @@ public:
   StringBuffer(const StringBuffer&);
   virtual ~StringBuffer();
 
-  // Buffer
+public:
+  // yield::Buffer
   void* data() {
     return data_;
   }
