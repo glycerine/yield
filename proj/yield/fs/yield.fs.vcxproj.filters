@@ -47,9 +47,6 @@
     <ClInclude Include="..\..\..\include\yield\fs\file_system.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\fs\memory_mapped_file.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\yield\fs\path.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -65,9 +62,6 @@
     <ClInclude Include="..\..\..\include\yield\fs\posix\file_system.hpp">
       <Filter>Header Files\posix</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\fs\posix\memory_mapped_file.hpp">
-      <Filter>Header Files\posix</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\yield\fs\posix\stat.hpp">
       <Filter>Header Files\posix</Filter>
     </ClInclude>
@@ -81,9 +75,6 @@
       <Filter>Header Files\win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\yield\fs\win32\file_system.hpp">
-      <Filter>Header Files\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\fs\win32\memory_mapped_file.hpp">
       <Filter>Header Files\win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\yield\fs\win32\stat.hpp">
@@ -154,9 +145,6 @@
     <ClCompile Include="..\..\..\src\yield\fs\posix\file_system.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\fs\posix\memory_mapped_file.cpp">
-      <Filter>Source Files\posix</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\fs\posix\path.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>
@@ -170,9 +158,6 @@
       <Filter>Source Files\win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\fs\win32\file_system.cpp">
-      <Filter>Source Files\win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\fs\win32\memory_mapped_file.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\fs\win32\named_pipe.cpp">

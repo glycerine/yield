@@ -63,10 +63,6 @@ public:
     return data_;
   }
 
-  Buffer* get_next_buffer() const {
-    return next_buffer;
-  }
-
 public:
   static size_t getpagesize();
   bool is_page_aligned() const;
@@ -103,10 +99,6 @@ public:
   }
 
 public:
-  void set_next_buffer(YO_NEW_REF Buffer* next_buffer);
-  void set_next_buffer(YO_NEW_REF Buffer& next_buffer);
-
-public:
   // yield::Object
   uint32_t get_type_id() const {
     return TYPE_ID;
@@ -131,7 +123,6 @@ private:
   void alloc(size_t alignment, size_t capacity);
 
 private:
-  Buffer* next_buffer;
   static size_t pagesize;
 };
 }

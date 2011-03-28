@@ -34,7 +34,6 @@
 #include "yield/fs/win32/directory.hpp"
 #include "yield/fs/win32/file.hpp"
 #include "yield/fs/win32/file_system.hpp"
-#include "yield/fs/win32/memory_mapped_file.hpp"
 #include "yield/fs/win32/stat.hpp"
 
 #include <fcntl.h> // For O_*

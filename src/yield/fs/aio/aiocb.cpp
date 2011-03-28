@@ -27,7 +27,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/page.hpp"
+#include "yield/buffer.hpp"
 #include "yield/fs/aio/aiocb.hpp"
 #include "yield/fs/file.hpp"
 
@@ -42,8 +42,8 @@ AIOCB::AIOCB(File& file, size_t nbytes, uint64_t offset)
   : yield::aio::AIOCB(file, NULL, nbytes, offset)
 { }
 
-AIOCB::AIOCB(File& file, Page& page, size_t nbytes, uint64_t offset)
-  : yield::aio::AIOCB(file, page, nbytes, offset)
+AIOCB::AIOCB(File& file, Buffer& buffer, size_t nbytes, uint64_t offset)
+  : yield::aio::AIOCB(file, buffer, nbytes, offset)
 { }
 
 File& AIOCB::get_file() {

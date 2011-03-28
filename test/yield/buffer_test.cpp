@@ -56,17 +56,19 @@ TEST(Buffer, data) {
   throw_assert_ne(buffer->data(), NULL);
 }
 
-TEST(Buffer, get_next_buffer) {
-  auto_Object<Buffer> buffer = new Buffer(2);
-  auto_Object<Buffer> buffer2 = new Buffer(2);
-  buffer->set_next_buffer(buffer2->inc_ref());
-  throw_assert_eq(buffer->get_next_buffer(), &buffer2.get());
-}
-
 TEST(Buffer, getpagesize) {
   size_t pagesize = Buffer::getpagesize();
   throw_assert_gt(pagesize, 0);
   throw_assert_eq(pagesize % 2, 0);
+}
+
+TEST(Buffer, is_page_aligned) {
+  auto_Object<Buffer> buffer = new Buffer(Buffer::getpagesize());
+  throw_assert(Buffer::is_page_aligned(buffer->data()));
+  iovec iov;
+  iov.iov_base = buffer->data();
+  iov.iov_len = buffer->capacity();
+  throw_assert(Buffer::is_page_aligned(iov));
 }
 
 TEST(Buffer, operator_array) {
@@ -79,20 +81,5 @@ TEST(Buffer, operator_cast) {
   throw_assert_ne(static_cast<void*>(*buffer), NULL);
   throw_assert_ne(static_cast<char*>(*buffer), NULL);
   throw_assert_ne(static_cast<uint8_t*>(*buffer), NULL);
-}
-
-TEST(Buffer, set_next_buffer) {
-  auto_Object<Buffer> buffer = new Buffer(2);
-  auto_Object<Buffer> buffer2 = new Buffer(2);
-  buffer->set_next_buffer(buffer2->inc_ref());
-}
-
-TEST(Buffer, is_page_aligned) {
-  auto_Object<Buffer> buffer = new Buffer(Buffer::getpagesize());
-  throw_assert(Buffer::is_page_aligned(buffer->data()));
-  iovec iov;
-  iov.iov_base = buffer->data();
-  iov.iov_len = buffer->capacity();
-  throw_assert(Buffer::is_page_aligned(iov));
 }
 }

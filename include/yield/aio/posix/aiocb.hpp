@@ -55,42 +55,55 @@ public:
 public:
   virtual ~AIOCB();
 
+public:
   bool cancel();
 
+public:
   Channel& get_channel() {
     return channel;
   }
+
   EventHandler* get_completion_handler() {
     return completion_handler;
   }
+
   uint32_t get_error() const {
     return error;
   }
+
   size_t get_nbytes() const {
     return aiocb_.aio_nbytes;
   }
+
   uint64_t get_offset() const {
     return aiocb_.aio_offset;
   }
+
   ssize_t get_return() const {
     return return_;
   }
 
+public:
   virtual bool issue(EventHandler& completion_handler);
 
+public:
   operator aiocb* () {
     return &aiocb_;
   }
 
+public:
   virtual RetryStatus retry() = 0;
 
+public:
   void set_error(uint32_t error) {
     this->error = error;
   }
+
   virtual void set_return(ssize_t return_) {
     this->return_ = return_;
   }
 
+public:
   // yield::Object
   virtual uint32_t get_type_id() const = 0;
   virtual const char* get_type_name() const = 0;
@@ -101,6 +114,7 @@ public:
 protected:
   AIOCB(Channel&, void* buf, size_t nbytes, uint64_t offset);
 
+protected:
   void set_completion_handler(EventHandler& completion_handler);
 
 private:

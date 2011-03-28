@@ -43,13 +43,13 @@ public:
 public:
   setlkAIOCB
   (
-    yield::fs::File& file,
-    const yield::fs::File::Lock& flock_
+    File& file,
+    const File::Lock& flock_
   )
     : AIOCB(file, 0, flock_.get_start()), flock_(flock_)
   { }
 
-  const yield::fs::File::Lock& get_flock() const {
+  const File::Lock& get_flock() const {
     return flock_;
   }
 
@@ -68,7 +68,7 @@ public:
   RetryStatus retry();
 
 private:
-  yield::fs::File::Lock flock_;
+  File::Lock flock_;
 };
 }
 }

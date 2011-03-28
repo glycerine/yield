@@ -40,24 +40,24 @@ public:
   const static uint32_t TYPE_ID = 1080008554UL;
 
 public:
-  pwriteAIOCB
-  (
-    yield::fs::File& file,
-    YO_NEW_REF Page& page,
+  pwriteAIOCB(
+    File& file,
+    YO_NEW_REF Buffer& buffer,
     size_t nbytes,
     uint64_t offset
   );
 
   ~pwriteAIOCB();
 
-  Page& get_page() const {
-    return page;
+  Buffer& get_buffer() const {
+    return buffer;
   }
 
   // yield::Object
   uint32_t get_type_id() const {
     return TYPE_ID;
   }
+
   const char* get_type_name() const {
     return "yield::fs::aio::pwriteAIOCB";
   }
@@ -70,7 +70,7 @@ public:
   RetryStatus retry();
 
 private:
-  Page& page;
+  Buffer& buffer;
 };
 }
 }

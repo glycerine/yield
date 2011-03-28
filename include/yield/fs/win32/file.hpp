@@ -30,6 +30,7 @@
 #ifndef _YIELD_FS_WIN32_FILE_HPP_
 #define _YIELD_FS_WIN32_FILE_HPP_
 
+#include "yield/buffer.hpp"
 #include "yield/channel.hpp"
 
 #define O_SYNC     010000
@@ -41,7 +42,7 @@
 namespace yield {
 namespace fs {
 namespace win32 {
-class MemoryMappedFile;
+class Map;
 class Stat;
 
 class File : public Channel {
@@ -87,6 +88,60 @@ public:
   };
 
 public:
+  class Map : public Buffer {
+  public:
+    ~Map();
+
+  public:
+    File& get_file() {
+      return file;
+    }
+
+    uint64_t get_file_offset() const {
+      return file_offset;
+    }
+
+    bool is_read_only() const {
+      return read_only;
+    }
+
+    bool is_shared() const {
+      return shared;
+    }
+
+  public:
+    bool sync();
+    bool sync(size_t offset, size_t length);
+    bool sync(void* ptr, size_t length);
+
+    bool unmap();
+
+  private:
+    friend class File;
+
+    Map(
+      size_t capacity,
+      void* data,
+      File& file,
+      fd_t file_mapping,
+      uint64_t file_offset,
+      unsigned int flags,
+      unsigned int prot,
+      bool read_only,
+      bool shared
+    );
+
+  private:
+    File& file;
+    fd_t file_mapping;
+    uint64_t file_offset;
+    unsigned int flags;
+    unsigned int prot;
+    bool read_only;
+    bool shared;
+  };
+
+public:
   File(fd_t fd);
   ~File();
 
@@ -95,7 +150,7 @@ public:
 
   virtual bool datasync();
 
-  YO_NEW_REF MemoryMappedFile*
+  YO_NEW_REF Map*
   mmap(
     size_t length = SIZE_MAX,
     uint64_t offset = 0,

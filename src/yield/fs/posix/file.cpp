@@ -47,6 +47,70 @@
 namespace yield {
 namespace fs {
 namespace posix {
+File::Map::Map(
+  size_t capacity,
+  void* data,
+  File& file,
+  uint64_t file_offset,
+  int flags,
+  int prot
+)
+  : Buffer(capacity, data),
+    file(file.inc_ref()),
+    file_offset(file_offset),
+    flags(flags),
+    prot(prot)
+{ }
+
+File::Map::~Map() {
+  unmap();
+  File::dec_ref(file);
+}
+
+bool File::Map::is_read_only() const {
+  return (prot & PROT_WRITE) != PROT_WRITE;
+}
+
+bool File::Map::is_shared() const {
+  return (flags & MAP_SHARED) == MAP_SHARED;
+}
+
+bool File::Map::sync() {
+  return sync(data_, capacity());
+}
+
+bool File::Map::sync(size_t offset, size_t length) {
+  return sync(static_cast<char*>(data_) + offset, length);
+}
+
+bool File::Map::sync(void* ptr, size_t length) {
+  if (data_ != MAP_FAILED) {
+#ifdef __sun
+    return msync(static_cast<char*>(ptr), length, MS_SYNC) == 0;
+#else
+    return msync(ptr, length, MS_SYNC) == 0;
+#endif
+  } else {
+    errno = EBADF;
+    return false;
+  }
+}
+
+bool File::Map::unmap() {
+  if (data_ != MAP_FAILED) {
+    if (munmap(data_, capacity()) == 0) {
+      capacity_ = 0;
+      data_ = MAP_FAILED;
+      return true;
+    } else
+      return false;
+  } else {
+    errno = EBADF;
+    return false;
+  }
+}
+
+
 File::File(fd_t fd) : fd(fd) {
 }
 
@@ -80,7 +144,7 @@ File::Lock* File::getlk(const Lock& lock) {
     return NULL;
 }
 
-YO_NEW_REF MemoryMappedFile*
+YO_NEW_REF File::Map*
 File::mmap(
   size_t length,
   uint64_t offset,
@@ -107,7 +171,7 @@ File::mmap(
     data = MAP_FAILED;
 
   return new
-         MemoryMappedFile(
+         File::Map(
            length,
            data,
            *this,

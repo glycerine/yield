@@ -38,7 +38,9 @@
 #include "yield/fs/stat.hpp"
 
 #include <fcntl.h> // For O_*
-
+#ifndef _WIN32
+#include <sys/mman.h> // For MAP_* and PROT_*
+#endif
 
 namespace yield {
 namespace fs {
@@ -142,6 +144,94 @@ public:
     );
   }
 };
+
+
+class FileMapTest : public FileTest {
+public:
+  FileMapTest(FilePairFactory& file_pair_factory)
+    : FileTest(file_pair_factory)
+  { }
+
+  // yunit::Test
+  void run() {
+    auto_Object<File::Map> mmf = get_read_file().mmap();
+  }
+};
+
+
+//class FileMapReadTest : public FileTest {
+//public:
+//  FileMapReadTest(FilePairFactory& file_pair_factory)
+//    : FileTest(file_pair_factory)
+//  { }
+//
+//  // yunit::Test
+//  void run() {
+//    {
+//      auto_Object<File::Map> mmf = get_test_file().mmap();
+//
+//      mmf->reserve(get_test_string().size());
+//
+//      memcpy_s
+//      (
+//        *mmf,
+//        get_test_string().size(),
+//        get_test_string().c_str(),
+//        get_test_string().size()
+//      );
+//
+//      if (mmf->sync())
+//        mmf->close();
+//      else
+//        throw Exception();
+//    }
+//
+//    {
+//      auto_Object<File> test_file = FileSystem().open(get_test_file_name());
+//
+//      auto_Object<File::Map> mmf
+//      = get_test_file().mmap(
+//          SIZE_MAX,
+//          0,
+//          true,
+//          false
+//        );
+//
+//      throw_assert_eq(mmf->capacity(), get_test_string().size());
+//      throw_assert_eq
+//      (
+//        strncmp(*mmf, get_test_string().data(), get_test_string().size()),
+//        0
+//      );
+//    }
+//  }
+//};
+//
+//
+//class FileMapWriteTest : public FileTest {
+//public:
+//  FileMapWriteTest(FilePairFactory& file_pair_factory)
+//    : FileTest(file_pair_factory)
+//  { }
+//
+//  // yunit::Test
+//  void run() {
+//    auto_Object<File::Map> mmf = get_test_file().mmap();
+//
+//    mmf->reserve(get_test_string().size());
+//
+//    memcpy_s
+//    (
+//      *mmf,
+//      get_test_string().size(),
+//      get_test_string().data(),
+//      get_test_string().size()
+//    );
+//
+//    if (!mmf->sync(static_cast<size_t>(0), get_test_string().size()))
+//      throw Exception();
+//  }
+//};
 
 
 class FilePReadTest : public FileTest {
@@ -497,6 +587,8 @@ public:
     = static_cast<FilePairFactory&>(get_channel_pair_factory());
 
     add("File::datasync", new FileDataSyncTest(file_pair_factory));
+
+    add("File::Map", new FileMapTest(file_pair_factory));
 
     add("File::pread", new FilePReadTest(file_pair_factory));
 

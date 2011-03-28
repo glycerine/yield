@@ -30,6 +30,7 @@
 #ifndef _YIELD_FS_POSIX_FILE_HPP_
 #define _YIELD_FS_POSIX_FILE_HPP_
 
+#include "yield/buffer.hpp"
 #include "yield/channel.hpp"
 
 #include <fcntl.h>
@@ -38,7 +39,7 @@ namespace yield {
 namespace fs {
 namespace posix {
 class ExtendedAttributes;
-class MemoryMappedFile;
+class Map;
 class Stat;
 
 class File : public Channel {
@@ -99,6 +100,49 @@ public:
   };
 
 public:
+  class Map : public Buffer {
+  public:
+    ~Map();
+
+  public:
+    File& get_file() {
+      return file;
+    }
+
+    uint64_t get_file_offset() const {
+      return file_offset;
+    }
+
+    bool is_read_only() const;
+    bool is_shared() const;
+
+  public:
+    bool sync();
+    bool sync(size_t offset, size_t length);
+    bool sync(void* ptr, size_t length);
+
+    bool unmap();
+
+  private:
+    friend class File;
+
+    Map(
+      size_t capacity,
+      void* data,
+      File& file,
+      uint64_t file_offset,
+      int flags,
+      int prot
+    );
+
+  private:
+    File& file;
+    uint64_t file_offset;
+    int flags;
+    int prot;
+  };
+
+public:
   File(fd_t fd);
   virtual ~File();
 
@@ -107,7 +151,7 @@ public:
 
   YO_NEW_REF Lock* getlk(const File::Lock&);
 
-  YO_NEW_REF MemoryMappedFile*
+  YO_NEW_REF Map*
   mmap(
     size_t length = SIZE_MAX,
     uint64_t offset = 0,

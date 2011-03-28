@@ -34,7 +34,7 @@
 #include "yield/fs/file.hpp"
 
 namespace yield {
-class Page;
+class Buffer;
 
 namespace fs {
 namespace aio {
@@ -42,17 +42,16 @@ class AIOCB : public yield::aio::AIOCB {
 public:
   virtual ~AIOCB() { }
 
-  yield::fs::File& get_file();
+  File& get_file();
 
 protected:
-  AIOCB(yield::fs::File& file);
-  AIOCB(yield::fs::File& file, size_t nbytes, uint64_t offset);
-  AIOCB(yield::fs::File& file, Page& page, size_t nbytes, uint64_t offset);
+  AIOCB(File& file);
+  AIOCB(File& file, size_t nbytes, uint64_t offset);
+  AIOCB(File& file, Buffer& buffer, size_t nbytes, uint64_t offset);
 
 #ifdef _WIN32
   static void __stdcall
-  CompletionRoutine
-  (
+  CompletionRoutine(
     unsigned long dwErrorCode,
     unsigned long dwNumberOfBytesTransferred,
     ::OVERLAPPED* lpOverlapped

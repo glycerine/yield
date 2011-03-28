@@ -103,8 +103,6 @@
     </ClCompile>
     <ClInclude Include="..\..\..\test\yield\fs\file_system_test.hpp" />
     <ClInclude Include="..\..\..\test\yield\fs\file_test.hpp" />
-    <ClCompile Include="..\..\..\test\yield\fs\memory_mapped_file_test.cpp">
-    </ClCompile>
     <ClCompile Include="..\..\..\test\yield\fs\named_pipe_test.cpp">
     </ClCompile>
     <ClCompile Include="..\..\..\test\yield\fs\path_test.cpp">

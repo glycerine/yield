@@ -40,12 +40,10 @@ size_t Buffer::pagesize = 0;
 
 Buffer::Buffer(size_t capacity) {
   alloc(2, capacity);
-  next_buffer = NULL;
 }
 
 Buffer::Buffer(size_t alignment, size_t capacity) {
   alloc(alignment, capacity);
-  next_buffer = NULL;
 }
 
 Buffer::Buffer(size_t capacity, void* data)
@@ -59,7 +57,6 @@ Buffer::~Buffer() {
 #else
   free(data_);
 #endif
-  Buffer::dec_ref(next_buffer);
 }
 
 void Buffer::alloc(size_t alignment, size_t capacity) {
@@ -124,19 +121,5 @@ bool Buffer::is_page_aligned(const iovec& iov) {
   return is_page_aligned(iov.iov_base)
          &&
          (iov.iov_len & (getpagesize() - 1)) == 0;
-}
-
-void Buffer::set_next_buffer(Buffer* next_buffer) {
-  if (next_buffer != NULL)
-    set_next_buffer(*next_buffer);
-  else {
-    Buffer::dec_ref(this->next_buffer);
-    this->next_buffer = NULL;
-  }
-}
-
-void Buffer::set_next_buffer(Buffer& next_buffer) {
-  Buffer::dec_ref(this->next_buffer);
-  this->next_buffer = &next_buffer;
 }
 }

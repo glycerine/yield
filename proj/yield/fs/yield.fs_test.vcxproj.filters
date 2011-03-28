@@ -27,9 +27,6 @@
     <ClInclude Include="..\..\..\test\yield\fs\file_test.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\test\yield\fs\memory_mapped_file_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\test\yield\fs\named_pipe_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

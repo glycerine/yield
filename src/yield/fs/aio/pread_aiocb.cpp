@@ -28,7 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/exception.hpp"
-#include "yield/page.hpp"
+#include "yield/buffer.hpp"
 #include "yield/fs/file.hpp"
 #include "yield/fs/aio/pread_aiocb.hpp"
 
@@ -36,71 +36,68 @@ namespace yield {
 namespace fs {
 namespace aio {
 preadAIOCB::preadAIOCB(
-  yield::fs::File& file,
-  YO_NEW_REF Page& page,
+  File& file,
+  YO_NEW_REF Buffer& buffer,
   size_t nbytes,
   uint64_t offset
 )
-  : AIOCB(file, page, nbytes, offset), page(page)
+  : AIOCB(file, buffer, nbytes, offset), buffer(buffer)
 { }
 
 preadAIOCB::~preadAIOCB() {
-  Page::dec_ref(page);
+  Buffer::dec_ref(buffer);
 }
 
-void preadAIOCB::set_return(ssize_t return_) {
-  if (return_ >= 0) {
-    Page* page = &get_page();
-    for (;;) {
-      size_t page_left = page->capacity() - page->size();
-
-      if (static_cast<size_t>(return_) <= page_left) {
-        page->resize(page->size() + return_);
-        break;
-      } else {
-        page->resize(page->capacity());
-        return_ -= page_left;
-        page = page->get_next_page();
-      }
-    }
-  }
-
-  AIOCB::set_return(return_);
-}
+//void preadAIOCB::set_return(ssize_t return_) {
+//  if (return_ >= 0) {
+//    Buffer* buffer = &get_buffer();
+//    for (;;) {
+//      size_t page_left = buffer->capacity() - buffer->size();
+//
+//      if (static_cast<size_t>(return_) <= page_left) {
+//        buffer->resize(buffer->size() + return_);
+//        break;
+//      } else {
+//        buffer->resize(buffer->capacity());
+//        return_ -= page_left;
+//        buffer = buffer->get_next_buffer();
+//      }
+//    }
+//  }
+//
+//  AIOCB::set_return(return_);
+//}
 
 preadAIOCB::RetryStatus preadAIOCB::retry() {
   ssize_t return_;
 
-  if (get_page().get_next_page() == NULL) {   // pread
+  //if (get_buffer().get_next_buffer() == NULL) {   // pread
     return_
-    = get_file().pread
-      (
-        static_cast<char*>(get_page())
-        + get_page().size(),
-        get_page().capacity()
-        - get_page().size(),
+    = get_file().pread(
+        static_cast<char*>(get_buffer()),// + get_buffer().size(),
+        get_nbytes(), //get_buffer().capacity() - get_buffer().size(),
         get_offset()
       );
-  } else { // preadv
-    vector<iovec> iov;
-    Page* page = &get_page();
-    do {
-      iovec page_iov;
-      page_iov.iov_base
-      = static_cast<char*>(*page) + page->size();
-      page_iov.iov_len = page->capacity() - page->size();
-      iov.push_back(page_iov);
-      page = page->get_next_page();
-    } while (page != NULL);
+  //} else { // preadv
+  //  vector<iovec> iov;
+  //  Buffer* buffer = &get_buffer();
+  //  do {
+  //    iovec page_iov;
+  //    page_iov.iov_base
+  //    = static_cast<char*>(*buffer) + buffer->size();
+  //    page_iov.iov_len = buffer->capacity() - buffer->size();
+  //    iov.push_back(page_iov);
+  //    buffer = buffer->get_next_buffer();
+  //  } while (buffer != NULL);
 
-    return_
-    = get_file().preadv
-      (
-        &iov[0],
-        iov.size(),
-        get_offset()
-      );
-  }
+  //  return_
+  //  = get_file().preadv
+  //    (
+  //      &iov[0],
+  //      iov.size(),
+  //      get_offset()
+  //    );
+  //}
 
   if (return_ >= 0) {
     set_return(return_);

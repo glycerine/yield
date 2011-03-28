@@ -57,22 +57,22 @@ O_FILE_PATHS += ../../../build/yield/fs/file_log.o
 ifeq ($(UNAME), Darwin)
 	O_FILE_PATHS += ../../../build/yield/fs/bsd/directory.o
 	O_FILE_PATHS += ../../../build/yield/fs/darwin/extended_attributes.o ../../../build/yield/fs/darwin/file.o
-	O_FILE_PATHS += ../../../build/yield/fs/posix/directory.o ../../../build/yield/fs/posix/extended_attributes.o ../../../build/yield/fs/posix/file.o ../../../build/yield/fs/posix/file_system.o ../../../build/yield/fs/posix/memory_mapped_file.o ../../../build/yield/fs/posix/path.o ../../../build/yield/fs/posix/stat.o
+	O_FILE_PATHS += ../../../build/yield/fs/posix/directory.o ../../../build/yield/fs/posix/extended_attributes.o ../../../build/yield/fs/posix/file.o ../../../build/yield/fs/posix/file_system.o ../../../build/yield/fs/posix/path.o ../../../build/yield/fs/posix/stat.o
 endif
 ifeq ($(UNAME), FreeBSD)
 	O_FILE_PATHS += ../../../build/yield/fs/bsd/directory.o
 	O_FILE_PATHS += ../../../build/yield/fs/freebsd/extended_attributes.o ../../../build/yield/fs/freebsd/file.o
-	O_FILE_PATHS += ../../../build/yield/fs/posix/directory.o ../../../build/yield/fs/posix/extended_attributes.o ../../../build/yield/fs/posix/file.o ../../../build/yield/fs/posix/file_system.o ../../../build/yield/fs/posix/memory_mapped_file.o ../../../build/yield/fs/posix/path.o ../../../build/yield/fs/posix/stat.o
+	O_FILE_PATHS += ../../../build/yield/fs/posix/directory.o ../../../build/yield/fs/posix/extended_attributes.o ../../../build/yield/fs/posix/file.o ../../../build/yield/fs/posix/file_system.o ../../../build/yield/fs/posix/path.o ../../../build/yield/fs/posix/stat.o
 endif
 ifeq ($(UNAME), Linux)
 	O_FILE_PATHS += ../../../build/yield/fs/linux/directory.o ../../../build/yield/fs/linux/extended_attributes.o ../../../build/yield/fs/linux/file.o
-	O_FILE_PATHS += ../../../build/yield/fs/posix/directory.o ../../../build/yield/fs/posix/extended_attributes.o ../../../build/yield/fs/posix/file.o ../../../build/yield/fs/posix/file_system.o ../../../build/yield/fs/posix/memory_mapped_file.o ../../../build/yield/fs/posix/path.o ../../../build/yield/fs/posix/stat.o
+	O_FILE_PATHS += ../../../build/yield/fs/posix/directory.o ../../../build/yield/fs/posix/extended_attributes.o ../../../build/yield/fs/posix/file.o ../../../build/yield/fs/posix/file_system.o ../../../build/yield/fs/posix/path.o ../../../build/yield/fs/posix/stat.o
 endif
 ifeq ($(UNAME), Solaris)
-	O_FILE_PATHS += ../../../build/yield/fs/posix/directory.o ../../../build/yield/fs/posix/extended_attributes.o ../../../build/yield/fs/posix/file.o ../../../build/yield/fs/posix/file_system.o ../../../build/yield/fs/posix/memory_mapped_file.o ../../../build/yield/fs/posix/path.o ../../../build/yield/fs/posix/stat.o
+	O_FILE_PATHS += ../../../build/yield/fs/posix/directory.o ../../../build/yield/fs/posix/extended_attributes.o ../../../build/yield/fs/posix/file.o ../../../build/yield/fs/posix/file_system.o ../../../build/yield/fs/posix/path.o ../../../build/yield/fs/posix/stat.o
 endif
 ifeq ($(UNAME), MINGW32)
-	O_FILE_PATHS += ../../../build/yield/fs/win32/directory.o ../../../build/yield/fs/win32/file.o ../../../build/yield/fs/win32/file_system.o ../../../build/yield/fs/win32/memory_mapped_file.o ../../../build/yield/fs/win32/named_pipe.o ../../../build/yield/fs/win32/path.o ../../../build/yield/fs/win32/stat.o
+	O_FILE_PATHS += ../../../build/yield/fs/win32/directory.o ../../../build/yield/fs/win32/file.o ../../../build/yield/fs/win32/file_system.o ../../../build/yield/fs/win32/named_pipe.o ../../../build/yield/fs/win32/path.o ../../../build/yield/fs/win32/stat.o
 endif
 
 
@@ -143,10 +143,6 @@ depclean:
 	-mkdir -p ../../../build/yield/fs/posix 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/fs/posix/file_system.o -MD $(CXXFLAGS) ../../../src/yield/fs/posix/file_system.cpp
 
-../../../build/yield/fs/posix/memory_mapped_file.o: ../../../src/yield/fs/posix/memory_mapped_file.cpp
-	-mkdir -p ../../../build/yield/fs/posix 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs/posix/memory_mapped_file.o -MD $(CXXFLAGS) ../../../src/yield/fs/posix/memory_mapped_file.cpp
-
 ../../../build/yield/fs/posix/path.o: ../../../src/yield/fs/posix/path.cpp
 	-mkdir -p ../../../build/yield/fs/posix 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/fs/posix/path.o -MD $(CXXFLAGS) ../../../src/yield/fs/posix/path.cpp
@@ -166,10 +162,6 @@ depclean:
 ../../../build/yield/fs/win32/file_system.o: ../../../src/yield/fs/win32/file_system.cpp
 	-mkdir -p ../../../build/yield/fs/win32 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/fs/win32/file_system.o -MD $(CXXFLAGS) ../../../src/yield/fs/win32/file_system.cpp
-
-../../../build/yield/fs/win32/memory_mapped_file.o: ../../../src/yield/fs/win32/memory_mapped_file.cpp
-	-mkdir -p ../../../build/yield/fs/win32 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs/win32/memory_mapped_file.o -MD $(CXXFLAGS) ../../../src/yield/fs/win32/memory_mapped_file.cpp
 
 ../../../build/yield/fs/win32/named_pipe.o: ../../../src/yield/fs/win32/named_pipe.cpp
 	-mkdir -p ../../../build/yield/fs/win32 2>/dev/null

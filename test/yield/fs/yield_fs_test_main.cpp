@@ -34,7 +34,6 @@
 
 extern yunit::TestSuite& StatTestSuite();
 extern yunit::TestSuite& DirectoryTestSuite();
-extern yunit::TestSuite& MemoryMappedFileTestSuite();
 extern yunit::TestSuite& NamedPipeTestSuite();
 extern yunit::TestSuite& PathTestSuite();
 #ifdef __unix__
@@ -68,11 +67,6 @@ int main(int, char**) {
   // Directory
   std::cout << "Directory:" << std::endl;
   failed_test_case_count += DirectoryTestSuite().run();
-  std::cout << std::endl;
-
-  // MemoryMappedFile
-  std::cout << "MemoryMappedFile:" << std::endl;
-  failed_test_case_count += MemoryMappedFileTestSuite().run();
   std::cout << std::endl;
 
   // NamedPipe

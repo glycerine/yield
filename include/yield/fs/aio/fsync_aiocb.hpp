@@ -40,7 +40,7 @@ public:
   const static uint32_t TYPE_ID = 1349938901UL;
 
 public:
-  fsyncAIOCB(yield::fs::File& file)
+  fsyncAIOCB(File& file)
     : AIOCB(file)
   { }
 

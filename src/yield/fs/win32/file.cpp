@@ -27,9 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/page.hpp"
+#include "yield/assert.hpp"
 #include "yield/fs/win32/file.hpp"
-#include "yield/fs/win32/memory_mapped_file.hpp"
 #include "yield/fs/win32/stat.hpp"
 
 #include <Windows.h>
@@ -37,6 +36,80 @@
 namespace yield {
 namespace fs {
 namespace win32 {
+File::Map::Map(
+  size_t capacity,
+  void* data,
+  File& file,
+  fd_t file_mapping,
+  uint64_t file_offset,
+  unsigned int flags,
+  unsigned int prot,
+  bool read_only,
+  bool shared
+) : Buffer(capacity, data),
+  file(file.inc_ref()),
+  file_mapping(file_mapping),
+  file_offset(file_offset),
+  flags(flags),
+  prot(prot),
+  read_only(read_only),
+  shared(shared) {
+  if (data_ == reinterpret_cast<void*>(-1)) {
+    debug_assert_eq(file_mapping, NULL);
+  } else {
+    debug_assert_ne(data_, NULL);
+    debug_assert_ne(file_mapping, NULL);
+    debug_assert_ne(file_mapping, INVALID_HANDLE_VALUE);
+  }
+}
+
+File::Map::~Map() {
+  unmap();
+  File::dec_ref(file);
+}
+
+bool File::Map::sync() {
+  return sync(data_, capacity_);
+}
+
+bool File::Map::sync(size_t offset, size_t length) {
+  return sync(static_cast<char*>(data_) + offset, length);
+}
+
+bool File::Map::sync(void* ptr, size_t length) {
+  if (data_ != reinterpret_cast<void*>(-1))
+    return FlushViewOfFile(ptr, length) == TRUE;
+  else {
+    SetLastError(ERROR_INVALID_PARAMETER);
+    return false;
+  }
+}
+
+bool File::Map::unmap() {
+  if (data_ != reinterpret_cast<void*>(-1)) {
+    debug_assert_ne(file_mapping, NULL);
+
+    if
+    (
+      UnmapViewOfFile(data_)
+      &&
+      CloseHandle(file_mapping)
+    ) {
+      capacity_ = 0;
+      data_ = reinterpret_cast<void*>(-1);
+      file_mapping = NULL;
+      return true;
+    } else {
+      DebugBreak();
+      return false;
+    }
+  } else {
+    SetLastError(ERROR_INVALID_PARAMETER);
+    return false;
+  }
+}
+
+
 File::File(fd_t fd)
   : fd(fd)
 { }
@@ -62,7 +135,7 @@ bool File::datasync() {
   return FlushFileBuffers(*this) != 0;
 }
 
-YO_NEW_REF MemoryMappedFile*
+YO_NEW_REF File::Map*
 File::mmap(
   size_t length,
   uint64_t offset,
@@ -122,13 +195,13 @@ File::mmap(
       return NULL;
   } else { // length == 0
     // Can't CreateFileMapping on an empty file; instead
-    // return an "empty" MemoryMappedFile (lpMapAddress=NULL).
+    // return an "empty" mapping (lpMapAddress=NULL).
     hFileMapping = NULL;
     lpMapAddress = reinterpret_cast<LPVOID>(-1);
   }
 
   return new
-         MemoryMappedFile(
+         Map(
            length,
            lpMapAddress,
            *this,
@@ -180,7 +253,7 @@ ssize_t File::pread(void* buf, size_t buflen, uint64_t offset) {
 
 ssize_t File::preadv(const iovec* iov, int iovlen, uint64_t offset) {
   for (int iov_i = 0; iov_i < iovlen; iov_i++) {
-    if (!Page::is_page_aligned(iov[iov_i])) {
+    if (!Buffer::is_page_aligned(iov[iov_i])) {
       if (iovlen == 1)
         return pread(iov[0].iov_base, iov[0].iov_len, offset);
       else {
@@ -285,7 +358,7 @@ ssize_t File::pwrite(const void* buf, size_t buflen, uint64_t offset) {
 
 ssize_t File::pwritev(const iovec* iov, int iovlen, uint64_t offset) {
   for (int iov_i = 0; iov_i < iovlen; iov_i++) {
-    if (!Page::is_page_aligned(iov[iov_i])) {
+    if (!Buffer::is_page_aligned(iov[iov_i])) {
       if (iovlen == 1)
         return pwrite(iov[0].iov_base, iov[0].iov_len, offset);
       else {

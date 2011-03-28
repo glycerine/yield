@@ -28,7 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/exception.hpp"
-#include "yield/page.hpp"
+#include "yield/buffer.hpp"
 #include "yield/fs/file.hpp"
 #include "yield/fs/aio/pwrite_aiocb.hpp"
 
@@ -36,49 +36,48 @@ namespace yield {
 namespace fs {
 namespace aio {
 pwriteAIOCB::pwriteAIOCB(
-  yield::fs::File& file,
-  YO_NEW_REF Page& page,
+  File& file,
+  YO_NEW_REF Buffer& buffer,
   size_t nbytes,
   uint64_t offset
 )
-  : AIOCB(file, page, nbytes, offset),
-    page(page)
+  : AIOCB(file, buffer, nbytes, offset),
+    buffer(buffer)
 { }
 
 pwriteAIOCB::~pwriteAIOCB() {
-  Page::dec_ref(page);
+  Buffer::dec_ref(buffer);
 }
 
 pwriteAIOCB::RetryStatus pwriteAIOCB::retry() {
   ssize_t return_;
 
-  if (get_page().get_next_page() == NULL) {   // pwrite
+  //if (get_buffer().get_next_buffer() == NULL) {   // pwrite
     return_
-    = get_file().pwrite
-      (
-        get_page(),
-        get_page().size(),
+    = get_file().pwrite(
+        get_buffer(),
+        get_nbytes(),
         get_offset()
       );
-  } else { // pwritev
-    vector<iovec> iov;
-    Page* page = &get_page();
-    do {
-      iovec page_iov;
-      page_iov.iov_base = *page;
-      page_iov.iov_len = page->size();
-      iov.push_back(page_iov);
-      page = page->get_next_page();
-    } while (page != NULL);
+  //} else { // pwritev
+  //  vector<iovec> iov;
+  //  Buffer* buffer = &get_buffer();
+  //  do {
+  //    iovec page_iov;
+  //    page_iov.iov_base = *buffer;
+  //    page_iov.iov_len = buffer->
+  //    iov.push_back(page_iov);
+  //    buffer = buffer->get_next_buffer();
+  //  } while (buffer != NULL);
 
-    return_
-    = get_file().pwritev
-      (
-        &iov[0],
-        iov.size(),
-        get_offset()
-      );
-  }
+  //  return_
+  //  = get_file().pwritev
+  //    (
+  //      &iov[0],
+  //      iov.size(),
+  //      get_offset()
+  //    );
+  //}
 
   if (return_ >= 0) {
     set_return(return_);

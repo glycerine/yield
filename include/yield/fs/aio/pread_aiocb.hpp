@@ -41,8 +41,8 @@ public:
 
 public:
   preadAIOCB(
-    yield::fs::File& file,
-    YO_NEW_REF Page& page,
+    File& file,
+    YO_NEW_REF Buffer& buffer,
     size_t nbytes,
     uint64_t offset
   );
@@ -50,8 +50,8 @@ public:
   ~preadAIOCB();
 
 public:
-  Page& get_page() const {
-    return page;
+  Buffer& get_buffer() const {
+    return buffer;
   }
 
 public:
@@ -71,10 +71,9 @@ public:
   bool issue(yield::aio::win32::AIOQueue&);
 #endif
   RetryStatus retry();
-  void set_return(ssize_t return_);
 
 private:
-  Page& page;
+  Buffer& buffer;
 };
 }
 }

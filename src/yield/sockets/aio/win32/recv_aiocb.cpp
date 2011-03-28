@@ -47,7 +47,7 @@ WSARecvFrom(
   sockaddr* lpFrom = peername;
   socklen_t lpFromlen = peername.len();
 
-  if (buffer.get_next_buffer() == NULL) {
+  //if (buffer.get_next_buffer() == NULL) {
     WSABUF wsabuf;
     wsabuf.buf = static_cast<char*>(buffer)
                  + buffer.size();
@@ -65,31 +65,30 @@ WSARecvFrom(
              lpOverlapped,
              lpCompletionRoutine
            );
-  } else { // Scatter I/O
-    vector<WSABUF> wsabufs;
-    Buffer* next_buffer = &buffer;
-    do {
-      WSABUF wsabuf;
-      wsabuf.buf = static_cast<char*>(*next_buffer)
-                   + next_buffer->size();
-      wsabuf.len = next_buffer->capacity() - next_buffer->size();
-      wsabufs.push_back(wsabuf);
-      next_buffer = next_buffer->get_next_buffer();
-    } while (next_buffer != NULL);
+  //} else { // Scatter I/O
+  //  vector<WSABUF> wsabufs;
+  //  Buffer* next_buffer = &buffer;
+  //  do {
+  //    WSABUF wsabuf;
+  //    wsabuf.buf = static_cast<char*>(*next_buffer)
+  //                 + next_buffer->size();
+  //    wsabuf.len = next_buffer->capacity() - next_buffer->size();
+  //    wsabufs.push_back(wsabuf);
+  //    next_buffer = next_buffer->get_next_buffer();
+  //  } while (next_buffer != NULL);
 
-    return WSARecvFrom
-           (
-             socket_,
-             &wsabufs[0],
-             wsabufs.size(),
-             NULL,
-             &dwFlags,
-             lpFrom,
-             &lpFromlen,
-             lpOverlapped,
-             lpCompletionRoutine
-           );
-  }
+  //  return WSARecvFrom(
+  //           socket_,
+  //           &wsabufs[0],
+  //           wsabufs.size(),
+  //           NULL,
+  //           &dwFlags,
+  //           lpFrom,
+  //           &lpFromlen,
+  //           lpOverlapped,
+  //           lpCompletionRoutine
+  //         );
+  //}
 }
 
 
@@ -110,8 +109,7 @@ bool recvAIOCB::issue(EventHandler& completion_handler) {
 }
 
 bool recvAIOCB::issue(yield::aio::win32::AIOQueue&) {
-  return WSARecvFrom
-         (
+  return WSARecvFrom(
            get_socket(),
            get_buffer(),
            get_flags(),
