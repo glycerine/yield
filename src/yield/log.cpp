@@ -27,7 +27,6 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/buffer.hpp"
 #include "yield/date_time.hpp"
 #include "yield/log.hpp"
 
@@ -138,33 +137,33 @@ void Log::write(const uint8_t* str, size_t str_len, const Level& level) {
 //  }
 //}
 
-void Log::write(const Buffer& buffer, const Level& level) {
-  if (level <= this->level) {
-    std::ostringstream str;
-
-    str << "Buffer( ";
-    str << "capacity=" << buffer.capacity() << ", ";
-    str << "size=" << buffer.size();
-
-    if (this->level == DEBUG) {
-      if (buffer.empty()) {
-        str << ", data='' )";
-        write(str.str().data(), str.str().size());
-      } else {
-        str << ", data='\n";
-        write(str.str().data(), str.str().size());
-        write(static_cast<const uint8_t*>(buffer), buffer.size());
-        if (static_cast<const char*>(buffer)[buffer.size() - 1] == '\n')
-          write("')\n", 3);
-        else
-          write("\n')\n", 4);
-      }
-    } else {
-      str << " )";
-      write(str.str().data(), str.str().size());
-    }
-  }
-}
+//void Log::write(const Buffer& buffer, const Level& level) {
+//  if (level <= this->level) {
+//    std::ostringstream str;
+//
+//    str << "Buffer( ";
+//    str << "capacity=" << buffer.capacity() << ", ";
+//    str << "size=" << buffer.size();
+//
+//    if (this->level == DEBUG) {
+//      if (buffer.empty()) {
+//        str << ", data='' )";
+//        write(str.str().data(), str.str().size());
+//      } else {
+//        str << ", data='\n";
+//        write(str.str().data(), str.str().size());
+//        write(static_cast<const uint8_t*>(buffer), buffer.size());
+//        if (static_cast<const char*>(buffer)[buffer.size() - 1] == '\n')
+//          write("')\n", 3);
+//        else
+//          write("\n')\n", 4);
+//      }
+//    } else {
+//      str << " )";
+//      write(str.str().data(), str.str().size());
+//    }
+//  }
+//}
 
 void Log::write(const void* str, size_t str_len) {
   write(static_cast<const uint8_t*>(str), str_len);

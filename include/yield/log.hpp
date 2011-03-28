@@ -47,16 +47,20 @@ public:
     Level(const char* level_string, uint8_t level_uint8);
     Level(const Level& other);
 
+  public:
     operator const string& () const {
       return level_string;
     }
+
     operator const char* () const {
       return level_string.c_str();
     }
+
     inline operator uint8_t() const {
       return level_uint8;
     }
 
+  public:
     bool operator<(const Level& other) const;
     bool operator<=(const Level& other) const;
     bool operator==(const Level& other) const;
@@ -78,6 +82,7 @@ public:
     Stream(const Stream& other);
     ~Stream();
 
+  public:
     template <typename T>
     Stream& operator<<(T t) {
       if (level <= log.get_level())
@@ -127,7 +132,7 @@ public:
   void write(const void*, size_t, const Level&);
   void write(const uint8_t*, size_t, const Level&);
   void write(const char*, size_t, const Level&);
-  void write(const Buffer&, const Level&);
+  //void write(const Buffer&, const Level&);
 
 public:
   // yield::Object

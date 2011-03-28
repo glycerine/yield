@@ -22,9 +22,9 @@
     <ClCompile Include="..\..\test\yield\auto_object_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\test\yield\buffer_test.hpp">
+    <ClCompile Include="..\..\test\yield\buffer_test.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
+    </ClCompile>
     <ClInclude Include="..\..\test\yield\channel_test.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -40,9 +40,6 @@
     <ClCompile Include="..\..\test\yield\exception_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\test\yield\fixed_buffer_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\test\yield\log_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -52,16 +49,10 @@
     <ClCompile Include="..\..\test\yield\object_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\test\yield\page_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\test\yield\request_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\test\yield\response_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\test\yield\string_buffer_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClInclude Include="..\..\test\yield\test_object.hpp">

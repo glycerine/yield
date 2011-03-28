@@ -34,17 +34,15 @@
 
 extern yunit::TestSuite& atomicTestSuite();
 extern yunit::TestSuite& auto_ObjectTestSuite();
+extern yunit::TestSuite& BufferTestSuite();
 extern yunit::TestSuite& DateTimeTestSuite();
 extern yunit::TestSuite& EventTestSuite();
 extern yunit::TestSuite& ExceptionTestSuite();
-extern yunit::TestSuite& FixedBufferTestSuite();
 extern yunit::TestSuite& LogTestSuite();
 extern yunit::TestSuite& MessageTestSuite();
 extern yunit::TestSuite& ObjectTestSuite();
-extern yunit::TestSuite& PageTestSuite();
 extern yunit::TestSuite& RequestTestSuite();
 extern yunit::TestSuite& ResponseTestSuite();
-extern yunit::TestSuite& StringBufferTestSuite();
 extern yunit::TestSuite& TimeTestSuite();
 
 
@@ -59,6 +57,11 @@ int main(int, char**) {
   // auto_Object
   std::cout << "auto_Object:" << std::endl;
   failed_test_case_count += auto_ObjectTestSuite().run();
+  std::cout << std::endl;
+
+  // Buffer
+  std::cout << "Buffer:" << std::endl;
+  failed_test_case_count += BufferTestSuite().run();
   std::cout << std::endl;
 
   // DateTime
@@ -76,11 +79,6 @@ int main(int, char**) {
   failed_test_case_count += ExceptionTestSuite().run();
   std::cout << std::endl;
 
-  // FixedBuffer
-  std::cout << "FixedBuffer:" << std::endl;
-  failed_test_case_count += FixedBufferTestSuite().run();
-  std::cout << std::endl;
-
   // Log
   std::cout << "Log:" << std::endl;
   failed_test_case_count += LogTestSuite().run();
@@ -96,11 +94,6 @@ int main(int, char**) {
   failed_test_case_count += ObjectTestSuite().run();
   std::cout << std::endl;
 
-  // Page
-  std::cout << "Page:" << std::endl;
-  failed_test_case_count += PageTestSuite().run();
-  std::cout << std::endl;
-
   // Request
   std::cout << "Request:" << std::endl;
   failed_test_case_count += RequestTestSuite().run();
@@ -109,11 +102,6 @@ int main(int, char**) {
   // Response
   std::cout << "Response:" << std::endl;
   failed_test_case_count += ResponseTestSuite().run();
-  std::cout << std::endl;
-
-  // StringBuffer
-  std::cout << "StringBuffer:" << std::endl;
-  failed_test_case_count += StringBufferTestSuite().run();
   std::cout << std::endl;
 
   // Time

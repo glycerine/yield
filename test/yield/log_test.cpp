@@ -28,7 +28,6 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/assert.hpp"
-#include "yield/string_buffer.hpp"
 #include "yield/log.hpp"
 #include "yunit.hpp"
 
@@ -83,13 +82,13 @@ TEST_EX(Log, Stream_copy, LogTest) {
   Log::Stream log_stream(get_log().get_stream());
 }
 
-TEST_EX(Log, write_buffer, LogTest) {
-  get_log().write(StringBuffer(1024), Log::EMERG);
-  throw_assert_ge(get_log_oss().str().size(), get_test_string().size());
-
-  get_log().write(StringBuffer(get_test_string()), Log::EMERG);
-  throw_assert_ge(get_log_oss().str().size(), get_test_string().size());
-}
+//TEST_EX(Log, write_buffer, LogTest) {
+//  get_log().write(StringBuffer(1024), Log::EMERG);
+//  throw_assert_ge(get_log_oss().str().size(), get_test_string().size());
+//
+//  get_log().write(StringBuffer(get_test_string()), Log::EMERG);
+//  throw_assert_ge(get_log_oss().str().size(), get_test_string().size());
+//}
 
 TEST_EX(Log, write_ignore, LogTest) {
   get_log().write(get_test_string(), Log::Level(8));

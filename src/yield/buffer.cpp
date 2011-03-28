@@ -29,79 +29,101 @@
 
 #include "yield/buffer.hpp"
 
+#ifdef _WIN32
+#include <Windows.h>
+#else
+#include <stdlib.h>
+#endif
 
 namespace yield {
-Buffer::Buffer(size_t capacity)
-  : capacity_(capacity) {
+size_t Buffer::pagesize = 0;
+
+Buffer::Buffer(size_t capacity) {
+  alloc(2, capacity);
   next_buffer = NULL;
-  size_ = 0;
 }
 
+Buffer::Buffer(size_t alignment, size_t capacity) {
+  alloc(alignment, capacity);
+  next_buffer = NULL;
+}
+
+Buffer::Buffer(size_t capacity, void* data)
+  : capacity_(capacity),
+    data_(data)
+{ }
+
 Buffer::~Buffer() {
+#ifdef _WIN32
+  _aligned_free(data_);
+#else
+  free(data_);
+#endif
   Buffer::dec_ref(next_buffer);
 }
 
-Buffer::operator const char* () const {
-  return static_cast<const char*>(data());
-}
-
-Buffer::operator const uint8_t* () const {
-  return static_cast<const uint8_t*>(data());
-}
-
-bool Buffer::operator==(const Buffer& other) const {
-  if (size() == other.size()) {
-    const void* this_data = static_cast<const void*>(*this);
-    const void* other_data = static_cast<const void*>(other);
-    if (this_data != NULL && other_data != NULL)
-      return memcmp(this_data, other_data, size()) == 0;
-    else
-      return false;
+void Buffer::alloc(size_t alignment, size_t capacity) {
+  if (alignment % 2 == 0) {
+    capacity_ = (capacity + alignment - 1) / alignment * alignment;
+#ifdef _WIN32
+    if ((data_ = _aligned_malloc(capacity_, alignment)) == NULL)
+#else
+    if (posix_memalign(&data_, alignment, capacity_) != 0)
+#endif
+      throw std::bad_alloc();
   } else
-    return false;
+    throw std::bad_alloc();
 }
 
-bool Buffer::operator!=(const Buffer& other) const {
-  return !operator==(other);
+Buffer& Buffer::copy(const string& data) {
+  return copy(data.data(), data.size());
 }
 
-void Buffer::put(const Buffer& buf) {
-  put(buf, buf.size());
+Buffer& Buffer::copy(const char* data) {
+  return copy(data, strlen(data));
 }
 
-void Buffer::put(char buf, size_t repeat_count) {
-  for (size_t char_i = 0; char_i < repeat_count; char_i++)
-    put(&buf, 1);
+Buffer& Buffer::copy(const void* data, size_t size) {
+  Buffer* buffer = new Buffer(getpagesize(), size);
+  memcpy_s(*buffer, buffer->capacity(), data, size);
+  return *buffer;
 }
 
-void Buffer::put(const iovec& iov) {
-  put(iov.iov_base, iov.iov_len);
+Buffer& Buffer::copy(const Buffer& data) {
+  return copy(data, data.capacity());
 }
 
-void Buffer::put(const char* buf) {
-  put(buf, strlen(buf));
+size_t Buffer::getpagesize() {
+  if (pagesize != 0)
+    return pagesize;
+  else {
+#ifdef _WIN32
+    SYSTEM_INFO system_info;
+    GetSystemInfo(&system_info);
+    pagesize = system_info.dwPageSize;
+#else
+    pagesize = ::getpagesize();
+#endif
+    return pagesize;
+  }
 }
 
-void Buffer::put(const string& buf) {
-  put(buf.c_str(), buf.size());
+bool Buffer::is_page_aligned() const {
+  return is_page_aligned(data());
 }
 
-void Buffer::put(const void* buf, size_t len) {
-  reserve(size() + len);
-
-  memcpy_s(
-    static_cast<char*>(*this) + size(),
-    capacity() - size(),
-    buf,
-    len
-  );
-
-  resize(size() + len);
+bool Buffer::is_page_aligned(const void* ptr) {
+  return (
+           reinterpret_cast<const uintptr_t>(ptr)
+           &
+           (getpagesize() - 1)
+         ) == 0;
 }
 
-void Buffer::resize(size_t new_size) {
-  reserve(new_size);
-  size_ = new_size;
+bool Buffer::is_page_aligned(const iovec& iov) {
+  return is_page_aligned(iov.iov_base)
+         &&
+         (iov.iov_len & (getpagesize() - 1)) == 0;
 }
 
 void Buffer::set_next_buffer(Buffer* next_buffer) {

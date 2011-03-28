@@ -47,7 +47,7 @@ LIBS += -lyield
 D_FILE_PATHS := $(shell find ../../build/yield -name "*.d")
 
 
-O_FILE_PATHS += ../../build/yield/atomic_test.o ../../build/yield/auto_object_test.o ../../build/yield/date_time_test.o ../../build/yield/event_test.o ../../build/yield/exception_test.o ../../build/yield/fixed_buffer_test.o ../../build/yield/log_test.o ../../build/yield/message_test.o ../../build/yield/object_test.o ../../build/yield/page_test.o ../../build/yield/request_test.o ../../build/yield/response_test.o ../../build/yield/string_buffer_test.o ../../build/yield/time_test.o ../../build/yield/yield_test_main.o
+O_FILE_PATHS += ../../build/yield/atomic_test.o ../../build/yield/auto_object_test.o ../../build/yield/buffer_test.o ../../build/yield/date_time_test.o ../../build/yield/event_test.o ../../build/yield/exception_test.o ../../build/yield/log_test.o ../../build/yield/message_test.o ../../build/yield/object_test.o ../../build/yield/request_test.o ../../build/yield/response_test.o ../../build/yield/time_test.o ../../build/yield/yield_test_main.o
 
 
 all: ../../bin/yield/yield_test
@@ -83,6 +83,10 @@ lcov: ../../bin/yield/yield_test
 	-mkdir -p ../../build/yield 2>/dev/null
 	$(CXX) -c -o ../../build/yield/auto_object_test.o -MD $(CXXFLAGS) ../../test/yield/auto_object_test.cpp
 
+../../build/yield/buffer_test.o: ../../test/yield/buffer_test.cpp
+	-mkdir -p ../../build/yield 2>/dev/null
+	$(CXX) -c -o ../../build/yield/buffer_test.o -MD $(CXXFLAGS) ../../test/yield/buffer_test.cpp
+
 ../../build/yield/date_time_test.o: ../../test/yield/date_time_test.cpp
 	-mkdir -p ../../build/yield 2>/dev/null
 	$(CXX) -c -o ../../build/yield/date_time_test.o -MD $(CXXFLAGS) ../../test/yield/date_time_test.cpp
@@ -94,10 +98,6 @@ lcov: ../../bin/yield/yield_test
 ../../build/yield/exception_test.o: ../../test/yield/exception_test.cpp
 	-mkdir -p ../../build/yield 2>/dev/null
 	$(CXX) -c -o ../../build/yield/exception_test.o -MD $(CXXFLAGS) ../../test/yield/exception_test.cpp
-
-../../build/yield/fixed_buffer_test.o: ../../test/yield/fixed_buffer_test.cpp
-	-mkdir -p ../../build/yield 2>/dev/null
-	$(CXX) -c -o ../../build/yield/fixed_buffer_test.o -MD $(CXXFLAGS) ../../test/yield/fixed_buffer_test.cpp
 
 ../../build/yield/log_test.o: ../../test/yield/log_test.cpp
 	-mkdir -p ../../build/yield 2>/dev/null
@@ -111,10 +111,6 @@ lcov: ../../bin/yield/yield_test
 	-mkdir -p ../../build/yield 2>/dev/null
 	$(CXX) -c -o ../../build/yield/object_test.o -MD $(CXXFLAGS) ../../test/yield/object_test.cpp
 
-../../build/yield/page_test.o: ../../test/yield/page_test.cpp
-	-mkdir -p ../../build/yield 2>/dev/null
-	$(CXX) -c -o ../../build/yield/page_test.o -MD $(CXXFLAGS) ../../test/yield/page_test.cpp
-
 ../../build/yield/request_test.o: ../../test/yield/request_test.cpp
 	-mkdir -p ../../build/yield 2>/dev/null
 	$(CXX) -c -o ../../build/yield/request_test.o -MD $(CXXFLAGS) ../../test/yield/request_test.cpp
@@ -122,10 +118,6 @@ lcov: ../../bin/yield/yield_test
 ../../build/yield/response_test.o: ../../test/yield/response_test.cpp
 	-mkdir -p ../../build/yield 2>/dev/null
 	$(CXX) -c -o ../../build/yield/response_test.o -MD $(CXXFLAGS) ../../test/yield/response_test.cpp
-
-../../build/yield/string_buffer_test.o: ../../test/yield/string_buffer_test.cpp
-	-mkdir -p ../../build/yield 2>/dev/null
-	$(CXX) -c -o ../../build/yield/string_buffer_test.o -MD $(CXXFLAGS) ../../test/yield/string_buffer_test.cpp
 
 ../../build/yield/time_test.o: ../../test/yield/time_test.cpp
 	-mkdir -p ../../build/yield 2>/dev/null
