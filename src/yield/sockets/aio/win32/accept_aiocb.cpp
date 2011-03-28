@@ -43,13 +43,11 @@ static LPFN_GETACCEPTEXSOCKADDRS lpfnGetAcceptExSockaddrs = NULL;
 
 acceptAIOCB::acceptAIOCB(
   StreamSocket& socket_,
-  YO_NEW_REF Buffer* recv_buffer,
-  size_t recv_nbytes
+  YO_NEW_REF Buffer* recv_buffer
 )
   : AIOCB(socket_, NULL, 0),
     peername(*new SocketAddress),
-    recv_buffer(recv_buffer),
-    recv_nbytes(recv_nbytes) {
+    recv_buffer(recv_buffer) {
   accepted_socket = NULL;
 
   if (this->recv_buffer == NULL) {
@@ -58,7 +56,7 @@ acceptAIOCB::acceptAIOCB(
     this->recv_buffer = new Buffer(recv_buffer_size);
   } else {
     debug_assert_ge(
-      recv_nbytes,
+      this->recv_buffer->capacity() - this->recv_buffer->size(),
       get_sockname_length() + get_peername_length()
     );
   }
@@ -66,8 +64,7 @@ acceptAIOCB::acceptAIOCB(
 
 void acceptAIOCB::set_return(ssize_t return_) {
   int optval = get_socket();
-  setsockopt
-  (
+  setsockopt(
     *get_accepted_socket(),
     SOL_SOCKET,
     SO_UPDATE_ACCEPT_CONTEXT,
@@ -80,8 +77,7 @@ void acceptAIOCB::set_return(ssize_t return_) {
   sockaddr* sockname;
   socklen_t socknamelen;
 
-  lpfnGetAcceptExSockaddrs
-  (
+  lpfnGetAcceptExSockaddrs(
     get_output_buffer(),
     get_recv_data_length(),
     get_sockname_length(),
@@ -111,9 +107,8 @@ uint32_t acceptAIOCB::get_peername_length() const {
 }
 
 uint32_t acceptAIOCB::get_recv_data_length() const {
-  return //recv_buffer->capacity()
-         //- recv_buffer->size()
-         recv_nbytes
+  return recv_buffer->capacity()
+         - recv_buffer->size()
          - get_sockname_length()
          - get_peername_length();
 }

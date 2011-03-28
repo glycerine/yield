@@ -58,7 +58,6 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/assert.hpp"
-#include "yield/page.hpp"
 #include "yield/http/http_response_parser.hpp"
 
 #include <stdlib.h> // For atof and atoi
@@ -94,10 +93,15 @@ Object& HTTPResponseParser::parse() {
                    status_code
                  );
         } else {
-          Buffer* next_buffer
-          = new Page(p - ps + content_length, ps, eof - ps);
+          Buffer& next_buffer
+          = Buffer::copy(
+              Buffer::getpagesize(),
+              p - ps + content_length,
+              ps,
+              eof - ps
+            );
           ps = p;
-          return *next_buffer;
+          return next_buffer;
         }
       }
     } else {
@@ -107,14 +111,19 @@ Object& HTTPResponseParser::parse() {
     }
 
     if (p == eof) { // EOF parsing
-      Buffer* next_buffer
-      = new Page(eof - ps + Page::getpagesize(), ps, eof - ps);
+      Buffer& next_buffer
+      = Buffer::copy(
+          Buffer::getpagesize(),
+          eof - ps + Buffer::getpagesize(),
+          ps,
+          eof - ps
+        );
       p = ps;
-      return *next_buffer;
+      return next_buffer;
     } else // Error parsing
       return *new HTTPResponse(400, NULL, http_version);
   } else // p == eof
-    return *new Page;
+    return *new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
 }
 
 bool
@@ -273,13 +282,13 @@ _match:
       }
       break;
       case 1:
-        /* #line 104 "src\\yield\\http\\http_response_parser.rl" */
+        /* #line 113 "src\\yield\\http\\http_response_parser.rl" */
       {
         status_code = static_cast<uint16_t>(atoi(p));
       }
       break;
       case 2:
-        /* #line 111 "src\\yield\\http\\http_response_parser.rl" */
+        /* #line 120 "src\\yield\\http\\http_response_parser.rl" */
       { {
           p++;
           goto _out;
@@ -287,7 +296,7 @@ _match:
       }
       break;
       case 3:
-        /* #line 112 "src\\yield\\http\\http_response_parser.rl" */
+        /* #line 121 "src\\yield\\http\\http_response_parser.rl" */
       {
         return false;
       }
@@ -307,7 +316,7 @@ _again:
       while (__nacts-- > 0) {
         switch (*__acts++) {
         case 3:
-          /* #line 112 "src\\yield\\http\\http_response_parser.rl" */
+          /* #line 121 "src\\yield\\http\\http_response_parser.rl" */
         {
           return false;
         }
@@ -321,7 +330,7 @@ _out:
     {}
   }
 
-  /* #line 117 "src\\yield\\http\\http_response_parser.rl" */
+  /* #line 126 "src\\yield\\http\\http_response_parser.rl" */
 
 
   return cs != status_line_parser_error;

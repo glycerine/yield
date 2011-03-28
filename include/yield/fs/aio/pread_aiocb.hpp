@@ -40,13 +40,7 @@ public:
   const static uint32_t TYPE_ID = 2917461772UL;
 
 public:
-  preadAIOCB(
-    File& file,
-    YO_NEW_REF Buffer& buffer,
-    size_t nbytes,
-    uint64_t offset
-  );
-
+  preadAIOCB(File& file, YO_NEW_REF Buffer& buffer, uint64_t offset);
   ~preadAIOCB();
 
 public:
@@ -71,6 +65,7 @@ public:
   bool issue(yield::aio::win32::AIOQueue&);
 #endif
   RetryStatus retry();
+  void set_return(ssize_t return_);
 
 private:
   Buffer& buffer;

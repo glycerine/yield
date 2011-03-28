@@ -45,8 +45,7 @@ public:
   recvAIOCB(
     Socket& socket_,
     Buffer& buffer,
-    const Socket::MessageFlags& flags,
-    size_t nbytes
+    const Socket::MessageFlags& flags
   );
 
   ~recvAIOCB();
@@ -85,9 +84,7 @@ public:
   bool issue(yield::aio::win32::AIOQueue&);
 #endif
   RetryStatus retry();
-
-private:
-  recvAIOCB(recvAIOCB& other);
+  void set_return(ssize_t return_);
 
 private:
   Buffer& buffer;

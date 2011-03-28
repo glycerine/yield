@@ -37,56 +37,44 @@ namespace aio {
 recvAIOCB::recvAIOCB(
   Socket& socket_,
   Buffer& buffer,
-  const Socket::MessageFlags& flags,
-  size_t nbytes
+  const Socket::MessageFlags& flags
 )
-  : AIOCB(socket_, buffer, nbytes),
+  : AIOCB(socket_, buffer, buffer.capacity() - buffer.size()),
     buffer(buffer),
     flags(flags)
-{ }
-
-recvAIOCB::recvAIOCB(recvAIOCB& other)
-  : AIOCB(
-    other.get_socket(),
-    other.buffer,
-    other.get_nbytes()
-  ),
-  buffer(other.buffer.inc_ref()),
-  flags(other.flags),
-  peername(other.peername)
 { }
 
 recvAIOCB::~recvAIOCB() {
   Buffer::dec_ref(buffer);
 }
 
-//void recvAIOCB::set_return(ssize_t return_) {
-//  if (return_ > 0) {
-//    Buffer* buffer = &get_buffer();
-//    size_t ret = static_cast<size_t>(return_);
-//
-//    for (;;) {
-//      size_t buffer_left = buffer->capacity() - buffer->size();
-//
-//      if (ret <= buffer_left) {
-//        buffer->resize(buffer->size() + ret);
-//        break;
-//      } else {
-//        buffer->resize(buffer->capacity());
-//        ret -= buffer_left;
-//        buffer = buffer->get_next_buffer();
-//      }
-//    }
-//  }
-//
-//  AIOCB::set_return(return_);
-//}
+void recvAIOCB::set_return(ssize_t return_) {
+  if (return_ > 0) {
+    Buffer* buffer = &get_buffer();
+    size_t ret = static_cast<size_t>(return_);
+
+    for (;;) {
+      size_t buffer_left = buffer->capacity() - buffer->size();
+
+      if (ret <= buffer_left) {
+        buffer->resize(buffer->size() + ret);
+        break;
+      } else {
+        buffer->resize(buffer->capacity());
+        ret -= buffer_left;
+        buffer = buffer->get_next_buffer();
+      }
+    }
+  }
+
+  AIOCB::set_return(return_);
+}
 
 recvAIOCB::RetryStatus recvAIOCB::retry() {
   ssize_t recv_ret
   = get_socket().recvfrom(
-      static_cast<char*>(get_buffer()), // + get_buffer().size(),
-      get_nbytes(), //get_buffer().capacity() - get_buffer().size(),
+      static_cast<char*>(get_buffer()) + get_buffer().size(),
+      get_nbytes(),
       get_flags(),
       get_peername()
     );

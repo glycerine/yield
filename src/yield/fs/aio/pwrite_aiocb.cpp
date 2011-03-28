@@ -38,10 +38,9 @@ namespace aio {
 pwriteAIOCB::pwriteAIOCB(
   File& file,
   YO_NEW_REF Buffer& buffer,
-  size_t nbytes,
   uint64_t offset
 )
-  : AIOCB(file, buffer, nbytes, offset),
+  : AIOCB(file, buffer, buffer.size(), offset),
     buffer(buffer)
 { }
 
@@ -52,32 +51,32 @@ pwriteAIOCB::~pwriteAIOCB() {
 pwriteAIOCB::RetryStatus pwriteAIOCB::retry() {
   ssize_t return_;
 
-  //if (get_buffer().get_next_buffer() == NULL) {   // pwrite
+  if (get_buffer().get_next_buffer() == NULL) {   // pwrite
     return_
     = get_file().pwrite(
         get_buffer(),
         get_nbytes(),
         get_offset()
       );
-  //} else { // pwritev
-  //  vector<iovec> iov;
-  //  Buffer* buffer = &get_buffer();
-  //  do {
-  //    iovec page_iov;
-  //    page_iov.iov_base = *buffer;
-  //    page_iov.iov_len = buffer->
-  //    iov.push_back(page_iov);
-  //    buffer = buffer->get_next_buffer();
-  //  } while (buffer != NULL);
+  } else { // pwritev
+    vector<iovec> iov;
+    Buffer* buffer = &get_buffer();
+    do {
+      iovec page_iov;
+      page_iov.iov_base = *buffer;
+      page_iov.iov_len = buffer->size();
+      iov.push_back(page_iov);
+      buffer = buffer->get_next_buffer();
+    } while (buffer != NULL);
 
-  //  return_
-  //  = get_file().pwritev
-  //    (
-  //      &iov[0],
-  //      iov.size(),
-  //      get_offset()
-  //    );
-  //}
+    return_
+    = get_file().pwritev
+      (
+        &iov[0],
+        iov.size(),
+        get_offset()
+      );
+  }
 
   if (return_ >= 0) {
     set_return(return_);

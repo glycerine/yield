@@ -28,7 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/assert.hpp"
-#include "yield/page.hpp"
+#include "yield/buffer.hpp"
 #include "yield/http/http_body_chunk.hpp"
 #include "yield/http/http_message_parser.hpp"
 #include "yield/http/http_request.hpp"
@@ -51,7 +51,7 @@ HTTPMessageParser::HTTPMessageParser(Buffer& buffer)
 }
 
 HTTPMessageParser::HTTPMessageParser(const string& buffer)
-  : buffer(*new Page(buffer)) {
+  : buffer(Buffer::copy(buffer)) {
   debug_assert_false(buffer.empty());
 
   ps = p = this->buffer;
@@ -112,7 +112,7 @@ Object* HTTPMessageParser::parse_body_chunk() {
     } else // Last chunk
       return new HTTPBodyChunk;
   } else if (p == eof && chunk_size != 0)
-    return new Page(chunk_size + 2);   // Assumes no trailers..
+    return new Buffer(chunk_size + 2); // Assumes no trailers.
   else
     return NULL;
 }

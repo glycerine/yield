@@ -31,7 +31,6 @@
 #include "yield/buffer.hpp"
 #include "yield/exception.hpp"
 #include "yield/log.hpp"
-#include "yield/page.hpp"
 #include "yield/sockets/aio/accept_aiocb.hpp"
 #include "yield/sockets/aio/aio_queue.hpp"
 #include "yield/sockets/server/stream_socket_server.hpp"
@@ -62,7 +61,8 @@ StreamSocketServer::StreamSocketServer(
     &&
     get_aio_queue().associate(socket_)
   ) {
-    acceptAIOCB* accept_aiocb = new acceptAIOCB(socket_, new Page);
+    acceptAIOCB* accept_aiocb
+      = new acceptAIOCB(socket_, new Buffer(Buffer::getpagesize()));
     enqueue(*accept_aiocb);
   } else
     throw Exception();
@@ -115,7 +115,7 @@ void StreamSocketServer::service(YO_NEW_REF Event& event) {
       DebugBreak();
 
     acceptAIOCB* next_accept_aiocb
-    = new acceptAIOCB(get_socket(), new Page);
+      = new acceptAIOCB(get_socket(), new Buffer(Buffer::getpagesize()));
 
     enqueue(*next_accept_aiocb);
   }

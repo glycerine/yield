@@ -57,11 +57,10 @@ WSASendTo(
 
   if (buffer.get_next_buffer() == NULL) {
     WSABUF wsabuf;
-    wsabuf.buffer = buffer;
+    wsabuf.buf = buffer;
     wsabuf.len = buffer.size();
 
-    return WSASendTo
-           (
+    return WSASendTo(
              socket_,
              &wsabuf,
              1,
@@ -77,14 +76,13 @@ WSASendTo(
     Buffer* next_buffer = &buffer;
     do {
       WSABUF wsabuf;
-      wsabuf.buffer = static_cast<char*>(*next_buffer);
+      wsabuf.buf = static_cast<char*>(*next_buffer);
       wsabuf.len = next_buffer->size();
       wsabufs.push_back(wsabuf);
       next_buffer = next_buffer->get_next_buffer();
     } while (next_buffer != NULL);
 
-    return WSASendTo
-           (
+    return WSASendTo(
              socket_,
              &wsabufs[0],
              wsabufs.size(),

@@ -37,41 +37,44 @@ namespace yield {
 namespace fs {
 namespace aio {
 bool preadAIOCB::issue(EventHandler& completion_handler) {
-  set_completion_handler(completion_handler);
+  if (buffer.get_next_buffer() == NULL) {
+    set_completion_handler(completion_handler);
 
-  return ReadFileEx(
-            get_file(),
-            buffer,
-            get_nbytes(),
-            *this,
-            CompletionRoutine
-          ) == TRUE
-          ||
-          GetLastError() == ERROR_IO_PENDING;
+    return ReadFileEx(
+              get_file(),
+              buffer,
+              get_nbytes(),
+              *this,
+              CompletionRoutine
+            ) == TRUE
+            ||
+            GetLastError() == ERROR_IO_PENDING;
+  } else
+    return AIOCB::issue(completion_handler);
 }
 
 bool preadAIOCB::issue(yield::aio::win32::AIOQueue&) {
-  //if (buffer.get_next_buffer() != NULL) {
-  //  vector<FILE_SEGMENT_ELEMENT> aSegmentArray;
-  //  Buffer* next_page = &buffer;
-  //  do {
-  //    FILE_SEGMENT_ELEMENT file_segment_element;
-  //    file_segment_element.Buffer = *next_page;
-  //    aSegmentArray.push_back(file_segment_element);
-  //    next_page = next_page->get_next_buffer();
-  //  } while (next_page != NULL);
+  if (buffer.get_next_buffer() != NULL) {
+    vector<FILE_SEGMENT_ELEMENT> aSegmentArray;
+    Buffer* next_page = &buffer;
+    do {
+      FILE_SEGMENT_ELEMENT file_segment_element;
+      file_segment_element.Buffer = *next_page;
+      aSegmentArray.push_back(file_segment_element);
+      next_page = next_page->get_next_buffer();
+    } while (next_page != NULL);
 
-  //  return ReadFileScatter
-  //         (
-  //           get_file(),
-  //           &aSegmentArray[0],
-  //           get_nbytes(),
-  //           NULL,
-  //           *this
-  //         ) == TRUE
-  //         ||
-  //         GetLastError() == ERROR_IO_PENDING;
-  //} else {
+    return ReadFileScatter
+           (
+             get_file(),
+             &aSegmentArray[0],
+             get_nbytes(),
+             NULL,
+             *this
+           ) == TRUE
+           ||
+           GetLastError() == ERROR_IO_PENDING;
+  } else {
     return ReadFile(
              get_file(),
              buffer,
@@ -81,7 +84,7 @@ bool preadAIOCB::issue(yield::aio::win32::AIOQueue&) {
            ) == TRUE
            ||
            GetLastError() == ERROR_IO_PENDING;
-  //}
+  }
 }
 }
 }

@@ -36,6 +36,7 @@
 namespace yield {
 class Buffer : public Object {
 public:
+  const static size_t ALIGNMENT_DEFAULT = 2;
   const static uint32_t TYPE_ID = 4078143893UL;
 
 public:
@@ -45,10 +46,37 @@ public:
   virtual ~Buffer();
 
 public:
-  static Buffer& copy(const string& data);
-  static Buffer& copy(const char* data);
-  static Buffer& copy(const void* data, size_t size);
-  static Buffer& copy(const Buffer& data);
+  Buffer& copy() const {
+    return copy(*this);
+  }
+
+  static Buffer& copy(const Buffer& data) {
+    return copy(data, data.capacity());
+  }
+
+  static Buffer& copy(const string& data) {
+    return copy(data.data(), data.size());
+  }
+
+  static Buffer& copy(const char* data) {
+    return copy(data, strlen(data));
+  }
+
+  static Buffer& copy(const void* data, size_t size) {
+    return copy(size, data, size);
+  }
+
+  static Buffer& copy(size_t capacity, const void* data, size_t size) {
+    return copy(ALIGNMENT_DEFAULT, capacity, data, size);
+  }
+
+  static Buffer&
+  copy(
+    size_t alignment,
+    size_t capacity,
+    const void* data,
+    size_t size
+  );
 
 public:
   size_t capacity() const {
@@ -59,15 +87,36 @@ public:
     return data_;
   }
 
+  bool empty() const {
+    return size() == 0;
+  }
+
   const void* data() const {
     return data_;
   }
 
+  size_t size() const {
+    return size_;
+  }
+
+public:
+  Buffer* get_next_buffer() {
+    return next_buffer;
+  }
+
 public:
   static size_t getpagesize();
-  bool is_page_aligned() const;
-  static bool is_page_aligned(const void* ptr);
-  static bool is_page_aligned(const iovec& iov);
+
+  bool is_page_aligned() const {
+    return is_page_aligned(capacity(), data());
+  }
+
+  static bool is_page_aligned(const iovec& iov) {
+    return is_page_aligned(iov.iov_len, iov.iov_base);
+  }
+
+  static bool is_page_aligned(const void* data);
+  static bool is_page_aligned(size_t capacity, const void* data);
 
 public:
   operator char* () {
@@ -98,6 +147,37 @@ public:
     return static_cast<char*>(*this)[n];
   }
 
+  bool operator==(const Buffer&) const;
+
+ 	bool operator!=(const Buffer& other) const {
+    return !operator==(other);
+  }
+
+public:
+  void put(const Buffer& data) {
+    put(data, data.size());
+  }
+
+ 	void put(const char* data) {
+    put(data, strlen(data));
+  }
+
+ 	void put(const string& data) {
+    put(data.c_str(), data.size());
+  }
+
+ 	void put(char data, size_t repeat_count);
+ 	void put(const void* data, size_t size);
+
+public:
+  void resize(size_t size) {
+    if (size < capacity())
+      this->size_ = size;
+  }
+
+  void set_next_buffer(YO_NEW_REF Buffer*);
+  void set_next_buffer(YO_NEW_REF Buffer&);
+
 public:
   // yield::Object
   uint32_t get_type_id() const {
@@ -116,14 +196,16 @@ protected:
   Buffer(size_t capacity, void* data);
 
 protected:
-  size_t capacity_;
   void* data_;
 
 private:
   void alloc(size_t alignment, size_t capacity);
 
 private:
+  size_t capacity_;
   static size_t pagesize;
+  Buffer* next_buffer;
+  size_t size_;
 };
 }
 

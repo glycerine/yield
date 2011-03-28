@@ -47,8 +47,7 @@ public:
 public:
   acceptAIOCB(
     StreamSocket& socket_,
-    YO_NEW_REF Buffer* recv_buffer = NULL,
-    size_t recv_nbytes = 0
+    YO_NEW_REF Buffer* recv_buffer = NULL
   );
 
   ~acceptAIOCB();
@@ -64,10 +63,6 @@ public:
 
   Buffer* get_recv_buffer() const {
     return recv_buffer;
-  }
-
-  size_t get_recv_nbytes() const {
-    return recv_nbytes;
   }
 
 public:
@@ -88,9 +83,6 @@ public:
   RetryStatus retry();
   void set_return(ssize_t return_);
 
-private:
-  acceptAIOCB(acceptAIOCB& other);
-
 #ifdef _WIN32
   void* get_output_buffer() const;
   uint32_t get_peername_length() const;
@@ -102,7 +94,6 @@ private:
   StreamSocket* accepted_socket;
   SocketAddress& peername;
   Buffer* recv_buffer;
-  size_t recv_nbytes;
 };
 }
 }

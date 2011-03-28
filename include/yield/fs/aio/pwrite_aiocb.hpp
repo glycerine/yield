@@ -40,19 +40,15 @@ public:
   const static uint32_t TYPE_ID = 1080008554UL;
 
 public:
-  pwriteAIOCB(
-    File& file,
-    YO_NEW_REF Buffer& buffer,
-    size_t nbytes,
-    uint64_t offset
-  );
-
+  pwriteAIOCB(File& file, YO_NEW_REF Buffer& buffer, uint64_t offset);
   ~pwriteAIOCB();
 
+public:
   Buffer& get_buffer() const {
     return buffer;
   }
 
+public:
   // yield::Object
   uint32_t get_type_id() const {
     return TYPE_ID;
@@ -62,6 +58,7 @@ public:
     return "yield::fs::aio::pwriteAIOCB";
   }
 
+public:
   // yield::aio::AIOCB
   bool issue(EventHandler& completion_handler);
 #ifdef _WIN32

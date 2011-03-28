@@ -28,7 +28,6 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/assert.hpp"
-#include "yield/page.hpp"
 #include "yield/http/http_response_parser.hpp"
 
 #include <stdlib.h> // For atof and atoi
@@ -64,10 +63,15 @@ Object& HTTPResponseParser::parse() {
                    status_code
                 );
         } else {
-          Buffer* next_buffer
-          = new Page(p - ps + content_length, ps, eof - ps);
+          Buffer& next_buffer
+            = Buffer::copy(
+                Buffer::getpagesize(),
+                p - ps + content_length,
+                ps,
+                eof - ps
+              );
           ps = p;
-          return *next_buffer;
+          return next_buffer;
         }
       }
     } else {
@@ -77,14 +81,19 @@ Object& HTTPResponseParser::parse() {
     }
 
     if (p == eof) { // EOF parsing
-      Buffer* next_buffer
-        = new Page(eof - ps + Page::getpagesize(), ps, eof - ps);
+      Buffer& next_buffer
+        = Buffer::copy(
+            Buffer::getpagesize(),
+            eof - ps + Buffer::getpagesize(),
+            ps,
+            eof - ps
+          );
       p = ps;
-      return *next_buffer;
+      return next_buffer;
     } else // Error parsing
       return *new HTTPResponse(400, NULL, http_version);
   } else // p == eof
-    return *new Page;
+    return *new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
 }
 
 bool

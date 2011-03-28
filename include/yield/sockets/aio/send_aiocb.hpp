@@ -82,9 +82,6 @@ public:
   RetryStatus retry();
 
 private:
-  sendAIOCB(sendAIOCB& other);
-
-private:
   Buffer& buffer;
   Socket::MessageFlags flags;
   SocketAddress* peername;

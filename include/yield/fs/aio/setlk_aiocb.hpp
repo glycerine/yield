@@ -41,11 +41,7 @@ public:
   const static uint32_t TYPE_ID = 2934085911UL;
 
 public:
-  setlkAIOCB
-  (
-    File& file,
-    const File::Lock& flock_
-  )
+  setlkAIOCB(File& file, const File::Lock& flock_)
     : AIOCB(file, 0, flock_.get_start()), flock_(flock_)
   { }
 
@@ -53,14 +49,17 @@ public:
     return flock_;
   }
 
+public:
   // yield::Object
   uint32_t get_type_id() const {
     return TYPE_ID;
   }
+
   const char* get_type_name() const {
     return "yield::fs::aio::setlkAIOCB";
   }
 
+public:
   // yield::aio::AIOCB
 #ifdef _WIN32
   bool issue(yield::aio::win32::AIOQueue&);

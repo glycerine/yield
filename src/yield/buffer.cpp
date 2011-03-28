@@ -39,17 +39,23 @@ namespace yield {
 size_t Buffer::pagesize = 0;
 
 Buffer::Buffer(size_t capacity) {
-  alloc(2, capacity);
+  alloc(ALIGNMENT_DEFAULT, capacity);
+  next_buffer = NULL;
+  size_ = 0;
 }
 
 Buffer::Buffer(size_t alignment, size_t capacity) {
   alloc(alignment, capacity);
+  next_buffer = NULL;
+  size_ = 0;
 }
 
 Buffer::Buffer(size_t capacity, void* data)
   : capacity_(capacity),
     data_(data)
-{ }
+{
+  next_buffer = NULL;
+}
 
 Buffer::~Buffer() {
 #ifdef _WIN32
@@ -57,6 +63,7 @@ Buffer::~Buffer() {
 #else
   free(data_);
 #endif
+  Buffer::dec_ref(next_buffer);
 }
 
 void Buffer::alloc(size_t alignment, size_t capacity) {
@@ -72,22 +79,17 @@ void Buffer::alloc(size_t alignment, size_t capacity) {
     throw std::bad_alloc();
 }
 
-Buffer& Buffer::copy(const string& data) {
-  return copy(data.data(), data.size());
-}
-
-Buffer& Buffer::copy(const char* data) {
-  return copy(data, strlen(data));
-}
-
-Buffer& Buffer::copy(const void* data, size_t size) {
-  Buffer* buffer = new Buffer(getpagesize(), size);
+Buffer&
+Buffer::copy(
+  size_t alignment,
+  size_t capacity,
+  const void* data,
+  size_t size
+) {
+  Buffer* buffer = new Buffer(alignment, capacity);
   memcpy_s(*buffer, buffer->capacity(), data, size);
+  buffer->resize(size);
   return *buffer;
-}
-
-Buffer& Buffer::copy(const Buffer& data) {
-  return copy(data, data.capacity());
 }
 
 size_t Buffer::getpagesize() {
@@ -105,10 +107,6 @@ size_t Buffer::getpagesize() {
   }
 }
 
-bool Buffer::is_page_aligned() const {
-  return is_page_aligned(data());
-}
-
 bool Buffer::is_page_aligned(const void* ptr) {
   return (
            reinterpret_cast<const uintptr_t>(ptr)
@@ -117,9 +115,53 @@ bool Buffer::is_page_aligned(const void* ptr) {
          ) == 0;
 }
 
-bool Buffer::is_page_aligned(const iovec& iov) {
-  return is_page_aligned(iov.iov_base)
+bool Buffer::is_page_aligned(size_t capacity, const void* data) {
+  return (capacity & (getpagesize() - 1)) == 0
          &&
-         (iov.iov_len & (getpagesize() - 1)) == 0;
+         is_page_aligned(data);
+}
+
+bool Buffer::operator==(const Buffer& other) const {
+  if (size() == other.size()) {
+    const void* this_data = static_cast<const void*>(*this);
+    const void* other_data = static_cast<const void*>(other);
+    if (this_data != NULL && other_data != NULL)
+      return memcmp(this_data, other_data, size()) == 0;
+    else
+      return false;
+  } else
+    return false;
+}
+
+void Buffer::put(char data, size_t repeat_count) {
+  for (size_t char_i = 0; char_i < repeat_count; char_i++)
+    put(&data, 1);
+}
+
+void Buffer::put(const void* data, size_t size) {
+  if (size_ + size < capacity_) {
+    memcpy_s(
+      static_cast<char*>(data_) + size_,
+      capacity_ - size_,
+      data,
+      size
+    );
+
+    size_ += size;
+  }
+}
+
+void Buffer::set_next_buffer(YO_NEW_REF Buffer* next_buffer) {
+  if (next_buffer != NULL)
+    set_next_buffer(*next_buffer);
+  else if (this->next_buffer != NULL) {
+    Buffer::dec_ref(*this->next_buffer);
+    this->next_buffer = NULL;
+  }
+}
+
+void Buffer::set_next_buffer(YO_NEW_REF Buffer& next_buffer) {
+  Buffer::dec_ref(this->next_buffer);
+  this->next_buffer = &next_buffer;
 }
 }

@@ -69,15 +69,15 @@ File::Map::~Map() {
 }
 
 bool File::Map::sync() {
-  return sync(data_, capacity_);
+  return sync(data(), capacity());
 }
 
 bool File::Map::sync(size_t offset, size_t length) {
-  return sync(static_cast<char*>(data_) + offset, length);
+  return sync(static_cast<char*>(data()) + offset, length);
 }
 
 bool File::Map::sync(void* ptr, size_t length) {
-  if (data_ != reinterpret_cast<void*>(-1))
+  if (data() != reinterpret_cast<void*>(-1))
     return FlushViewOfFile(ptr, length) == TRUE;
   else {
     SetLastError(ERROR_INVALID_PARAMETER);
@@ -86,16 +86,13 @@ bool File::Map::sync(void* ptr, size_t length) {
 }
 
 bool File::Map::unmap() {
-  if (data_ != reinterpret_cast<void*>(-1)) {
-    debug_assert_ne(file_mapping, NULL);
+  if (file_mapping != NULL) {
 
-    if
-    (
-      UnmapViewOfFile(data_)
+    if (
+      UnmapViewOfFile(data())
       &&
       CloseHandle(file_mapping)
     ) {
-      capacity_ = 0;
       data_ = reinterpret_cast<void*>(-1);
       file_mapping = NULL;
       return true;

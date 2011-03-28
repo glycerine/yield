@@ -125,8 +125,7 @@ public:
 
     auto_Object<Buffer> buffer = new Buffer(4096);
 
-    auto_Object<preadAIOCB> aiocb
-    = new preadAIOCB(*file, buffer->inc_ref(), buffer->capacity(), 0);
+    auto_Object<preadAIOCB> aiocb = new preadAIOCB(*file, buffer->inc_ref(), 0);
 
     if (!this->get_aio_queue().enqueue(aiocb->inc_ref()))
       throw Exception();
@@ -161,13 +160,7 @@ public:
         throw Exception();
 
       auto_Object<pwriteAIOCB> aiocb
-      = new pwriteAIOCB
-      (
-        *file,
-        this->get_test_buffer().inc_ref(),
-        this->get_test_nbytes(),
-        0
-      );
+        = new pwriteAIOCB(*file, this->get_test_buffer().inc_ref(), 0);
 
       if (!this->get_aio_queue().enqueue(aiocb->inc_ref()))
         throw Exception();

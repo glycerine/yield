@@ -27,8 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "yield/buffer.hpp"
 #include "yield/exception.hpp"
-#include "yield/string_buffer.hpp"
 #include "yield/uri/uri.hpp"
 
 #include <sstream> // or std::ostringstream
@@ -182,9 +182,8 @@ URI::URI(URI& other)
 { }
 
 URI::URI(const URI& other)
-  : port(other.port) {
-  this->buffer = new StringBuffer(*other.buffer);
-
+  : buffer(&other.buffer->copy()),
+    port(other.port) {
   char* old_base = static_cast<char*>(*other.buffer);
   char* new_base = static_cast<char*>(*this->buffer);
   rebase(old_base, other.fragment, new_base, fragment);
@@ -200,7 +199,7 @@ URI::~URI() {
 }
 
 void URI::init(const char* uri, size_t uri_len) {
-  buffer = new StringBuffer(uri, uri_len);
+  buffer = &Buffer::copy(uri, uri_len);
 
   memset(&fragment, 0, sizeof(fragment));
   memset(&host, 0, sizeof(host));

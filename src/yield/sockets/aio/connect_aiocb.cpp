@@ -46,19 +46,9 @@ connectAIOCB::connectAIOCB(
     send_buffer(send_buffer)
 { }
 
-connectAIOCB::connectAIOCB(connectAIOCB& other)
-  : AIOCB(other.get_socket(), NULL, 0),
-    peername(other.peername.inc_ref()),
-    send_buffer(Object::inc_ref(other.send_buffer))
-{ }
-
 connectAIOCB::~connectAIOCB() {
   SocketAddress::dec_ref(peername);
   Buffer::dec_ref(send_buffer);
-}
-
-const SocketAddress& connectAIOCB::get_peername() const {
-  return peername;
 }
 
 connectAIOCB::RetryStatus connectAIOCB::retry() {

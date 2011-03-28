@@ -60,10 +60,6 @@ public:
     return send_buffer;
   }
 
-  size_t get_send_nbytes() const {
-    return send_nbytes;
-  }
-
 public:
   // yield::Object
   uint32_t get_type_id() const {
@@ -82,12 +78,8 @@ public:
   RetryStatus retry();
 
 private:
-  connectAIOCB(connectAIOCB& other);
-
-private:
   SocketAddress& peername;
   Buffer* send_buffer;
-  size_t send_nbytes;
 };
 }
 }

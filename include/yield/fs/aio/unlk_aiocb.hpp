@@ -46,6 +46,7 @@ public:
       flock_(flock_)
   { }
 
+public:
   const File::Lock& get_flock() const {
     return flock_;
   }

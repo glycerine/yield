@@ -35,7 +35,6 @@
 #include "yield/auto_object.hpp"
 #include "yield/buffer.hpp"
 #include "yield/exception.hpp"
-#include "yield/page.hpp"
 #include "yield/sockets/socket_pair.hpp"
 #include "yield/sockets/aio/recv_aiocb.hpp"
 #include "yield/sockets/aio/send_aiocb.hpp"
@@ -79,7 +78,7 @@ public:
 
     sockets.second().send("m", 1, 0);
 
-    auto_Object<Buffer> buffer = new Page;
+    auto_Object<Buffer> buffer = new Buffer(4096);
 
     auto_Object<recvAIOCB> aiocb
     = new recvAIOCB(sockets.first(), buffer->inc_ref(), 0);
@@ -107,7 +106,7 @@ public:
     if (!this->get_aio_queue().associate(sockets.first()))
       throw Exception();
 
-    auto_Object<Buffer> buffer = new Page;
+    auto_Object<Buffer> buffer = new Buffer(4096);
     buffer->put('m', 512);
 
     auto_Object<sendAIOCB> aiocb

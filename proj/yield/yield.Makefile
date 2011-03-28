@@ -46,7 +46,7 @@ endif
 D_FILE_PATHS := $(shell find ../../build/yield -name "*.d")
 
 
-O_FILE_PATHS += ../../build/yield/buffer.o ../../build/yield/date_time.o ../../build/yield/exception.o ../../build/yield/iovec.o ../../build/yield/log.o ../../build/yield/request.o ../../build/yield/time.o
+O_FILE_PATHS += ../../build/yield/buffer.o ../../build/yield/date_time.o ../../build/yield/exception.o ../../build/yield/log.o ../../build/yield/request.o ../../build/yield/time.o
 
 
 all: ../../lib/yield/libyield.a
@@ -75,10 +75,6 @@ depclean:
 ../../build/yield/exception.o: ../../src/yield/exception.cpp
 	-mkdir -p ../../build/yield 2>/dev/null
 	$(CXX) -c -o ../../build/yield/exception.o -MD $(CXXFLAGS) ../../src/yield/exception.cpp
-
-../../build/yield/iovec.o: ../../src/yield/iovec.cpp
-	-mkdir -p ../../build/yield 2>/dev/null
-	$(CXX) -c -o ../../build/yield/iovec.o -MD $(CXXFLAGS) ../../src/yield/iovec.cpp
 
 ../../build/yield/log.o: ../../src/yield/log.cpp
 	-mkdir -p ../../build/yield 2>/dev/null

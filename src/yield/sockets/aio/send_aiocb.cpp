@@ -47,13 +47,6 @@ sendAIOCB::sendAIOCB(
     peername(Object::inc_ref(peername))
 { }
 
-sendAIOCB::sendAIOCB(sendAIOCB& other)
-  : AIOCB(other.get_socket(), other.buffer, other.get_nbytes()),
-    buffer(other.buffer.inc_ref()),
-    flags(other.flags),
-    peername(Object::inc_ref(other.peername))
-{ }
-
 sendAIOCB::~sendAIOCB() {
   Buffer::dec_ref(buffer);
   SocketAddress::dec_ref(peername);
@@ -62,7 +55,7 @@ sendAIOCB::~sendAIOCB() {
 sendAIOCB::RetryStatus sendAIOCB::retry() {
   ssize_t send_ret;
 
-  //if (get_buffer().get_next_buffer() == NULL) {
+  if (get_buffer().get_next_buffer() == NULL) {
     if (get_peername() == NULL) {
       send_ret
       = get_socket().send(
@@ -79,25 +72,24 @@ sendAIOCB::RetryStatus sendAIOCB::retry() {
           *get_peername()
         );
     }
-  //} else {
-  //  vector<iovec> iovs;
-  //  Buffer* next_buffer = &get_buffer();
-  //  do {
-  //    iovec iov;
-  //    iov.iov_base = *next_buffer;
-  //    iov.iov_len = next_buffer->size();
-  //    next_buffer = next_buffer->get_next_buffer();
-  //  } while (next_buffer != NULL);
+  } else {
+    vector<iovec> iovs;
+    Buffer* next_buffer = &get_buffer();
+    do {
+      iovec iov;
+      iov.iov_base = *next_buffer;
+      iov.iov_len = next_buffer->size();
+      next_buffer = next_buffer->get_next_buffer();
+    } while (next_buffer != NULL);
 
-  //  send_ret
-  //  = get_socket().sendmsg
-  //    (
-  //      &iovs[0],
-  //      iovs.size(),
-  //      get_flags(),
-  //      get_peername()
-  //    );
-  //}
+    send_ret
+    = get_socket().sendmsg(
+        &iovs[0],
+        iovs.size(),
+        get_flags(),
+        get_peername()
+      );
+  }
 
   if (send_ret >= 0) {
     set_return(send_ret);
