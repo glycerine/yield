@@ -37,9 +37,10 @@ namespace aio {
 recvAIOCB::recvAIOCB(
   Socket& socket_,
   Buffer& buffer,
-  const Socket::MessageFlags& flags
+  const Socket::MessageFlags& flags,
+  size_t nbytes
 )
-  : AIOCB(socket_, buffer, buffer.capacity() - buffer.size()),
+  : AIOCB(socket_, buffer, nbytes),
     buffer(buffer),
     flags(flags)
 { }
@@ -48,7 +49,7 @@ recvAIOCB::recvAIOCB(recvAIOCB& other)
   : AIOCB(
     other.get_socket(),
     other.buffer,
-    other.buffer.capacity() - other.buffer.size()
+    other.get_nbytes()
   ),
   buffer(other.buffer.inc_ref()),
   flags(other.flags),
@@ -59,45 +60,33 @@ recvAIOCB::~recvAIOCB() {
   Buffer::dec_ref(buffer);
 }
 
-void recvAIOCB::set_return(ssize_t return_) {
-  if (return_ > 0) {
-    Buffer* buffer = &get_buffer();
-    size_t ret = static_cast<size_t>(return_);
-
-    for (;;) {
-      size_t buffer_left = buffer->capacity() - buffer->size();
-
-      if (ret <= buffer_left) {
-        buffer->resize(buffer->size() + ret);
-        break;
-      } else {
-        buffer->resize(buffer->capacity());
-        ret -= buffer_left;
-        buffer = buffer->get_next_buffer();
-      }
-    }
-  }
-
-  AIOCB::set_return(return_);
-}
-
-const Socket::MessageFlags& recvAIOCB::get_flags() const {
-  return flags;
-}
-
-const SocketAddress& recvAIOCB::get_peername() const {
-  return peername;
-}
+//void recvAIOCB::set_return(ssize_t return_) {
+//  if (return_ > 0) {
+//    Buffer* buffer = &get_buffer();
+//    size_t ret = static_cast<size_t>(return_);
+//
+//    for (;;) {
+//      size_t buffer_left = buffer->capacity() - buffer->size();
+//
+//      if (ret <= buffer_left) {
+//        buffer->resize(buffer->size() + ret);
+//        break;
+//      } else {
+//        buffer->resize(buffer->capacity());
+//        ret -= buffer_left;
+//        buffer = buffer->get_next_buffer();
+//      }
+//    }
+//  }
+//
+//  AIOCB::set_return(return_);
+//}
 
 recvAIOCB::RetryStatus recvAIOCB::retry() {
-  // Scatter I/O not implemented
-  debug_assert_eq(get_buffer().get_next_buffer(), NULL);
-
   ssize_t recv_ret
-  = get_socket().recvfrom
-    (
-      static_cast<char*>(get_buffer()) + get_buffer().size(),
-      get_buffer().capacity() - get_buffer().size(),
+  = get_socket().recvfrom(
+      static_cast<char*>(get_buffer()), // + get_buffer().size(),
+      get_nbytes(), //get_buffer().capacity() - get_buffer().size(),
       get_flags(),
       get_peername()
     );

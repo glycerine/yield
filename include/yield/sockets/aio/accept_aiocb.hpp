@@ -47,16 +47,27 @@ public:
 public:
   acceptAIOCB(
     StreamSocket& socket_,
-    YO_NEW_REF Buffer* recv_buffer = NULL
+    YO_NEW_REF Buffer* recv_buffer = NULL,
+    size_t recv_nbytes = 0
   );
+
   ~acceptAIOCB();
 
 public:
-  StreamSocket* get_accepted_socket() const;
-  SocketAddress& get_peername() const;
+  StreamSocket* get_accepted_socket() const {
+    return accepted_socket;
+  }
+
+  SocketAddress& get_peername() const {
+    return peername;
+  }
 
   Buffer* get_recv_buffer() const {
     return recv_buffer;
+  }
+
+  size_t get_recv_nbytes() const {
+    return recv_nbytes;
   }
 
 public:
@@ -64,6 +75,7 @@ public:
   uint32_t get_type_id() const {
     return TYPE_ID;
   }
+
   const char* get_type_name() const {
     return "aio::acceptAIOCB";
   }
@@ -90,6 +102,7 @@ private:
   StreamSocket* accepted_socket;
   SocketAddress& peername;
   Buffer* recv_buffer;
+  size_t recv_nbytes;
 };
 }
 }

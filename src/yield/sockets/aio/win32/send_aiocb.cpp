@@ -57,7 +57,7 @@ WSASendTo(
 
   if (buffer.get_next_buffer() == NULL) {
     WSABUF wsabuf;
-    wsabuf.buf = buffer;
+    wsabuf.buffer = buffer;
     wsabuf.len = buffer.size();
 
     return WSASendTo
@@ -77,7 +77,7 @@ WSASendTo(
     Buffer* next_buffer = &buffer;
     do {
       WSABUF wsabuf;
-      wsabuf.buf = static_cast<char*>(*next_buffer);
+      wsabuf.buffer = static_cast<char*>(*next_buffer);
       wsabuf.len = next_buffer->size();
       wsabufs.push_back(wsabuf);
       next_buffer = next_buffer->get_next_buffer();

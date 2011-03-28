@@ -67,7 +67,7 @@ bool connectAIOCB::issue(yield::aio::win32::AIOQueue&) {
     DWORD dwSendDataLength;
     if (get_send_buffer() != NULL) {
       lpSendBuffer = *get_send_buffer();
-      dwSendDataLength = get_send_buffer()->size();
+      dwSendDataLength = get_send_nbytes();
     } else {
       lpSendBuffer = NULL;
       dwSendDataLength = 0;

@@ -103,6 +103,7 @@
     <ClInclude Include="..\..\include\yield\event_handler.hpp" />
     <ClInclude Include="..\..\include\yield\event_queue.hpp" />
     <ClInclude Include="..\..\include\yield\exception.hpp" />
+    <ClInclude Include="..\..\include\yield\iovec.hpp" />
     <ClInclude Include="..\..\include\yield\log.hpp" />
     <ClInclude Include="..\..\include\yield\message.hpp" />
     <ClInclude Include="..\..\include\yield\object.hpp" />
@@ -118,6 +119,8 @@
     <ClCompile Include="..\..\src\yield\date_time.cpp">
     </ClCompile>
     <ClCompile Include="..\..\src\yield\exception.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\src\yield\iovec.cpp">
     </ClCompile>
     <ClCompile Include="..\..\src\yield\log.cpp">
     </ClCompile>

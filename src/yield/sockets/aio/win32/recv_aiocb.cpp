@@ -49,7 +49,7 @@ WSARecvFrom(
 
   //if (buffer.get_next_buffer() == NULL) {
     WSABUF wsabuf;
-    wsabuf.buf = static_cast<char*>(buffer)
+    wsabuf.buffer = static_cast<char*>(buffer)
                  + buffer.size();
     wsabuf.len = buffer.capacity() - buffer.size();
 
@@ -70,7 +70,7 @@ WSARecvFrom(
   //  Buffer* next_buffer = &buffer;
   //  do {
   //    WSABUF wsabuf;
-  //    wsabuf.buf = static_cast<char*>(*next_buffer)
+  //    wsabuf.buffer = static_cast<char*>(*next_buffer)
   //                 + next_buffer->size();
   //    wsabuf.len = next_buffer->capacity() - next_buffer->size();
   //    wsabufs.push_back(wsabuf);

@@ -43,8 +43,7 @@ public:
   const static uint32_t TYPE_ID = 2458109810UL;
 
 public:
-  connectAIOCB
-  (
+  connectAIOCB(
     StreamSocket& socket_,
     SocketAddress& peername,
     YO_NEW_REF Buffer* send_buffer = NULL
@@ -52,19 +51,30 @@ public:
 
   ~connectAIOCB();
 
-  const SocketAddress& get_peername() const;
+public:
+  const SocketAddress& get_peername() const {
+    return peername;
+  }
+
   Buffer* get_send_buffer() const {
     return send_buffer;
   }
 
+  size_t get_send_nbytes() const {
+    return send_nbytes;
+  }
+
+public:
   // yield::Object
   uint32_t get_type_id() const {
     return TYPE_ID;
   }
+
   const char* get_type_name() const {
     return "aio::connectAIOCB";
   }
 
+public:
   // yield::aio::AIOCB
 #ifdef _WIN32
   bool issue(yield::aio::win32::AIOQueue&);
@@ -77,6 +87,7 @@ private:
 private:
   SocketAddress& peername;
   Buffer* send_buffer;
+  size_t send_nbytes;
 };
 }
 }

@@ -28,7 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/assert.hpp"
-#include "yield/page.hpp"
+#include "yield/buffer.hpp"
 #include "yield/sockets/socket_address.hpp"
 #include "yield/sockets/stream_socket.hpp"
 #include "yield/sockets/aio/accept_aiocb.hpp"
@@ -41,24 +41,24 @@ static LPFN_ACCEPTEX lpfnAcceptEx = NULL;
 static LPFN_GETACCEPTEXSOCKADDRS lpfnGetAcceptExSockaddrs = NULL;
 
 
-acceptAIOCB::acceptAIOCB
-(
+acceptAIOCB::acceptAIOCB(
   StreamSocket& socket_,
-  YO_NEW_REF Buffer* recv_buffer
+  YO_NEW_REF Buffer* recv_buffer,
+  size_t recv_nbytes
 )
   : AIOCB(socket_, NULL, 0),
     peername(*new SocketAddress),
-    recv_buffer(recv_buffer) {
+    recv_buffer(recv_buffer),
+    recv_nbytes(recv_nbytes) {
   accepted_socket = NULL;
 
   if (this->recv_buffer == NULL) {
     size_t recv_buffer_size
-    = get_sockname_length() + get_peername_length();
-    this->recv_buffer = new Page(recv_buffer_size);
+      = get_sockname_length() + get_peername_length();
+    this->recv_buffer = new Buffer(recv_buffer_size);
   } else {
-    debug_assert_ge
-    (
-      this->recv_buffer->capacity() - this->recv_buffer->size(),
+    debug_assert_ge(
+      recv_nbytes,
       get_sockname_length() + get_peername_length()
     );
   }
@@ -93,21 +93,17 @@ void acceptAIOCB::set_return(ssize_t return_) {
   );
 
   if (peername != NULL) {
-    get_peername().assign
-    (
+    get_peername().assign(
       *peername,
       get_accepted_socket()->get_domain()
     );
   }
 
-  if (return_ > 0)
-    recv_buffer->resize(recv_buffer->size() + return_);
-
   AIOCB::set_return(return_);
 }
 
 void* acceptAIOCB::get_output_buffer() const {
-  return static_cast<char*>(*recv_buffer) + recv_buffer->size();
+  return static_cast<char*>(*recv_buffer); // + recv_buffer->size();
 }
 
 uint32_t acceptAIOCB::get_peername_length() const {
@@ -115,8 +111,9 @@ uint32_t acceptAIOCB::get_peername_length() const {
 }
 
 uint32_t acceptAIOCB::get_recv_data_length() const {
-  return recv_buffer->capacity()
-         - recv_buffer->size()
+  return //recv_buffer->capacity()
+         //- recv_buffer->size()
+         recv_nbytes
          - get_sockname_length()
          - get_peername_length();
 }
@@ -129,8 +126,7 @@ bool acceptAIOCB::issue(yield::aio::win32::AIOQueue&) {
   if (lpfnAcceptEx == NULL) {
     GUID GuidAcceptEx = WSAID_ACCEPTEX;
     DWORD dwBytes;
-    WSAIoctl
-    (
+    WSAIoctl(
       get_socket(),
       SIO_GET_EXTENSION_FUNCTION_POINTER,
       &GuidAcceptEx,
@@ -146,8 +142,7 @@ bool acceptAIOCB::issue(yield::aio::win32::AIOQueue&) {
       return false;
 
     GUID GuidGetAcceptExSockAddrs = WSAID_GETACCEPTEXSOCKADDRS;
-    WSAIoctl
-    (
+    WSAIoctl(
       get_socket(),
       SIO_GET_EXTENSION_FUNCTION_POINTER,
       &GuidGetAcceptExSockAddrs,
@@ -168,8 +163,7 @@ bool acceptAIOCB::issue(yield::aio::win32::AIOQueue&) {
   if (accepted_socket != NULL) {
     DWORD dwBytesReceived;
 
-    return lpfnAcceptEx
-           (
+    return lpfnAcceptEx(
              get_socket(),
              *accepted_socket,
              get_output_buffer(),

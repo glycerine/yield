@@ -45,18 +45,26 @@ public:
     Socket& socket_,
     YO_NEW_REF Buffer& buffer,
     const Socket::MessageFlags& flags,
+    size_t nbytes,
     SocketAddress* peername = NULL
   );
 
   ~sendAIOCB();
-
+  
+public:
   Buffer& get_buffer() const {
     return buffer;
   }
 
-  const Socket::MessageFlags& get_flags() const;
-  const SocketAddress* get_peername() const;
+  const Socket::MessageFlags& get_flags() const {
+    return flags;
+  }
 
+  const SocketAddress* get_peername() const {
+    return peername;
+  }
+
+public:
   // yield::Object
   uint32_t get_type_id() const {
     return TYPE_ID;
@@ -65,6 +73,7 @@ public:
     return "aio::sendAIOCB";
   }
 
+public:
   // yield::aio::AIOCB
 #ifdef _WIN32
   bool issue(EventHandler& completion_handler);

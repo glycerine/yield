@@ -1,4 +1,4 @@
-// buffer_test.hpp
+// buffer_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved

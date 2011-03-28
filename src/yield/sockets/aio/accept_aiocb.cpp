@@ -42,14 +42,6 @@ acceptAIOCB::~acceptAIOCB() {
   Buffer::dec_ref(recv_buffer);
 }
 
-StreamSocket* acceptAIOCB::get_accepted_socket() const {
-  return accepted_socket;
-}
-
-SocketAddress& acceptAIOCB::get_peername() const {
-  return peername;
-}
-
 acceptAIOCB::RetryStatus acceptAIOCB::retry() {
   accepted_socket
   = static_cast<StreamSocket&>(get_socket())

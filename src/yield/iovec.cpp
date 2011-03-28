@@ -1,4 +1,4 @@
-// yield/sockets/aio/aiocb.hpp
+// yield/iovec.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,48 +27,28 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_SOCKETS_AIO_AIOCB_HPP_
-#define _YIELD_SOCKETS_AIO_AIOCB_HPP_
-
-#include "yield/aio/aiocb.hpp"
+#include "yield/iovec.hpp"
 
 namespace yield {
-namespace sockets {
-class Socket;
-
-namespace aio {
-class AIOCB : public yield::aio::AIOCB {
-public:
-  virtual ~AIOCB();
-
-public:
-  AIOCB* get_next_aiocb() {
-    return next_aiocb;
-  }
-
-  Socket& get_socket();
-
-public:
-  void set_next_aiocb(AIOCB* next_aiocb);
-
-protected:
-  AIOCB(Socket&, void* buffer, size_t nbytes);
-
-#ifdef _WIN32
-  static void __stdcall
-  CompletionRoutine(
-    unsigned long dwErrorCode,
-    unsigned long dwNumberOfBytesTransferred,
-    ::OVERLAPPED* lpOverlapped,
-    unsigned long dwFlags
-  );
-#endif
-
-private:
-  AIOCB* next_aiocb;
-};
-}
-}
+IOVec::IOVec(YO_NEW_REF Buffer& buffer)
+  : buffer(buffer),
+    nbytes(buffer.capacity()) {
 }
 
-#endif
+IOVec::IOVec(YO_NEW_REF Buffer& buffer, size_t nbytes)
+  : buffer(buffer),
+    nbytes(nbytes) {
+}
+
+IOVec::IOVec(IOVec& other) 
+  : buffer(other.get_buffer().inc_ref()),
+    nbytes(other.get_nbytes()) {
+}
+
+IOVec::operator struct iovec() const {
+  struct iovec iov;
+  iov.iov_base = get_buffer();
+  iov.iov_len = get_nbytes();
+  return iov;
+}
+}

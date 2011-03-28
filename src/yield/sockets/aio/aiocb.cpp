@@ -33,8 +33,8 @@
 namespace yield {
 namespace sockets {
 namespace aio {
-AIOCB::AIOCB(Socket& socket_, void* buf, size_t nbytes)
-  : yield::aio::AIOCB(socket_, buf, nbytes, 0) {
+AIOCB::AIOCB(Socket& socket_, void* buffer, size_t nbytes)
+  : yield::aio::AIOCB(socket_, buffer, nbytes, 0) {
   next_aiocb = NULL;
 }
 
