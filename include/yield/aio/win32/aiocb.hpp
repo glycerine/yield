@@ -32,20 +32,16 @@
 
 #include "yield/event.hpp"
 
-
 struct _OVERLAPPED;
 typedef struct _OVERLAPPED OVERLAPPED;
-
 
 namespace yield {
 class Channel;
 class EventHandler;
 
-
 namespace aio {
 namespace win32 {
 class AIOQueue;
-
 
 class AIOCB : public Event {
 public:

@@ -41,7 +41,7 @@ public:
 
 public:
   fsyncAIOCB(File& file)
-    : AIOCB(file)
+    : AIOCB(file, 0)
   { }
 
 public:

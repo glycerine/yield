@@ -34,12 +34,9 @@
 
 #include <aio.h>
 
-
-
 namespace yield {
 class Channel;
 class EventHandler;
-
 
 namespace aio {
 namespace posix {

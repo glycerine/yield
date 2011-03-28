@@ -30,36 +30,21 @@
 #ifndef _YIELD_FS_AIO_AIOCB_HPP_
 #define _YIELD_FS_AIO_AIOCB_HPP_
 
-#include "yield/aio/aiocb.hpp"
 #include "yield/fs/file.hpp"
+#ifdef _WIN32
+#include "yield/fs/aio/win32/aiocb.hpp"
+#else
+#include "yield/fs/aio/posix/aiocb.hpp"
+#endif
 
 namespace yield {
-class Buffer;
-
 namespace fs {
 namespace aio {
-class AIOCB : public yield::aio::AIOCB {
-public:
-  virtual ~AIOCB() { }
-
-  File& get_file() {
-    return static_cast<File&>(get_channel());
-  }
-
-protected:
-  AIOCB(File& file, uint64_t offset)
-    : yield::aio::AIOCB(file, offset) {
-  }
-
 #ifdef _WIN32
-  static void __stdcall
-  CompletionRoutine(
-    unsigned long dwErrorCode,
-    unsigned long dwNumberOfBytesTransferred,
-    ::OVERLAPPED* lpOverlapped
-  );
+  typedef win32::AIOCB AIOCB;
+#else
+  typedef posix::AIOCB AIOCB;
 #endif
-};
 }
 }
 }

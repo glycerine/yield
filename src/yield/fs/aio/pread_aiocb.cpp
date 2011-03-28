@@ -74,7 +74,7 @@ preadAIOCB::RetryStatus preadAIOCB::retry() {
     return_
     = get_file().pread(
         static_cast<char*>(get_buffer()) + get_buffer().size(),
-        get_nbytes(),
+        get_buffer().capacity() - get_buffer().size(),
         get_offset()
       );
   } else { // preadv
@@ -89,8 +89,7 @@ preadAIOCB::RetryStatus preadAIOCB::retry() {
     } while (buffer != NULL);
 
     return_
-    = get_file().preadv
-      (
+    = get_file().preadv(
         &iov[0],
         iov.size(),
         get_offset()

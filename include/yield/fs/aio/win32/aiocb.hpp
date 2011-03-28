@@ -1,4 +1,4 @@
-// yield/fs/aio/aiocb.cpp
+// yield/fs/aio/win32/aiocb.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,28 +27,41 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/buffer.hpp"
-#include "yield/fs/aio/aiocb.hpp"
-#include "yield/fs/file.hpp"
+#ifndef _YIELD_FS_AIO_WIN32_AIOCB_HPP_
+#define _YIELD_FS_AIO_WIN32_AIOCB_HPP_
+
+#include "yield/aio/win32/aiocb.hpp"
+#include "yield/fs/win32/file.hpp"
 
 namespace yield {
+class Buffer;
+
 namespace fs {
 namespace aio {
-AIOCB::AIOCB(File& file)
-  : yield::aio::AIOCB(file, NULL, 0, 0)
-{ }
+namespace win32 {
+class AIOCB : public yield::aio::win32::AIOCB {
+public:
+  virtual ~AIOCB() { }
 
-AIOCB::AIOCB(File& file, Buffer& buffer, uint64_t offset)
-  : yield::aio::AIOCB(file, buffer, 0, offset)
-{ }
+  yield::fs::win32::File& get_file() {
+    return static_cast<yield::fs::win32::File&>(get_channel());
+  }
 
-AIOCB::AIOCB(File& file, size_t nbytes, uint64_t offset)
-  : yield::aio::AIOCB(file, NULL, nbytes, offset)
-{ }
+protected:
+  AIOCB(yield::fs::win32::File& file, uint64_t offset)
+    : yield::aio::win32::AIOCB(file, offset) {
+  }
 
-File& AIOCB::get_file() {
-  return static_cast<File&>(get_channel());
+  static void __stdcall
+  CompletionRoutine(
+    unsigned long dwErrorCode,
+    unsigned long dwNumberOfBytesTransferred,
+    ::OVERLAPPED* lpOverlapped
+  );
+};
 }
 }
 }
 }
+
+#endif

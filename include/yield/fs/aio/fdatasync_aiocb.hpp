@@ -41,7 +41,7 @@ public:
 
 public:
   fdatasyncAIOCB(File& file)
-    : AIOCB(file)
+    : AIOCB(file, 0)
   { }
 
 public:

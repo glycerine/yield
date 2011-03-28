@@ -29,7 +29,6 @@
 
 #include "yield/buffer.hpp"
 #include "yield/fs/aio/pread_aiocb.hpp"
-#include "yield/fs/file.hpp"
 
 #include <Windows.h>
 
@@ -37,18 +36,14 @@ namespace yield {
 namespace fs {
 namespace aio {
 bool preadAIOCB::issue(EventHandler& completion_handler) {
-  if (buffer.get_next_buffer() == NULL) {
+  if (get_buffer().get_next_buffer() == NULL) {
     set_completion_handler(completion_handler);
-
-    LPOVERLAPPED lpOverlapped = *this;
-    lpOverlapped->Offset = static_cast<uint32_t>(offset);
-    lpOverlapped->OffsetHigh = static_cast<uint32_t>(offset >> 32);
 
     return ReadFileEx(
               get_file(),
-              buffer,
-              get_nbytes(),
-              lpOverlapped,
+              get_buffer(),
+              get_buffer().capacity() - get_buffer().size(),
+              *this,
               CompletionRoutine
             ) == TRUE
             ||
@@ -58,21 +53,22 @@ bool preadAIOCB::issue(EventHandler& completion_handler) {
 }
 
 bool preadAIOCB::issue(yield::aio::win32::AIOQueue&) {
-  if (buffer.get_next_buffer() != NULL) {
+  if (get_buffer().get_next_buffer() != NULL) {
     vector<FILE_SEGMENT_ELEMENT> aSegmentArray;
-    Buffer* next_page = &buffer;
+    size_t nNumberOfBytesToRead = 0;
+    Buffer* next_buffer = &get_buffer();
     do {
       FILE_SEGMENT_ELEMENT file_segment_element;
-      file_segment_element.Buffer = *next_page;
+      file_segment_element.Buffer = *next_buffer;
       aSegmentArray.push_back(file_segment_element);
-      next_page = next_page->get_next_buffer();
-    } while (next_page != NULL);
+      nNumberOfBytesToRead += next_buffer->size();
+      next_buffer = next_buffer->get_next_buffer();
+    } while (next_buffer != NULL);
 
-    return ReadFileScatter
-           (
+    return ReadFileScatter(
              get_file(),
              &aSegmentArray[0],
-             get_nbytes(),
+             nNumberOfBytesToRead,
              NULL,
              *this
            ) == TRUE
@@ -81,8 +77,8 @@ bool preadAIOCB::issue(yield::aio::win32::AIOQueue&) {
   } else {
     return ReadFile(
              get_file(),
-             buffer,
-             get_nbytes(),
+             get_buffer(),
+             get_buffer().size(),
              NULL,
              *this
            ) == TRUE

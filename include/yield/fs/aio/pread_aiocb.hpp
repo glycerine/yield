@@ -30,6 +30,7 @@
 #ifndef _YIELD_FS_AIO_PREAD_AIOCB_HPP_
 #define _YIELD_FS_AIO_PREAD_AIOCB_HPP_
 
+#include "yield/fs/file.hpp"
 #include "yield/fs/aio/aiocb.hpp"
 
 namespace yield {

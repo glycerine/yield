@@ -37,13 +37,13 @@ namespace yield {
 namespace fs {
 namespace aio {
 bool pwriteAIOCB::issue(EventHandler& completion_handler) {
-  if (buffer.get_next_buffer() == NULL) {
+  if (get_buffer().get_next_buffer() == NULL) {
     set_completion_handler(completion_handler);
 
     return WriteFileEx(
              get_file(),
-             buffer,
-             get_nbytes(),
+             get_buffer(),
+             get_buffer().size(),
              *this,
              CompletionRoutine
            ) == TRUE
@@ -54,21 +54,22 @@ bool pwriteAIOCB::issue(EventHandler& completion_handler) {
 }
 
 bool pwriteAIOCB::issue(yield::aio::win32::AIOQueue&) {
-  if (buffer.get_next_buffer() != NULL) {
+  if (get_buffer().get_next_buffer() != NULL) {
     vector<FILE_SEGMENT_ELEMENT> aSegmentArray;
-    Buffer* next_page = &buffer;
+    DWORD nNumberOfBytesToWrite = 0;
+    Buffer* next_buffer = &buffer;
     do {
       FILE_SEGMENT_ELEMENT file_segment_element;
-      file_segment_element.Buffer = *next_page;
+      file_segment_element.Buffer = *next_buffer;
       aSegmentArray.push_back(file_segment_element);
-      next_page = next_page->get_next_buffer();
-    } while (next_page != NULL);
+      nNumberOfBytesToWrite += next_buffer->size();
+      next_buffer = next_buffer->get_next_buffer();
+    } while (next_buffer != NULL);
 
-    return WriteFileGather
-           (
+    return WriteFileGather(
              get_file(),
              &aSegmentArray[0],
-             get_nbytes(),
+             nNumberOfBytesToWrite,
              NULL,
              *this
            ) == TRUE
@@ -77,8 +78,8 @@ bool pwriteAIOCB::issue(yield::aio::win32::AIOQueue&) {
   } else {
     return WriteFile(
              get_file(),
-             buffer,
-             get_nbytes(),
+             get_buffer(),
+             get_buffer().size(),
              NULL,
              *this
            ) == TRUE

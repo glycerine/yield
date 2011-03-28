@@ -31,6 +31,7 @@
 #define _YIELD_FS_AIO_BIO_QUEUE_HPP_
 
 #include "yield/event_queue.hpp"
+#include "yield/fs/aio/aiocb.hpp"
 
 namespace yield {
 namespace thread {
@@ -39,8 +40,6 @@ class SynchronizedEventQueue;
 
 namespace fs {
 namespace aio {
-class AIOCB;
-
 class BIOQueue : public EventQueue {
 public:
   BIOQueue();

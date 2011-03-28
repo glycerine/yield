@@ -149,7 +149,7 @@ public:
 
   bool operator==(const Buffer&) const;
 
- 	bool operator!=(const Buffer& other) const {
+  bool operator!=(const Buffer& other) const {
     return !operator==(other);
   }
 
@@ -158,16 +158,16 @@ public:
     put(data, data.size());
   }
 
- 	void put(const char* data) {
+  void put(const char* data) {
     put(data, strlen(data));
   }
 
- 	void put(const string& data) {
+  void put(const string& data) {
     put(data.c_str(), data.size());
   }
 
- 	void put(char data, size_t repeat_count);
- 	void put(const void* data, size_t size);
+  void put(char data, size_t repeat_count);
+  void put(const void* data, size_t size);
 
 public:
   void resize(size_t size) {

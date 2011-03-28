@@ -1,4 +1,4 @@
-// yield/fs/aio/win32/aiocb.cpp
+// yield/fs/aio/posix/aiocb.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,29 +27,35 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/assert.hpp"
-#include "yield/event_handler.hpp"
-#include "yield/fs/aio/win32/aiocb.hpp"
+#ifndef _YIELD_FS_AIO_POSIX_AIOCB_HPP_
+#define _YIELD_FS_AIO_POSIX_AIOCB_HPP_
 
-#include <Windows.h>
+#include "yield/aio/posix/aiocb.hpp"
+#include "yield/fs/posix/file.hpp"
 
 namespace yield {
+class Buffer;
+
 namespace fs {
 namespace aio {
-namespace win32 {
-void __stdcall
-AIOCB::CompletionRoutine(
-  unsigned long dwErrorCode,
-  unsigned long dwNumberOfBytesTransfered,
-  ::OVERLAPPED* lpOverlapped
-) {
-  yield::aio::win32::AIOCB& aiocb = AIOCB::cast(*lpOverlapped);
-  aiocb.set_error(dwErrorCode);
-  aiocb.set_return(dwNumberOfBytesTransfered);
-  debug_assert_ne(aiocb.get_completion_handler(), NULL);
-  aiocb.get_completion_handler()->handle(aiocb);
+namespace posix {
+class AIOCB : public yield::aio::posix::AIOCB {
+public:
+  virtual ~AIOCB() { }
+
+  yield::fs::posix::File& get_file() {
+    return static_cast<yield::fs::posix::File&>(get_channel());
+  }
+
+protected:
+  AIOCB(yield::fs::posix::File& file, uint64_t offset)
+    : yield::aio::posix::AIOCB(file, offset) {
+  }
+};
 }
 }
 }
 }
-}
+
+
+#endif

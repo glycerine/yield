@@ -99,16 +99,16 @@
     <ClInclude Include="..\..\..\..\include\yield\fs\aio\fdatasync_aiocb.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\fs\aio\fsync_aiocb.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\fs\aio\posix\aio_queue.hpp" />
+    <ClInclude Include="..\..\..\..\include\yield\fs\aio\posix\aiocb.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\fs\aio\pread_aiocb.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\fs\aio\pwrite_aiocb.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\fs\aio\setlk_aiocb.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\fs\aio\unlk_aiocb.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\fs\aio\win32\aio_queue.hpp" />
+    <ClInclude Include="..\..\..\..\include\yield\fs\aio\win32\aiocb.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
-    <ClCompile Include="..\..\..\..\src\yield\fs\aio\aiocb.cpp">
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\fs\aio\bio_queue.cpp">
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\fs\aio\fdatasync_aiocb.cpp">

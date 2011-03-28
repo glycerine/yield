@@ -42,7 +42,7 @@ public:
 
 public:
   setlkAIOCB(File& file, const File::Lock& flock_)
-    : AIOCB(file, 0, flock_.get_start()), flock_(flock_)
+    : AIOCB(file, flock_.get_start()), flock_(flock_)
   { }
 
   const File::Lock& get_flock() const {
