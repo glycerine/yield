@@ -80,103 +80,19 @@ void Log::write(const string& str, const Level& level) {
   write(str.c_str(), str.size(), level);
 }
 
-void Log::write(const char* str, size_t str_len, const Level& level) {
-  if (level <= this->level)
-    write(str, str_len);
-}
-
 void Log::write(const void* str, size_t str_len, const Level& level) {
   if (level <= this->level)
     write(str, str_len);
 }
 
-void Log::write(const uint8_t* str, size_t str_len, const Level& level) {
-  if (level <= this->level)
-    write(str, str_len);
-}
-
-//void
-//Log::write
-//(
-//  const iovec* iov,
-//  int iovlen,
-//  const Level& level
-//)
-//{
-//  if ( level <= this->level )
-//  {
-//    for ( int iov_i = 0; iov_i < iovlen; iov_i++ )
-//      write( iov[iov_i].iov_base, iov[iov_i].iov_len, level );
-//  }
-//}
-
-//void
-//Log::write
-//(
-//  const iovec* iov,
-//  int iovlen,
-//  size_t count,
-//  const Level& level
-//)
-//{
-//  if ( level <= this->level )
-//  {
-//    for ( int iov_i = 0; iov_i < iovlen; iov_i++ )
-//    {
-//      if ( iov[iov_i].iov_len <= count )
-//      {
-//        write( iov[iov_i].iov_base, iov[iov_i].iov_len );
-//        count -= iov[iov_i].iov_len;
-//      }
-//      else
-//      {
-//        write( iov[iov_i].iov_base, count );
-//        break;
-//      }
-//    }
-//  }
-//}
-
-//void Log::write(const Buffer& buffer, const Level& level) {
-//  if (level <= this->level) {
-//    std::ostringstream str;
-//
-//    str << "Buffer( ";
-//    str << "capacity=" << buffer.capacity() << ", ";
-//    str << "size=" << buffer.size();
-//
-//    if (this->level == DEBUG) {
-//      if (buffer.empty()) {
-//        str << ", data='' )";
-//        write(str.str().data(), str.str().size());
-//      } else {
-//        str << ", data='\n";
-//        write(str.str().data(), str.str().size());
-//        write(static_cast<const uint8_t*>(buffer), buffer.size());
-//        if (static_cast<const char*>(buffer)[buffer.size() - 1] == '\n')
-//          write("')\n", 3);
-//        else
-//          write("\n')\n", 4);
-//      }
-//    } else {
-//      str << " )";
-//      write(str.str().data(), str.str().size());
-//    }
-//  }
-//}
-
 void Log::write(const void* str, size_t str_len) {
-  write(static_cast<const uint8_t*>(str), str_len);
-}
-
-void Log::write(const uint8_t* str, size_t str_len) {
   bool str_is_printable = true;
   for (size_t str_i = 0; str_i < str_len; str_i++) {
-    if
-    (
-      str[str_i] == '\r' ||
-      str[str_i] == '\n' ||
-      (str[str_i] >= 32 && str[str_i] <= 126)
+    if (
+      static_cast<const uint8_t*>(str)[str_i] == '\r' ||
+      static_cast<const uint8_t*>(str)[str_i] == '\n' ||
+      (static_cast<const uint8_t*>(str)[str_i] >= 32 &&
+        static_cast<const uint8_t*>(str)[str_i] <= 126)
     )
       continue;
     else {
@@ -192,13 +108,13 @@ void Log::write(const uint8_t* str, size_t str_len) {
     size_t printable_str_len = 0;
 
     for (size_t str_i = 0; str_i < str_len; str_i++) {
-      char hex_digit = (str[str_i] >> 4) & 0x0F;
+      char hex_digit = (static_cast<const uint8_t*>(str)[str_i] >> 4) & 0x0F;
       if (hex_digit >= 0 && hex_digit <= 9)
         printable_str[printable_str_len++] = '0' + hex_digit;
       else
         printable_str[printable_str_len++] = 'A' + hex_digit - 10;
 
-      hex_digit = str[str_i] & 0x0F;
+      hex_digit = static_cast<const uint8_t*>(str)[str_i] & 0x0F;
       if (hex_digit >= 0 && hex_digit <= 9)
         printable_str[printable_str_len++] = '0' + hex_digit;
       else

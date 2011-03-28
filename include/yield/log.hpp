@@ -130,9 +130,6 @@ public:
   void write(const char*, const Level&);
   void write(const string&, const Level&);
   void write(const void*, size_t, const Level&);
-  void write(const uint8_t*, size_t, const Level&);
-  void write(const char*, size_t, const Level&);
-  //void write(const Buffer&, const Level&);
 
 public:
   // yield::Object
@@ -147,7 +144,6 @@ protected:
 
 private:
   void write(const void*, size_t);
-  void write(const uint8_t*, size_t);
 
 private:
   Level level;
