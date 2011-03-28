@@ -39,10 +39,18 @@ recvAIOCB::recvAIOCB(
   Buffer& buffer,
   const Socket::MessageFlags& flags
 )
-  : AIOCB(socket_, buffer, buffer.capacity() - buffer.size()),
+  : AIOCB(socket_, buffer),
     buffer(buffer),
     flags(flags)
-{ }
+{
+  size_t nbytes = 0;
+  Buffer* next_buffer = &buffer;
+  do {
+    nbytes += next_buffer->capacity() - next_buffer->size();
+    next_buffer = next_buffer->get_next_buffer();
+  } while (next_buffer != NULL);
+  set_nbytes(nbytes);
+}
 
 recvAIOCB::~recvAIOCB() {
   Buffer::dec_ref(buffer);

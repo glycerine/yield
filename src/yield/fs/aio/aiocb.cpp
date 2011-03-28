@@ -38,12 +38,12 @@ AIOCB::AIOCB(File& file)
   : yield::aio::AIOCB(file, NULL, 0, 0)
 { }
 
-AIOCB::AIOCB(File& file, size_t nbytes, uint64_t offset)
-  : yield::aio::AIOCB(file, NULL, nbytes, offset)
+AIOCB::AIOCB(File& file, Buffer& buffer, uint64_t offset)
+  : yield::aio::AIOCB(file, buffer, 0, offset)
 { }
 
-AIOCB::AIOCB(File& file, Buffer& buffer, size_t nbytes, uint64_t offset)
-  : yield::aio::AIOCB(file, buffer, nbytes, offset)
+AIOCB::AIOCB(File& file, size_t nbytes, uint64_t offset)
+  : yield::aio::AIOCB(file, NULL, nbytes, offset)
 { }
 
 File& AIOCB::get_file() {

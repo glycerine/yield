@@ -40,11 +40,15 @@ bool preadAIOCB::issue(EventHandler& completion_handler) {
   if (buffer.get_next_buffer() == NULL) {
     set_completion_handler(completion_handler);
 
+    LPOVERLAPPED lpOverlapped = *this;
+    lpOverlapped->Offset = static_cast<uint32_t>(offset);
+    lpOverlapped->OffsetHigh = static_cast<uint32_t>(offset >> 32);
+
     return ReadFileEx(
               get_file(),
               buffer,
               get_nbytes(),
-              *this,
+              lpOverlapped,
               CompletionRoutine
             ) == TRUE
             ||

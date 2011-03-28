@@ -42,12 +42,14 @@ class AIOCB : public yield::aio::AIOCB {
 public:
   virtual ~AIOCB() { }
 
-  File& get_file();
+  File& get_file() {
+    return static_cast<File&>(get_channel());
+  }
 
 protected:
-  AIOCB(File& file);
-  AIOCB(File& file, size_t nbytes, uint64_t offset);
-  AIOCB(File& file, Buffer& buffer, size_t nbytes, uint64_t offset);
+  AIOCB(File& file, uint64_t offset)
+    : yield::aio::AIOCB(file, offset) {
+  }
 
 #ifdef _WIN32
   static void __stdcall

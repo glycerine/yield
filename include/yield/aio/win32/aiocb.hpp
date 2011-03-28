@@ -77,10 +77,6 @@ public:
     return error;
   }
 
-  size_t get_nbytes() const {
-    return nbytes;
-  }
-
   uint64_t get_offset() const;
 
   ssize_t get_return() const {
@@ -113,7 +109,7 @@ public:
   }
 
 protected:
-  AIOCB(Channel&, void* buf, size_t nbytes, uint64_t offset);
+  AIOCB(Channel&, uint64_t offset);
 
 protected:
   operator ::OVERLAPPED* ();
@@ -145,7 +141,6 @@ private:
   Channel& channel;
   EventHandler* completion_handler;
   uint32_t error;
-  size_t nbytes;
   ssize_t return_;
 };
 }

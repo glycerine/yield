@@ -32,7 +32,6 @@
 #include "yield/event_handler.hpp"
 #include "yield/aio/posix/aiocb.hpp"
 
-
 namespace yield {
 namespace aio {
 namespace posix {
@@ -45,14 +44,12 @@ static void aio_notify_function(sigval_t sigval) {
 }
 
 
-AIOCB::AIOCB(Channel& channel, void* buf, size_t nbytes, uint64_t offset)
+AIOCB::AIOCB(Channel& channel, uint64_t offset)
   : channel(channel.inc_ref()) {
   debug_assert_ne(static_cast<fd_t>(channel), INVALID_FD);
 
   memset(&aiocb_, 0, sizeof(aiocb_));
-  aiocb_.aio_buf = buf;
   aiocb_.aio_fildes = channel;
-  aiocb_.aio_nbytes = nbytes;
   aiocb_.aio_offset = offset;
   aiocb_.aio_sigevent.sigev_notify = SIGEV_THREAD;
   aiocb_.aio_sigevent.sigev_notify_attributes = NULL;

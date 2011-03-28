@@ -34,12 +34,11 @@
 
 #include <Windows.h>
 
-
 namespace yield {
 namespace aio {
 namespace win32 {
-AIOCB::AIOCB(Channel& channel, void*, size_t nbytes, uint64_t offset)
-  : channel(channel.inc_ref()), nbytes(nbytes) {
+AIOCB::AIOCB(Channel& channel, uint64_t offset)
+  : channel(channel.inc_ref()) {
   static_assert(sizeof(OVERLAPPED) == sizeof(::OVERLAPPED), "");
   debug_assert_ne(static_cast<fd_t>(channel), INVALID_FD);
 

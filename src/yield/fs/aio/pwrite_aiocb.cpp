@@ -39,10 +39,17 @@ pwriteAIOCB::pwriteAIOCB(
   File& file,
   YO_NEW_REF Buffer& buffer,
   uint64_t offset
-)
-  : AIOCB(file, buffer, buffer.size(), offset),
+) : AIOCB(file, buffer, offset),
     buffer(buffer)
-{ }
+{
+  size_t nbytes = 0;
+  Buffer* next_buffer = &buffer;
+  do {
+    nbytes += next_buffer->size();
+    next_buffer = next_buffer->get_next_buffer();
+  } while (next_buffer != NULL);
+  set_nbytes(nbytes);
+}
 
 pwriteAIOCB::~pwriteAIOCB() {
   Buffer::dec_ref(buffer);

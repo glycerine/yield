@@ -41,10 +41,15 @@ connectAIOCB::connectAIOCB(
   SocketAddress& peername,
   YO_NEW_REF Buffer* send_buffer
 )
-  : AIOCB(socket_, NULL, 0),
+  : AIOCB(socket_, send_buffer),
     peername(peername.inc_ref()),
     send_buffer(send_buffer)
-{ }
+{
+  if (send_buffer != NULL) {
+    debug_assert_eq(send_buffer->get_next_buffer(), NULL);
+    set_nbytes(send_buffer->size());
+  }
+}
 
 connectAIOCB::~connectAIOCB() {
   SocketAddress::dec_ref(peername);
@@ -52,7 +57,6 @@ connectAIOCB::~connectAIOCB() {
 }
 
 connectAIOCB::RetryStatus connectAIOCB::retry() {
-  debug_assert_eq(get_send_buffer(), NULL);   // Not implemented yet
 
   StreamSocket& socket_ = static_cast<StreamSocket&>(get_socket());
 

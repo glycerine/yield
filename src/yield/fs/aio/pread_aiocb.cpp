@@ -39,9 +39,9 @@ preadAIOCB::preadAIOCB(
   File& file,
   YO_NEW_REF Buffer& buffer,
   uint64_t offset
-) : AIOCB(file, buffer, buffer.capacity() - buffer.size(), offset),
-    buffer(buffer)
-{ }
+) : AIOCB(file, offset),
+    buffer(buffer) {
+}
 
 preadAIOCB::~preadAIOCB() {
   Buffer::dec_ref(buffer);
@@ -51,14 +51,14 @@ void preadAIOCB::set_return(ssize_t return_) {
   if (return_ >= 0) {
     Buffer* buffer = &get_buffer();
     for (;;) {
-      size_t page_left = buffer->capacity() - buffer->size();
+      size_t buffer_left = buffer->capacity() - buffer->size();
 
-      if (static_cast<size_t>(return_) <= page_left) {
+      if (static_cast<size_t>(return_) <= buffer_left) {
         buffer->resize(buffer->size() + return_);
         break;
       } else {
         buffer->resize(buffer->capacity());
-        return_ -= page_left;
+        return_ -= buffer_left;
         buffer = buffer->get_next_buffer();
       }
     }

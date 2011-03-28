@@ -41,25 +41,22 @@ static LPFN_ACCEPTEX lpfnAcceptEx = NULL;
 static LPFN_GETACCEPTEXSOCKADDRS lpfnGetAcceptExSockaddrs = NULL;
 
 
-acceptAIOCB::acceptAIOCB(
-  StreamSocket& socket_,
-  YO_NEW_REF Buffer* recv_buffer
-)
-  : AIOCB(socket_, NULL, 0),
+acceptAIOCB::acceptAIOCB(StreamSocket& socket_, YO_NEW_REF Buffer* recv_buffer)
+  : AIOCB(socket_, recv_buffer),
     peername(*new SocketAddress),
-    recv_buffer(recv_buffer) {
+    recv_buffer(
+      recv_buffer != NULL ?
+        recv_buffer :
+        new Buffer(get_sockname_length() + get_peername_length())
+    )
+{
   accepted_socket = NULL;
 
-  if (this->recv_buffer == NULL) {
-    size_t recv_buffer_size
-      = get_sockname_length() + get_peername_length();
-    this->recv_buffer = new Buffer(recv_buffer_size);
-  } else {
-    debug_assert_ge(
-      this->recv_buffer->capacity() - this->recv_buffer->size(),
-      get_sockname_length() + get_peername_length()
-    );
-  }
+  debug_assert_eq(recv_buffer->get_next_buffer(), NULL);
+  debug_assert_ge(
+    recv_buffer->capacity() - recv_buffer->size(),
+    get_sockname_length() + get_peername_length()
+  );
 }
 
 void acceptAIOCB::set_return(ssize_t return_) {

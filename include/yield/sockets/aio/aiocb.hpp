@@ -33,6 +33,8 @@
 #include "yield/aio/aiocb.hpp"
 
 namespace yield {
+class Buffer;
+
 namespace sockets {
 class Socket;
 
@@ -52,7 +54,8 @@ public:
   void set_next_aiocb(AIOCB* next_aiocb);
 
 protected:
-  AIOCB(Socket&, void* buffer, size_t nbytes);
+  AIOCB(Socket&, Buffer& buffer);
+  AIOCB(Socket&, Buffer* buffer);
 
 #ifdef _WIN32
   static void __stdcall

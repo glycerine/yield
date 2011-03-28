@@ -45,7 +45,6 @@ public:
     Socket& socket_,
     YO_NEW_REF Buffer& buffer,
     const Socket::MessageFlags& flags,
-    size_t nbytes,
     SocketAddress* peername = NULL
   );
 

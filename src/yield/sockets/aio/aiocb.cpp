@@ -27,14 +27,20 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "yield/buffer.hpp"
 #include "yield/sockets/aio/aiocb.hpp"
 #include "yield/sockets/socket.hpp"
 
 namespace yield {
 namespace sockets {
 namespace aio {
-AIOCB::AIOCB(Socket& socket_, void* buffer, size_t nbytes)
-  : yield::aio::AIOCB(socket_, buffer, nbytes, 0) {
+AIOCB::AIOCB(Socket& socket_, Buffer& buffer)
+  : yield::aio::AIOCB(socket_, buffer, 0, 0) {
+  next_aiocb = NULL;  
+}
+
+AIOCB::AIOCB(Socket& socket_, Buffer* buffer)
+  : yield::aio::AIOCB(socket_, buffer != NULL ? *buffer : NULL, 0, 0) {
   next_aiocb = NULL;
 }
 

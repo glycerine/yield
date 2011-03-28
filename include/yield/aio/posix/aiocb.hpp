@@ -71,10 +71,6 @@ public:
     return error;
   }
 
-  size_t get_nbytes() const {
-    return aiocb_.aio_nbytes;
-  }
-
   uint64_t get_offset() const {
     return aiocb_.aio_offset;
   }
@@ -112,7 +108,7 @@ public:
   }
 
 protected:
-  AIOCB(Channel&, void* buf, size_t nbytes, uint64_t offset);
+  AIOCB(Channel&, uint64_t offset);
 
 protected:
   void set_completion_handler(EventHandler& completion_handler);
