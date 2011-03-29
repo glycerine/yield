@@ -30,7 +30,7 @@
 #include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/buffer.hpp"
-#include "yield/http/http_body_chunk.hpp"
+#include "yield/http/http_message_body_chunk.hpp"
 #include "yield/http/http_response.hpp"
 #include "yield/http/http_response_parser.hpp"
 #include "yunit.hpp"

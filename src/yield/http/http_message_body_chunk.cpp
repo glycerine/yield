@@ -1,4 +1,4 @@
-// yield/http/http_message_parser.hpp
+// yield/http/http_message_body_chunk.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,60 +27,17 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_HTTP_HTTP_MESSAGE_PARSER_HPP_
-#define _YIELD_HTTP_HTTP_MESSAGE_PARSER_HPP_
-
-#include "yield/http/http_message.hpp"
+#include "yield/buffer.hpp"
+#include "yield/http/http_message_body_chunk.hpp"
 
 namespace yield {
-class DateTime;
-
 namespace http {
-class HTTPBodyChunk;
-
-class HTTPMessageParser {
-public:
-  HTTPMessageParser(Buffer& buffer);
-  HTTPMessageParser(const string& buffer); // For testing
-  ~HTTPMessageParser();
-
-public:
-  static DateTime parse_date(const iovec& date);
-  static DateTime parse_date(const char* ps, const char* pe);
-
-  static bool
-  parse_field(
-    const char* ps,
-    const char* pe,
-    const iovec& field_name,
-    OUT iovec& field_value
-  );
-
-  static void
-  parse_fields(
-    const char* ps,
-    const char* pe,
-    OUT vector< pair<iovec, iovec> >& fields
-  );
-
-protected:
-  Buffer& get_buffer() {
-    return buffer;
-  }
-
-protected:
-  bool parse_body(size_t content_length, OUT void*& body);
-  Object* parse_body_chunk();
-  bool parse_fields(OUT uint16_t& fields_offset, OUT size_t& content_length);
-
-protected:
-  const char* eof;
-  char *p, *ps;
-
-private:
-  Buffer& buffer;
-};
-}
+HTTPMessageBodyChunk::HTTPMessageBodyChunk(YO_NEW_REF Buffer* data)
+  : data_(data) {
 }
 
-#endif
+HTTPMessageBodyChunk::~HTTPMessageBodyChunk() {
+  Buffer::dec_ref(data_);
+}
+}
+}

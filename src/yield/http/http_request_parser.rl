@@ -28,6 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/assert.hpp"
+#include "yield/buffer.hpp"
 #include "yield/http/http_request_parser.hpp"
 #include "yield/http/http_response.hpp"
 
@@ -91,6 +92,7 @@ Object& HTTPRequestParser::parse() {
           return *new HTTPRequest(
                    body,
                    get_buffer(),
+                   connection_id,
                    content_length,
                    fields_offset,
                    http_version,

@@ -29,11 +29,10 @@
 
 #include <sstream> // for std::ostringstream
 #include "yield/assert.hpp"
+#include "yield/buffer.hpp"
 #include "yield/exception.hpp"
-#include "yield/string_buffer.hpp"
 #include "yield/http/http_request.hpp"
 #include "yield/http/http_response.hpp"
-
 
 namespace yield {
 namespace http {
@@ -182,14 +181,14 @@ void HTTPRequest::respond(uint16_t status_code) {
 }
 
 void HTTPRequest::respond(uint16_t status_code, const char* body) {
-  respond(status_code, *new StringBuffer(body));
+  respond(status_code, Buffer::copy(body));
 }
 
-void HTTPRequest::respond(uint16_t status_code, Buffer* body) {
+void HTTPRequest::respond(uint16_t status_code, YO_NEW_REF Buffer* body) {
   respond(*new HTTPResponse(status_code, body, get_http_version()));
 }
 
-void HTTPRequest::respond(uint16_t status_code, Buffer& body) {
+void HTTPRequest::respond(uint16_t status_code, YO_NEW_REF Buffer& body) {
   respond(*new HTTPResponse(status_code, &body, get_http_version()));
 }
 

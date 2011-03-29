@@ -28,7 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/assert.hpp"
-#include "yield/string_buffer.hpp"
+#include "yield/buffer.hpp"
 #include "yield/http/http_response.hpp"
 #include "yunit.hpp"
 
@@ -38,8 +38,8 @@ namespace yield {
 namespace http {
 TEST(HTTPResponse, constructor) {
   HTTPResponse(404);
-  HTTPResponse(404, new StringBuffer("test"));
-  HTTPResponse(404, new StringBuffer("test"), 1.1f);
+  HTTPResponse(404, &Buffer::copy("test"));
+  HTTPResponse(404, &Buffer::copy("test"), 1.1f);
 }
 
 TEST(HTTPResponse, get_status_code) {

@@ -93,8 +93,8 @@
   </ItemDefinitionGroup>
 
   <ItemGroup Label="ClIncludeItems">
-    <ClInclude Include="..\..\..\include\yield\http\http_body_chunk.hpp" />
     <ClInclude Include="..\..\..\include\yield\http\http_message.hpp" />
+    <ClInclude Include="..\..\..\include\yield\http\http_message_body_chunk.hpp" />
     <ClInclude Include="..\..\..\include\yield\http\http_message_parser.hpp" />
     <ClInclude Include="..\..\..\include\yield\http\http_request.hpp" />
     <ClInclude Include="..\..\..\include\yield\http\http_request_handler.hpp" />
@@ -122,9 +122,7 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\http\http_message.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\http\http_message.rl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    <ClCompile Include="..\..\..\src\yield\http\http_message_body_chunk.cpp">
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\http\http_message_parser.cpp">
     </ClCompile>

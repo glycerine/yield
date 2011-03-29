@@ -1,4 +1,4 @@
-// yield/http/http_body_chunk.hpp
+// yield/http/http_message_body_chunk.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,31 +27,34 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_HTTP_HTTP_BODY_CHUNK_HPP_
-#define _YIELD_HTTP_HTTP_BODY_CHUNK_HPP_
+#ifndef _YIELD_HTTP_HTTP_MESSAGE_BODY_CHUNK_HPP_
+#define _YIELD_HTTP_HTTP_MESSAGE_BODY_CHUNK_HPP_
 
-#include "yield/page.hpp"
-
+#include "yield/response.hpp"
 
 namespace yield {
+class Buffer;
+
 namespace http {
-class HTTPBodyChunk : public Response {
+class HTTPMessageBodyChunk : public Response {
 public:
   const static uint32_t TYPE_ID = 3435197009UL;
 
 public:
-  HTTPBodyChunk() {
-    is_last_ = true;
-  }
-
-  HTTPBodyChunk(const void* data, size_t size)
-    : Page(data, size) {
-    is_last_ = false;
-  }
+  HTTPMessageBodyChunk(YO_NEW_REF Buffer* data);
+  ~HTTPMessageBodyChunk();
 
 public:
+  Buffer* data() {
+    return data_;
+  }
+
   bool is_last() const {
-    return is_last_;
+    return data_ == NULL;
+  }
+
+  size_t size() const {
+    return data_ != NULL ? data_->size() : 0;
   }
 
 public:
@@ -61,11 +64,11 @@ public:
   }
 
   const char* get_type_name() const {
-    return "yield::http::HTTPBodyChunk";
+    return "yield::http::HTTPMessageBodyChunk";
   }
 
 private:
-  bool is_last_;
+  Buffer* data_;
 };
 }
 }

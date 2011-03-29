@@ -28,6 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/assert.hpp"
+#include "yield/buffer.hpp"
 #include "yield/http/http_response_parser.hpp"
 
 #include <stdlib.h> // For atof and atoi

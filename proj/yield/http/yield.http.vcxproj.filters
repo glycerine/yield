@@ -11,10 +11,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\include\yield\http\http_body_chunk.hpp">
+    <ClInclude Include="..\..\..\include\yield\http\http_message.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\http\http_message.hpp">
+    <ClInclude Include="..\..\..\include\yield\http\http_message_body_chunk.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\yield\http\http_message_parser.hpp">
@@ -52,7 +52,7 @@
     <ClCompile Include="..\..\..\src\yield\http\http_message.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\http\http_message.rl">
+    <ClCompile Include="..\..\..\src\yield\http\http_message_body_chunk.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\http\http_message_parser.cpp">

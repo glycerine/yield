@@ -193,12 +193,12 @@ class WellFormed1ChunkBodyHTTPMessageParserTest(HTTPMessageParserTest):
         self.ASSERT_NONNULL()
         self.ASSERT_HTTP_VERSION()
         self.ASSERT_HOST_FIELD()
-        for http_body_chunk_size in (1, 0):
+        for http_message_body_chunk_size in (1, 0):
             self.append('{')
-            self.PARSE("HTTPBodyChunk", "http_body_chunk")
-            self.ASSERT_NONNULL("http_body_chunk")
-            self.append("throw_assert_eq(http_body_chunk->size(), %(http_body_chunk_size)u);" % locals())
-            self.DEC_REF("HTTPBodyChunk", "http_body_chunk")
+            self.PARSE("HTTPMessageBodyChunk", "http_message_body_chunk")
+            self.ASSERT_NONNULL("http_message_body_chunk")
+            self.append("throw_assert_eq(http_message_body_chunk->size(), %(http_message_body_chunk_size)u);" % locals())
+            self.DEC_REF("HTTPMessageBodyChunk", "http_message_body_chunk")
             self.append('}')
         self.DEC_REF()
 
@@ -220,12 +220,12 @@ class WellFormed2ChunkBodyHTTPMessageParserTest(HTTPMessageParserTest):
         self.ASSERT_NONNULL()
         self.ASSERT_HTTP_VERSION()
         self.ASSERT_HOST_FIELD()
-        for http_body_chunk_size in (1, 1, 0):
+        for http_message_body_chunk_size in (1, 1, 0):
             self.append('{')
-            self.PARSE("HTTPBodyChunk", "http_body_chunk")
-            self.ASSERT_NONNULL("http_body_chunk")
-            self.append("throw_assert_eq(http_body_chunk->size(), %(http_body_chunk_size)u);" % locals())
-            self.DEC_REF("HTTPBodyChunk", "http_body_chunk")
+            self.PARSE("HTTPMessageBodyChunk", "http_message_body_chunk")
+            self.ASSERT_NONNULL("http_message_body_chunk")
+            self.append("throw_assert_eq(http_message_body_chunk->size(), %(http_message_body_chunk_size)u);" % locals())
+            self.DEC_REF("HTTPMessageBodyChunk", "http_message_body_chunk")
             self.append('}')
         self.DEC_REF()
 
@@ -239,17 +239,20 @@ class WellFormedChunkedBodyWithChunkExtensionHTTPMessageParserTest(HTTPMessagePa
             CRLF,
             "1" + CRLF + "x",
             ";chunk_ext1",
-            ";chunk_ext2=\"ChunkExtension\"",
+            ";chunk_ext2=\\\"ChunkExtension\\\"",
             CRLF,
             "0" + CRLF,
             CRLF
         )
-        for http_body_chunk_size in (1, 0):
+        self.PARSE()
+        self.ASSERT_NONNULL()
+        self.ASSERT_HTTP_VERSION()
+        for http_message_body_chunk_size in (1, 0):
             self.append('{')
-            self.PARSE("HTTPBodyChunk", "http_body_chunk")
-            self.ASSERT_NONNULL("http_body_chunk")
-            self.append("throw_assert_eq(http_body_chunk->size(), %(http_body_chunk_size)u);" % locals())
-            self.DEC_REF("HTTPBodyChunk", "http_body_chunk")
+            self.PARSE("HTTPMessageBodyChunk", "http_message_body_chunk")
+            self.ASSERT_NONNULL("http_message_body_chunk")
+            self.append("throw_assert_eq(http_message_body_chunk->size(), %(http_message_body_chunk_size)u);" % locals())
+            self.DEC_REF("HTTPMessageBodyChunk", "http_message_body_chunk")
             self.append('}')
         self.DEC_REF()
 
@@ -271,12 +274,12 @@ class WellFormedChunkedBodyWithTrailerHTTPMessageParserTest(HTTPMessageParserTes
         self.PARSE()
         self.ASSERT_NONNULL()
         self.ASSERT_HTTP_VERSION()
-        for http_body_chunk_size in (1, 1, 0):
+        for http_message_body_chunk_size in (1, 1, 0):
             self.append('{')
-            self.PARSE("HTTPBodyChunk", "http_body_chunk")
-            self.ASSERT_NONNULL("http_body_chunk")
-            self.append("throw_assert_eq(http_body_chunk->size(), %(http_body_chunk_size)u);" % locals())
-            self.DEC_REF("HTTPBodyChunk", "http_body_chunk")
+            self.PARSE("HTTPMessageBodyChunk", "http_message_body_chunk")
+            self.ASSERT_NONNULL("http_message_body_chunk")
+            self.append("throw_assert_eq(http_message_body_chunk->size(), %(http_message_body_chunk_size)u);" % locals())
+            self.DEC_REF("HTTPMessageBodyChunk", "http_message_body_chunk")
             self.append('}')
         self.DEC_REF()
 
@@ -387,7 +390,7 @@ class HTTPMessageParserTestSuite(list):
 #include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/buffer.hpp"
-#include "yield/http/http_body_chunk.hpp"
+#include "yield/http/http_message_body_chunk.hpp"
 #include "yield/http/%(http_message_type_lower_case)s.hpp"
 #include "yield/http/%(http_message_type_lower_case)s_parser.hpp"
 #include "yunit.hpp"

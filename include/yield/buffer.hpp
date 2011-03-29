@@ -166,6 +166,10 @@ public:
     put(data.c_str(), data.size());
   }
 
+  void put(const iovec& data) {
+    put(data.iov_base, data.iov_len);
+  }
+
   void put(char data, size_t repeat_count);
   void put(const void* data, size_t size);
 

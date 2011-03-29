@@ -30,7 +30,7 @@
 #include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/buffer.hpp"
-#include "yield/http/http_body_chunk.hpp"
+#include "yield/http/http_message_body_chunk.hpp"
 #include "yield/http/http_request.hpp"
 #include "yield/http/http_request_parser.hpp"
 #include "yunit.hpp"
@@ -52,18 +52,21 @@ TEST(HTTPMessageParser, MalformedFieldMissingName) {
 }
 
 TEST(HTTPMessageParser, WellFormedChunkedBodyWithChunkExtension) {
-  HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\nTransfer-Encoding: chunked\r\n\r\n1\r\nx;chunk_ext1;chunk_ext2="ChunkExtension"\r\n0\r\n\r\n");
+  HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\nTransfer-Encoding: chunked\r\n\r\n1\r\nx;chunk_ext1;chunk_ext2=\"ChunkExtension\"\r\n0\r\n\r\n");
+  HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
+  throw_assert_ne(http_request, NULL);
+  throw_assert_eq(http_request->get_http_version(), 1.1F);
   {
-    HTTPBodyChunk* http_body_chunk = object_cast<HTTPBodyChunk>(http_request_parser.parse());
-    throw_assert_ne(http_body_chunk, NULL);
-    throw_assert_eq(http_body_chunk->size(), 1);
-    HTTPBodyChunk::dec_ref(http_body_chunk);
+    HTTPMessageBodyChunk* http_message_body_chunk = object_cast<HTTPMessageBodyChunk>(http_request_parser.parse());
+    throw_assert_ne(http_message_body_chunk, NULL);
+    throw_assert_eq(http_message_body_chunk->size(), 1);
+    HTTPMessageBodyChunk::dec_ref(http_message_body_chunk);
   }
   {
-    HTTPBodyChunk* http_body_chunk = object_cast<HTTPBodyChunk>(http_request_parser.parse());
-    throw_assert_ne(http_body_chunk, NULL);
-    throw_assert_eq(http_body_chunk->size(), 0);
-    HTTPBodyChunk::dec_ref(http_body_chunk);
+    HTTPMessageBodyChunk* http_message_body_chunk = object_cast<HTTPMessageBodyChunk>(http_request_parser.parse());
+    throw_assert_ne(http_message_body_chunk, NULL);
+    throw_assert_eq(http_message_body_chunk->size(), 0);
+    HTTPMessageBodyChunk::dec_ref(http_message_body_chunk);
   }
   HTTPRequest::dec_ref(http_request);
 }
@@ -74,22 +77,22 @@ TEST(HTTPMessageParser, WellFormedChunkedBodyWithTrailer) {
   throw_assert_ne(http_request, NULL);
   throw_assert_eq(http_request->get_http_version(), 1.1F);
   {
-    HTTPBodyChunk* http_body_chunk = object_cast<HTTPBodyChunk>(http_request_parser.parse());
-    throw_assert_ne(http_body_chunk, NULL);
-    throw_assert_eq(http_body_chunk->size(), 1);
-    HTTPBodyChunk::dec_ref(http_body_chunk);
+    HTTPMessageBodyChunk* http_message_body_chunk = object_cast<HTTPMessageBodyChunk>(http_request_parser.parse());
+    throw_assert_ne(http_message_body_chunk, NULL);
+    throw_assert_eq(http_message_body_chunk->size(), 1);
+    HTTPMessageBodyChunk::dec_ref(http_message_body_chunk);
   }
   {
-    HTTPBodyChunk* http_body_chunk = object_cast<HTTPBodyChunk>(http_request_parser.parse());
-    throw_assert_ne(http_body_chunk, NULL);
-    throw_assert_eq(http_body_chunk->size(), 1);
-    HTTPBodyChunk::dec_ref(http_body_chunk);
+    HTTPMessageBodyChunk* http_message_body_chunk = object_cast<HTTPMessageBodyChunk>(http_request_parser.parse());
+    throw_assert_ne(http_message_body_chunk, NULL);
+    throw_assert_eq(http_message_body_chunk->size(), 1);
+    HTTPMessageBodyChunk::dec_ref(http_message_body_chunk);
   }
   {
-    HTTPBodyChunk* http_body_chunk = object_cast<HTTPBodyChunk>(http_request_parser.parse());
-    throw_assert_ne(http_body_chunk, NULL);
-    throw_assert_eq(http_body_chunk->size(), 0);
-    HTTPBodyChunk::dec_ref(http_body_chunk);
+    HTTPMessageBodyChunk* http_message_body_chunk = object_cast<HTTPMessageBodyChunk>(http_request_parser.parse());
+    throw_assert_ne(http_message_body_chunk, NULL);
+    throw_assert_eq(http_message_body_chunk->size(), 0);
+    HTTPMessageBodyChunk::dec_ref(http_message_body_chunk);
   }
   HTTPRequest::dec_ref(http_request);
 }
@@ -101,16 +104,16 @@ TEST(HTTPMessageParser, WellFormed1ChunkBody) {
   throw_assert_eq(http_request->get_http_version(), 1.1F);
   throw_assert_eq((*http_request)["Host"], "localhost");
   {
-    HTTPBodyChunk* http_body_chunk = object_cast<HTTPBodyChunk>(http_request_parser.parse());
-    throw_assert_ne(http_body_chunk, NULL);
-    throw_assert_eq(http_body_chunk->size(), 1);
-    HTTPBodyChunk::dec_ref(http_body_chunk);
+    HTTPMessageBodyChunk* http_message_body_chunk = object_cast<HTTPMessageBodyChunk>(http_request_parser.parse());
+    throw_assert_ne(http_message_body_chunk, NULL);
+    throw_assert_eq(http_message_body_chunk->size(), 1);
+    HTTPMessageBodyChunk::dec_ref(http_message_body_chunk);
   }
   {
-    HTTPBodyChunk* http_body_chunk = object_cast<HTTPBodyChunk>(http_request_parser.parse());
-    throw_assert_ne(http_body_chunk, NULL);
-    throw_assert_eq(http_body_chunk->size(), 0);
-    HTTPBodyChunk::dec_ref(http_body_chunk);
+    HTTPMessageBodyChunk* http_message_body_chunk = object_cast<HTTPMessageBodyChunk>(http_request_parser.parse());
+    throw_assert_ne(http_message_body_chunk, NULL);
+    throw_assert_eq(http_message_body_chunk->size(), 0);
+    HTTPMessageBodyChunk::dec_ref(http_message_body_chunk);
   }
   HTTPRequest::dec_ref(http_request);
 }
@@ -122,22 +125,22 @@ TEST(HTTPMessageParser, WellFormed2ChunkBody) {
   throw_assert_eq(http_request->get_http_version(), 1.1F);
   throw_assert_eq((*http_request)["Host"], "localhost");
   {
-    HTTPBodyChunk* http_body_chunk = object_cast<HTTPBodyChunk>(http_request_parser.parse());
-    throw_assert_ne(http_body_chunk, NULL);
-    throw_assert_eq(http_body_chunk->size(), 1);
-    HTTPBodyChunk::dec_ref(http_body_chunk);
+    HTTPMessageBodyChunk* http_message_body_chunk = object_cast<HTTPMessageBodyChunk>(http_request_parser.parse());
+    throw_assert_ne(http_message_body_chunk, NULL);
+    throw_assert_eq(http_message_body_chunk->size(), 1);
+    HTTPMessageBodyChunk::dec_ref(http_message_body_chunk);
   }
   {
-    HTTPBodyChunk* http_body_chunk = object_cast<HTTPBodyChunk>(http_request_parser.parse());
-    throw_assert_ne(http_body_chunk, NULL);
-    throw_assert_eq(http_body_chunk->size(), 1);
-    HTTPBodyChunk::dec_ref(http_body_chunk);
+    HTTPMessageBodyChunk* http_message_body_chunk = object_cast<HTTPMessageBodyChunk>(http_request_parser.parse());
+    throw_assert_ne(http_message_body_chunk, NULL);
+    throw_assert_eq(http_message_body_chunk->size(), 1);
+    HTTPMessageBodyChunk::dec_ref(http_message_body_chunk);
   }
   {
-    HTTPBodyChunk* http_body_chunk = object_cast<HTTPBodyChunk>(http_request_parser.parse());
-    throw_assert_ne(http_body_chunk, NULL);
-    throw_assert_eq(http_body_chunk->size(), 0);
-    HTTPBodyChunk::dec_ref(http_body_chunk);
+    HTTPMessageBodyChunk* http_message_body_chunk = object_cast<HTTPMessageBodyChunk>(http_request_parser.parse());
+    throw_assert_ne(http_message_body_chunk, NULL);
+    throw_assert_eq(http_message_body_chunk->size(), 0);
+    HTTPMessageBodyChunk::dec_ref(http_message_body_chunk);
   }
   HTTPRequest::dec_ref(http_request);
 }

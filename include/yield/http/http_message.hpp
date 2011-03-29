@@ -30,14 +30,15 @@
 #ifndef _YIELD_HTTP_HTTP_MESSAGE_HPP_
 #define _YIELD_HTTP_HTTP_MESSAGE_HPP_
 
-#include "yield/buffer.hpp"
-#include "yield/date_time.hpp"
-
 #include <utility> // for std::pair
-
+#include "yield/object.hpp"
 
 namespace yield {
+class Buffer;
+class DateTime;
+
 namespace http {
+
 template <class HTTPMessageType>
 class HTTPMessage {
 public:
@@ -222,10 +223,7 @@ protected:
     float http_version
   );
 
-  HTTPMessage(
-    YO_NEW_REF Buffer* body,
-    float http_version
-  );
+  HTTPMessage(YO_NEW_REF Buffer* body, float http_version);
 
   virtual ~HTTPMessage();
 

@@ -29,7 +29,7 @@
 
 #include "yield/assert.hpp"
 #include "yield/buffer.hpp"
-#include "yield/http/http_body_chunk.hpp"
+#include "yield/http/http_message_body_chunk.hpp"
 #include "yield/http/http_message_parser.hpp"
 #include "yield/http/http_request.hpp"
 
@@ -108,13 +108,121 @@ Object* HTTPMessageParser::parse_body_chunk() {
     if (chunk_size > 0) {
       // Cut off the chunk size + extension + CRLF before
       // the chunk data and the CRLF after
-      return new HTTPBodyChunk(chunk_data_p, p - chunk_data_p - 2);
+      Buffer& chunk_data = Buffer::copy(chunk_data_p, p - chunk_data_p - 2);
+      return new HTTPMessageBodyChunk(&chunk_data);
     } else // Last chunk
-      return new HTTPBodyChunk;
+      return new HTTPMessageBodyChunk(NULL);
   } else if (p == eof && chunk_size != 0)
     return new Buffer(chunk_size + 2); // Assumes no trailers.
   else
     return NULL;
+}
+
+DateTime HTTPMessageParser::parse_date(const iovec& date) {
+return parse_date(
+          static_cast<const char*>(date.iov_base),
+          static_cast<const char*>(date.iov_base) + date.iov_len
+        );
+}
+
+DateTime HTTPMessageParser::parse_date(const char* ps, const char* pe) {
+  int cs;
+  const char* eof = pe;
+  char* p = const_cast<char*>(ps);
+
+  int hour = 0, minute = 0, second = 0;
+  int day = 0, month = 0, year = 0;
+
+  %%{
+    machine date_parser;
+    alphtype unsigned char;
+
+    include date "date.rl";
+
+    main := date
+            $err{ return DateTime::INVALID_DATE_TIME; };
+
+    write data;
+    write init;
+    write exec;
+  }%%
+
+  if (cs != date_parser_error) {
+    if (year < 100) year += 2000;
+    year -= 1900;
+    return DateTime(second, minute, hour, day, month - 1, year, false);
+  } else
+    return DateTime::INVALID_DATE_TIME;
+}
+
+bool
+HTTPMessageParser::parse_field(
+  const char* ps,
+  const char* pe,
+  const iovec& in_field_name,
+  OUT iovec& out_field_value
+) {
+  int cs;
+  char* p = const_cast<char*>(ps);
+
+  iovec field_name = {0}, field_value = {0};
+
+  // Don't look for the trailing CRLF before the body,
+  // since it may not be present yet.
+  %%{
+    machine field_parser;
+    include field "field.rl";
+
+    main := (
+      field @ {
+        if (
+          field_name.iov_len == in_field_name.iov_len
+          &&
+          memcmp(
+            field_name.iov_base,
+            in_field_name.iov_base,
+            in_field_name.iov_len
+          ) == 0
+        ) {
+          out_field_value = field_value;
+          return true;
+        }
+      }
+    )*;
+
+    write data;
+    write init;
+    write exec;
+  }%%
+
+  return false;
+}
+
+void
+HTTPMessageParser::parse_fields(
+  const char* ps,
+  const char* pe,
+  OUT vector< pair<iovec, iovec> >& fields
+) {
+  int cs;
+  char* p = const_cast<char*>(ps);
+
+  iovec field_name = {0}, field_value = {0};
+
+  // Don't look for the trailing CRLF before the body,
+  // since it may not be present yet.
+  %%{
+    machine static_fields_parser;
+    include field "field.rl";
+
+    main := (
+      field @ { fields.push_back(make_pair(field_name, field_value)); }
+    )*;
+
+    write data;
+    write init;
+    write exec;
+  }%%
 }
 
 bool

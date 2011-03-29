@@ -29,8 +29,8 @@
 
 #include "yield/auto_object.hpp"
 #include "yield/assert.hpp"
+#include "yield/buffer.hpp"
 #include "yield/date_time.hpp"
-#include "yield/string_buffer.hpp"
 #include "yield/http/http_request.hpp"
 #include "yield/http/http_response.hpp"
 #include "yunit.hpp"
@@ -41,8 +41,9 @@ namespace yield {
 namespace http {
 TEST(HTTPRequest, constructor) {
   HTTPRequest(HTTPRequest::METHOD_GET, "/");
-  HTTPRequest(HTTPRequest::METHOD_GET, "/", new StringBuffer("test"));
-  HTTPRequest(HTTPRequest::METHOD_GET, "/", new StringBuffer("test"), 1.0f);
+  HTTPRequest(HTTPRequest::METHOD_GET, "/", &Buffer::copy("test"));
+  HTTPRequest(HTTPRequest::METHOD_GET, "/", &Buffer::copy("test"), 0);
+  HTTPRequest(HTTPRequest::METHOD_GET, "/", &Buffer::copy("test"), 0, 1.0f);
 }
 
 TEST(HTTPRequest, get_creation_date_time) {
@@ -77,8 +78,8 @@ TEST(HTTPRequest, respond) {
   http_request->respond(*new HTTPResponse(200));
   http_request->respond(404);
   http_request->respond(404, "test");
-  http_request->respond(404, new StringBuffer("test"));
-  http_request->respond(404, *new StringBuffer("test"));
+  http_request->respond(404, Buffer::copy("test"));
+  http_request->respond(404, &Buffer::copy("test"));
   http_request->respond(*new Exception("exception"));
 }
 }

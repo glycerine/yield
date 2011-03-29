@@ -27,14 +27,13 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "yield/buffer.hpp"
 #include "yield/http/http_request.hpp"
 #include "yield/http/http_response.hpp"
 
-
 namespace yield {
 namespace http {
-HTTPResponse::HTTPResponse
-(
+HTTPResponse::HTTPResponse(
   void* body,
   Buffer& buffer,
   size_t content_length,
@@ -42,8 +41,7 @@ HTTPResponse::HTTPResponse
   float http_version,
   uint16_t status_code
 )
-  : HTTPMessage<HTTPResponse>
-  (
+  : HTTPMessage<HTTPResponse>(
     body,
     buffer,
     content_length,

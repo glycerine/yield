@@ -37,12 +37,15 @@ namespace yield {
 namespace http {
 class HTTPRequestParser : public HTTPMessageParser {
 public:
-  HTTPRequestParser(Buffer& buffer)
-    : HTTPMessageParser(buffer)
+  HTTPRequestParser(Buffer& buffer, uint32_t connection_id = 0)
+    : HTTPMessageParser(buffer),
+      connection_id(connection_id)
   { }
 
-  HTTPRequestParser(const string& buffer)   // For testing
-    : HTTPMessageParser(buffer)
+  // For testing
+  HTTPRequestParser(const string& buffer, uint32_t connection_id = 0)
+    : HTTPMessageParser(buffer),
+      connection_id(connection_id)
   { }
 
 public:
@@ -60,6 +63,9 @@ private:
     OUT iovec& uri_scheme,
     OUT iovec& uri_userinfo
   );
+
+private:
+  uint32_t connection_id;
 };
 }
 }

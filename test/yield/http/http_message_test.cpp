@@ -29,7 +29,7 @@
 
 #include "yield/auto_object.hpp"
 #include "yield/assert.hpp"
-#include "yield/string_buffer.hpp"
+#include "yield/buffer.hpp"
 #include "yield/http/http_request.hpp"
 #include "yunit.hpp"
 
@@ -40,7 +40,7 @@ namespace http {
 TEST(HTTPMessage, get_body) {
   throw_assert_eq(HTTPRequest(HTTPRequest::METHOD_GET, "/").get_body(), NULL);
 
-  auto_Object<Buffer> body = new StringBuffer("body");
+  auto_Object<Buffer> body = Buffer::copy("body");
   throw_assert_eq(
     memcmp(
       HTTPRequest(HTTPRequest::METHOD_GET, "/", &body->inc_ref()).get_body(),
@@ -57,7 +57,7 @@ TEST(HTTPMessage, get_content_length) {
     0
   );
 
-  auto_Object<Buffer> body = new StringBuffer("body");
+  auto_Object<Buffer> body = Buffer::copy("body");
   throw_assert_eq(
     HTTPRequest(HTTPRequest::METHOD_GET, "/", &body->inc_ref()).get_content_length(),
     4
