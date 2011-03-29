@@ -74,7 +74,7 @@ public:
   }
 
   const char* get_type_name() const {
-    return "aio::recvAIOCB";
+    return "yield::sockets::aio::recvAIOCB";
   }
 
 public:

@@ -41,11 +41,13 @@ public:
 public:
   virtual ~Event() { }
 
+public:
   virtual bool is_message() const {
     return false;
   }
 
-  // Object
+public:
+  // yield::Object
   virtual uint32_t get_type_id() const {
     return TYPE_ID;
   }

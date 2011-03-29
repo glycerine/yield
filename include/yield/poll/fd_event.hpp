@@ -69,26 +69,35 @@ public:
     : events(events), fd(fd)
   { }
 
+public:
   uint16_t get_events() const {
     return events;
   }
+
   fd_t get_fd() const {
     return fd;
   }
+
+public:
   operator uint16_t() const {
     return get_events();
   }
+
+public:
   void set_events(uint16_t events) {
     this->events = events;
   }
+
   void set_fd(fd_t fd) {
     this->fd = fd;
   }
 
-  // Object
+public:
+  // yield::Object
   virtual uint32_t get_type_id() const {
     return TYPE_ID;
   }
+
   virtual const char* get_type_name() const {
     return "yield::poll::FDEvent";
   }

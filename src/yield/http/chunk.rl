@@ -35,31 +35,31 @@
   include field "field.rl";
 
   chunk_size = xdigit+
-            >{ chunk_size_p = p; }
-            %
-            {
-              char* chunk_size_pe = p;
-              chunk_size
-                = static_cast<size_t>
-                  (
-                    strtol(chunk_size_p, &chunk_size_pe, 16)
-                 );
-            };
+               >{ chunk_size_p = p; }
+               %
+               {
+                 char* chunk_size_pe = p;
+                 chunk_size
+                   = static_cast<size_t>(
+                       strtol(chunk_size_p, &chunk_size_pe, 16)
+                     );
+               };
 
   chunk_ext_name = token;
   chunk_ext_val = token | quoted_string;
-  chunk_extension
-    = (';' chunk_ext_name ('=' chunk_ext_val)?)*;
+  chunk_extension = (';' chunk_ext_name ('=' chunk_ext_val)?)*;
 
   body_chunk = chunk_size chunk_extension? crlf
                (
-               (any when { seen_chunk_size++ < chunk_size })*
-               >{ chunk_data_p = p; }
-              )
+                 (any when { seen_chunk_size++ < chunk_size })*
+                 >{ chunk_data_p = p; }
+               )
                crlf;
 
+  trailer = (field :> crlf)*;
+
   last_chunk = ('0' %{ chunk_size = 0; }) chunk_extension? crlf
-               field :> crlf*
+               trailer
                crlf;
 
   chunk = last_chunk | body_chunk;

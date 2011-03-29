@@ -57,19 +57,21 @@ public:
       http_request_handler(http_server.http_request_handler.inc_ref())
   { }
 
-  // Object
+public:
+  // yield::Object
   const char* get_type_name() const {
     return "yield::http::HTTPServer::Connection";
   }
 
-  // EventHandler
+  // yield::EventHandler
   void handle(YO_NEW_REF Event& event) {
     debug_assert_eq(event.get_type_id(), HTTPResponse::TYPE_ID);
 
     handle(static_cast<HTTPResponse&>(event));
   }
 
-  // StreamSocketPeer::Connection
+public:
+  // yield::sockets::peer::StreamSocketPeer::Connection
   void handle(YO_NEW_REF recvAIOCB& recv_aiocb) {
     if (recv_aiocb.get_return() > 0)
       parse(recv_aiocb.get_buffer());

@@ -51,7 +51,50 @@ TEST(HTTPMessageParser, MalformedFieldMissingName) {
   throw_assert_eq(http_request, NULL);
 }
 
-TEST(HTTPMessageParser, WellFormedChunk1Body) {
+TEST(HTTPMessageParser, WellFormedChunkedBodyWithChunkExtension) {
+  HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\nTransfer-Encoding: chunked\r\n\r\n1\r\nx;chunk_ext1;chunk_ext2="ChunkExtension"\r\n0\r\n\r\n");
+  {
+    HTTPBodyChunk* http_body_chunk = object_cast<HTTPBodyChunk>(http_request_parser.parse());
+    throw_assert_ne(http_body_chunk, NULL);
+    throw_assert_eq(http_body_chunk->size(), 1);
+    HTTPBodyChunk::dec_ref(http_body_chunk);
+  }
+  {
+    HTTPBodyChunk* http_body_chunk = object_cast<HTTPBodyChunk>(http_request_parser.parse());
+    throw_assert_ne(http_body_chunk, NULL);
+    throw_assert_eq(http_body_chunk->size(), 0);
+    HTTPBodyChunk::dec_ref(http_body_chunk);
+  }
+  HTTPRequest::dec_ref(http_request);
+}
+
+TEST(HTTPMessageParser, WellFormedChunkedBodyWithTrailer) {
+  HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\nTransfer-Encoding: chunked\r\n\r\n1\r\nx\r\n1\r\ny\r\n0\r\nHost: localhost\r\nX-Host: x-localhost\r\n\r\n");
+  HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
+  throw_assert_ne(http_request, NULL);
+  throw_assert_eq(http_request->get_http_version(), 1.1F);
+  {
+    HTTPBodyChunk* http_body_chunk = object_cast<HTTPBodyChunk>(http_request_parser.parse());
+    throw_assert_ne(http_body_chunk, NULL);
+    throw_assert_eq(http_body_chunk->size(), 1);
+    HTTPBodyChunk::dec_ref(http_body_chunk);
+  }
+  {
+    HTTPBodyChunk* http_body_chunk = object_cast<HTTPBodyChunk>(http_request_parser.parse());
+    throw_assert_ne(http_body_chunk, NULL);
+    throw_assert_eq(http_body_chunk->size(), 1);
+    HTTPBodyChunk::dec_ref(http_body_chunk);
+  }
+  {
+    HTTPBodyChunk* http_body_chunk = object_cast<HTTPBodyChunk>(http_request_parser.parse());
+    throw_assert_ne(http_body_chunk, NULL);
+    throw_assert_eq(http_body_chunk->size(), 0);
+    HTTPBodyChunk::dec_ref(http_body_chunk);
+  }
+  HTTPRequest::dec_ref(http_request);
+}
+
+TEST(HTTPMessageParser, WellFormed1ChunkBody) {
   HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n1\r\nx\r\n0\r\n\r\n");
   HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
   throw_assert_ne(http_request, NULL);
@@ -72,7 +115,7 @@ TEST(HTTPMessageParser, WellFormedChunk1Body) {
   HTTPRequest::dec_ref(http_request);
 }
 
-TEST(HTTPMessageParser, WellFormedChunk2Body) {
+TEST(HTTPMessageParser, WellFormed2ChunkBody) {
   HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n1\r\nx\r\n1\r\ny\r\n0\r\n\r\n");
   HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
   throw_assert_ne(http_request, NULL);

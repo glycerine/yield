@@ -45,19 +45,24 @@ public:
     : FDEvent(events, socket_to_fd(socket_))
   { }
 
+public:
   socket_t get_socket() const {
     return fd_to_socket(get_fd());
   }
+
+public:
   void set_socket(socket_t s) {
     set_fd(socket_to_fd(s));
   }
 
-  // Object
+public:
+  // yield::Object
   uint32_t get_type_id() const {
     return TYPE_ID;
   }
+
   const char* get_type_name() const {
-    return "yield::poll::SocketEvent";
+    return "yield::sockets::poll::SocketEvent";
   }
 };
 }

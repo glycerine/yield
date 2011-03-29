@@ -34,8 +34,13 @@ namespace yield {
 namespace fs {
 namespace aio {
 bool pwriteAIOCB::issue(EventHandler& completion_handler) {
-  set_completion_handler(completion_handler);
-  return aio_write(*this) == 0;
+  if (get_buffer().get_next_buffer() == NULL) {
+    set_completion_handler(completion_handler);
+    aiocb* aiocb_ = *this;
+    aiocb_->aio_nbytes = get_buffer().size();
+    return aio_write(*this) == 0;
+  } else
+    return AIOCB::issue(completion_handler);
 }
 }
 }

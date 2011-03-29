@@ -67,13 +67,13 @@ void StreamSocketClient::service(YO_NEW_REF Event& event) {
     if (connect_aiocb.get_error() == 0) {
       if (get_trace_log() != NULL) {
         get_trace_log()->get_stream(Log::INFO) <<
-                                               connection.get_log_prefix() << ": " <<
-                                               connect_aiocb.get_type_name() <<
-                                               "( socket=" <<
-                                               static_cast<socket_t>(connect_aiocb.get_socket()) <<
-                                               ", peername=" << connect_aiocb.get_peername() <<
-                                               ", return=" << connect_aiocb.get_return() <<
-                                               ", send_buffer=";
+          connection.get_log_prefix() << ": " <<
+          connect_aiocb.get_type_name() <<
+          "( socket=" <<
+          static_cast<socket_t>(connect_aiocb.get_socket()) <<
+          ", peername=" << connect_aiocb.get_peername() <<
+          ", return=" << connect_aiocb.get_return() <<
+          ", send_buffer=";
 
         if (connect_aiocb.get_send_buffer() != NULL)
           get_trace_log()->write(*connect_aiocb.get_send_buffer(), Log::INFO);

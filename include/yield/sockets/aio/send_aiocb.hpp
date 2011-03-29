@@ -68,8 +68,9 @@ public:
   uint32_t get_type_id() const {
     return TYPE_ID;
   }
+
   const char* get_type_name() const {
-    return "aio::sendAIOCB";
+    return "yield::sockets::aio::sendAIOCB";
   }
 
 public:

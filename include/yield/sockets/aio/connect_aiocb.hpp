@@ -67,7 +67,7 @@ public:
   }
 
   const char* get_type_name() const {
-    return "aio::connectAIOCB";
+    return "yield::sockets::aio::connectAIOCB";
   }
 
 public:

@@ -177,7 +177,7 @@ class MalformedFieldMissingNameHTTPMessageParserTest(HTTPMessageParserTest):
         self.ASSERT_NULL()
 
 
-class WellFormedChunk1BodyHTTPMessageParserTest(HTTPMessageParserTest):
+class WellFormed1ChunkBodyHTTPMessageParserTest(HTTPMessageParserTest):
     def __init__(self):
         HTTPMessageParserTest.__init__(self)
         self.PARSER(
@@ -185,7 +185,9 @@ class WellFormedChunk1BodyHTTPMessageParserTest(HTTPMessageParserTest):
             HOST_FIELD,
             TE_CHUNKED_FIELD,
             CRLF,
-            "1" + CRLF + "x" + CRLF + "0" + CRLF * 2
+            "1" + CRLF + "x" + CRLF,
+            "0" + CRLF,
+            CRLF
         )
         self.PARSE()
         self.ASSERT_NONNULL()
@@ -201,7 +203,7 @@ class WellFormedChunk1BodyHTTPMessageParserTest(HTTPMessageParserTest):
         self.DEC_REF()
 
 
-class WellFormedChunk2BodyHTTPMessageParserTest(HTTPMessageParserTest):
+class WellFormed2ChunkBodyHTTPMessageParserTest(HTTPMessageParserTest):
     def __init__(self):
         HTTPMessageParserTest.__init__(self)
         self.PARSER(
@@ -209,7 +211,10 @@ class WellFormedChunk2BodyHTTPMessageParserTest(HTTPMessageParserTest):
             HOST_FIELD,
             TE_CHUNKED_FIELD,
             CRLF,
-            "1" + CRLF + "x" + CRLF + "1" + CRLF + "y" + CRLF + "0" + CRLF * 2
+            "1" + CRLF + "x" + CRLF,
+            "1" + CRLF + "y" + CRLF,
+            "0" + CRLF,
+            CRLF
         )
         self.PARSE()
         self.ASSERT_NONNULL()
@@ -223,6 +228,58 @@ class WellFormedChunk2BodyHTTPMessageParserTest(HTTPMessageParserTest):
             self.DEC_REF("HTTPBodyChunk", "http_body_chunk")
             self.append('}')
         self.DEC_REF()
+
+
+class WellFormedChunkedBodyWithChunkExtensionHTTPMessageParserTest(HTTPMessageParserTest):
+    def __init__(self):
+        HTTPMessageParserTest.__init__(self)
+        self.PARSER(
+            "GET", ' ', URI, ' ', HTTP_VERSION, CRLF,
+            TE_CHUNKED_FIELD,
+            CRLF,
+            "1" + CRLF + "x",
+            ";chunk_ext1",
+            ";chunk_ext2=\"ChunkExtension\"",
+            CRLF,
+            "0" + CRLF,
+            CRLF
+        )
+        for http_body_chunk_size in (1, 0):
+            self.append('{')
+            self.PARSE("HTTPBodyChunk", "http_body_chunk")
+            self.ASSERT_NONNULL("http_body_chunk")
+            self.append("throw_assert_eq(http_body_chunk->size(), %(http_body_chunk_size)u);" % locals())
+            self.DEC_REF("HTTPBodyChunk", "http_body_chunk")
+            self.append('}')
+        self.DEC_REF()
+
+
+class WellFormedChunkedBodyWithTrailerHTTPMessageParserTest(HTTPMessageParserTest):
+    def __init__(self):
+        HTTPMessageParserTest.__init__(self)
+        self.PARSER(
+            "GET", ' ', URI, ' ', HTTP_VERSION, CRLF,
+            TE_CHUNKED_FIELD,
+            CRLF,
+            "1" + CRLF + "x" + CRLF,
+            "1" + CRLF + "y" + CRLF,
+            "0" + CRLF,
+            HOST_FIELD,
+            "X-Host: x-localhost" + CRLF,
+            CRLF
+        )
+        self.PARSE()
+        self.ASSERT_NONNULL()
+        self.ASSERT_HTTP_VERSION()
+        for http_body_chunk_size in (1, 1, 0):
+            self.append('{')
+            self.PARSE("HTTPBodyChunk", "http_body_chunk")
+            self.ASSERT_NONNULL("http_body_chunk")
+            self.append("throw_assert_eq(http_body_chunk->size(), %(http_body_chunk_size)u);" % locals())
+            self.DEC_REF("HTTPBodyChunk", "http_body_chunk")
+            self.append('}')
+        self.DEC_REF()
+
 
 
 class WellFormedFieldMissingValueHTTPMessageParserTest(HTTPMessageParserTest):
@@ -305,8 +362,10 @@ class HTTPMessageParserTestSuite(list):
         if self.__class__ == HTTPMessageParserTestSuite:
             self.append(MalformedFieldMissingColonHTTPMessageParserTest())
             self.append(MalformedFieldMissingNameHTTPMessageParserTest())
-            self.append(WellFormedChunk1BodyHTTPMessageParserTest())
-            self.append(WellFormedChunk2BodyHTTPMessageParserTest())
+            self.append(WellFormedChunkedBodyWithChunkExtensionHTTPMessageParserTest())
+            self.append(WellFormedChunkedBodyWithTrailerHTTPMessageParserTest())
+            self.append(WellFormed1ChunkBodyHTTPMessageParserTest())
+            self.append(WellFormed2ChunkBodyHTTPMessageParserTest())
             self.append(WellFormedFieldMissingValueHTTPMessageParserTest())
             self.append(WellFormedNoBodyHTTPMessageParserTest())
             self.append(WellFormedNormalBodyHTTPMessageParserTest())
