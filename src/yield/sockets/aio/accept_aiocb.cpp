@@ -32,7 +32,6 @@
 #include "yield/sockets/stream_socket.hpp"
 #include "yield/sockets/aio/accept_aiocb.hpp"
 
-
 namespace yield {
 namespace sockets {
 namespace aio {

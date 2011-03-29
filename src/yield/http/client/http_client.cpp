@@ -30,7 +30,6 @@
 #include "yield/auto_object.hpp"
 #include "yield/assert.hpp"
 #include "yield/log.hpp"
-#include "yield/page.hpp"
 #include "yield/http/http_request.hpp"
 #include "yield/http/http_response.hpp"
 #include "yield/http/http_response_parser.hpp"
@@ -66,7 +65,8 @@ public:
     if (connect_aiocb.get_error() == 0) {
       connected = true;
 
-      recvAIOCB* recv_aiocb = new recvAIOCB(*this, *new Page);
+      Buffer* recv_buffer = new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
+      recvAIOCB* recv_aiocb = new recvAIOCB(*this, *recv_buffer);
       StreamSocketPeer<SocketClient>::Connection::enqueue(*recv_aiocb);
     } else {
       Exception* exception = new Exception(connect_aiocb.get_error());

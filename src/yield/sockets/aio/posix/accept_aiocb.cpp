@@ -40,6 +40,8 @@ acceptAIOCB::acceptAIOCB(StreamSocket& socket_, YO_NEW_REF Buffer* recv_buffer)
     peername(*new SocketAddress),
     recv_buffer(recv_buffer) {
   accepted_socket = NULL;
+  if (recv_buffer != NULL)
+    debug_assert_eq(recv_buffer->get_next_buffer(), NULL);
 }
 
 void acceptAIOCB::set_return(ssize_t return_) {

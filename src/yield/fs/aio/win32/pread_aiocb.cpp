@@ -53,7 +53,17 @@ bool preadAIOCB::issue(EventHandler& completion_handler) {
 }
 
 bool preadAIOCB::issue(yield::aio::win32::AIOQueue&) {
-  if (get_buffer().get_next_buffer() != NULL) {
+  if (get_buffer().get_next_buffer() == NULL) {
+    return ReadFile(
+             get_file(),
+             get_buffer(),
+             get_buffer().size(),
+             NULL,
+             *this
+           ) == TRUE
+           ||
+           GetLastError() == ERROR_IO_PENDING;
+  } else {
     vector<FILE_SEGMENT_ELEMENT> aSegmentArray;
     size_t nNumberOfBytesToRead = 0;
     Buffer* next_buffer = &get_buffer();
@@ -69,16 +79,6 @@ bool preadAIOCB::issue(yield::aio::win32::AIOQueue&) {
              get_file(),
              &aSegmentArray[0],
              nNumberOfBytesToRead,
-             NULL,
-             *this
-           ) == TRUE
-           ||
-           GetLastError() == ERROR_IO_PENDING;
-  } else {
-    return ReadFile(
-             get_file(),
-             get_buffer(),
-             get_buffer().size(),
              NULL,
              *this
            ) == TRUE

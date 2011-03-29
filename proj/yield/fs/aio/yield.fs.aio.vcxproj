@@ -99,13 +99,11 @@
     <ClInclude Include="..\..\..\..\include\yield\fs\aio\fdatasync_aiocb.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\fs\aio\fsync_aiocb.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\fs\aio\posix\aio_queue.hpp" />
-    <ClInclude Include="..\..\..\..\include\yield\fs\aio\posix\aiocb.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\fs\aio\pread_aiocb.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\fs\aio\pwrite_aiocb.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\fs\aio\setlk_aiocb.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\fs\aio\unlk_aiocb.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\fs\aio\win32\aio_queue.hpp" />
-    <ClInclude Include="..\..\..\..\include\yield\fs\aio\win32\aiocb.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
@@ -145,9 +143,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\fs\aio\win32\aio_queue.cpp">
       <ObjectFileName>$(IntDir)win32\aio_queue.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\fs\aio\win32\aiocb.cpp">
-      <ObjectFileName>$(IntDir)win32\aiocb.obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\fs\aio\win32\pread_aiocb.cpp">
       <ObjectFileName>$(IntDir)win32\pread_aiocb.obj</ObjectFileName>

@@ -31,6 +31,7 @@
 #define _YIELD_SOCKETS_AIO_AIOCB_HPP_
 
 #include "yield/aio/aiocb.hpp"
+#include "yield/sockets/socket.hpp"
 
 namespace yield {
 class Buffer;
@@ -41,31 +42,30 @@ class Socket;
 namespace aio {
 class AIOCB : public yield::aio::AIOCB {
 public:
-  virtual ~AIOCB();
+  virtual ~AIOCB() {
+    AIOCB::dec_ref(next_aiocb);
+  }
 
 public:
   AIOCB* get_next_aiocb() {
     return next_aiocb;
   }
 
-  Socket& get_socket();
+  Socket& get_socket() {
+    return static_cast<Socket&>(get_channel());
+  }
 
 public:
-  void set_next_aiocb(AIOCB* next_aiocb);
+  void set_next_aiocb(AIOCB* next_aiocb) {
+    AIOCB::dec_ref(this->next_aiocb);
+    this->next_aiocb = next_aiocb;
+  }
 
 protected:
-  AIOCB(Socket&, Buffer& buffer);
-  AIOCB(Socket&, Buffer* buffer);
-
-#ifdef _WIN32
-  static void __stdcall
-  CompletionRoutine(
-    unsigned long dwErrorCode,
-    unsigned long dwNumberOfBytesTransferred,
-    ::OVERLAPPED* lpOverlapped,
-    unsigned long dwFlags
-  );
-#endif
+  AIOCB(Socket& socket_)
+    : yield::aio::AIOCB(socket_, 0) {
+    next_aiocb = NULL; 
+  }
 
 private:
   AIOCB* next_aiocb;

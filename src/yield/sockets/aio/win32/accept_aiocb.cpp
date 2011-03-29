@@ -42,7 +42,7 @@ static LPFN_GETACCEPTEXSOCKADDRS lpfnGetAcceptExSockaddrs = NULL;
 
 
 acceptAIOCB::acceptAIOCB(StreamSocket& socket_, YO_NEW_REF Buffer* recv_buffer)
-  : AIOCB(socket_, recv_buffer),
+  : AIOCB(socket_),
     peername(*new SocketAddress),
     recv_buffer(
       recv_buffer != NULL ?

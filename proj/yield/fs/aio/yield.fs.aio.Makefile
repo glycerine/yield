@@ -67,7 +67,7 @@ ifeq ($(UNAME), Solaris)
 	O_FILE_PATHS += ../../../../build/yield/fs/aio/posix/aio_queue.o ../../../../build/yield/fs/aio/posix/fdatasync_aiocb.o ../../../../build/yield/fs/aio/posix/fsync_aiocb.o ../../../../build/yield/fs/aio/posix/pread_aiocb.o ../../../../build/yield/fs/aio/posix/pwrite_aiocb.o
 endif
 ifeq ($(UNAME), MINGW32)
-	O_FILE_PATHS += ../../../../build/yield/fs/aio/win32/aio_queue.o ../../../../build/yield/fs/aio/win32/aiocb.o ../../../../build/yield/fs/aio/win32/pread_aiocb.o ../../../../build/yield/fs/aio/win32/pwrite_aiocb.o ../../../../build/yield/fs/aio/win32/setlk_aiocb.o ../../../../build/yield/fs/aio/win32/unlk_aiocb.o
+	O_FILE_PATHS += ../../../../build/yield/fs/aio/win32/aio_queue.o ../../../../build/yield/fs/aio/win32/pread_aiocb.o ../../../../build/yield/fs/aio/win32/pwrite_aiocb.o ../../../../build/yield/fs/aio/win32/setlk_aiocb.o ../../../../build/yield/fs/aio/win32/unlk_aiocb.o
 endif
 
 
@@ -137,10 +137,6 @@ depclean:
 ../../../../build/yield/fs/aio/win32/aio_queue.o: ../../../../src/yield/fs/aio/win32/aio_queue.cpp
 	-mkdir -p ../../../../build/yield/fs/aio/win32 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/fs/aio/win32/aio_queue.o -MD $(CXXFLAGS) ../../../../src/yield/fs/aio/win32/aio_queue.cpp
-
-../../../../build/yield/fs/aio/win32/aiocb.o: ../../../../src/yield/fs/aio/win32/aiocb.cpp
-	-mkdir -p ../../../../build/yield/fs/aio/win32 2>/dev/null
-	$(CXX) -c -o ../../../../build/yield/fs/aio/win32/aiocb.o -MD $(CXXFLAGS) ../../../../src/yield/fs/aio/win32/aiocb.cpp
 
 ../../../../build/yield/fs/aio/win32/pread_aiocb.o: ../../../../src/yield/fs/aio/win32/pread_aiocb.cpp
 	-mkdir -p ../../../../build/yield/fs/aio/win32 2>/dev/null

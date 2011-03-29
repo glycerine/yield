@@ -34,24 +34,6 @@
 namespace yield {
 namespace sockets {
 namespace aio {
-recvAIOCB::recvAIOCB(
-  Socket& socket_,
-  Buffer& buffer,
-  const Socket::MessageFlags& flags
-)
-  : AIOCB(socket_, buffer),
-    buffer(buffer),
-    flags(flags)
-{
-  size_t nbytes = 0;
-  Buffer* next_buffer = &buffer;
-  do {
-    nbytes += next_buffer->capacity() - next_buffer->size();
-    next_buffer = next_buffer->get_next_buffer();
-  } while (next_buffer != NULL);
-  set_nbytes(nbytes);
-}
-
 recvAIOCB::~recvAIOCB() {
   Buffer::dec_ref(buffer);
 }
@@ -79,13 +61,20 @@ void recvAIOCB::set_return(ssize_t return_) {
 }
 
 recvAIOCB::RetryStatus recvAIOCB::retry() {
-  ssize_t recv_ret
-  = get_socket().recvfrom(
-      static_cast<char*>(get_buffer()) + get_buffer().size(),
-      get_nbytes(),
-      get_flags(),
-      get_peername()
-    );
+  ssize_t recv_ret;
+
+  if (get_buffer().get_next_buffer() == NULL) {
+    recv_ret
+    = get_socket().recvfrom(
+        static_cast<char*>(get_buffer()) + get_buffer().size(),
+        get_buffer().capacity() - get_buffer().size(),
+        get_flags(),
+        get_peername()
+      );
+  } else {
+    DebugBreak();
+    recv_ret = -1;
+  }
 
   if (recv_ret >= 0) {
     set_return(recv_ret);

@@ -40,15 +40,12 @@ connectAIOCB::connectAIOCB(
   StreamSocket& socket_,
   SocketAddress& peername,
   YO_NEW_REF Buffer* send_buffer
-)
-  : AIOCB(socket_, send_buffer),
+) : AIOCB(socket_),
     peername(peername.inc_ref()),
     send_buffer(send_buffer)
 {
-  if (send_buffer != NULL) {
+  if (send_buffer != NULL)
     debug_assert_eq(send_buffer->get_next_buffer(), NULL);
-    set_nbytes(send_buffer->size());
-  }
 }
 
 connectAIOCB::~connectAIOCB() {

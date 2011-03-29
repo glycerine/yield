@@ -74,6 +74,33 @@ AIOCB& AIOCB::cast(::OVERLAPPED& lpOverlapped) {
   return *aiocb;
 }
 
+void __stdcall
+AIOCB::CompletionRoutine(
+  unsigned long dwErrorCode,
+  unsigned long dwNumberOfBytesTransfered,
+  ::OVERLAPPED* lpOverlapped
+) {
+  AIOCB& aiocb = cast(*lpOverlapped);
+  aiocb.set_error(dwErrorCode);
+  aiocb.set_return(dwNumberOfBytesTransfered);
+  debug_assert_ne(aiocb.get_completion_handler(), NULL);
+  aiocb.get_completion_handler()->handle(aiocb);
+}
+
+void __stdcall
+AIOCB::CompletionRoutine(
+  unsigned long dwErrorCode,
+  unsigned long dwNumberOfBytesTransfered,
+  ::OVERLAPPED* lpOverlapped,
+  unsigned long dwFlags
+) {
+  AIOCB& aiocb = cast(*lpOverlapped);
+  aiocb.set_error(dwErrorCode);
+  aiocb.set_return(dwNumberOfBytesTransfered);
+  debug_assert_ne(aiocb.get_completion_handler(), NULL);
+  aiocb.get_completion_handler()->handle(aiocb);
+}
+
 uint64_t AIOCB::get_offset() const {
   return static_cast<uint64_t>(overlapped.OffsetHigh << 32)
          |

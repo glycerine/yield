@@ -46,7 +46,10 @@ public:
     Socket& socket_,
     Buffer& buffer,
     const Socket::MessageFlags& flags
-  );
+  ) : AIOCB(socket_),
+      buffer(buffer),
+      flags(flags)
+  { }
 
   ~recvAIOCB();
 

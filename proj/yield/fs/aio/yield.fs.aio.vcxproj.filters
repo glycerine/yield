@@ -41,9 +41,6 @@
     <ClInclude Include="..\..\..\..\include\yield\fs\aio\posix\aio_queue.hpp">
       <Filter>Header Files\posix</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\yield\fs\aio\posix\aiocb.hpp">
-      <Filter>Header Files\posix</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\yield\fs\aio\pread_aiocb.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -57,9 +54,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\yield\fs\aio\win32\aio_queue.hpp">
-      <Filter>Header Files\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\yield\fs\aio\win32\aiocb.hpp">
       <Filter>Header Files\win32</Filter>
     </ClInclude>
   </ItemGroup>
@@ -101,9 +95,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\fs\aio\win32\aio_queue.cpp">
-      <Filter>Source Files\win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\fs\aio\win32\aiocb.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\fs\aio\win32\pread_aiocb.cpp">

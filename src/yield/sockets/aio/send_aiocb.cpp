@@ -34,26 +34,6 @@
 namespace yield {
 namespace sockets {
 namespace aio {
-sendAIOCB::sendAIOCB(
-  Socket& socket_,
-  YO_NEW_REF Buffer& buffer,
-  const Socket::MessageFlags& flags,
-  SocketAddress* peername
-)
-  : AIOCB(socket_, buffer),
-    buffer(buffer),
-    flags(flags),
-    peername(Object::inc_ref(peername))
-{
-  size_t nbytes = 0;
-  Buffer* next_buffer = &buffer;
-  do {
-    nbytes += next_buffer->size();
-    next_buffer = next_buffer->get_next_buffer();
-  } while (next_buffer != NULL);
-  set_nbytes(nbytes);
-}
-
 sendAIOCB::~sendAIOCB() {
   Buffer::dec_ref(buffer);
   SocketAddress::dec_ref(peername);
@@ -67,14 +47,14 @@ sendAIOCB::RetryStatus sendAIOCB::retry() {
       send_ret
       = get_socket().send(
           get_buffer(),
-          get_nbytes(),
+          get_buffer().size(),
           get_flags()
         );
     } else {
       send_ret
       = get_socket().sendto(
           get_buffer(),
-          get_nbytes(),
+          get_buffer().size(),
           get_flags(),
           *get_peername()
         );

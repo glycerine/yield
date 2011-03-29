@@ -111,6 +111,21 @@ protected:
   operator ::OVERLAPPED* ();
 
 protected:
+  static void __stdcall
+  CompletionRoutine(
+    unsigned long dwErrorCode,
+    unsigned long dwNumberOfBytesTransferred,
+    ::OVERLAPPED* lpOverlapped
+  );
+
+  static void __stdcall
+  CompletionRoutine(
+    unsigned long dwErrorCode,
+    unsigned long dwNumberOfBytesTransferred,
+    ::OVERLAPPED* lpOverlapped,
+    unsigned long dwFlags
+  );
+
   void set_completion_handler(EventHandler& completion_handler);
 
 private:

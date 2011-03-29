@@ -49,9 +49,6 @@
     <ClCompile Include="..\..\..\..\src\yield\sockets\aio\accept_aiocb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\aiocb.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\sockets\aio\connect_aiocb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -71,9 +68,6 @@
       <Filter>Source Files\win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\sockets\aio\win32\aio_queue.cpp">
-      <Filter>Source Files\win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\win32\aiocb.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\sockets\aio\win32\connect_aiocb.cpp">

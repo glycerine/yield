@@ -46,7 +46,11 @@ public:
     YO_NEW_REF Buffer& buffer,
     const Socket::MessageFlags& flags,
     SocketAddress* peername = NULL
-  );
+  ) : AIOCB(socket_),
+      buffer(buffer),
+      flags(flags),
+      peername(Object::inc_ref(peername)) {
+  }
 
   ~sendAIOCB();
   

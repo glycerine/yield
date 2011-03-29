@@ -1,4 +1,4 @@
-// yield/fs/aio/aiocb.hpp
+// yield/fs/aio/posix/aiocb.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,26 +27,31 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_FS_AIO_AIOCB_HPP_
-#define _YIELD_FS_AIO_AIOCB_HPP_
+#ifndef _YIELD_FS_AIO_POSIX_AIOCB_HPP_
+#define _YIELD_FS_AIO_POSIX_AIOCB_HPP_
 
+#include "yield/aio/aiocb.hpp"
 #include "yield/fs/file.hpp"
-#ifdef _WIN32
-#include "yield/fs/aio/win32/aiocb.hpp"
-#else
-#include "yield/fs/aio/posix/aiocb.hpp"
-#endif
 
 namespace yield {
 namespace fs {
 namespace aio {
-#ifdef _WIN32
-  typedef win32::AIOCB AIOCB;
-#else
-  typedef posix::AIOCB AIOCB;
-#endif
+class AIOCB : public yield::aio::AIOCB {
+public:
+  virtual ~AIOCB() { }
+
+  File& get_file() {
+    return static_cast<File&>(get_channel());
+  }
+
+protected:
+  AIOCB(File& file, uint64_t offset)
+    : yield::aio::AIOCB(file, offset) {
+  }
+};
 }
 }
 }
+
 
 #endif

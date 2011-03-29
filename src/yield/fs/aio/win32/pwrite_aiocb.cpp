@@ -54,7 +54,17 @@ bool pwriteAIOCB::issue(EventHandler& completion_handler) {
 }
 
 bool pwriteAIOCB::issue(yield::aio::win32::AIOQueue&) {
-  if (get_buffer().get_next_buffer() != NULL) {
+  if (get_buffer().get_next_buffer() == NULL) {
+    return WriteFile(
+             get_file(),
+             get_buffer(),
+             get_buffer().size(),
+             NULL,
+             *this
+           ) == TRUE
+           ||
+           GetLastError() == ERROR_IO_PENDING;
+  } else {
     vector<FILE_SEGMENT_ELEMENT> aSegmentArray;
     DWORD nNumberOfBytesToWrite = 0;
     Buffer* next_buffer = &buffer;
@@ -70,16 +80,6 @@ bool pwriteAIOCB::issue(yield::aio::win32::AIOQueue&) {
              get_file(),
              &aSegmentArray[0],
              nNumberOfBytesToWrite,
-             NULL,
-             *this
-           ) == TRUE
-           ||
-           GetLastError() == ERROR_IO_PENDING;
-  } else {
-    return WriteFile(
-             get_file(),
-             get_buffer(),
-             get_buffer().size(),
              NULL,
              *this
            ) == TRUE
