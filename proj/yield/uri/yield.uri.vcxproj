@@ -93,7 +93,7 @@
   </ItemDefinitionGroup>
 
   <ItemGroup Label="ClIncludeItems">
-    <ClInclude Include="..\..\..\include\yield\uri\rfc_3986.rl" />
+    <ClInclude Include="..\..\..\include\yield\uri\rfc3986.rl" />
     <ClInclude Include="..\..\..\include\yield\uri\uri.hpp" />
     <ClInclude Include="..\..\..\include\yield\uri\uri_parser.hpp" />
   </ItemGroup>

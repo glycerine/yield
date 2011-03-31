@@ -11,7 +11,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\include\yield\uri\rfc_3986.rl">
+    <ClCompile Include="..\..\..\include\yield\uri\rfc3986.rl">
       <Filter>Header Files</Filter>
     </ClCompile>
     <ClInclude Include="..\..\..\include\yield\uri\uri.hpp">

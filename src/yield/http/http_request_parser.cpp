@@ -3265,73 +3265,73 @@ _match:
     while (_nacts-- > 0) {
       switch (*_acts++) {
       case 0:
-        /* #line 32 "src\\yield\\http\\rfc_2616.rl" */
+        /* #line 32 "src\\yield\\http\\rfc2616.rl" */
       {
         http_version = static_cast<float>(atof(p));
       }
       break;
       case 1:
-        /* #line 67 "src\\yield\\http\\../../../include/yield/uri/rfc_3986.rl" */
+        /* #line 67 "src\\yield\\http\\../../../include/yield/uri/rfc3986.rl" */
       {
         scheme.iov_base = p;
       }
       break;
       case 2:
-        /* #line 68 "src\\yield\\http\\../../../include/yield/uri/rfc_3986.rl" */
+        /* #line 68 "src\\yield\\http\\../../../include/yield/uri/rfc3986.rl" */
       {
         scheme.iov_len =  p - static_cast<char*>(scheme.iov_base);
       }
       break;
       case 3:
-        /* #line 72 "src\\yield\\http\\../../../include/yield/uri/rfc_3986.rl" */
+        /* #line 72 "src\\yield\\http\\../../../include/yield/uri/rfc3986.rl" */
       {
         userinfo.iov_base = p;
       }
       break;
       case 4:
-        /* #line 73 "src\\yield\\http\\../../../include/yield/uri/rfc_3986.rl" */
+        /* #line 73 "src\\yield\\http\\../../../include/yield/uri/rfc3986.rl" */
       {
         userinfo.iov_len = p - static_cast<char*>(userinfo.iov_base);
       }
       break;
       case 5:
-        /* #line 77 "src\\yield\\http\\../../../include/yield/uri/rfc_3986.rl" */
+        /* #line 77 "src\\yield\\http\\../../../include/yield/uri/rfc3986.rl" */
       {
         host.iov_base = p;
       }
       break;
       case 6:
-        /* #line 78 "src\\yield\\http\\../../../include/yield/uri/rfc_3986.rl" */
+        /* #line 78 "src\\yield\\http\\../../../include/yield/uri/rfc3986.rl" */
       {
         host.iov_len = p - static_cast<char*>(host.iov_base);
       }
       break;
       case 7:
-        /* #line 81 "src\\yield\\http\\../../../include/yield/uri/rfc_3986.rl" */
+        /* #line 81 "src\\yield\\http\\../../../include/yield/uri/rfc3986.rl" */
       {
         port = static_cast<uint16_t>(atoi(p));
       }
       break;
       case 8:
-        /* #line 86 "src\\yield\\http\\../../../include/yield/uri/rfc_3986.rl" */
+        /* #line 86 "src\\yield\\http\\../../../include/yield/uri/rfc3986.rl" */
       {
         path.iov_base = p;
       }
       break;
       case 9:
-        /* #line 87 "src\\yield\\http\\../../../include/yield/uri/rfc_3986.rl" */
+        /* #line 87 "src\\yield\\http\\../../../include/yield/uri/rfc3986.rl" */
       {
         path.iov_len = p - static_cast<char*>(path.iov_base);
       }
       break;
       case 10:
-        /* #line 105 "src\\yield\\http\\../../../include/yield/uri/rfc_3986.rl" */
+        /* #line 105 "src\\yield\\http\\../../../include/yield/uri/rfc3986.rl" */
       {
         query.iov_base = p;
       }
       break;
       case 11:
-        /* #line 106 "src\\yield\\http\\../../../include/yield/uri/rfc_3986.rl" */
+        /* #line 106 "src\\yield\\http\\../../../include/yield/uri/rfc3986.rl" */
       {
         query.iov_len = p - static_cast<char*>(query.iov_base);
       }

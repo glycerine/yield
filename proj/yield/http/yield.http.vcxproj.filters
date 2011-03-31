@@ -67,10 +67,10 @@
     <ClCompile Include="..\..\..\src\yield\http\http_response_parser.rl">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\http\rfc_2616.rl">
+    <ClCompile Include="..\..\..\src\yield\http\rfc2616.rl">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\http\rfc_822.rl">
+    <ClCompile Include="..\..\..\src\yield\http\rfc822.rl">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

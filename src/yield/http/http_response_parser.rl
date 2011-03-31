@@ -109,7 +109,7 @@ HTTPResponseParser::parse_status_line(
     machine status_line_parser;
     alphtype unsigned char;
 
-    include rfc_2616 "rfc_2616.rl";
+    include rfc2616 "rfc2616.rl";
 
     status_code = digit+
                   >{ status_code = static_cast<uint16_t>(atoi(p)); };

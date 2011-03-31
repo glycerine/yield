@@ -278,7 +278,7 @@ _match:
     while (_nacts-- > 0) {
       switch (*_acts++) {
       case 0:
-        /* #line 32 "src\\yield\\http\\rfc_2616.rl" */
+        /* #line 32 "src\\yield\\http\\rfc2616.rl" */
       {
         http_version = static_cast<float>(atof(p));
       }

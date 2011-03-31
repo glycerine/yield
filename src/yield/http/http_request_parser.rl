@@ -150,8 +150,8 @@ bool HTTPRequestParser::parse_request_line(
       machine request_line_parser;
       alphtype unsigned char;
 
-      include rfc_2616 "rfc_2616.rl";
-      include rfc_3986 "../../../include/yield/uri/rfc_3986.rl";
+      include rfc2616 "rfc2616.rl";
+      include rfc3986 "../../../include/yield/uri/rfc3986.rl";
 
       method
         = ("CONNECT" % { method = HTTPRequest::METHOD_CONNECT; }) |

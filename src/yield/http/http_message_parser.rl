@@ -95,7 +95,7 @@ Object* HTTPMessageParser::parse_body_chunk() {
     machine chunk_parser;
     alphtype unsigned char;
 
-    include rfc_2616 "rfc_2616.rl";
+    include rfc2616 "rfc2616.rl";
 
     main := chunk
             @{ fbreak; }
@@ -139,7 +139,7 @@ DateTime HTTPMessageParser::parse_date(const char* ps, const char* pe) {
     machine date_parser;
     alphtype unsigned char;
 
-    include rfc_2616 "rfc_2616.rl";
+    include rfc2616 "rfc2616.rl";
 
     main := date
             $err{ return DateTime::INVALID_DATE_TIME; };
@@ -175,7 +175,7 @@ HTTPMessageParser::parse_field(
     machine field_parser;
     alphtype unsigned char;
 
-    include rfc_2616 "rfc_2616.rl";
+    include rfc2616 "rfc2616.rl";
 
     main := (
       field @ {
@@ -219,7 +219,7 @@ HTTPMessageParser::parse_fields(
     machine static_fields_parser;
     alphtype unsigned char;
 
-    include rfc_2616 "rfc_2616.rl";
+    include rfc2616 "rfc2616.rl";
 
     main := (
       field @ { fields.push_back(make_pair(field_name, field_value)); }
@@ -247,7 +247,7 @@ HTTPMessageParser::parse_fields(
     machine fields_parser;
     alphtype unsigned char;
 
-    include rfc_2616 "rfc_2616.rl";
+    include rfc2616 "rfc2616.rl";
 
     main :=
     (

@@ -27,4 +27,4 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%%{  machine rfc_822;  alphtype unsigned char;  crlf = "\r\n";  ctl = (cntrl | 127);  lws = crlf? (' ' | '\t')+;  quoted_pair = '\\' ascii;}%%
+%%{  machine rfc822;  alphtype unsigned char;  crlf = "\r\n";  ctl = (cntrl | 127);  lws = crlf? (' ' | '\t')+;  quoted_pair = '\\' ascii;}%%
