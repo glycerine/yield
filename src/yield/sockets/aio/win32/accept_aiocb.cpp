@@ -92,6 +92,9 @@ void acceptAIOCB::set_return(ssize_t return_) {
     );
   }
 
+  if (return_ > 0)
+      recv_buffer->resize(recv_buffer->size() + return_);
+
   AIOCB::set_return(return_);
 }
 
