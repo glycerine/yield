@@ -358,6 +358,7 @@ INCLUDE_FILE_PATHS["yield.i18n"] = [
 INCLUDE_FILE_PATHS["yield.i18n"]
 
 INCLUDE_FILE_PATHS["yield.sockets"] = [
+    path_join(INCLUDE_DIR_PATH, "yield", "sockets", "socket_address.hpp"), # before socket
     path_join(INCLUDE_DIR_PATH, "yield", "sockets", "socket.hpp"), # before datagram_socket
 ] + \
 INCLUDE_FILE_PATHS["yield.sockets"]

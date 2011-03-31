@@ -128,7 +128,7 @@ Object& HTTPRequestParser::parse() {
       p = ps;
       return next_buffer;
     } else // Error parsing
-      return *new HTTPResponse(400, NULL, http_version);
+      return *new HTTPResponse(400, NULL, connection_id, http_version);
   } else // p == eof
     return *new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
 }
