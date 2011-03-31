@@ -1,4 +1,4 @@
-// yield/http/date.rl
+// yield/http/basic_rules.rl
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -26,13 +26,11 @@
 // ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-# Adapted from the EBNF in RFC 2616 section 2.2
-%%{
-  machine date;
-  alphtype unsigned char;
-
-  hour = digit{2} >{ hour = atoi(p); };
+%%{  machine rfc_2616;  alphtype unsigned char;  include rfc_822 "rfc_822.rl";  separators = '(' | ')' | '<' | '>' | '@' |               ',' | ';' | ':' | '\\' | "'" |               '/' | '[' | ']' | '?' | '=' |               '{' | '}' | ' ' | '\t';  text = extend -- ctl;  token = (ascii -- (ctl | separators))+;  qdtext = text -- '\"';  quoted_string = '\"' (qdtext | quoted_pair)* '\"';  http_version = "HTTP/"
+                 (
+                   (digit+ '.' digit+)
+                   >{ http_version = static_cast<float>(atof(p)); }
+                 );  hour = digit{2} >{ hour = atoi(p); };
   minute = digit{2} >{ minute = atoi(p); };
   second = digit{2} >{ second = atoi(p); };
   time = hour ':' minute ':' second;
@@ -80,5 +78,33 @@
   rfc1123_date = wkday ", " day2 ' ' month ' ' year4 ' ' time " GMT";
   rfc850_date  = weekday ", " day2 '-' month '-' year2 ' ' time " GMT";
   asctime = wkday ' ' month ' ' (day2 | (' ' day1)) ' ' time ' ' year4;
-  date = rfc1123_date | rfc850_date | asctime;
+  date = rfc1123_date | rfc850_date | asctime;  field_name    = token      >{ field_name.iov_base = p; }      %{ field_name.iov_len = p - static_cast<char*>(field_name.iov_base); };  field_content = text*;  field_value    = field_content      >{ field_value.iov_base = p; }      %{ field_value.iov_len = p - static_cast<char*>(field_value.iov_base); };  field = field_name ':' ' '* field_value :> crlf;  chunk_size = xdigit+
+               >{ chunk_size_p = p; }
+               %
+               {
+                 char* chunk_size_pe = p;
+                 chunk_size
+                   = static_cast<size_t>(
+                       strtol(chunk_size_p, &chunk_size_pe, 16)
+                     );
+               };
+
+  chunk_ext_name = token;
+  chunk_ext_val = token | quoted_string;
+  chunk_extension = (';' chunk_ext_name ('=' chunk_ext_val)?)*;
+
+  body_chunk = chunk_size chunk_extension? crlf
+               (
+                 (any when { seen_chunk_size++ < chunk_size })*
+                 >{ chunk_data_p = p; }
+               )
+               crlf;
+
+  trailer = (field :> crlf)*;
+
+  last_chunk = ('0' %{ chunk_size = 0; }) chunk_extension? crlf
+               trailer
+               crlf;
+
+  chunk = last_chunk | body_chunk;
 }%%

@@ -37,18 +37,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\yield\http\basic_rules.rl">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\http\chunk.rl">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\http\date.rl">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\http\field.rl">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\http\http_message.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -79,7 +67,10 @@
     <ClCompile Include="..\..\..\src\yield\http\http_response_parser.rl">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\http\rfc_822_lexical_tokens.rl">
+    <ClCompile Include="..\..\..\src\yield\http\rfc_2616.rl">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\http\rfc_822.rl">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
