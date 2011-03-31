@@ -42,17 +42,6 @@ TEST(URIParser, any) {
   throw_assert_eq(uri.get_path(), "/");
 }
 
-TEST(URIParser, copy) {
-  URI uri("http://minorg:minorg@localhost:80/myfile");
-  URI uri_copy(uri);
-  throw_assert_eq(uri_copy.get_scheme(), "http");
-  //throw_assert_eq( uri_copy.get_user(), "minorg" );
-  //throw_assert_eq( uri_copy.get_password(), "minorg" );
-  throw_assert_eq(uri_copy.get_host(), "localhost");
-  throw_assert_eq(uri_copy.get_port(), 80);
-  throw_assert_eq(uri_copy.get_path(), "/myfile");
-}
-
 TEST(URIParser, host) {
   URI uri("http://localhost");
   throw_assert_eq(uri.get_scheme(), "http");
@@ -125,13 +114,6 @@ TEST(URIParser, host_slash) {
   throw_assert_eq(uri.get_scheme(), "http");
   throw_assert_eq(uri.get_host(), "localhost");
   throw_assert_eq(uri.get_path(), "/");
-}
-
-TEST(URIParser, set_port) {
-  URI uri("http://localhost/");
-  throw_assert_eq(uri.get_port(), 0);
-  uri.set_port(80);
-  throw_assert_eq(uri.get_port(), 80);
 }
 
 TEST(URIParser, user_host) {

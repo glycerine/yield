@@ -175,7 +175,7 @@ public:
 
 public:
   void resize(size_t size) {
-    if (size < capacity())
+    if (size <= capacity())
       this->size_ = size;
   }
 
