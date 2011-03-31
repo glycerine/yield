@@ -79,7 +79,7 @@
     <ClCompile Include="..\..\..\src\yield\http\http_response_parser.rl">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\http\rfc822_lexical_tokens.rl">
+    <ClCompile Include="..\..\..\src\yield\http\rfc_822_lexical_tokens.rl">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

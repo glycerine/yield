@@ -28,7 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 %%{
-  machine uri;
+  machine rfc_3986;
   alphtype unsigned char;
 
   gen_delims    = ":" | "|" | "?" | "#" | "[" | "]" | "@";

@@ -27,7 +27,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Adapted from the ABNF in RFC 2616 section 2.2%%{  machine basic_rules;  alphtype unsigned char;  include rfc822_lexical_tokens "rfc822_lexical_tokens.rl";  separators = '(' | ')' | '<' | '>' | '@' |               ',' | ';' | ':' | '\\' | "'" |               '/' | '[' | ']' | '?' | '=' |               '{' | '}' | ' ' | '\t';  text = extend -- ctl;  token = (ascii -- (ctl | separators))+;  qdtext = text -- '\"';  quoted_string = '\"' (qdtext | quoted_pair)* '\"';  http_version = "HTTP/"
+# Adapted from the ABNF in RFC 2616 section 2.2%%{  machine basic_rules;  alphtype unsigned char;  include rfc_822_lexical_tokens "rfc_822_lexical_tokens.rl";  separators = '(' | ')' | '<' | '>' | '@' |               ',' | ';' | ':' | '\\' | "'" |               '/' | '[' | ']' | '?' | '=' |               '{' | '}' | ' ' | '\t';  text = extend -- ctl;  token = (ascii -- (ctl | separators))+;  qdtext = text -- '\"';  quoted_string = '\"' (qdtext | quoted_pair)* '\"';  http_version = "HTTP/"
                  (
                    (digit+ '.' digit+)
                    >{ http_version = static_cast<float>(atof(p)); }

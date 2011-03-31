@@ -63,7 +63,7 @@ URIParser::parse(
     machine parse_uri_reference;
     alphtype unsigned char;
 
-    include uri "../../../include/yield/uri/uri.rl";
+    include rfc_3986 "../../../include/yield/uri/rfc_3986.rl";
 
     main := uri_reference;
 

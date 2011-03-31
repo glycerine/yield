@@ -11,12 +11,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\include\yield\uri\rfc_3986.rl">
+      <Filter>Header Files</Filter>
+    </ClCompile>
     <ClInclude Include="..\..\..\include\yield\uri\uri.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\include\yield\uri\uri.rl">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClInclude Include="..\..\..\include\yield\uri\uri_parser.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
