@@ -51,6 +51,13 @@ TEST(HTTPMessage, get_body) {
   );
 }
 
+TEST(HTTPMessage, get_connection_id) {
+  throw_assert_eq(
+    HTTPRequest(HTTPRequest::METHOD_GET, "/", NULL, 1).get_connection_id(),
+    1
+  );
+}
+
 TEST(HTTPMessage, get_content_length) {
   throw_assert_eq(
     HTTPRequest(HTTPRequest::METHOD_GET, "/").get_content_length(),

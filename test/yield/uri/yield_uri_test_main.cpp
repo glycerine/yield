@@ -32,11 +32,17 @@
 #include <iostream>
 
 
+extern yunit::TestSuite& URIParserTestSuite();
 extern yunit::TestSuite& URITestSuite();
 
 
 int main(int, char**) {
   int failed_test_case_count = 0;
+
+  // URIParser
+  std::cout << "URIParser:" << std::endl;
+  failed_test_case_count += URIParserTestSuite().run();
+  std::cout << std::endl;
 
   // URI
   std::cout << "URI:" << std::endl;

@@ -30,13 +30,13 @@
 #ifndef _YIELD_SOCKETS_SOCKET_HPP_
 #define _YIELD_SOCKETS_SOCKET_HPP_
 
+#include "yield/auto_object.hpp"
 #include "yield/channel.hpp"
 #include "yield/exception.hpp"
+#include "yield/sockets/socket_address.hpp"
 
 namespace yield {
 namespace sockets {
-class SocketAddress;
-
 class Socket : public Channel {
 public:
   class MessageFlags {
@@ -55,6 +55,7 @@ public:
     int platform_message_flags;
   };
 
+public:
   typedef uint32_t Option;
   const static Option OPTION_SO_KEEPALIVE = 1;
   const static Option OPTION_SO_LINGER = 2;
@@ -82,33 +83,71 @@ public:
     close();
   }
 
+public:
   virtual bool bind(const SocketAddress& to_sockaddr);
+
   virtual bool connect(const SocketAddress& peername);
+
+public:
   int get_domain() const {
     return domain;
   }
+
+public:
   static string getfqdn();
   static string gethostname();
+
+public:
+  auto_Object<SocketAddress> getpeername() const throw(Exception) {
+    SocketAddress* peername = new SocketAddress;
+    if (getpeername(*peername))
+      return peername;
+    else {
+      Exception exception;
+      SocketAddress::dec_ref(*peername);
+      throw exception;
+    }
+  }
+
   bool getpeername(OUT SocketAddress& peername) const;
+
+public:
   int get_protocol() const {
     return protocol;
   }
+
+public:
+  auto_Object<SocketAddress> getsockname() const throw(Exception) {
+    SocketAddress* sockname = new SocketAddress;
+    if (getsockname(*sockname))
+      return sockname;
+    else {
+      Exception exception;
+      SocketAddress::dec_ref(*sockname);
+      throw exception;
+    }
+  }
+
   bool getsockname(OUT SocketAddress& sockname) const;
+
+public:
   int get_type() const {
     return type;
   }
+
+public:
 #ifdef _WIN32
   operator socket_t() const {
     return socket_;
   }
 #endif
 
+public:
   virtual ssize_t recv(void* buf, size_t len, const MessageFlags&);
 
   virtual
   ssize_t
-  recvfrom
-  (
+  recvfrom(
     void* buf,
     size_t len,
     const MessageFlags&,
@@ -116,19 +155,18 @@ public:
   );
 
   virtual ssize_t
-  recvmsg
-  (
+  recvmsg(
     const iovec* iov,
     int iovlen,
     const MessageFlags&,
     SocketAddress* peername = NULL
   );
 
+public:
   virtual ssize_t send(const void*, size_t, const MessageFlags&);
 
   virtual ssize_t
-  sendmsg
-  (
+  sendmsg(
     const iovec* iov,
     int iovlen,
     const MessageFlags&,
@@ -136,26 +174,33 @@ public:
   );
 
   virtual ssize_t
-  sendto
-  (
+  sendto(
     const void* buf,
     size_t len,
     const MessageFlags&,
     const SocketAddress& peername
   );
 
+public:
   virtual bool setsockopt(Option option, bool onoff);
+
+public:
   virtual bool shutdown(bool shut_rd = true, bool shut_wr = true);
+
+public:
   virtual bool want_recv() const;
   virtual bool want_send() const;
 
-  // Object
+public:
+  // yield::Object
   Socket& inc_ref() {
     return Object::inc_ref(*this);
   }
 
-  // Channel
+public:
+  // yield::Channel
   virtual bool close();
+
   operator fd_t() const {
     return socket_to_fd(socket_);
   }

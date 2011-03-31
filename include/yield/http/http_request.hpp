@@ -75,10 +75,6 @@ public:
   );
 
 public:
-  uint32_t get_connection_id() const {
-    return connection_id;
-  }
-
   const DateTime& get_creation_date_time() const {
     return creation_date_time;
   }
@@ -130,7 +126,6 @@ private:
   );
 
 private:
-  uint32_t connection_id;
   DateTime creation_date_time;
   Method method;
   yield::uri::URI uri;

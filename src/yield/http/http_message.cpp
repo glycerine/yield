@@ -51,12 +51,14 @@ HTTPMessage<HTTPMessageType>::
 HTTPMessage(
   void* body,
   Buffer& buffer,
+  uint32_t connection_id,
   size_t content_length,
   uint16_t fields_offset,
   float http_version
 )
   : body(body),
     buffer(buffer.inc_ref()),
+    connection_id(connection_id),
     content_length(content_length),
     fields_offset(fields_offset),
     http_version(http_version)
@@ -66,9 +68,11 @@ template <class HTTPMessageType>
 HTTPMessage<HTTPMessageType>::
 HTTPMessage(
   YO_NEW_REF Buffer* body,
+  uint32_t connection_id,
   float http_version
 )
   : buffer(*new Buffer(Buffer::getpagesize(), Buffer::getpagesize())),
+    connection_id(connection_id),
     http_version(http_version) {
   if (body != NULL) {
     this->body = *body;

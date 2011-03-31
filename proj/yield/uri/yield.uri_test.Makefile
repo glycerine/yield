@@ -47,7 +47,7 @@ LIBS += -lyield_uri -lyield
 D_FILE_PATHS := $(shell find ../../../build/yield/uri -name "*.d")
 
 
-O_FILE_PATHS += ../../../build/yield/uri/uri_test.o ../../../build/yield/uri/yield_uri_test_main.o
+O_FILE_PATHS += ../../../build/yield/uri/uri_parser_test.o ../../../build/yield/uri/uri_test.o ../../../build/yield/uri/yield_uri_test_main.o
 
 
 all: ../../../bin/yield/yield_uri_test
@@ -74,6 +74,10 @@ lcov: ../../../bin/yield/yield_uri_test
 ../../../bin/yield/yield_uri_test: $(O_FILE_PATHS)
 	-mkdir -p ../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
+
+../../../build/yield/uri/uri_parser_test.o: ../../../test/yield/uri/uri_parser_test.cpp
+	-mkdir -p ../../../build/yield/uri 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/uri/uri_parser_test.o -MD $(CXXFLAGS) ../../../test/yield/uri/uri_parser_test.cpp
 
 ../../../build/yield/uri/uri_test.o: ../../../test/yield/uri/uri_test.cpp
 	-mkdir -p ../../../build/yield/uri 2>/dev/null

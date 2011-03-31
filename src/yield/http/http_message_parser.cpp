@@ -72,8 +72,9 @@
 
 namespace yield {
 namespace http {
-HTTPMessageParser::HTTPMessageParser(Buffer& buffer)
-  : buffer(buffer.inc_ref()) {
+HTTPMessageParser::HTTPMessageParser(Buffer& buffer, uint32_t connection_id)
+  : buffer(buffer.inc_ref()),
+    connection_id(connection_id) {
   debug_assert_false(buffer.empty());
 
   ps = p = buffer;
@@ -84,6 +85,7 @@ HTTPMessageParser::HTTPMessageParser(const string& buffer)
   : buffer(Buffer::copy(buffer)) {
   debug_assert_false(buffer.empty());
 
+  connection_id = 0;
   ps = p = this->buffer;
   eof = ps + this->buffer.size();
 }
@@ -535,7 +537,7 @@ _match:
       }
       break;
       case 8:
-        /* #line 99 "src\\yield\\http\\http_message_parser.rl" */
+        /* #line 101 "src\\yield\\http\\http_message_parser.rl" */
       { {
           p++;
           goto _out;
@@ -543,7 +545,7 @@ _match:
       }
       break;
       case 9:
-        /* #line 100 "src\\yield\\http\\http_message_parser.rl" */
+        /* #line 102 "src\\yield\\http\\http_message_parser.rl" */
       {
         return NULL;
       }
@@ -563,7 +565,7 @@ _again:
       while (__nacts-- > 0) {
         switch (*__acts++) {
         case 9:
-          /* #line 100 "src\\yield\\http\\http_message_parser.rl" */
+          /* #line 102 "src\\yield\\http\\http_message_parser.rl" */
         {
           return NULL;
         }
@@ -577,7 +579,7 @@ _out:
     {}
   }
 
-  /* #line 105 "src\\yield\\http\\http_message_parser.rl" */
+  /* #line 107 "src\\yield\\http\\http_message_parser.rl" */
 
 
   if (cs != chunk_parser_error) {
@@ -585,9 +587,9 @@ _out:
       // Cut off the chunk size + extension + CRLF before
       // the chunk data and the CRLF after
       Buffer& chunk_data = Buffer::copy(chunk_data_p, p - chunk_data_p - 2);
-      return new HTTPMessageBodyChunk(&chunk_data);
+      return new HTTPMessageBodyChunk(&chunk_data, connection_id);
     } else // Last chunk
-      return new HTTPMessageBodyChunk(NULL);
+      return new HTTPMessageBodyChunk(NULL, connection_id);
   } else if (p == eof && chunk_size != 0)
     return new Buffer(chunk_size + 2); // Assumes no trailers.
   else
@@ -1010,7 +1012,7 @@ _match:
       }
       break;
       case 8:
-        /* #line 143 "src\\yield\\http\\http_message_parser.rl" */
+        /* #line 145 "src\\yield\\http\\http_message_parser.rl" */
       {
         return DateTime::INVALID_DATE_TIME;
       }
@@ -1032,7 +1034,7 @@ _test_eof:
       while (__nacts-- > 0) {
         switch (*__acts++) {
         case 8:
-          /* #line 143 "src\\yield\\http\\http_message_parser.rl" */
+          /* #line 145 "src\\yield\\http\\http_message_parser.rl" */
         {
           return DateTime::INVALID_DATE_TIME;
         }
@@ -1046,7 +1048,7 @@ _out:
     {}
   }
 
-  /* #line 148 "src\\yield\\http\\http_message_parser.rl" */
+  /* #line 150 "src\\yield\\http\\http_message_parser.rl" */
 
 
   if (cs != date_parser_error) {
@@ -1065,7 +1067,6 @@ HTTPMessageParser::parse_field(
   OUT iovec& out_field_value
 ) {
   int cs;
-  //const char* eof = pe;
   char* p = const_cast<char*>(ps);
 
   iovec field_name = {0}, field_value = {0};
@@ -1229,7 +1230,7 @@ _match:
       }
       break;
       case 4:
-        /* #line 178 "src\\yield\\http\\http_message_parser.rl" */
+        /* #line 179 "src\\yield\\http\\http_message_parser.rl" */
       {
         if (
           field_name.iov_len == in_field_name.iov_len
@@ -1260,7 +1261,7 @@ _out:
     {}
   }
 
-  /* #line 197 "src\\yield\\http\\http_message_parser.rl" */
+  /* #line 198 "src\\yield\\http\\http_message_parser.rl" */
 
 
   return false;
@@ -1436,7 +1437,7 @@ _match:
       }
       break;
       case 4:
-        /* #line 220 "src\\yield\\http\\http_message_parser.rl" */
+        /* #line 221 "src\\yield\\http\\http_message_parser.rl" */
       {
         fields.push_back(make_pair(field_name, field_value));
       }
@@ -1456,7 +1457,7 @@ _out:
     {}
   }
 
-  /* #line 226 "src\\yield\\http\\http_message_parser.rl" */
+  /* #line 227 "src\\yield\\http\\http_message_parser.rl" */
 
 }
 
@@ -1642,7 +1643,7 @@ _match:
       }
       break;
       case 4:
-        /* #line 249 "src\\yield\\http\\http_message_parser.rl" */
+        /* #line 250 "src\\yield\\http\\http_message_parser.rl" */
       {
         if
         (
@@ -1673,7 +1674,7 @@ _match:
       }
       break;
       case 5:
-        /* #line 279 "src\\yield\\http\\http_message_parser.rl" */
+        /* #line 280 "src\\yield\\http\\http_message_parser.rl" */
       { {
           p++;
           goto _out;
@@ -1681,7 +1682,7 @@ _match:
       }
       break;
       case 6:
-        /* #line 280 "src\\yield\\http\\http_message_parser.rl" */
+        /* #line 281 "src\\yield\\http\\http_message_parser.rl" */
       {
         return false;
       }
@@ -1701,7 +1702,7 @@ _again:
       while (__nacts-- > 0) {
         switch (*__acts++) {
         case 6:
-          /* #line 280 "src\\yield\\http\\http_message_parser.rl" */
+          /* #line 281 "src\\yield\\http\\http_message_parser.rl" */
         {
           return false;
         }
@@ -1715,7 +1716,7 @@ _out:
     {}
   }
 
-  /* #line 285 "src\\yield\\http\\http_message_parser.rl" */
+  /* #line 286 "src\\yield\\http\\http_message_parser.rl" */
 
 
   return cs != fields_parser_error;

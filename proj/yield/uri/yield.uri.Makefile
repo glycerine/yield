@@ -47,7 +47,7 @@ LIBS += -lyield
 D_FILE_PATHS := $(shell find ../../../build/yield/uri -name "*.d")
 
 
-O_FILE_PATHS += ../../../build/yield/uri/uri.o
+O_FILE_PATHS += ../../../build/yield/uri/uri.o ../../../build/yield/uri/uri_parser.o
 
 
 all: ../../../lib/yield/libyield_uri.a
@@ -68,3 +68,7 @@ depclean:
 ../../../build/yield/uri/uri.o: ../../../src/yield/uri/uri.cpp
 	-mkdir -p ../../../build/yield/uri 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/uri/uri.o -MD $(CXXFLAGS) ../../../src/yield/uri/uri.cpp
+
+../../../build/yield/uri/uri_parser.o: ../../../src/yield/uri/uri_parser.cpp
+	-mkdir -p ../../../build/yield/uri 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/uri/uri_parser.o -MD $(CXXFLAGS) ../../../src/yield/uri/uri_parser.cpp

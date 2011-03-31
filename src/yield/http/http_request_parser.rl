@@ -72,7 +72,7 @@ Object& HTTPRequestParser::parse() {
       )
     ) {
       URI uri(
-        get_buffer(),
+        buffer,
         uri_fragment,
         uri_host,
         uri_path,
@@ -91,7 +91,7 @@ Object& HTTPRequestParser::parse() {
         if (parse_body(content_length, body)) {
           return *new HTTPRequest(
                    body,
-                   get_buffer(),
+                   buffer,
                    connection_id,
                    content_length,
                    fields_offset,
@@ -151,7 +151,7 @@ bool HTTPRequestParser::parse_request_line(
       alphtype unsigned char;
 
       include basic_rules "basic_rules.rl";
-      include uri "../uri/uri.rl";
+      include uri "../../../include/yield/uri/uri.rl";
 
       method
         = ("CONNECT" % { method = HTTPRequest::METHOD_CONNECT; }) |

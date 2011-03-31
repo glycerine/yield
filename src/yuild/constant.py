@@ -82,19 +82,19 @@ C_CXX_SOURCE_FILE_FNMATCH_PATTERNS = ['*' + ext for ext in C_CXX_SOURCE_FILE_EXT
 C_CXX_FILE_EXTENSIONS = C_CXX_INCLUDE_FILE_EXTENSIONS + C_CXX_SOURCE_FILE_EXTENSIONS
 C_CXX_FILE_FNMATCH_PATTERNS = C_CXX_INCLUDE_FILE_FNMATCH_PATTERNS + C_CXX_SOURCE_FILE_FNMATCH_PATTERNS
 
-IDL_SOURCE_FILE_EXTENSIONS = (".idl",)
-for idl_source_file_extension in IDL_SOURCE_FILE_EXTENSIONS:
-    COMMENT_PREFIXES[idl_source_file_extension] = "//"
-    COMMENT_SUFFIXES[idl_source_file_extension] = ''
-    INDENT_SPACES[idl_source_file_extension] = INDENT_SPACES['c']
+RAGEL_FILE_EXTENSIONS = (".rl",)
+for ragel_source_file_extension in RAGEL_FILE_EXTENSIONS:
+    COMMENT_PREFIXES[ragel_source_file_extension] = COMMENT_PREFIXES["rl"]
+    COMMENT_SUFFIXES[ragel_source_file_extension] = COMMENT_SUFFIXES["rl"]
+    INDENT_SPACES[ragel_source_file_extension] = INDENT_SPACES["rl"]
 
 INCLUDE_FILE_EXTENSIONS = {}
-for c_include_file_extension in C_INCLUDE_FILE_EXTENSIONS:
-    INCLUDE_FILE_EXTENSIONS[c_include_file_extension] = 'c'
-for cpp_include_file_extension in CXX_INCLUDE_FILE_EXTENSIONS:
-    INCLUDE_FILE_EXTENSIONS[cpp_include_file_extension] = "cpp"
-for idl_source_file_extension in IDL_SOURCE_FILE_EXTENSIONS:
-    INCLUDE_FILE_EXTENSIONS[idl_source_file_extension] = "idl"
+for include_file_extension in C_INCLUDE_FILE_EXTENSIONS:
+    INCLUDE_FILE_EXTENSIONS[include_file_extension] = 'c'
+for include_file_extension in CXX_INCLUDE_FILE_EXTENSIONS:
+    INCLUDE_FILE_EXTENSIONS[include_file_extension] = "cpp"
+for include_file_extension in RAGEL_FILE_EXTENSIONS:
+    INCLUDE_FILE_EXTENSIONS[include_file_extension] = "rl"
 
 INCLUDE_FILE_FNMATCH_PATTERNS = ['*' + ext for ext in INCLUDE_FILE_EXTENSIONS.iterkeys()]
 
@@ -146,22 +146,14 @@ for py_source_file_extension in PY_SOURCE_FILE_EXTENSIONS:
     COMMENT_SUFFIXES[py_source_file_extension] = COMMENT_SUFFIXES["py"]
     INDENT_SPACES[py_source_file_extension] = INDENT_SPACES["py"]
 
-RAGEL_SOURCE_FILE_EXTENSIONS = (".rl",)
-for ragel_source_file_extension in RAGEL_SOURCE_FILE_EXTENSIONS:
-    COMMENT_PREFIXES[ragel_source_file_extension] = COMMENT_PREFIXES["rl"]
-    COMMENT_SUFFIXES[ragel_source_file_extension] = COMMENT_SUFFIXES["rl"]
-    INDENT_SPACES[ragel_source_file_extension] = INDENT_SPACES["rl"]
-
 SOURCE_FILE_EXTENSIONS = {}
 for source_file_extension in C_SOURCE_FILE_EXTENSIONS:
     SOURCE_FILE_EXTENSIONS[source_file_extension] = 'c'
 for source_file_extension in CXX_SOURCE_FILE_EXTENSIONS:
     SOURCE_FILE_EXTENSIONS[source_file_extension] = "cpp"
-for source_file_extension in IDL_SOURCE_FILE_EXTENSIONS:
-    SOURCE_FILE_EXTENSIONS[source_file_extension] = "idl"
 for source_file_extension in PY_SOURCE_FILE_EXTENSIONS:
     SOURCE_FILE_EXTENSIONS[source_file_extension] = "py"
-for source_file_extension in RAGEL_SOURCE_FILE_EXTENSIONS:
+for source_file_extension in RAGEL_FILE_EXTENSIONS:
     SOURCE_FILE_EXTENSIONS[source_file_extension] = "rl"
 
 SOURCE_FILE_FNMATCH_PATTERNS = ['*' + ext for ext in SOURCE_FILE_EXTENSIONS.iterkeys()]

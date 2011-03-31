@@ -42,8 +42,9 @@
 
 namespace yield {
 namespace http {
-HTTPMessageParser::HTTPMessageParser(Buffer& buffer)
-  : buffer(buffer.inc_ref()) {
+HTTPMessageParser::HTTPMessageParser(Buffer& buffer, uint32_t connection_id)
+  : buffer(buffer.inc_ref()),
+    connection_id(connection_id) {
   debug_assert_false(buffer.empty());
 
   ps = p = buffer;
@@ -54,6 +55,7 @@ HTTPMessageParser::HTTPMessageParser(const string& buffer)
   : buffer(Buffer::copy(buffer)) {
   debug_assert_false(buffer.empty());
 
+  connection_id = 0;
   ps = p = this->buffer;
   eof = ps + this->buffer.size();
 }
@@ -109,9 +111,9 @@ Object* HTTPMessageParser::parse_body_chunk() {
       // Cut off the chunk size + extension + CRLF before
       // the chunk data and the CRLF after
       Buffer& chunk_data = Buffer::copy(chunk_data_p, p - chunk_data_p - 2);
-      return new HTTPMessageBodyChunk(&chunk_data);
+      return new HTTPMessageBodyChunk(&chunk_data, connection_id);
     } else // Last chunk
-      return new HTTPMessageBodyChunk(NULL);
+      return new HTTPMessageBodyChunk(NULL, connection_id);
   } else if (p == eof && chunk_size != 0)
     return new Buffer(chunk_size + 2); // Assumes no trailers.
   else

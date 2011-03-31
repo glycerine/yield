@@ -94,12 +94,16 @@
 
   <ItemGroup Label="ClIncludeItems">
     <ClInclude Include="..\..\..\include\yield\uri\uri.hpp" />
+    <ClInclude Include="..\..\..\include\yield\uri\uri.rl" />
+    <ClInclude Include="..\..\..\include\yield\uri\uri_parser.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
     <ClCompile Include="..\..\..\src\yield\uri\uri.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\uri\uri.rl">
+    <ClCompile Include="..\..\..\src\yield\uri\uri_parser.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\uri\uri_parser.rl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>

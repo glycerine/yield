@@ -38,14 +38,12 @@ namespace http {
 class HTTPRequestParser : public HTTPMessageParser {
 public:
   HTTPRequestParser(Buffer& buffer, uint32_t connection_id = 0)
-    : HTTPMessageParser(buffer),
-      connection_id(connection_id)
+    : HTTPMessageParser(buffer, connection_id)
   { }
 
   // For testing
-  HTTPRequestParser(const string& buffer, uint32_t connection_id = 0)
-    : HTTPMessageParser(buffer),
-      connection_id(connection_id)
+  HTTPRequestParser(const string& buffer)
+    : HTTPMessageParser(buffer)
   { }
 
 public:
@@ -63,9 +61,6 @@ private:
     OUT iovec& uri_scheme,
     OUT iovec& uri_userinfo
   );
-
-private:
-  uint32_t connection_id;
 };
 }
 }

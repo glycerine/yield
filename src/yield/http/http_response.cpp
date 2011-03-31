@@ -36,27 +36,28 @@ namespace http {
 HTTPResponse::HTTPResponse(
   void* body,
   Buffer& buffer,
+  uint32_t connection_id,
   size_t content_length,
   uint16_t fields_offset,
   float http_version,
   uint16_t status_code
-)
-  : HTTPMessage<HTTPResponse>(
-    body,
-    buffer,
-    content_length,
-    fields_offset,
-    http_version
-  ),
-  status_code(status_code)
+) : HTTPMessage<HTTPResponse>(
+      body,
+      buffer,
+      connection_id,
+      content_length,
+      fields_offset,
+      http_version
+    ),
+    status_code(status_code)
 { }
 
 HTTPResponse::HTTPResponse(
   uint16_t status_code,
   YO_NEW_REF Buffer* body,
+  uint32_t connection_id,
   float http_version
-)
-  : HTTPMessage<HTTPResponse>(body, http_version),
+) : HTTPMessage<HTTPResponse>(body, connection_id, http_version),
     status_code(status_code) {
   const char* status_line;
   size_t status_line_len;

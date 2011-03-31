@@ -44,6 +44,7 @@ public:
   HTTPResponse(
     uint16_t status_code,
     YO_NEW_REF Buffer* body = NULL,
+    uint32_t connection_id = 0,
     float http_version = 1.1f
   );
 
@@ -76,6 +77,7 @@ private:
   HTTPResponse(
     void* body,
     Buffer& buffer,
+    uint32_t connection_id,
     size_t content_length,
     uint16_t fields_offset,
     float http_version,

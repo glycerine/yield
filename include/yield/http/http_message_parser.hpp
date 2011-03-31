@@ -40,11 +40,6 @@ class HTTPBodyChunk;
 
 class HTTPMessageParser {
 public:
-  HTTPMessageParser(Buffer& buffer);
-  HTTPMessageParser(const string& buffer); // For testing
-  ~HTTPMessageParser();
-
-public:
   static DateTime parse_date(const iovec& date);
   static DateTime parse_date(const char* ps, const char* pe);
 
@@ -64,9 +59,9 @@ public:
   );
 
 protected:
-  Buffer& get_buffer() {
-    return buffer;
-  }
+  HTTPMessageParser(Buffer& buffer, uint32_t connection_id);
+  HTTPMessageParser(const string& buffer); // For testing
+  ~HTTPMessageParser();
 
 protected:
   bool parse_body(size_t content_length, OUT void*& body);
@@ -74,11 +69,10 @@ protected:
   bool parse_fields(OUT uint16_t& fields_offset, OUT size_t& content_length);
 
 protected:
+  Buffer& buffer;
+  uint32_t connection_id;
   const char* eof;
   char *p, *ps;
-
-private:
-  Buffer& buffer;
 };
 }
 }

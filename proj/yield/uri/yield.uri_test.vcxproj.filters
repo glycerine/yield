@@ -12,6 +12,9 @@
 
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\test\yield\uri\uri_parser_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\test\yield\uri\uri_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

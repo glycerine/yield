@@ -29,7 +29,6 @@
 
 #include "yield/assert.hpp"
 #include "yield/sockets/socket.hpp"
-#include "yield/sockets/socket_address.hpp"
 #include "yield/sockets/win32/winsock.hpp"
 
 namespace yield {

@@ -122,8 +122,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\http\http_message.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\http\http_message_body_chunk.cpp">
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\http\http_message_parser.cpp">
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\http\http_message_parser.rl">

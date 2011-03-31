@@ -87,7 +87,8 @@ Object& HTTPResponseParser::parse() {
         if (parse_body(content_length, body)) {
           return *new HTTPResponse(
                    body,
-                   get_buffer(),
+                   buffer,
+                   connection_id,
                    content_length,
                    fields_offset,
                    http_version,
@@ -122,7 +123,7 @@ Object& HTTPResponseParser::parse() {
       p = ps;
       return next_buffer;
     } else // Error parsing
-      return *new HTTPResponse(400, NULL, http_version);
+      return *new HTTPResponse(400, NULL, connection_id, http_version);
   } else // p == eof
     return *new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
 }
@@ -283,13 +284,13 @@ _match:
       }
       break;
       case 1:
-        /* #line 114 "src\\yield\\http\\http_response_parser.rl" */
+        /* #line 115 "src\\yield\\http\\http_response_parser.rl" */
       {
         status_code = static_cast<uint16_t>(atoi(p));
       }
       break;
       case 2:
-        /* #line 121 "src\\yield\\http\\http_response_parser.rl" */
+        /* #line 122 "src\\yield\\http\\http_response_parser.rl" */
       { {
           p++;
           goto _out;
@@ -297,7 +298,7 @@ _match:
       }
       break;
       case 3:
-        /* #line 122 "src\\yield\\http\\http_response_parser.rl" */
+        /* #line 123 "src\\yield\\http\\http_response_parser.rl" */
       {
         return false;
       }
@@ -317,7 +318,7 @@ _again:
       while (__nacts-- > 0) {
         switch (*__acts++) {
         case 3:
-          /* #line 122 "src\\yield\\http\\http_response_parser.rl" */
+          /* #line 123 "src\\yield\\http\\http_response_parser.rl" */
         {
           return false;
         }
@@ -331,7 +332,7 @@ _out:
     {}
   }
 
-  /* #line 127 "src\\yield\\http\\http_response_parser.rl" */
+  /* #line 128 "src\\yield\\http\\http_response_parser.rl" */
 
 
   return cs != status_line_parser_error;

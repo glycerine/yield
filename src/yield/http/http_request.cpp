@@ -49,11 +49,11 @@ HTTPRequest::HTTPRequest(
   : HTTPMessage<HTTPRequest>(
       body,
       buffer,
+      connection_id,
       content_length,
       fields_offset,
       http_version
   ),
-  connection_id(connection_id),
   creation_date_time(DateTime::now()),
   method(method),
   uri(uri)
@@ -66,8 +66,7 @@ HTTPRequest::HTTPRequest(
   uint32_t connection_id,
   float http_version
 )
-  : HTTPMessage<HTTPRequest>(body, http_version),
-    connection_id(connection_id),
+  : HTTPMessage<HTTPRequest>(body, connection_id, http_version),
     creation_date_time(DateTime::now()),
     method(method),
     uri(uri) {
@@ -177,7 +176,7 @@ void HTTPRequest::respond(HTTPResponse& http_response) {
 }
 
 void HTTPRequest::respond(uint16_t status_code) {
-  respond(*new HTTPResponse(status_code, NULL, get_http_version()));
+  respond(status_code, static_cast<Buffer*>(NULL));
 }
 
 void HTTPRequest::respond(uint16_t status_code, const char* body) {
@@ -185,11 +184,18 @@ void HTTPRequest::respond(uint16_t status_code, const char* body) {
 }
 
 void HTTPRequest::respond(uint16_t status_code, YO_NEW_REF Buffer* body) {
-  respond(*new HTTPResponse(status_code, body, get_http_version()));
+  respond(
+    *new HTTPResponse(
+           status_code,
+           body,
+           get_connection_id(),
+           get_http_version()
+         )
+  );
 }
 
 void HTTPRequest::respond(uint16_t status_code, YO_NEW_REF Buffer& body) {
-  respond(*new HTTPResponse(status_code, &body, get_http_version()));
+  respond(status_code, &body);
 }
 
 void HTTPRequest::respond(Exception& exception) {

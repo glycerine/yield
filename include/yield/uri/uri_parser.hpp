@@ -1,4 +1,4 @@
-// yield/fs/aio/aiocb.hpp
+// yield/uri/uri_parser.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,29 +27,39 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_FS_AIO_AIOCB_HPP_
-#define _YIELD_FS_AIO_AIOCB_HPP_
+#ifndef _YIELD_URI_URI_PARSER_HPP_
+#define _YIELD_URI_URI_PARSER_HPP_
 
-#include "yield/aio/aiocb.hpp"
-#include "yield/fs/file.hpp"
+#include "yield/buffer.hpp"
 
 namespace yield {
-namespace fs {
-namespace aio {
-class AIOCB : public yield::aio::AIOCB {
+namespace uri {
+class URIParser {
 public:
-  virtual ~AIOCB() { }
-
-  File& get_file() {
-    return static_cast<File&>(get_channel());
+  URIParser(const char* ps, const char* pe)
+    : p(const_cast<char*>(ps)), pe(pe), ps(ps) {
   }
 
-protected:
-  AIOCB(File& file, uint64_t offset)
-    : yield::aio::AIOCB(file, offset) {
+  URIParser(Buffer& buffer) {
+    p = buffer;
+    ps = buffer;
+    pe = static_cast<const char*>(buffer) + buffer.size();
   }
+
+  bool parse(
+    iovec& fragment,
+    iovec& host,
+    iovec& path,
+    uint16_t& port,
+    iovec& query,
+    iovec& scheme,
+    iovec& userinfo
+  );
+
+private:
+  char* p;
+  const char *pe, *ps;
 };
-}
 }
 }
 

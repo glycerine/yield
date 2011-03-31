@@ -35,28 +35,17 @@
 namespace yield {
 namespace sockets {
 const SocketAddress
-SocketAddress::IN_ANY
-(
-  static_cast<uint32_t>(INADDR_ANY),
-  in6addr_any,
-  0
-);
+  SocketAddress::IN_ANY(static_cast<uint32_t>(INADDR_ANY), in6addr_any, 0);
 
 const SocketAddress
-SocketAddress::IN_BROADCAST
-(
-  static_cast<uint32_t>(INADDR_BROADCAST),
-  0
-);
+  SocketAddress::IN_BROADCAST(static_cast<uint32_t>(INADDR_BROADCAST), 0);
 
 const SocketAddress
-SocketAddress::IN_LOOPBACK
-(
+SocketAddress::IN_LOOPBACK(
   static_cast<uint32_t>(INADDR_LOOPBACK),
   in6addr_loopback,
   0
 );
-
 
 SocketAddress::SocketAddress(const SocketAddress& other, uint16_t port) {
   memcpy_s(&addr, sizeof(addr), &other.addr, sizeof(other.addr));

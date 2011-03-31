@@ -108,11 +108,7 @@ public:
     init(NULL, port);
   }
 
-  SocketAddress
-  (
-    const char* nodename,
-    const char* servname
-  ) throw(Exception) {
+  SocketAddress(const char* nodename, const char* servname) throw(Exception) {
     init(nodename, servname);
   }
 
@@ -139,6 +135,7 @@ public:
     dec_ref(next_socket_address);
   }
 
+public:
   void assign(const addrinfo&);
   void assign(const sockaddr_in&);
   void assign(const sockaddr_in6&);
@@ -152,18 +149,18 @@ public:
   void assign(const in_addr&, uint16_t port);
   void assign(const in6_addr&, uint16_t port);
 
+public:
   const SocketAddress* filter(int family) const;
 
+public:
   static YO_NEW_REF SocketAddress*
-  getaddrinfo
-  (
+  getaddrinfo(
     const char* nodename,
     const char* servname
   );
 
   static YO_NEW_REF SocketAddress*
-  getaddrinfo
-  (
+  getaddrinfo(
     const char* nodename,
     uint16_t port
   ) {
@@ -172,10 +169,12 @@ public:
     return getaddrinfo(nodename, servname.str().c_str());
   }
 
+public:
   int get_family() const {
     return addr.ss_family;
   }
 
+public:
   bool getnameinfo(OUT string& nodename, bool numeric) const {
     char nameinfo[256];
     if (this->getnameinfo(nameinfo, 256, numeric)) {
@@ -187,10 +186,12 @@ public:
 
   bool getnameinfo(OUT char* nodename, size_t, bool numeric) const;
 
+public:
   socklen_t len() const {
     return len(get_family());
   }
 
+public:
   operator string() const {
     std::ostringstream repr;
     repr << *this;
@@ -220,7 +221,8 @@ public:
     return !operator==(other);
   }
 
-  // Object
+public:
+  // yield::Object
   SocketAddress& inc_ref() {
     return Object::inc_ref(*this);
   }

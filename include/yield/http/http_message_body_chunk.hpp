@@ -30,6 +30,7 @@
 #ifndef _YIELD_HTTP_HTTP_MESSAGE_BODY_CHUNK_HPP_
 #define _YIELD_HTTP_HTTP_MESSAGE_BODY_CHUNK_HPP_
 
+#include "yield/buffer.hpp"
 #include "yield/response.hpp"
 
 namespace yield {
@@ -41,12 +42,22 @@ public:
   const static uint32_t TYPE_ID = 3435197009UL;
 
 public:
-  HTTPMessageBodyChunk(YO_NEW_REF Buffer* data);
-  ~HTTPMessageBodyChunk();
+  HTTPMessageBodyChunk(YO_NEW_REF Buffer* data, uint32_t connection_id = 0)
+    : data_(data),
+      connection_id(connection_id)
+  { }
+
+  ~HTTPMessageBodyChunk() {
+    Buffer::dec_ref(data_);
+  }
 
 public:
   Buffer* data() {
     return data_;
+  }
+
+  uint32_t get_connection_id() const {
+    return connection_id;
   }
 
   bool is_last() const {
@@ -69,6 +80,7 @@ public:
 
 private:
   Buffer* data_;
+  uint32_t connection_id;
 };
 }
 }

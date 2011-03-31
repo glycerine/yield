@@ -14,12 +14,21 @@
     <ClInclude Include="..\..\..\include\yield\uri\uri.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\..\include\yield\uri\uri.rl">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\include\yield\uri\uri_parser.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\yield\uri\uri.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\uri\uri.rl">
+    <ClCompile Include="..\..\..\src\yield\uri\uri_parser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\uri\uri_parser.rl">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

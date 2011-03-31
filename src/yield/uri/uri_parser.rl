@@ -1,4 +1,4 @@
-// yield/http/http_message_body_chunk.cpp
+// yield/uri/uri_parser.rl
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,17 +27,57 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/buffer.hpp"
-#include "yield/http/http_message_body_chunk.hpp"
+#include "yield/uri/uri_parser.hpp"
+
+#include <stdlib.h> // For atoi
+
+#ifdef _WIN32
+#pragma warning(push)
+#pragma warning( disable: 4702)
+#endif
 
 namespace yield {
-namespace http {
-HTTPMessageBodyChunk::HTTPMessageBodyChunk(YO_NEW_REF Buffer* data)
-  : data_(data) {
+namespace uri {
+bool
+URIParser::parse(
+  iovec& fragment,
+  iovec& host,
+  iovec& path,
+  uint16_t& port,
+  iovec& query,
+  iovec& scheme,
+  iovec& userinfo
+) {
+  memset(&fragment, 0, sizeof(fragment));
+  memset(&host, 0, sizeof(host));
+  memset(&path, 0, sizeof(path));
+  port = 0;
+  memset(&query, 0, sizeof(query));
+  memset(&scheme, 0, sizeof(scheme));
+  memset(&userinfo, 0, sizeof(userinfo));
+
+  int cs;
+  const char* eof = pe;
+
+  %%{
+    machine parse_uri_reference;
+    alphtype unsigned char;
+
+    include uri "../../../include/yield/uri/uri.rl";
+
+    main := uri_reference;
+
+    write data;
+    write init;
+    write exec;
+  }%%
+
+  return cs != parse_uri_reference_error;
+}
+}
 }
 
-HTTPMessageBodyChunk::~HTTPMessageBodyChunk() {
-  Buffer::dec_ref(data_);
-}
-}
-}
+#ifdef _WIN32
+#pragma warning( pop )
+#endif
+//

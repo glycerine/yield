@@ -741,9 +741,11 @@ if options.generate_src or options.generate_src_rl:
         if exists(cpp_file_path):
             if options.force or stat(rl_file_path).st_mtime > stat(cpp_file_path).st_mtime:
                 args = ["ragel"]
+                args.extend(("-I", INCLUDE_DIR_PATH))
                 args.append("-L")
                 args.extend(("-o", cpp_file_path))
                 args.append(rl_file_path)
+                # print args
                 subprocess.call(args)
 
                 SourceFiles(cpp_file_path).format(

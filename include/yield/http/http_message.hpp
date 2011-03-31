@@ -49,6 +49,10 @@ public:
     return body;
   }
 
+  uint32_t get_connection_id() const {
+    return connection_id;
+  }
+
   size_t get_content_length() const {
     return content_length;
   }
@@ -218,12 +222,17 @@ protected:
   HTTPMessage(
     void* body,
     Buffer& buffer,
+    uint32_t connection_id,
     size_t content_length,
     uint16_t fields_offset,
     float http_version
   );
 
-  HTTPMessage(YO_NEW_REF Buffer* body, float http_version);
+  HTTPMessage(
+    YO_NEW_REF Buffer* body,
+    uint32_t connection_id,
+    float http_version
+  );
 
   virtual ~HTTPMessage();
 
@@ -239,6 +248,7 @@ protected:
 private:
   void* body;
   Buffer& buffer;
+  uint32_t connection_id;
   size_t content_length;
   uint16_t fields_offset;
   float http_version;

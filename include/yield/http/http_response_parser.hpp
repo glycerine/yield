@@ -37,8 +37,8 @@ namespace yield {
 namespace http {
 class HTTPResponseParser : public HTTPMessageParser {
 public:
-  HTTPResponseParser(Buffer& buffer)
-    : HTTPMessageParser(buffer)
+  HTTPResponseParser(Buffer& buffer, uint32_t connection_id = 0)
+    : HTTPMessageParser(buffer, connection_id)
   { }
 
   HTTPResponseParser(const string& buffer)

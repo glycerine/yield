@@ -129,8 +129,7 @@ class Project(object):
             platform_project_references[platform] = project_references
         self._project_references = platform_project_references
 
-        for paths_var in \
-            (
+        for paths_var in (
                 "exclude_file_paths",
                 "include_file_paths",
                 "source_file_paths",
