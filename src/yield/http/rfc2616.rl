@@ -100,10 +100,11 @@
                )
                crlf;
 
-  trailer = (field :> crlf)*;
+  trailer = field*;
 
   last_chunk = ('0' %{ chunk_size = 0; }) chunk_extension? crlf
                trailer
+               :>
                crlf;
 
   chunk = last_chunk | body_chunk;

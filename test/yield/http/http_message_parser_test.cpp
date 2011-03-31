@@ -52,7 +52,7 @@ TEST(HTTPMessageParser, MalformedFieldMissingName) {
 }
 
 TEST(HTTPMessageParser, WellFormedChunkedBodyWithChunkExtension) {
-  HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\nTransfer-Encoding: chunked\r\n\r\n1\r\nx;chunk_ext1;chunk_ext2=\"ChunkExtension\"\r\n0\r\n\r\n");
+  HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\nTransfer-Encoding: chunked\r\n\r\n1;chunk_ext1;chunk_ext2=\"ChunkExtension\"\r\nx\r\n0\r\n\r\n");
   HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
   throw_assert_ne(http_request, NULL);
   throw_assert_eq(http_request->get_http_version(), 1.1F);

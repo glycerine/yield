@@ -237,9 +237,11 @@ class WellFormedChunkedBodyWithChunkExtensionHTTPMessageParserTest(HTTPMessagePa
             "GET", ' ', URI, ' ', HTTP_VERSION, CRLF,
             TE_CHUNKED_FIELD,
             CRLF,
-            "1" + CRLF + "x",
+            "1",
             ";chunk_ext1",
             ";chunk_ext2=\\\"ChunkExtension\\\"",
+            CRLF,
+            "x",
             CRLF,
             "0" + CRLF,
             CRLF

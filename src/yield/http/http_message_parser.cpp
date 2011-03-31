@@ -132,44 +132,43 @@ Object* HTTPMessageParser::parse_body_chunk() {
 
   static const char _chunk_parser_cond_offsets[] = {
     0, 0, 0, 0, 0, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 2, 3,
-    4, 5, 5, 6, 6, 7, 8, 8,
-    8, 9, 9, 9, 9, 9, 9, 9,
-    9, 9, 9, 9, 9, 9, 9, 9,
-    9, 9, 9, 9, 9, 9, 9, 9,
-    9, 9, 9, 10, 10, 11, 11
+    1, 1, 1, 1, 2, 3, 4, 5,
+    5, 6, 7, 7, 7, 8, 8, 8,
+    8, 8, 8, 8, 8, 8, 8, 8,
+    8, 8, 8, 8, 8, 8, 8, 8,
+    8, 8, 8, 8, 8, 8, 8, 9,
+    9
   };
 
   static const char _chunk_parser_cond_lengths[] = {
     0, 0, 0, 0, 1, 0, 0, 0,
-    0, 0, 0, 0, 0, 1, 1, 1,
-    1, 0, 1, 0, 1, 1, 0, 0,
-    1, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 1, 1, 1, 1, 0,
+    1, 1, 0, 0, 1, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 1, 0, 1, 0, 1
+    0, 0, 0, 0, 0, 0, 1, 0,
+    1
   };
 
   static const short _chunk_parser_cond_keys[] = {
     0u, 255u, 0u, 255u, 0u, 255u, 0u, 255u,
     0u, 255u, 0u, 255u, 0u, 255u, 0u, 255u,
-    0u, 255u, 0u, 255u, 0u, 255u, 0u, 255u,
-    0
+    0u, 255u, 0u, 255u, 0
   };
 
   static const char _chunk_parser_cond_spaces[] = {
     0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0
+    0, 0, 0
   };
 
   static const short _chunk_parser_key_offsets[] = {
     0, 0, 7, 15, 16, 54, 55, 70,
-    75, 76, 77, 78, 93, 97, 101, 107,
-    147, 160, 161, 167, 168, 174, 185, 193,
-    194, 198, 212, 229, 244, 260, 281, 286,
-    288, 290, 297, 316, 338, 356, 370, 387,
-    402, 418, 439, 444, 446, 448, 455, 474,
-    496, 514, 514, 518, 519, 523, 538
+    75, 76, 91, 95, 99, 105, 145, 158,
+    159, 165, 176, 184, 185, 189, 203, 220,
+    235, 251, 272, 277, 279, 281, 288, 307,
+    329, 347, 361, 378, 393, 409, 430, 435,
+    437, 439, 446, 465, 487, 505, 505, 509,
+    524
   };
 
   static const short _chunk_parser_trans_keys[] = {
@@ -182,100 +181,98 @@ Object* HTTPMessageParser::parse_body_chunk() {
     603u, 605u, 606u, 638u, 639u, 767u, 10u, 58u,
     124u, 126u, 33u, 38u, 42u, 43u, 45u, 46u,
     48u, 57u, 65u, 90u, 94u, 122u, 13u, 32u,
-    127u, 0u, 31u, 10u, 13u, 10u, 13u, 124u,
-    126u, 33u, 38u, 42u, 43u, 45u, 46u, 48u,
-    57u, 65u, 90u, 94u, 122u, 13u, 127u, 0u,
-    31u, 269u, 525u, 512u, 767u, 266u, 269u, 522u,
-    525u, 512u, 767u, 269u, 314u, 380u, 382u, 525u,
-    556u, 559u, 570u, 635u, 637u, 289u, 294u, 298u,
-    299u, 301u, 302u, 304u, 313u, 321u, 346u, 350u,
-    378u, 512u, 544u, 545u, 550u, 551u, 553u, 554u,
-    569u, 571u, 576u, 577u, 602u, 603u, 605u, 606u,
-    638u, 639u, 767u, 269u, 288u, 525u, 544u, 639u,
-    289u, 382u, 384u, 511u, 512u, 543u, 545u, 767u,
-    10u, 266u, 269u, 522u, 525u, 512u, 767u, 10u,
-    266u, 269u, 522u, 525u, 512u, 767u, 269u, 525u,
-    639u, 288u, 382u, 384u, 511u, 512u, 543u, 544u,
-    767u, 13u, 59u, 48u, 57u, 65u, 70u, 97u,
-    102u, 10u, 269u, 525u, 512u, 767u, 124u, 126u,
-    33u, 38u, 42u, 43u, 45u, 46u, 48u, 57u,
-    65u, 90u, 94u, 122u, 13u, 59u, 61u, 124u,
-    126u, 33u, 38u, 42u, 43u, 45u, 46u, 48u,
-    57u, 65u, 90u, 94u, 122u, 34u, 124u, 126u,
-    33u, 38u, 42u, 43u, 45u, 46u, 48u, 57u,
-    65u, 90u, 94u, 122u, 13u, 59u, 124u, 126u,
-    33u, 38u, 42u, 43u, 45u, 46u, 48u, 57u,
-    65u, 90u, 94u, 122u, 13u, 34u, 59u, 92u,
-    124u, 126u, 127u, 0u, 31u, 33u, 38u, 42u,
-    43u, 45u, 46u, 48u, 57u, 65u, 90u, 94u,
-    122u, 34u, 92u, 127u, 0u, 31u, 13u, 59u,
-    34u, 92u, 13u, 34u, 59u, 92u, 127u, 0u,
-    31u, 34u, 92u, 124u, 126u, 127u, 0u, 31u,
-    33u, 38u, 42u, 43u, 45u, 46u, 48u, 57u,
-    65u, 90u, 94u, 122u, 13u, 34u, 59u, 61u,
-    92u, 124u, 126u, 127u, 0u, 31u, 33u, 38u,
-    42u, 43u, 45u, 46u, 48u, 57u, 65u, 90u,
-    94u, 122u, 92u, 124u, 126u, 127u, 0u, 31u,
-    33u, 38u, 42u, 43u, 45u, 46u, 48u, 57u,
-    65u, 90u, 94u, 122u, 124u, 126u, 33u, 38u,
-    42u, 43u, 45u, 46u, 48u, 57u, 65u, 90u,
-    94u, 122u, 13u, 59u, 61u, 124u, 126u, 33u,
+    127u, 0u, 31u, 10u, 13u, 124u, 126u, 33u,
     38u, 42u, 43u, 45u, 46u, 48u, 57u, 65u,
-    90u, 94u, 122u, 34u, 124u, 126u, 33u, 38u,
-    42u, 43u, 45u, 46u, 48u, 57u, 65u, 90u,
-    94u, 122u, 13u, 59u, 124u, 126u, 33u, 38u,
-    42u, 43u, 45u, 46u, 48u, 57u, 65u, 90u,
-    94u, 122u, 13u, 34u, 59u, 92u, 124u, 126u,
-    127u, 0u, 31u, 33u, 38u, 42u, 43u, 45u,
-    46u, 48u, 57u, 65u, 90u, 94u, 122u, 34u,
-    92u, 127u, 0u, 31u, 13u, 59u, 34u, 92u,
-    13u, 34u, 59u, 92u, 127u, 0u, 31u, 34u,
-    92u, 124u, 126u, 127u, 0u, 31u, 33u, 38u,
-    42u, 43u, 45u, 46u, 48u, 57u, 65u, 90u,
-    94u, 122u, 13u, 34u, 59u, 61u, 92u, 124u,
+    90u, 94u, 122u, 13u, 127u, 0u, 31u, 269u,
+    525u, 512u, 767u, 266u, 269u, 522u, 525u, 512u,
+    767u, 269u, 314u, 380u, 382u, 525u, 556u, 559u,
+    570u, 635u, 637u, 289u, 294u, 298u, 299u, 301u,
+    302u, 304u, 313u, 321u, 346u, 350u, 378u, 512u,
+    544u, 545u, 550u, 551u, 553u, 554u, 569u, 571u,
+    576u, 577u, 602u, 603u, 605u, 606u, 638u, 639u,
+    767u, 269u, 288u, 525u, 544u, 639u, 289u, 382u,
+    384u, 511u, 512u, 543u, 545u, 767u, 10u, 266u,
+    269u, 522u, 525u, 512u, 767u, 269u, 525u, 639u,
+    288u, 382u, 384u, 511u, 512u, 543u, 544u, 767u,
+    13u, 59u, 48u, 57u, 65u, 70u, 97u, 102u,
+    10u, 269u, 525u, 512u, 767u, 124u, 126u, 33u,
+    38u, 42u, 43u, 45u, 46u, 48u, 57u, 65u,
+    90u, 94u, 122u, 13u, 59u, 61u, 124u, 126u,
+    33u, 38u, 42u, 43u, 45u, 46u, 48u, 57u,
+    65u, 90u, 94u, 122u, 34u, 124u, 126u, 33u,
+    38u, 42u, 43u, 45u, 46u, 48u, 57u, 65u,
+    90u, 94u, 122u, 13u, 59u, 124u, 126u, 33u,
+    38u, 42u, 43u, 45u, 46u, 48u, 57u, 65u,
+    90u, 94u, 122u, 13u, 34u, 59u, 92u, 124u,
     126u, 127u, 0u, 31u, 33u, 38u, 42u, 43u,
     45u, 46u, 48u, 57u, 65u, 90u, 94u, 122u,
-    92u, 124u, 126u, 127u, 0u, 31u, 33u, 38u,
+    34u, 92u, 127u, 0u, 31u, 13u, 59u, 34u,
+    92u, 13u, 34u, 59u, 92u, 127u, 0u, 31u,
+    34u, 92u, 124u, 126u, 127u, 0u, 31u, 33u,
+    38u, 42u, 43u, 45u, 46u, 48u, 57u, 65u,
+    90u, 94u, 122u, 13u, 34u, 59u, 61u, 92u,
+    124u, 126u, 127u, 0u, 31u, 33u, 38u, 42u,
+    43u, 45u, 46u, 48u, 57u, 65u, 90u, 94u,
+    122u, 92u, 124u, 126u, 127u, 0u, 31u, 33u,
+    38u, 42u, 43u, 45u, 46u, 48u, 57u, 65u,
+    90u, 94u, 122u, 124u, 126u, 33u, 38u, 42u,
+    43u, 45u, 46u, 48u, 57u, 65u, 90u, 94u,
+    122u, 13u, 59u, 61u, 124u, 126u, 33u, 38u,
     42u, 43u, 45u, 46u, 48u, 57u, 65u, 90u,
-    94u, 122u, 269u, 525u, 512u, 767u, 13u, 269u,
-    525u, 512u, 767u, 13u, 124u, 126u, 33u, 38u,
-    42u, 43u, 45u, 46u, 48u, 57u, 65u, 90u,
-    94u, 122u, 269u, 380u, 382u, 525u, 556u, 559u,
-    635u, 637u, 289u, 294u, 298u, 299u, 301u, 302u,
-    304u, 313u, 321u, 346u, 350u, 378u, 512u, 544u,
-    545u, 550u, 551u, 553u, 554u, 569u, 570u, 576u,
-    577u, 602u, 603u, 605u, 606u, 638u, 639u, 767u,
-    0
+    94u, 122u, 34u, 124u, 126u, 33u, 38u, 42u,
+    43u, 45u, 46u, 48u, 57u, 65u, 90u, 94u,
+    122u, 13u, 59u, 124u, 126u, 33u, 38u, 42u,
+    43u, 45u, 46u, 48u, 57u, 65u, 90u, 94u,
+    122u, 13u, 34u, 59u, 92u, 124u, 126u, 127u,
+    0u, 31u, 33u, 38u, 42u, 43u, 45u, 46u,
+    48u, 57u, 65u, 90u, 94u, 122u, 34u, 92u,
+    127u, 0u, 31u, 13u, 59u, 34u, 92u, 13u,
+    34u, 59u, 92u, 127u, 0u, 31u, 34u, 92u,
+    124u, 126u, 127u, 0u, 31u, 33u, 38u, 42u,
+    43u, 45u, 46u, 48u, 57u, 65u, 90u, 94u,
+    122u, 13u, 34u, 59u, 61u, 92u, 124u, 126u,
+    127u, 0u, 31u, 33u, 38u, 42u, 43u, 45u,
+    46u, 48u, 57u, 65u, 90u, 94u, 122u, 92u,
+    124u, 126u, 127u, 0u, 31u, 33u, 38u, 42u,
+    43u, 45u, 46u, 48u, 57u, 65u, 90u, 94u,
+    122u, 269u, 525u, 512u, 767u, 13u, 124u, 126u,
+    33u, 38u, 42u, 43u, 45u, 46u, 48u, 57u,
+    65u, 90u, 94u, 122u, 269u, 380u, 382u, 525u,
+    556u, 559u, 635u, 637u, 289u, 294u, 298u, 299u,
+    301u, 302u, 304u, 313u, 321u, 346u, 350u, 378u,
+    512u, 544u, 545u, 550u, 551u, 553u, 554u, 569u,
+    570u, 576u, 577u, 602u, 603u, 605u, 606u, 638u,
+    639u, 767u, 0
   };
 
   static const char _chunk_parser_single_lengths[] = {
     0, 1, 2, 1, 8, 1, 3, 3,
-    1, 1, 1, 3, 2, 2, 4, 10,
-    5, 1, 4, 1, 4, 3, 2, 1,
-    2, 2, 5, 3, 4, 7, 3, 2,
-    2, 5, 5, 8, 4, 2, 5, 3,
+    1, 3, 2, 2, 4, 10, 5, 1,
+    4, 3, 2, 1, 2, 2, 5, 3,
     4, 7, 3, 2, 2, 5, 5, 8,
-    4, 0, 2, 1, 2, 3, 8
+    4, 2, 5, 3, 4, 7, 3, 2,
+    2, 5, 5, 8, 4, 0, 2, 3,
+    8
   };
 
   static const char _chunk_parser_range_lengths[] = {
     0, 3, 3, 0, 15, 0, 6, 1,
-    0, 0, 0, 6, 1, 1, 1, 15,
-    4, 0, 1, 0, 1, 4, 3, 0,
-    1, 6, 6, 6, 6, 7, 1, 0,
-    0, 1, 7, 7, 7, 6, 6, 6,
+    0, 6, 1, 1, 1, 15, 4, 0,
+    1, 4, 3, 0, 1, 6, 6, 6,
     6, 7, 1, 0, 0, 1, 7, 7,
-    7, 0, 1, 0, 1, 6, 15
+    7, 6, 6, 6, 6, 7, 1, 0,
+    0, 1, 7, 7, 7, 0, 1, 6,
+    15
   };
 
   static const short _chunk_parser_index_offsets[] = {
     0, 0, 5, 11, 13, 37, 39, 49,
-    54, 56, 58, 60, 70, 74, 78, 84,
-    110, 120, 122, 128, 130, 136, 144, 150,
-    152, 156, 165, 177, 187, 198, 213, 218,
-    221, 224, 231, 244, 260, 272, 281, 293,
-    303, 314, 329, 334, 337, 340, 347, 360,
-    376, 388, 389, 393, 395, 399, 409
+    54, 56, 66, 70, 74, 80, 106, 116,
+    118, 124, 132, 138, 140, 144, 153, 165,
+    175, 186, 201, 206, 209, 212, 219, 232,
+    248, 260, 269, 281, 291, 302, 317, 322,
+    325, 328, 335, 348, 364, 376, 377, 381,
+    391
   };
 
   static const char _chunk_parser_indicies[] = {
@@ -286,78 +283,75 @@ Object* HTTPMessageParser::parse_body_chunk() {
     11, 9, 11, 9, 0, 12, 0, 14,
     13, 13, 13, 13, 13, 13, 13, 13,
     0, 15, 16, 0, 0, 17, 18, 0,
-    19, 0, 20, 0, 21, 8, 8, 8,
-    8, 8, 8, 8, 8, 0, 22, 0,
-    0, 23, 21, 25, 24, 0, 12, 21,
-    26, 25, 24, 0, 21, 14, 13, 13,
-    25, 24, 24, 28, 24, 24, 13, 13,
-    13, 13, 13, 13, 24, 27, 24, 27,
-    24, 27, 24, 27, 24, 0, 29, 16,
-    30, 31, 24, 17, 17, 24, 32, 0,
-    33, 0, 33, 21, 34, 25, 24, 0,
-    35, 0, 35, 21, 36, 25, 24, 0,
-    37, 38, 24, 23, 23, 24, 39, 0,
-    40, 41, 4, 4, 4, 0, 42, 0,
-    7, 10, 9, 0, 43, 43, 43, 43,
-    43, 43, 43, 43, 0, 44, 45, 46,
-    43, 43, 43, 43, 43, 43, 43, 43,
-    0, 48, 47, 47, 47, 47, 47, 47,
-    47, 47, 0, 44, 45, 47, 47, 47,
-    47, 47, 47, 47, 47, 0, 44, 47,
-    50, 51, 48, 48, 0, 0, 48, 48,
-    48, 48, 48, 48, 49, 52, 51, 0,
-    0, 49, 44, 45, 0, 53, 51, 49,
-    44, 52, 50, 51, 0, 0, 49, 43,
-    51, 54, 54, 0, 0, 54, 54, 54,
-    54, 54, 54, 49, 44, 43, 50, 55,
-    51, 54, 54, 0, 0, 54, 54, 54,
-    54, 54, 54, 49, 51, 48, 48, 0,
-    0, 48, 48, 48, 48, 48, 48, 49,
-    56, 56, 56, 56, 56, 56, 56, 56,
-    0, 57, 58, 59, 56, 56, 56, 56,
-    56, 56, 56, 56, 0, 61, 60, 60,
-    60, 60, 60, 60, 60, 60, 0, 57,
-    58, 60, 60, 60, 60, 60, 60, 60,
-    60, 0, 57, 60, 63, 64, 61, 61,
-    0, 0, 61, 61, 61, 61, 61, 61,
-    62, 65, 64, 0, 0, 62, 57, 58,
-    0, 66, 64, 62, 57, 65, 63, 64,
-    0, 0, 62, 56, 64, 67, 67, 0,
-    0, 67, 67, 67, 67, 67, 67, 62,
-    57, 56, 63, 68, 64, 67, 67, 0,
-    0, 67, 67, 67, 67, 67, 67, 62,
-    64, 61, 61, 0, 0, 61, 61, 61,
-    61, 61, 61, 62, 0, 21, 25, 24,
-    0, 19, 0, 69, 70, 24, 0, 21,
-    8, 8, 8, 8, 8, 8, 8, 8,
-    0, 21, 8, 8, 25, 24, 24, 24,
-    24, 8, 8, 8, 8, 8, 8, 24,
-    71, 24, 71, 24, 71, 24, 71, 24,
-    0, 0
+    19, 8, 8, 8, 8, 8, 8, 8,
+    8, 0, 20, 0, 0, 21, 19, 23,
+    22, 0, 12, 19, 24, 23, 22, 0,
+    19, 14, 13, 13, 23, 22, 22, 26,
+    22, 22, 13, 13, 13, 13, 13, 13,
+    22, 25, 22, 25, 22, 25, 22, 25,
+    22, 0, 27, 16, 28, 29, 22, 17,
+    17, 22, 30, 0, 31, 0, 31, 19,
+    32, 23, 22, 0, 33, 34, 22, 21,
+    21, 22, 35, 0, 36, 37, 4, 4,
+    4, 0, 38, 0, 7, 10, 9, 0,
+    39, 39, 39, 39, 39, 39, 39, 39,
+    0, 40, 41, 42, 39, 39, 39, 39,
+    39, 39, 39, 39, 0, 44, 43, 43,
+    43, 43, 43, 43, 43, 43, 0, 40,
+    41, 43, 43, 43, 43, 43, 43, 43,
+    43, 0, 40, 43, 46, 47, 44, 44,
+    0, 0, 44, 44, 44, 44, 44, 44,
+    45, 48, 47, 0, 0, 45, 40, 41,
+    0, 49, 47, 45, 40, 48, 46, 47,
+    0, 0, 45, 39, 47, 50, 50, 0,
+    0, 50, 50, 50, 50, 50, 50, 45,
+    40, 39, 46, 51, 47, 50, 50, 0,
+    0, 50, 50, 50, 50, 50, 50, 45,
+    47, 44, 44, 0, 0, 44, 44, 44,
+    44, 44, 44, 45, 52, 52, 52, 52,
+    52, 52, 52, 52, 0, 53, 54, 55,
+    52, 52, 52, 52, 52, 52, 52, 52,
+    0, 57, 56, 56, 56, 56, 56, 56,
+    56, 56, 0, 53, 54, 56, 56, 56,
+    56, 56, 56, 56, 56, 0, 53, 56,
+    59, 60, 57, 57, 0, 0, 57, 57,
+    57, 57, 57, 57, 58, 61, 60, 0,
+    0, 58, 53, 54, 0, 62, 60, 58,
+    53, 61, 59, 60, 0, 0, 58, 52,
+    60, 63, 63, 0, 0, 63, 63, 63,
+    63, 63, 63, 58, 53, 52, 59, 64,
+    60, 63, 63, 0, 0, 63, 63, 63,
+    63, 63, 63, 58, 60, 57, 57, 0,
+    0, 57, 57, 57, 57, 57, 57, 58,
+    0, 19, 23, 22, 0, 19, 8, 8,
+    8, 8, 8, 8, 8, 8, 0, 19,
+    8, 8, 23, 22, 22, 22, 22, 8,
+    8, 8, 8, 8, 8, 22, 65, 22,
+    65, 22, 65, 22, 65, 22, 0, 0
   };
 
   static const char _chunk_parser_trans_targs[] = {
-    0, 2, 22, 3, 22, 37, 4, 5,
-    6, 13, 14, 15, 49, 6, 7, 8,
-    7, 12, 9, 10, 11, 5, 8, 12,
-    13, 14, 50, 15, 16, 17, 18, 16,
-    21, 51, 52, 53, 54, 17, 18, 21,
-    23, 25, 24, 26, 23, 25, 27, 28,
-    29, 30, 34, 32, 31, 33, 35, 36,
-    38, 3, 37, 39, 40, 41, 42, 46,
-    44, 43, 45, 47, 48, 19, 20, 15
+    0, 2, 18, 3, 18, 33, 4, 5,
+    6, 11, 12, 13, 45, 6, 7, 8,
+    7, 10, 9, 5, 8, 10, 11, 12,
+    46, 13, 14, 15, 16, 14, 17, 47,
+    48, 15, 16, 17, 19, 21, 20, 22,
+    19, 21, 23, 24, 25, 26, 30, 28,
+    27, 29, 31, 32, 34, 3, 33, 35,
+    36, 37, 38, 42, 40, 39, 41, 43,
+    44, 13
   };
 
   static const char _chunk_parser_trans_actions[] = {
     17, 9, 9, 25, 0, 25, 0, 13,
     1, 13, 13, 19, 15, 0, 3, 22,
-    5, 5, 0, 0, 0, 0, 7, 0,
-    0, 0, 15, 0, 3, 22, 22, 5,
-    5, 15, 15, 15, 15, 7, 7, 0,
-    11, 11, 0, 0, 0, 0, 0, 0,
+    5, 5, 0, 0, 7, 0, 0, 0,
+    15, 0, 3, 22, 22, 5, 5, 15,
+    15, 7, 7, 0, 11, 11, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 1
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 1
   };
 
   static const char _chunk_parser_eof_actions[] = {
@@ -366,23 +360,23 @@ Object* HTTPMessageParser::parse_body_chunk() {
     17, 17, 17, 17, 17, 17, 17, 17,
     17, 17, 17, 17, 17, 17, 17, 17,
     17, 17, 17, 17, 17, 17, 17, 17,
-    17, 17, 17, 17, 17, 17, 17, 17,
-    17, 0, 0, 0, 0, 0, 0
+    17, 17, 17, 17, 17, 0, 0, 0,
+    0
   };
 
   static const int chunk_parser_start = 1;
-  static const int chunk_parser_first_final = 49;
+  static const int chunk_parser_first_final = 45;
   static const int chunk_parser_error = 0;
 
   static const int chunk_parser_en_main = 1;
 
 
-  /* #line 255 "src\\yield\\http\\http_message_parser.cpp" */
+  /* #line 249 "src\\yield\\http\\http_message_parser.cpp" */
   {
     cs = chunk_parser_start;
   }
 
-  /* #line 258 "src\\yield\\http\\http_message_parser.cpp" */
+  /* #line 252 "src\\yield\\http\\http_message_parser.cpp" */
   {
     int _klen;
     unsigned int _trans;
@@ -550,7 +544,7 @@ _match:
         return NULL;
       }
       break;
-      /* #line 396 "src\\yield\\http\\http_message_parser.cpp" */
+      /* #line 390 "src\\yield\\http\\http_message_parser.cpp" */
       }
     }
 
@@ -570,7 +564,7 @@ _again:
           return NULL;
         }
         break;
-        /* #line 413 "src\\yield\\http\\http_message_parser.cpp" */
+        /* #line 407 "src\\yield\\http\\http_message_parser.cpp" */
         }
       }
     }
@@ -612,7 +606,7 @@ DateTime HTTPMessageParser::parse_date(const char* ps, const char* pe) {
   int day = 0, month = 0, year = 0;
 
 
-  /* #line 419 "src\\yield\\http\\http_message_parser.cpp" */
+  /* #line 413 "src\\yield\\http\\http_message_parser.cpp" */
   static const char _date_parser_actions[] = {
     0, 1, 0, 1, 1, 1, 2, 1,
     3, 1, 4, 1, 5, 1, 6, 1,
@@ -838,12 +832,12 @@ DateTime HTTPMessageParser::parse_date(const char* ps, const char* pe) {
   static const int date_parser_en_main = 1;
 
 
-  /* #line 643 "src\\yield\\http\\http_message_parser.cpp" */
+  /* #line 637 "src\\yield\\http\\http_message_parser.cpp" */
   {
     cs = date_parser_start;
   }
 
-  /* #line 646 "src\\yield\\http\\http_message_parser.cpp" */
+  /* #line 640 "src\\yield\\http\\http_message_parser.cpp" */
   {
     int _klen;
     unsigned int _trans;
@@ -1017,7 +1011,7 @@ _match:
         return DateTime::INVALID_DATE_TIME;
       }
       break;
-      /* #line 776 "src\\yield\\http\\http_message_parser.cpp" */
+      /* #line 770 "src\\yield\\http\\http_message_parser.cpp" */
       }
     }
 
@@ -1039,7 +1033,7 @@ _test_eof:
           return DateTime::INVALID_DATE_TIME;
         }
         break;
-        /* #line 794 "src\\yield\\http\\http_message_parser.cpp" */
+        /* #line 788 "src\\yield\\http\\http_message_parser.cpp" */
         }
       }
     }
@@ -1074,7 +1068,7 @@ HTTPMessageParser::parse_field(
   // Don't look for the trailing CRLF before the body,
   // since it may not be present yet.
 
-  /* #line 800 "src\\yield\\http\\http_message_parser.cpp" */
+  /* #line 794 "src\\yield\\http\\http_message_parser.cpp" */
   static const char _field_parser_actions[] = {
     0, 1, 0, 1, 1, 1, 2, 1,
     3, 1, 4, 2, 2, 3
@@ -1128,12 +1122,12 @@ HTTPMessageParser::parse_field(
   static const int field_parser_en_main = 5;
 
 
-  /* #line 852 "src\\yield\\http\\http_message_parser.cpp" */
+  /* #line 846 "src\\yield\\http\\http_message_parser.cpp" */
   {
     cs = field_parser_start;
   }
 
-  /* #line 855 "src\\yield\\http\\http_message_parser.cpp" */
+  /* #line 849 "src\\yield\\http\\http_message_parser.cpp" */
   {
     int _klen;
     unsigned int _trans;
@@ -1246,7 +1240,7 @@ _match:
         }
       }
       break;
-      /* #line 956 "src\\yield\\http\\http_message_parser.cpp" */
+      /* #line 950 "src\\yield\\http\\http_message_parser.cpp" */
       }
     }
 
@@ -1281,7 +1275,7 @@ HTTPMessageParser::parse_fields(
   // Don't look for the trailing CRLF before the body,
   // since it may not be present yet.
 
-  /* #line 967 "src\\yield\\http\\http_message_parser.cpp" */
+  /* #line 961 "src\\yield\\http\\http_message_parser.cpp" */
   static const char _static_fields_parser_actions[] = {
     0, 1, 0, 1, 1, 1, 2, 1,
     3, 1, 4, 2, 2, 3
@@ -1335,12 +1329,12 @@ HTTPMessageParser::parse_fields(
   static const int static_fields_parser_en_main = 5;
 
 
-  /* #line 1019 "src\\yield\\http\\http_message_parser.cpp" */
+  /* #line 1013 "src\\yield\\http\\http_message_parser.cpp" */
   {
     cs = static_fields_parser_start;
   }
 
-  /* #line 1022 "src\\yield\\http\\http_message_parser.cpp" */
+  /* #line 1016 "src\\yield\\http\\http_message_parser.cpp" */
   {
     int _klen;
     unsigned int _trans;
@@ -1442,7 +1436,7 @@ _match:
         fields.push_back(make_pair(field_name, field_value));
       }
       break;
-      /* #line 1110 "src\\yield\\http\\http_message_parser.cpp" */
+      /* #line 1104 "src\\yield\\http\\http_message_parser.cpp" */
       }
     }
 
@@ -1474,7 +1468,7 @@ HTTPMessageParser::parse_fields(
   iovec field_name = { 0 }, field_value = { 0 };
 
 
-  /* #line 1121 "src\\yield\\http\\http_message_parser.cpp" */
+  /* #line 1115 "src\\yield\\http\\http_message_parser.cpp" */
   static const char _fields_parser_actions[] = {
     0, 1, 0, 1, 1, 1, 2, 1,
     3, 1, 4, 1, 5, 1, 6, 2,
@@ -1543,12 +1537,12 @@ HTTPMessageParser::parse_fields(
   static const int fields_parser_en_main = 1;
 
 
-  /* #line 1188 "src\\yield\\http\\http_message_parser.cpp" */
+  /* #line 1182 "src\\yield\\http\\http_message_parser.cpp" */
   {
     cs = fields_parser_start;
   }
 
-  /* #line 1191 "src\\yield\\http\\http_message_parser.cpp" */
+  /* #line 1185 "src\\yield\\http\\http_message_parser.cpp" */
   {
     int _klen;
     unsigned int _trans;
@@ -1687,7 +1681,7 @@ _match:
         return false;
       }
       break;
-      /* #line 1311 "src\\yield\\http\\http_message_parser.cpp" */
+      /* #line 1305 "src\\yield\\http\\http_message_parser.cpp" */
       }
     }
 
@@ -1707,7 +1701,7 @@ _again:
           return false;
         }
         break;
-        /* #line 1328 "src\\yield\\http\\http_message_parser.cpp" */
+        /* #line 1322 "src\\yield\\http\\http_message_parser.cpp" */
         }
       }
     }
