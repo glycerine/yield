@@ -29,6 +29,7 @@
 
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
+#include "yield/http/http_message_body_chunk.hpp"
 #include "yield/http/http_request.hpp"
 #include "yield/http/http_request_parser.hpp"
 #include "yield/http/http_response.hpp"
@@ -65,9 +66,19 @@ public:
 
   // yield::EventHandler
   void handle(YO_NEW_REF Event& event) {
-    debug_assert_eq(event.get_type_id(), HTTPResponse::TYPE_ID);
+    switch (event.get_type_id()) {
+    case HTTPMessageBodyChunk::TYPE_ID: {
+      handle(static_cast<HTTPMessageBodyChunk&>(event));
+    }
+    break;
 
-    handle(static_cast<HTTPResponse&>(event));
+    case HTTPResponse::TYPE_ID: {
+      handle(static_cast<HTTPResponse&>(event));
+    }
+    break;
+
+    default: DebugBreak(); break;
+    }
   }
 
 public:
@@ -97,12 +108,25 @@ public:
   }
 
 private:
+  void handle(YO_NEW_REF HTTPMessageBodyChunk& http_message_body_chunk) {
+    sendAIOCB* send_aiocb;
+
+    if (http_message_body_chunk.data() != NULL) {
+      send_aiocb
+        = new sendAIOCB(*this, http_message_body_chunk.data()->inc_ref());
+    } else {
+      send_aiocb
+        = new sendAIOCB(*this, Buffer::copy("0\r\n\r\n", 5));
+    }
+
+    enqueue(*send_aiocb);
+
+    HTTPMessageBodyChunk::dec_ref(http_message_body_chunk);
+  }
+
   void handle(YO_NEW_REF HTTPResponse& http_response) {
     sendAIOCB* send_aiocb
-      = new sendAIOCB(
-        *this,
-        static_cast<Buffer&>(http_response).inc_ref()
-      );
+      = new sendAIOCB(*this, static_cast<Buffer&>(http_response).inc_ref());
 
     enqueue(*send_aiocb);
 
