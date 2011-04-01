@@ -53,7 +53,7 @@ Event* NBIOQueue::dequeue(const Time& timeout) {
       SocketEvent* socket_event = static_cast<SocketEvent*>(event);
 
       map<socket_t, AIOCB*>::iterator aiocb_i
-      = issued_aiocbs.find(socket_event->get_socket());
+        = issued_aiocbs.find(socket_event->get_socket());
       debug_assert_ne(aiocb_i, issued_aiocbs.end());
 
       SocketEvent::dec_ref(*socket_event);
@@ -93,18 +93,17 @@ Event* NBIOQueue::dequeue(const Time& timeout) {
           return aiocb;
 
         default: {
-          DebugBreak();
-
           map<socket_t, AIOCB*>::iterator aiocb_i
-          = issued_aiocbs.find(aiocb->get_socket());
+            = issued_aiocbs.find(aiocb->get_socket());
 
-          if (aiocb_i != issued_aiocbs.end()) {
+          if (aiocb_i == issued_aiocbs.end())
+            issued_aiocbs[aiocb->get_socket()] = aiocb;
+          else {
             AIOCB* aiocb = aiocb_i->second;
             while (aiocb->get_next_aiocb() != NULL)
               aiocb = aiocb->get_next_aiocb();
             aiocb->set_next_aiocb(aiocb);
-          } else
-            issued_aiocbs[aiocb->get_socket()] = aiocb;
+          }
 
           return NULL;
         }

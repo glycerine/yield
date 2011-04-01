@@ -27,6 +27,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "yield/assert.hpp"
 #include "yield/buffer.hpp"
 #include "yield/sockets/socket_address.hpp"
 #include "yield/sockets/stream_socket.hpp"
@@ -36,7 +37,7 @@ namespace yield {
 namespace sockets {
 namespace aio {
 acceptAIOCB::acceptAIOCB(StreamSocket& socket_, YO_NEW_REF Buffer* recv_buffer)
-  : AIOCB(socket_, recv_buffer),
+  : AIOCB(socket_),
     peername(*new SocketAddress),
     recv_buffer(recv_buffer) {
   accepted_socket = NULL;

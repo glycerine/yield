@@ -30,6 +30,7 @@
 #ifndef _YIELD_URI_URI_HPP_
 #define _YIELD_URI_URI_HPP_
 
+#include "yield/exception.hpp"
 #include "yield/object.hpp"
 
 #ifdef _WIN32
@@ -39,7 +40,6 @@
 
 namespace yield {
 class Buffer;
-class Exception;
 
 namespace uri {
 class URI : public Object {

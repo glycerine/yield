@@ -101,8 +101,9 @@ void HTTPMessage<HTTPMessageType>::finalize() {
 
 template <class HTTPMessageType>
 DateTime 
-HTTPMessage<HTTPMessageType>::get_date_field(
-  const char* name = "Date"
+HTTPMessage<HTTPMessageType>::
+get_date_field(
+  const char* name
 ) const {
   iovec value;
   if (get_field(name, value))

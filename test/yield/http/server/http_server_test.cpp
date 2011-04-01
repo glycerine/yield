@@ -38,9 +38,9 @@ TEST_SUITE(HTTPServer);
 namespace yield {
 namespace http {
 namespace server {
-TEST(HTTPServer, constructor) {
-  HTTPServer(*new TestHTTPRequestHandler, 8000);
-}
+//TEST(HTTPServer, constructor) {
+//  HTTPServer(*new TestHTTPRequestHandler, 8000);
+//}
 
 TEST(HTTPServer, visit) {
   HTTPServer http_server(*new TestHTTPRequestHandler, 8000);

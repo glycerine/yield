@@ -46,7 +46,6 @@
 #include "yield/auto_object.hpp"
 #include "yield/assert.hpp"
 #include "yield/fs/posix/file_system.hpp"
-#include "yield/fs/posix/memory_mapped_file.hpp"
 #include "yield/fs/posix/stat.hpp"
 
 #include <errno.h>

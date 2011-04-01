@@ -36,7 +36,7 @@
 namespace yield {
 class Buffer : public Object {
 public:
-  const static size_t ALIGNMENT_DEFAULT = 2;
+  const static size_t ALIGNMENT_DEFAULT = sizeof(void*);
   const static uint32_t TYPE_ID = 4078143893UL;
 
 public:
@@ -200,13 +200,13 @@ protected:
   Buffer(size_t capacity, void* data);
 
 protected:
+  size_t capacity_;
   void* data_;
 
 private:
   void alloc(size_t alignment, size_t capacity);
 
 private:
-  size_t capacity_;
   static size_t pagesize;
   Buffer* next_buffer;
   size_t size_;
