@@ -40,9 +40,10 @@ public:
   virtual ~EventQueue() { }
 
   virtual YO_NEW_REF Event& dequeue() {
-    Event* event = dequeue(Time::FOREVER);
-    while (event == NULL)
+    Event* event;
+    do {
       event = dequeue(Time::FOREVER);
+    } while (event == NULL);
     return *event;
   }
 

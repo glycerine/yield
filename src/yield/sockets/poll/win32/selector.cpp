@@ -44,7 +44,8 @@ Selector::Selector() {
   FD_ZERO(&read_fd_set);
   FD_ZERO(&write_fd_set);
 
-  associate(wake_socket_pair.first(), POLLIN);
+  if (!associate(wake_socket_pair.first(), POLLIN))
+    throw Exception();
 }
 
 bool Selector::associate(socket_t socket_, int16_t events) {
@@ -87,24 +88,21 @@ bool Selector::associate(socket_t socket_, int16_t events) {
 Event* Selector::dequeue(const Time& timeout) {
   fd_set except_fd_set_copy, read_fd_set_copy, write_fd_set_copy;
 
-  memcpy_s
-  (
+  memcpy_s(
     &except_fd_set_copy,
     sizeof(except_fd_set_copy),
     &except_fd_set,
     sizeof(except_fd_set)
   );
 
-  memcpy_s
-  (
+  memcpy_s(
     &read_fd_set_copy,
     sizeof(read_fd_set_copy),
     &read_fd_set,
     sizeof(read_fd_set)
   );
 
-  memcpy_s
-  (
+  memcpy_s(
     &write_fd_set_copy,
     sizeof(write_fd_set_copy),
     &write_fd_set,
@@ -160,8 +158,11 @@ Event* Selector::dequeue(const Time& timeout) {
       }
 
       if (events != 0) {
-        if (socket_ == wake_socket_pair.first())
+        if (socket_ == wake_socket_pair.first()) {
+          char m;
+          wake_socket_pair.second().read(&m, 1);
           return NonBlockingConcurrentQueue<Event, 32>::trydequeue();
+        }
         else
           return new SocketEvent(events, socket_);
       }

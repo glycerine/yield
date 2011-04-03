@@ -839,9 +839,7 @@ std::cout << std::endl;""" % locals()
 
 #include <iostream>
 
-
 %(test_suite_decls)s
-
 
 int main(int, char**) {
   int failed_test_case_count = 0;

@@ -68,6 +68,18 @@ private:
 
 
 template <class AIOQueueType>
+class AIOQueueAssociateTest : public AIOQueueTest<AIOQueueType> {
+public:
+  // yunit::Test
+  void run() {
+    SocketPair sockets;
+    if (!this->get_aio_queue().associate(sockets.first()))
+      throw Exception();
+  }
+};
+
+
+template <class AIOQueueType>
 class AIOQueueRecvTest : public AIOQueueTest<AIOQueueType> {
 public:
   // yunit::Test
@@ -76,25 +88,83 @@ public:
     if (!this->get_aio_queue().associate(sockets.first()))
       throw Exception();
 
-    sockets.second().send("m", 1, 0);
+    {
+      sockets.second().send("m", 1, 0);
+      auto_Object<Buffer> buffer = new Buffer(4096);
 
-    auto_Object<Buffer> buffer = new Buffer(4096);
+      auto_Object<recvAIOCB> aiocb
+      = new recvAIOCB(sockets.first(), buffer->inc_ref(), 0);
 
-    auto_Object<recvAIOCB> aiocb
-    = new recvAIOCB(sockets.first(), buffer->inc_ref(), 0);
+      if (!this->get_aio_queue().enqueue(aiocb->inc_ref()))
+        throw Exception();
 
-    if (!this->get_aio_queue().enqueue(aiocb->inc_ref()))
-      throw Exception();
+      auto_Object<recvAIOCB> out_aiocb
+      = object_cast<recvAIOCB>(this->get_aio_queue().dequeue());
+      throw_assert_eq(&out_aiocb.get(), &aiocb.get());
+      throw_assert_eq(out_aiocb->get_error(), 0);
+      throw_assert_eq(out_aiocb->get_return(), 1);
+      throw_assert_eq(buffer->size(), 1);
+      throw_assert_eq((*buffer)[0], 'm');
+    }
 
-    auto_Object<recvAIOCB> out_aiocb
-    = object_cast<recvAIOCB>(this->get_aio_queue().dequeue());
-    throw_assert_eq(&out_aiocb.get(), &aiocb.get());
-    throw_assert_eq(out_aiocb->get_error(), 0);
-    throw_assert_eq(out_aiocb->get_return(), 1);
-    throw_assert_eq(buffer->size(), 1);
-    throw_assert_eq((*buffer)[0], 'm');
+    {
+      for (uint8_t i = 0; i < 2; i++) {
+        recvAIOCB* aiocb = new recvAIOCB(sockets.first(), *new Buffer(2), 0);
+        if (!this->get_aio_queue().enqueue(*aiocb))
+          throw Exception();
+      }
+
+      sockets.second().send("test", 4, 0);
+
+      for (uint8_t i = 0; i < 2; i++) {
+        auto_Object<recvAIOCB> out_aiocb
+          = object_cast<recvAIOCB>(this->get_aio_queue().dequeue());
+        throw_assert_eq(out_aiocb->get_error(), 0);
+        throw_assert_eq(out_aiocb->get_return(), 2);
+        throw_assert_eq(out_aiocb->get_buffer(), i == 0 ? "te" : "st");
+        throw_assert_eq(out_aiocb->get_buffer().size(), 2);
+      }
+    }
+
+    {
+      for (uint8_t i = 0; i < 2; i++) {
+        recvAIOCB* aiocb = new recvAIOCB(sockets.first(), *new Buffer(2), 0);
+        if (!this->get_aio_queue().enqueue(*aiocb))
+          throw Exception();
+      }
+
+      sockets.second().send("te", 2, 0);
+
+      {
+        auto_Object<recvAIOCB> out_aiocb
+          = object_cast<recvAIOCB>(this->get_aio_queue().dequeue());
+        throw_assert_eq(out_aiocb->get_error(), 0);
+        throw_assert_eq(out_aiocb->get_return(), 2);
+        throw_assert_eq(out_aiocb->get_buffer(), "te");
+        throw_assert_eq(out_aiocb->get_buffer().size(), 2);
+      }
+      
+      {
+        recvAIOCB* out_aiocb
+          = object_cast<recvAIOCB>(this->get_aio_queue().trydequeue());
+        throw_assert_eq(out_aiocb, NULL);
+      }
+
+      sockets.second().send("st", 2, 0);
+
+      {
+        auto_Object<recvAIOCB> out_aiocb
+          = object_cast<recvAIOCB>(this->get_aio_queue().dequeue());
+        throw_assert_eq(out_aiocb->get_error(), 0);
+        throw_assert_eq(out_aiocb->get_return(), 2);
+        throw_assert_eq(out_aiocb->get_buffer(), "st");
+        throw_assert_eq(out_aiocb->get_buffer().size(), 2);
+      }
+    }
+
   }
 };
+
 
 
 template <class AIOQueueType>
@@ -128,18 +198,19 @@ template <class AIOQueueType>
 class AIOQueueTestSuite : public EventQueueTestSuite<AIOQueueType> {
 public:
   AIOQueueTestSuite() {
+    add("AIOQueue::associate", new AIOQueueAssociateTest<AIOQueueType>);
+
     add("AIOQueue::dequeue", new EventQueueDequeueTest<AIOQueueType>);
+
     add("AIOQueue + recv", new AIOQueueRecvTest<AIOQueueType>);
     add("AIOQueue + send", new AIOQueueSendTest<AIOQueueType>);
 
-    add
-    (
+    add(
       "AIOQueue::timeddequeue",
       new EventQueueTimedDequeueTest<AIOQueueType>
     );
 
-    add
-    (
+    add(
       "AIOQueue::trydequeue",
       new EventQueueTryDequeueTest<AIOQueueType>
     );

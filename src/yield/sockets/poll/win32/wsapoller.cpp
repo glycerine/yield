@@ -41,7 +41,8 @@ using yield::thread::NonBlockingConcurrentQueue;
 
 #if _WIN32_WINNT >= 0x0600
 WSAPoller::WSAPoller() {
-  associate(wake_socket_pair.first(), POLLIN);
+  if (!associate(wake_socket_pair.first(), POLLIN))
+    throw Exception();
 }
 
 bool
@@ -73,28 +74,37 @@ WSAPoller::associate(
 }
 
 Event* WSAPoller::dequeue(const Time& timeout) {
-  int ret
-  = WSAPoll
-    (
-      &pollfds[0],
-      pollfds.size(),
-      static_cast<int>(timeout.ms())
-    );
-
-  if (ret > 0) {
-    vector<pollfd>::const_iterator pollfd_i = pollfds.begin();
+  // Scan pollfds once for outstanding revents from the last WSAPoll,
+  // then call WSAPoll again if necessary.
+  int ret = 0;
+  do {
+    vector<pollfd>::iterator pollfd_i = pollfds.begin();
 
     do {
-      const pollfd& pollfd_ = *pollfd_i;
+      pollfd& pollfd_ = *pollfd_i;
 
       if (pollfd_.revents != 0) {
-        if (pollfd_.fd == wake_socket_pair.first())
+        if (pollfd_.fd == wake_socket_pair.first()) {
+          pollfd_.revents = 0;
+          char m;
+          wake_socket_pair.first().read(&m, 1);
           return NonBlockingConcurrentQueue<Event, 32>::trydequeue();
-        else
-          return new SocketEvent(pollfd_.revents, pollfd_.fd);
+        }
+        else {
+          uint16_t revents = pollfd_.revents;
+          pollfd_.revents = 0;
+          return new SocketEvent(revents, pollfd_.fd);
+        }
       }
     } while (++pollfd_i < pollfds.end());
-  }
+
+    ret
+      = WSAPoll(
+          &pollfds[0],
+          pollfds.size(),
+          static_cast<int>(timeout.ms())
+        );
+  } while (ret > 0);
 
   return NULL;
 }

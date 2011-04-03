@@ -30,4 +30,7 @@
 #include "aio_queue_test.hpp"
 #include "yield/sockets/aio/nbio_queue.hpp"
 
-TEST_SUITE_EX(SocketNBIOQueue, yield::sockets::aio::AIOQueueTestSuite<yield::sockets::aio::NBIOQueue>);
+TEST_SUITE_EX(
+  NBIOQueue,
+  yield::sockets::aio::AIOQueueTestSuite<yield::sockets::aio::NBIOQueue>
+);

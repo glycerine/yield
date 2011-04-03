@@ -58,6 +58,7 @@ public:
   YO_NEW_REF Event& dequeue() {
     return EventQueue::dequeue();
   }
+
   YO_NEW_REF Event* dequeue(const Time& timeout);
 
   bool enqueue(YO_NEW_REF Event&);

@@ -31,25 +31,23 @@
 
 #include <iostream>
 
-
-extern yunit::TestSuite& SocketNBIOQueueTestSuite();
+extern yunit::TestSuite& NBIOQueueTestSuite();
 #ifdef _WIN32
-extern yunit::TestSuite& Win32SocketAIOQueueTestSuite();
+extern yunit::TestSuite& Win32AIOQueueTestSuite();
 #endif
-
 
 int main(int, char**) {
   int failed_test_case_count = 0;
 
-  // SocketNBIOQueue
-  std::cout << "SocketNBIOQueue:" << std::endl;
-  failed_test_case_count += SocketNBIOQueueTestSuite().run();
+  // NBIOQueue
+  std::cout << "NBIOQueue:" << std::endl;
+  failed_test_case_count += NBIOQueueTestSuite().run();
   std::cout << std::endl;
 
 #ifdef _WIN32
-  // Win32SocketAIOQueue
-  std::cout << "Win32SocketAIOQueue:" << std::endl;
-  failed_test_case_count += Win32SocketAIOQueueTestSuite().run();
+  // Win32AIOQueue
+  std::cout << "Win32AIOQueue:" << std::endl;
+  failed_test_case_count += Win32AIOQueueTestSuite().run();
   std::cout << std::endl;
 #endif
 

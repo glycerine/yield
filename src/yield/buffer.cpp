@@ -67,7 +67,6 @@ Buffer::~Buffer() {
 }
 
 void Buffer::alloc(size_t alignment, size_t capacity) {
-  //capacity_ = (capacity + alignment - 1) / alignment * alignment;
   capacity_ = capacity;
 #ifdef _WIN32
   if ((data_ = _aligned_malloc(capacity_, alignment)) == NULL)
@@ -114,14 +113,23 @@ bool Buffer::is_page_aligned(const void* ptr) {
 }
 
 bool Buffer::operator==(const Buffer& other) const {
-  if (size() == other.size()) {
-    const void* this_data = static_cast<const void*>(*this);
-    const void* other_data = static_cast<const void*>(other);
-    if (this_data != NULL && other_data != NULL)
-      return memcmp(this_data, other_data, size()) == 0;
-    else
-      return false;
-  } else
+  if (size() == other.size())
+    return memcmp(data(), other.data(), size()) == 0;
+  else
+    return false;
+}
+
+bool Buffer::operator==(const char* other) const {
+  if (size() == strlen(other))
+    return memcmp(data(), other, size()) == 0;
+  else
+    return 0;
+}
+
+bool Buffer::operator==(const string& other) const {
+  if (size() == other.size())
+    return memcmp(data(), other.data(), size()) == 0;
+  else
     return false;
 }
 

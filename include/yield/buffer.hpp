@@ -147,8 +147,18 @@ public:
   }
 
   bool operator==(const Buffer&) const;
+  bool operator==(const char*) const;
+  bool operator==(const string&) const;
 
   bool operator!=(const Buffer& other) const {
+    return !operator==(other);
+  }
+
+  bool operator!=(const char* other) const {
+    return !operator==(other);
+  }
+
+  bool operator!=(const string& other) const {
     return !operator==(other);
   }
 

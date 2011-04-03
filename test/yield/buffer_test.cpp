@@ -138,7 +138,7 @@ TEST(Buffer, operator_cast) {
   throw_assert_ne(static_cast<uint8_t*>(*buffer), NULL);
 }
 
-TEST(Buffer, operator_equals) {
+TEST(Buffer, operator_equals_Buffer) {
   auto_Object<Buffer> buffer1 = new Buffer(2);
   buffer1->put('m', 2);
 
@@ -153,6 +153,20 @@ TEST(Buffer, operator_equals) {
   throw_assert_ne(*buffer1, *buffer3);
   buffer3->put('n');
   throw_assert_ne(*buffer1, *buffer3);
+}
+
+TEST(Buffer, operator_equals_c_string) {
+  auto_Object<Buffer> buffer = Buffer::copy("test");
+  throw_assert_eq(*buffer, "test");
+  throw_assert_ne(*buffer, "test1");
+  throw_assert_ne(*buffer, "text");
+}
+
+TEST(Buffer, operator_equals_string) {
+  auto_Object<Buffer> buffer = Buffer::copy("test");
+  throw_assert_eq(*buffer, string("test"));
+  throw_assert_ne(*buffer, string("test1"));
+  throw_assert_ne(*buffer, string("text"));
 }
 
 TEST(Buffer, put_Buffer) {

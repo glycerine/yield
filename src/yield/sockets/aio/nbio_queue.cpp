@@ -52,29 +52,51 @@ Event* NBIOQueue::dequeue(const Time& timeout) {
     case SocketEvent::TYPE_ID: {
       SocketEvent* socket_event = static_cast<SocketEvent*>(event);
 
-      map<socket_t, AIOCB*>::iterator aiocb_i
+      map<socket_t, AIOCB*>::iterator issued_aiocb_i
         = issued_aiocbs.find(socket_event->get_socket());
-      debug_assert_ne(aiocb_i, issued_aiocbs.end());
+      debug_assert_ne(issued_aiocb_i, issued_aiocbs.end());
 
       SocketEvent::dec_ref(*socket_event);
 
-      AIOCB* aiocb = aiocb_i->second;
+      AIOCB* aiocb = issued_aiocb_i->second;
 
-      if (aiocb->get_channel().set_blocking_mode(false)) {
+      if (aiocb->get_socket().set_blocking_mode(false)) {
         switch (aiocb->retry()) {
-        case AIOCB::RETRY_STATUS_WANT_READ:
+        case AIOCB::RETRY_STATUS_COMPLETE:
+        case AIOCB::RETRY_STATUS_ERROR: break; // Drop down to return aiocb
+
+        case AIOCB::RETRY_STATUS_WANT_READ: {
+          socket_event_queue.associate(aiocb->get_socket(), POLLIN);
+          return NULL;
+        }
+        break;
+
         case AIOCB::RETRY_STATUS_WANT_WRITE: {
-          DebugBreak();
+          socket_event_queue.associate(aiocb->get_socket(), POLLOUT);
           return NULL;
         }
         }
       } else
         aiocb->set_error(Exception::get_last_error_code());
 
-      if (aiocb->get_next_aiocb() != NULL)
-        aiocb_i->second = aiocb->get_next_aiocb();
-      else
-        issued_aiocbs.erase(aiocb_i);
+      if (aiocb->get_next_aiocb() != NULL) {
+        issued_aiocb_i->second = aiocb->get_next_aiocb();
+        // We can't assume the next AIOCB is waiting on the same socket
+        // events. The options are to (1) try it here and then store it 
+        // away in a separate "completed AIOCBs queue" or (2) turn on all
+        // socket events and wait until dequeue() is called again to retry
+        // the next aiocb.
+        // Given that multiple outstanding AIOCBs are somewhat rare anyway
+        // we'll go with the simpler option, (2).
+        socket_event_queue.associate(
+          aiocb->get_socket(),
+          POLLERR|POLLIN|POLLOUT
+        );
+      }
+      else {
+        issued_aiocbs.erase(issued_aiocb_i);
+        socket_event_queue.dissociate(aiocb->get_socket());
+      }
 
       return aiocb;
     }
@@ -86,32 +108,40 @@ Event* NBIOQueue::dequeue(const Time& timeout) {
     case sendAIOCB::TYPE_ID: {
       AIOCB* aiocb = static_cast<AIOCB*>(event);
 
-      if (aiocb->get_socket().set_blocking_mode(false)) {
-        switch (aiocb->retry()) {
-        case AIOCB::RETRY_STATUS_COMPLETE:
-        case AIOCB::RETRY_STATUS_ERROR:
-          return aiocb;
+      map<socket_t, AIOCB*>::iterator issued_aiocb_i
+        = issued_aiocbs.find(aiocb->get_socket());
 
-        default: {
-          map<socket_t, AIOCB*>::iterator aiocb_i
-            = issued_aiocbs.find(aiocb->get_socket());
+      if (issued_aiocb_i == issued_aiocbs.end()) {
+        if (aiocb->get_socket().set_blocking_mode(false)) {
+          switch (aiocb->retry()) {
+            case AIOCB::RETRY_STATUS_COMPLETE:
+            case AIOCB::RETRY_STATUS_ERROR: return aiocb;
 
-          if (aiocb_i == issued_aiocbs.end())
-            issued_aiocbs[aiocb->get_socket()] = aiocb;
-          else {
-            AIOCB* aiocb = aiocb_i->second;
-            while (aiocb->get_next_aiocb() != NULL)
-              aiocb = aiocb->get_next_aiocb();
-            aiocb->set_next_aiocb(aiocb);
+            case AIOCB::RETRY_STATUS_WANT_READ: {
+              socket_event_queue.associate(aiocb->get_socket(), POLLIN);
+            }
+            break; // Drop down to add aiocb to issued_aiocbs
+
+            case AIOCB::RETRY_STATUS_WANT_WRITE: {
+              socket_event_queue.associate(aiocb->get_socket(), POLLOUT);
+            }
+            break; // Drop down to add aiocb to issued_aiocbs
           }
 
-          return NULL;
+          issued_aiocbs[aiocb->get_socket()] = aiocb;
+        } else {
+          aiocb->set_error(Exception::get_last_error_code());
+          return aiocb;
         }
-        }
-      } else {
-        aiocb->set_error(Exception::get_last_error_code());
-        return aiocb;
       }
+      else { // Already an issued AIOCB for this socket; add aiocb to the queue
+        AIOCB* issued_aiocb = issued_aiocb_i->second;
+        while (issued_aiocb->get_next_aiocb() != NULL)
+          issued_aiocb = issued_aiocb->get_next_aiocb();
+        issued_aiocb->set_next_aiocb(aiocb);
+      }
+
+      return NULL;
     }
     break;
 
