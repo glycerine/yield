@@ -30,7 +30,13 @@
 from copy import copy
 from cStringIO import StringIO
 from os import getcwd
-from os.path import commonprefix, dirname, exists, join, relpath, split, splitext
+from os.path import commonprefix, \
+                    dirname, \
+                    exists, \
+                    join as path_join, \
+                    relpath, \
+                    split as path_split, \
+                    splitext
 import traceback
 from uuid import UUID, uuid4
 
@@ -195,11 +201,12 @@ class VCXProj(VCProj):
                 elif source_file_ext in C_CXX_SOURCE_FILE_EXTENSIONS:
                     if source_file.get_platform() in ('*', "win32") and\
                        source_file not in self.get_exclude_files():
-                        if dirname(source_file.get_path()) == self.get_root_source_dir_path():
+                        source_dir_path = self.get_source_dir_path()[source_file.get_platform()]
+                        if dirname(source_file.get_path()) == source_dir_path:
                             ObjectFileName = ""
                         else:
                             ObjectFileName = "$(IntDir)"
-                            ObjectFileName += ntpath(relpath(source_file.get_path(), self.get_root_source_dir_path()))
+                            ObjectFileName += ntpath(relpath(source_file.get_path(), source_dir_path))
                             ObjectFileName = ObjectFileName[:ObjectFileName.rindex('.')] + ".obj"
                             ObjectFileName = "<ObjectFileName>%(ObjectFileName)s</ObjectFileName>" % locals()
                             ObjectFileName = '\n' + indent(INDENT_SPACES, ObjectFileName)
@@ -222,7 +229,7 @@ class VCXProj(VCProj):
             ProjectGuid = \
                 VCXProjReference(
                     self.get_project_dir_path(),
-                    join(self.get_project_dir_path(), self.get_name() + ".vcxproj")
+                    path_join(self.get_project_dir_path(), self.get_name() + ".vcxproj")
                 ).get_Guid()
         except:
             print __name__ + ": generating GUID for project", self.get_name()
@@ -422,8 +429,8 @@ class VCXProjFilters(object):
     def get_project_dir_path(self):
         return self.__vcxproj.get_project_dir_path()
 
-    def get_root_source_dir_path(self):
-        return self.__vcxproj.get_root_source_dir_path()
+    def get_source_dir_path(self):
+        return self.__vcxproj.get_source_dir_path()
 
     def get_source_file_tree(self):
         return self.__vcxproj.get_source_file_tree()
@@ -441,7 +448,7 @@ class VCXProjFilters(object):
                     ntpath(
                         relpath(
                             dirname(source_file.get_path()),
-                            self.get_root_source_dir_path()
+                            self.get_source_dir_path()[source_file.get_platform()]
                         )
                     )
                 if FilterTail != "." :
@@ -503,7 +510,7 @@ class VCXProjFilters(object):
         vcxproj_filters_file_path = self.get_name() + ".vcxproj.filters"
         if self.get_project_dir_path() is not None:
             vcxproj_filters_file_path = \
-                join(self.get_project_dir_path(), vcxproj_filters_file_path)
+                path_join(self.get_project_dir_path(), vcxproj_filters_file_path)
 
         item_groups = []
 
@@ -543,7 +550,6 @@ class VCXProjReference(object):
     def __init__(self, referer_dir_path, vcxproj_file_path):
         # assert exists( referer_dir_path ), referer_dir_path
         self.__referer_dir_path = referer_dir_path
-        assert exists(vcxproj_file_path), vcxproj_file_path
         self.__vcxproj_file_path = vcxproj_file_path
 
     def get_Guid(self):
@@ -568,27 +574,33 @@ class VCXProjReference(object):
         return ntpath(relpath(self.__vcxproj_file_path, self.__referer_dir_path))
 
     def get_project_name(self):
-        return splitext(split(self.__vcxproj_file_path)[1])[0]
+        return splitext(path_split(self.__vcxproj_file_path)[1])[0]
 
 
 class VCXProjReferences(list):
     def __init__(self, referer_dir_path, project_references):
         if isinstance(project_references, PlatformDict):
-            project_references = project_references.get("win32", default=[], combine_platforms=True)
+            project_references = \
+                project_references.get("win32", default=[], combine_platforms=True)
 
         for project_reference in project_references:
-            vcxproj_file_path = join(referer_dir_path, project_reference + ".vcxproj")
-            if exists(vcxproj_file_path):
-                list.append(self, VCXProjReference(referer_dir_path, vcxproj_file_path))
+            if isinstance(project_reference, VCXProj):
+                vcxproj = project_reference
+                vcxproj_file_path = \
+                    path_join(
+                        vcxproj.get_project_dir_path(),
+                        vcxproj.get_name() + ".vcxproj"
+                    )
+            else:
+                vcxproj_file_path = \
+                    path_join(referer_dir_path, project_reference + ".vcxproj")
+
+            list.append(self, VCXProjReference(referer_dir_path, vcxproj_file_path))
 
 
 
 class VCXSln(object):
-    def __init__(
-        self,
-        project_references,
-        sln_file_path=None
-    ):
+    def __init__(self, vcxprojs, sln_file_path=None):
         if sln_file_path is not None:
             assert isinstance(sln_file_path, basestring), type(sln_file_path)
             sln_dir_path = dirname(sln_file_path)
@@ -608,7 +620,7 @@ class VCXSln(object):
             sln_dir_path = getcwd()
             self.__Guid = str(uuid4())
 
-        self.__vcxproj_references = VCXProjReferences(sln_dir_path, project_references)
+        self.__vcxproj_references = VCXProjReferences(sln_dir_path, vcxprojs)
 
     def __str__(self):
         Projects = []

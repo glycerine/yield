@@ -63,6 +63,7 @@ class Project(object):
         ldflags=None,
         project_dir_path=None,
         project_references=None,
+        source_dir_path=None,
         type="lib",
         *args,
         **kwds
@@ -81,16 +82,26 @@ class Project(object):
         else:
             self.__project_dir_path = getcwd()
 
-        if build_dir_path is None:
-            self._build_dir_path = PlatformDict(None)
-        else:
-            platform_build_dir_path = PlatformDict(build_dir_path)
-            for platform in platform_build_dir_path.iterkeys():
-                build_dir_path = platform_build_dir_path[platform]
-                # assert exists( build_dir_path ), build_dir_path
-                build_dir_path = relpath(build_dir_path, self.__project_dir_path)
-                platform_build_dir_path[platform] = build_dir_path
-            self._build_dir_path = platform_build_dir_path
+        if source_dir_path is None:
+            source_file_tree = self.get_source_file_tree()
+            if len(source_file_tree) == 0:
+                source_dir_path = self.get_project_dir_path()
+            elif len(source_file_tree) == 1:
+                if isinstance(source_file_tree.values()[0], dict):
+                    source_dir_path = source_file_tree.keys()[0]
+                else:
+                    source_dir_path = dirname(source_file_tree.keys()[0])
+            else:
+                raise NotImplementedError, source_file_tree.keys()
+
+        for path_var in ("build_dir_path", "source_dir_path"):
+            path = locals()[path_var]
+            platform_path = dict(PlatformDict(path))
+            for platform in platform_path.iterkeys():
+                path = platform_path[platform]
+                if exists(path):
+                    platform_path[platform] = relpath(path, self.__project_dir_path)
+            setattr(self, '_' + path_var, PlatformDict(platform_path))
 
         for paths_var in ("cxxpath", "libpath"):
             paths = locals()[paths_var]
@@ -145,19 +156,7 @@ class Project(object):
             source_file_tree = treepaths(source_files)
             setattr(self, '_' + paths_var[:-6] + "_tree", source_file_tree)
 
-#        c_cxx_source_files =\
-#             self.get_source_files().filter( C_CXX_SOURCE_FILE_FNMATCH_PATTERNS )
-#        c_cxx_source_file_tree = treepaths( c_cxx_source_files )
-        source_file_tree = self.get_source_file_tree()
-        if len(source_file_tree) == 0:
-            self.__root_source_dir_path = self.get_project_dir_path()
-        elif len(source_file_tree) == 1:
-            if isinstance(source_file_tree.values()[0], dict):
-                self.__root_source_dir_path = source_file_tree.keys()[0]
-            else:
-                self.__root_source_dir_path = dirname(source_file_tree.keys()[0])
-        else:
-            raise NotImplementedError, source_file_tree.keys()
+    def __cmp__(self, other): return cmp(self.get_name(), other.get_name())
 
     def get_build_dir_path(self): return self._build_dir_path
     def get_cxxdefines(self): return self.__cxxdefines
@@ -173,7 +172,7 @@ class Project(object):
     def get_output_file_path(self): return self._output_file_path
     def get_project_dir_path(self): return self.__project_dir_path
     def get_project_references(self): return self._project_references
-    def get_root_source_dir_path(self): return self.__root_source_dir_path
+    def get_source_dir_path(self): return self._source_dir_path
     def get_source_files(self): return self._source_files
     def get_source_file_tree(self): return self._source_file_tree
     def get_type(self): return self.__type

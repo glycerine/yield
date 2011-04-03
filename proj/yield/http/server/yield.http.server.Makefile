@@ -67,7 +67,7 @@ depclean:
 -include $(D_FILE_PATHS)
 
 
-../../../../lib/yield/libyield_http_server.a: $(O_FILE_PATHS)
+../../../../lib/yield/libyield_http_server.a: $(O_FILE_PATHS) ..\..\..\..\lib\yield\libyield_fs.a ..\..\..\..\lib\yield\libyield_http.a ..\..\..\..\lib\yield\libyield_sockets_server.a
 	-mkdir -p ../../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(O_FILE_PATHS)
 

@@ -261,6 +261,7 @@ LIBS = LIBS_EXPANDED
 
 #EXCLUDE_FILE_PATHS = {}
 INCLUDE_FILE_PATHS = {}
+SOURCE_DIR_PATHS = {}
 SOURCE_FILE_PATHS = {}
 
 for project_name in PROJECT_NAMES:
@@ -281,6 +282,9 @@ for project_name in PROJECT_NAMES:
             ])
 
     INCLUDE_FILE_PATHS[project_name + "_test"] = []
+
+    SOURCE_DIR_PATHS[project_name] = project_source_dir_path
+    SOURCE_DIR_PATHS[project_name + "_test"] = project_test_dir_path
 
     SOURCE_FILE_PATHS[project_name] = [
          path_join(project_source_dir_path, fnmatch_pattern)
@@ -637,6 +641,9 @@ if options.format_src:
 
 
 if options.generate_proj:
+    makefiles = []
+    vcxprojs = []
+
     for project_name in options.project_names:
         for project_name_suffix, project_type in (("", "lib"), ("_test", "exe")):
             if (project_name == "yield.sockets.client" or project_name == "yield.sockets.server") and\
@@ -662,7 +669,7 @@ if options.generate_proj:
                     path_join(PROJECT_DIR_PATHS[project_reference], project_reference)
                     for project_reference in PROJECT_REFERENCES[project_name + project_name_suffix]
                 ],
-               "source_dir_path": path_join(SRC_DIR_PATH, path_sep.join(project_name.split('.'))),
+               "source_dir_path": SOURCE_DIR_PATHS[project_name + project_name_suffix],
                "source_file_paths": SOURCE_FILE_PATHS[project_name + project_name_suffix],
                "type": project_type
             }
@@ -675,7 +682,6 @@ if options.generate_proj:
                         project["source_dir_path"],
                         project["build_dir_path"]["win32"]
                     )
-                del project["source_dir_path"]
 
                 try: makedirs(project["project_dir_path"])
                 except: pass
@@ -686,47 +692,32 @@ if options.generate_proj:
                 (VCXProjFilters, ".vcxproj.filters"),
                 (VCXProjUser, ".vcxproj.user"),
             ):
+                project_instance = project_class(**project)
+                if project_class == Makefile:
+                    makefiles.append(project_instance)
+                elif project_class == VCXProj:
+                    vcxprojs.append(project_instance)
+
                 write_file(
                     path_join(
                         project["project_dir_path"],
                         project["name"] + file_ext
                     ),
-                    str(project_class(**project)),
+                    str(project_instance),
                     force=options.force
                 )
 
     if len(options.project_names) == len(PROJECT_NAMES):
-        # Generate Visual Studio solution
         write_file(
             "yield.sln",
-            str(
-                VCXSln(
-                    [path_join(PROJECT_DIR_PATHS[project_name], project_name)
-                     for project_name in PROJECT_NAMES] + \
-                    [path_join(PROJECT_DIR_PATHS[project_name], project_name + "_test")
-                     for project_name in PROJECT_NAMES
-                     if project_name != "yield.sockets.client" and \
-                        project_name != "yield.sockets.server"],
-                    "yield.sln"
-                )
-            ),
+            str(VCXSln(vcxprojs, "yield.sln")),
+            force=options.force,
             newline="\r\n"
         )
 
-        # Generate top-level Makefile
         write_file(
             "Makefile",
-            str(
-                TopLevelMakefile(
-                    PROJECT_DIR_PATHS,
-                    dict(
-                        (project_name, project_references)
-                        for project_name, project_references in PROJECT_REFERENCES.iteritems()
-                        if project_name != "yield.sockets.client_test" and \
-                           project_name != "yield.sockets.server_test"
-                    )
-                )
-            ),
+            str(TopLevelMakefile(makefiles)),
             force=options.force
         )
 

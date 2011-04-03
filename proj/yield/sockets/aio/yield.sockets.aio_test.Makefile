@@ -74,7 +74,7 @@ lcov: ../../../../bin/yield/yield_sockets_aio_test
 	rm -fr yield.sockets.aio_test_lcov_html-$(TIMESTAMP)
 
 
-../../../../bin/yield/yield_sockets_aio_test: $(O_FILE_PATHS)
+../../../../bin/yield/yield_sockets_aio_test: $(O_FILE_PATHS) ..\..\..\..\lib\yield\libyield_sockets_aio.a
 	-mkdir -p ../../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 

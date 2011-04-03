@@ -388,7 +388,7 @@ class VCProj(Project):
                              self.get_exclude_files().get(platform, []):
                             ObjectFile = "$(IntDir)"
                             ObjectFile += \
-                                ntpath(relpath(source_file_path, self.get_root_source_dir_path()))
+                                ntpath(relpath(source_file_path, self.get_source_dir_path()[platform]))
                             ObjectFile = ObjectFile[:-len(source_file_ext)] + ".obj"
                             source_file = SOURCE_FILE % locals()
                     else:
@@ -410,7 +410,7 @@ class VCProj(Project):
                         self.__get_files(child_source_file_tree, seen_source_files)
 
                     if len(child_header_files) > 0 or len(child_source_files) > 0:
-                        filter_name = split(relpath(source_path, self.get_root_source_dir_path()))[-1]
+                        filter_name = split(relpath(source_path, self.get_source_dir_path[platform]()))[-1]
                         if filter_name != "..":
                             filter_start = """<Filter Name="%(filter_name)s">\r\n""" % locals()
                             filter_end = """</Filter>\r\n"""

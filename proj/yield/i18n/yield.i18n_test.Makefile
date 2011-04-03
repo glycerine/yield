@@ -77,7 +77,7 @@ lcov: ../../../bin/yield/yield_i18n_test
 	rm -fr yield.i18n_test_lcov_html-$(TIMESTAMP)
 
 
-../../../bin/yield/yield_i18n_test: $(O_FILE_PATHS)
+../../../bin/yield/yield_i18n_test: $(O_FILE_PATHS) ..\..\..\lib\yield\libyield_i18n.a
 	-mkdir -p ../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 

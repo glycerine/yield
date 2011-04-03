@@ -28,7 +28,9 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from os.path import dirname, \
+                    isfile, \
                     join as path_join, \
+                    normpath, \
                     split as path_split, \
                     splitext
 
@@ -158,7 +160,7 @@ endif""")
                         path_join(
                             self.get_build_dir_path()[platform],
                             splitext(
-                                relpath(source_file_path, self.get_root_source_dir_path())
+                                relpath(source_file_path, self.get_source_dir_path()['*'])
                             )[0] + ".o"
                         )
                     object_dir_path = posixpath(dirname(o_file_path))
@@ -230,6 +232,36 @@ lcov: %(output_file_path)s
             raise NotImplementedError, self.get_type()
         output_dir_path = my_dir_path + posixpath(output_dir_path)
         output_file_path = my_dir_path + posixpath(output_file_path)
+        output_file_path_prerequisites = ["$(O_FILE_PATHS)"]
+        for project_reference in self.get_project_references()['*']:
+            if not isfile(project_reference):
+                project_reference = \
+                    normpath(
+                        path_join(
+                            self.get_project_dir_path(),
+                            project_reference + ".Makefile"
+                        )
+                    )
+                if not isfile(project_reference):
+                    continue
+            for line in open(project_reference).readlines():
+                if line.startswith("all: "):
+                    all_targets = line.split()[1:]
+                    if len(all_targets) == 1:
+                        project_reference_output_file_path = \
+                            relpath(
+                                normpath(
+                                    path_join(
+                                        dirname(project_reference),
+                                        all_targets[0]
+                                    )
+                                ),
+                                self.get_project_dir_path()
+                            )
+                        output_file_path_prerequisites.append(project_reference_output_file_path)
+                    break
+
+        output_file_path_prerequisites = ' '.join(output_file_path_prerequisites)
 
         return ("""\
 TIMESTAMP=$(shell date +%%Y%%m%%dT%%H%%M%%S)
@@ -253,7 +285,7 @@ depclean:
 -include $(D_FILE_PATHS)%(lcov_rule)s
 
 
-%(output_file_path)s: $(O_FILE_PATHS)
+%(output_file_path)s: %(output_file_path_prerequisites)s
     -mkdir -p %(output_dir_path)s 2>/dev/null
     %(output_file_path_recipe)s
 
@@ -261,9 +293,8 @@ depclean:
 
 
 class TopLevelMakefile(object):
-    def __init__(self, project_dir_paths, project_references):
-        self.__project_dir_paths = project_dir_paths
-        self.__project_references = project_references
+    def __init__(self, makefiles):
+        self.__makefiles = makefiles
 
     def __repr__(self):
         clean_recipes = []
@@ -271,8 +302,14 @@ class TopLevelMakefile(object):
         project_rules = []
         project_targets = []
 
-        for project_name in sorted(self.__project_references.keys()):
-            project_dir_path = posixpath(self.__project_dir_paths[project_name])
+        for makefile in sorted(self.__makefiles):
+            if isinstance(makefile, Makefile):
+                project_dir_path = posixpath(makefile.get_project_dir_path())
+                project_name = makefile.get_name()
+                project_references = makefile.get_project_references()['*']
+            else:
+                project_dir_path, project_name = path_split(makefile)
+                project_references = []
 
             for recipe_type in ("clean", "depclean"):
                 locals()[recipe_type + "_recipes"].append(
@@ -282,7 +319,7 @@ class TopLevelMakefile(object):
             project_references = \
                 ' '.join([
                     path_split(project_reference)[1]
-                    for project_reference in self.__project_references.get(project_name, [])]
+                    for project_reference in project_references]
                 )
 
             project_rules.append("""\

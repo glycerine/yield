@@ -80,7 +80,7 @@ depclean:
 -include $(D_FILE_PATHS)
 
 
-../../../lib/yield/libyield_poll.a: $(O_FILE_PATHS)
+../../../lib/yield/libyield_poll.a: $(O_FILE_PATHS) ..\..\..\lib\yield\libyield.a
 	-mkdir -p ../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(O_FILE_PATHS)
 
