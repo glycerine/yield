@@ -36,7 +36,6 @@
 #include <sys/epoll.h>
 #include <sys/eventfd.h>
 
-
 namespace yield {
 namespace poll {
 namespace linux {
@@ -75,15 +74,10 @@ bool EPoller::associate(fd_t fd, uint16_t events) {
     epoll_event_.data.fd = fd;
     epoll_event_.events = events;
 
-    if (epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &epoll_event_) != -1)
+    if (epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &epoll_event_) == 0)
       return true;
-    else if
-    (
-      errno == EEXIST
-      &&
-      epoll_ctl(epfd, EPOLL_CTL_MOD, fd, &epoll_event_) != -1
-    )
-      return true;
+    else if (errno == EEXIST)
+      return epoll_ctl(epfd, EPOLL_CTL_MOD, fd, &epoll_event_) == 0;
     else
       return false;
   } else
@@ -93,13 +87,7 @@ bool EPoller::associate(fd_t fd, uint16_t events) {
 YO_NEW_REF Event* EPoller::dequeue(const Time& timeout) {
   epoll_event epoll_event_;
 
-  int ret = epoll_wait
-            (
-              epfd,
-              &epoll_event_,
-              1,
-              static_cast<int>(timeout.ms())
-            );
+  int ret = epoll_wait(epfd, &epoll_event_, 1, static_cast<int>(timeout.ms()));
 
   if (ret > 0) {
     debug_assert_eq(ret, 1);
@@ -121,7 +109,7 @@ bool EPoller::dissociate(fd_t fd) {
   // event can be specified as NULL when using EPOLL_CTL_DEL.
   epoll_event epoll_event_;
   memset(&epoll_event_, 0, sizeof(epoll_event_));
-  return epoll_ctl(epfd, EPOLL_CTL_DEL, fd, &epoll_event_) != -1;
+  return epoll_ctl(epfd, EPOLL_CTL_DEL, fd, &epoll_event_) == 0;
 }
 
 bool EPoller::enqueue(Event& event) {

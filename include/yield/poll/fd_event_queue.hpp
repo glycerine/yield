@@ -64,14 +64,18 @@ public:
   FDEventQueue();
   ~FDEventQueue();
 
+public:
   bool associate(fd_t fd, uint16_t events);
   bool dissociate(fd_t fd);
 
-  // EventQueue
+public:
+  // yield::EventQueue
   YO_NEW_REF Event& dequeue() {
     return EventQueue::dequeue();
   }
+
   YO_NEW_REF Event* dequeue(const Time& timeout);
+
   bool enqueue(YO_NEW_REF Event& event);
 
 private:

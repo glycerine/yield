@@ -90,11 +90,13 @@ protected:
   FDEventQueueType& get_fd_event_queue() const {
     return *fd_event_queue;
   }
+
   fd_t get_read_fd() const {
     return fds[0];
   }
+
   fd_t get_write_fd() const {
-    return fds[0];
+    return fds[1];
   }
 
   void signal_pipe() {
