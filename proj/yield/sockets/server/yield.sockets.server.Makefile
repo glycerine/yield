@@ -64,11 +64,11 @@ depclean:
 -include $(D_FILE_PATHS)
 
 
-../../../../lib/yield/libyield_sockets_aio.a
+../../../../lib/yield/libyield_sockets_aio.a:
 	$(MAKE) ../aio/yield.sockets.aio.Makefile
 
 
-../../../../lib/yield/libyield_stage.a
+../../../../lib/yield/libyield_stage.a:
 	$(MAKE) ../../stage/yield.stage.Makefile
 
 

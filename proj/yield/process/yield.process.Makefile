@@ -85,7 +85,7 @@ depclean:
 -include $(D_FILE_PATHS)
 
 
-../../../lib/yield/libyield_fs.a
+../../../lib/yield/libyield_fs.a:
 	$(MAKE) ../fs/yield.fs.Makefile
 
 

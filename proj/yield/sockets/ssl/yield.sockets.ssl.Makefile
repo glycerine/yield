@@ -61,7 +61,7 @@ depclean:
 -include $(D_FILE_PATHS)
 
 
-../../../../lib/yield/libyield_sockets.a
+../../../../lib/yield/libyield_sockets.a:
 	$(MAKE) ../yield.sockets.Makefile
 
 

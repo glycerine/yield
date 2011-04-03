@@ -74,7 +74,7 @@ lcov: ../../../bin/yield/yield_thread_test
 	rm -fr yield.thread_test_lcov_html-$(TIMESTAMP)
 
 
-../../../lib/yield/libyield_thread.a
+../../../lib/yield/libyield_thread.a:
 	$(MAKE) yield.thread.Makefile
 
 

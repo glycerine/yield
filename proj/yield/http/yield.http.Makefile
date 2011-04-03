@@ -61,7 +61,7 @@ depclean:
 -include $(D_FILE_PATHS)
 
 
-../../../lib/yield/libyield_uri.a
+../../../lib/yield/libyield_uri.a:
 	$(MAKE) ../uri/yield.uri.Makefile
 
 

@@ -71,7 +71,7 @@ lcov: ../../../bin/yield/yield_uri_test
 	rm -fr yield.uri_test_lcov_html-$(TIMESTAMP)
 
 
-../../../lib/yield/libyield_uri.a
+../../../lib/yield/libyield_uri.a:
 	$(MAKE) yield.uri.Makefile
 
 

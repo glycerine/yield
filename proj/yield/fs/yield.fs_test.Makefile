@@ -92,7 +92,7 @@ lcov: ../../../bin/yield/yield_fs_test
 	rm -fr yield.fs_test_lcov_html-$(TIMESTAMP)
 
 
-../../../lib/yield/libyield_fs.a
+../../../lib/yield/libyield_fs.a:
 	$(MAKE) yield.fs.Makefile
 
 

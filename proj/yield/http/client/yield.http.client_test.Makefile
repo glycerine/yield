@@ -77,11 +77,11 @@ lcov: ../../../../bin/yield/yield_http_client_test
 	rm -fr yield.http.client_test_lcov_html-$(TIMESTAMP)
 
 
-../../../../lib/yield/libyield_http_client.a
+../../../../lib/yield/libyield_http_client.a:
 	$(MAKE) yield.http.client.Makefile
 
 
-../../../../lib/yield/libyield_http_server.a
+../../../../lib/yield/libyield_http_server.a:
 	$(MAKE) ../server/yield.http.server.Makefile
 
 

@@ -67,15 +67,15 @@ depclean:
 -include $(D_FILE_PATHS)
 
 
-../../../../lib/yield/libyield_fs.a
+../../../../lib/yield/libyield_fs.a:
 	$(MAKE) ../../fs/yield.fs.Makefile
 
 
-../../../../lib/yield/libyield_http.a
+../../../../lib/yield/libyield_http.a:
 	$(MAKE) ../yield.http.Makefile
 
 
-../../../../lib/yield/libyield_sockets_server.a
+../../../../lib/yield/libyield_sockets_server.a:
 	$(MAKE) ../../sockets/server/yield.sockets.server.Makefile
 
 

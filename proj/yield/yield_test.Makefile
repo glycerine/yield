@@ -71,7 +71,7 @@ lcov: ../../bin/yield/yield_test
 	rm -fr yield_test_lcov_html-$(TIMESTAMP)
 
 
-../../lib/yield/libyield.a
+../../lib/yield/libyield.a:
 	$(MAKE) yield.Makefile
 
 

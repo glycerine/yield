@@ -77,7 +77,7 @@ lcov: ../../../bin/yield/yield_i18n_test
 	rm -fr yield.i18n_test_lcov_html-$(TIMESTAMP)
 
 
-../../../lib/yield/libyield_i18n.a
+../../../lib/yield/libyield_i18n.a:
 	$(MAKE) yield.i18n.Makefile
 
 

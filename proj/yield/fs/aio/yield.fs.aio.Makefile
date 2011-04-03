@@ -82,15 +82,15 @@ depclean:
 -include $(D_FILE_PATHS)
 
 
-../../../../lib/yield/libyield_aio.a
+../../../../lib/yield/libyield_aio.a:
 	$(MAKE) ../../aio/yield.aio.Makefile
 
 
-../../../../lib/yield/libyield_fs.a
+../../../../lib/yield/libyield_fs.a:
 	$(MAKE) ../yield.fs.Makefile
 
 
-../../../../lib/yield/libyield_thread.a
+../../../../lib/yield/libyield_thread.a:
 	$(MAKE) ../../thread/yield.thread.Makefile
 
 

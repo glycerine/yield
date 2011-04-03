@@ -71,7 +71,7 @@ lcov: ../../../bin/yield/yield_poll_test
 	rm -fr yield.poll_test_lcov_html-$(TIMESTAMP)
 
 
-../../../lib/yield/libyield_poll.a
+../../../lib/yield/libyield_poll.a:
 	$(MAKE) yield.poll.Makefile
 
 

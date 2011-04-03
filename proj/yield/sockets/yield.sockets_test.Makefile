@@ -71,7 +71,7 @@ lcov: ../../../bin/yield/yield_sockets_test
 	rm -fr yield.sockets_test_lcov_html-$(TIMESTAMP)
 
 
-../../../lib/yield/libyield_sockets.a
+../../../lib/yield/libyield_sockets.a:
 	$(MAKE) yield.sockets.Makefile
 
 

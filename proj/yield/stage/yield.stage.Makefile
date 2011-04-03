@@ -64,7 +64,7 @@ depclean:
 -include $(D_FILE_PATHS)
 
 
-../../../lib/yield/libyield_thread.a
+../../../lib/yield/libyield_thread.a:
 	$(MAKE) ../thread/yield.thread.Makefile
 
 

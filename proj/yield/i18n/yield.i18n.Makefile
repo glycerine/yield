@@ -81,7 +81,7 @@ depclean:
 -include $(D_FILE_PATHS)
 
 
-../../../lib/yield/libyield.a
+../../../lib/yield/libyield.a:
 	$(MAKE) ../yield.Makefile
 
 
