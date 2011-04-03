@@ -287,7 +287,7 @@ lcov: %(output_file_path)s
                             )
 
                         project_reference_rules.append("""\
-%(project_reference_output_file_path)s
+%(project_reference_output_file_path)s:
     $(MAKE) %(project_reference_makefile_relpath)s
 """ % locals())
                     break
