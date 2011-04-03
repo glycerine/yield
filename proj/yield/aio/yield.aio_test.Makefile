@@ -71,7 +71,11 @@ lcov: ../../../bin/yield/yield_aio_test
 	rm -fr yield.aio_test_lcov_html-$(TIMESTAMP)
 
 
-../../../bin/yield/yield_aio_test: $(O_FILE_PATHS) ..\..\..\lib\yield\libyield_aio.a
+../../../lib/yield/libyield_aio.a
+	$(MAKE) yield.aio.Makefile
+
+
+../../../bin/yield/yield_aio_test: $(O_FILE_PATHS) ../../../lib/yield/libyield_aio.a
 	-mkdir -p ../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 

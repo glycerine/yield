@@ -34,7 +34,7 @@ from os.path import dirname, \
                     split as path_split, \
                     splitext
 
-from yutil import deduplist, indent, posixpath, posixpaths, pad, relpath, rpad
+from yutil import deduplist, indent, posixpath, posixpaths, lpad, pad, relpath, rpad
 
 from yuild.constant import C_CXX_SOURCE_FILE_FNMATCH_PATTERNS, \
                            INDENT_SPACES
@@ -232,35 +232,67 @@ lcov: %(output_file_path)s
             raise NotImplementedError, self.get_type()
         output_dir_path = my_dir_path + posixpath(output_dir_path)
         output_file_path = my_dir_path + posixpath(output_file_path)
+
         output_file_path_prerequisites = ["$(O_FILE_PATHS)"]
+        project_reference_rules = []
         for project_reference in self.get_project_references()['*']:
-            if not isfile(project_reference):
-                project_reference = \
+            project_reference_makefile_path = project_reference
+            if not isfile(project_reference_makefile_path):
+                project_reference_makefile_path = \
                     normpath(
                         path_join(
                             self.get_project_dir_path(),
-                            project_reference + ".Makefile"
+                            project_reference
                         )
                     )
-                if not isfile(project_reference):
-                    continue
-            for line in open(project_reference).readlines():
+
+                if not isfile(project_reference_makefile_path):
+                    project_reference_makefile_path = \
+                        normpath(
+                            path_join(
+                                self.get_project_dir_path(),
+                                project_reference + ".Makefile"
+                            )
+                        )
+                    if not isfile(project_reference_makefile_path):
+                        continue
+
+            for line in open(project_reference_makefile_path).readlines():
                 if line.startswith("all: "):
                     all_targets = line.split()[1:]
                     if len(all_targets) == 1:
                         project_reference_output_file_path = \
-                            relpath(
-                                normpath(
-                                    path_join(
-                                        dirname(project_reference),
-                                        all_targets[0]
-                                    )
-                                ),
-                                self.get_project_dir_path()
+                            posixpath(
+                                relpath(
+                                    normpath(
+                                        path_join(
+                                            dirname(project_reference_makefile_path),
+                                            all_targets[0]
+                                        )
+                                    ),
+                                    self.get_project_dir_path()
+                                )
                             )
-                        output_file_path_prerequisites.append(project_reference_output_file_path)
+
+                        output_file_path_prerequisites.append(
+                            project_reference_output_file_path
+                        )
+
+                        project_reference_makefile_relpath = \
+                            posixpath(
+                                relpath(
+                                    project_reference_makefile_path,
+                                    self.get_project_dir_path()
+                                )
+                            )
+
+                        project_reference_rules.append("""\
+%(project_reference_output_file_path)s
+    $(MAKE) %(project_reference_makefile_relpath)s
+""" % locals())
                     break
 
+        project_reference_rules = lpad("\n\n\n", "\n\n".join(project_reference_rules))
         output_file_path_prerequisites = ' '.join(output_file_path_prerequisites)
 
         return ("""\
@@ -282,8 +314,7 @@ clean:
 depclean:
     $(RM) $(D_FILE_PATHS)
 
--include $(D_FILE_PATHS)%(lcov_rule)s
-
+-include $(D_FILE_PATHS)%(lcov_rule)s%(project_reference_rules)s
 
 %(output_file_path)s: %(output_file_path_prerequisites)s
     -mkdir -p %(output_dir_path)s 2>/dev/null

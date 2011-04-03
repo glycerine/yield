@@ -71,7 +71,11 @@ lcov: ../../../bin/yield/yield_uri_test
 	rm -fr yield.uri_test_lcov_html-$(TIMESTAMP)
 
 
-../../../bin/yield/yield_uri_test: $(O_FILE_PATHS) ..\..\..\lib\yield\libyield_uri.a
+../../../lib/yield/libyield_uri.a
+	$(MAKE) yield.uri.Makefile
+
+
+../../../bin/yield/yield_uri_test: $(O_FILE_PATHS) ../../../lib/yield/libyield_uri.a
 	-mkdir -p ../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 

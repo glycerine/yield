@@ -74,7 +74,11 @@ lcov: ../../../bin/yield/yield_thread_test
 	rm -fr yield.thread_test_lcov_html-$(TIMESTAMP)
 
 
-../../../bin/yield/yield_thread_test: $(O_FILE_PATHS) ..\..\..\lib\yield\libyield_thread.a
+../../../lib/yield/libyield_thread.a
+	$(MAKE) yield.thread.Makefile
+
+
+../../../bin/yield/yield_thread_test: $(O_FILE_PATHS) ../../../lib/yield/libyield_thread.a
 	-mkdir -p ../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 

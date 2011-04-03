@@ -64,7 +64,15 @@ depclean:
 -include $(D_FILE_PATHS)
 
 
-../../../../lib/yield/libyield_sockets_poll.a: $(O_FILE_PATHS) ..\..\..\..\lib\yield\libyield_poll.a ..\..\..\..\lib\yield\libyield_sockets.a
+../../../../lib/yield/libyield_poll.a
+	$(MAKE) ../../poll/yield.poll.Makefile
+
+
+../../../../lib/yield/libyield_sockets.a
+	$(MAKE) ../yield.sockets.Makefile
+
+
+../../../../lib/yield/libyield_sockets_poll.a: $(O_FILE_PATHS) ../../../../lib/yield/libyield_poll.a ../../../../lib/yield/libyield_sockets.a
 	-mkdir -p ../../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(O_FILE_PATHS)
 

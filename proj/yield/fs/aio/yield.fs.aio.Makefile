@@ -82,7 +82,19 @@ depclean:
 -include $(D_FILE_PATHS)
 
 
-../../../../lib/yield/libyield_fs_aio.a: $(O_FILE_PATHS) ..\..\..\..\lib\yield\libyield_aio.a ..\..\..\..\lib\yield\libyield_fs.a ..\..\..\..\lib\yield\libyield_thread.a
+../../../../lib/yield/libyield_aio.a
+	$(MAKE) ../../aio/yield.aio.Makefile
+
+
+../../../../lib/yield/libyield_fs.a
+	$(MAKE) ../yield.fs.Makefile
+
+
+../../../../lib/yield/libyield_thread.a
+	$(MAKE) ../../thread/yield.thread.Makefile
+
+
+../../../../lib/yield/libyield_fs_aio.a: $(O_FILE_PATHS) ../../../../lib/yield/libyield_aio.a ../../../../lib/yield/libyield_fs.a ../../../../lib/yield/libyield_thread.a
 	-mkdir -p ../../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(O_FILE_PATHS)
 

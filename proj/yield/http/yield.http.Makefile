@@ -61,7 +61,11 @@ depclean:
 -include $(D_FILE_PATHS)
 
 
-../../../lib/yield/libyield_http.a: $(O_FILE_PATHS) ..\..\..\lib\yield\libyield_uri.a
+../../../lib/yield/libyield_uri.a
+	$(MAKE) ../uri/yield.uri.Makefile
+
+
+../../../lib/yield/libyield_http.a: $(O_FILE_PATHS) ../../../lib/yield/libyield_uri.a
 	-mkdir -p ../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(O_FILE_PATHS)
 

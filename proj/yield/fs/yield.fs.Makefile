@@ -87,7 +87,11 @@ depclean:
 -include $(D_FILE_PATHS)
 
 
-../../../lib/yield/libyield_fs.a: $(O_FILE_PATHS) ..\..\..\lib\yield\libyield_i18n.a
+../../../lib/yield/libyield_i18n.a
+	$(MAKE) ../i18n/yield.i18n.Makefile
+
+
+../../../lib/yield/libyield_fs.a: $(O_FILE_PATHS) ../../../lib/yield/libyield_i18n.a
 	-mkdir -p ../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(O_FILE_PATHS)
 

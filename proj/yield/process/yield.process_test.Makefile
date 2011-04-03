@@ -77,7 +77,11 @@ lcov: ../../../bin/yield/yield_process_test
 	rm -fr yield.process_test_lcov_html-$(TIMESTAMP)
 
 
-../../../bin/yield/yield_process_test: $(O_FILE_PATHS) ..\..\..\lib\yield\libyield_process.a
+../../../lib/yield/libyield_process.a
+	$(MAKE) yield.process.Makefile
+
+
+../../../bin/yield/yield_process_test: $(O_FILE_PATHS) ../../../lib/yield/libyield_process.a
 	-mkdir -p ../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 

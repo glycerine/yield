@@ -77,7 +77,11 @@ lcov: ../../../../bin/yield/yield_http_server_test
 	rm -fr yield.http.server_test_lcov_html-$(TIMESTAMP)
 
 
-../../../../bin/yield/yield_http_server_test: $(O_FILE_PATHS) ..\..\..\..\lib\yield\libyield_http_server.a
+../../../../lib/yield/libyield_http_server.a
+	$(MAKE) yield.http.server.Makefile
+
+
+../../../../bin/yield/yield_http_server_test: $(O_FILE_PATHS) ../../../../lib/yield/libyield_http_server.a
 	-mkdir -p ../../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 
