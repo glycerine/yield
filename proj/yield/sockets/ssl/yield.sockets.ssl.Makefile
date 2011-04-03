@@ -62,7 +62,7 @@ depclean:
 
 
 ../../../../lib/yield/libyield_sockets.a:
-	$(MAKE) ../yield.sockets.Makefile
+	$(MAKE) -C .. yield.sockets.Makefile
 
 
 ../../../../lib/yield/libyield_sockets_ssl.a: $(O_FILE_PATHS) ../../../../lib/yield/libyield_sockets.a

@@ -72,7 +72,7 @@ lcov: ../../../bin/yield/yield_uri_test
 
 
 ../../../lib/yield/libyield_uri.a:
-	$(MAKE) yield.uri.Makefile
+	$(MAKE) -C . yield.uri.Makefile
 
 
 ../../../bin/yield/yield_uri_test: $(O_FILE_PATHS) ../../../lib/yield/libyield_uri.a

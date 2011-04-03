@@ -75,7 +75,7 @@ lcov: ../../../../bin/yield/yield_sockets_aio_test
 
 
 ../../../../lib/yield/libyield_sockets_aio.a:
-	$(MAKE) yield.sockets.aio.Makefile
+	$(MAKE) -C . yield.sockets.aio.Makefile
 
 
 ../../../../bin/yield/yield_sockets_aio_test: $(O_FILE_PATHS) ../../../../lib/yield/libyield_sockets_aio.a

@@ -72,7 +72,7 @@ lcov: ../../../../bin/yield/yield_sockets_ssl_test
 
 
 ../../../../lib/yield/libyield_sockets_ssl.a:
-	$(MAKE) yield.sockets.ssl.Makefile
+	$(MAKE) -C . yield.sockets.ssl.Makefile
 
 
 ../../../../bin/yield/yield_sockets_ssl_test: $(O_FILE_PATHS) ../../../../lib/yield/libyield_sockets_ssl.a

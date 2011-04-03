@@ -78,7 +78,7 @@ lcov: ../../../../bin/yield/yield_http_server_test
 
 
 ../../../../lib/yield/libyield_http_server.a:
-	$(MAKE) yield.http.server.Makefile
+	$(MAKE) -C . yield.http.server.Makefile
 
 
 ../../../../bin/yield/yield_http_server_test: $(O_FILE_PATHS) ../../../../lib/yield/libyield_http_server.a

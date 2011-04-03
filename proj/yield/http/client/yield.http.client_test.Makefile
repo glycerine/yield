@@ -78,11 +78,11 @@ lcov: ../../../../bin/yield/yield_http_client_test
 
 
 ../../../../lib/yield/libyield_http_client.a:
-	$(MAKE) yield.http.client.Makefile
+	$(MAKE) -C . yield.http.client.Makefile
 
 
 ../../../../lib/yield/libyield_http_server.a:
-	$(MAKE) ../server/yield.http.server.Makefile
+	$(MAKE) -C ../server yield.http.server.Makefile
 
 
 ../../../../bin/yield/yield_http_client_test: $(O_FILE_PATHS) ../../../../lib/yield/libyield_http_client.a ../../../../lib/yield/libyield_http_server.a

@@ -87,7 +87,7 @@ depclean:
 
 
 ../../../lib/yield/libyield.a:
-	$(MAKE) ../yield.Makefile
+	$(MAKE) -C .. yield.Makefile
 
 
 ../../../lib/yield/libyield_thread.a: $(O_FILE_PATHS) ../../../lib/yield/libyield.a

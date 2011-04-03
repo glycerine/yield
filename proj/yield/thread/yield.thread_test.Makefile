@@ -75,7 +75,7 @@ lcov: ../../../bin/yield/yield_thread_test
 
 
 ../../../lib/yield/libyield_thread.a:
-	$(MAKE) yield.thread.Makefile
+	$(MAKE) -C . yield.thread.Makefile
 
 
 ../../../bin/yield/yield_thread_test: $(O_FILE_PATHS) ../../../lib/yield/libyield_thread.a

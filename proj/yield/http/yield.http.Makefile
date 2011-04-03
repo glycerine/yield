@@ -62,7 +62,7 @@ depclean:
 
 
 ../../../lib/yield/libyield_uri.a:
-	$(MAKE) ../uri/yield.uri.Makefile
+	$(MAKE) -C ../uri yield.uri.Makefile
 
 
 ../../../lib/yield/libyield_http.a: $(O_FILE_PATHS) ../../../lib/yield/libyield_uri.a

@@ -72,7 +72,7 @@ lcov: ../../../bin/yield/yield_aio_test
 
 
 ../../../lib/yield/libyield_aio.a:
-	$(MAKE) yield.aio.Makefile
+	$(MAKE) -C . yield.aio.Makefile
 
 
 ../../../bin/yield/yield_aio_test: $(O_FILE_PATHS) ../../../lib/yield/libyield_aio.a

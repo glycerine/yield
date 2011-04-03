@@ -93,7 +93,7 @@ lcov: ../../../../bin/yield/yield_fs_aio_test
 
 
 ../../../../lib/yield/libyield_fs_aio.a:
-	$(MAKE) yield.fs.aio.Makefile
+	$(MAKE) -C . yield.fs.aio.Makefile
 
 
 ../../../../bin/yield/yield_fs_aio_test: $(O_FILE_PATHS) ../../../../lib/yield/libyield_fs_aio.a

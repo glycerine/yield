@@ -278,17 +278,21 @@ lcov: %(output_file_path)s
                             project_reference_output_file_path
                         )
 
-                        project_reference_makefile_relpath = \
+                        project_reference_makefile_dir_path, \
+                            project_reference_makefile_name = \
+                                path_split(project_reference_makefile_path)
+
+                        project_reference_makefile_dir_relpath = \
                             posixpath(
                                 relpath(
-                                    project_reference_makefile_path,
+                                    project_reference_makefile_dir_path,
                                     self.get_project_dir_path()
                                 )
                             )
 
                         project_reference_rules.append("""\
 %(project_reference_output_file_path)s:
-    $(MAKE) %(project_reference_makefile_relpath)s
+    $(MAKE) -C %(project_reference_makefile_dir_relpath)s %(project_reference_makefile_name)s
 """ % locals())
                     break
 

@@ -78,7 +78,7 @@ lcov: ../../../bin/yield/yield_process_test
 
 
 ../../../lib/yield/libyield_process.a:
-	$(MAKE) yield.process.Makefile
+	$(MAKE) -C . yield.process.Makefile
 
 
 ../../../bin/yield/yield_process_test: $(O_FILE_PATHS) ../../../lib/yield/libyield_process.a

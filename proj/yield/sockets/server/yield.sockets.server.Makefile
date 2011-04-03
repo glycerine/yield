@@ -65,11 +65,11 @@ depclean:
 
 
 ../../../../lib/yield/libyield_sockets_aio.a:
-	$(MAKE) ../aio/yield.sockets.aio.Makefile
+	$(MAKE) -C ../aio yield.sockets.aio.Makefile
 
 
 ../../../../lib/yield/libyield_stage.a:
-	$(MAKE) ../../stage/yield.stage.Makefile
+	$(MAKE) -C ../../stage yield.stage.Makefile
 
 
 ../../../../lib/yield/libyield_sockets_server.a: $(O_FILE_PATHS) ../../../../lib/yield/libyield_sockets_aio.a ../../../../lib/yield/libyield_stage.a

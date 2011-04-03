@@ -65,11 +65,11 @@ depclean:
 
 
 ../../../../lib/yield/libyield_http.a:
-	$(MAKE) ../yield.http.Makefile
+	$(MAKE) -C .. yield.http.Makefile
 
 
 ../../../../lib/yield/libyield_sockets_client.a:
-	$(MAKE) ../../sockets/client/yield.sockets.client.Makefile
+	$(MAKE) -C ../../sockets/client yield.sockets.client.Makefile
 
 
 ../../../../lib/yield/libyield_http_client.a: $(O_FILE_PATHS) ../../../../lib/yield/libyield_http.a ../../../../lib/yield/libyield_sockets_client.a

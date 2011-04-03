@@ -72,7 +72,7 @@ lcov: ../../../bin/yield/yield_sockets_test
 
 
 ../../../lib/yield/libyield_sockets.a:
-	$(MAKE) yield.sockets.Makefile
+	$(MAKE) -C . yield.sockets.Makefile
 
 
 ../../../bin/yield/yield_sockets_test: $(O_FILE_PATHS) ../../../lib/yield/libyield_sockets.a

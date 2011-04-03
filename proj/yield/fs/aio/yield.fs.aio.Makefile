@@ -83,15 +83,15 @@ depclean:
 
 
 ../../../../lib/yield/libyield_aio.a:
-	$(MAKE) ../../aio/yield.aio.Makefile
+	$(MAKE) -C ../../aio yield.aio.Makefile
 
 
 ../../../../lib/yield/libyield_fs.a:
-	$(MAKE) ../yield.fs.Makefile
+	$(MAKE) -C .. yield.fs.Makefile
 
 
 ../../../../lib/yield/libyield_thread.a:
-	$(MAKE) ../../thread/yield.thread.Makefile
+	$(MAKE) -C ../../thread yield.thread.Makefile
 
 
 ../../../../lib/yield/libyield_fs_aio.a: $(O_FILE_PATHS) ../../../../lib/yield/libyield_aio.a ../../../../lib/yield/libyield_fs.a ../../../../lib/yield/libyield_thread.a

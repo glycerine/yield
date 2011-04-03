@@ -75,7 +75,7 @@ lcov: ../../../bin/yield/yield_stage_test
 
 
 ../../../lib/yield/libyield_stage.a:
-	$(MAKE) yield.stage.Makefile
+	$(MAKE) -C . yield.stage.Makefile
 
 
 ../../../bin/yield/yield_stage_test: $(O_FILE_PATHS) ../../../lib/yield/libyield_stage.a
