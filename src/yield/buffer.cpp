@@ -67,15 +67,13 @@ Buffer::~Buffer() {
 }
 
 void Buffer::alloc(size_t alignment, size_t capacity) {
-  if (alignment % 2 == 0) {
-    capacity_ = (capacity + alignment - 1) / alignment * alignment;
+  //capacity_ = (capacity + alignment - 1) / alignment * alignment;
+  capacity_ = capacity;
 #ifdef _WIN32
-    if ((data_ = _aligned_malloc(capacity_, alignment)) == NULL)
+  if ((data_ = _aligned_malloc(capacity_, alignment)) == NULL)
 #else
-    if (posix_memalign(&data_, alignment, capacity_) != 0)
+  if (posix_memalign(&data_, alignment, capacity_) != 0)
 #endif
-      throw std::bad_alloc();
-  } else
     throw std::bad_alloc();
 }
 
@@ -115,12 +113,6 @@ bool Buffer::is_page_aligned(const void* ptr) {
          ) == 0;
 }
 
-bool Buffer::is_page_aligned(size_t capacity, const void* data) {
-  return (capacity & (getpagesize() - 1)) == 0
-         &&
-         is_page_aligned(data);
-}
-
 bool Buffer::operator==(const Buffer& other) const {
   if (size() == other.size()) {
     const void* this_data = static_cast<const void*>(*this);
@@ -139,7 +131,7 @@ void Buffer::put(char data, size_t repeat_count) {
 }
 
 void Buffer::put(const void* data, size_t size) {
-  if (size_ + size < capacity_) {
+  if (size_ + size <= capacity_) {
     memcpy_s(
       static_cast<char*>(data_) + size_,
       capacity_ - size_,

@@ -108,15 +108,14 @@ public:
   static size_t getpagesize();
 
   bool is_page_aligned() const {
-    return is_page_aligned(capacity(), data());
+    return is_page_aligned(data());
   }
 
   static bool is_page_aligned(const iovec& iov) {
-    return is_page_aligned(iov.iov_len, iov.iov_base);
+    return is_page_aligned(iov.iov_base);
   }
 
   static bool is_page_aligned(const void* data);
-  static bool is_page_aligned(size_t capacity, const void* data);
 
 public:
   operator char* () {
@@ -156,6 +155,10 @@ public:
 public:
   void put(const Buffer& data) {
     put(data, data.size());
+  }
+
+  void put(char data) {
+    put(data, 1);
   }
 
   void put(const char* data) {
