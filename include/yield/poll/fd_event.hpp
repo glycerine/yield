@@ -69,6 +69,12 @@ public:
     : events(events), fd(fd)
   { }
 
+#ifdef _WIN32
+  FDEvent(uint16_t events, socket_t socket_)
+    : events(events), fd(socket_to_fd(socket_))
+  { }
+#endif
+
 public:
   uint16_t get_events() const {
     return events;
@@ -76,6 +82,10 @@ public:
 
   fd_t get_fd() const {
     return fd;
+  }
+
+  socket_t get_socket() const {
+    return fd_to_socket(get_fd());
   }
 
 public:

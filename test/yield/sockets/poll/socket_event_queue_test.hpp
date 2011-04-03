@@ -144,10 +144,10 @@ public:
 
     auto_Object<SocketEvent> socket_event
       = object_cast<SocketEvent>(this->get_socket_event_queue().dequeue());
-    throw_assert_eq(socket_event->get_socket(), this->get_write_socket());
+    throw_assert_eq(socket_event->get_fd(), this->get_write_socket());
     throw_assert_ne(*socket_event & POLLIN, 0);
     char m;
-    if (socket_event->get_fd() == this->get_read_socket())
+    if (socket_event->get_socket() == this->get_read_socket())
       this->get_read_socket().recv(&m, 1, 0);
     else
       this->get_write_socket().recv(&m, 1, 0);
@@ -210,8 +210,7 @@ public:
       auto_Object<SocketEvent> socket_event
       = object_cast<SocketEvent>(this->get_socket_event_queue().dequeue());
 
-      throw_assert
-      (
+      throw_assert(
         socket_event->get_socket() == this->get_read_socket()
         ||
         socket_event->get_socket() == this->get_write_socket()

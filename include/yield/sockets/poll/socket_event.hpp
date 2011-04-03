@@ -32,39 +32,10 @@
 
 #include "yield/poll/fd_event.hpp"
 
-
 namespace yield {
 namespace sockets {
 namespace poll {
-class SocketEvent : public yield::poll::FDEvent {
-public:
-  const static uint32_t TYPE_ID = 858162022UL;
-
-public:
-  SocketEvent(uint16_t events, socket_t socket_)
-    : FDEvent(events, socket_to_fd(socket_))
-  { }
-
-public:
-  socket_t get_socket() const {
-    return fd_to_socket(get_fd());
-  }
-
-public:
-  void set_socket(socket_t s) {
-    set_fd(socket_to_fd(s));
-  }
-
-public:
-  // yield::Object
-  uint32_t get_type_id() const {
-    return TYPE_ID;
-  }
-
-  const char* get_type_name() const {
-    return "yield::sockets::poll::SocketEvent";
-  }
-};
+typedef yield::poll::FDEvent SocketEvent;
 }
 }
 }
