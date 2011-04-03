@@ -143,9 +143,14 @@ public:
     this->get_write_socket().send("m", 1, 0);
 
     auto_Object<SocketEvent> socket_event
-    = object_cast<SocketEvent>(this->get_socket_event_queue().dequeue());
+      = object_cast<SocketEvent>(this->get_socket_event_queue().dequeue());
     throw_assert_eq(socket_event->get_socket(), this->get_write_socket());
     throw_assert_ne(*socket_event & POLLIN, 0);
+    char m;
+    if (socket_event->get_fd() == this->get_read_socket())
+      this->get_read_socket().recv(&m, 1, 0);
+    else
+      this->get_write_socket().recv(&m, 1, 0);
 
     Event* event = this->get_socket_event_queue().trydequeue();
     throw_assert_eq(event, NULL);
