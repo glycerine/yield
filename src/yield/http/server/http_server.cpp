@@ -117,17 +117,13 @@ public:
 
 private:
   void handle(YO_NEW_REF HTTPMessageBodyChunk& http_message_body_chunk) {
-    sendAIOCB* send_aiocb;
+    Buffer* send_buffer;
+    if (http_message_body_chunk.data() != NULL)
+      send_buffer = &http_message_body_chunk.data()->inc_ref();
+    else
+      send_buffer = &Buffer::copy("0\r\n\r\n", 5);
 
-    if (http_message_body_chunk.data() != NULL) {
-      send_aiocb
-        = new sendAIOCB(*this, http_message_body_chunk.data()->inc_ref());
-    } else {
-      send_aiocb
-        = new sendAIOCB(*this, Buffer::copy("0\r\n\r\n", 5));
-    }
-
-    enqueue(*send_aiocb);
+    enqueue(*new sendAIOCB(*this, *send_buffer));
 
     HTTPMessageBodyChunk::dec_ref(http_message_body_chunk);
   }
