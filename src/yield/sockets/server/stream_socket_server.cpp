@@ -36,7 +36,6 @@
 #include "yield/sockets/server/stream_socket_server.hpp"
 #include "yield/sockets/stream_socket.hpp"
 
-
 namespace yield {
 namespace sockets {
 namespace server {
@@ -62,7 +61,7 @@ StreamSocketServer::StreamSocketServer(
     get_aio_queue().associate(socket_)
   ) {
     acceptAIOCB* accept_aiocb
-      = new acceptAIOCB(socket_, new Buffer(Buffer::getpagesize()));
+      = new acceptAIOCB(socket_, new Buffer(Buffer::getpagesize(), Buffer::getpagesize()));
     enqueue(*accept_aiocb);
   } else
     throw Exception();

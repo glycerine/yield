@@ -103,6 +103,14 @@ public:
       accept_aiocb.get_return() > 0
     )
       parse(*accept_aiocb.get_recv_buffer());
+    else {
+      enqueue(
+        *new recvAIOCB(
+               *this,
+               *new Buffer(Buffer::getpagesize(), Buffer::getpagesize())
+             )
+      );
+    }
 
     acceptAIOCB::dec_ref(accept_aiocb);
   }

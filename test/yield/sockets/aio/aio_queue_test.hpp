@@ -107,12 +107,15 @@ public:
       throw_assert_eq((*buffer)[0], 'm');
     }
 
+#ifdef _WIN32
     {
       for (uint8_t i = 0; i < 2; i++) {
         recvAIOCB* aiocb = new recvAIOCB(sockets.first(), *new Buffer(2), 0);
         if (!this->get_aio_queue().enqueue(*aiocb))
           throw Exception();
       }
+
+      this->get_aio_queue().dequeue(0.1); // Sleep
 
       sockets.second().send("test", 4, 0);
 
@@ -161,7 +164,7 @@ public:
         throw_assert_eq(out_aiocb->get_buffer().size(), 2);
       }
     }
-
+#endif
   }
 };
 

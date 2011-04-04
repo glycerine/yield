@@ -32,6 +32,7 @@
 #include "yield/exception.hpp"
 #include "yield/poll/fd_event.hpp"
 
+#include <iostream>
 #include <errno.h>
 #include <sys/epoll.h>
 #include <sys/eventfd.h>
@@ -98,8 +99,13 @@ YO_NEW_REF Event* EPoller::dequeue(const Time& timeout) {
       return NonBlockingConcurrentQueue<Event, 32>::trydequeue();
     } else
       return new FDEvent(epoll_event_.events, epoll_event_.data.fd);
-  } else
+  } else if (ret == 0 || errno == EINTR)
     return NULL;
+  else {
+     std::cerr << "EPoller: encountered unexpected error: " << Exception() << std::endl;
+     DebugBreak();
+     return NULL;
+  }
 }
 
 bool EPoller::dissociate(fd_t fd) {
