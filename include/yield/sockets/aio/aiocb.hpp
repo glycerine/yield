@@ -61,6 +61,12 @@ public:
     this->next_aiocb = next_aiocb;
   }
 
+public:
+  // yield::Object
+  AIOCB& inc_ref() {
+    return Object::inc_ref(*this);
+  }
+
 protected:
   AIOCB(Socket& socket_)
     : yield::aio::AIOCB(socket_, 0) {

@@ -103,23 +103,27 @@ public:
       accept_aiocb.get_return() > 0
     )
       parse(*accept_aiocb.get_recv_buffer());
+    else {
+      enqueue(
+        *new recvAIOCB(
+               *this,
+               *new Buffer(Buffer::getpagesize(), Buffer::getpagesize())
+             )
+      );
+    }
 
     acceptAIOCB::dec_ref(accept_aiocb);
   }
 
 private:
   void handle(YO_NEW_REF HTTPMessageBodyChunk& http_message_body_chunk) {
-    sendAIOCB* send_aiocb;
+    Buffer* send_buffer;
+    if (http_message_body_chunk.data() != NULL)
+      send_buffer = &http_message_body_chunk.data()->inc_ref();
+    else
+      send_buffer = &Buffer::copy("0\r\n\r\n", 5);
 
-    if (http_message_body_chunk.data() != NULL) {
-      send_aiocb
-        = new sendAIOCB(*this, http_message_body_chunk.data()->inc_ref());
-    } else {
-      send_aiocb
-        = new sendAIOCB(*this, Buffer::copy("0\r\n\r\n", 5));
-    }
-
-    enqueue(*send_aiocb);
+    enqueue(*new sendAIOCB(*this, *send_buffer));
 
     HTTPMessageBodyChunk::dec_ref(http_message_body_chunk);
   }

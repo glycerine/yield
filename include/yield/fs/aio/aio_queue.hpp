@@ -39,11 +39,11 @@
 namespace yield {
 namespace fs {
 namespace aio {
-#ifdef _WIN32
-typedef win32::AIOQueue AIOQueue;
-#else
+//#ifdef _WIN32
+//typedef win32::AIOQueue AIOQueue;
+//#else
 typedef posix::AIOQueue AIOQueue;
-#endif
+//#endif
 }
 }
 }

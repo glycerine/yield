@@ -31,6 +31,7 @@
 #define _YIELD_SOCKETS_AIO_NBIO_QUEUE_HPP_
 
 #include "yield/event_queue.hpp"
+#include "yield/sockets/aio/aiocb.hpp"
 #include "yield/sockets/poll/socket_event_queue.hpp"
 
 #include <map>
@@ -68,8 +69,17 @@ public:
   }
 
 private:
-  std::map<socket_t, AIOCB*> issued_aiocbs;
+  class SocketState {
+  public:
+    SocketState() {
+      memset(aiocb_queues, 0, sizeof(aiocb_queues));
+    }
+
+    AIOCB* aiocb_queues[4]; // accept, connect, send, recv
+  };
+
   yield::sockets::poll::SocketEventQueue socket_event_queue;
+  std::map<socket_t, SocketState*> state;
 };
 }
 }
