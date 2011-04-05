@@ -30,7 +30,7 @@
 #ifndef _YIELD_FS_AIO_POSIX_AIO_QUEUE_HPP_
 #define _YIELD_FS_AIO_POSIX_AIO_QUEUE_HPP_
 
-#include "yield/event_queue.hpp"
+#include "yield/aio/posix/aio_queue.hpp"
 
 namespace yield {
 namespace thread {
@@ -42,17 +42,10 @@ namespace aio {
 class AIOCB;
 
 namespace posix {
-class AIOQueue : public EventQueue {
+class AIOQueue : public yield::aio::posix::AIOQueue {
 public:
   AIOQueue();
   ~AIOQueue();
-
-public:
-  bool associate(fd_t) {
-    return true;
-  }
-
-  bool enqueue(YO_NEW_REF AIOCB& aiocb);
 
 public:
   // yield::EventQueue

@@ -36,11 +36,14 @@
 
 #include <map>
 
-
 namespace yield {
 namespace sockets {
 namespace aio {
 class AIOCB;
+class acceptAIOCB;
+class connectAIOCB;
+class recvAIOCB;
+class sendAIOCB;
 
 class NBIOQueue : public EventQueue {
 public:
@@ -69,6 +72,13 @@ public:
   }
 
 private:
+  enum RetryStatus {
+    RETRY_STATUS_COMPLETE,
+    RETRY_STATUS_ERROR,
+    RETRY_STATUS_WANT_READ,
+    RETRY_STATUS_WANT_WRITE
+  };
+
   class SocketState {
   public:
     SocketState() {
@@ -78,6 +88,14 @@ private:
     AIOCB* aiocb_queues[4]; // accept, connect, send, recv
   };
 
+private:
+  RetryStatus retry(AIOCB& aiocb);
+  RetryStatus retry(acceptAIOCB& accept_aiocb);
+  RetryStatus retry(connectAIOCB& connect_aiocb);
+  RetryStatus retry(recvAIOCB& recv_aiocb);
+  RetryStatus retry(sendAIOCB& send_aiocb);
+
+private:
   yield::sockets::poll::SocketEventQueue socket_event_queue;
   std::map<socket_t, SocketState*> state;
 };

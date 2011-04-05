@@ -106,27 +106,7 @@
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
-    <ClCompile Include="..\..\..\..\src\yield\fs\aio\fdatasync_aiocb.cpp">
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\fs\aio\fsync_aiocb.cpp">
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\fs\aio\posix\aio_queue.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\fs\aio\posix\fdatasync_aiocb.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\fs\aio\posix\fsync_aiocb.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\fs\aio\posix\pread_aiocb.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\fs\aio\posix\pwrite_aiocb.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -134,24 +114,8 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\fs\aio\pwrite_aiocb.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\fs\aio\setlk_aiocb.cpp">
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\fs\aio\unlk_aiocb.cpp">
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\fs\aio\win32\aio_queue.cpp">
       <ObjectFileName>$(IntDir)win32\aio_queue.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\fs\aio\win32\pread_aiocb.cpp">
-      <ObjectFileName>$(IntDir)win32\pread_aiocb.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\fs\aio\win32\pwrite_aiocb.cpp">
-      <ObjectFileName>$(IntDir)win32\pwrite_aiocb.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\fs\aio\win32\setlk_aiocb.cpp">
-      <ObjectFileName>$(IntDir)win32\setlk_aiocb.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\fs\aio\win32\unlk_aiocb.cpp">
-      <ObjectFileName>$(IntDir)win32\unlk_aiocb.obj</ObjectFileName>
     </ClCompile>
   </ItemGroup>
 

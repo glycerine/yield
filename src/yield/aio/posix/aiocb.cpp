@@ -28,7 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/assert.hpp"
-#include "yield/aio/posix/aio_queue.hpp"
+#include "yield/aio/posix/completion_handler.hpp"
 #include "yield/aio/posix/aiocb.hpp"
 
 namespace yield {
@@ -43,29 +43,29 @@ AIOCB::AIOCB(fd_t fd, uint64_t offset) {
   aiocb_.aio_sigevent.sigev_notify_function = aio_notify_function;
   aiocb_.aio_sigevent.sigev_value.sival_ptr = this;
 
-  aio_queue = NULL;
+  completion_handler = NULL;
   error = 0;
   return_ = -1;
 }
 
 AIOCB::~AIOCB() {
-  EventHandler::dec_ref(aio_queue);
+  EventHandler::dec_ref(completion_handler);
 }
 
 bool AIOCB::cancel() {
   return aio_cancel(aiocb_.aio_fildes, *this) == AIO_CANCELED;
 }
 
-static void AIOCB::notify_function(sigval_t sigval) {
+static void AIOQueue::notify_function(sigval_t sigval) {
   AIOCB& aiocb = *static_cast<AIOCB*>(sigval.sival_ptr);
   aiocb.set_error(aio_error(aiocb));
   aiocb.set_return(aio_return(aiocb));
-  aiocb.aio_queue->handle(aiocb);
+  aiocb.get_completion_handler()->handle(aiocb);
 }
 
-void AIOCB::set_aio_queue(AIOQueue& aio_queue) {
-  AIOQueue::dec_ref(this->aio_queue);
-  this->aio_queue = &aio_queue.inc_ref();
+void AIOCB::set_completion_handler(EventHandler& completion_handler) {
+  EventHandler::dec_ref(this->completion_handler);
+  this->completion_handler = &completion_handler.inc_ref();
 }
 }
 }

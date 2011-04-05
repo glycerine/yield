@@ -35,18 +35,6 @@
 namespace yield {
 namespace fs {
 namespace aio {
-preadAIOCB::preadAIOCB(
-  File& file,
-  YO_NEW_REF Buffer& buffer,
-  uint64_t offset
-) : AIOCB(file, offset),
-    buffer(buffer) {
-}
-
-preadAIOCB::~preadAIOCB() {
-  Buffer::dec_ref(buffer);
-}
-
 void preadAIOCB::set_return(ssize_t return_) {
   if (return_ >= 0) {
     Buffer* buffer = &get_buffer();
@@ -67,43 +55,43 @@ void preadAIOCB::set_return(ssize_t return_) {
   AIOCB::set_return(return_);
 }
 
-preadAIOCB::RetryStatus preadAIOCB::retry() {
-  ssize_t return_;
-
-  if (get_buffer().get_next_buffer() == NULL) {   // pread
-    return_
-    = get_file().pread(
-        static_cast<char*>(get_buffer()) + get_buffer().size(),
-        get_buffer().capacity() - get_buffer().size(),
-        get_offset()
-      );
-  } else { // preadv
-    vector<iovec> iov;
-    Buffer* buffer = &get_buffer();
-    do {
-      iovec page_iov;
-      page_iov.iov_base = static_cast<char*>(*buffer) + buffer->size();
-      page_iov.iov_len = buffer->capacity() - buffer->size();
-      iov.push_back(page_iov);
-      buffer = buffer->get_next_buffer();
-    } while (buffer != NULL);
-
-    return_
-    = get_file().preadv(
-        &iov[0],
-        iov.size(),
-        get_offset()
-      );
-  }
-
-  if (return_ >= 0) {
-    set_return(return_);
-    return RETRY_STATUS_COMPLETE;
-  } else {
-    set_error(Exception::get_last_error_code());
-    return RETRY_STATUS_ERROR;
-  }
-}
+//preadAIOCB::RetryStatus preadAIOCB::retry() {
+//  ssize_t return_;
+//
+//  if (get_buffer().get_next_buffer() == NULL) {   // pread
+//    return_
+//    = get_file().pread(
+//        static_cast<char*>(get_buffer()) + get_buffer().size(),
+//        get_buffer().capacity() - get_buffer().size(),
+//        get_offset()
+//      );
+//  } else { // preadv
+//    vector<iovec> iov;
+//    Buffer* buffer = &get_buffer();
+//    do {
+//      iovec page_iov;
+//      page_iov.iov_base = static_cast<char*>(*buffer) + buffer->size();
+//      page_iov.iov_len = buffer->capacity() - buffer->size();
+//      iov.push_back(page_iov);
+//      buffer = buffer->get_next_buffer();
+//    } while (buffer != NULL);
+//
+//    return_
+//    = get_file().preadv(
+//        &iov[0],
+//        iov.size(),
+//        get_offset()
+//      );
+//  }
+//
+//  if (return_ >= 0) {
+//    set_return(return_);
+//    return RETRY_STATUS_COMPLETE;
+//  } else {
+//    set_error(Exception::get_last_error_code());
+//    return RETRY_STATUS_ERROR;
+//  }
+//}
 }
 }
 }

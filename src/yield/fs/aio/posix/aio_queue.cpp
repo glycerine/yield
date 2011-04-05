@@ -52,20 +52,52 @@ YO_NEW_REF Event& AIOQueue::dequeue() {
   return completed_event_queue->dequeue();
 }
 
-YO_NEW_REF Event* AIOQueue::dequeue(const Time& timeout) {
-  return completed_event_queue->dequeue(timeout);
-}
-
-bool AIOQueue::enqueue(YO_NEW_REF AIOCB& aiocb) {
-  return aiocb.issue(*completed_event_queue);
-}
-
 bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
   switch (event.get_type_id()) {
-  case fsyncAIOCB::TYPE_ID:
-  case preadAIOCB::TYPE_ID:
-  case pwriteAIOCB::TYPE_ID:
-    return enqueue(static_cast<AIOCB&>(event));
+  case fdatasyncAIOCB::TYPE_ID: {
+    fdatasyncAIOCB& fdatasync_aiocb = static_cast<fdatasyncAIOCB&>(event);
+    fdatasync_aiocb.set_completion_handler(*completed_event_queue);
+    return aio_fsync(O_DSYNC, fdatasync_aiocb) == 0;
+  }
+  break;
+
+  case fsyncAIOCB::TYPE_ID: {
+    fsyncAIOCB& fsync_aiocb = static_cast<fsyncAIOCB&>(event);
+    fsync_aiocb.set_completion_handler(*completed_event_queue);
+    return aio_fsync(O_SYNC, fsync_aiocb) == 0;
+  }
+  break;
+
+  case preadAIOCB::TYPE_ID: {
+    preadAIOCB& pread_aiocb = static_cast<preadAIOCB&>(event);
+    if (pread_aiocb.get_buffer().get_next_buffer() == NULL) {
+      pread_aiocb.set_completion_handler(*completed_event_queue);
+      aiocb* aiocb_ = pread_aiocb;
+      aiocb_->aio_nbytes = get_buffer().capacity() - get_buffer().size();
+      return aio_read(aiocb_) == 0;
+    } else {
+      pread_aiocb.set_error(ENOTSUP);
+      return completed_event_queue->enqueue(pread_aiocb);
+    }
+  }
+  break;
+
+  case pwriteAIOCB::TYPE_ID {
+    pwriteAIOCB& pwrite_aiocb = static_cast<pwriteAIOCB&>(event);
+    if (pwrite_aicob.get_buffer().get_next_buffer() == NULL) {
+      pwrite_aicob.set_completion_handler(completion_handler);
+      aiocb* aiocb_ = pwrite_aiocb;
+      aiocb_->aio_nbytes = get_buffer().size();
+      return aio_write(aiocb_) == 0;
+    } else {
+      pwrite_aiocb.set_error(ENOTSUP);
+      return completed_event_queue->enqueue(pwrite_aiocb);
+    }
+  }
+  break;
+
+  case setlkAIOCB::TYPE_ID:
+  case unlkAIOCB::TYPE_ID: DebugBreak(); return false;
 
   default:
     return completed_event_queue->enqueue(event);

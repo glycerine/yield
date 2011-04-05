@@ -40,8 +40,14 @@ public:
   const static uint32_t TYPE_ID = 1080008554UL;
 
 public:
-  pwriteAIOCB(File& file, YO_NEW_REF Buffer& buffer, uint64_t offset);
-  ~pwriteAIOCB();
+  pwriteAIOCB(File& file, YO_NEW_REF Buffer& buffer, uint64_t offset)
+    : AIOCB(file, offset),
+        buffer(buffer) {
+  }
+  
+  ~pwriteAIOCB() {
+    Buffer::dec_ref(buffer);
+  }
 
 public:
   Buffer& get_buffer() const {

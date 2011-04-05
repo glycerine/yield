@@ -37,13 +37,15 @@
 namespace yield {
 namespace aio {
 namespace posix {
-class AIOQueue;
-
 class AIOCB : public Event {
 public:
   virtual ~AIOCB();
 
 public:
+  EventHandler* get_completion_handler() {
+    return completion_handler;
+  }
+
   uint32_t get_error() const {
     return error;
   }
@@ -62,6 +64,8 @@ public:
   }
 
 public:
+  void set_completion_handler(EventHandler& completion_handler);
+
   void set_error(uint32_t error) {
     this->error = error;
   }
@@ -79,15 +83,12 @@ public:
 protected:
   AIOCB(fd_t, uint64_t offset);
 
-protected:
+private:
   static void notify_function(sigval_t sigval);
-
-protected:
-  void set_aio_queue(AIOQueue& aio_queue);
 
 private:
   aiocb aiocb_;
-  AIOQueue* aio_queue;
+  EventHandler* completion_handler;
   uint32_t error;
   ssize_t return_;
 };

@@ -59,35 +59,6 @@ void recvAIOCB::set_return(ssize_t return_) {
 
   AIOCB::set_return(return_);
 }
-
-recvAIOCB::RetryStatus recvAIOCB::retry() {
-  ssize_t recv_ret;
-
-  if (get_buffer().get_next_buffer() == NULL) {
-    recv_ret
-    = get_socket().recvfrom(
-        static_cast<char*>(get_buffer()) + get_buffer().size(),
-        get_buffer().capacity() - get_buffer().size(),
-        get_flags(),
-        get_peername()
-      );
-  } else {
-    DebugBreak();
-    recv_ret = -1;
-  }
-
-  if (recv_ret >= 0) {
-    set_return(recv_ret);
-    return RETRY_STATUS_COMPLETE;
-  } else if (get_socket().want_recv())
-    return RETRY_STATUS_WANT_READ;
-  else if (get_socket().want_send())
-    return RETRY_STATUS_WANT_WRITE;
-  else {
-    set_error(Exception::get_last_error_code());
-    return RETRY_STATUS_ERROR;
-  }
-}
 }
 }
 }

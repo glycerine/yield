@@ -27,6 +27,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "yield/fs/aio/fdatasync_aiocb.hpp"
 #include "yield/fs/aio/fsync_aiocb.hpp"
 #include "yield/fs/aio/pread_aiocb.hpp"
 #include "yield/fs/aio/pwrite_aiocb.hpp"
@@ -42,15 +43,127 @@ namespace aio {
 namespace win32 {
 bool AIOQueue::enqueue(Event& event) {
   switch (event.get_type_id()) {
-  case fsyncAIOCB::TYPE_ID:
-  case preadAIOCB::TYPE_ID:
-  case pwriteAIOCB::TYPE_ID:
-  case setlkAIOCB::TYPE_ID:
-  case unlkAIOCB::TYPE_ID:
-    return yield::aio::win32::AIOQueue::enqueue(static_cast<AIOCB&>(event));
+  case fdatasyncAIOCB::TYPE_ID: {
+  case fsyncAIOCB::TYPE_ID: {
+    AIOCB& aiocb = static_cast<AIOCB&>(event);
+    if (aiocb.get_file().sync()) {
+      aiocb.set_error(0);
+      return yield::aio::win32::AIOQueue::enqueue(event);
+    } else {
+      aiocb.set_error(GetLastError());
+      return yield::aio::win32::AIOQueue::enqueue(event);
+    }
+  }
+  break;
+
+  case preadAIOCB::TYPE_ID: {
+    preadAIOCB& pread_aiocb = static_cast<preadAIOCB&>(event);
+    if (pread_aiocb.get_buffer().get_next_buffer() == NULL) {
+      return ReadFile(
+               pread_aiocb.get_file(),
+               pread_aiocb.get_buffer(),
+               pread_aiocb.get_buffer().size(),
+               NULL,
+               pread_aiocb
+             ) == TRUE
+             ||
+             GetLastError() == ERROR_IO_PENDING;
+    } else {
+      vector<FILE_SEGMENT_ELEMENT> aSegmentArray;
+      size_t nNumberOfBytesToRead = 0;
+      Buffer* next_buffer = &pread_aiocb.get_buffer();
+      do {
+        FILE_SEGMENT_ELEMENT file_segment_element;
+        file_segment_element.Buffer = *next_buffer;
+        aSegmentArray.push_back(file_segment_element);
+        nNumberOfBytesToRead += next_buffer->size();
+        next_buffer = next_buffer->get_next_buffer();
+      } while (next_buffer != NULL);
+
+      return ReadFileScatter(
+               pread_aiocb.get_file(),
+               &aSegmentArray[0],
+               nNumberOfBytesToRead,
+               NULL,
+               pread_aiocb
+             ) == TRUE
+             ||
+             GetLastError() == ERROR_IO_PENDING;
+    }
+  }
+  break;
+
+  case pwriteAIOCB::TYPE_ID: {
+    pwriteAIOCB& pwrite_aiocb = static_cast<pwriteAIOCB&>(event);
+    if (pwrite_aiocb.get_buffer().get_next_buffer() == NULL) {
+      return WriteFile(
+                pwrite_aiocb.get_file(),
+                pwrite_aiocb.get_buffer(),
+                pwrite_aiocb.get_buffer().size(),
+                NULL,
+                pwrite_aiocb
+              ) == TRUE
+              ||
+              GetLastError() == ERROR_IO_PENDING;
+    } else {
+      vector<FILE_SEGMENT_ELEMENT> aSegmentArray;
+      DWORD nNumberOfBytesToWrite = 0;
+      Buffer* next_buffer = &pwrite_aiocb.get_buffer();
+      do {
+        FILE_SEGMENT_ELEMENT file_segment_element;
+        file_segment_element.Buffer = *next_buffer;
+        aSegmentArray.push_back(file_segment_element);
+        nNumberOfBytesToWrite += next_buffer->size();
+        next_buffer = next_buffer->get_next_buffer();
+      } while (next_buffer != NULL);
+
+      return WriteFileGather(
+                pwrite_aiocb.get_file(),
+                &aSegmentArray[0],
+                nNumberOfBytesToWrite,
+                NULL,
+                pwrite_aiocb
+              ) == TRUE
+              ||
+              GetLastError() == ERROR_IO_PENDING;
+    }
+  }
+  break;
+
+  case setlkAIOCB::TYPE_ID: {
+    setlkAIOCB& setlk_aiocb = static_cast<setlkAIOCB&>(event);
+    return LockFileEx(
+             setlk_aiocb.get_file(),
+             setlk_aiocb.get_flock().is_exclusive()
+              ? LOCKFILE_EXCLUSIVE_LOCK :
+              0,
+             0,
+             static_cast<DWORD>(setlk_aiocb.get_flock().get_len()),
+             static_cast<DWORD>(setlk_aiocb.get_flock().get_len() >> 32),
+             setlk_aiocb
+           ) == TRUE
+           ||
+           GetLastError() == ERROR_IO_PENDING;
+  }
+  break;
+
+  case unlkAIOCB::TYPE_ID: {
+    unlkAIOCB& unlk_aiocb = static_cast<unlkAIOCB&>(event);
+    return UnlockFileEx(
+             unlk_aiocb.get_file(),
+             0,
+             static_cast<DWORD>(unlk_aiocb.get_flock().get_len()),
+             static_cast<DWORD>(unlk_aiocb.get_flock().get_len() >> 32),
+             unlk_aiocb
+           ) == TRUE
+           ||
+           GetLastError() == ERROR_IO_PENDING;
+  }
+  break;
 
   default:
     return yield::aio::win32::AIOQueue::enqueue(event);
+  }
   }
 }
 }

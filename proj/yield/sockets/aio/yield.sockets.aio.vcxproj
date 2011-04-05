@@ -104,10 +104,6 @@
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
-    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\accept_aiocb.cpp">
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\connect_aiocb.cpp">
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\sockets\aio\nbio_queue.cpp">
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\sockets\aio\posix\accept_aiocb.cpp">
@@ -116,22 +112,11 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\sockets\aio\recv_aiocb.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\send_aiocb.cpp">
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\sockets\aio\win32\accept_aiocb.cpp">
       <ObjectFileName>$(IntDir)win32\accept_aiocb.obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\sockets\aio\win32\aio_queue.cpp">
       <ObjectFileName>$(IntDir)win32\aio_queue.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\win32\connect_aiocb.cpp">
-      <ObjectFileName>$(IntDir)win32\connect_aiocb.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\win32\recv_aiocb.cpp">
-      <ObjectFileName>$(IntDir)win32\recv_aiocb.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\win32\send_aiocb.cpp">
-      <ObjectFileName>$(IntDir)win32\send_aiocb.obj</ObjectFileName>
     </ClCompile>
   </ItemGroup>
 

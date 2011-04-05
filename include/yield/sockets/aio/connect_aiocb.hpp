@@ -34,7 +34,6 @@
 
 namespace yield {
 namespace sockets {
-class SocketAddress;
 class StreamSocket;
 
 namespace aio {
@@ -47,17 +46,29 @@ public:
     StreamSocket& socket_,
     SocketAddress& peername,
     YO_NEW_REF Buffer* send_buffer = NULL
-  );
+  ) : AIOCB(socket_),
+      peername(peername.inc_ref()),
+      send_buffer(send_buffer) {
+    //if (send_buffer != NULL)
+    //  debug_assert_eq(send_buffer->get_next_buffer(), NULL);
+  }
 
-  ~connectAIOCB();
+  ~connectAIOCB() {
+    SocketAddress::dec_ref(peername);
+    Buffer::dec_ref(send_buffer);
+  }
 
 public:
   const SocketAddress& get_peername() const {
     return peername;
   }
 
-  Buffer* get_send_buffer() const {
+  Buffer* get_send_buffer() {
     return send_buffer;
+  }
+
+  StreamSocket& get_socket() {
+    return static_cast<StreamSocket&>(AIOCB::get_socket());
   }
 
 public:
@@ -69,13 +80,6 @@ public:
   const char* get_type_name() const {
     return "yield::sockets::aio::connectAIOCB";
   }
-
-public:
-  // yield::aio::AIOCB
-#ifdef _WIN32
-  bool issue(yield::aio::win32::AIOQueue&);
-#endif
-  RetryStatus retry();
 
 private:
   SocketAddress& peername;

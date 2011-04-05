@@ -42,14 +42,6 @@ class Socket;
 namespace aio {
 class AIOCB : public yield::aio::AIOCB {
 public:
-  enum RetryStatus {
-    RETRY_STATUS_COMPLETE,
-    RETRY_STATUS_ERROR,
-    RETRY_STATUS_WANT_READ,
-    RETRY_STATUS_WANT_WRITE
-  };
-
-public:
   virtual ~AIOCB() {
     AIOCB::dec_ref(next_aiocb);
     Socket::dec_ref(socket_);
@@ -63,9 +55,6 @@ public:
   Socket& get_socket() {
     return socket_;
   }
-
-public:
-  virtual RetryStatus retry() = 0;
 
 public:
   void set_next_aiocb(AIOCB* next_aiocb) {

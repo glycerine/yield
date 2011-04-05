@@ -30,15 +30,13 @@
 #ifndef _YIELD_SOCKETS_AIO_ACCEPT_AIOCB_HPP_
 #define _YIELD_SOCKETS_AIO_ACCEPT_AIOCB_HPP_
 
+#include "yield/buffer.hpp"
+#include "yield/sockets/socket_address.hpp"
+#include "yield/sockets/stream_socket.hpp"
 #include "yield/sockets/aio/aiocb.hpp"
 
 namespace yield {
-class Buffer;
-
 namespace sockets {
-class SocketAddress;
-class StreamSocket;
-
 namespace aio {
 class acceptAIOCB : public AIOCB {
 public:
@@ -50,19 +48,33 @@ public:
     YO_NEW_REF Buffer* recv_buffer = NULL
   );
 
-  ~acceptAIOCB();
+  ~acceptAIOCB() {
+    StreamSocket::dec_ref(accepted_socket);
+    SocketAddress::dec_ref(peername);
+    Buffer::dec_ref(recv_buffer);
+  }
 
 public:
-  StreamSocket* get_accepted_socket() const {
+  StreamSocket* get_accepted_socket() {
     return accepted_socket;
   }
 
-  SocketAddress& get_peername() const {
+  SocketAddress& get_peername() {
     return peername;
   }
 
-  Buffer* get_recv_buffer() const {
+  Buffer* get_recv_buffer() {
     return recv_buffer;
+  }
+
+  StreamSocket& get_socket() {
+    return static_cast<StreamSocket&>(AIOCB::get_socket());
+  }
+
+public:
+  void set_accepted_socket(YO_NEW_REF StreamSocket& accepted_socket) {
+    StreamSocket::dec_ref(this->accepted_socket);
+    this->accepted_socket = &accepted_socket;
   }
 
 public:
@@ -77,17 +89,13 @@ public:
 
 public:
   // yield::aio::AIOCB
-#ifdef _WIN32
-  bool issue(yield::aio::win32::AIOQueue&);
-#endif
-  RetryStatus retry();
   void set_return(ssize_t return_);
 
 #ifdef _WIN32
-  void* get_output_buffer() const;
-  uint32_t get_peername_length() const;
-  uint32_t get_recv_data_length() const;
-  uint32_t get_sockname_length() const;
+  void* get_output_buffer();
+  uint32_t get_peername_length();
+  uint32_t get_recv_data_length();
+  uint32_t get_sockname_length();
 #endif
 
 private:

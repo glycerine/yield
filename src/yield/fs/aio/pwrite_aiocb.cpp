@@ -35,56 +35,44 @@
 namespace yield {
 namespace fs {
 namespace aio {
-pwriteAIOCB::pwriteAIOCB(
-  File& file,
-  YO_NEW_REF Buffer& buffer,
-  uint64_t offset
-) : AIOCB(file, offset),
-    buffer(buffer)
-{ }
-
-pwriteAIOCB::~pwriteAIOCB() {
-  Buffer::dec_ref(buffer);
-}
-
-pwriteAIOCB::RetryStatus pwriteAIOCB::retry() {
-  ssize_t return_;
-
-  if (get_buffer().get_next_buffer() == NULL) {   // pwrite
-    return_
-    = get_file().pwrite(
-        get_buffer(),
-        get_buffer().size(),
-        get_offset()
-      );
-  } else { // pwritev
-    vector<iovec> iov;
-    Buffer* buffer = &get_buffer();
-    do {
-      iovec page_iov;
-      page_iov.iov_base = *buffer;
-      page_iov.iov_len = buffer->size();
-      iov.push_back(page_iov);
-      buffer = buffer->get_next_buffer();
-    } while (buffer != NULL);
-
-    return_
-    = get_file().pwritev
-      (
-        &iov[0],
-        iov.size(),
-        get_offset()
-      );
-  }
-
-  if (return_ >= 0) {
-    set_return(return_);
-    return RETRY_STATUS_COMPLETE;
-  } else {
-    set_error(Exception::get_last_error_code());
-    return RETRY_STATUS_ERROR;
-  }
-}
+//pwriteAIOCB::RetryStatus pwriteAIOCB::retry() {
+//  ssize_t return_;
+//
+//  if (get_buffer().get_next_buffer() == NULL) {   // pwrite
+//    return_
+//    = get_file().pwrite(
+//        get_buffer(),
+//        get_buffer().size(),
+//        get_offset()
+//      );
+//  } else { // pwritev
+//    vector<iovec> iov;
+//    Buffer* buffer = &get_buffer();
+//    do {
+//      iovec page_iov;
+//      page_iov.iov_base = *buffer;
+//      page_iov.iov_len = buffer->size();
+//      iov.push_back(page_iov);
+//      buffer = buffer->get_next_buffer();
+//    } while (buffer != NULL);
+//
+//    return_
+//    = get_file().pwritev
+//      (
+//        &iov[0],
+//        iov.size(),
+//        get_offset()
+//      );
+//  }
+//
+//  if (return_ >= 0) {
+//    set_return(return_);
+//    return RETRY_STATUS_COMPLETE;
+//  } else {
+//    set_error(Exception::get_last_error_code());
+//    return RETRY_STATUS_ERROR;
+//  }
+//}
 }
 }
 }

@@ -39,7 +39,6 @@ namespace win32 {
 class AIOQueue : public EventQueue {
 public:
   bool associate(fd_t fd);
-  virtual bool enqueue(YO_NEW_REF AIOCB& aiocb);
 
 public:
   // yield::Object

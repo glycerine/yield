@@ -30,7 +30,6 @@
 #ifndef _YIELD_SOCKETS_AIO_SEND_AIOCB_HPP_
 #define _YIELD_SOCKETS_AIO_SEND_AIOCB_HPP_
 
-#include "yield/sockets/socket.hpp"
 #include "yield/sockets/aio/aiocb.hpp"
 
 namespace yield {
@@ -52,7 +51,10 @@ public:
       peername(Object::inc_ref(peername)) {
   }
 
-  ~sendAIOCB();
+  ~sendAIOCB() {
+    Buffer::dec_ref(buffer);
+    SocketAddress::dec_ref(peername);
+  }
   
 public:
   Buffer& get_buffer() const {
@@ -76,14 +78,6 @@ public:
   const char* get_type_name() const {
     return "yield::sockets::aio::sendAIOCB";
   }
-
-public:
-  // yield::aio::AIOCB
-#ifdef _WIN32
-  bool issue(EventHandler& completion_handler);
-  bool issue(yield::aio::win32::AIOQueue&);
-#endif
-  RetryStatus retry();
 
 private:
   Buffer& buffer;

@@ -61,6 +61,9 @@ public:
   }
 
 public:
+  operator ::OVERLAPPED* ();
+
+public:
   void set_error(uint32_t error) {
     this->error = error;
   }
@@ -79,9 +82,6 @@ protected:
   AIOCB();
   AIOCB(uint64_t offset);  
   AIOCB(fd_t, uint64_t offset);
-
-protected:
-  operator ::OVERLAPPED* ();
 
 private:
   typedef struct {

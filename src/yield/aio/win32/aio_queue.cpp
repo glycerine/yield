@@ -84,10 +84,6 @@ YO_NEW_REF Event* AIOQueue::dequeue(const Time& timeout) {
     return NULL;
 }
 
-bool AIOQueue::enqueue(YO_NEW_REF AIOCB& aiocb) {
-  return aiocb.issue(*this);
-}
-
 bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
   return PostQueuedCompletionStatus(
            hIoCompletionPort,

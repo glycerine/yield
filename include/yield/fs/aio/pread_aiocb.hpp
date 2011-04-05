@@ -30,6 +30,7 @@
 #ifndef _YIELD_FS_AIO_PREAD_AIOCB_HPP_
 #define _YIELD_FS_AIO_PREAD_AIOCB_HPP_
 
+#include "yield/buffer.hpp"
 #include "yield/fs/file.hpp"
 #include "yield/fs/aio/aiocb.hpp"
 
@@ -41,8 +42,14 @@ public:
   const static uint32_t TYPE_ID = 2917461772UL;
 
 public:
-  preadAIOCB(File& file, YO_NEW_REF Buffer& buffer, uint64_t offset);
-  ~preadAIOCB();
+  preadAIOCB(File& file, YO_NEW_REF Buffer& buffer, uint64_t offset)
+    : AIOCB(file, offset),
+      buffer(buffer) {
+    }
+
+  ~preadAIOCB() {
+    Buffer::dec_ref(buffer);
+  }
 
 public:
   Buffer& get_buffer() const {
