@@ -315,8 +315,7 @@ Socket::sendmsg
     peername = peername->filter(get_domain());
     if (peername != NULL) {
       send_ret
-      = WSASendTo
-        (
+      = WSASendTo(
           *this,
 #ifdef _WIN64
           reinterpret_cast<LPWSABUF>(&wsabufs[0]),
@@ -335,8 +334,7 @@ Socket::sendmsg
       return -1;
   } else {
     send_ret
-    = WSASend
-      (
+    = WSASend(
         *this,
 #ifdef _WIN64
         & wsabufs[0],

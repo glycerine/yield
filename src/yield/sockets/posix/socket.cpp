@@ -171,16 +171,14 @@ ssize_t Socket::recv(void* buf, size_t buflen, const MessageFlags& flags) {
 }
 
 ssize_t
-Socket::recvfrom
-(
+Socket::recvfrom(
   void* buf,
   size_t buflen,
   const MessageFlags& flags,
   SocketAddress& peername
 ) {
   socklen_t namelen = peername.len();
-  return ::recvfrom
-         (
+  return ::recvfrom(
            *this,
            static_cast<char*>(buf),
            buflen,
@@ -191,8 +189,7 @@ Socket::recvfrom
 }
 
 ssize_t
-Socket::recvmsg
-(
+Socket::recvmsg(
   const iovec* iov,
   int iovlen,
   const MessageFlags& flags,
@@ -213,8 +210,7 @@ Socket::recvmsg
 }
 
 ssize_t
-Socket::send
-(
+Socket::send(
   const void* buf,
   size_t buflen,
   const MessageFlags& flags
@@ -223,35 +219,33 @@ Socket::send
 }
 
 ssize_t
-Socket::sendmsg
-(
+Socket::sendmsg(
   const iovec* iov,
   int iovlen,
   const MessageFlags& flags,
-  const SocketAddress* _peername
+  const SocketAddress* peername
 ) {
-  const SocketAddress* peername = _peername->filter(get_domain());
+  msghdr msghdr_;
+  memset(&msghdr_, 0, sizeof(msghdr_));
+
+  msghdr_.msg_iov = const_cast<iovec*>(iov);
+  msghdr_.msg_iovlen = iovlen;
+
   if (peername != NULL) {
-    msghdr msghdr_;
-    memset(&msghdr_, 0, sizeof(msghdr_));
-
-    msghdr_.msg_iov = const_cast<iovec*>(iov);
-    msghdr_.msg_iovlen = iovlen;
-
+    peername = peername->filter(get_domain());
     if (peername != NULL) {
       const sockaddr* peername_sockaddr = *peername;
       msghdr_.msg_name = const_cast<sockaddr*>(peername_sockaddr);
       msghdr_.msg_namelen = peername->len();
-    }
+    } else
+      return -1;
+  }
 
-    return ::sendmsg(*this, &msghdr_, flags);
-  } else
-    return -1;
+  return ::sendmsg(*this, &msghdr_, flags);
 }
 
 ssize_t
-Socket::sendto
-(
+Socket::sendto(
   const void* buf,
   size_t buflen,
   const MessageFlags& flags,
@@ -259,8 +253,7 @@ Socket::sendto
 ) {
   const SocketAddress* peername = _peername.filter(get_domain());
   if (peername != NULL) {
-    return ::sendto
-           (
+    return ::sendto(
              *this,
              static_cast<const char*>(buf),
              buflen,

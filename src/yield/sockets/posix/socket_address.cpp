@@ -41,23 +41,20 @@
 namespace yield {
 namespace sockets {
 const SocketAddress
-SocketAddress::IN_ANY
-(
+SocketAddress::IN_ANY(
   static_cast<uint32_t>(INADDR_ANY),
   in6addr_any,
   0
 );
 
 const SocketAddress
-SocketAddress::IN_BROADCAST
-(
+SocketAddress::IN_BROADCAST(
   static_cast<uint32_t>(INADDR_BROADCAST),
   0
 );
 
 const SocketAddress
-SocketAddress::IN_LOOPBACK
-(
+SocketAddress::IN_LOOPBACK(
   static_cast<uint32_t>(INADDR_LOOPBACK),
   in6addr_loopback,
   0
@@ -91,19 +88,18 @@ SocketAddress::SocketAddress(const SocketAddress& other, uint16_t port) {
 void SocketAddress::assign(const addrinfo& addrinfo_) {
   debug_assert_eq(sizeof(addr), sizeof(sockaddr_storage));
 
-  debug_assert_eq
-  (
+  debug_assert_eq(
     len(addrinfo_.ai_family),
     static_cast<socklen_t>(addrinfo_.ai_addrlen)
   );
 
-  memcpy_s
-  (
+  memcpy_s(
     &addr,
     sizeof(addr),
     addrinfo_.ai_addr,
     addrinfo_.ai_addrlen
   );
+
   addr.ss_family = static_cast<uint16_t>(addrinfo_.ai_family);
 
   SocketAddress::dec_ref(next_socket_address);
@@ -170,8 +166,7 @@ const SocketAddress* SocketAddress::filter(int family) const {
 }
 
 SocketAddress*
-SocketAddress::getaddrinfo
-(
+SocketAddress::getaddrinfo(
   const char* nodename,
   const char* servname
 ) {
@@ -185,8 +180,7 @@ SocketAddress::getaddrinfo
 }
 
 addrinfo*
-SocketAddress::_getaddrinfo
-(
+SocketAddress::_getaddrinfo(
   const char* nodename,
   const char* servname
 ) {
@@ -225,8 +219,8 @@ SocketAddress::_getaddrinfo
 }
 
 
-bool SocketAddress::getnameinfo
-(
+bool
+SocketAddress::getnameinfo(
   OUT char* nodename,
   size_t nodename_len,
   bool numeric
@@ -259,8 +253,7 @@ bool SocketAddress::getnameinfo
 }
 
 void
-SocketAddress::init
-(
+SocketAddress::init(
   const char* nodename,
   const char* servname
 )

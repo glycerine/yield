@@ -66,6 +66,7 @@ sendAIOCB::RetryStatus sendAIOCB::retry() {
       iovec iov;
       iov.iov_base = *next_buffer;
       iov.iov_len = next_buffer->size();
+      iovs.push_back(iov);
       next_buffer = next_buffer->get_next_buffer();
     } while (next_buffer != NULL);
 

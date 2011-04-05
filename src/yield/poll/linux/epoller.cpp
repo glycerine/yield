@@ -86,25 +86,29 @@ bool EPoller::associate(fd_t fd, uint16_t events) {
 }
 
 YO_NEW_REF Event* EPoller::dequeue(const Time& timeout) {
-  epoll_event epoll_event_;
-
-  int ret = epoll_wait(epfd, &epoll_event_, 1, static_cast<int>(timeout.ms()));
-
-  if (ret > 0) {
-    debug_assert_eq(ret, 1);
-
-    if (epoll_event_.data.fd == wake_fd) {
-      uint64_t data;
-      read(wake_fd, &data, sizeof(data));
-      return NonBlockingConcurrentQueue<Event, 32>::trydequeue();
-    } else
-      return new FDEvent(epoll_event_.events, epoll_event_.data.fd);
-  } else if (ret == 0 || errno == EINTR)
-    return NULL;
+  Event* event = NonBlockingConcurrentQueue<Event, 32>::trydequeue();
+  if (event != NULL)
+    return event;
   else {
+    epoll_event epoll_event_;
+    int ret = epoll_wait(epfd, &epoll_event_, 1, static_cast<int>(timeout.ms()));
+
+    if (ret > 0) {
+      debug_assert_eq(ret, 1);
+
+      if (epoll_event_.data.fd == wake_fd) {
+        uint64_t data;
+        read(wake_fd, &data, sizeof(data));
+        return NonBlockingConcurrentQueue<Event, 32>::trydequeue();
+      } else
+        return new FDEvent(epoll_event_.events, epoll_event_.data.fd);
+    } else if (ret == 0 || errno == EINTR)
+      return NULL;
+    else {
      std::cerr << "EPoller: encountered unexpected error: " << Exception() << std::endl;
      DebugBreak();
      return NULL;
+    }
   }
 }
 
