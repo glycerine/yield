@@ -35,35 +35,15 @@
 #include <aio.h>
 
 namespace yield {
-class Channel;
-class EventHandler;
-
 namespace aio {
 namespace posix {
-class AIOCB : public Event {
-public:
-  enum RetryStatus {
-    RETRY_STATUS_COMPLETE,
-    RETRY_STATUS_ERROR,
-    RETRY_STATUS_WANT_READ,
-    RETRY_STATUS_WANT_WRITE
-  };
+class AIOQueue;
 
+class AIOCB : public Event {
 public:
   virtual ~AIOCB();
 
 public:
-  bool cancel();
-
-public:
-  Channel& get_channel() {
-    return channel;
-  }
-
-  EventHandler* get_completion_handler() {
-    return completion_handler;
-  }
-
   uint32_t get_error() const {
     return error;
   }
@@ -77,15 +57,9 @@ public:
   }
 
 public:
-  virtual bool issue(EventHandler& completion_handler);
-
-public:
   operator aiocb* () {
     return &aiocb_;
   }
-
-public:
-  virtual RetryStatus retry() = 0;
 
 public:
   void set_error(uint32_t error) {
@@ -98,23 +72,22 @@ public:
 
 public:
   // yield::Object
-  virtual uint32_t get_type_id() const = 0;
-  virtual const char* get_type_name() const = 0;
-
   AIOCB& inc_ref() {
     return Object::inc_ref(*this);
   }
 
 protected:
-  AIOCB(Channel&, uint64_t offset);
+  AIOCB(fd_t, uint64_t offset);
 
 protected:
-  void set_completion_handler(EventHandler& completion_handler);
+  static void notify_function(sigval_t sigval);
+
+protected:
+  void set_aio_queue(AIOQueue& aio_queue);
 
 private:
   aiocb aiocb_;
-  Channel& channel;
-  EventHandler* completion_handler;
+  AIOQueue* aio_queue;
   uint32_t error;
   ssize_t return_;
 };

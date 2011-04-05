@@ -41,7 +41,6 @@ struct _WIN32_FIND_DATAW;
 typedef _WIN32_FIND_DATAW WIN32_FIND_DATAW;
 typedef WIN32_FIND_DATAW WIN32_FIND_DATA;
 
-
 namespace yield {
 namespace fs {
 namespace win32 {

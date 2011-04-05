@@ -93,7 +93,9 @@
   </ItemDefinitionGroup>
 
   <ItemGroup Label="ClIncludeItems">
+    <ClInclude Include="..\..\..\include\yield\aio\aio_queue.hpp" />
     <ClInclude Include="..\..\..\include\yield\aio\aiocb.hpp" />
+    <ClInclude Include="..\..\..\include\yield\aio\posix\aio_queue.hpp" />
     <ClInclude Include="..\..\..\include\yield\aio\posix\aiocb.hpp" />
     <ClInclude Include="..\..\..\include\yield\aio\win32\aio_queue.hpp" />
     <ClInclude Include="..\..\..\include\yield\aio\win32\aiocb.hpp" />

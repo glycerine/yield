@@ -36,18 +36,39 @@
 namespace yield {
 namespace fs {
 namespace aio {
+class AIOQueue;
+
 class AIOCB : public yield::aio::AIOCB {
 public:
-  virtual ~AIOCB() { }
+  virtual ~AIOCB() {
+    File::dec_ref(file);
+  }
 
+public:
   File& get_file() {
-    return static_cast<File&>(get_channel());
+    return file;
+  }
+
+public:
+  virtual bool issue(AIOQueue& aio_queue) = 0;
+
+public:
+  // yield::Object
+  virtual uint32_t get_type_id() const = 0;
+  virtual const char* get_type_name() const = 0;
+
+  AIOCB& inc_ref() {
+    return Object::inc_ref(*this);
   }
 
 protected:
   AIOCB(File& file, uint64_t offset)
-    : yield::aio::AIOCB(file, offset) {
+    : yield::aio::AIOCB(file, offset),
+      file(file.inc_ref()) {
   }
+
+private:
+  File& file;
 };
 }
 }

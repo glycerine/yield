@@ -62,11 +62,8 @@ public:
   }
 
 public:
-  // yield::aio::AIOCB
-#ifdef _WIN32
-  bool issue(yield::aio::win32::AIOQueue&);
-#endif
-  RetryStatus retry();
+  // yield::aio::fs::AIOCB
+  bool issue(AIOQueue& aio_queue);
 
 private:
   File::Lock flock_;

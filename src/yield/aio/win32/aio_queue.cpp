@@ -37,9 +37,7 @@ namespace yield {
 namespace aio {
 namespace win32 {
 AIOQueue::AIOQueue() {
-  hIoCompletionPort
-  = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 0);
-
+  hIoCompletionPort = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 0);
   if (hIoCompletionPort == INVALID_HANDLE_VALUE)
     throw Exception();
 }
@@ -49,8 +47,7 @@ AIOQueue::~AIOQueue() {
 }
 
 bool AIOQueue::associate(fd_t fd) {
-  return CreateIoCompletionPort
-         (
+  return CreateIoCompletionPort(
            fd,
            hIoCompletionPort,
            0,
@@ -64,14 +61,13 @@ YO_NEW_REF Event* AIOQueue::dequeue(const Time& timeout) {
   LPOVERLAPPED lpOverlapped = NULL;
 
   BOOL bRet
-  = GetQueuedCompletionStatus
-    (
-      hIoCompletionPort,
-      &dwBytesTransferred,
-      &ulCompletionKey,
-      &lpOverlapped,
-      static_cast<DWORD>(timeout.ms())
-    );
+    = GetQueuedCompletionStatus(
+        hIoCompletionPort,
+        &dwBytesTransferred,
+        &ulCompletionKey,
+        &lpOverlapped,
+        static_cast<DWORD>(timeout.ms())
+      );
 
   if (lpOverlapped != NULL) {
     AIOCB& aiocb = AIOCB::cast(*lpOverlapped);
@@ -93,8 +89,7 @@ bool AIOQueue::enqueue(YO_NEW_REF AIOCB& aiocb) {
 }
 
 bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
-  return PostQueuedCompletionStatus
-         (
+  return PostQueuedCompletionStatus(
            hIoCompletionPort,
            0,
            reinterpret_cast<ULONG_PTR>(&event),

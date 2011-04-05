@@ -28,7 +28,6 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/assert.hpp"
-#include "yield/channel.hpp"
 #include "yield/event_handler.hpp"
 #include "yield/aio/win32/aiocb.hpp"
 
@@ -37,34 +36,23 @@
 namespace yield {
 namespace aio {
 namespace win32 {
-AIOCB::AIOCB(Channel& channel, uint64_t offset)
-  : channel(channel.inc_ref()) {
+AIOCB::AIOCB() {
   static_assert(sizeof(OVERLAPPED) == sizeof(::OVERLAPPED), "");
-  debug_assert_ne(static_cast<fd_t>(channel), INVALID_FD);
-
-  completion_handler = NULL;
-  error = 0;
-  memset(&overlapped, 0, sizeof(overlapped));
-  overlapped.Offset = static_cast<uint32_t>(offset);
-  overlapped.OffsetHigh = static_cast<uint32_t>(offset >> 32);
-  return_ = -1;
-  this_aiocb = this;
+  init(0);
 }
 
-AIOCB::~AIOCB() {
-  Channel::dec_ref(channel);
-  EventHandler::dec_ref(completion_handler);
+AIOCB::AIOCB(uint64_t offset) {
+  init(offset);
 }
 
-bool AIOCB::cancel() {
-  return CancelIoEx(get_channel(), *this) == TRUE;
+AIOCB::AIOCB(fd_t, uint64_t offset) {
+  init(offset);
 }
 
 AIOCB& AIOCB::cast(::OVERLAPPED& lpOverlapped) {
   AIOCB* aiocb;
 
-  memcpy_s
-  (
+  memcpy_s(
     &aiocb,
     sizeof(aiocb),
     reinterpret_cast<char*>(&lpOverlapped) + sizeof(::OVERLAPPED),
@@ -74,32 +62,32 @@ AIOCB& AIOCB::cast(::OVERLAPPED& lpOverlapped) {
   return *aiocb;
 }
 
-void __stdcall
-AIOCB::CompletionRoutine(
-  unsigned long dwErrorCode,
-  unsigned long dwNumberOfBytesTransfered,
-  ::OVERLAPPED* lpOverlapped
-) {
-  AIOCB& aiocb = cast(*lpOverlapped);
-  aiocb.set_error(dwErrorCode);
-  aiocb.set_return(dwNumberOfBytesTransfered);
-  debug_assert_ne(aiocb.get_completion_handler(), NULL);
-  aiocb.get_completion_handler()->handle(aiocb);
-}
-
-void __stdcall
-AIOCB::CompletionRoutine(
-  unsigned long dwErrorCode,
-  unsigned long dwNumberOfBytesTransfered,
-  ::OVERLAPPED* lpOverlapped,
-  unsigned long dwFlags
-) {
-  AIOCB& aiocb = cast(*lpOverlapped);
-  aiocb.set_error(dwErrorCode);
-  aiocb.set_return(dwNumberOfBytesTransfered);
-  debug_assert_ne(aiocb.get_completion_handler(), NULL);
-  aiocb.get_completion_handler()->handle(aiocb);
-}
+//void __stdcall
+//AIOCB::CompletionRoutine(
+//  unsigned long dwErrorCode,
+//  unsigned long dwNumberOfBytesTransfered,
+//  ::OVERLAPPED* lpOverlapped
+//) {
+//  AIOCB& aiocb = cast(*lpOverlapped);
+//  aiocb.set_error(dwErrorCode);
+//  aiocb.set_return(dwNumberOfBytesTransfered);
+//  debug_assert_ne(aiocb.get_completion_handler(), NULL);
+//  aiocb.get_completion_handler()->handle(aiocb);
+//}
+//
+//void __stdcall
+//AIOCB::CompletionRoutine(
+//  unsigned long dwErrorCode,
+//  unsigned long dwNumberOfBytesTransfered,
+//  ::OVERLAPPED* lpOverlapped,
+//  unsigned long dwFlags
+//) {
+//  AIOCB& aiocb = cast(*lpOverlapped);
+//  aiocb.set_error(dwErrorCode);
+//  aiocb.set_return(dwNumberOfBytesTransfered);
+//  debug_assert_ne(aiocb.get_completion_handler(), NULL);
+//  aiocb.get_completion_handler()->handle(aiocb);
+//}
 
 uint64_t AIOCB::get_offset() const {
   return static_cast<uint64_t>(overlapped.OffsetHigh << 32)
@@ -107,25 +95,17 @@ uint64_t AIOCB::get_offset() const {
          overlapped.Offset;
 }
 
-bool AIOCB::issue(EventHandler& completion_handler) {
-  retry();
-  completion_handler.handle(*this);
-  return true;
-}
-
-bool AIOCB::issue(win32::AIOQueue&) {
-  DebugBreak();
-  SetLastError(ERROR_NOT_SUPPORTED);
-  return false;
+void AIOCB::init(uint64_t offset) {
+  error = 0;
+  memset(&overlapped, 0, sizeof(overlapped));
+  overlapped.Offset = static_cast<uint32_t>(offset);
+  overlapped.OffsetHigh = static_cast<uint32_t>(offset >> 32);
+  return_ = -1;
+  this_aiocb = this;
 }
 
 AIOCB::operator ::OVERLAPPED* () {
   return reinterpret_cast<::OVERLAPPED*>(&overlapped);
-}
-
-void AIOCB::set_completion_handler(EventHandler& completion_handler) {
-  EventHandler::dec_ref(this->completion_handler);
-  this->completion_handler = &completion_handler.inc_ref();
 }
 }
 }

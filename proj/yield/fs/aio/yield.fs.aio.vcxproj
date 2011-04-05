@@ -95,7 +95,6 @@
   <ItemGroup Label="ClIncludeItems">
     <ClInclude Include="..\..\..\..\include\yield\fs\aio\aio_queue.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\fs\aio\aiocb.hpp" />
-    <ClInclude Include="..\..\..\..\include\yield\fs\aio\bio_queue.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\fs\aio\fdatasync_aiocb.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\fs\aio\fsync_aiocb.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\fs\aio\posix\aio_queue.hpp" />
@@ -107,8 +106,6 @@
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
-    <ClCompile Include="..\..\..\..\src\yield\fs\aio\bio_queue.cpp">
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\fs\aio\fdatasync_aiocb.cpp">
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\fs\aio\fsync_aiocb.cpp">

@@ -1,4 +1,4 @@
-// yield/aio/win32/aiocb.hpp
+// yield/aio/aio_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,90 +27,22 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_AIO_WIN32_AIOCB_HPP_
-#define _YIELD_AIO_WIN32_AIOCB_HPP_
+#ifndef _YIELD_AIO_AIO_QUEUE_HPP_
+#define _YIELD_AIO_AIO_QUEUE_HPP_
 
-#include "yield/event.hpp"
-
-struct _OVERLAPPED;
-typedef struct _OVERLAPPED OVERLAPPED;
+#ifdef _WIN32
+#include "yield/aio/win32/aio_queue.hpp"
+#else
+#include "yield/aio/posix/aio_queue.hpp"
+#endif
 
 namespace yield {
-class EventHandler;
-
 namespace aio {
-namespace win32 {
-class AIOQueue;
-
-class AIOCB : public Event {
-public:
-  virtual ~AIOCB() { }
-
-public:
-  static AIOCB& cast(::OVERLAPPED&);
-
-public:
-  uint32_t get_error() const {
-    return error;
-  }
-
-  uint64_t get_offset() const;
-
-  ssize_t get_return() const {
-    return return_;
-  }
-
-public:
-  void set_error(uint32_t error) {
-    this->error = error;
-  }
-
-  virtual void set_return(ssize_t return_) {
-    this->return_ = return_;
-  }
-
-public:
-  // yield::Object
-  AIOCB& inc_ref() {
-    return Object::inc_ref(*this);
-  }
-
-protected:
-  AIOCB();
-  AIOCB(uint64_t offset);  
-  AIOCB(fd_t, uint64_t offset);
-
-protected:
-  operator ::OVERLAPPED* ();
-
-private:
-  typedef struct {
-    unsigned long* Internal;
-    unsigned long* InternalHigh;
-#pragma warning( push )
-#pragma warning( disable: 4201 )
-    union {
-      struct {
-        unsigned long Offset;
-        unsigned long OffsetHigh;
-      };
-      void* Pointer;
-    };
-#pragma warning( pop )
-    void* hEvent;
-  } OVERLAPPED;
-
-private:
-  void init(uint64_t offset);
-
-private:
-  OVERLAPPED overlapped;
-  AIOCB* this_aiocb;
-
-  uint32_t error;
-  ssize_t return_;
-};
-}
+#ifdef _WIN32
+typedef win32::AIOQueue AIOQueue;
+#else
+typedef posix::AIOCB AIOQueue;
+#endif
 }
 }
 

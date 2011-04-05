@@ -1,4 +1,4 @@
-// yield/aio/win32/aiocb.hpp
+// yield/fs/poll/file_system_change_event.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,88 +27,81 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_AIO_WIN32_AIOCB_HPP_
-#define _YIELD_AIO_WIN32_AIOCB_HPP_
+#ifndef _YIELD_FS_POLL_FILE_SYSTEM_CHANGE_EVENT_HPP_
+#define _YIELD_FS_POLL_FILE_SYSTEM_CHANGE_EVENT_HPP_
 
 #include "yield/event.hpp"
-
-struct _OVERLAPPED;
-typedef struct _OVERLAPPED OVERLAPPED;
+#include "yield/fs/path.hpp"
 
 namespace yield {
-class EventHandler;
-
-namespace aio {
-namespace win32 {
-class AIOQueue;
-
-class AIOCB : public Event {
+namespace fs {
+namespace poll {
+class FileSystemChangeEvent  : public Event {
 public:
-  virtual ~AIOCB() { }
-
-public:
-  static AIOCB& cast(::OVERLAPPED&);
-
-public:
-  uint32_t get_error() const {
-    return error;
-  }
-
-  uint64_t get_offset() const;
-
-  ssize_t get_return() const {
-    return return_;
-  }
+  typedef uint8_t Type;
+  const static Type TYPE_ALL = static_cast<Type>(~0);
+  const static Type TYPE_DIRECTORY_ADD = 1;
+  const static Type TYPE_DIRECTORY_MODIFY = 2;
+  const static Type TYPE_DIRECTORY_REMOVE = 4;
+  const static Type TYPE_DIRECTORY_RENAME = 8;
+  const static Type TYPE_FILE_ADD = 16;
+  const static Type TYPE_FILE_MODIFY = 32;
+  const static Type TYPE_FILE_REMOVE = 64;
+  const static Type TYPE_FILE_RENAME = 128;
 
 public:
-  void set_error(uint32_t error) {
-    this->error = error;
+  FileSystemChangeEvent::FileSystemChangeEvent()
+    : type(TYPE_FILE_ADD)
+  { }
+
+  FileSystemChangeEvent::FileSystemChangeEvent(const Path& path, Type type)
+    : old_path(path), type(type)
+  { }
+
+  FileSystemChangeEvent::FileSystemChangeEvent(
+    const Path& old_path,
+    const Path& new_path,
+    Type type
+  ) : new_path(new_path), old_path(old_path), type(type)
+  { }
+
+public:
+  const Path& get_new_path() const {
+    return new_path;
   }
 
-  virtual void set_return(ssize_t return_) {
-    this->return_ = return_;
+  const Path& get_old_path() const {
+    return old_path;
+  }
+
+  const Path& get_path() const {
+    return old_path;
+  }
+
+  Type get_type() const {
+    return type;
   }
 
 public:
-  // yield::Object
-  AIOCB& inc_ref() {
-    return Object::inc_ref(*this);
+  void set_new_path(const Path& new_path) {
+    this->new_path = new_path;
   }
 
-protected:
-  AIOCB();
-  AIOCB(uint64_t offset);  
-  AIOCB(fd_t, uint64_t offset);
+  void set_old_path(const Path& old_path) {
+    this->old_path = old_path;
+  }
 
-protected:
-  operator ::OVERLAPPED* ();
+  void set_path(const Path& path) {
+    this->old_path = path;
+  }
+
+  void set_type(Type type) {
+    this->type = type;
+  }
 
 private:
-  typedef struct {
-    unsigned long* Internal;
-    unsigned long* InternalHigh;
-#pragma warning( push )
-#pragma warning( disable: 4201 )
-    union {
-      struct {
-        unsigned long Offset;
-        unsigned long OffsetHigh;
-      };
-      void* Pointer;
-    };
-#pragma warning( pop )
-    void* hEvent;
-  } OVERLAPPED;
-
-private:
-  void init(uint64_t offset);
-
-private:
-  OVERLAPPED overlapped;
-  AIOCB* this_aiocb;
-
-  uint32_t error;
-  ssize_t return_;
+  Path new_path, old_path;
+  Type type;
 };
 }
 }

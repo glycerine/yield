@@ -36,7 +36,6 @@
 #include "yield/aio/posix/aiocb.hpp"
 #endif
 
-
 namespace yield {
 namespace aio {
 #ifdef _WIN32

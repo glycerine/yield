@@ -85,7 +85,7 @@ yield.fs.aio: yield.aio yield.fs yield.thread
 yield.fs.aio_test: yield.fs.aio
 	$(MAKE) -C proj/yield/fs/aio -f yield.fs.aio_test.Makefile
 
-yield.fs.poll: yield.poll yield.fs
+yield.fs.poll: yield.aio yield.poll yield.fs
 	$(MAKE) -C proj/yield/fs/poll -f yield.fs.poll.Makefile
 
 yield.fs.poll_test: yield.fs.poll

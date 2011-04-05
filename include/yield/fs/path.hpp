@@ -36,8 +36,6 @@
 #include <ostream> // For std::ostream
 #include <utility> // For std::make_pair, std::pair
 
-
-
 namespace yield {
 namespace fs {
 class Path : public yield::i18n::tstring {

@@ -34,15 +34,7 @@
 namespace yield {
 namespace sockets {
 namespace aio {
-static int
-WSARecvFrom(
-  Socket& socket_,
-  Buffer& buffer,
-  const Socket::MessageFlags& flags,
-  SocketAddress& peername,
-  LPWSAOVERLAPPED lpOverlapped,
-  LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine
-) {
+bool recvAIOCB::issue(yield::aio::win32::AIOQueue&) {
   DWORD dwFlags = static_cast<DWORD>(flags);
   sockaddr* lpFrom = peername;
   socklen_t lpFromlen = peername.len();
@@ -53,16 +45,18 @@ WSARecvFrom(
     wsabuf.len = buffer.capacity() - buffer.size();
 
     return WSARecvFrom(
-             socket_,
+             get_socket(),
              &wsabuf,
              1,
              NULL,
              &dwFlags,
              lpFrom,
              &lpFromlen,
-             lpOverlapped,
-             lpCompletionRoutine
-           );
+             *this,
+             NULL
+           ) == 0
+           ||
+           WSAGetLastError() == WSA_IO_PENDING;
   } else { // Scatter I/O
     vector<WSABUF> wsabufs;
     Buffer* next_buffer = &buffer;
@@ -75,47 +69,19 @@ WSARecvFrom(
     } while (next_buffer != NULL);
 
     return WSARecvFrom(
-             socket_,
+             get_socket(),
              &wsabufs[0],
              wsabufs.size(),
              NULL,
              &dwFlags,
              lpFrom,
              &lpFromlen,
-             lpOverlapped,
-             lpCompletionRoutine
-           );
-  }
-}
-
-
-bool recvAIOCB::issue(EventHandler& completion_handler) {
-  set_completion_handler(completion_handler);
-
-  return WSARecvFrom
-         (
-           get_socket(),
-           get_buffer(),
-           get_flags(),
-           get_peername(),
-           *this,
-           CompletionRoutine
-         ) == 0
-         ||
-         WSAGetLastError() == WSA_IO_PENDING;
-}
-
-bool recvAIOCB::issue(yield::aio::win32::AIOQueue&) {
-  return WSARecvFrom(
-           get_socket(),
-           get_buffer(),
-           get_flags(),
-           get_peername(),
-           *this,
-           NULL
-         ) == 0
-         ||
-         WSAGetLastError() == WSA_IO_PENDING;
+             *this,
+             NULL
+           ) == 0
+           ||
+           WSAGetLastError() == WSA_IO_PENDING;;
+  }      
 }
 }
 }

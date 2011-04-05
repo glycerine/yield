@@ -1,4 +1,4 @@
-// yield/fs/aio/bio_queue.cpp
+// yield/aio/posix/aio_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,57 +27,17 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/assert.hpp"
-#include "yield/fs/aio/bio_queue.hpp"
-#include "yield/fs/aio/fsync_aiocb.hpp"
-#include "yield/fs/aio/pread_aiocb.hpp"
-#include "yield/fs/aio/pwrite_aiocb.hpp"
-#include "yield/fs/aio/setlk_aiocb.hpp"
-#include "yield/fs/aio/unlk_aiocb.hpp"
-#include "yield/thread/synchronized_event_queue.hpp"
+#ifndef _YIELD_AIO_POSIX_AIO_QUEUE_HPP_
+#define _YIELD_AIO_POSIX_AIO_QUEUE_HPP_
+
+#include "yield/event_queue.hpp"
 
 namespace yield {
-namespace fs {
 namespace aio {
-using yield::thread::SynchronizedEventQueue;
-
-BIOQueue::BIOQueue() {
-  completed_event_queue = new SynchronizedEventQueue;
+namespace posix {
+typedef EventQueue AIOQueue;
 }
-
-BIOQueue::~BIOQueue() {
-  SynchronizedEventQueue::dec_ref(*completed_event_queue);
+}
 }
 
-YO_NEW_REF Event& BIOQueue::dequeue() {
-  return completed_event_queue->dequeue();
-}
-
-YO_NEW_REF Event* BIOQueue::dequeue(const Time& timeout) {
-  return completed_event_queue->dequeue(timeout);
-}
-
-bool BIOQueue::enqueue(YO_NEW_REF Event& event) {
-  switch (event.get_type_id()) {
-  case fsyncAIOCB::TYPE_ID:
-  case preadAIOCB::TYPE_ID:
-  case pwriteAIOCB::TYPE_ID:
-  case setlkAIOCB::TYPE_ID:
-  case unlkAIOCB::TYPE_ID: {
-    AIOCB& aiocb = static_cast<AIOCB&>(event);
-    bool issue_ret = aiocb.issue(*completed_event_queue);
-    debug_assert(issue_ret);
-    return issue_ret;
-  }
-
-  default:
-    return completed_event_queue->enqueue(event);
-  }
-}
-
-YO_NEW_REF Event* BIOQueue::trydequeue() {
-  return completed_event_queue->trydequeue();
-}
-}
-}
-}
+#endif

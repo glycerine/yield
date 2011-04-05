@@ -66,7 +66,7 @@
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>yield_poll.lib;yield_fs.lib;yield_i18n.lib;yield.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_aio.lib;yield_poll.lib;yield_fs.lib;yield_i18n.lib;yield.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -85,7 +85,7 @@
       <WarningLevel>Level4</WarningLevel>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>yield_poll.lib;yield_fs.lib;yield_i18n.lib;yield.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_aio.lib;yield_poll.lib;yield_fs.lib;yield_i18n.lib;yield.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -93,8 +93,8 @@
   </ItemDefinitionGroup>
 
   <ItemGroup Label="ClIncludeItems">
-    <ClInclude Include="..\..\..\..\include\yield\fs\poll\file_system_change_event.h" />
-    <ClInclude Include="..\..\..\..\include\yield\fs\poll\file_system_change_event_queue.h" />
+    <ClInclude Include="..\..\..\..\include\yield\fs\poll\file_system_change_event.hpp" />
+    <ClInclude Include="..\..\..\..\include\yield\fs\poll\file_system_change_event_queue.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
@@ -104,14 +104,18 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClInclude Include="..\..\..\..\src\yield\fs\poll\linux\file_system_change_event_queue.h" />
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\linux\file_system_change_event_queue.hpp" />
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\win32\file_system_change_event_queue.cpp">
       <ObjectFileName>$(IntDir)win32\file_system_change_event_queue.obj</ObjectFileName>
     </ClCompile>
-    <ClInclude Include="..\..\..\..\src\yield\fs\poll\win32\file_system_change_event_queue.h" />
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\win32\file_system_change_event_queue.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ProjectReferenceItems">
+    <ProjectReference Include="..\..\aio\yield.aio.vcxproj">
+      <Project>{b6c03d16-2fa8-439c-ae71-3e908ad2cf02}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
     <ProjectReference Include="..\..\poll\yield.poll.vcxproj">
       <Project>{941ab6a9-57ca-4350-9df0-5d1eaec9e355}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

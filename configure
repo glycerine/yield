@@ -79,7 +79,7 @@ PROJECT_REFERENCES = {
     "yield.aio": ("yield",),
     "yield.fs": ("yield.i18n",),
     "yield.fs.aio": ("yield.aio", "yield.fs", "yield.thread"),
-    "yield.fs.poll": ("yield.poll", "yield.fs"),
+    "yield.fs.poll": ("yield.aio", "yield.poll", "yield.fs"),
     "yield.http": ("yield.uri",),
     "yield.http.client": ("yield.http", "yield.sockets.client"),
     "yield.http.server": ("yield.fs", "yield.http", "yield.sockets.server"),
@@ -443,6 +443,21 @@ option_parser.add_option("--generate-test_main_cpp", action="store_true")
 option_parser.add_option("--generate-test_py", action="store_true")
 
 options, _ = option_parser.parse_args()
+
+# If no options set, do generate_proj
+if not options.check_src_namespace and\
+   not options.check_src_type_id and\
+   not options.check_src_width and\
+   not options.check_src_yunit and\
+   not options.format_src and\
+   not options.generate_dist and\
+   not options.generate_proj and\
+   not options.generate_src and\
+   not options.generate_src_rl and\
+   not options.generate_test and\
+   not options.generate_test_main_cpp and\
+   not options.generate_test_py:
+    options.generate_proj = True
 
 if options.project_names is not None and len(options.project_names) > 0:
     for project_name in options.project_names:

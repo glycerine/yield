@@ -32,8 +32,8 @@
 namespace yield {
 namespace fs {
 namespace aio {
-bool fdatasyncAIOCB::issue(EventHandler& completion_handler) {
-  set_completion_handler(completion_handler);
+bool fdatasyncAIOCB::issue(AIOQueue& aio_queue) {
+  set_aio_queue(aio_queue);
   return aio_fsync(O_DSYNC, *this) == 0;
 }
 }

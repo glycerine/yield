@@ -29,9 +29,6 @@
     <ClInclude Include="..\..\..\..\include\yield\fs\aio\aiocb.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\yield\fs\aio\bio_queue.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\yield\fs\aio\fdatasync_aiocb.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -58,9 +55,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\yield\fs\aio\bio_queue.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\fs\aio\fdatasync_aiocb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

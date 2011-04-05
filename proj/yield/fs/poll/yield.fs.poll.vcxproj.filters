@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
@@ -17,10 +17,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\include\yield\fs\poll\file_system_change_event.h">
+    <ClInclude Include="..\..\..\..\include\yield\fs\poll\file_system_change_event.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\yield\fs\poll\file_system_change_event_queue.h">
+    <ClInclude Include="..\..\..\..\include\yield\fs\poll\file_system_change_event_queue.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -31,13 +31,13 @@
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\linux\file_system_change_event_queue.cpp">
       <Filter>Source Files\linux</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\..\src\yield\fs\poll\linux\file_system_change_event_queue.h">
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\linux\file_system_change_event_queue.hpp">
       <Filter>Source Files\linux</Filter>
     </ClInclude>
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\win32\file_system_change_event_queue.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\..\src\yield\fs\poll\win32\file_system_change_event_queue.h">
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\win32\file_system_change_event_queue.hpp">
       <Filter>Source Files\win32</Filter>
     </ClInclude>
   </ItemGroup>

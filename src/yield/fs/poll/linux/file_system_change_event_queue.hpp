@@ -1,4 +1,4 @@
-// yield/aio/win32/aiocb.hpp
+// yield/fs/poll/linux/file_system_change_event_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,91 +27,51 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_AIO_WIN32_AIOCB_HPP_
-#define _YIELD_AIO_WIN32_AIOCB_HPP_
+#ifndef _YIELD_FS_POLL_LINUX_FILE_SYSTEM_CHANGE_EVENT_QUEUE_HPP_
+#define _YIELD_FS_POLL_LINUX_FILE_SYSTEM_CHANGE_EVENT_QUEUE_HPP_
 
-#include "yield/event.hpp"
-
-struct _OVERLAPPED;
-typedef struct _OVERLAPPED OVERLAPPED;
+#include "yield/fs/volume_change_event_queue.h"
 
 namespace yield {
-class EventHandler;
-
-namespace aio {
-namespace win32 {
-class AIOQueue;
-
-class AIOCB : public Event {
+namespace platform {
+namespace linux2 {
+class InotifyVolumeChangeEventQueue : public VolumeChangeEventQueue {
 public:
-  virtual ~AIOCB() { }
+  ~InotifyVolumeChangeEventQueue();
 
-public:
-  static AIOCB& cast(::OVERLAPPED&);
+  static YO_NEW_REF InotifyVolumeChangeEventQueue& create();
 
-public:
-  uint32_t get_error() const {
-    return error;
-  }
+  // VolumeChangeEventQueue
+  bool associate
+  (
+    const Path& path,
+    VolumeChangeEvent::Type events,
+    Flag flags
+  );
 
-  uint64_t get_offset() const;
+  void dissociate(const Path& path);
 
-  ssize_t get_return() const {
-    return return_;
-  }
-
-public:
-  void set_error(uint32_t error) {
-    this->error = error;
-  }
-
-  virtual void set_return(ssize_t return_) {
-    this->return_ = return_;
-  }
-
-public:
-  // yield::Object
-  AIOCB& inc_ref() {
-    return Object::inc_ref(*this);
-  }
-
-protected:
-  AIOCB();
-  AIOCB(uint64_t offset);  
-  AIOCB(fd_t, uint64_t offset);
-
-protected:
-  operator ::OVERLAPPED* ();
+  int
+  poll
+  (
+    VolumeChangeEvent* volume_change_events,
+    int volume_change_events_len,
+    const Time& timeout
+  );
 
 private:
-  typedef struct {
-    unsigned long* Internal;
-    unsigned long* InternalHigh;
-#pragma warning( push )
-#pragma warning( disable: 4201 )
-    union {
-      struct {
-        unsigned long Offset;
-        unsigned long OffsetHigh;
-      };
-      void* Pointer;
-    };
-#pragma warning( pop )
-    void* hEvent;
-  } OVERLAPPED;
+  class Watch;
 
 private:
-  void init(uint64_t offset);
+  InotifyVolumeChangeEventQueue(FDEventQueue&, fd_t inotify_fd);
 
 private:
-  OVERLAPPED overlapped;
-  AIOCB* this_aiocb;
-
-  uint32_t error;
-  ssize_t return_;
+  FDEventQueue& fd_event_queue;
+  fd_t inotify_fd;
+  WatchMap<Watch> watches;
 };
-}
-}
-}
+};
+};
+};
 
 #endif

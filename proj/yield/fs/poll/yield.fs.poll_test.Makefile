@@ -47,7 +47,7 @@ endif
 ifeq ($(UNAME), Solaris)
 	LIBS += -liconv -lm -lrt -lstdc++
 endif
-LIBS += -lyield_fs_poll -lyield_poll -lyield_fs -lyield_i18n -lyield
+LIBS += -lyield_fs_poll -lyield_aio -lyield_poll -lyield_fs -lyield_i18n -lyield
 
 
 D_FILE_PATHS := $(shell find ../../../../build/yield/fs/poll -name "*.d")

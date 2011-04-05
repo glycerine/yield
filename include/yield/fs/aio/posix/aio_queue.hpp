@@ -51,6 +51,7 @@ public:
   bool associate(fd_t) {
     return true;
   }
+
   bool enqueue(YO_NEW_REF AIOCB& aiocb);
 
 public:

@@ -27,90 +27,51 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/fs/file_system_change_event_queue.h"
-
-#if defined(_WIN32)
-#include "win32/directory_change_event_queue.h"
-#elif defined(__linux__)
-#include "linux2/inotify_volume_change_event_queue.h"
+#if defined(__linux__)
+#include "linux2/file_system_change_event_queue.hpp"
+#elif defined(_WIN32)
+#include "win32/file_system_change_event_queue.hpp"
 #endif
+#include "yield/fs/poll/file_system_change_event_queue.hpp"
 
 namespace yield {
 namespace fs {
 namespace poll {
-VolumeChangeEventQueue& VolumeChangeEventQueue::create() {
-#if defined(_WIN32)
-  return yield::fs::poll::win32::DirectoryChangeEventQueue::create();
-#elif defined(YIELD_PLATFORM_HAVE_LINUX_INOTIFY)
-  return yield::fs::poll::linux2::InotifyVolumeChangeEventQueue::create();
-#else
-  DebugBreak();
-  //return FallbackVolumeChangeEventQueue()::create();
+FileSystemChangeEventQueue::FileSystemChangeEventQueue() {
+#if defined(__linux__)
+  pimpl = new linux::FileSystemChangeEventQueue;
+#elif defined(_WIN32)
+  pimpl = new win32::FileSystemChangeEventQueue;
 #endif
 }
 
-int
-VolumeChangeEventQueue::get_leftover_volume_change_events
-(
-  VolumeChangeEvent* volume_change_events,
-  int volume_change_events_len
-) {
-#ifdef _DEBUG
-  if (volume_change_events_len == 0) DebugBreak();
+FileSystemChangeEventQueue::~FileSystemChangeEventQueue() {
+#if defined(__linux__)
+  linux::FileSystemChangeEventQueue::dec_ref(*pimpl);
+#elif defined(_WIN32)
+  win32::FileSystemChangeEventQueue::dec_ref(*pimpl);
 #endif
-
-  int volume_change_event_i = 0;
-
-  while
-  (
-    !leftover_volume_change_events.empty()
-    &&
-    volume_change_event_i < volume_change_events_len
-  ) {
-    volume_change_events[volume_change_event_i++]
-    = *leftover_volume_change_events.front();
-    leftover_volume_change_events.pop();
-  }
-
-  return volume_change_event_i;
 }
 
 bool
-VolumeChangeEventQueue::poll
-(
-  VolumeChangeEvent& volume_change_event,
-  const Time& timeout
+FileSystemChangeEventQueue::associate(
+  const Path& path,
+  FileSystemChangeEvent::Type events,
+  bool recursive
 ) {
-  return poll(&volume_change_event, 1, timeout) == 1;
+  return pimpl->associate(path, events, recursive);
 }
 
-int
-VolumeChangeEventQueue::read
-(
-  VolumeChangeEvent* volume_change_events,
-  int volume_change_events_len,
-  Watch& watch
-) {
-#ifdef _DEBUG
-  if (volume_change_events_len == 0) DebugBreak();
-#endif
+bool FileSystemChangeEventQueue::dissociate(const Path& path) {
+  return pimpl->dissociate(path);
+}
 
-  int volume_change_event_i = 0;
+YO_NEW_REF Event* FileSystemChangeEventQueue::dequeue(const Time& timeout) {
+  return pimpl->dequeue(timeout);
+}
 
-  while (watch.read(volume_change_events[volume_change_event_i])) {
-    if (++volume_change_event_i == volume_change_events_len) {
-      VolumeChangeEvent* leftover_vce = new VolumeChangeEvent;
-      while (watch.read(*leftover_vce)) {
-        leftover_volume_change_events.push(leftover_vce);
-        leftover_vce = new VolumeChangeEvent;
-      }
-      delete leftover_vce;
-
-      break;
-    }
-  }
-
-  return volume_change_event_i;
+bool FileSystemChangeEventQueue::enqueue(YO_NEW_REF Event& event) {
+  return pimpl->enqueue(event);
 }
 }
 }

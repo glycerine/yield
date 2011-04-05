@@ -32,14 +32,17 @@
 namespace yield {
 namespace fs {
 namespace aio {
-bool preadAIOCB::issue(EventHandler& completion_handler) {
+bool preadAIOCB::issue(AIOQueue& aio_queue) {
   if (get_buffer().get_next_buffer() == NULL) {
-    set_completion_handler(completion_handler);
+    set_aio_queue(aio_queue);
     aiocb* aiocb_ = *this;
     aiocb_->aio_nbytes = get_buffer().capacity() - get_buffer().size();
     return aio_read(aiocb_) == 0;
-  } else
-    return AIOCB::issue(completion_handler);
+  } else {
+    retry();
+    aio_queue.enqueue(*this);
+    return true;
+  }
 }
 }
 }

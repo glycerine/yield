@@ -36,23 +36,6 @@
 namespace yield {
 namespace fs {
 namespace aio {
-bool pwriteAIOCB::issue(EventHandler& completion_handler) {
-  if (get_buffer().get_next_buffer() == NULL) {
-    set_completion_handler(completion_handler);
-
-    return WriteFileEx(
-             get_file(),
-             get_buffer(),
-             get_buffer().size(),
-             *this,
-             CompletionRoutine
-           ) == TRUE
-           ||
-           GetLastError() == ERROR_IO_PENDING;
-  } else
-    return AIOCB::issue(completion_handler);
-}
-
 bool pwriteAIOCB::issue(yield::aio::win32::AIOQueue&) {
   if (get_buffer().get_next_buffer() == NULL) {
     return WriteFile(

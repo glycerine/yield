@@ -28,57 +28,44 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/assert.hpp"
-#include "yield/channel.hpp"
-#include "yield/event_handler.hpp"
+#include "yield/aio/posix/aio_queue.hpp"
 #include "yield/aio/posix/aiocb.hpp"
 
 namespace yield {
 namespace aio {
 namespace posix {
-static void aio_notify_function(sigval_t sigval) {
-  AIOCB& aiocb = *static_cast<AIOCB*>(sigval.sival_ptr);
-  aiocb.set_error(aio_error(aiocb));
-  aiocb.set_return(aio_return(aiocb));
-  debug_assert_ne(aiocb.get_completion_handler(), NULL);
-  aiocb.get_completion_handler()->handle(aiocb);
-}
-
-
-AIOCB::AIOCB(Channel& channel, uint64_t offset)
-  : channel(channel.inc_ref()) {
-  debug_assert_ne(static_cast<fd_t>(channel), INVALID_FD);
-
+AIOCB::AIOCB(fd_t fd, uint64_t offset) {
   memset(&aiocb_, 0, sizeof(aiocb_));
-  aiocb_.aio_fildes = channel;
+  aiocb_.aio_fildes = fd;
   aiocb_.aio_offset = offset;
   aiocb_.aio_sigevent.sigev_notify = SIGEV_THREAD;
   aiocb_.aio_sigevent.sigev_notify_attributes = NULL;
   aiocb_.aio_sigevent.sigev_notify_function = aio_notify_function;
   aiocb_.aio_sigevent.sigev_value.sival_ptr = this;
 
-  completion_handler = NULL;
+  aio_queue = NULL;
   error = 0;
   return_ = -1;
 }
 
 AIOCB::~AIOCB() {
-  Channel::dec_ref(channel);
-  EventHandler::dec_ref(completion_handler);
+  EventHandler::dec_ref(aio_queue);
 }
 
 bool AIOCB::cancel() {
   return aio_cancel(aiocb_.aio_fildes, *this) == AIO_CANCELED;
 }
 
-bool AIOCB::issue(EventHandler& completion_handler) {
-  retry();
-  completion_handler.handle(*this);
-  return true;
+static void AIOCB::notify_function(sigval_t sigval) {
+  AIOCB& aiocb = *static_cast<AIOCB*>(sigval.sival_ptr);
+  aiocb.set_error(aio_error(aiocb));
+  aiocb.set_return(aio_return(aiocb));
+  aiocb.aio_queue->handle(aiocb);
 }
 
-void AIOCB::set_completion_handler(EventHandler& completion_handler) {
-  EventHandler::dec_ref(this->completion_handler);
-  this->completion_handler = &completion_handler.inc_ref();
+void AIOCB::set_aio_queue(AIOQueue& aio_queue) {
+  AIOQueue::dec_ref(this->aio_queue);
+  this->aio_queue = &aio_queue.inc_ref();
 }
 }
 }

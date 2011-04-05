@@ -1,4 +1,4 @@
-// yield/fs/aio/bio_queue.hpp
+// yield/fs/poll/file_system_change_event_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,40 +27,55 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_FS_AIO_BIO_QUEUE_HPP_
-#define _YIELD_FS_AIO_BIO_QUEUE_HPP_
+#ifndef _YIELD_FS_POLL_FILE_SYSTEM_CHANGE_EVENT_QUEUE_HPP_
+#define _YIELD_FS_POLL_FILE_SYSTEM_CHANGE_EVENT_QUEUE_HPP_
 
 #include "yield/event_queue.hpp"
-#include "yield/fs/aio/aiocb.hpp"
+#include "yield/fs/poll/file_system_change_event.hpp"
 
 namespace yield {
-namespace thread {
-class SynchronizedEventQueue;
-}
-
 namespace fs {
-namespace aio {
-class BIOQueue : public EventQueue {
+namespace poll {
+#if defined(__linux__)
+namespace linux {
+class FileSystemChangeEventQueue;
+}
+#elif defined(_WIN32)
+namespace win32 {
+class FileSystemChangeEventQueue;
+}
+#endif
+
+class FileSystemChangeEventQueue : public EventQueue {
 public:
-  BIOQueue();
-  ~BIOQueue();
+  FileSystemChangeEventQueue();
+  ~FileSystemChangeEventQueue();
 
 public:
-  bool associate(fd_t) {
-    return true;
-  }
+  bool
+  associate(
+    const Path& path,
+    FileSystemChangeEvent::Type events = FileSystemChangeEvent::TYPE_ALL,
+    bool recursive = true
+  );
 
-  bool enqueue(YO_NEW_REF AIOCB& aiocb);
+  bool dissociate(const Path& path);
 
 public:
   // yield::EventQueue
-  YO_NEW_REF Event& dequeue();
+  YO_NEW_REF Event& dequeue() {
+    return EventQueue::dequeue();
+  }
+
   YO_NEW_REF Event* dequeue(const Time& timeout);
   bool enqueue(YO_NEW_REF Event& event);
-  YO_NEW_REF Event* trydequeue();
-
+  
 private:
-  yield::thread::SynchronizedEventQueue* completed_event_queue;
+#if defined(__linux__)
+  linux::FileSystemChangeEventQueue* pimpl;
+#elif defined(_WIN32)
+  win32::FileSystemChangeEventQueue* pimpl;
+#endif
 };
 }
 }

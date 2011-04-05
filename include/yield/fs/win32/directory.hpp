@@ -62,20 +62,26 @@ public:
   Directory(fd_t hDirectory);
   virtual ~Directory();
 
+public:
+  bool close();
+
+public:
   operator fd_t() const {
     return hDirectory;
   }
 
-  // Object
+public:
+  YO_NEW_REF Entry* read();
+  bool read(Entry&);
+
+public:
+  void rewind();
+
+public:
+  // yield::Object
   Directory& inc_ref() {
     return Object::inc_ref(*this);
   }
-
-  // Directory
-  bool close();
-  YO_NEW_REF Entry* read();
-  bool read(Entry&);
-  void rewind();
 
 private:
   bool read(OUT Entry*&);

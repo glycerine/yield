@@ -55,11 +55,8 @@ public:
   }
 
 public:
-  // yield::aio::AIOCB
-#ifndef _WIN32
-  bool issue(EventHandler& completion_handler);
-#endif
-  RetryStatus retry();
+  // yield::aio::fs::AIOCB
+  bool issue(AIOQueue& aio_queue);
 };
 }
 }

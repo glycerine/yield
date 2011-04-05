@@ -61,12 +61,11 @@ public:
 
 public:
   // yield::aio::AIOCB
-  bool issue(EventHandler& completion_handler);
-#ifdef _WIN32
-  bool issue(yield::aio::win32::AIOQueue&);
-#endif
-  RetryStatus retry();
   void set_return(ssize_t return_);
+
+public:
+  // yield::aio::fs::AIOCB
+  bool issue(AIOQueue& aio_queue);
 
 private:
   Buffer& buffer;

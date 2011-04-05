@@ -42,8 +42,17 @@ class Socket;
 namespace aio {
 class AIOCB : public yield::aio::AIOCB {
 public:
+  enum RetryStatus {
+    RETRY_STATUS_COMPLETE,
+    RETRY_STATUS_ERROR,
+    RETRY_STATUS_WANT_READ,
+    RETRY_STATUS_WANT_WRITE
+  };
+
+public:
   virtual ~AIOCB() {
     AIOCB::dec_ref(next_aiocb);
+    Socket::dec_ref(socket_);
   }
 
 public:
@@ -52,8 +61,11 @@ public:
   }
 
   Socket& get_socket() {
-    return static_cast<Socket&>(get_channel());
+    return socket_;
   }
+
+public:
+  virtual RetryStatus retry() = 0;
 
 public:
   void set_next_aiocb(AIOCB* next_aiocb) {
@@ -63,18 +75,23 @@ public:
 
 public:
   // yield::Object
+  virtual uint32_t get_type_id() const = 0;
+  virtual const char* get_type_name() const = 0;
+
   AIOCB& inc_ref() {
     return Object::inc_ref(*this);
   }
 
 protected:
   AIOCB(Socket& socket_)
-    : yield::aio::AIOCB(socket_, 0) {
+    : yield::aio::AIOCB(socket_, 0),
+      socket_(socket_.inc_ref()) {
     next_aiocb = NULL; 
   }
 
 private:
   AIOCB* next_aiocb;
+  Socket& socket_;
 };
 }
 }
