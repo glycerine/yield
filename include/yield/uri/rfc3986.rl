@@ -1,4 +1,4 @@
-// yield/uri/uri.rl
+// yield/uri/rfc3986.rl
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved

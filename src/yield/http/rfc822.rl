@@ -1,4 +1,4 @@
-// yield/http/rfc822_lexical_tokens.rl
+// yield/http/rfc822.rl
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved

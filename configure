@@ -79,6 +79,7 @@ PROJECT_REFERENCES = {
     "yield.aio": ("yield",),
     "yield.fs": ("yield.i18n",),
     "yield.fs.aio": ("yield.aio", "yield.fs", "yield.thread"),
+    "yield.fs.poll": ("yield.poll", "yield.fs"),
     "yield.http": ("yield.uri",),
     "yield.http.client": ("yield.http", "yield.sockets.client"),
     "yield.http.server": ("yield.fs", "yield.http", "yield.sockets.server"),

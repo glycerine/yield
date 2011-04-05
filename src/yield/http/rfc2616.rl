@@ -1,4 +1,4 @@
-// yield/http/basic_rules.rl
+// yield/http/rfc2616.rl
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -26,6 +26,7 @@
 // ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 %%{  machine rfc2616;  alphtype unsigned char;  include rfc822 "rfc822.rl";  separators = '(' | ')' | '<' | '>' | '@' |               ',' | ';' | ':' | '\\' | "'" |               '/' | '[' | ']' | '?' | '=' |               '{' | '}' | ' ' | '\t';  text = extend -- ctl;  token = (ascii -- (ctl | separators))+;  qdtext = text -- '\"';  quoted_string = '\"' (qdtext | quoted_pair)* '\"';  http_version = "HTTP/"
                  (
                    (digit+ '.' digit+)
