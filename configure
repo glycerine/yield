@@ -89,7 +89,6 @@ PROJECT_REFERENCES = {
     "yield.sockets.client": ("yield.sockets.aio", "yield.stage"),
     "yield.sockets.poll": ("yield.poll", "yield.sockets"),
     "yield.sockets.server": ("yield.sockets.aio", "yield.stage"),
-    "yield.sockets.ssl": ("yield.sockets",),
     "yield.stage": ("yield.thread",),
     "yield.thread": ("yield",),
     "yield.uri": ("yield",),
