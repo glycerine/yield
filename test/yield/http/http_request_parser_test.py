@@ -33,7 +33,7 @@ from http_message_parser_test import *
 
 class HTTPRequestParserTest(HTTPMessageParserTest):
     def ASSERT_METHOD(self, method="GET"):
-        self.append("""throw_assert_eq(http_request->get_method(), HTTPRequest::METHOD_%(method)s);""" % locals())
+        self.append("""throw_assert_eq(http_request->get_method(), HTTPRequest::Method::%(method)s);""" % locals())
 
     def ASSERT_URI(self):
         self.append("""throw_assert_eq(strcmp(http_request->get_uri(), "%(URI)s"), 0);""" % globals())

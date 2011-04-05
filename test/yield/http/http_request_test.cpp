@@ -40,40 +40,40 @@ TEST_SUITE(HTTPRequest);
 namespace yield {
 namespace http {
 TEST(HTTPRequest, constructor) {
-  HTTPRequest(HTTPRequest::METHOD_GET, "/");
-  HTTPRequest(HTTPRequest::METHOD_GET, "/", &Buffer::copy("test"));
-  HTTPRequest(HTTPRequest::METHOD_GET, "/", &Buffer::copy("test"), 0);
-  HTTPRequest(HTTPRequest::METHOD_GET, "/", &Buffer::copy("test"), 0, 1.0f);
+  HTTPRequest(HTTPRequest::Method::GET, "/");
+  HTTPRequest(HTTPRequest::Method::GET, "/", &Buffer::copy("test"));
+  HTTPRequest(HTTPRequest::Method::GET, "/", &Buffer::copy("test"), 0);
+  HTTPRequest(HTTPRequest::Method::GET, "/", &Buffer::copy("test"), 0, 1.0f);
 }
 
 TEST(HTTPRequest, get_creation_date_time) {
   DateTime now = DateTime::now();
   throw_assert_ge(
-    HTTPRequest(HTTPRequest::METHOD_GET, "/").get_creation_date_time(),
+    HTTPRequest(HTTPRequest::Method::GET, "/").get_creation_date_time(),
     now
   );  
 }
 
 TEST(HTTPRequest, get_method) {
   throw_assert_eq(
-    HTTPRequest(HTTPRequest::METHOD_GET, "/").get_method(),
-    HTTPRequest::METHOD_GET
+    HTTPRequest(HTTPRequest::Method::GET, "/").get_method(),
+    HTTPRequest::Method::GET
   );
 
   throw_assert_eq(
-    HTTPRequest(HTTPRequest::METHOD_PUT, "/").get_method(),
-    HTTPRequest::METHOD_PUT
+    HTTPRequest(HTTPRequest::Method::PUT, "/").get_method(),
+    HTTPRequest::Method::PUT
   );
 }
 
 TEST(HTTPRequest, get_uri) {
   yield::uri::URI uri("/test");
-  throw_assert_eq(HTTPRequest(HTTPRequest::METHOD_GET, uri).get_uri(), uri);
+  throw_assert_eq(HTTPRequest(HTTPRequest::Method::GET, uri).get_uri(), uri);
 }
 
 TEST(HTTPRequest, respond) {
   auto_Object<HTTPRequest> http_request
-    = new HTTPRequest(HTTPRequest::METHOD_GET, "/");
+    = new HTTPRequest(HTTPRequest::Method::GET, "/");
 
   http_request->respond(*new HTTPResponse(200));
   http_request->respond(404);

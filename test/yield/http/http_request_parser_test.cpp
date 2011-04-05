@@ -85,7 +85,7 @@ TEST(HTTPRequestParser, WellFormedRequestLineOnly) {
   HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\n\r\n");
   HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
   throw_assert_ne(http_request, NULL);
-  throw_assert_eq(http_request->get_method(), HTTPRequest::METHOD_GET);
+  throw_assert_eq(http_request->get_method(), HTTPRequest::Method::GET);
   throw_assert_eq(http_request->get_http_version(), 1.1F);
   throw_assert_eq(http_request->get_body(), NULL);
   HTTPRequest::dec_ref(http_request);

@@ -157,14 +157,12 @@ private:
 };
 
 
-HTTPClient::HTTPClient
-(
+HTTPClient::HTTPClient(
   const yield::uri::URI& uri,
   Log* error_log,
   Log* trace_log
 )
-  : StreamSocketClient
-  (
+  : StreamSocketClient(
     Configuration(),
     error_log,
     trace_log,
@@ -173,15 +171,13 @@ HTTPClient::HTTPClient
   init();
 }
 
-HTTPClient::HTTPClient
-(
+HTTPClient::HTTPClient(
   const Configuration& configuration,
   const yield::uri::URI& uri,
   Log* error_log,
   Log* trace_log
 )
-  : StreamSocketClient
-  (
+  : StreamSocketClient(
     configuration,
     error_log,
     trace_log,
@@ -209,7 +205,7 @@ YO_NEW_REF HTTPResponse& HTTPClient::GET(const URI& uri) {
   auto_Object<HTTPResponseQueue> http_response_queue
   = new HTTPResponseQueue;
 
-  HTTPRequest* http_request = new HTTPRequest(HTTPRequest::METHOD_GET, uri);
+  HTTPRequest* http_request = new HTTPRequest(HTTPRequest::Method::GET, uri);
   http_request->set_response_handler(*http_response_queue);
 
   http_client->handle(*http_request);

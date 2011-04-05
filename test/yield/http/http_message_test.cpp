@@ -38,12 +38,12 @@ TEST_SUITE(HTTPMessage);
 namespace yield {
 namespace http {
 TEST(HTTPMessage, get_body) {
-  throw_assert_eq(HTTPRequest(HTTPRequest::METHOD_GET, "/").get_body(), NULL);
+  throw_assert_eq(HTTPRequest(HTTPRequest::Method::GET, "/").get_body(), NULL);
 
   auto_Object<Buffer> body = Buffer::copy("body");
   throw_assert_eq(
     memcmp(
-      HTTPRequest(HTTPRequest::METHOD_GET, "/", &body->inc_ref()).get_body(),
+      HTTPRequest(HTTPRequest::Method::GET, "/", &body->inc_ref()).get_body(),
       "body",
       4
     ),
@@ -53,27 +53,27 @@ TEST(HTTPMessage, get_body) {
 
 TEST(HTTPMessage, get_connection_id) {
   throw_assert_eq(
-    HTTPRequest(HTTPRequest::METHOD_GET, "/", NULL, 1).get_connection_id(),
+    HTTPRequest(HTTPRequest::Method::GET, "/", NULL, 1).get_connection_id(),
     1
   );
 }
 
 TEST(HTTPMessage, get_content_length) {
   throw_assert_eq(
-    HTTPRequest(HTTPRequest::METHOD_GET, "/").get_content_length(),
+    HTTPRequest(HTTPRequest::Method::GET, "/").get_content_length(),
     0
   );
 
   auto_Object<Buffer> body = Buffer::copy("body");
   throw_assert_eq(
-    HTTPRequest(HTTPRequest::METHOD_GET, "/", &body->inc_ref()).get_content_length(),
+    HTTPRequest(HTTPRequest::Method::GET, "/", &body->inc_ref()).get_content_length(),
     4
   );
 }
 
 TEST(HTTPMessage, get_date_field) {
   auto_Object<HTTPRequest> http_request
-    = new HTTPRequest(HTTPRequest::METHOD_GET, "/");
+    = new HTTPRequest(HTTPRequest::Method::GET, "/");
   http_request->set_field("Date", "Wed, 15 Nov 1995 06:25:24 GMT");
   DateTime date = http_request->get_date_field("Date");
   throw_assert_ne(date, DateTime::INVALID_DATE_TIME);
@@ -81,7 +81,7 @@ TEST(HTTPMessage, get_date_field) {
 
 TEST(HTTPMessage, get_field) {
   auto_Object<HTTPRequest> http_request
-    = new HTTPRequest(HTTPRequest::METHOD_GET, "/");
+    = new HTTPRequest(HTTPRequest::Method::GET, "/");
   // Set a field before the desired field
   http_request->set_field("Host", "localhost");
   http_request->set_field("Date", "Wed, 15 Nov 1995 06:25:24 GMT");
@@ -113,7 +113,7 @@ TEST(HTTPMessage, get_field) {
 
 TEST(HTTPMessage, get_fields) {
   auto_Object<HTTPRequest> http_request
-    = new HTTPRequest(HTTPRequest::METHOD_GET, "/");
+    = new HTTPRequest(HTTPRequest::Method::GET, "/");
   http_request->set_field("Host", "localhost");
   http_request->set_field("XHost", "localhost");
 

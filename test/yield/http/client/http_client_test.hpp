@@ -108,7 +108,7 @@ public:
     auto_Object<HTTPClient> http_client = new HTTPClient(get_uri());
 
     auto_Object<HTTPRequest> http_request
-    = new HTTPRequest(HTTPRequest::METHOD_GET, get_uri());
+    = new HTTPRequest(HTTPRequest::Method::GET, get_uri());
 
     auto_Object< SynchronizedResponseQueue<HTTPResponse> >
     http_response_queue = new SynchronizedResponseQueue<HTTPResponse>;

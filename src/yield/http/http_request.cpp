@@ -36,6 +36,24 @@
 
 namespace yield {
 namespace http {
+HTTPRequest::Method HTTPRequest::Method::CONNECT(1, "CONNECT", 7);
+HTTPRequest::Method HTTPRequest::Method::COPY(2, "COPY", 4);
+HTTPRequest::Method HTTPRequest::Method::DELETE(3, "DELETE", 7);
+HTTPRequest::Method HTTPRequest::Method::GET(4, "GET", 3);
+HTTPRequest::Method HTTPRequest::Method::HEAD(5, "HEAD", 4);
+HTTPRequest::Method HTTPRequest::Method::MKCOL(6, "MKCOL", 5);
+HTTPRequest::Method HTTPRequest::Method::LOCK(7, "LOCK", 4);
+HTTPRequest::Method HTTPRequest::Method::MOVE(8, "MOVE", 4);
+HTTPRequest::Method HTTPRequest::Method::OPTIONS(9, "OPTIONS", 7);
+HTTPRequest::Method HTTPRequest::Method::PATCH(10, "PATCH", 5);
+HTTPRequest::Method HTTPRequest::Method::POST(11, "POST", 4);
+HTTPRequest::Method HTTPRequest::Method::PROPFIND(12, "PROPFIND", 8);
+HTTPRequest::Method HTTPRequest::Method::PROPPATCH(13, "PROPPATCH", 9);
+HTTPRequest::Method HTTPRequest::Method::PUT(14, "PUT", 3);
+HTTPRequest::Method HTTPRequest::Method::TRACE(15, "TRACE", 5);
+HTTPRequest::Method HTTPRequest::Method::UNLOCK(16, "UNLOCK", 6);
+
+
 HTTPRequest::HTTPRequest(
   void* body,
   Buffer& buffer,
@@ -70,56 +88,9 @@ HTTPRequest::HTTPRequest(
     creation_date_time(DateTime::now()),
     method(method),
     uri(uri) {
-  switch (method) {
-  case METHOD_CONNECT:
-    get_buffer().put("CONNECT ", 8);
-    break;
-  case METHOD_COPY:
-    get_buffer().put("COPY ", 5);
-    break;
-  case METHOD_DELETE:
-    get_buffer().put("DELETE ", 7);
-    break;
-  case METHOD_GET:
-    get_buffer().put("GET ", 4);
-    break;
-  case METHOD_HEAD:
-    get_buffer().put("HEAD ", 5);
-    break;
-  case METHOD_LOCK:
-    get_buffer().put("LOCK ", 5);
-    break;
-  case METHOD_MKCOL:
-    get_buffer().put("MKCOL ", 6);
-    break;
-  case METHOD_MOVE:
-    get_buffer().put("MOVE ", 5);
-    break;
-  case METHOD_OPTIONS:
-    get_buffer().put("OPTIONS ", 8);
-    break;
-  case METHOD_PATCH:
-    get_buffer().put("PATCH ", 6);
-    break;
-  case METHOD_POST:
-    get_buffer().put("POST ", 5);
-    break;
-  case METHOD_PROPFIND:
-    get_buffer().put("PROPFIND ", 9);
-    break;
-  case METHOD_PROPPATCH:
-    get_buffer().put("PROPPATCH ", 10);
-    break;
-  case METHOD_PUT:
-    get_buffer().put("PUT ", 4);
-    break;
-  case METHOD_TRACE:
-    get_buffer().put("TRACE ", 6);
-    break;
-  case METHOD_UNLOCK:
-    get_buffer().put("UNLOCK ", 7);
-    break;
-  }
+  get_buffer().put(method.get_name(), method.get_name_len());
+
+  get_buffer().put(' ');
 
   iovec uri_path;
   uri.get_path(uri_path);
@@ -200,6 +171,12 @@ void HTTPRequest::respond(uint16_t status_code, YO_NEW_REF Buffer& body) {
 
 void HTTPRequest::respond(Exception& exception) {
   Request::respond(exception);
+}
+
+
+std::ostream& operator<<(std::ostream& os, const HTTPRequest::Method& method) {
+  os << method.get_name();
+  return os;
 }
 }
 }

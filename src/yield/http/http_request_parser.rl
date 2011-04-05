@@ -154,22 +154,22 @@ bool HTTPRequestParser::parse_request_line(
       include rfc3986 "../../../include/yield/uri/rfc3986.rl";
 
       method
-        = ("CONNECT" % { method = HTTPRequest::METHOD_CONNECT; }) |
-          ("COPY" % { method = HTTPRequest::METHOD_COPY; }) |
-          ("DELETE" % { method = HTTPRequest::METHOD_DELETE; }) |
-          ("GET" % { method = HTTPRequest::METHOD_GET; }) |
-          ("HEAD" % { method = HTTPRequest::METHOD_HEAD; }) |
-          ("LOCK" % { method = HTTPRequest::METHOD_LOCK; }) |
-          ("MKCOL" % { method = HTTPRequest::METHOD_MKCOL; }) |
-          ("MOVE" % { method = HTTPRequest::METHOD_MOVE; }) |
-          ("OPTIONS" % { method = HTTPRequest::METHOD_OPTIONS; }) |
-          ("PATCH" % { method = HTTPRequest::METHOD_PATCH; }) |
-          ("POST" % { method = HTTPRequest::METHOD_POST; }) |
-          ("PROPFIND" % { method = HTTPRequest::METHOD_PROPFIND; }) |
-          ("PROPPATCH" % { method = HTTPRequest::METHOD_PROPPATCH; }) |
-          ("PUT" % { method = HTTPRequest::METHOD_PUT; }) |
-          ("TRACE" % { method = HTTPRequest::METHOD_TRACE; }) |
-          ("UNLOCK" % { method = HTTPRequest::METHOD_UNLOCK; });
+        = ("CONNECT" % { method = HTTPRequest::Method::CONNECT; }) |
+          ("COPY" % { method = HTTPRequest::Method::COPY; }) |
+          ("DELETE" % { method = HTTPRequest::Method::DELETE; }) |
+          ("GET" % { method = HTTPRequest::Method::GET; }) |
+          ("HEAD" % { method = HTTPRequest::Method::HEAD; }) |
+          ("LOCK" % { method = HTTPRequest::Method::LOCK; }) |
+          ("MKCOL" % { method = HTTPRequest::Method::MKCOL; }) |
+          ("MOVE" % { method = HTTPRequest::Method::MOVE; }) |
+          ("OPTIONS" % { method = HTTPRequest::Method::OPTIONS; }) |
+          ("PATCH" % { method = HTTPRequest::Method::PATCH; }) |
+          ("POST" % { method = HTTPRequest::Method::POST; }) |
+          ("PROPFIND" % { method = HTTPRequest::Method::PROPFIND; }) |
+          ("PROPPATCH" % { method = HTTPRequest::Method::PROPPATCH; }) |
+          ("PUT" % { method = HTTPRequest::Method::PUT; }) |
+          ("TRACE" % { method = HTTPRequest::Method::TRACE; }) |
+          ("UNLOCK" % { method = HTTPRequest::Method::UNLOCK; });
 
       request_uri = (
           (

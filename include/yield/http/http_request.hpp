@@ -44,23 +44,80 @@ class HTTPResponse;
 
 class HTTPRequest : public Request, public HTTPMessage<HTTPRequest> {
 public:
-  enum Method {
-    METHOD_CONNECT,
-    METHOD_COPY,
-    METHOD_DELETE,
-    METHOD_GET,
-    METHOD_HEAD,
-    METHOD_MKCOL,
-    METHOD_LOCK,
-    METHOD_MOVE,
-    METHOD_OPTIONS,
-    METHOD_PATCH,
-    METHOD_POST,
-    METHOD_PROPFIND,
-    METHOD_PROPPATCH,
-    METHOD_PUT,
-    METHOD_TRACE,
-    METHOD_UNLOCK
+  class Method {
+  public:
+    static Method CONNECT;
+    static Method COPY;
+    static Method DELETE;
+    static Method GET;
+    static Method HEAD;
+    static Method MKCOL;
+    static Method LOCK;
+    static Method MOVE;
+    static Method OPTIONS;
+    static Method PATCH;
+    static Method POST;
+    static Method PROPFIND;
+    static Method PROPPATCH;
+    static Method PUT;
+    static Method TRACE;
+    static Method UNLOCK;
+
+  public:
+    Method()
+      : id(0), name(NULL), name_len(0) {
+    }
+
+    Method(uint8_t id, const char* name, uint8_t name_len)
+      : id(id), name(name), name_len(name_len) {
+    }
+
+    Method(const Method& other)
+      : id(other.id), name(other.name), name_len(other.name_len) {
+    }
+
+  public:
+    uint8_t get_id() const {
+      return id;
+    }
+
+    const char* get_name() const {
+      return name;
+    }
+
+    uint8_t get_name_len() const {
+      return name_len;
+    }
+
+  public:
+    operator const char*() const {
+      return name;
+    }
+
+    operator uint8_t() const {
+      return id;
+    }
+
+  public:
+    Method& operator=(const Method& other) {
+      id = other.id;
+      name = other.name;
+      name_len = other.name_len;
+      return *this;
+    }
+
+    bool operator==(const Method& other) const {
+      return id == other.id;
+    }
+
+    bool operator!=(const Method& other) const {
+      return !operator==(other);
+    }
+
+  private:
+    uint8_t id;
+    const char* name;
+    uint8_t name_len;
   };
 
   const static uint32_t TYPE_ID = 707981577;
@@ -130,6 +187,8 @@ private:
   Method method;
   yield::uri::URI uri;
 };
+
+std::ostream& operator<<(std::ostream&, const HTTPRequest::Method&);
 }
 }
 

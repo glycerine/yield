@@ -3339,97 +3339,97 @@ _match:
       case 12:
         /* #line 157 "src\\yield\\http\\http_request_parser.rl" */
       {
-        method = HTTPRequest::METHOD_CONNECT;
+        method = HTTPRequest::Method::CONNECT;
       }
       break;
       case 13:
         /* #line 158 "src\\yield\\http\\http_request_parser.rl" */
       {
-        method = HTTPRequest::METHOD_COPY;
+        method = HTTPRequest::Method::COPY;
       }
       break;
       case 14:
         /* #line 159 "src\\yield\\http\\http_request_parser.rl" */
       {
-        method = HTTPRequest::METHOD_DELETE;
+        method = HTTPRequest::Method::DELETE;
       }
       break;
       case 15:
         /* #line 160 "src\\yield\\http\\http_request_parser.rl" */
       {
-        method = HTTPRequest::METHOD_GET;
+        method = HTTPRequest::Method::GET;
       }
       break;
       case 16:
         /* #line 161 "src\\yield\\http\\http_request_parser.rl" */
       {
-        method = HTTPRequest::METHOD_HEAD;
+        method = HTTPRequest::Method::HEAD;
       }
       break;
       case 17:
         /* #line 162 "src\\yield\\http\\http_request_parser.rl" */
       {
-        method = HTTPRequest::METHOD_LOCK;
+        method = HTTPRequest::Method::LOCK;
       }
       break;
       case 18:
         /* #line 163 "src\\yield\\http\\http_request_parser.rl" */
       {
-        method = HTTPRequest::METHOD_MKCOL;
+        method = HTTPRequest::Method::MKCOL;
       }
       break;
       case 19:
         /* #line 164 "src\\yield\\http\\http_request_parser.rl" */
       {
-        method = HTTPRequest::METHOD_MOVE;
+        method = HTTPRequest::Method::MOVE;
       }
       break;
       case 20:
         /* #line 165 "src\\yield\\http\\http_request_parser.rl" */
       {
-        method = HTTPRequest::METHOD_OPTIONS;
+        method = HTTPRequest::Method::OPTIONS;
       }
       break;
       case 21:
         /* #line 166 "src\\yield\\http\\http_request_parser.rl" */
       {
-        method = HTTPRequest::METHOD_PATCH;
+        method = HTTPRequest::Method::PATCH;
       }
       break;
       case 22:
         /* #line 167 "src\\yield\\http\\http_request_parser.rl" */
       {
-        method = HTTPRequest::METHOD_POST;
+        method = HTTPRequest::Method::POST;
       }
       break;
       case 23:
         /* #line 168 "src\\yield\\http\\http_request_parser.rl" */
       {
-        method = HTTPRequest::METHOD_PROPFIND;
+        method = HTTPRequest::Method::PROPFIND;
       }
       break;
       case 24:
         /* #line 169 "src\\yield\\http\\http_request_parser.rl" */
       {
-        method = HTTPRequest::METHOD_PROPPATCH;
+        method = HTTPRequest::Method::PROPPATCH;
       }
       break;
       case 25:
         /* #line 170 "src\\yield\\http\\http_request_parser.rl" */
       {
-        method = HTTPRequest::METHOD_PUT;
+        method = HTTPRequest::Method::PUT;
       }
       break;
       case 26:
         /* #line 171 "src\\yield\\http\\http_request_parser.rl" */
       {
-        method = HTTPRequest::METHOD_TRACE;
+        method = HTTPRequest::Method::TRACE;
       }
       break;
       case 27:
         /* #line 172 "src\\yield\\http\\http_request_parser.rl" */
       {
-        method = HTTPRequest::METHOD_UNLOCK;
+        method = HTTPRequest::Method::UNLOCK;
       }
       break;
       case 28:
