@@ -84,7 +84,6 @@ PROJECT_REFERENCES = {
     "yield.http.server": ("yield.fs", "yield.http", "yield.sockets.server"),
     "yield.i18n": ("yield",),
     "yield.poll": ("yield",),
-    "yield.process": ("yield.fs",),
     "yield.sockets": ("yield",),
     "yield.sockets.aio": ("yield.aio", "yield.sockets.poll"),
     "yield.sockets.client": ("yield.sockets.aio", "yield.stage"),
@@ -179,10 +178,6 @@ LIBS = {
 
     "yield.sockets": {
         "sunos": ["nsl", "socket"],
-    },
-
-    "yield.process": {
-        "linux": ["dl"],
     },
 
     "yield.thread": {
