@@ -89,7 +89,7 @@ void StreamSocketServer::service(YO_NEW_REF Event& event) {
 
       if (get_aio_queue().associate(accepted_socket)) {
         Connection& connection
-        = create_connection(accept_aiocb.get_peername(), accepted_socket);
+          = create_connection(accept_aiocb.get_peername(), accepted_socket.inc_ref());
 
         if (get_trace_log() != NULL) {
           Buffer* recv_buffer = accept_aiocb.get_recv_buffer();

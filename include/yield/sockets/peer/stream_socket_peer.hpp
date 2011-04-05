@@ -167,6 +167,10 @@ protected:
       : connection(connection.inc_ref())
     { }
 
+    virtual ~AIOCB() {
+      Connection::dec_ref(connection);
+    }
+
   private:
     Connection& connection;
   };
@@ -209,13 +213,24 @@ protected:
       = static_cast<Connection&>(recv_aiocb.get_connection());
 
       if (recv_aiocb.get_error() == 0) {
-        if (this->get_trace_log() != NULL) {
-          this->get_trace_log()->get_stream(Log::INFO) <<
-              connection.get_log_prefix() << ": received ";
-          this->get_trace_log()->write(recv_aiocb.get_buffer(), Log::INFO);
-        }
+        if (recv_aiocb.get_return() > 0) {
+          if (this->get_trace_log() != NULL) {
+            this->get_trace_log()->get_stream(Log::INFO) <<
+                connection.get_log_prefix() << ": received ";
+            this->get_trace_log()->write(recv_aiocb.get_buffer(), Log::INFO);
+          }
 
-        connection.handle(recv_aiocb);
+          connection.handle(recv_aiocb);
+        } else {
+          if (this->get_trace_log() != NULL) {
+            this->get_trace_log()->get_stream(Log::INFO) <<
+                connection.get_log_prefix() << ": normal connection shutdown";
+          }
+
+          connection.handle(recv_aiocb);
+
+          Connection::dec_ref(connection);
+        }
       } else {
         if (this->get_error_log() != NULL) {
           this->get_error_log()->get_stream(Log::ERR) <<
