@@ -5,10 +5,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.aio", "proj\yield\aio
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.aio_test", "proj\yield\aio\yield.aio_test.vcxproj", "{69D33BC0-26EB-4C8C-9A21-95B9D531E2A1}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.sockets.ssl", "proj\yield\sockets\ssl\yield.sockets.ssl.vcxproj", "{8FB70B9E-C011-434A-A873-D23936170367}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.sockets.ssl_test", "proj\yield\sockets\ssl\yield.sockets.ssl_test.vcxproj", "{2346D7A5-E26A-46C5-802B-DCB18993E249}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.uri", "proj\yield\uri\yield.uri.vcxproj", "{0C12BE60-999B-4525-ADD1-B2F2A35A2936}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.uri_test", "proj\yield\uri\yield.uri_test.vcxproj", "{2A5D7A84-021F-47A8-89E2-A2E28FBD5DFF}"
@@ -83,14 +79,6 @@ Global
 		{69D33BC0-26EB-4C8C-9A21-95B9D531E2A1}.Debug|Win32.Build.0 = Debug|Win32
 		{69D33BC0-26EB-4C8C-9A21-95B9D531E2A1}.Release|Win32.ActiveCfg = Release|Win32
 		{69D33BC0-26EB-4C8C-9A21-95B9D531E2A1}.Release|Win32.Build.0 = Release|Win32
-		{8FB70B9E-C011-434A-A873-D23936170367}.Debug|Win32.ActiveCfg = Debug|Win32
-		{8FB70B9E-C011-434A-A873-D23936170367}.Debug|Win32.Build.0 = Debug|Win32
-		{8FB70B9E-C011-434A-A873-D23936170367}.Release|Win32.ActiveCfg = Release|Win32
-		{8FB70B9E-C011-434A-A873-D23936170367}.Release|Win32.Build.0 = Release|Win32
-		{2346D7A5-E26A-46C5-802B-DCB18993E249}.Debug|Win32.ActiveCfg = Debug|Win32
-		{2346D7A5-E26A-46C5-802B-DCB18993E249}.Debug|Win32.Build.0 = Debug|Win32
-		{2346D7A5-E26A-46C5-802B-DCB18993E249}.Release|Win32.ActiveCfg = Release|Win32
-		{2346D7A5-E26A-46C5-802B-DCB18993E249}.Release|Win32.Build.0 = Release|Win32
 		{0C12BE60-999B-4525-ADD1-B2F2A35A2936}.Debug|Win32.ActiveCfg = Debug|Win32
 		{0C12BE60-999B-4525-ADD1-B2F2A35A2936}.Debug|Win32.Build.0 = Debug|Win32
 		{0C12BE60-999B-4525-ADD1-B2F2A35A2936}.Release|Win32.ActiveCfg = Release|Win32
