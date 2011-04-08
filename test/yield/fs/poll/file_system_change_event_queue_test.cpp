@@ -1,4 +1,4 @@
-// file_system_change_event_queue_test.cpp
+// fsce_queue_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,61 +27,39 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include <memory>
-using std::auto_ptr;
+#include "yield/auto_object.hpp"
+#include "yield/assert.hpp"
+#include "yield/exception.hpp"
+#include "yield/fs/file_system.hpp"
+#include "yield/fs/poll/file_system_change_event_queue.hpp"
+#include "yunit.hpp"
 
-#include "yield/platform.h"
-using namespace yield::platform;
-
-#include "yunit.h"
-
+TEST_SUITE(FileSystemChangeEventQueue);
 
 namespace yield {
-namespace platform {
-class VolumeChangeEventQueueTest : public yunit::Test {
+namespace fs {
+namespace poll {
+class FileSystemChangeEventQueueTest : public yunit::Test {
 public:
-  VolumeChangeEventQueueTest() {
+  FileSystemChangeEventQueueTest() {
     test_root_path = Path(".");
     test_directory_path = test_root_path / "dce_test";
     test_file_path = test_root_path / "dce_test.txt";
-    volume_change_event_queue = NULL;
   }
 
   // yunit::Test
   void setup() {
-    volume = Volume::create();
-    if (volume != NULL) {
-      volume_change_event_queue = &VolumeChangeEventQueue::create();
-      volume->rmtree(get_test_directory_path());
-      if (volume->exists(get_test_directory_path())) FAIL();
-      volume->unlink(get_test_file_path());
-      if (volume->exists(get_test_file_path())) FAIL();
-    }
+    teardown();
   }
 
   void teardown() {
-    if (volume != NULL) {
-      delete volume_change_event_queue;
-      volume->rmtree(get_test_directory_path());
-      volume->unlink(get_test_file_path());
-      Volume::dec_ref(*volume);
-    }
+    FileSystem().rmtree(get_test_directory_path());
+    throw_assert_false(FileSystem().exists(get_test_directory_path()));
+    FileSystem().unlink(get_test_file_path());
+    throw_assert_false(FileSystem().exists(get_test_file_path()));
   }
 
 protected:
-  VolumeChangeEventQueue& get_volume_change_event_queue() {
-    return *volume_change_event_queue;
-  }
-
-  void
-  associate
-  (
-    VolumeChangeEvent::Type events = VolumeChangeEvent::TYPE_ALL
-  ) {
-    if (!volume_change_event_queue->associate(test_root_path, events))
-      throw Exception();
-  }
-
   const Path& get_test_directory_path() const {
     return test_directory_path;
   }
@@ -89,296 +67,262 @@ protected:
   const Path& get_test_file_path() const {
     return test_file_path;
   }
+
   const Path& get_test_root_path() const {
     return test_root_path;
-  }
-  Volume& get_volume() const {
-    return *volume;
-  }
-
-  void
-  poll
-  (
-    const Path& expected_path,
-    VolumeChangeEvent::Type expected_type
-  ) {
-    VolumeChangeEvent volume_change_event;
-    int poll_ret
-    = get_volume_change_event_queue().poll(volume_change_event);
-
-    ASSERT_EQ(poll_ret, 1);
-    ASSERT_EQ(volume_change_event.get_path(), expected_path);
-    ASSERT_EQ(volume_change_event.get_type(), expected_type);
-  }
-
-  void
-  poll
-  (
-    const Path& expected_old_path,
-    const Path& expected_new_path,
-    VolumeChangeEvent::Type expected_type
-  ) {
-    VolumeChangeEvent volume_change_event;
-    int poll_ret
-    = get_volume_change_event_queue().poll(volume_change_event);
-
-    ASSERT_EQ(poll_ret, 1);
-    ASSERT_EQ(volume_change_event.get_old_path(), expected_old_path);
-    ASSERT_EQ(volume_change_event.get_new_path(), expected_new_path);
-    ASSERT_EQ(volume_change_event.get_type(), expected_type);
   }
 
 private:
   Path test_directory_path, test_file_path, test_root_path;
-  Volume* volume;
-  VolumeChangeEventQueue* volume_change_event_queue;
-};
-};
 };
 
 
-TEST_SUITE(VolumeChangeEventQueue);
-
-TEST_EX
-(
-  VolumeChangeEventQueue,
+TEST_EX(
+  FileSystemChangeEventQueue,
   associate,
-  VolumeChangeEventQueueTest
+  FileSystemChangeEventQueueTest
 ) {
-  associate();
+  throw_assert(
+    FileSystemChangeEventQueue().associate(get_test_directory_path())
+  );
 }
 
-TEST_EX
-(
-  VolumeChangeEventQueue,
+TEST_EX(
+  FileSystemChangeEventQueue,
   directory_add,
-  VolumeChangeEventQueueTest
+  FileSystemChangeEventQueueTest
 ) {
   associate();
 
-  if (!get_volume().mkdir(get_test_directory_path()))
+  if (!FileSystem().mkdir(get_test_directory_path()))
     throw Exception();
 
-  poll(get_test_directory_path(), VolumeChangeEvent::TYPE_DIRECTORY_ADD);
+  poll(get_test_directory_path(), FileSystemChangeEvent::TYPE_DIRECTORY_ADD);
 }
 
-TEST_EX
-(
-  VolumeChangeEventQueue,
+TEST_EX(
+  FileSystemChangeEventQueue,
   directory_add_recursive,
-  VolumeChangeEventQueueTest
+  FileSystemChangeEventQueueTest
 ) {
-  if (!get_volume().mkdir(get_test_directory_path()))
+  if (!FileSystem().mkdir(get_test_directory_path()))
     throw Exception();
 
-  associate();
+  FileSystemChangeEventQueue fsce_queue;
+  throw_assert(
+    fsce_queue.associate(
+      get_test_directory_path(),
+      FileSystemChangeEvent::TYPE_ALL,
+      true
+    )
+  );
 
   Path subdir_path = get_test_directory_path() / "subdir";
-  if (!get_volume().mkdir(subdir_path))
+  if (!FileSystem().mkdir(subdir_path))
     throw Exception();
 
-  poll(subdir_path, VolumeChangeEvent::TYPE_DIRECTORY_ADD);
+  auto_Object<FileSystemChangeEvent> fsce
+    = fsce_queue->dequeue();
+  throw_assert_eq(
+    fsce->get_type(),
+    FileSystemChangeEvent::TYPE_DIRECTORY_ADD
+  );
 }
 
-TEST_EX
-(
-  VolumeChangeEventQueue,
+TEST_EX(
+  FileSystemChangeEventQueue,
   directory_remove,
-  VolumeChangeEventQueueTest
+  FileSystemChangeEventQueueTest
 ) {
-  if (!get_volume().mkdir(get_test_directory_path()))
+  if (!FileSystem().mkdir(get_test_directory_path()))
     throw Exception();
 
   associate();
 
-  if (!get_volume().rmdir(get_test_directory_path()))
+  if (!FileSystem().rmdir(get_test_directory_path()))
     throw Exception();
 
-  poll(get_test_directory_path(), VolumeChangeEvent::TYPE_DIRECTORY_REMOVE);
+  poll(get_test_directory_path(), FileSystemChangeEvent::TYPE_DIRECTORY_REMOVE);
 }
 
 TEST_EX
 (
-  VolumeChangeEventQueue,
+  FileSystemChangeEventQueue,
   directory_remove_recursive,
-  VolumeChangeEventQueueTest
+  FileSystemChangeEventQueueTest
 ) {
-  if (!get_volume().mkdir(get_test_directory_path()))
+  if (!FileSystem().mkdir(get_test_directory_path()))
     throw Exception();
 
   Path subdir_path = get_test_directory_path() / "subdir";
-  if (!get_volume().mkdir(subdir_path))
+  if (!FileSystem().mkdir(subdir_path))
     throw Exception();
 
   associate();
 
-  if (!get_volume().rmdir(subdir_path))
+  if (!FileSystem().rmdir(subdir_path))
     throw Exception();
 
-  poll(subdir_path, VolumeChangeEvent::TYPE_DIRECTORY_REMOVE);
+  poll(subdir_path, FileSystemChangeEvent::TYPE_DIRECTORY_REMOVE);
 }
 
-TEST_EX
-(
-  VolumeChangeEventQueue,
+TEST_EX(
+  FileSystemChangeEventQueue,
   directory_rename,
-  VolumeChangeEventQueueTest
+  FileSystemChangeEventQueueTest
 ) {
-  if (!get_volume().mkdir(get_test_directory_path()))
+  if (!FileSystem().mkdir(get_test_directory_path()))
     throw Exception();
 
   Path new_test_directory_path = get_test_root_path() / "test_dir_renamed";
-  if (get_volume().exists(new_test_directory_path))
-    if (!get_volume().rmdir(new_test_directory_path))
+  if (FileSystem().exists(new_test_directory_path))
+    if (!FileSystem().rmdir(new_test_directory_path))
       throw Exception();
 
   associate();
 
-  if (!get_volume().rename(get_test_directory_path(), new_test_directory_path))
+  if (!FileSystem().rename(get_test_directory_path(), new_test_directory_path))
     throw Exception();
 
   poll
   (
     get_test_directory_path(),
     new_test_directory_path,
-    VolumeChangeEvent::TYPE_DIRECTORY_RENAME
+    FileSystemChangeEvent::TYPE_DIRECTORY_RENAME
   );
 
-  get_volume().rmdir(new_test_directory_path);
+  FileSystem().rmdir(new_test_directory_path);
 }
 
 TEST_EX
 (
-  VolumeChangeEventQueue,
+  FileSystemChangeEventQueue,
   dissociate,
-  VolumeChangeEventQueueTest
+  FileSystemChangeEventQueueTest
 ) {
   associate();
 
-  if (!get_volume().touch(get_test_file_path()))
+  if (!FileSystem().touch(get_test_file_path()))
     throw Exception();
 
   get_volume_change_event_queue().dissociate(get_test_root_path());
 
   Time timeout(static_cast<uint64_t>(0));
-  VolumeChangeEvent volume_change_event;
+  FileSystemChangeEvent volume_change_event;
   int poll_ret
   = get_volume_change_event_queue().poll(&volume_change_event, 1, timeout);
   ASSERT_EQ(poll_ret, 0);
 }
 
-TEST_EX
-(
-  VolumeChangeEventQueue,
+TEST_EX(
+  FileSystemChangeEventQueue,
   file_add,
-  VolumeChangeEventQueueTest
+  FileSystemChangeEventQueueTest
 ) {
   associate();
 
-  if (!get_volume().touch(get_test_file_path()))
+  if (!FileSystem().touch(get_test_file_path()))
     throw Exception();
 
-  poll(get_test_file_path(), VolumeChangeEvent::TYPE_FILE_ADD);
+  poll(get_test_file_path(), FileSystemChangeEvent::TYPE_FILE_ADD);
 }
 
-TEST_EX
-(
-  VolumeChangeEventQueue,
+TEST_EX(
+  FileSystemChangeEventQueue,
   file_add_recursive,
-  VolumeChangeEventQueueTest
+  FileSystemChangeEventQueueTest
 ) {
-  if (!get_volume().mkdir(get_test_directory_path()))
+  if (!FileSystem().mkdir(get_test_directory_path()))
     throw Exception();
 
   associate();
 
   Path file_path = get_test_directory_path() / "file.txt";
-  if (!get_volume().touch(file_path))
+  if (!FileSystem().touch(file_path))
     throw Exception();
 
-  poll(file_path, VolumeChangeEvent::TYPE_FILE_ADD);
+  poll(file_path, FileSystemChangeEvent::TYPE_FILE_ADD);
 }
 
-TEST_EX
-(
-  VolumeChangeEventQueue,
+TEST_EX(
+  FileSystemChangeEventQueue,
   file_modify,
-  VolumeChangeEventQueueTest
+  FileSystemChangeEventQueueTest
 ) {
-  if (!get_volume().touch(get_test_file_path()))
+  if (!FileSystem().touch(get_test_file_path()))
     throw Exception();
 
   associate();
 
-  if (!get_volume().utime(get_test_file_path(), DateTime(), DateTime()))
+  if (!FileSystem().utime(get_test_file_path(), DateTime(), DateTime()))
     throw Exception();
 
-  poll(get_test_file_path(), VolumeChangeEvent::TYPE_FILE_MODIFY);
+  poll(get_test_file_path(), FileSystemChangeEvent::TYPE_FILE_MODIFY);
 }
 
-TEST_EX
-(
-  VolumeChangeEventQueue,
+TEST_EX(
+  FileSystemChangeEventQueue,
   file_remove,
-  VolumeChangeEventQueueTest
+  FileSystemChangeEventQueueTest
 ) {
-  if (!get_volume().touch(get_test_file_path()))
+  if (!FileSystem().touch(get_test_file_path()))
     throw Exception();
 
   associate();
 
-  if (!get_volume().unlink(get_test_file_path()))
+  if (!FileSystem().unlink(get_test_file_path()))
     throw Exception();
 
-  poll(get_test_file_path(), VolumeChangeEvent::TYPE_FILE_REMOVE);
+  poll(get_test_file_path(), FileSystemChangeEvent::TYPE_FILE_REMOVE);
 }
 
-TEST_EX
-(
-  VolumeChangeEventQueue,
+TEST_EX(
+  FileSystemChangeEventQueue,
   file_remove_recursive,
-  VolumeChangeEventQueueTest
+  FileSystemChangeEventQueueTest
 ) {
-  if (!get_volume().mkdir(get_test_directory_path()))
+  if (!FileSystem().mkdir(get_test_directory_path()))
     throw Exception();
 
   Path file_path = get_test_directory_path() / "file.txt";
-  if (!get_volume().touch(file_path))
+  if (!FileSystem().touch(file_path))
     throw Exception();
 
   associate();
 
-  if (!get_volume().unlink(file_path))
+  if (!FileSystem().unlink(file_path))
     throw Exception();
 
-  poll(file_path, VolumeChangeEvent::TYPE_FILE_REMOVE);
+  poll(file_path, FileSystemChangeEvent::TYPE_FILE_REMOVE);
 }
 
-TEST_EX
-(
-  VolumeChangeEventQueue,
+TEST_EX(
+  FileSystemChangeEventQueue,
   file_rename,
-  VolumeChangeEventQueueTest
+  FileSystemChangeEventQueueTest
 ) {
-  if (!get_volume().touch(get_test_file_path()))
+  if (!FileSystem().touch(get_test_file_path()))
     throw Exception();
 
   Path new_test_file_path = get_test_root_path() / "test_file_renamed.txt";
-  if (get_volume().exists(new_test_file_path))
-    if (!get_volume().unlink(new_test_file_path))
+  if (FileSystem().exists(new_test_file_path))
+    if (!FileSystem().unlink(new_test_file_path))
       throw Exception();
 
   associate();
 
-  if (!get_volume().rename(get_test_file_path(), new_test_file_path))
+  if (!FileSystem().rename(get_test_file_path(), new_test_file_path))
     throw Exception();
 
   poll
   (
     get_test_file_path(),
     new_test_file_path,
-    VolumeChangeEvent::TYPE_FILE_RENAME
+    FileSystemChangeEvent::TYPE_FILE_RENAME
   );
 
-  get_volume().unlink(new_test_file_path);
+  FileSystem().unlink(new_test_file_path);
+}
+}
+}
 }

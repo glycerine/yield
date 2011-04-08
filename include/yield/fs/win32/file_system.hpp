@@ -30,7 +30,7 @@
 #ifndef _YIELD_FS_WIN32_FILE_SYSTEM_HPP_
 #define _YIELD_FS_WIN32_FILE_SYSTEM_HPP_
 
-#include "yield/types.hpp"
+#include "yield/object.hpp"
 
 struct statvfs {
   unsigned long f_bsize;    // File system block size.

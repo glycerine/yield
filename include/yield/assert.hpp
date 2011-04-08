@@ -57,11 +57,10 @@ class AssertionException : public std::exception {
 public:
   AssertionException(const char* file, int line, const char* message = "") {
 #ifdef _WIN32
-    _snprintf_s
+    _snprintf_s(
 #else
-    snprintf
+    snprintf(
 #endif
-    (
       what_buffer,
       1024,
       "line number %d in %s (%s)",
