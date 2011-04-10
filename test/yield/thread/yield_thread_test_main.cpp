@@ -31,7 +31,6 @@
 
 #include <iostream>
 
-
 extern yunit::TestSuite& BlockingConcurrentQueueTestSuite();
 extern yunit::TestSuite& ConditionVariableTestSuite();
 extern yunit::TestSuite& LightweightMutexTestSuite();
@@ -49,7 +48,6 @@ extern yunit::TestSuite& SynchronizedResponseQueueTestSuite();
 extern yunit::TestSuite& ThreadTestSuite();
 extern yunit::TestSuite& TLSConcurrentQueueTestSuite();
 extern yunit::TestSuite& UnitConcurrentQueueTestSuite();
-
 
 int main(int, char**) {
   int failed_test_case_count = 0;

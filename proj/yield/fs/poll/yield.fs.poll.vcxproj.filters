@@ -17,27 +17,27 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\include\yield\fs\poll\file_system_change_event.hpp">
+    <ClInclude Include="..\..\..\..\include\yield\fs\poll\fs_event.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\yield\fs\poll\file_system_change_event_queue.hpp">
+    <ClInclude Include="..\..\..\..\include\yield\fs\poll\fs_event_queue.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\yield\fs\poll\file_system_change_event_queue.cpp">
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\fs_event_queue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\fs\poll\linux\file_system_change_event_queue.cpp">
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\linux\fs_event_queue.cpp">
       <Filter>Source Files\linux</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\..\src\yield\fs\poll\linux\file_system_change_event_queue.hpp">
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\linux\fs_event_queue.hpp">
       <Filter>Source Files\linux</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\..\src\yield\fs\poll\win32\file_system_change_event_queue.cpp">
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\win32\fs_event_queue.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\..\src\yield\fs\poll\win32\file_system_change_event_queue.hpp">
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\win32\fs_event_queue.hpp">
       <Filter>Source Files\win32</Filter>
     </ClInclude>
   </ItemGroup>

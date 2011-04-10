@@ -1,4 +1,4 @@
-// yield/fs/poll/file_system_change_event_queue.hpp
+// yield/fs/poll/fs_event_queue.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,58 +27,52 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_FS_POLL_FILE_SYSTEM_CHANGE_EVENT_QUEUE_HPP_
-#define _YIELD_FS_POLL_FILE_SYSTEM_CHANGE_EVENT_QUEUE_HPP_
-
-#include "yield/event_queue.hpp"
-#include "yield/fs/poll/file_system_change_event.hpp"
+#if defined(__linux__)
+#include "linux2/fs_event_queue.hpp"
+#elif defined(_WIN32)
+#include "win32/fs_event_queue.hpp"
+#endif
+#include "yield/fs/poll/fs_event_queue.hpp"
 
 namespace yield {
 namespace fs {
 namespace poll {
+FSEventQueue::FSEventQueue() {
 #if defined(__linux__)
-namespace linux {
-class FileSystemChangeEventQueue;
-}
+  pimpl = new linux::FSEventQueue;
 #elif defined(_WIN32)
-namespace win32 {
-class FileSystemChangeEventQueue;
-}
+  pimpl = new win32::FSEventQueue;
 #endif
+}
 
-class FileSystemChangeEventQueue : public EventQueue {
-public:
-  FileSystemChangeEventQueue();
-  ~FileSystemChangeEventQueue();
-
-public:
-  bool
-  associate(
-    const Path& path,
-    FileSystemChangeEvent::Type events = FileSystemChangeEvent::TYPE_ALL,
-    bool recursive = true
-  );
-
-  bool dissociate(const Path& path);
-
-public:
-  // yield::EventQueue
-  YO_NEW_REF Event& dequeue() {
-    return EventQueue::dequeue();
-  }
-
-  YO_NEW_REF Event* dequeue(const Time& timeout);
-  bool enqueue(YO_NEW_REF Event& event);
-  
-private:
+FSEventQueue::~FSEventQueue() {
 #if defined(__linux__)
-  linux::FileSystemChangeEventQueue* pimpl;
+  linux::FSEventQueue::dec_ref(*pimpl);
 #elif defined(_WIN32)
-  win32::FileSystemChangeEventQueue* pimpl;
+  win32::FSEventQueue::dec_ref(*pimpl);
 #endif
-};
-}
-}
 }
 
-#endif
+bool
+FSEventQueue::associate(
+  const Path& path,
+  FSEvent::Type events,
+  bool recursive
+) {
+  return pimpl->associate(path, events, recursive);
+}
+
+bool FSEventQueue::dissociate(const Path& path) {
+  return pimpl->dissociate(path);
+}
+
+YO_NEW_REF Event* FSEventQueue::dequeue(const Time& timeout) {
+  return pimpl->dequeue(timeout);
+}
+
+bool FSEventQueue::enqueue(YO_NEW_REF Event& event) {
+  return pimpl->enqueue(event);
+}
+}
+}
+}

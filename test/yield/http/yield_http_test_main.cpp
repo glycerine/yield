@@ -31,14 +31,12 @@
 
 #include <iostream>
 
-
 extern yunit::TestSuite& HTTPMessageParserTestSuite();
 extern yunit::TestSuite& HTTPMessageTestSuite();
 extern yunit::TestSuite& HTTPRequestParserTestSuite();
 extern yunit::TestSuite& HTTPRequestTestSuite();
 extern yunit::TestSuite& HTTPResponseParserTestSuite();
 extern yunit::TestSuite& HTTPResponseTestSuite();
-
 
 int main(int, char**) {
   int failed_test_case_count = 0;

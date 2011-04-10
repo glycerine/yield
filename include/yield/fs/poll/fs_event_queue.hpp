@@ -1,4 +1,4 @@
-// yield/fs/poll/file_system_change_event_queue.cpp
+// yield/fs/poll/fs_event_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,52 +27,58 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#if defined(__linux__)
-#include "linux2/file_system_change_event_queue.hpp"
-#elif defined(_WIN32)
-#include "win32/file_system_change_event_queue.hpp"
-#endif
-#include "yield/fs/poll/file_system_change_event_queue.hpp"
+#ifndef _YIELD_FS_POLL_FS_EVENT_QUEUE_HPP_
+#define _YIELD_FS_POLL_FS_EVENT_QUEUE_HPP_
+
+#include "yield/event_queue.hpp"
+#include "yield/fs/poll/fs_event.hpp"
 
 namespace yield {
 namespace fs {
 namespace poll {
-FileSystemChangeEventQueue::FileSystemChangeEventQueue() {
 #if defined(__linux__)
-  pimpl = new linux::FileSystemChangeEventQueue;
-#elif defined(_WIN32)
-  pimpl = new win32::FileSystemChangeEventQueue;
-#endif
+namespace linux {
+class FSEventQueue;
 }
+#elif defined(_WIN32)
+namespace win32 {
+class FSEventQueue;
+}
+#endif
 
-FileSystemChangeEventQueue::~FileSystemChangeEventQueue() {
+class FSEventQueue : public EventQueue {
+public:
+  FSEventQueue();
+  ~FSEventQueue();
+
+public:
+  bool
+  associate(
+    const Path& path,
+    FSEvent::Type events = FSEvent::TYPE_ALL,
+    bool recursive = true
+  );
+
+  bool dissociate(const Path& path);
+
+public:
+  // yield::EventQueue
+  YO_NEW_REF Event& dequeue() {
+    return EventQueue::dequeue();
+  }
+
+  YO_NEW_REF Event* dequeue(const Time& timeout);
+  bool enqueue(YO_NEW_REF Event& event);
+
+private:
 #if defined(__linux__)
-  linux::FileSystemChangeEventQueue::dec_ref(*pimpl);
+  linux::FSEventQueue* pimpl;
 #elif defined(_WIN32)
-  win32::FileSystemChangeEventQueue::dec_ref(*pimpl);
+  win32::FSEventQueue* pimpl;
 #endif
+};
+}
+}
 }
 
-bool
-FileSystemChangeEventQueue::associate(
-  const Path& path,
-  FileSystemChangeEvent::Type events,
-  bool recursive
-) {
-  return pimpl->associate(path, events, recursive);
-}
-
-bool FileSystemChangeEventQueue::dissociate(const Path& path) {
-  return pimpl->dissociate(path);
-}
-
-YO_NEW_REF Event* FileSystemChangeEventQueue::dequeue(const Time& timeout) {
-  return pimpl->dequeue(timeout);
-}
-
-bool FileSystemChangeEventQueue::enqueue(YO_NEW_REF Event& event) {
-  return pimpl->enqueue(event);
-}
-}
-}
-}
+#endif

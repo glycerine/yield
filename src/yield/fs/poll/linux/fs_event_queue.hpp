@@ -1,4 +1,4 @@
-// yield/fs/poll/linux/file_system_change_event_queue.hpp
+// yield/fs/poll/linux/fs_event_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,8 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_FS_POLL_LINUX_FILE_SYSTEM_CHANGE_EVENT_QUEUE_HPP_
-#define _YIELD_FS_POLL_LINUX_FILE_SYSTEM_CHANGE_EVENT_QUEUE_HPP_
+#ifndef _YIELD_FS_POLL_LINUX_FS_EVENT_QUEUE_HPP_
+#define _YIELD_FS_POLL_LINUX_FS_EVENT_QUEUE_HPP_
 
 #include "yield/fs/volume_change_event_queue.h"
 

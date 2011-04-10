@@ -31,7 +31,6 @@
 
 #include <iostream>
 
-
 extern yunit::TestSuite& FileBIOQueueTestSuite();
 #ifdef __unix__
 extern yunit::TestSuite& POSIXFileAIOQueueTestSuite();
@@ -39,7 +38,6 @@ extern yunit::TestSuite& POSIXFileAIOQueueTestSuite();
 #ifdef _WIN32
 extern yunit::TestSuite& Win32FileAIOQueueTestSuite();
 #endif
-
 
 int main(int, char**) {
   int failed_test_case_count = 0;

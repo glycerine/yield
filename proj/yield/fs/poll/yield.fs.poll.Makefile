@@ -53,12 +53,12 @@ LIBS += -lyield_aio -lyield_poll -lyield_fs -lyield_i18n -lyield
 D_FILE_PATHS := $(shell find ../../../../build/yield/fs/poll -name "*.d")
 
 
-O_FILE_PATHS += ../../../../build/yield/fs/poll/file_system_change_event_queue.o
+O_FILE_PATHS += ../../../../build/yield/fs/poll/fs_event_queue.o
 ifeq ($(UNAME), Linux)
-	O_FILE_PATHS += ../../../../build/yield/fs/poll/linux/file_system_change_event_queue.o
+	O_FILE_PATHS += ../../../../build/yield/fs/poll/linux/fs_event_queue.o
 endif
 ifeq ($(UNAME), MINGW32)
-	O_FILE_PATHS += ../../../../build/yield/fs/poll/win32/file_system_change_event_queue.o
+	O_FILE_PATHS += ../../../../build/yield/fs/poll/win32/fs_event_queue.o
 endif
 
 
@@ -89,14 +89,14 @@ depclean:
 	-mkdir -p ../../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(O_FILE_PATHS)
 
-../../../../build/yield/fs/poll/file_system_change_event_queue.o: ../../../../src/yield/fs/poll/file_system_change_event_queue.cpp
+../../../../build/yield/fs/poll/fs_event_queue.o: ../../../../src/yield/fs/poll/fs_event_queue.cpp
 	-mkdir -p ../../../../build/yield/fs/poll 2>/dev/null
-	$(CXX) -c -o ../../../../build/yield/fs/poll/file_system_change_event_queue.o -MD $(CXXFLAGS) ../../../../src/yield/fs/poll/file_system_change_event_queue.cpp
+	$(CXX) -c -o ../../../../build/yield/fs/poll/fs_event_queue.o -MD $(CXXFLAGS) ../../../../src/yield/fs/poll/fs_event_queue.cpp
 
-../../../../build/yield/fs/poll/linux/file_system_change_event_queue.o: ../../../../src/yield/fs/poll/linux/file_system_change_event_queue.cpp
+../../../../build/yield/fs/poll/linux/fs_event_queue.o: ../../../../src/yield/fs/poll/linux/fs_event_queue.cpp
 	-mkdir -p ../../../../build/yield/fs/poll/linux 2>/dev/null
-	$(CXX) -c -o ../../../../build/yield/fs/poll/linux/file_system_change_event_queue.o -MD $(CXXFLAGS) ../../../../src/yield/fs/poll/linux/file_system_change_event_queue.cpp
+	$(CXX) -c -o ../../../../build/yield/fs/poll/linux/fs_event_queue.o -MD $(CXXFLAGS) ../../../../src/yield/fs/poll/linux/fs_event_queue.cpp
 
-../../../../build/yield/fs/poll/win32/file_system_change_event_queue.o: ../../../../src/yield/fs/poll/win32/file_system_change_event_queue.cpp
+../../../../build/yield/fs/poll/win32/fs_event_queue.o: ../../../../src/yield/fs/poll/win32/fs_event_queue.cpp
 	-mkdir -p ../../../../build/yield/fs/poll/win32 2>/dev/null
-	$(CXX) -c -o ../../../../build/yield/fs/poll/win32/file_system_change_event_queue.o -MD $(CXXFLAGS) ../../../../src/yield/fs/poll/win32/file_system_change_event_queue.cpp
+	$(CXX) -c -o ../../../../build/yield/fs/poll/win32/fs_event_queue.o -MD $(CXXFLAGS) ../../../../src/yield/fs/poll/win32/fs_event_queue.cpp

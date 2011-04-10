@@ -53,7 +53,7 @@ LIBS += -lyield_fs_poll -lyield_aio -lyield_poll -lyield_fs -lyield_i18n -lyield
 D_FILE_PATHS := $(shell find ../../../../build/yield/fs/poll -name "*.d")
 
 
-O_FILE_PATHS += ../../../../build/yield/fs/poll/file_system_change_event_queue_test.o
+O_FILE_PATHS += ../../../../build/yield/fs/poll/fs_event_queue_test.o ../../../../build/yield/fs/poll/yield_fs_poll_test_main.o
 
 
 all: ../../../../bin/yield/yield_fs_poll_test
@@ -85,6 +85,10 @@ lcov: ../../../../bin/yield/yield_fs_poll_test
 	-mkdir -p ../../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 
-../../../../build/yield/fs/poll/file_system_change_event_queue_test.o: ../../../../test/yield/fs/poll/file_system_change_event_queue_test.cpp
+../../../../build/yield/fs/poll/fs_event_queue_test.o: ../../../../test/yield/fs/poll/fs_event_queue_test.cpp
 	-mkdir -p ../../../../build/yield/fs/poll 2>/dev/null
-	$(CXX) -c -o ../../../../build/yield/fs/poll/file_system_change_event_queue_test.o -MD $(CXXFLAGS) ../../../../test/yield/fs/poll/file_system_change_event_queue_test.cpp
+	$(CXX) -c -o ../../../../build/yield/fs/poll/fs_event_queue_test.o -MD $(CXXFLAGS) ../../../../test/yield/fs/poll/fs_event_queue_test.cpp
+
+../../../../build/yield/fs/poll/yield_fs_poll_test_main.o: ../../../../test/yield/fs/poll/yield_fs_poll_test_main.cpp
+	-mkdir -p ../../../../build/yield/fs/poll 2>/dev/null
+	$(CXX) -c -o ../../../../build/yield/fs/poll/yield_fs_poll_test_main.o -MD $(CXXFLAGS) ../../../../test/yield/fs/poll/yield_fs_poll_test_main.cpp

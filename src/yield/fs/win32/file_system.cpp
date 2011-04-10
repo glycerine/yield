@@ -69,12 +69,7 @@ bool FileSystem::isfile(const Path& path) {
 }
 
 bool FileSystem::link(const Path& old_path, const Path& new_path) {
-  return CreateHardLink
-         (
-           new_path.c_str(),
-           old_path.c_str(),
-           NULL
-         ) == TRUE;
+  return CreateHardLink(new_path.c_str(), old_path.c_str(), NULL) == TRUE;
 }
 
 bool FileSystem::mkdir(const Path& path) {
@@ -100,8 +95,7 @@ File* FileSystem::mkfifo(const Path& path, uint32_t flags) {
       dwPipeMode |= PIPE_WAIT;
 
     HANDLE hNamedPipe
-    = CreateNamedPipe
-      (
+    = CreateNamedPipe(
         path.c_str(),
         dwOpenMode,
         dwPipeMode,
@@ -178,8 +172,7 @@ FileSystem::open(
     dwFlagsAndAttributes = FILE_ATTRIBUTE_HIDDEN;
 
   HANDLE fd
-  = CreateFile
-    (
+  = CreateFile(
       path.c_str(),
       dwDesiredAccess,
       FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE,
@@ -203,8 +196,7 @@ FileSystem::open(
 
 Directory* FileSystem::opendir(const Path& path) {
   HANDLE hDirectory
-  = CreateFile
-    (
+  = CreateFile(
       path.c_str(),
       FILE_LIST_DIRECTORY,
       FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
@@ -234,8 +226,7 @@ bool FileSystem::realpath(const Path& path, OUT Path& realpath) {
 }
 
 bool FileSystem::rename(const Path& from_path, const Path& to_path) {
-  return MoveFileEx
-         (
+  return MoveFileEx(
            from_path.c_str(),
            to_path.c_str(),
            MOVEFILE_REPLACE_EXISTING
@@ -291,10 +282,8 @@ bool FileSystem::statvfs(const Path& path, struct statvfs& stbuf) {
                  uTotalNumberOfBytes,
                  uTotalNumberOfFreeBytes;
 
-  if
-  (
-    GetDiskFreeSpaceEx
-    (
+  if (
+    GetDiskFreeSpaceEx(
       path.c_str(),
       &uFreeBytesAvailableToCaller,
       &uTotalNumberOfBytes,

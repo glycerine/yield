@@ -31,7 +31,6 @@
 
 #include <iostream>
 
-
 extern yunit::TestSuite& StatTestSuite();
 extern yunit::TestSuite& DirectoryTestSuite();
 extern yunit::TestSuite& NamedPipeTestSuite();
@@ -54,7 +53,6 @@ extern yunit::TestSuite& Win32FileTestSuite();
 #ifdef _WIN32
 extern yunit::TestSuite& Win32StatTestSuite();
 #endif
-
 
 int main(int, char**) {
   int failed_test_case_count = 0;

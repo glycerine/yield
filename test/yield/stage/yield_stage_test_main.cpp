@@ -31,11 +31,9 @@
 
 #include <iostream>
 
-
 extern yunit::TestSuite& SEDAStageSchedulerTestSuite();
 extern yunit::TestSuite& StageTestSuite();
 extern yunit::TestSuite& WavefrontStageSchedulerTestSuite();
-
 
 int main(int, char**) {
   int failed_test_case_count = 0;

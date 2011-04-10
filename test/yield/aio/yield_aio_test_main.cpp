@@ -33,8 +33,6 @@
 
 
 
-
-
 int main(int, char**) {
   int failed_test_case_count = 0;
 

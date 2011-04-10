@@ -31,10 +31,8 @@
 
 #include <iostream>
 
-
 extern yunit::TestSuite& URIParserTestSuite();
 extern yunit::TestSuite& URITestSuite();
-
 
 int main(int, char**) {
   int failed_test_case_count = 0;

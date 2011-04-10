@@ -82,10 +82,8 @@ bool Directory::read(OUT Entry*& entry) {
     char file_name_info_buffer[file_name_info_size];
     FILE_NAME_INFO* file_name_info = new(file_name_info_buffer) FILE_NAME_INFO;
 
-    if
-    (
-      GetFileInformationByHandleEx
-      (
+    if (
+      GetFileInformationByHandleEx(
         *this,
         FileNameInfo,
         file_name_info,
@@ -136,7 +134,9 @@ void Directory::rewind() {
 }
 
 
-Directory::Entry::Entry(const WIN32_FIND_DATA& find_data) : Stat(find_data) {
+Directory::Entry::Entry(const WIN32_FIND_DATA& find_data)
+  : Stat(find_data),
+    name(find_data.cFileName) {
 }
 
 bool Directory::Entry::is_hidden() const {
@@ -149,8 +149,8 @@ bool Directory::Entry::is_special() const {
          get_name() == Path::PARENT_DIRECTORY;
 }
 
-Directory::Entry& Directory::Entry::operator=
-(
+Directory::Entry&
+Directory::Entry::operator=(
   const WIN32_FIND_DATA& find_data
 ) {
   name = find_data.cFileName;

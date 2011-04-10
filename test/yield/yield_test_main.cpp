@@ -31,7 +31,6 @@
 
 #include <iostream>
 
-
 extern yunit::TestSuite& atomicTestSuite();
 extern yunit::TestSuite& auto_ObjectTestSuite();
 extern yunit::TestSuite& BufferTestSuite();
@@ -44,7 +43,6 @@ extern yunit::TestSuite& ObjectTestSuite();
 extern yunit::TestSuite& RequestTestSuite();
 extern yunit::TestSuite& ResponseTestSuite();
 extern yunit::TestSuite& TimeTestSuite();
-
 
 int main(int, char**) {
   int failed_test_case_count = 0;

@@ -31,12 +31,10 @@
 
 #include <iostream>
 
-
 extern yunit::TestSuite& SocketAddressTestSuite();
 extern yunit::TestSuite& SocketPairTestSuite();
 extern yunit::TestSuite& TCPSocketTestSuite();
 extern yunit::TestSuite& UDPSocketTestSuite();
-
 
 int main(int, char**) {
   int failed_test_case_count = 0;

@@ -1,4 +1,4 @@
-// yield/fs/poll/file_system_change_event.hpp
+// yield/fs/poll/fs_event.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,8 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_FS_POLL_FILE_SYSTEM_CHANGE_EVENT_HPP_
-#define _YIELD_FS_POLL_FILE_SYSTEM_CHANGE_EVENT_HPP_
+#ifndef _YIELD_FS_POLL_FS_EVENT_HPP_
+#define _YIELD_FS_POLL_FS_EVENT_HPP_
 
 #include "yield/event.hpp"
 #include "yield/fs/path.hpp"
@@ -36,7 +36,7 @@
 namespace yield {
 namespace fs {
 namespace poll {
-class FileSystemChangeEvent  : public Event {
+class FSEvent  : public Event {
 public:
   typedef uint8_t Type;
   const static Type TYPE_ALL = static_cast<Type>(~0);
@@ -50,15 +50,15 @@ public:
   const static Type TYPE_FILE_RENAME = 128;
 
 public:
-  FileSystemChangeEvent::FileSystemChangeEvent()
+  FSEvent::FSEvent()
     : type(TYPE_FILE_ADD)
   { }
 
-  FileSystemChangeEvent::FileSystemChangeEvent(const Path& path, Type type)
+  FSEvent::FSEvent(const Path& path, Type type)
     : old_path(path), type(type)
   { }
 
-  FileSystemChangeEvent::FileSystemChangeEvent(
+  FSEvent::FSEvent(
     const Path& old_path,
     const Path& new_path,
     Type type

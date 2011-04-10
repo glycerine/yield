@@ -1,4 +1,4 @@
-// yield/fs/poll/win32/file_system_change_event_queue.hpp
+// yield/fs/poll/win32/fs_event_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,25 +27,26 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_FS_POLL_WIN32_FILE_SYSTEM_CHANGE_EVENT_QUEUE_HPP_
-#define _YIELD_FS_POLL_WIN32_FILE_SYSTEM_CHANGE_EVENT_QUEUE_HPP_
+#ifndef _YIELD_FS_POLL_WIN32_FS_EVENT_QUEUE_HPP_
+#define _YIELD_FS_POLL_WIN32_FS_EVENT_QUEUE_HPP_
 
 #include <map>
 
 #include "yield/aio/win32/aio_queue.hpp"
-#include "yield/fs/poll/file_system_change_event.hpp"
+#include "yield/fs/poll/fs_event.hpp"
+#include "yield/thread/non_blocking_concurrent_queue.hpp"
 
 namespace yield {
 namespace fs {
 namespace poll {
 namespace win32 {
-class FileSystemChangeEventQueue : public yield::aio::win32::AIOQueue {
+class FSEventQueue : public yield::aio::win32::AIOQueue {
 public:
-  ~FileSystemChangeEventQueue();
+  ~FSEventQueue();
 
   bool associate(
     const Path& path,
-    FileSystemChangeEvent::Type events = FileSystemChangeEvent::TYPE_ALL,
+    FSEvent::Type events = FSEvent::TYPE_ALL,
     bool recursive = true
   );
 
@@ -54,12 +55,12 @@ public:
 public:
   // yield::EventQueue
   YO_NEW_REF Event* dequeue(const Time& timeout);
-  bool enqueue(YO_NEW_REF Event& event);
 
 private:
   class Watch;
 
 private:
+  yield::thread::NonBlockingConcurrentQueue<FSEvent, 1024> fs_events;
   std::map<Path, Watch*> watches;
 };
 }
