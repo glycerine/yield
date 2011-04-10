@@ -339,7 +339,7 @@ class TopLevelMakefile(object):
 
         for makefile in sorted(self.__makefiles):
             if isinstance(makefile, Makefile):
-                project_dir_path = posixpath(makefile.get_project_dir_path())
+                project_dir_path = posixpath(relpath(makefile.get_project_dir_path()))
                 project_name = makefile.get_name()
                 project_references = makefile.get_project_references()['*']
             else:
