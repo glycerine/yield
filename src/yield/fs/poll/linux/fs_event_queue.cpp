@@ -109,7 +109,7 @@ public:
 
     int inotify_wd = inotify_add_watch(inotify_fd, path.c_str(), mask);
     if (inotify_wd != -1) {
-      Directory* dir = FileSystem().opendir(path);
+      Directory* directory = FileSystem().opendir(path);
 
       Watch* watch
       = new Watch(
@@ -122,25 +122,25 @@ public:
         inotify_wd
       );
 
-      if (dir != NULL) {
+      if (directory != NULL) {
         if (recursive) {
-          Directory::Entry* dirent = dir->read();
+          Directory::Entry* dirent = directory->read();
           if (dirent != NULL) {
             do {
               if (dirent->ISDIR() && !dirent->is_hidden() && !dirent->is_special()) {
                 Path child_path = path / dirent->get_name();
                 Watch* child_watch
-                = create(events, inotify_fd, watch, child_path, recursive);
+                  = create(events, inotify_fd, watch, child_path, recursive);
                 if (child_watch != NULL)
                   watch->push_back(child_watch);
               }
-            } while (dir->read(*dirent));
+            } while (directory->read(*dirent));
 
             Directory::Entry::dec_ref(*dirent);
           }
         }
 
-        Directory::dec_ref(*dir);
+        Directory::dec_ref(*directory);
       }
 
       return watch;
@@ -153,6 +153,7 @@ public:
       return this;
     else {
       for (iterator watch_i = begin(); watch_i != end(); ++watch_i) {
+        debug_assert_ne(*watch_i, NULL);
         Watch* watch = (*watch_i)->find_watch(wd);
         if (watch != NULL)
           return watch;
@@ -173,96 +174,111 @@ public:
   ) {
     uint32_t cookie = inotify_event_.cookie;
     uint32_t mask = inotify_event_.mask;
-    Path name = Path(inotify_event_.name, inotify_event_.len);
     bool isdir = (mask & IN_ISDIR) == IN_ISDIR;
-    Path path = path / name;
+    Path name, path;
+    if (inotify_event_.len > 1) {
+      // len includes a NULL terminator, but may also include
+      // one or more bytes of padding. Do a strlen to find the real length.
+      name = Path(inotify_event_.name); //, inotify_event_.len - 1);
+      path = this->path / name;
+    }
 
     for (;;) { // Mask can have multiple bits set.
       // Keep looping until we find one that matches events.
       FSEvent::Type type;
 
-      if (mask & IN_ATTRIB) {
+      if ((mask & IN_ATTRIB) == IN_ATTRIB) {
+        mask ^= IN_ATTRIB;
+
         if (isdir)
           type = FSEvent::TYPE_DIRECTORY_MODIFY;
         else
           type = FSEvent::TYPE_FILE_MODIFY;
+      } else if ((mask & IN_CREATE) == IN_CREATE) {
+        mask ^= IN_CREATE;
 
-        mask ^= IN_ATTRIB;
-      } else if (mask & IN_CREATE) {
         if (isdir) {
-          type = FSEvent::TYPE_DIRECTORY_ADD;
-
           if (recursive) {
             Watch* child_watch
-            = create(events, inotify_fd, this, path, recursive);
-
+              = create(events, inotify_fd, this, path, recursive);
             if (child_watch != NULL)
               push_back(child_watch);
           }
+
+          type = FSEvent::TYPE_DIRECTORY_ADD;
         } else
           type = FSEvent::TYPE_FILE_ADD;
-
-        mask ^= IN_CREATE;
-      } else if (mask & IN_DELETE) {
+      } else if (
+          (mask & IN_DELETE) == IN_DELETE
+          ||
+          (mask & IN_MOVED_FROM) == IN_MOVED_FROM
+      ) {
         if (isdir) {
-          type = FSEvent::TYPE_DIRECTORY_REMOVE;
+          bool found_child_watch = false;
+          for (iterator watch_i = begin(); watch_i != end(); ++watch_i) {
+            if ((*watch_i)->name == name) {
+              found_child_watch = true;
+              (*watch_i)->close();
+              delete *watch_i;
+              erase(watch_i);
 
-          Watch* child_watch = find_child_watch(name);
-          if (child_watch != NULL) {
-            child_watch->close();
-            delete child_watch;
+              if ((mask & IN_DELETE) == IN_DELETE) {
+                mask ^= IN_DELETE;
+                type = FSEvent::TYPE_DIRECTORY_REMOVE;
+              } else {
+                mask ^= IN_MOVED_FROM;
+                old_names[cookie] = name;
+                type = 0;
+              }
+
+              break;
+            }
           }
-        } else
-          type = FSEvent::TYPE_FILE_REMOVE;
 
-        mask ^= IN_DELETE;
-      } else if (mask & IN_MOVE_SELF)
-        DebugBreak();
-      else if ((mask & IN_MOVED_FROM) == IN_MOVED_FROM) {
-        if (isdir) {
-          Watch* child_watch = find_child_watch(name);
-          if (child_watch != NULL) {
-            child_watch->close();
-            delete child_watch;
-          } else
-            DebugBreak();
+          debug_assert(found_child_watch);
+        } else {
+          if ((mask & IN_DELETE) == IN_DELETE) {
+            mask ^= IN_DELETE;
+            type = FSEvent::TYPE_FILE_REMOVE;
+          } else {
+            mask ^= IN_MOVED_FROM;
+            old_names[cookie] = name;
+            type = 0;
+          }
         }
+      } else if ((mask & IN_MOVED_TO) == IN_MOVED_TO) {
+        mask ^= IN_MOVED_TO;
 
-        old_names[cookie] = name;
-
-        mask ^= IN_MOVED_FROM;
-      } else if (mask & IN_MOVED_TO) {
         map<uint32_t, Path>::iterator old_name_i = old_names.find(cookie);
         debug_assert_ne(old_name_i, old_names.end());
 
         if (isdir) {
-          type = FSEvent::TYPE_DIRECTORY_RENAME;
-
           if (recursive) {
             Watch* child_watch
-            = create(events, inotify_fd, this, path, recursive);
-
+              = create(events, inotify_fd, this, path, recursive);
             if (child_watch != NULL)
               push_back(child_watch);
           }
+
+          type = FSEvent::TYPE_DIRECTORY_RENAME;
         } else
           type = FSEvent::TYPE_FILE_RENAME;
 
         if ((events & type) == type) {
           FSEvent* fs_event
-            = new FSEvent(path / old_name_i->second, path, type);
+            = new FSEvent(this->path / old_name_i->second, path, type);
           old_names.erase(old_name_i);
           fs_events.enqueue(*fs_event);
         } else {
           old_names.erase(old_name_i);
           continue;
         }
+      } else if ((mask & IN_MOVE_SELF) == IN_MOVE_SELF)
+        DebugBreak();
+      else
+        return;
 
-        mask ^= IN_MOVED_TO;
-      } else
-        return NULL;
-
-      if ((events & type) == type)
+      if (type != 0 && (events & type) == type)
         fs_events.enqueue(*new FSEvent(path, type));
     }
   }
@@ -285,15 +301,6 @@ private:
       recursive(recursive),
       wd(wd)
   { }
-
-  Watch* find_child_watch(const Path& name) {
-    for (iterator watch_i = begin(); watch_i != end(); ++watch_i) {
-      if ((*watch_i)->name == name)
-        return *watch_i;
-    }
-
-    return NULL;
-  }
 
 private:
   FSEvent::Type events;
@@ -362,7 +369,7 @@ YO_NEW_REF Event* FSEventQueue::dequeue(const Time& timeout) {
       if (event->get_type_id() == FDEvent::TYPE_ID) {
         FDEvent* fd_event = static_cast<FDEvent*>(event);
         if (fd_event->get_fd() == inotify_fd) {
-          char inotify_events[(sizeof(inotify_event_) + PATH_MAX) * 16];
+          char inotify_events[(sizeof(inotify_event) + PATH_MAX) * 16];
           ssize_t read_ret
             = ::read(inotify_fd, inotify_events, sizeof(inotify_events));
 
@@ -372,7 +379,7 @@ YO_NEW_REF Event* FSEventQueue::dequeue(const Time& timeout) {
               = inotify_events + static_cast<size_t>(read_ret);
 
             do {
-              const inotify_event inotify_event_*
+              const inotify_event* inotify_event_
                 = reinterpret_cast<const inotify_event*>(inotify_events_p);
 
               for (
