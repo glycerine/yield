@@ -44,7 +44,7 @@ class AIOQueue;
 
 class AIOCB : public Event {
 public:
-  const static uint32_t TYPE_ID = 3930686968;
+  const static uint32_t TYPE_ID = 3930686968UL;
 
 public:
   virtual ~AIOCB() { }

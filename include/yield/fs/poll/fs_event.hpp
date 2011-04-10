@@ -53,15 +53,15 @@ public:
   const static Type TYPE_FILE_RENAME = 128;
 
 public:
-  FSEvent::FSEvent()
+  FSEvent()
     : type(TYPE_FILE_ADD)
   { }
 
-  FSEvent::FSEvent(const Path& path, Type type)
+  FSEvent(const Path& path, Type type)
     : old_path(path), type(type)
   { }
 
-  FSEvent::FSEvent(
+  FSEvent(
     const Path& old_path,
     const Path& new_path,
     Type type

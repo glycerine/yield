@@ -39,7 +39,7 @@ namespace aio {
 namespace posix {
 class AIOCB : public Event {
 public:
-  const static uint32_t TYPE_ID = 4212504993;
+  const static uint32_t TYPE_ID = 4212504993UL;
 
 public:
   virtual ~AIOCB();

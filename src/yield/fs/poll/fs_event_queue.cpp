@@ -28,7 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(__linux__)
-#include "linux2/fs_event_queue.hpp"
+#include "linux/fs_event_queue.hpp"
 #elif defined(_WIN32)
 #include "win32/fs_event_queue.hpp"
 #endif

@@ -28,14 +28,25 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "fs_event_queue.hpp"
+#include "yield/exception.hpp"
 #include "yield/fs/posix/directory.hpp"
 #include "yield/fs/posix/file_system.hpp"
+#include "yield/poll/fd_event.hpp"
 
+#include <errno.h>
 #include <sys/inotify.h>
 
-class FSEventQueue::Watch
-  : public FSEventQueue::Watch,
-    private vector<Watch*> {
+namespace yield {
+namespace fs {
+namespace poll {
+namespace linux {
+using std::map;
+using yield::fs::posix::Directory;
+using yield::fs::posix::FileSystem;
+using yield::poll::FDEvent;
+using yield::thread::NonBlockingConcurrentQueue;
+
+class FSEventQueue::Watch : private vector<Watch*> {
 public:
   void close() {
     if (wd != -1) {
@@ -48,9 +59,9 @@ public:
   create(
     FSEvent::Type events,
     int inotify_fd,
-    const Path& path,
     Watch* parent,
-    bool recursive    
+    const Path& path,
+    bool recursive
   ) {
     uint32_t mask = 0;
 
@@ -96,7 +107,7 @@ public:
     )
       mask |= IN_MOVED_FROM | IN_MOVED_TO;
 
-    int inotify_wd = inotify_add_watch(inotify_fd, path, mask);
+    int inotify_wd = inotify_add_watch(inotify_fd, path.c_str(), mask);
     if (inotify_wd != -1) {
       Directory* dir = FileSystem().opendir(path);
 
@@ -107,22 +118,23 @@ public:
         path.split().second,
         parent,
         path,
+        recursive,
         inotify_wd
       );
 
       if (dir != NULL) {
-        if (flags & FLAG_RECURSIVE) {
-          Directory::Entry* dirent = dir->read(Directory::Entry::TYPE_DIR);
+        if (recursive) {
+          Directory::Entry* dirent = dir->read();
           if (dirent != NULL) {
             do {
-              if (!dirent->is_hidden() && !dirent->is_special()) {
+              if (dirent->ISDIR() && !dirent->is_hidden() && !dirent->is_special()) {
                 Path child_path = path / dirent->get_name();
                 Watch* child_watch
-                = create(events, flags, inotify_fd, child_path, watch);
+                = create(events, inotify_fd, watch, child_path, recursive);
                 if (child_watch != NULL)
                   watch->push_back(child_watch);
               }
-            } while (dir->read(*dirent, Directory::Entry::TYPE_DIR));
+            } while (dir->read(*dirent));
 
             Directory::Entry::dec_ref(*dirent);
           }
@@ -160,18 +172,17 @@ public:
     if (last_read_mask == 0) {
       uint32_t mask_cookie_len[3];
       ssize_t read_ret
-      = ::read(inotify_fd, mask_cookie_len, sizeof(mask_cookie_len));
-      if (read_ret != sizeof(mask_cookie_len)) DebugBreak();
+        = ::read(inotify_fd, mask_cookie_len, sizeof(mask_cookie_len));
+      debug_assert_eq(read_ret, static_cast<ssize_t>(sizeof(mask_cookie_len)));
 
       mask = mask_cookie_len[0];
       cookie = mask_cookie_len[1];
       uint32_t len = mask_cookie_len[2];
 
       if (len > 0) {
-        //if (!this->isdir()) DebugBreak();
         char* read_name = new char[len];
         read_ret = ::read(inotify_fd, read_name, len);
-        if (read_ret != len) DebugBreak();
+        debug_assert_eq(read_ret, static_cast<ssize_t>(len));
         name = Path(read_name, len);
         delete [] read_name;
       } else
@@ -183,7 +194,7 @@ public:
     }
 
     bool isdir = (mask & IN_ISDIR) == IN_ISDIR;
-    Path path = get_path() / name;
+    Path path = path / name;
 
     for (;;) { // Mask can have multiple bits set.
       // Keep looping until we find one that matches events.
@@ -200,9 +211,9 @@ public:
         if (isdir) {
           type = FSEvent::TYPE_DIRECTORY_ADD;
 
-          if (get_flags() & FLAG_RECURSIVE) {
+          if (recursive) {
             Watch* child_watch
-            = create(events, inotify_fd, path, this, recursive);
+            = create(events, inotify_fd, this, path, recursive);
 
             if (child_watch != NULL)
               push_back(child_watch);
@@ -241,14 +252,14 @@ public:
         mask ^= IN_MOVED_FROM;
       } else if (mask & IN_MOVED_TO) {
         map<uint32_t, Path>::iterator old_name_i = old_names.find(cookie);
-        if (old_name_i == old_names.end()) DebugBreak();
+        debug_assert_ne(old_name_i, old_names.end());
 
         if (isdir) {
           type = FSEvent::TYPE_DIRECTORY_RENAME;
 
-          if (get_flags() & FLAG_RECURSIVE) {
+          if (recursive) {
             Watch* child_watch
-            = create(events, inotify_fd, path, this, recursive);
+            = create(events, inotify_fd, this, path, recursive);
 
             if (child_watch != NULL)
               push_back(child_watch);
@@ -258,7 +269,7 @@ public:
 
         if ((events & type) == type) {
           FSEvent* fs_event
-            = new FSEvent(get_path() / old_name_i->second, path, type);
+            = new FSEvent(path / old_name_i->second, path, type);
           fs_events.enqueue(*fs_event);
           old_names.erase(old_name_i);
           //return true;
@@ -302,8 +313,8 @@ private:
     : events(events),
       inotify_fd(inotify_fd),
       name(name),
-      parent(parent),
       path(path),
+      parent(parent),
       recursive(recursive),
       wd(wd)
   { }
@@ -334,7 +345,7 @@ private:
 FSEventQueue::FSEventQueue() {
   inotify_fd = inotify_init();
   if (inotify_fd != -1) {
-    if (!FDEventQueue::associate(inotify_fd)) {
+    if (!FDEventQueue::associate(inotify_fd, POLLIN)) {
       close(inotify_fd);
       throw Exception();
     }
@@ -346,7 +357,7 @@ FSEventQueue::~FSEventQueue() {
   close(inotify_fd);
 
   for (
-    std::map<Path, Watch*>::iterator watch_i = watches.begin();
+    map<Path, Watch*>::iterator watch_i = watches.begin();
     watch_i != watches.end();
     ++watch_i
   )
@@ -360,22 +371,20 @@ FSEventQueue::associate(
   FSEvent::Type events,
   bool recursive
 ) {
-  std::map<Path, Watch*>::iterator watch_i = watches.find(path);
+  map<Path, Watch*>::iterator watch_i = watches.find(path);
   if (watch_i == watches.end()) {
-    watch = Watch::create(events, flags, inotify_fd, path);
+    Watch* watch = Watch::create(events, inotify_fd, NULL, path, recursive);
     if (watch != NULL) {
-      if (FDEventQueue::associate(*watch)) {
-        watches.insert(path, *watch);
+      if (FDEventQueue::associate(*watch, POLLIN)) {
+        watches[path] = watch;
         return true;
-      } else {
+      } else
         delete watch;
-        return false;
-      }
     }
-  } else {
+  } else
     DebugBreak(); // Modify the existing watch
-    return false;
-  }
+
+  return false;
 }
 
 YO_NEW_REF Event* FSEventQueue::dequeue(const Time& timeout) {
@@ -383,24 +392,23 @@ YO_NEW_REF Event* FSEventQueue::dequeue(const Time& timeout) {
   if (fs_event != NULL)
     return fs_event;
   else {
-    Event* event = AIOQueue::dequeue(timeout);
+    Event* event = FDEventQueue::dequeue(timeout);
     if (event != NULL) {
       if (event->get_type_id() == FDEvent::TYPE_ID) {
         FDEvent* fd_event = static_cast<FDEvent*>(event);
         if (fd_event->get_fd() == inotify_fd) {
           int wd;
           ssize_t read_ret = ::read(inotify_fd, &wd, sizeof(wd));
-          if (read_ret != sizeof(wd)) DebugBreak();
+          debug_assert_eq(read_ret, static_cast<ssize_t>(sizeof(wd)));
 
-          for
-          (
-            std::map<Path, Watch*>::iterator watch_i = watches.begin();
+          for (
+            map<Path, Watch*>::iterator watch_i = watches.begin();
             watch_i != watches.end();
             ++watch_i
           ) {
             Watch* watch = watch_i->second->find_watch(wd);
             if (watch != NULL) {
-              watch->read(fs_events):
+              watch->read(fs_events);
               return fs_events.trydequeue();
             }
           }
@@ -415,7 +423,7 @@ YO_NEW_REF Event* FSEventQueue::dequeue(const Time& timeout) {
 }
 
 bool FSEventQueue::dissociate(const Path& path) {
-  std::map<Path, Watch*>::iterator watch_i = watches.find(path);
+  map<Path, Watch*>::iterator watch_i = watches.find(path);
   if (watch_i != watches.end()) {
     Watch* watch = watch_i->second;
     watch->close();
@@ -425,3 +433,8 @@ bool FSEventQueue::dissociate(const Path& path) {
   } else
     return false;
 }
+}
+}
+}
+}
+
