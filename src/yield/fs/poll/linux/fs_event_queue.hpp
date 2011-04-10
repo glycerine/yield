@@ -30,48 +30,45 @@
 #ifndef _YIELD_FS_POLL_LINUX_FS_EVENT_QUEUE_HPP_
 #define _YIELD_FS_POLL_LINUX_FS_EVENT_QUEUE_HPP_
 
-#include "yield/fs/volume_change_event_queue.h"
+#include <map>
+
+#include "yield/fs/poll/fs_event.hpp"
+#include "yield/poll/fd_event_queue.hpp"
+#include "yield/thread/non_blocking_concurrent_queue.hpp"
 
 namespace yield {
-namespace platform {
-namespace linux2 {
-class InotifyVolumeChangeEventQueue : public VolumeChangeEventQueue {
+namespace fs {
+namespace poll {
+namespace linux {
+class FSEventQueue : public yield::poll::FDEventQueue {
 public:
-  ~InotifyVolumeChangeEventQueue();
+  FSEventQueue();
+  ~FSEventQueue();
 
-  static YO_NEW_REF InotifyVolumeChangeEventQueue& create();
-
-  // VolumeChangeEventQueue
-  bool associate
-  (
+public:
+  bool associate(
     const Path& path,
-    VolumeChangeEvent::Type events,
-    Flag flags
+    FSEvent::Type events = FSEvent::TYPE_ALL,
+    bool recursive = true
   );
 
-  void dissociate(const Path& path);
+  bool dissociate(const Path& path);
 
-  int
-  poll
-  (
-    VolumeChangeEvent* volume_change_events,
-    int volume_change_events_len,
-    const Time& timeout
-  );
+public:
+  // yield::EventQueue
+  YO_NEW_REF Event* dequeue(const Time& timeout);
 
 private:
   class Watch;
 
 private:
-  InotifyVolumeChangeEventQueue(FDEventQueue&, fd_t inotify_fd);
-
-private:
-  FDEventQueue& fd_event_queue;
+  yield::thread::NonBlockingConcurrentQueue<FSEvent, 1024> fs_events;
   fd_t inotify_fd;
-  WatchMap<Watch> watches;
+  std::map<Path, Watch*> watches;
 };
-};
-};
-};
+}
+}
+}
+}
 
 #endif

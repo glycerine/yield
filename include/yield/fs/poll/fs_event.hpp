@@ -38,6 +38,9 @@ namespace fs {
 namespace poll {
 class FSEvent  : public Event {
 public:
+  const static uint32_t TYPE_ID = 1640119324;
+
+public:
   typedef uint8_t Type;
   const static Type TYPE_ALL = static_cast<Type>(~0);
   const static Type TYPE_DIRECTORY_ADD = 1;
@@ -97,6 +100,16 @@ public:
 
   void set_type(Type type) {
     this->type = type;
+  }
+
+public:
+  // yield::Object
+  uint32_t get_type_id() const {
+    return TYPE_ID;
+  }
+
+  const char* get_type_name() const {
+    return "yield::fs::poll::FSEvent";
   }
 
 private:

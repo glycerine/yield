@@ -29,6 +29,7 @@
 
 assert __name__ == "__main__"
 
+from binascii import crc32
 from copy import copy, deepcopy
 from os import chdir, getcwd, listdir, makedirs, stat, unlink
 from os.path import abspath, \
@@ -427,6 +428,7 @@ THIRD_PARTY_SOURCE_FNMATCH_PATTERNS = (
 
 # Parse options
 option_parser = OptionParser()
+option_parser.add_option("--calculate-type-id")
 option_parser.add_option("--check-src-namespace", action="store_true")
 option_parser.add_option("--check-src-type-id", action="store_true")
 option_parser.add_option("--check-src-width", action="store_true")
@@ -445,7 +447,8 @@ option_parser.add_option("--generate-test_py", action="store_true")
 options, _ = option_parser.parse_args()
 
 # If no options set, do generate_proj
-if not options.check_src_namespace and\
+if not options.calculate_type_id and\
+   not options.check_src_namespace and\
    not options.check_src_type_id and\
    not options.check_src_width and\
    not options.check_src_yunit and\
@@ -464,6 +467,11 @@ if options.project_names is not None and len(options.project_names) > 0:
         assert project_name in PROJECT_NAMES, project_name
 else:
     options.project_names = PROJECT_NAMES
+
+
+if options.calculate_type_id:
+    type_name = options.calculate_type_id
+    print str(crc32(type_name) & 0xffffffff)
 
 
 if options.check_src_namespace or \

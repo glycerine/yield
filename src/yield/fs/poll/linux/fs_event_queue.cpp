@@ -27,17 +27,14 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "inotify_volume_change_event_queue.h"
-using yield::platform::linux2::InotifyVolumeChangeEventQueue;
-
-#include "../posix/volume.h"
-using yield::platform::posix::Volume;
+#include "fs_event_queue.hpp"
+#include "yield/fs/posix/directory.hpp"
+#include "yield/fs/posix/file_system.hpp"
 
 #include <sys/inotify.h>
 
-
-class InotifyVolumeChangeEventQueue::Watch
-  : public VolumeChangeEventQueue::Watch,
+class FSEventQueue::Watch
+  : public FSEventQueue::Watch,
     private vector<Watch*> {
 public:
   void close() {
@@ -48,85 +45,64 @@ public:
   }
 
   static Watch*
-  create
-  (
-    VolumeChangeEvent::Type events,
-    Flag flags,
+  create(
+    FSEvent::Type events,
     int inotify_fd,
     const Path& path,
-    Watch* parent = NULL
+    Watch* parent,
+    bool recursive    
   ) {
     uint32_t mask = 0;
 
-    if (flags & FLAG_DONT_FOLLOW)
-      mask |= IN_DONT_FOLLOW;
-
-    if (flags & FLAG_ONESHOT)
-      mask |= IN_ONESHOT;
-
-    if
-    (
-      events & VolumeChangeEvent::TYPE_DIRECTORY_MODIFY
+    if (
+      events & FSEvent::TYPE_DIRECTORY_MODIFY
       ||
-      events & VolumeChangeEvent::TYPE_FILE_MODIFY
+      events & FSEvent::TYPE_FILE_MODIFY
     )
       mask |= IN_ATTRIB | IN_MODIFY;
 
-    if
-    (
-      events & VolumeChangeEvent::TYPE_DIRECTORY_REMOVE
+    if (
+      events & FSEvent::TYPE_DIRECTORY_REMOVE
       ||
-      events & VolumeChangeEvent::TYPE_FILE_REMOVE
+      events & FSEvent::TYPE_FILE_REMOVE
     )
       mask |= IN_DELETE_SELF;
 
-    if
-    (
-      events & VolumeChangeEvent::TYPE_DIRECTORY_RENAME
+    if (
+      events & FSEvent::TYPE_DIRECTORY_RENAME
       ||
-      events & VolumeChangeEvent::TYPE_FILE_RENAME
+      events & FSEvent::TYPE_FILE_RENAME
     )
       mask |= IN_MOVE_SELF;
 
-    if (flags & FLAG_ONLYDIR) {
-      mask |= IN_ONLYDIR;
+    if (
+      events & FSEvent::TYPE_DIRECTORY_ADD
+      ||
+      events & FSEvent::TYPE_FILE_ADD
+    )
+      mask |= IN_CREATE;
 
-      if
-      (
-        events & VolumeChangeEvent::TYPE_DIRECTORY_ADD
-        ||
-        events & VolumeChangeEvent::TYPE_FILE_ADD
-      )
-        mask |= IN_CREATE;
+    if (
+      events & FSEvent::TYPE_DIRECTORY_REMOVE
+      ||
+      events & FSEvent::TYPE_FILE_REMOVE
+    )
+      mask |= IN_DELETE;
 
-      if
-      (
-        events & VolumeChangeEvent::TYPE_DIRECTORY_REMOVE
-        ||
-        events & VolumeChangeEvent::TYPE_FILE_REMOVE
-      )
-        mask |= IN_DELETE;
-
-      if
-      (
-        events & VolumeChangeEvent::TYPE_DIRECTORY_RENAME
-        ||
-        events & VolumeChangeEvent::TYPE_FILE_RENAME
-      )
-        mask |= IN_MOVED_FROM | IN_MOVED_TO;
-    }
+    if (
+      events & FSEvent::TYPE_DIRECTORY_RENAME
+      ||
+      events & FSEvent::TYPE_FILE_RENAME
+    )
+      mask |= IN_MOVED_FROM | IN_MOVED_TO;
 
     int inotify_wd = inotify_add_watch(inotify_fd, path, mask);
     if (inotify_wd != -1) {
-      Directory* dir = yield::platform::posix::Volume().opendir(path);
-      if (dir != NULL)
-        flags |= FLAG_ONLYDIR;
+      Directory* dir = FileSystem().opendir(path);
 
       Watch* watch
-      = new Watch
-      (
+      = new Watch(
         events,
-        flags,
         inotify_fd,
         path.split().second,
         parent,
@@ -178,7 +154,7 @@ public:
     return wd;
   }
 
-  bool read(VolumeChangeEvent& volume_change_event) {
+  void read(NonBlockingConcurrentQueue<FSEvent, 1024>& fs_events) {
     uint32_t mask, cookie;
     Path name;
     if (last_read_mask == 0) {
@@ -192,8 +168,7 @@ public:
       uint32_t len = mask_cookie_len[2];
 
       if (len > 0) {
-        if (!this->isdir()) DebugBreak();
-
+        //if (!this->isdir()) DebugBreak();
         char* read_name = new char[len];
         read_ret = ::read(inotify_fd, read_name, len);
         if (read_ret != len) DebugBreak();
@@ -212,33 +187,33 @@ public:
 
     for (;;) { // Mask can have multiple bits set.
       // Keep looping until we find one that matches events.
-      VolumeChangeEvent::Type type;
+      FSEvent::Type type;
 
       if (mask & IN_ATTRIB) {
         if (isdir)
-          type = VolumeChangeEvent::TYPE_DIRECTORY_MODIFY;
+          type = FSEvent::TYPE_DIRECTORY_MODIFY;
         else
-          type = VolumeChangeEvent::TYPE_FILE_MODIFY;
+          type = FSEvent::TYPE_FILE_MODIFY;
 
         mask ^= IN_ATTRIB;
       } else if (mask & IN_CREATE) {
         if (isdir) {
-          type = VolumeChangeEvent::TYPE_DIRECTORY_ADD;
+          type = FSEvent::TYPE_DIRECTORY_ADD;
 
           if (get_flags() & FLAG_RECURSIVE) {
             Watch* child_watch
-            = create(get_events(), get_flags(), inotify_fd, path, this);
+            = create(events, inotify_fd, path, this, recursive);
 
             if (child_watch != NULL)
               push_back(child_watch);
           }
         } else
-          type = VolumeChangeEvent::TYPE_FILE_ADD;
+          type = FSEvent::TYPE_FILE_ADD;
 
         mask ^= IN_CREATE;
       } else if (mask & IN_DELETE) {
         if (isdir) {
-          type = VolumeChangeEvent::TYPE_DIRECTORY_REMOVE;
+          type = FSEvent::TYPE_DIRECTORY_REMOVE;
 
           Watch* child_watch = find_child_watch(name);
           if (child_watch != NULL) {
@@ -246,7 +221,7 @@ public:
             delete child_watch;
           }
         } else
-          type = VolumeChangeEvent::TYPE_FILE_REMOVE;
+          type = FSEvent::TYPE_FILE_REMOVE;
 
         mask ^= IN_DELETE;
       } else if (mask & IN_MOVE_SELF)
@@ -269,24 +244,25 @@ public:
         if (old_name_i == old_names.end()) DebugBreak();
 
         if (isdir) {
-          type = VolumeChangeEvent::TYPE_DIRECTORY_RENAME;
+          type = FSEvent::TYPE_DIRECTORY_RENAME;
 
           if (get_flags() & FLAG_RECURSIVE) {
             Watch* child_watch
-            = create(get_events(), get_flags(), inotify_fd, path, this);
+            = create(events, inotify_fd, path, this, recursive);
 
             if (child_watch != NULL)
               push_back(child_watch);
           }
         } else
-          type = VolumeChangeEvent::TYPE_FILE_RENAME;
+          type = FSEvent::TYPE_FILE_RENAME;
 
-        if ((get_events() & type) == type) {
-          volume_change_event.set_new_path(path);
-          volume_change_event.set_old_path(get_path() / old_name_i->second);
+        if ((events & type) == type) {
+          FSEvent* fs_event
+            = new FSEvent(get_path() / old_name_i->second, path, type);
+          fs_events.enqueue(*fs_event);
           old_names.erase(old_name_i);
-          volume_change_event.set_type(type);
-          return true;
+          //return true;
+          return;
         } else {
           old_names.erase(old_name_i);
           continue;
@@ -296,77 +272,81 @@ public:
       } else {
         last_read_cookie = 0;
         last_read_mask = 0;
-        return false;
+        //return false;
+        return;
       }
 
-      if ((get_events() & type) == type) {
+      if ((events & type) == type) {
+        FSEvent* fs_event = new FSEvent(path, type);
+        fs_events.enqueue(*fs_event);
         last_read_cookie = cookie;
         last_read_mask = mask;
         last_read_name = name;
-        volume_change_event.set_path(path);
-        volume_change_event.set_type(type);
-        return true;
+        //return true;
+        return;
       } else
         continue;
     }
   }
 
 private:
-  Watch
-  (
-    VolumeChangeEvent::Type events,
-    Flag flags,
+  Watch(
+    FSEvent::Type events,
     int inotify_fd,
     const Path& name,
     Watch* parent,
     const Path& path,
+    bool recursive,
     int wd
   )
-    : VolumeChangeEventQueue::Watch(events, flags, path),
+    : events(events),
       inotify_fd(inotify_fd),
       name(name),
       parent(parent),
+      path(path),
+      recursive(recursive),
       wd(wd)
   { }
 
   Watch* find_child_watch(const Path& name) {
     for (iterator watch_i = begin(); watch_i != end(); ++watch_i) {
-      Watch* watch = (*watch_i)->find_watch(wd);
-      if (watch != NULL)
-        return watch;
+      if ((*watch_i)->name == name)
+        return *watch_i;
     }
 
     return NULL;
   }
 
 private:
+  FSEvent::Type events;
   int inotify_fd;
   uint32_t last_read_cookie, last_read_mask;
   Path last_read_name;
   Path name;
   map<uint32_t, Path> old_names;
+  Path path;
   Watch* parent;
+  bool recursive;
   int wd;
 };
 
 
-InotifyVolumeChangeEventQueue::InotifyVolumeChangeEventQueue
-(
-  FDEventQueue& fd_event_queue,
-  int inotify_fd
-)
-  : fd_event_queue(fd_event_queue),
-    inotify_fd(inotify_fd)
-{ }
+FSEventQueue::FSEventQueue() {
+  inotify_fd = inotify_init();
+  if (inotify_fd != -1) {
+    if (!FDEventQueue::associate(inotify_fd)) {
+      close(inotify_fd);
+      throw Exception();
+    }
+  } else
+    throw Exception();
+}
 
-InotifyVolumeChangeEventQueue::~InotifyVolumeChangeEventQueue() {
-  delete &fd_event_queue;
-
+FSEventQueue::~FSEventQueue() {
   close(inotify_fd);
 
-  for
-  (
-    WatchMap<Watch>::iterator watch_i = watches.begin();
+  for (
+    std::map<Path, Watch*>::iterator watch_i = watches.begin();
     watch_i != watches.end();
     ++watch_i
   )
@@ -375,107 +355,73 @@ InotifyVolumeChangeEventQueue::~InotifyVolumeChangeEventQueue() {
 }
 
 bool
-InotifyVolumeChangeEventQueue::associate
-(
+FSEventQueue::associate(
   const Path& path,
-  VolumeChangeEvent::Type events,
-  Flag flags
+  FSEvent::Type events,
+  bool recursive
 ) {
-  Watch* watch = watches.find(path);
-  if (watch != NULL)
-    DebugBreak(); // Modify the existing watch
-  else {
+  std::map<Path, Watch*>::iterator watch_i = watches.find(path);
+  if (watch_i == watches.end()) {
     watch = Watch::create(events, flags, inotify_fd, path);
     if (watch != NULL) {
-      if (fd_event_queue.associate(*watch)) {
+      if (FDEventQueue::associate(*watch)) {
         watches.insert(path, *watch);
         return true;
-      } else
+      } else {
         delete watch;
-    }
-  }
-
-  return false;
-}
-
-InotifyVolumeChangeEventQueue&
-InotifyVolumeChangeEventQueue::create() {
-  int inotify_fd = inotify_init();
-  if (inotify_fd != -1) {
-    FDEventQueue* fd_event_queue = FDEventQueue::create();
-    if (fd_event_queue != NULL) {
-      if (fd_event_queue->associate(inotify_fd)) {
-        return *new InotifyVolumeChangeEventQueue
-               (
-                 *fd_event_queue,
-                 inotify_fd
-               );
-      } else
-        delete fd_event_queue;
-    }
-
-    close(inotify_fd);
-  }
-
-  throw Exception();
-}
-
-void InotifyVolumeChangeEventQueue::dissociate(const Path& path) {
-  Watch* watch = watches.erase(path);
-  if (watch != NULL) {
-    watch->close();
-    delete watch;
-  }
-}
-
-int
-InotifyVolumeChangeEventQueue::poll
-(
-  VolumeChangeEvent* volume_change_events,
-  int volume_change_events_len,
-  const Time& _timeout
-) {
-  Time timeout(_timeout);
-
-  int volume_change_event_i
-  = VolumeChangeEventQueue::get_leftover_volume_change_events
-    (
-      volume_change_events,
-      volume_change_events_len
-    );
-
-  while
-  (
-    volume_change_event_i < volume_change_events_len
-    &&
-    fd_event_queue.poll(timeout)
-  ) {
-    int wd;
-    ssize_t read_ret = ::read(inotify_fd, &wd, sizeof(wd));
-    if (read_ret != sizeof(wd)) DebugBreak();
-
-    for
-    (
-      WatchMap<Watch>::iterator watch_i = watches.begin();
-      watch_i != watches.end();
-      ++watch_i
-    ) {
-      Watch* watch = watch_i->second->find_watch(wd);
-      if (watch != NULL) {
-        volume_change_event_i +=
-          read
-          (
-            volume_change_events + volume_change_event_i,
-            volume_change_events_len - volume_change_event_i,
-            *watch
-          );
-
-        break;
+        return false;
       }
     }
+  } else {
+    DebugBreak(); // Modify the existing watch
+    return false;
+  }
+}
 
-    timeout = static_cast<uint64_t>(0);
+YO_NEW_REF Event* FSEventQueue::dequeue(const Time& timeout) {
+  FSEvent* fs_event = fs_events.trydequeue();
+  if (fs_event != NULL)
+    return fs_event;
+  else {
+    Event* event = AIOQueue::dequeue(timeout);
+    if (event != NULL) {
+      if (event->get_type_id() == FDEvent::TYPE_ID) {
+        FDEvent* fd_event = static_cast<FDEvent*>(event);
+        if (fd_event->get_fd() == inotify_fd) {
+          int wd;
+          ssize_t read_ret = ::read(inotify_fd, &wd, sizeof(wd));
+          if (read_ret != sizeof(wd)) DebugBreak();
+
+          for
+          (
+            std::map<Path, Watch*>::iterator watch_i = watches.begin();
+            watch_i != watches.end();
+            ++watch_i
+          ) {
+            Watch* watch = watch_i->second->find_watch(wd);
+            if (watch != NULL) {
+              watch->read(fs_events):
+              return fs_events.trydequeue();
+            }
+          }
+        } else
+          return fd_event;
+      } else
+        return event;
+    }
   }
 
-  return volume_change_event_i;
+  return NULL;
+}
+
+bool FSEventQueue::dissociate(const Path& path) {
+  std::map<Path, Watch*>::iterator watch_i = watches.find(path);
+  if (watch_i != watches.end()) {
+    Watch* watch = watch_i->second;
+    watch->close();
+    delete watch;
+    watches.erase(watch_i);
+    return true;
+  } else
+    return false;
 }

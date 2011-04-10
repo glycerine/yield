@@ -39,6 +39,9 @@ namespace aio {
 namespace posix {
 class AIOCB : public Event {
 public:
+  const static uint32_t TYPE_ID = 4212504993;
+
+public:
   virtual ~AIOCB();
 
 public:
@@ -76,6 +79,14 @@ public:
 
 public:
   // yield::Object
+  uint32_t get_type_id() const {
+    return TYPE_ID;
+  }
+
+  const char* get_type_name() const {
+    return "yield::aio::linux::AIOCB";
+  }
+
   AIOCB& inc_ref() {
     return Object::inc_ref(*this);
   }
