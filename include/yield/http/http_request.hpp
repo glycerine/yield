@@ -31,14 +31,12 @@
 #define _YIELD_HTTP_HTTP_REQUEST_HPP_
 
 #include "yield/date_time.hpp"
+#include "yield/exception.hpp"
 #include "yield/request.hpp"
 #include "yield/http/http_message.hpp"
 #include "yield/uri/uri.hpp"
 
 namespace yield {
-class Exception;
-
-
 namespace http {
 class HTTPResponse;
 
@@ -51,8 +49,8 @@ public:
     static Method DELETE;
     static Method GET;
     static Method HEAD;
-    static Method MKCOL;
     static Method LOCK;
+    static Method MKCOL;
     static Method MOVE;
     static Method OPTIONS;
     static Method PATCH;
@@ -113,6 +111,9 @@ public:
     bool operator!=(const Method& other) const {
       return !operator==(other);
     }
+
+  public:
+    static Method parse(const char* method) throw(Exception);
 
   private:
     uint8_t id;

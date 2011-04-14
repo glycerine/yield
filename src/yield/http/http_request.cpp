@@ -38,11 +38,14 @@ namespace yield {
 namespace http {
 HTTPRequest::Method HTTPRequest::Method::CONNECT(1, "CONNECT", 7);
 HTTPRequest::Method HTTPRequest::Method::COPY(2, "COPY", 4);
+#ifdef DELETE
+#undef DELETE
+#endif
 HTTPRequest::Method HTTPRequest::Method::DELETE(3, "DELETE", 7);
 HTTPRequest::Method HTTPRequest::Method::GET(4, "GET", 3);
 HTTPRequest::Method HTTPRequest::Method::HEAD(5, "HEAD", 4);
-HTTPRequest::Method HTTPRequest::Method::MKCOL(6, "MKCOL", 5);
-HTTPRequest::Method HTTPRequest::Method::LOCK(7, "LOCK", 4);
+HTTPRequest::Method HTTPRequest::Method::LOCK(6, "LOCK", 4);
+HTTPRequest::Method HTTPRequest::Method::MKCOL(7, "MKCOL", 5);
 HTTPRequest::Method HTTPRequest::Method::MOVE(8, "MOVE", 4);
 HTTPRequest::Method HTTPRequest::Method::OPTIONS(9, "OPTIONS", 7);
 HTTPRequest::Method HTTPRequest::Method::PATCH(10, "PATCH", 5);
@@ -53,6 +56,44 @@ HTTPRequest::Method HTTPRequest::Method::PUT(14, "PUT", 3);
 HTTPRequest::Method HTTPRequest::Method::TRACE(15, "TRACE", 5);
 HTTPRequest::Method HTTPRequest::Method::UNLOCK(16, "UNLOCK", 6);
 
+HTTPRequest::Method HTTPRequest::Method::parse(const char* method) {
+  if (method != NULL) {
+    switch (method[0]) {
+    case 'D': return DELETE;
+    case 'G': return GET;
+    case 'H': return HEAD;
+    case 'M': {
+      switch (method[1]) {
+      case 'K': return MKCOL;
+      case 'O': return MOVE;
+      }
+    }
+    break;
+    case 'O': return OPTIONS;
+    case 'P': {
+      switch (method[1]) {
+      case 'A': return PATCH;
+      case 'O': return POST;
+      case 'R': {
+        if (method[2] == 'O' && method[3] == 'P') {
+          switch (method[3]) {
+          case 'F': return PROPFIND;
+          case 'P': return PROPPATCH;
+          }
+        }
+      }
+      break;
+      case 'U': return PUT;
+      }
+    }
+    break;
+    case 'T': return TRACE;
+    case 'U': return UNLOCK;
+    }
+  }
+
+  throw Exception("unknown method");
+}
 
 HTTPRequest::HTTPRequest(
   void* body,

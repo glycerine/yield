@@ -311,6 +311,7 @@ for project_name in PROJECT_NAMES:
     #EXCLUDE_FILE_PATHS[project_name + "_test"] = []
 
 INCLUDE_FILE_PATHS["yield"] = [
+    path_join(INCLUDE_DIR_PATH, "yield", "config.hpp"), # before types
     path_join(INCLUDE_DIR_PATH, "yield", "types.hpp"), # before atomic
     path_join(INCLUDE_DIR_PATH, "yield", "atomic.hpp"), # before object
     path_join(INCLUDE_DIR_PATH, "yield", "object.hpp"), # before event
@@ -343,6 +344,12 @@ INCLUDE_FILE_PATHS["yield.fs"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "fs", "stat.hpp"), # before directory
 ] + \
 INCLUDE_FILE_PATHS["yield.fs"]
+
+INCLUDE_FILE_PATHS["yield.fs.aio"] = [
+    path_join(INCLUDE_DIR_PATH, "yield", "fs", "aio", "posix", "aio_queue.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "fs", "aio", "win32", "aio_queue.hpp"),
+] + \
+INCLUDE_FILE_PATHS["yield.fs.aio"]
 
 INCLUDE_FILE_PATHS["yield.i18n"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "i18n", "posix", "code.hpp"),
@@ -562,7 +569,7 @@ if options.generate_dist:
     if not exists(ypy_dir_path):
         ypy_dir_path = None
 
-    for project_name in options.project_names:
+    for project_name in ("yield",):#options.project_names:
         hpp = []
         cpp = ['#include "%s.hpp"\n\n\n' % '_'.join(project_name.split('.'))]
 

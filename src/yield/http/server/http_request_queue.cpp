@@ -291,6 +291,8 @@ HTTPRequestQueue::HTTPRequestQueue(const SocketAddress& sockname)
 }
 
 HTTPRequestQueue::~HTTPRequestQueue() {
+  socket_.close();
+
   AIOQueue::dec_ref(aio_queue);
   TCPSocket::dec_ref(socket_);
 }

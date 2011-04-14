@@ -36,8 +36,6 @@
 namespace yield {
 namespace fs {
 namespace aio {
-class AIOQueue;
-
 class AIOCB : public yield::aio::AIOCB {
 public:
   virtual ~AIOCB() {
