@@ -112,6 +112,17 @@ bool Buffer::is_page_aligned(const void* ptr) {
          ) == 0;
 }
 
+std::ostream& operator<<(std::ostream& os, const Buffer& buffer) {
+  os <<
+    buffer.get_type_name() <<
+    "(" <<
+      "capacity=" << buffer.capacity() << 
+      ", " <<
+      "size=" << buffer.size() <<
+    ")";
+  return os;
+}
+
 bool Buffer::operator==(const Buffer& other) const {
   if (size() == other.size())
     return memcmp(data(), other.data(), size()) == 0;

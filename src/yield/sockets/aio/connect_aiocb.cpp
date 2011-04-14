@@ -1,4 +1,4 @@
-// yield/sockets/server/stream_socket_server.hpp
+// yield/sockets/aio/connect_aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,62 +27,55 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_SOCKETS_SERVER_STREAM_SOCKET_SERVER_HPP_
-#define _YIELD_SOCKETS_SERVER_STREAM_SOCKET_SERVER_HPP_
-
-#include "yield/sockets/server/socket_server.hpp"
-#include "yield/sockets/peer/stream_socket_peer.hpp"
+#include "yield/assert.hpp"
+#include "yield/buffer.hpp"
+#include "yield/sockets/stream_socket.hpp"
+#include "yield/sockets/aio/connect_aiocb.hpp"
 
 namespace yield {
 namespace sockets {
 namespace aio {
-class acceptAIOCB;
+connectAIOCB::connectAIOCB(
+  StreamSocket& socket_,
+  SocketAddress& peername,
+  YO_NEW_REF Buffer* send_buffer
+) : AIOCB(socket_),
+    peername(peername.inc_ref()),
+    send_buffer(send_buffer) {
+  if (send_buffer != NULL)
+    debug_assert_eq(send_buffer->get_next_buffer(), NULL);
 }
 
-namespace server {
-class StreamSocketServer : public yield::sockets::peer::StreamSocketPeer<SocketServer> {
-protected:
-  class Connection : public yield::sockets::peer::StreamSocketPeer<SocketServer>::Connection {
-  public:
-    Connection(
-      StreamSocketServer&,
-      YO_NEW_REF SocketAddress& peername,
-      YO_NEW_REF StreamSocket& socket_
-    );
+connectAIOCB::~connectAIOCB() {
+  SocketAddress::dec_ref(peername);
+  Buffer::dec_ref(send_buffer);
+}
 
-    virtual void handle(YO_NEW_REF yield::sockets::aio::acceptAIOCB& accept_aiocb) = 0;
-  };
+StreamSocket& connectAIOCB::get_socket() {
+  return static_cast<StreamSocket&>(AIOCB::get_socket());
+}
 
-protected:
-  StreamSocketServer(
-    Log* error_log,
-    YO_NEW_REF StreamSocket& socket_,
-    const SocketAddress& sockname,
-    Log* trace_log
-  );
-
-  virtual ~StreamSocketServer();
-
-  virtual Connection&
-  create_connection(
-    SocketAddress& peername,
-    StreamSocket& socket_
-  ) = 0;
-
-  void enqueue(YO_NEW_REF yield::sockets::aio::acceptAIOCB& accept_aiocb);
-
-  StreamSocket& get_socket() const {
-    return socket_;
-  }
-
-  // Stage
-  virtual void service(YO_NEW_REF Event& event);
-
-private:
-  StreamSocket& socket_;
-};
+std::ostream& operator<<(std::ostream& os, connectAIOCB& connect_aiocb) {
+  os <<
+    connect_aiocb.get_type_name() <<
+    "(" <<
+      "error=" << connect_aiocb.get_error() <<
+      ", " <<
+      "peername=" << connect_aiocb.get_peername() <<
+      ", " <<
+      "return=" << connect_aiocb.get_return() <<
+      ", " <<
+      "send_buffer=";
+      if (connect_aiocb.get_send_buffer() != NULL)
+        os << *connect_aiocb.get_send_buffer();
+      else
+        os << "NULL";
+      os <<
+      "," <<
+      "socket=" << connect_aiocb.get_socket() <<
+    ")";
+  return os;
 }
 }
 }
-
-#endif
+}

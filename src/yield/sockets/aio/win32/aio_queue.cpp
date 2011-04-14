@@ -27,12 +27,14 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/sockets/win32/winsock.hpp"
+#include "yield/buffer.hpp"
+#include "yield/sockets/stream_socket.hpp"
 #include "yield/sockets/aio/accept_aiocb.hpp"
 #include "yield/sockets/aio/connect_aiocb.hpp"
 #include "yield/sockets/aio/recv_aiocb.hpp"
 #include "yield/sockets/aio/send_aiocb.hpp"
 #include "yield/sockets/aio/win32/aio_queue.hpp"
+#include "yield/sockets/win32/winsock.hpp"
 
 namespace yield {
 namespace sockets {
@@ -79,10 +81,13 @@ bool AIOQueue::enqueue(Event& event) {
       return lpfnAcceptEx(
                 accept_aiocb.get_socket(),
                 *accepted_socket,
-                accept_aiocb.get_output_buffer(),
-                accept_aiocb.get_recv_data_length(),
-                accept_aiocb.get_sockname_length(),
-                accept_aiocb.get_peername_length(),
+                static_cast<char*>(*accept_aiocb.get_recv_buffer()) +
+                  accept_aiocb.get_recv_buffer()->size(),
+                accept_aiocb.get_recv_buffer()->capacity()
+                  - accept_aiocb.get_recv_buffer()->size()
+                  - ((accept_aiocb.get_peername().len() + 16) * 2),
+                accept_aiocb.get_peername().len() + 16,
+                accept_aiocb.get_peername().len() + 16,
                 &dwBytesReceived,
                 accept_aiocb
               ) == TRUE

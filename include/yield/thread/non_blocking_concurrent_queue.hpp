@@ -33,7 +33,6 @@
 #include "yield/assert.hpp"
 #include "yield/atomic.hpp"
 
-
 namespace yield {
 namespace thread {
 // Adapted from Michael, M. M. and Scott, M. L. 1996. Simple, fast, and practical
@@ -175,7 +174,7 @@ private:
   volatile atomic_t elements[Length + 2];
   volatile atomic_t head_element_i, tail_element_i;
 };
-};
-};
+}
+}
 
 #endif

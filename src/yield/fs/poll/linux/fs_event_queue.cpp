@@ -170,7 +170,7 @@ public:
   void
   read(
     const inotify_event& inotify_event_,
-    OUT NonBlockingConcurrentQueue<FSEvent, 1024>& fs_events
+    EventHandler& fs_event_handler
   ) {
     uint32_t cookie = inotify_event_.cookie;
     uint32_t mask = inotify_event_.mask;
@@ -268,7 +268,7 @@ public:
           FSEvent* fs_event
             = new FSEvent(this->path / old_name_i->second, path, type);
           old_names.erase(old_name_i);
-          fs_events.enqueue(*fs_event);
+          fs_event_handler.handle(*fs_event);
         } else {
           old_names.erase(old_name_i);
           continue;
@@ -279,7 +279,7 @@ public:
         return;
 
       if (type != 0 && (events & type) == type)
-        fs_events.enqueue(*new FSEvent(path, type));
+        fs_event_handler.handle(*new FSEvent(path, type));
     }
   }
 
@@ -317,7 +317,7 @@ private:
 FSEventQueue::FSEventQueue() {
   inotify_fd = inotify_init();
   if (inotify_fd != -1) {
-    if (!FDEventQueue::associate(inotify_fd, POLLIN)) {
+    if (!fd_event_queue.associate(inotify_fd, POLLIN)) {
       close(inotify_fd);
       throw Exception();
     }
@@ -347,11 +347,8 @@ FSEventQueue::associate(
   if (watch_i == watches.end()) {
     Watch* watch = Watch::create(events, inotify_fd, NULL, path, recursive);
     if (watch != NULL) {
-      if (FDEventQueue::associate(*watch, POLLIN)) {
-        watches[path] = watch;
-        return true;
-      } else
-        delete watch;
+      watches[path] = watch;
+      return true;
     }
   } else
     DebugBreak(); // Modify the existing watch
@@ -360,48 +357,43 @@ FSEventQueue::associate(
 }
 
 YO_NEW_REF Event* FSEventQueue::dequeue(const Time& timeout) {
-  FSEvent* fs_event = fs_events.trydequeue();
-  if (fs_event != NULL)
-    return fs_event;
-  else {
-    Event* event = FDEventQueue::dequeue(timeout);
-    if (event != NULL) {
-      if (event->get_type_id() == FDEvent::TYPE_ID) {
-        FDEvent* fd_event = static_cast<FDEvent*>(event);
-        if (fd_event->get_fd() == inotify_fd) {
-          char inotify_events[(sizeof(inotify_event) + PATH_MAX) * 16];
-          ssize_t read_ret
-            = ::read(inotify_fd, inotify_events, sizeof(inotify_events));
+  Event* event = fd_event_queue.dequeue(timeout);
+  if (event != NULL) {
+    if (event->get_type_id() == FDEvent::TYPE_ID) {
+      FDEvent* fd_event = static_cast<FDEvent*>(event);
+      if (fd_event->get_fd() == inotify_fd) {
+        char inotify_events[(sizeof(inotify_event) + PATH_MAX) * 16];
+        ssize_t read_ret
+          = ::read(inotify_fd, inotify_events, sizeof(inotify_events));
 
-          if (read_ret > 0) {
-            const char* inotify_events_p = inotify_events;
-            const char* inotify_events_pe
-              = inotify_events + static_cast<size_t>(read_ret);
+        if (read_ret > 0) {
+          const char* inotify_events_p = inotify_events;
+          const char* inotify_events_pe
+            = inotify_events + static_cast<size_t>(read_ret);
 
-            do {
-              const inotify_event* inotify_event_
-                = reinterpret_cast<const inotify_event*>(inotify_events_p);
+          do {
+            const inotify_event* inotify_event_
+              = reinterpret_cast<const inotify_event*>(inotify_events_p);
 
-              for (
-                map<Path, Watch*>::iterator watch_i = watches.begin();
-                watch_i != watches.end();
-                ++watch_i
-              ) {
-                Watch* watch = watch_i->second->find_watch(inotify_event_->wd);
-                if (watch != NULL)
-                  watch->read(*inotify_event_, fs_events);
-              }
+            for (
+              map<Path, Watch*>::iterator watch_i = watches.begin();
+              watch_i != watches.end();
+              ++watch_i
+            ) {
+              Watch* watch = watch_i->second->find_watch(inotify_event_->wd);
+              if (watch != NULL)
+                watch->read(*inotify_event_, *this);
+            }
 
-              inotify_events_p += sizeof(inotify_event) + inotify_event_->len;
-            } while (inotify_events_p < inotify_events_pe);
+            inotify_events_p += sizeof(inotify_event) + inotify_event_->len;
+          } while (inotify_events_p < inotify_events_pe);
 
-            return fs_events.trydequeue();
-          }
-        } else
-          return fd_event;
+          return fd_event_queue.trydequeue();
+        }
       } else
-        return event;
-    }
+        return fd_event;
+    } else
+      return event;
   }
 
   return NULL;
@@ -417,6 +409,10 @@ bool FSEventQueue::dissociate(const Path& path) {
     return true;
   } else
     return false;
+}
+
+bool FSEventQueue::enqueue(YO_NEW_REF Event& event) {
+  return fd_event_queue.enqueue(event);
 }
 }
 }

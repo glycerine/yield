@@ -31,7 +31,6 @@
 #define _YIELD_SOCKETS_AIO_RECV_AIOCB_HPP_
 
 #include "yield/sockets/socket.hpp"
-#include "yield/sockets/socket_address.hpp"
 #include "yield/sockets/aio/aiocb.hpp"
 
 namespace yield {
@@ -89,6 +88,8 @@ private:
   Socket::MessageFlags flags;
   SocketAddress peername;
 };
+
+std::ostream& operator<<(std::ostream&, recvAIOCB&);
 }
 }
 }

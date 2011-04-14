@@ -29,7 +29,6 @@
 
 #include "yield/assert.hpp"
 #include "yield/buffer.hpp"
-#include "yield/sockets/socket_address.hpp"
 #include "yield/sockets/stream_socket.hpp"
 #include "yield/sockets/aio/accept_aiocb.hpp"
 #include "yield/sockets/win32/winsock.hpp"
@@ -39,23 +38,22 @@ namespace sockets {
 namespace aio {
 static LPFN_GETACCEPTEXSOCKADDRS lpfnGetAcceptExSockaddrs = NULL;
 
-
 acceptAIOCB::acceptAIOCB(StreamSocket& socket_, YO_NEW_REF Buffer* recv_buffer)
   : AIOCB(socket_),
-    peername(*new SocketAddress),
-    recv_buffer(
-      recv_buffer != NULL ?
-        recv_buffer :
-        new Buffer(get_sockname_length() + get_peername_length())
-    )
+    peername(*new SocketAddress)
 {
   accepted_socket = NULL;
 
-  debug_assert_eq(recv_buffer->get_next_buffer(), NULL);
-  debug_assert_ge(
-    recv_buffer->capacity() - recv_buffer->size(),
-    get_sockname_length() + get_peername_length()
-  );
+  if (recv_buffer == NULL)
+    this->recv_buffer = new Buffer((this->peername.len() + 16) * 2);
+  else {
+    debug_assert_eq(recv_buffer->get_next_buffer(), NULL);
+    debug_assert_ge(
+      recv_buffer->capacity() - recv_buffer->size(),
+      static_cast<size_t>((this->peername.len() + 16) * 2)
+    );
+    this->recv_buffer = recv_buffer;
+  }
 }
 
 void acceptAIOCB::set_return(ssize_t return_) {
@@ -93,10 +91,12 @@ void acceptAIOCB::set_return(ssize_t return_) {
   socklen_t socknamelen;
 
   lpfnGetAcceptExSockaddrs(
-    get_output_buffer(),
-    get_recv_data_length(),
-    get_sockname_length(),
-    get_peername_length(),
+    static_cast<char*>(*recv_buffer) + recv_buffer->size(),
+    recv_buffer->capacity()
+      - recv_buffer->size()
+      - ((this->peername.len() + 16) * 2),
+    this->peername.len() + 16,
+    this->peername.len() + 16,
     &sockname,
     &socknamelen,
     &peername,
@@ -106,7 +106,7 @@ void acceptAIOCB::set_return(ssize_t return_) {
   if (peername != NULL) {
     get_peername().assign(
       *peername,
-      get_accepted_socket()->get_domain()
+      accepted_socket->get_domain()
     );
   }
 
@@ -115,26 +115,6 @@ void acceptAIOCB::set_return(ssize_t return_) {
 
   AIOCB::set_return(return_);
 }
-
-void* acceptAIOCB::get_output_buffer() {
-  return static_cast<char*>(*recv_buffer); // + recv_buffer->size();
-}
-
-uint32_t acceptAIOCB::get_peername_length() {
-  return get_peername().len() + 16;
-}
-
-uint32_t acceptAIOCB::get_recv_data_length() {
-  return recv_buffer->capacity()
-         - recv_buffer->size()
-         - get_sockname_length()
-         - get_peername_length();
-}
-
-uint32_t acceptAIOCB::get_sockname_length() {
-  return get_peername().len() + 16;
 }
 }
 }
-}
-

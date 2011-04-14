@@ -34,16 +34,16 @@
 
 #include "yield/aio/win32/aio_queue.hpp"
 #include "yield/fs/poll/fs_event.hpp"
-#include "yield/thread/non_blocking_concurrent_queue.hpp"
 
 namespace yield {
 namespace fs {
 namespace poll {
 namespace win32 {
-class FSEventQueue : public yield::aio::win32::AIOQueue {
+class FSEventQueue : public EventQueue {
 public:
   ~FSEventQueue();
 
+public:
   bool associate(
     const Path& path,
     FSEvent::Type events = FSEvent::TYPE_ALL,
@@ -55,12 +55,13 @@ public:
 public:
   // yield::EventQueue
   YO_NEW_REF Event* dequeue(const Time& timeout);
+  bool enqueue(YO_NEW_REF Event& event);
 
 private:
   class Watch;
 
 private:
-  yield::thread::NonBlockingConcurrentQueue<FSEvent, 1024> fs_events;
+  yield::aio::win32::AIOQueue aio_queue;
   std::map<Path, Watch*> watches;
 };
 }

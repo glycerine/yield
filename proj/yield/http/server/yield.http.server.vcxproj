@@ -66,7 +66,7 @@
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>yield_fs.lib;yield_i18n.lib;yield_http.lib;yield_uri.lib;yield_sockets_server.lib;yield_sockets_aio.lib;yield_aio.lib;yield_sockets_poll.lib;yield_poll.lib;yield_sockets.lib;yield_stage.lib;yield_thread.lib;yield.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_fs.lib;yield_i18n.lib;yield_http.lib;yield_uri.lib;yield_sockets_aio.lib;yield_aio.lib;yield_sockets_poll.lib;yield_poll.lib;yield_sockets.lib;yield_stage.lib;yield_thread.lib;yield.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -85,7 +85,7 @@
       <WarningLevel>Level4</WarningLevel>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>yield_fs.lib;yield_i18n.lib;yield_http.lib;yield_uri.lib;yield_sockets_server.lib;yield_sockets_aio.lib;yield_aio.lib;yield_sockets_poll.lib;yield_poll.lib;yield_sockets.lib;yield_stage.lib;yield_thread.lib;yield.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_fs.lib;yield_i18n.lib;yield_http.lib;yield_uri.lib;yield_sockets_aio.lib;yield_aio.lib;yield_sockets_poll.lib;yield_poll.lib;yield_sockets.lib;yield_stage.lib;yield_thread.lib;yield.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -94,6 +94,7 @@
 
   <ItemGroup Label="ClIncludeItems">
     <ClInclude Include="..\..\..\..\include\yield\http\server\access_log.hpp" />
+    <ClInclude Include="..\..\..\..\include\yield\http\server\http_request_queue.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\http\server\http_server.hpp" />
   </ItemGroup>
 
@@ -103,6 +104,8 @@
     <ClCompile Include="..\..\..\..\src\yield\http\server\file_access_log.cpp">
     </ClCompile>
     <ClInclude Include="..\..\..\..\src\yield\http\server\file_access_log.hpp" />
+    <ClCompile Include="..\..\..\..\src\yield\http\server\http_request_queue.cpp">
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\http\server\http_server.cpp">
     </ClCompile>
     <ClInclude Include="..\..\..\..\src\yield\http\server\ostream_access_log.hpp" />
@@ -117,8 +120,12 @@
       <Project>{3993b27c-2dae-4899-8d95-b17d37a2c6de}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\sockets\server\yield.sockets.server.vcxproj">
-      <Project>{6deccf61-2140-45e4-8aef-308a155345a7}</Project>
+    <ProjectReference Include="..\..\sockets\aio\yield.sockets.aio.vcxproj">
+      <Project>{45e844f8-0362-4466-8701-6ed06dc1f0e7}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\stage\yield.stage.vcxproj">
+      <Project>{13ae0a2c-51b6-4ea8-8b2f-e56ec570a4f3}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>

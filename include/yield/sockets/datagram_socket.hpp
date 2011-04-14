@@ -50,9 +50,9 @@ public:
 
   virtual ~DatagramSocket() { }
 
+public:
   static YO_NEW_REF DatagramSocket*
-  create
-  (
+  create(
     int domain,
     int protocol = PROTOCOL_DEFAULT
   ) {
@@ -63,7 +63,11 @@ public:
       return NULL;
   }
 
-  // Object
+  // yield::Object
+  const char* get_type_name() const {
+    return "yield::sockets::DatagramSocket";
+  }
+
   DatagramSocket& inc_ref() {
     return Object::inc_ref(*this);
   }

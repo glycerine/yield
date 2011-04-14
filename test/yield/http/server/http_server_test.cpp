@@ -28,8 +28,6 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../test_http_request_handler.hpp"
-#include "yield/auto_object.hpp"
-#include "yield/log.hpp"
 #include "yield/http/server/http_server.hpp"
 #include "yunit.hpp"
 

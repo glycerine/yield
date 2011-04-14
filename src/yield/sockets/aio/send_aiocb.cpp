@@ -1,4 +1,4 @@
-// yield/sockets/client/socket_client.hpp
+// yield/sockets/aio/send_aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,24 +27,39 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_SOCKETS_CLIENT_SOCKET_CLIENT_HPP_
-#define _YIELD_SOCKETS_CLIENT_SOCKET_CLIENT_HPP_
-
-#include "yield/sockets/peer/socket_peer.hpp"
+#include "yield/buffer.hpp"
+#include "yield/sockets/aio/send_aiocb.hpp"
 
 namespace yield {
 namespace sockets {
-namespace client {
-class SocketClient : public ::yield::sockets::peer::SocketPeer {
-protected:
-  SocketClient(Log* error_log, Log* trace_log)
-    : SocketPeer(error_log, trace_log)
-  { }
-
-  virtual ~SocketClient() { }
-};
-}
-}
+namespace aio {
+sendAIOCB::~sendAIOCB() {
+  Buffer::dec_ref(buffer);
+  SocketAddress::dec_ref(peername);
 }
 
-#endif
+std::ostream& operator<<(std::ostream& os, sendAIOCB& send_aiocb) {
+  os <<
+    send_aiocb.get_type_name() <<
+    "(" <<
+      "buffer=" << send_aiocb.get_buffer() <<
+      "," <<
+      "error=" << send_aiocb.get_error() <<
+      ", " <<
+      "flags=" << send_aiocb.get_flags() <<
+      ", " <<
+      "peername=";
+      if (send_aiocb.get_peername() != NULL)
+        os << *send_aiocb.get_peername();
+      else
+        os << "NULL";
+      os <<
+      "return=" << send_aiocb.get_return() <<
+      "," <<
+      "socket=" << send_aiocb.get_socket() <<
+    ")";
+  return os;
+}
+}
+}
+}

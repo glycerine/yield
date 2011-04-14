@@ -1,4 +1,4 @@
-// yield/aio/win32/aio_queue.hpp
+// yield/sockets/aio/aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,43 +27,22 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_AIO_WIN32_AIO_QUEUE_HPP_
-#define _YIELD_AIO_WIN32_AIO_QUEUE_HPP_
-
-#include "yield/aio/aiocb.hpp"
-#include "yield/event_queue.hpp"
+#include "yield/sockets/socket.hpp"
+#include "yield/sockets/aio/aiocb.hpp"
 
 namespace yield {
+namespace sockets {
 namespace aio {
-namespace win32 {
-class AIOQueue : public EventQueue {
-public:
-  AIOQueue();
-  ~AIOQueue();
+AIOCB::AIOCB(Socket& socket_)
+  : yield::aio::AIOCB(socket_, 0),
+    socket_(socket_.inc_ref()) {
+  next_aiocb = NULL; 
+}
 
-public:
-  bool associate(fd_t fd);
-
-public:
-  // yield::Object
-  AIOQueue& inc_ref() {
-    return Object::inc_ref(*this);
-  }
-
-public:
-  // yield::EventQueue
-  YO_NEW_REF Event& dequeue() {
-    return EventQueue::dequeue();
-  }
-
-  virtual YO_NEW_REF Event* dequeue(const Time& timeout);
-  virtual bool enqueue(YO_NEW_REF Event& event);
-
-private:
-  fd_t hIoCompletionPort;
-};
+AIOCB::~AIOCB() {
+  AIOCB::dec_ref(next_aiocb);
+  Socket::dec_ref(socket_);
 }
 }
 }
-
-#endif
+}

@@ -193,6 +193,10 @@ public:
 
 public:
   // yield::Object
+  const char* get_type_name() const {
+    return "yield::sockets::Socket";
+  }
+
   Socket& inc_ref() {
     return Object::inc_ref(*this);
   }
@@ -230,6 +234,17 @@ private:
   int domain, type, protocol;
   socket_t socket_;
 };
+
+static inline std::ostream& operator<<(std::ostream& os, Socket& socket_) {
+    os << 
+       socket_.get_type_name() << 
+       "(" <<
+         *socket_.getsockname() <<
+         "/" <<
+         *socket_.getpeername() <<
+       ")";
+    return os;
+}
 }
 }
 

@@ -40,7 +40,7 @@ namespace yield {
 namespace fs {
 namespace poll {
 namespace linux {
-class FSEventQueue : public yield::poll::FDEventQueue {
+class FSEventQueue : public EventQueue {
 public:
   FSEventQueue();
   ~FSEventQueue();
@@ -57,12 +57,13 @@ public:
 public:
   // yield::EventQueue
   YO_NEW_REF Event* dequeue(const Time& timeout);
+  bool enqueue(YO_NEW_REF Event& event);
 
 private:
   class Watch;
 
 private:
-  yield::thread::NonBlockingConcurrentQueue<FSEvent, 1024> fs_events;
+  yield::poll::FDEventQueue fd_event_queue;
   fd_t inotify_fd;
   std::map<Path, Watch*> watches;
 };

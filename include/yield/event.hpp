@@ -32,7 +32,6 @@
 
 #include "yield/object.hpp"
 
-
 namespace yield {
 class Event : public Object {
 public:

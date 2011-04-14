@@ -1,4 +1,4 @@
-// yield/sockets/server/socket_server.hpp
+// yield/sockets/aio/accept_aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,31 +27,57 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_SOCKETS_SERVER_SOCKET_SERVER_HPP_
-#define _YIELD_SOCKETS_SERVER_SOCKET_SERVER_HPP_
-
-#include "yield/sockets/socket_address.hpp"
-#include "yield/sockets/peer/socket_peer.hpp"
+#include "yield/buffer.hpp"
+#include "yield/sockets/stream_socket.hpp"
+#include "yield/sockets/aio/accept_aiocb.hpp"
 
 namespace yield {
 namespace sockets {
-namespace server {
-class SocketServer : public yield::sockets::peer::SocketPeer {
-public:
-  void serve_forever() {
-    for (;;)
-      visit();
-  }
+namespace aio {
+acceptAIOCB::~acceptAIOCB() {
+  StreamSocket::dec_ref(accepted_socket);
+  SocketAddress::dec_ref(peername);
+  Buffer::dec_ref(recv_buffer);
+}
 
-protected:
-  SocketServer(Log* error_log, Log* trace_log)
-    : SocketPeer(error_log, trace_log)
-  { }
+StreamSocket& acceptAIOCB::get_socket() {
+  return static_cast<StreamSocket&>(AIOCB::get_socket());
+}
 
-  virtual ~SocketServer() { }
-};
+void
+acceptAIOCB::set_accepted_socket(
+  YO_NEW_REF StreamSocket& accepted_socket
+) {
+  StreamSocket::dec_ref(this->accepted_socket);
+  this->accepted_socket = &accepted_socket;
+}
+
+std::ostream& operator<<(std::ostream& os, acceptAIOCB& accept_aiocb) {
+  os <<
+    accept_aiocb.get_type_name() <<
+    "(";
+      if (accept_aiocb.get_accepted_socket() != NULL)
+        os << *accept_aiocb.get_accepted_socket();
+      else
+        os << "NULL";
+      os <<
+      "error=" << accept_aiocb.get_error() <<
+      ", " <<
+      "peername=" << accept_aiocb.get_peername() <<
+      ", " <<
+      "recv_buffer=";
+      if (accept_aiocb.get_recv_buffer() != NULL)
+        os << *accept_aiocb.get_recv_buffer();
+      else
+        os << "NULL";
+      os <<
+      ", " <<
+      "return=" << accept_aiocb.get_return() <<
+      ", " <<
+      "socket=" << accept_aiocb.get_socket() <<
+    ")";
+  return os;
 }
 }
 }
-
-#endif
+}

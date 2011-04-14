@@ -28,6 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/assert.hpp"
+#include "yield/buffer.hpp"
 #include "yield/exception.hpp"
 #include "yield/time.hpp"
 #include "yield/sockets/stream_socket.hpp"

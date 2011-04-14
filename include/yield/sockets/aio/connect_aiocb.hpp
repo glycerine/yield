@@ -33,6 +33,8 @@
 #include "yield/sockets/aio/aiocb.hpp"
 
 namespace yield {
+class Buffer;
+
 namespace sockets {
 class StreamSocket;
 
@@ -46,17 +48,9 @@ public:
     StreamSocket& socket_,
     SocketAddress& peername,
     YO_NEW_REF Buffer* send_buffer = NULL
-  ) : AIOCB(socket_),
-      peername(peername.inc_ref()),
-      send_buffer(send_buffer) {
-    //if (send_buffer != NULL)
-    //  debug_assert_eq(send_buffer->get_next_buffer(), NULL);
-  }
+  );
 
-  ~connectAIOCB() {
-    SocketAddress::dec_ref(peername);
-    Buffer::dec_ref(send_buffer);
-  }
+  ~connectAIOCB();
 
 public:
   const SocketAddress& get_peername() const {
@@ -67,9 +61,7 @@ public:
     return send_buffer;
   }
 
-  StreamSocket& get_socket() {
-    return static_cast<StreamSocket&>(AIOCB::get_socket());
-  }
+  StreamSocket& get_socket();
 
 public:
   // yield::Object
@@ -85,6 +77,8 @@ private:
   SocketAddress& peername;
   Buffer* send_buffer;
 };
+
+std::ostream& operator<<(std::ostream&, connectAIOCB&);
 }
 }
 }

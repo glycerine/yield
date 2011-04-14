@@ -81,7 +81,11 @@ public:
   virtual bool want_connect() const;
 
 public:
-  // Object
+  // yield::Object
+  const char* get_type_name() const {
+    return "yield::sockets::StreamSocket";
+  }
+
   StreamSocket& inc_ref() {
     return Object::inc_ref(*this);
   }

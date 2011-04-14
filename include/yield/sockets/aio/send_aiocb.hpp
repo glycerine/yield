@@ -31,6 +31,7 @@
 #define _YIELD_SOCKETS_AIO_SEND_AIOCB_HPP_
 
 #include "yield/sockets/aio/aiocb.hpp"
+#include "yield/sockets/socket.hpp"
 
 namespace yield {
 namespace sockets {
@@ -51,11 +52,8 @@ public:
       peername(Object::inc_ref(peername)) {
   }
 
-  ~sendAIOCB() {
-    Buffer::dec_ref(buffer);
-    SocketAddress::dec_ref(peername);
-  }
-  
+  ~sendAIOCB();
+
 public:
   Buffer& get_buffer() const {
     return buffer;
@@ -84,6 +82,8 @@ private:
   Socket::MessageFlags flags;
   SocketAddress* peername;
 };
+
+std::ostream& operator<<(std::ostream&, sendAIOCB&);
 }
 }
 }

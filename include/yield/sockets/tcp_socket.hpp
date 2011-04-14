@@ -52,6 +52,7 @@ public:
 
   virtual ~TCPSocket() { }
 
+public:
   static YO_NEW_REF TCPSocket* create(int domain = DOMAIN_DEFAULT) {
     socket_t socket_ = Socket::create(domain, TYPE, PROTOCOL);
     if (socket_ != static_cast<socket_t>(-1))
@@ -60,15 +61,22 @@ public:
       return NULL;
   }
 
-  // Object
+public:
+  // yield::Object
+  const char* get_type_name() const {
+    return "yield::sockets::TCPSocket";
+  }
+
   TCPSocket& inc_ref() {
     return Object::inc_ref(*this);
   }
 
-  // Socket
+public:
+  // yield::sockets::Socket
   virtual bool setsockopt(Option option, bool onoff);
 
-  // StreamSocket
+public:
+  // yield::sockets::StreamSocket
   virtual YO_NEW_REF StreamSocket* dup() {
     return create(get_domain());
   }

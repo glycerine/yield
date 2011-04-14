@@ -59,6 +59,25 @@ void recvAIOCB::set_return(ssize_t return_) {
 
   AIOCB::set_return(return_);
 }
+
+std::ostream& operator<<(std::ostream& os, recvAIOCB& recv_aiocb) {
+  os <<
+    recv_aiocb.get_type_name() <<
+    "(" <<
+      "buffer=" << recv_aiocb.get_buffer() <<
+      "," <<
+      "error=" << recv_aiocb.get_error() <<
+      ", " <<
+      "flags=" << recv_aiocb.get_flags() <<
+      ", " <<
+      "peername=" << recv_aiocb.get_peername() <<
+      ", " <<
+      "return=" << recv_aiocb.get_return() <<
+      "," <<
+      "socket=" << recv_aiocb.get_socket() <<
+    ")";
+  return os;
+}
 }
 }
 }

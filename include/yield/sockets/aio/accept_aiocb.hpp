@@ -30,13 +30,16 @@
 #ifndef _YIELD_SOCKETS_AIO_ACCEPT_AIOCB_HPP_
 #define _YIELD_SOCKETS_AIO_ACCEPT_AIOCB_HPP_
 
-#include "yield/buffer.hpp"
-#include "yield/sockets/socket_address.hpp"
-#include "yield/sockets/stream_socket.hpp"
 #include "yield/sockets/aio/aiocb.hpp"
 
 namespace yield {
+class Buffer;
+
 namespace sockets {
+class Socket;
+class SocketAddress;
+class StreamSocket;
+
 namespace aio {
 class acceptAIOCB : public AIOCB {
 public:
@@ -48,11 +51,7 @@ public:
     YO_NEW_REF Buffer* recv_buffer = NULL
   );
 
-  ~acceptAIOCB() {
-    StreamSocket::dec_ref(accepted_socket);
-    SocketAddress::dec_ref(peername);
-    Buffer::dec_ref(recv_buffer);
-  }
+  ~acceptAIOCB();
 
 public:
   StreamSocket* get_accepted_socket() {
@@ -67,15 +66,10 @@ public:
     return recv_buffer;
   }
 
-  StreamSocket& get_socket() {
-    return static_cast<StreamSocket&>(AIOCB::get_socket());
-  }
+  StreamSocket& get_socket();
 
 public:
-  void set_accepted_socket(YO_NEW_REF StreamSocket& accepted_socket) {
-    StreamSocket::dec_ref(this->accepted_socket);
-    this->accepted_socket = &accepted_socket;
-  }
+  void set_accepted_socket(YO_NEW_REF StreamSocket& accepted_socket);
 
 public:
   // yield::Object
@@ -91,18 +85,13 @@ public:
   // yield::aio::AIOCB
   void set_return(ssize_t return_);
 
-#ifdef _WIN32
-  void* get_output_buffer();
-  uint32_t get_peername_length();
-  uint32_t get_recv_data_length();
-  uint32_t get_sockname_length();
-#endif
-
 private:
   StreamSocket* accepted_socket;
   SocketAddress& peername;
   Buffer* recv_buffer;
 };
+
+std::ostream& operator<<(std::ostream&, acceptAIOCB&);
 }
 }
 }

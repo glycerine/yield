@@ -32,7 +32,6 @@
 
 #include "yield/types.hpp"
 
-
 #if defined(_WIN64)
 extern "C"
 {

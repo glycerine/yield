@@ -48,6 +48,7 @@ public:
     : DatagramSocket(domain, PROTOCOL, socket_)
   { }
 
+public:
   static YO_NEW_REF UDPSocket* create(int domain = DOMAIN_DEFAULT) {
     socket_t socket_ = Socket::create(domain, TYPE, PROTOCOL);
     if (socket_ != static_cast<socket_t>(-1))
@@ -56,7 +57,12 @@ public:
       return NULL;
   }
 
-  // Object
+public:
+  // yield::Object
+  const char* get_type_name() const {
+    return "yield::sockets::UDPSocket";
+  }
+
   UDPSocket& inc_ref() {
     return Object::inc_ref(*this);
   }

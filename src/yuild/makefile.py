@@ -47,8 +47,7 @@ __all__ = ["Makefile", "TopLevelMakefile"]
 # Constants
 INDENT_SPACES = INDENT_SPACES["py"]
 
-UNAME_CHECKS = \
-{
+UNAME_CHECKS = {
     "darwin": "ifeq ($(UNAME), Darwin)",
     "freebsd": "ifeq ($(UNAME), FreeBSD)",
     "linux": "ifeq ($(UNAME), Linux)",
@@ -235,7 +234,7 @@ lcov: %(output_file_path)s
 
         output_file_path_prerequisites = ["$(O_FILE_PATHS)"]
         project_reference_rules = []
-        for project_reference in self.get_project_references()['*']:
+        for project_reference in self.get_project_references().get('*', []):
             project_reference_makefile_path = project_reference
             if not isfile(project_reference_makefile_path):
                 project_reference_makefile_path = \
@@ -341,7 +340,7 @@ class TopLevelMakefile(object):
             if isinstance(makefile, Makefile):
                 project_dir_path = posixpath(relpath(makefile.get_project_dir_path()))
                 project_name = makefile.get_name()
-                project_references = makefile.get_project_references()['*']
+                project_references = makefile.get_project_references().get('*', [])
             else:
                 project_dir_path, project_name = path_split(makefile)
                 project_references = []

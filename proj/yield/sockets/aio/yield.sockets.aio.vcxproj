@@ -104,6 +104,12 @@
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\accept_aiocb.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\aiocb.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\connect_aiocb.cpp">
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\sockets\aio\nbio_queue.cpp">
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\sockets\aio\posix\accept_aiocb.cpp">
@@ -111,6 +117,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\sockets\aio\recv_aiocb.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\send_aiocb.cpp">
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\sockets\aio\win32\accept_aiocb.cpp">
       <ObjectFileName>$(IntDir)win32\accept_aiocb.obj</ObjectFileName>

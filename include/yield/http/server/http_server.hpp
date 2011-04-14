@@ -30,35 +30,18 @@
 #ifndef _YIELD_HTTP_SERVER_HTTP_SERVER_HPP_
 #define _YIELD_HTTP_SERVER_HTTP_SERVER_HPP_
 
-#include "yield/sockets/server/stream_socket_server.hpp"
+#include "yield/sockets/socket_address.hpp"
+#include "yield/stage/stage.hpp"
 
 namespace yield {
 namespace http {
 namespace server {
-class HTTPServer : public yield::sockets::server::StreamSocketServer {
+class HTTPServer : public yield::stage::Stage {
 public:
   HTTPServer(
     YO_NEW_REF EventHandler& http_request_handler,
-    const yield::sockets::SocketAddress& sockname,
-    Log* error_log = NULL,
-    Log* trace_log = NULL
+    const yield::sockets::SocketAddress& sockname
   );
-
-  ~HTTPServer();
-
-private:
-  class Connection;
-
-private:
-  // yield::sockets::StreamSocketServer
-  StreamSocketServer::Connection&
-  create_connection(
-    yield::sockets::SocketAddress& peername,
-    yield::sockets::StreamSocket& socket_
-  );
-
-private:
-  EventHandler& http_request_handler;
 };
 }
 }

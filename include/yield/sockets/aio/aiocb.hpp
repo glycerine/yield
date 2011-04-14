@@ -31,7 +31,6 @@
 #define _YIELD_SOCKETS_AIO_AIOCB_HPP_
 
 #include "yield/aio/aiocb.hpp"
-#include "yield/sockets/socket.hpp"
 
 namespace yield {
 class Buffer;
@@ -42,10 +41,7 @@ class Socket;
 namespace aio {
 class AIOCB : public yield::aio::AIOCB {
 public:
-  virtual ~AIOCB() {
-    AIOCB::dec_ref(next_aiocb);
-    Socket::dec_ref(socket_);
-  }
+  virtual ~AIOCB();
 
 public:
   AIOCB* get_next_aiocb() {
@@ -72,11 +68,7 @@ public:
   }
 
 protected:
-  AIOCB(Socket& socket_)
-    : yield::aio::AIOCB(socket_, 0),
-      socket_(socket_.inc_ref()) {
-    next_aiocb = NULL; 
-  }
+  AIOCB(Socket& socket_);
 
 private:
   AIOCB* next_aiocb;

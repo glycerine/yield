@@ -129,6 +129,7 @@ public:
 public:
   void write(const char*, const Level&);
   void write(const string&, const Level&);
+  void write(const Buffer&, const Level&);
   void write(const void*, size_t, const Level&);
 
 public:

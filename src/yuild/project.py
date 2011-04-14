@@ -75,33 +75,31 @@ class Project(object):
         self.__name = static_cast(name, str)
         self.__type = static_cast(type, str)
 
-        if project_dir_path is not None:
+        if project_dir_path is not None: # Must be set first
             project_dir_path = static_cast(project_dir_path, str)
             # assert exists( project_dir_path )
             self.__project_dir_path = project_dir_path
         else:
             self.__project_dir_path = getcwd()
 
-        if source_dir_path is None:
-            source_file_tree = self.get_source_file_tree()
-            if len(source_file_tree) == 0:
-                source_dir_path = self.get_project_dir_path()
-            elif len(source_file_tree) == 1:
-                if isinstance(source_file_tree.values()[0], dict):
-                    source_dir_path = source_file_tree.keys()[0]
-                else:
-                    source_dir_path = dirname(source_file_tree.keys()[0])
-            else:
-                raise NotImplementedError, source_file_tree.keys()
+        platform_output_file_path = PlatformDict(output_file_path)
+        for platform in platform_output_file_path.iterkeys():
+            output_file_path = platform_output_file_path[platform]
+            # assert exists( dirname( output_file_path ) )
+            output_file_path = relpath(output_file_path, self.__project_dir_path)
+            platform_output_file_path[platform] = output_file_path
+        self.__output_file_path = platform_output_file_path
 
-        for path_var in ("build_dir_path", "source_dir_path"):
-            path = locals()[path_var]
-            platform_path = dict(PlatformDict(path))
-            for platform in platform_path.iterkeys():
-                path = platform_path[platform]
-                if exists(path):
-                    platform_path[platform] = relpath(path, self.__project_dir_path)
-            setattr(self, '_' + path_var, PlatformDict(platform_path))
+        platform_project_references = PlatformDict(project_references)
+        for platform in platform_project_references.iterkeys():
+            project_references = platform_project_references[platform]
+            project_references = strlist(project_references)
+#            for project_reference in project_references:
+#                assert exists( dirname( project_reference ) ), project_reference
+            project_references = \
+                relpaths(project_references, self.__project_dir_path)
+            platform_project_references[platform] = project_references
+        self.__project_references = platform_project_references
 
         for paths_var in ("cxxpath", "libpath"):
             paths = locals()[paths_var]
@@ -121,31 +119,11 @@ class Project(object):
                     platform_paths[platform] = rel_paths
                 setattr(self, '_' + paths_var, PlatformDict(platform_paths))
 
-        platform_output_file_path = PlatformDict(output_file_path)
-        for platform in platform_output_file_path.iterkeys():
-            output_file_path = platform_output_file_path[platform]
-            # assert exists( dirname( output_file_path ) )
-            output_file_path = relpath(output_file_path, self.__project_dir_path)
-            platform_output_file_path[platform] = output_file_path
-        self._output_file_path = platform_output_file_path
-
-        platform_project_references = PlatformDict(project_references)
-        for platform in platform_project_references.iterkeys():
-            project_references = platform_project_references[platform]
-            project_references = strlist(project_references)
-#            for project_reference in project_references:
-#                assert exists( dirname( project_reference ) ), project_reference
-            project_references = \
-                relpaths(project_references, self.__project_dir_path)
-            platform_project_references[platform] = project_references
-        self._project_references = platform_project_references
-
         for paths_var in (
-                "exclude_file_paths",
-                "include_file_paths",
-                "source_file_paths",
-            ):
-
+            "exclude_file_paths",
+            "include_file_paths",
+            "source_file_paths",
+        ):
             paths = locals()[paths_var]
             paths = strlist(paths)
             paths = deduplist(paths)
@@ -155,6 +133,29 @@ class Project(object):
             setattr(self, '_' + paths_var[:-6] + 's', source_files)
             source_file_tree = treepaths(source_files)
             setattr(self, '_' + paths_var[:-6] + "_tree", source_file_tree)
+
+        if source_dir_path is None:
+            # Depends on source_file_paths being set above
+            source_file_tree = self.get_source_file_tree()
+            if len(source_file_tree) == 0:
+                source_dir_path = self.get_project_dir_path()
+            elif len(source_file_tree) == 1:
+                if isinstance(source_file_tree.values()[0], dict):
+                    source_dir_path = source_file_tree.keys()[0]
+                else:
+                    source_dir_path = dirname(source_file_tree.keys()[0])
+            else:
+                raise NotImplementedError, source_file_tree.keys()
+
+        # Depends on source_dir_path being set above
+        for path_var in ("build_dir_path", "source_dir_path"):
+            path = locals()[path_var]
+            platform_path = dict(PlatformDict(path))
+            for platform in platform_path.iterkeys():
+                path = platform_path[platform]
+                if exists(path):
+                    platform_path[platform] = relpath(path, self.__project_dir_path)
+            setattr(self, '_' + path_var, PlatformDict(platform_path))
 
     def __cmp__(self, other): return cmp(self.get_name(), other.get_name())
 
@@ -169,9 +170,9 @@ class Project(object):
     def get_libs(self): return self.__libs
     def get_ldflags(self): return self.__ldflags
     def get_name(self): return self.__name
-    def get_output_file_path(self): return self._output_file_path
+    def get_output_file_path(self): return self.__output_file_path
     def get_project_dir_path(self): return self.__project_dir_path
-    def get_project_references(self): return self._project_references
+    def get_project_references(self): return self.__project_references
     def get_source_dir_path(self): return self._source_dir_path
     def get_source_files(self): return self._source_files
     def get_source_file_tree(self): return self._source_file_tree

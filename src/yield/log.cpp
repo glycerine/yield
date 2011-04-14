@@ -27,6 +27,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "yield/buffer.hpp"
 #include "yield/date_time.hpp"
 #include "yield/log.hpp"
 
@@ -78,6 +79,10 @@ void Log::write(const char* str, const Level& level) {
 
 void Log::write(const string& str, const Level& level) {
   write(str.c_str(), str.size(), level);
+}
+
+void Log::write(const Buffer& buffer, const Level& level) {
+  write(buffer, buffer.size(), level);
 }
 
 void Log::write(const void* str, size_t str_len, const Level& level) {

@@ -82,15 +82,12 @@ PROJECT_REFERENCES = {
     "yield.fs.aio": ("yield.aio", "yield.fs", "yield.thread"),
     "yield.fs.poll": ("yield.aio", "yield.poll", "yield.fs"),
     "yield.http": ("yield.uri",),
-    "yield.http.client": ("yield.http", "yield.sockets.client"),
-    "yield.http.server": ("yield.fs", "yield.http", "yield.sockets.server"),
+    "yield.http.server": ("yield.fs", "yield.http", "yield.sockets.aio", "yield.stage"),
     "yield.i18n": ("yield",),
     "yield.poll": ("yield",),
     "yield.sockets": ("yield",),
     "yield.sockets.aio": ("yield.aio", "yield.sockets.poll"),
-    "yield.sockets.client": ("yield.sockets.aio", "yield.stage"),
     "yield.sockets.poll": ("yield.poll", "yield.sockets"),
-    "yield.sockets.server": ("yield.sockets.aio", "yield.stage"),
     "yield.stage": ("yield.thread",),
     "yield.thread": ("yield",),
     "yield.uri": ("yield",),
@@ -368,18 +365,6 @@ INCLUDE_FILE_PATHS["yield.sockets.aio"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "sockets", "aio", "win32", "aio_queue.hpp"), # before aio_queue
 ] + \
 INCLUDE_FILE_PATHS["yield.sockets.aio"]
-
-INCLUDE_FILE_PATHS["yield.sockets.client"] = [
-    path_join(INCLUDE_DIR_PATH, "yield", "sockets", "peer", "socket_peer.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "sockets", "peer", "stream_socket_peer.hpp"),
-] + \
-INCLUDE_FILE_PATHS["yield.sockets.client"]
-
-INCLUDE_FILE_PATHS["yield.sockets.server"] = [
-    path_join(INCLUDE_DIR_PATH, "yield", "sockets", "peer", "socket_peer.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "sockets", "peer", "stream_socket_peer.hpp"),
-] + \
-INCLUDE_FILE_PATHS["yield.sockets.server"]
 
 INCLUDE_FILE_PATHS["yield.stage"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "stage", "event.hpp"),
@@ -664,10 +649,6 @@ if options.generate_proj:
 
     for project_name in options.project_names:
         for project_name_suffix, project_type in (("", "lib"), ("_test", "exe")):
-            if (project_name == "yield.sockets.client" or project_name == "yield.sockets.server") and\
-               project_name_suffix == "_test":
-                continue
-
             project = {
                "build_dir_path": {
                    "*": path_join(ROOT_DIR_PATH, "build", path_sep.join(project_name.split('.'))),

@@ -28,6 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "fs_event_queue.hpp"
+#include "yield/assert.hpp"
 #include "yield/aio/win32/aiocb.hpp"
 #include "yield/fs/win32/directory.hpp"
 #include "yield/fs/win32/file_system.hpp"
@@ -45,17 +46,19 @@ using yield::aio::win32::AIOCB;
 using yield::aio::win32::AIOQueue;
 using yield::fs::win32::Directory;
 using yield::fs::win32::FileSystem;
-using yield::thread::NonBlockingConcurrentQueue;
 
 class FSEventQueue::Watch : public AIOCB {
 public:
+  const static uint32_t TYPE_ID = 497230685;
+
+public:
   Watch(
     YO_NEW_REF Directory& directory,
-    const Path& directory_path,
     FSEvent::Type events,
+    const Path& path,
     bool recursive
   ) : directory(&directory),
-      directory_path(directory_path),
+      path(path),
       events(events) {
     bWatchSubtree = recursive ? TRUE : FALSE;
 
@@ -91,13 +94,14 @@ public:
     )
       dwNotifyFilter |= FILE_NOTIFY_CHANGE_FILE_NAME;
 
-    gather_known_directory_paths(directory, directory_path);
+    gather_known_directory_paths(directory, path);
   }
 
   ~Watch() {
     close();
   }
 
+public:
   void close() {
     if (directory != NULL) {
       CancelIoEx(*directory, *this);
@@ -110,7 +114,13 @@ public:
     return directory == NULL;
   }
 
-  bool read(OUT NonBlockingConcurrentQueue<FSEvent, 1024>& fs_events) {
+public:
+  const Path& get_path() const {
+    return path;
+  }
+
+public:
+  bool read(EventHandler& fs_event_handler) {
     if (get_return() > 0) {
       DWORD dwReadUntilBufferOffset = 0;
 
@@ -123,7 +133,7 @@ public:
         const wchar_t* name = file_notify_info->FileName;
         size_t name_len = file_notify_info->FileNameLength;
         name_len /= sizeof(wchar_t);
-        Path path = this->directory_path / Path(name, name_len);
+        Path path = this->path / Path(name, name_len);
 
         if (file_notify_info->Action == FILE_ACTION_RENAMED_OLD_NAME) {
           for
@@ -153,7 +163,7 @@ public:
               type = FSEvent::TYPE_FILE_RENAME;
 
             if ((events & type) == type)
-              fs_events.enqueue(*new FSEvent(old_paths.top(), path, type));
+              fs_event_handler.handle(*new FSEvent(old_paths.top(), path, type));
 
             old_paths.pop();
           } else {
@@ -204,7 +214,7 @@ public:
             }
 
             if ((events & type) == type)
-              fs_events.enqueue(*new FSEvent(path, type));
+              fs_event_handler.handle(*new FSEvent(path, type));
           }
         }
 
@@ -231,7 +241,7 @@ public:
     if (bRet == TRUE) {
       if (dwBytesRead > 0) {
         set_return(dwBytesRead);
-        return read(fs_events);
+        return read(fs_event_handler);
       }
 
       return true;
@@ -264,14 +274,24 @@ private:
     }
   }
 
+public:
+  // yield::Object
+  uint32_t get_type_id() const {
+    return TYPE_ID;
+  }
+
+  const char* get_type_name() const {
+    return "yield::fs::poll::win32::FSEventQueue::Watch";
+  }
+
 private:
   BOOL bWatchSubtree;
   Directory* directory;
-  Path directory_path;
   DWORD dwNotifyFilter;
   FSEvent::Type events;
   vector<Path> known_directory_paths;
   stack<Path> old_paths;
+  Path path;
 
   char buffer[
     (
@@ -306,9 +326,9 @@ FSEventQueue::associate(
   if (watch_i == watches.end()) {
     Directory* directory = FileSystem().opendir(path);
     if (directory != NULL) {
-      if (AIOQueue::associate(*directory)) {
-        Watch* watch = new Watch(*directory, path, events, recursive);
-        if (watch->read(fs_events)) {
+      if (aio_queue.associate(*directory)) {
+        Watch* watch = new Watch(*directory, events, path, recursive);
+        if (watch->read(*this)) {
           watches[path] = watch;
           return true;
         } else {
@@ -326,30 +346,27 @@ FSEventQueue::associate(
 }
 
 YO_NEW_REF Event* FSEventQueue::dequeue(const Time& timeout) {
-  FSEvent* fs_event = fs_events.trydequeue();
-  if (fs_event != NULL)
-    return fs_event;
-  else {
-    Event* event = AIOQueue::dequeue(timeout);
-    if (event != NULL) {
-      if (event->get_type_id() == AIOCB::TYPE_ID) {
-        AIOCB* aiocb = static_cast<AIOCB*>(event);
-        if (aiocb->get_error() == 0) {
-          Watch* watch = static_cast<Watch*>(aiocb);
-          if (!watch->is_closed()) {
-            if (!watch->read(fs_events))
-              DebugBreak();
-            return fs_events.trydequeue();
-          } else
-            delete watch;
-        } else
-          DebugBreak();
-      } else
-        return event;
-    }
+  Event* event = aio_queue.dequeue(timeout);
+  if (event != NULL) {
+    if (event->get_type_id() == Watch::TYPE_ID) {
+      Watch* watch = static_cast<Watch*>(event);
+      if (!watch->is_closed()) {
+        debug_assert_eq(watch->get_error(), 0);
 
-    return NULL;
+        if (watch->read(aio_queue))
+          return aio_queue.trydequeue();
+        else {
+          dissociate(watch->get_path());
+          delete watch;
+          return aio_queue.trydequeue();
+        }
+      } else
+        delete watch;
+    } else
+      return event;
   }
+
+  return NULL;
 }
 
 bool FSEventQueue::dissociate(const Path& path) {
@@ -361,6 +378,10 @@ bool FSEventQueue::dissociate(const Path& path) {
     return true;
   } else
     return false;
+}
+
+bool FSEventQueue::enqueue(YO_NEW_REF Event& event) {
+  return aio_queue.enqueue(event);
 }
 }
 }

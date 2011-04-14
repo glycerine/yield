@@ -224,6 +224,8 @@ private:
   Buffer* next_buffer;
   size_t size_;
 };
+
+std::ostream& operator<<(std::ostream&, const Buffer&);
 }
 
 #endif
