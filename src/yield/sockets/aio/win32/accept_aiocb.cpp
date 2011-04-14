@@ -27,11 +27,11 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "../../win32/winsock.hpp"
 #include "yield/assert.hpp"
 #include "yield/buffer.hpp"
 #include "yield/sockets/stream_socket.hpp"
 #include "yield/sockets/aio/accept_aiocb.hpp"
-#include "yield/sockets/win32/winsock.hpp"
 
 namespace yield {
 namespace sockets {

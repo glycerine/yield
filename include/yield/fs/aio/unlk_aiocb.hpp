@@ -61,10 +61,6 @@ public:
     return "yield::fs::aio::unlkAIOCB";
   }
 
-public:
-  // yield::aio::fs::AIOCB
-  bool issue(AIOQueue& aio_queue);
-
 private:
   File::Lock flock_;
 };

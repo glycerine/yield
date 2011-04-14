@@ -21,9 +21,6 @@
     <ClInclude Include="..\..\..\..\test\yield\fs\aio\aio_queue_test.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\..\test\yield\fs\aio\bio_queue_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\test\yield\fs\aio\posix\aio_queue_test.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>

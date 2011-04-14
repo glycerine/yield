@@ -70,10 +70,6 @@ public:
   // yield::aio::AIOCB
   void set_return(ssize_t return_);
 
-public:
-  // yield::aio::fs::AIOCB
-  bool issue(AIOQueue& aio_queue);
-
 private:
   Buffer& buffer;
 };

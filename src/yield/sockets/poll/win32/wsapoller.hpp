@@ -30,9 +30,9 @@
 #ifndef _YIELD_SOCKETS_POLL_WIN32_WSAPOLLER_HPP_
 #define _YIELD_SOCKETS_POLL_WIN32_WSAPOLLER_HPP_
 
+#include "../../win32/winsock.hpp"
 #include "yield/event_queue.hpp"
 #include "yield/sockets/socket_pair.hpp"
-#include "yield/sockets/win32/winsock.hpp"
 #include "yield/thread/non_blocking_concurrent_queue.hpp"
 
 

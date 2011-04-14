@@ -143,20 +143,6 @@ public:
 };
 
 
-class ChannelOperatorFDTest : public ChannelTest {
-public:
-  ChannelOperatorFDTest(ChannelPairFactory& channel_pair_factory)
-    : ChannelTest(channel_pair_factory)
-  { }
-
-  // Test
-  virtual void run() {
-    debug_assert_ne(static_cast<fd_t>(get_read_channel()), INVALID_FD);
-    debug_assert_ne(static_cast<fd_t>(get_write_channel()), INVALID_FD);
-  }
-};
-
-
 class ChannelReadTest : public ChannelTest {
 public:
   ChannelReadTest(ChannelPairFactory& channel_pair_factory)
@@ -349,11 +335,6 @@ public:
     add(
       "Channel::close",
       new ChannelCloseTest(channel_pair_factory)
-    );
-
-    add(
-      "Channel::operator fd_t()",
-      new ChannelOperatorFDTest(channel_pair_factory)
     );
 
     add("Channel::read", new ChannelReadTest(channel_pair_factory));

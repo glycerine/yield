@@ -31,7 +31,6 @@
 
 #include <iostream>
 
-extern yunit::TestSuite& FileBIOQueueTestSuite();
 #ifdef __unix__
 extern yunit::TestSuite& POSIXFileAIOQueueTestSuite();
 #endif
@@ -41,11 +40,6 @@ extern yunit::TestSuite& Win32FileAIOQueueTestSuite();
 
 int main(int, char**) {
   int failed_test_case_count = 0;
-
-  // FileBIOQueue
-  std::cout << "FileBIOQueue:" << std::endl;
-  failed_test_case_count += FileBIOQueueTestSuite().run();
-  std::cout << std::endl;
 
 #ifdef __unix__
   // POSIXFileAIOQueue

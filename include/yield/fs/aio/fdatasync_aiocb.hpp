@@ -53,10 +53,6 @@ public:
   const char* get_type_name() const {
     return "yield::fs::aio::fdatasyncAIOCB";
   }
-
-public:
-  // yield::aio::fs::AIOCB
-  bool issue(AIOQueue& aio_queue);
 };
 }
 }

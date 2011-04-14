@@ -27,14 +27,13 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "winsock.hpp"
 #include "yield/sockets/tcp_socket.hpp"
-#include "yield/sockets/win32/winsock.hpp"
 
 namespace yield {
 namespace sockets {
 int TCPSocket::DOMAIN_DEFAULT = AF_INET;
 int TCPSocket::PROTOCOL = IPPROTO_TCP;
-
 
 bool TCPSocket::setsockopt(Option option, bool onoff) {
   if (option == OPTION_TCP_NODELAY) {

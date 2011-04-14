@@ -50,9 +50,6 @@ public:
   }
 
 public:
-  virtual bool issue(AIOQueue& aio_queue) = 0;
-
-public:
   // yield::Object
   virtual uint32_t get_type_id() const = 0;
   virtual const char* get_type_name() const = 0;

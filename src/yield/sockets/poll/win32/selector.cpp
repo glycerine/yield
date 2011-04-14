@@ -38,7 +38,6 @@ namespace poll {
 namespace win32 {
 using yield::thread::NonBlockingConcurrentQueue;
 
-
 Selector::Selector() {
   FD_ZERO(&except_fd_set);
   FD_ZERO(&read_fd_set);

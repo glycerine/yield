@@ -100,8 +100,6 @@
 
   <ItemGroup Label="ClCompileItems">
     <ClInclude Include="..\..\..\..\test\yield\fs\aio\aio_queue_test.hpp" />
-    <ClCompile Include="..\..\..\..\test\yield\fs\aio\bio_queue_test.cpp">
-    </ClCompile>
     <ClCompile Include="..\..\..\..\test\yield\fs\aio\posix\aio_queue_test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>

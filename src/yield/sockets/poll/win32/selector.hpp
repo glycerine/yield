@@ -30,22 +30,20 @@
 #ifndef _YIELD_SOCKETS_POLL_WIN32_SELECTOR_HPP_
 #define _YIELD_SOCKETS_POLL_WIN32_SELECTOR_HPP_
 
+#include "../../win32/winsock.hpp"
 #include "yield/event_queue.hpp"
 #include "yield/sockets/socket_pair.hpp"
-#include "yield/sockets/win32/winsock.hpp"
 #include "yield/thread/non_blocking_concurrent_queue.hpp"
-
 
 namespace yield {
 namespace sockets {
 namespace poll {
 class SocketPair;
 
-
 namespace win32 {
 class Selector
   : public EventQueue,
-  private vector<socket_t>,
+    private vector<socket_t>,
     private yield::thread::NonBlockingConcurrentQueue<Event, 32> {
 public:
   Selector();

@@ -53,7 +53,7 @@ LIBS += -lyield_fs_aio -lyield_aio -lyield_fs -lyield_i18n -lyield_thread -lyiel
 D_FILE_PATHS := $(shell find ../../../../build/yield/fs/aio -name "*.d")
 
 
-O_FILE_PATHS += ../../../../build/yield/fs/aio/bio_queue_test.o ../../../../build/yield/fs/aio/yield_fs_aio_test_main.o
+O_FILE_PATHS += ../../../../build/yield/fs/aio/yield_fs_aio_test_main.o
 ifeq ($(UNAME), Darwin)
 	O_FILE_PATHS += ../../../../build/yield/fs/aio/posix/aio_queue_test.o
 endif
@@ -99,10 +99,6 @@ lcov: ../../../../bin/yield/yield_fs_aio_test
 ../../../../bin/yield/yield_fs_aio_test: $(O_FILE_PATHS) ../../../../lib/yield/libyield_fs_aio.a
 	-mkdir -p ../../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
-
-../../../../build/yield/fs/aio/bio_queue_test.o: ../../../../test/yield/fs/aio/bio_queue_test.cpp
-	-mkdir -p ../../../../build/yield/fs/aio 2>/dev/null
-	$(CXX) -c -o ../../../../build/yield/fs/aio/bio_queue_test.o -MD $(CXXFLAGS) ../../../../test/yield/fs/aio/bio_queue_test.cpp
 
 ../../../../build/yield/fs/aio/posix/aio_queue_test.o: ../../../../test/yield/fs/aio/posix/aio_queue_test.cpp
 	-mkdir -p ../../../../build/yield/fs/aio/posix 2>/dev/null

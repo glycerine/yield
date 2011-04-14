@@ -15,9 +15,6 @@
     <Filter Include="Header Files">
       <UniqueIdentifier>{6a5be5f5-afe6-425b-9f28-12f7245560c3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\win32">
-      <UniqueIdentifier>{10d9343f-4500-4574-8207-1440dd568fbe}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\yield\sockets\datagram_socket.hpp">
@@ -40,9 +37,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\include\yield\sockets\udp_socket.hpp">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\sockets\win32\winsock.hpp">
-      <Filter>Header Files\win32</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -85,5 +79,8 @@
     <ClCompile Include="..\..\..\src\yield\sockets\win32\udp_socket.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\sockets\win32\winsock.hpp">
+      <Filter>Source Files\win32</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

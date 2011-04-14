@@ -64,10 +64,6 @@ public:
     return "yield::fs::aio::pwriteAIOCB";
   }
 
-public:
-  // yield::aio::fs::AIOCB
-  bool issue(AIOQueue& aio_queue);
-
 private:
   Buffer& buffer;
 };
