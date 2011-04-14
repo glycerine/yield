@@ -555,7 +555,7 @@ if options.generate_dist:
 
         if project_name not in PROJECT_BUILD_ORDER:
             PROJECT_BUILD_ORDER.append(project_name)
-    for project_name in options.project_names:
+    for project_name in PROJECT_NAMES:
         __fill_project_build_order(project_name)
 
     ypy_dir_path = path_join(ROOT_DIR_PATH, "..", "ypy")
@@ -566,7 +566,12 @@ if options.generate_dist:
         hpp = []
         cpp = ['#include "%s.hpp"\n\n\n' % '_'.join(project_name.split('.'))]
 
-        for project_reference in PROJECT_BUILD_ORDER[:PROJECT_BUILD_ORDER.index(project_name) + 1]:
+        if project_name == "yield":
+            project_references = PROJECT_BUILD_ORDER
+        else:
+            project_references = PROJECT_BUILD_ORDER[:PROJECT_BUILD_ORDER.index(project_name) + 1]
+
+        for project_reference in project_references:
             include_files = SourceFiles(INCLUDE_FILE_PATHS[project_reference])
             include_files = include_files.filter(C_CXX_INCLUDE_FILE_FNMATCH_PATTERNS)
             hpp.append(include_files.get_combined_repr())
@@ -577,7 +582,7 @@ if options.generate_dist:
             cpp.append(source_files.get_combined_repr())
 
         project_dist_dir_path = \
-            path_join(ROOT_DIR_PATH, "dist", path_sep.join(project_name.split('.')))
+            path_join(ROOT_DIR_PATH, "dist")#, path_sep.join(project_name.split('.')))
         if not exists(project_dist_dir_path):
             makedirs(project_dist_dir_path)
 
@@ -597,7 +602,7 @@ if options.generate_dist:
                         "share",
                         "yield",
                         "dist",
-                        path_sep.join(project_name.split('.')),
+                        #path_sep.join(project_name.split('.')),
                         path_split(file_path)[1]
                     )
 
