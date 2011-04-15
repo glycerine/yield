@@ -416,8 +416,6 @@ YO_NEW_REF Event* HTTPRequestQueue::dequeue(const Time& timeout) {
 
     default: return event;
     }
-
-    return aio_queue.trydequeue();
   }
 
   return NULL;

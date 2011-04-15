@@ -42,6 +42,9 @@ class HTTPResponse;
 
 class HTTPRequest : public Request, public HTTPMessage<HTTPRequest> {
 public:
+  const static uint32_t TYPE_ID = 707981577;
+
+public:
   class Method {
   public:
     static Method CONNECT;
@@ -120,8 +123,6 @@ public:
     const char* name;
     uint8_t name_len;
   };
-
-  const static uint32_t TYPE_ID = 707981577;
 
 public:
   HTTPRequest(

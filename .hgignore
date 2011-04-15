@@ -1,8 +1,10 @@
 syntax: glob
 bin/**
 build/**
+dist/**
 lib/**
 ipch/**
 *.pyc
+yield.opensdf
 yield.sdf
 yield.suo
