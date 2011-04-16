@@ -32,6 +32,7 @@
 #ifdef _WIN32
 #include <Windows.h>
 #else
+#include <ostream>
 #include <stdlib.h>
 #endif
 
@@ -116,7 +117,7 @@ std::ostream& operator<<(std::ostream& os, const Buffer& buffer) {
   os <<
     buffer.get_type_name() <<
     "(" <<
-      "capacity=" << buffer.capacity() << 
+      "capacity=" << buffer.capacity() <<
       ", " <<
       "size=" << buffer.size() <<
     ")";
