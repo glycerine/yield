@@ -58,6 +58,10 @@ YO_NEW_REF Event& AIOQueue::dequeue() {
   return completed_event_queue->dequeue();
 }
 
+YO_NEW_REF Event* AIOQueue::dequeue(const Time& timeout) {
+  return completed_event_queue->dequeue(timeout);
+}
+
 bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
   switch (event.get_type_id()) {
   case fdatasyncAIOCB::TYPE_ID: {

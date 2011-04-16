@@ -48,6 +48,11 @@ public:
   ~AIOQueue();
 
 public:
+  bool associate(fd_t) {
+    return true;
+  }
+
+public:
   // yield::EventQueue
   YO_NEW_REF Event& dequeue();
   YO_NEW_REF Event* dequeue(const Time& timeout);
