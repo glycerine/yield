@@ -30,11 +30,8 @@
 #ifndef _YIELD_FS_POLL_LINUX_FS_EVENT_QUEUE_HPP_
 #define _YIELD_FS_POLL_LINUX_FS_EVENT_QUEUE_HPP_
 
-#include <map>
-
 #include "yield/fs/poll/fs_event.hpp"
 #include "yield/poll/fd_event_queue.hpp"
-#include "yield/thread/non_blocking_concurrent_queue.hpp"
 
 namespace yield {
 namespace fs {
@@ -48,8 +45,7 @@ public:
 public:
   bool associate(
     const Path& path,
-    FSEvent::Type events = FSEvent::TYPE_ALL,
-    bool recursive = true
+    FSEvent::Type fs_event_types = FSEvent::TYPE_ALL,
   );
 
   bool dissociate(const Path& path);

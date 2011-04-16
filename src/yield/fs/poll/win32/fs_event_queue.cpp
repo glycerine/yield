@@ -56,13 +56,10 @@ public:
   Watch(
     YO_NEW_REF Directory& directory,
     FSEvent::Type fs_event_types,
-    const Path& path,
-    bool recursive
+    const Path& path
   ) : directory(&directory),
       fs_event_types(fs_event_types),
       path(path) {
-    bWatchSubtree = recursive ? TRUE : FALSE;
-
     dwNotifyFilter = 0;
 
     if (
@@ -95,7 +92,16 @@ public:
     )
       dwNotifyFilter |= FILE_NOTIFY_CHANGE_FILE_NAME;
 
-    gather_known_directory_paths(directory, path);
+    Directory::Entry* dirent = directory.read();
+    if (dirent != NULL) {
+      do {
+        if (dirent->ISDIR() && !dirent->is_hidden() && !dirent->is_special())
+          subdirectory_names.push_back(dirent->get_name());
+      } while (directory.read(*dirent));
+
+      Directory::Entry::dec_ref(*dirent);
+      directory.rewind();
+    }
   }
 
   ~Watch() {
@@ -124,10 +130,6 @@ public:
     return path;
   }
 
-  bool is_recursive() const {
-    return bWatchSubtree == TRUE;
-  }
-
 public:
   bool read(EventHandler& fs_event_handler) {
     if (get_return() > 0) {
@@ -139,21 +141,21 @@ public:
               &buffer[dwReadUntilBufferOffset]
             );
 
-        const wchar_t* name = file_notify_info->FileName;
-        size_t name_len = file_notify_info->FileNameLength;
-        name_len /= sizeof(wchar_t);
-        Path path = this->path / Path(name, name_len);
+        Path name(
+               file_notify_info->FileName,
+               file_notify_info->FileNameLength / sizeof(wchar_t)
+             );
+        Path path = this->path / name;
 
         if (file_notify_info->Action == FILE_ACTION_RENAMED_OLD_NAME) {
-          for
-          (
-            vector<Path>::iterator known_directory_path_i
-            = known_directory_paths.begin();
-            known_directory_path_i != known_directory_paths.end();
-            ++known_directory_path_i
+          for (
+            vector<Path>::iterator subdirectory_name_i
+            = subdirectory_names.begin();
+            subdirectory_name_i != subdirectory_names.end();
+            ++subdirectory_name_i
           ) {
-            if (*known_directory_path_i == path) {
-              known_directory_paths.erase(known_directory_path_i);
+            if (*subdirectory_name_i == name) {
+              subdirectory_names.erase(subdirectory_name_i);
               break;
             }
           }
@@ -167,7 +169,7 @@ public:
             FSEvent::Type type;
             if (FileSystem().isdir(path)) {
               type = FSEvent::TYPE_DIRECTORY_RENAME;
-              known_directory_paths.push_back(path);
+              subdirectory_names.push_back(path);
             } else
               type = FSEvent::TYPE_FILE_RENAME;
 
@@ -182,7 +184,7 @@ public:
             case FILE_ACTION_ADDED: {
               if (FileSystem().isdir(path)) {
                 type = FSEvent::TYPE_DIRECTORY_ADD;
-                known_directory_paths.push_back(path);
+                subdirectory_names.push_back(name);
               } else
                 type = FSEvent::TYPE_FILE_ADD;
             }
@@ -199,15 +201,14 @@ public:
             case FILE_ACTION_REMOVED: {
               type = FSEvent::TYPE_FILE_REMOVE;
 
-              for
-              (
-                vector<Path>::iterator known_directory_path_i
-                = known_directory_paths.begin();
-                known_directory_path_i != known_directory_paths.end();
-                ++known_directory_path_i
+              for (
+                vector<Path>::iterator subdirectory_name_i
+                  = subdirectory_names.begin();
+                subdirectory_name_i != subdirectory_names.end();
+                ++subdirectory_name_i
               ) {
-                if (*known_directory_path_i == path) {
-                  known_directory_paths.erase(known_directory_path_i);
+                if (*subdirectory_name_i == name) {
+                  subdirectory_names.erase(subdirectory_name_i);
                   type = FSEvent::TYPE_DIRECTORY_REMOVE;
                   break;
                 }
@@ -240,7 +241,7 @@ public:
         *directory,
         buffer,
         sizeof(buffer),
-        bWatchSubtree,
+        FALSE,
         dwNotifyFilter,
         &dwBytesRead,
         *this,
@@ -258,31 +259,6 @@ public:
       return false;
   }
 
-private:
-  void
-  gather_known_directory_paths(
-    Directory& directory,
-    const Path& directory_path
-  ) {
-    Directory::Entry* dirent = directory.read();
-    if (dirent != NULL) {
-      do {
-        if (dirent->ISDIR() && !dirent->is_hidden() && !dirent->is_special()) {
-          Path subdirectory_path = directory_path / dirent->get_name();
-          known_directory_paths.push_back(subdirectory_path);
-          Directory* subdirectory = FileSystem().opendir(subdirectory_path);
-          if (subdirectory != NULL) {
-            gather_known_directory_paths(*subdirectory, subdirectory_path);
-            Directory::dec_ref(*subdirectory);
-          }
-        }
-      } while (directory.read(*dirent));
-
-      Directory::Entry::dec_ref(*dirent);
-      directory.rewind();
-    }
-  }
-
 public:
   // yield::Object
   uint32_t get_type_id() const {
@@ -294,13 +270,12 @@ public:
   }
 
 private:
-  BOOL bWatchSubtree;
   Directory* directory;
   DWORD dwNotifyFilter;
   FSEvent::Type fs_event_types;
-  vector<Path> known_directory_paths;
   stack<Path> old_paths;
   Path path;
+  vector<Path> subdirectory_names;
 
   char buffer[
     (
@@ -325,20 +300,11 @@ FSEventQueue::~FSEventQueue() {
   }
 }
 
-bool
-FSEventQueue::associate(
-  const Path& path,
-  FSEvent::Type fs_event_types,
-  bool recursive
-) {
+bool FSEventQueue::associate(const Path& path, FSEvent::Type fs_event_types) {
   map<Path, Watch*>::iterator watch_i = watches.find(path);
   if (watch_i != watches.end()) {
     Watch* watch = watch_i->second;
-    if (
-      watch->get_fs_event_types() == fs_event_types
-      &&
-      watch->is_recursive() == recursive
-    )
+    if (watch->get_fs_event_types() == fs_event_types)
       return true;
     else {
       watches.erase(watch_i);
@@ -349,7 +315,7 @@ FSEventQueue::associate(
   Directory* directory = FileSystem().opendir(path);
   if (directory != NULL) {
     if (aio_queue.associate(*directory)) {
-      Watch* watch = new Watch(*directory, fs_event_types, path, recursive);
+      Watch* watch = new Watch(*directory, fs_event_types, path);
       if (watch->read(*this)) {
         watches[path] = watch;
         return true;

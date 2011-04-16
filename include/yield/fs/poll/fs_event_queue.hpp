@@ -55,8 +55,7 @@ public:
   bool
   associate(
     const Path& path,
-    FSEvent::Type events = FSEvent::TYPE_ALL,
-    bool recursive = true
+    FSEvent::Type fs_event_types = FSEvent::TYPE_ALL
   );
 
   bool dissociate(const Path& path);

@@ -53,13 +53,8 @@ FSEventQueue::~FSEventQueue() {
 #endif
 }
 
-bool
-FSEventQueue::associate(
-  const Path& path,
-  FSEvent::Type events,
-  bool recursive
-) {
-  return pimpl->associate(path, events, recursive);
+bool FSEventQueue::associate(const Path& path, FSEvent::Type fs_event_types) {
+  return pimpl->associate(path, fs_event_types);
 }
 
 bool FSEventQueue::dissociate(const Path& path) {
