@@ -27,11 +27,17 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "yield/assert.hpp"
+#include "yield/fs/aio/fdatasync_aiocb.hpp"
 #include "yield/fs/aio/fsync_aiocb.hpp"
 #include "yield/fs/aio/pread_aiocb.hpp"
 #include "yield/fs/aio/pwrite_aiocb.hpp"
+#include "yield/fs/aio/setlk_aiocb.hpp"
+#include "yield/fs/aio/unlk_aiocb.hpp"
 #include "yield/fs/aio/posix/aio_queue.hpp"
 #include "yield/thread/synchronized_event_queue.hpp"
+
+#include <errno.h>
 
 namespace yield {
 namespace fs {
@@ -73,7 +79,8 @@ bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
     if (pread_aiocb.get_buffer().get_next_buffer() == NULL) {
       pread_aiocb.set_completion_handler(*completed_event_queue);
       aiocb* aiocb_ = pread_aiocb;
-      aiocb_->aio_nbytes = get_buffer().capacity() - get_buffer().size();
+      aiocb_->aio_nbytes
+        = pread_aiocb.get_buffer().capacity() - pread_aiocb.get_buffer().size();
       return aio_read(aiocb_) == 0;
     } else {
       pread_aiocb.set_error(ENOTSUP);
@@ -82,12 +89,12 @@ bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
   }
   break;
 
-  case pwriteAIOCB::TYPE_ID {
+  case pwriteAIOCB::TYPE_ID: {
     pwriteAIOCB& pwrite_aiocb = static_cast<pwriteAIOCB&>(event);
-    if (pwrite_aicob.get_buffer().get_next_buffer() == NULL) {
-      pwrite_aicob.set_completion_handler(completion_handler);
+    if (pwrite_aiocb.get_buffer().get_next_buffer() == NULL) {
+      pwrite_aiocb.set_completion_handler(*completed_event_queue);
       aiocb* aiocb_ = pwrite_aiocb;
-      aiocb_->aio_nbytes = get_buffer().size();
+      aiocb_->aio_nbytes = pwrite_aiocb.get_buffer().size();
       return aio_write(aiocb_) == 0;
     } else {
       pwrite_aiocb.set_error(ENOTSUP);

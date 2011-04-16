@@ -35,6 +35,8 @@
 #include <aio.h>
 
 namespace yield {
+class EventHandler;
+
 namespace aio {
 namespace posix {
 class AIOCB : public Event {
