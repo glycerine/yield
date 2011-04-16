@@ -78,14 +78,23 @@ private:
 };
 
 
-//TEST_EX(
-//  FSEventQueue,
-//  associate,
-//  FSEventQueueTest
-//) {
-//  if (!FSEventQueue().associate(get_test_root_path()))
-//    throw Exception();
-//}
+TEST_EX(FSEventQueue, associate, FSEventQueueTest) {
+  if (!FSEventQueue().associate(get_test_root_path()))
+    throw Exception();
+}
+
+TEST_EX(FSEventQueue, associate_twice, FSEventQueueTest) {
+  FSEventQueue fs_event_queue;
+
+  if (!fs_event_queue.associate(get_test_root_path()))
+    throw Exception();
+
+  if (!fs_event_queue.associate(get_test_root_path()))
+    throw Exception();
+
+  if (!fs_event_queue.associate(get_test_root_path(), FSEvent::TYPE_FILE_ADD))
+    throw Exception();
+}
 
 TEST_EX(
   FSEventQueue,
@@ -127,11 +136,7 @@ TEST_EX(
   throw_assert_eq(fs_event->get_path(), test_subdirectory_path);
 }
 
-TEST_EX(
-  FSEventQueue,
-  directory_remove,
-  FSEventQueueTest
-) {
+TEST_EX(FSEventQueue, directory_remove, FSEventQueueTest) {
   if (!FileSystem().mkdir(get_test_directory_path()))
     throw Exception();
 
@@ -148,11 +153,7 @@ TEST_EX(
   throw_assert_eq(fs_event->get_path(), get_test_directory_path());
 }
 
-TEST_EX(
-  FSEventQueue,
-  directory_remove_recursive,
-  FSEventQueueTest
-) {
+TEST_EX(FSEventQueue, directory_remove_recursive, FSEventQueueTest) {
   if (!FileSystem().mkdir(get_test_directory_path()))
     throw Exception();
 
@@ -173,11 +174,7 @@ TEST_EX(
   throw_assert_eq(fs_event->get_path(), test_subdirectory_path);
 }
 
-TEST_EX(
-  FSEventQueue,
-  directory_rename,
-  FSEventQueueTest
-) {
+TEST_EX(FSEventQueue, directory_rename, FSEventQueueTest) {
   if (!FileSystem().mkdir(get_test_directory_path()))
     throw Exception();
 
@@ -202,11 +199,7 @@ TEST_EX(
   FileSystem().rmdir(new_test_directory_path);
 }
 
-TEST_EX(
-  FSEventQueue,
-  dissociate,
-  FSEventQueueTest
-) {
+TEST_EX(FSEventQueue, dissociate, FSEventQueueTest) {
   FSEventQueue fs_event_queue;
   fs_event_queue.associate(get_test_root_path());
 
@@ -220,11 +213,7 @@ TEST_EX(
   throw_assert_eq(fs_event, NULL);
 }
 
-TEST_EX(
-  FSEventQueue,
-  file_add,
-  FSEventQueueTest
-) {
+TEST_EX(FSEventQueue, file_add, FSEventQueueTest) {
   FSEventQueue fs_event_queue;
   if (!fs_event_queue.associate(get_test_root_path()))
     throw Exception();
@@ -238,11 +227,7 @@ TEST_EX(
   throw_assert_eq(fs_event->get_path(), get_test_file_path());
 }
 
-TEST_EX(
-  FSEventQueue,
-  file_add_recursive,
-  FSEventQueueTest
-) {
+TEST_EX(FSEventQueue, file_add_recursive, FSEventQueueTest) {
   if (!FileSystem().mkdir(get_test_directory_path()))
     throw Exception();
 
@@ -260,11 +245,7 @@ TEST_EX(
   throw_assert_eq(fs_event->get_path(), test_file_path);
 }
 
-TEST_EX(
-  FSEventQueue,
-  file_modify,
-  FSEventQueueTest
-) {
+TEST_EX(FSEventQueue, file_modify, FSEventQueueTest) {
   if (!FileSystem().touch(get_test_file_path()))
     throw Exception();
 
@@ -282,11 +263,7 @@ TEST_EX(
   throw_assert_eq(fs_event->get_path(), get_test_file_path());
 }
 
-TEST_EX(
-  FSEventQueue,
-  file_remove,
-  FSEventQueueTest
-) {
+TEST_EX(FSEventQueue, file_remove, FSEventQueueTest) {
   if (!FileSystem().touch(get_test_file_path()))
     throw Exception();
 
@@ -303,11 +280,7 @@ TEST_EX(
   throw_assert_eq(fs_event->get_path(), get_test_file_path());
 }
 
-TEST_EX(
-  FSEventQueue,
-  file_remove_recursive,
-  FSEventQueueTest
-) {
+TEST_EX(FSEventQueue, file_remove_recursive, FSEventQueueTest) {
   if (!FileSystem().mkdir(get_test_directory_path()))
     throw Exception();
 
@@ -328,11 +301,7 @@ TEST_EX(
   throw_assert_eq(fs_event->get_path(), test_file_path);
 }
 
-TEST_EX(
-  FSEventQueue,
-  file_rename,
-  FSEventQueueTest
-) {
+TEST_EX(FSEventQueue, file_rename, FSEventQueueTest) {
   if (!FileSystem().touch(get_test_file_path()))
     throw Exception();
 

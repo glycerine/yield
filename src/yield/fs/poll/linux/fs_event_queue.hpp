@@ -61,11 +61,12 @@ public:
 
 private:
   class Watch;
+  class Watches;
 
 private:
   yield::poll::FDEventQueue fd_event_queue;
-  fd_t inotify_fd;
-  std::map<Path, Watch*> watches;
+  int inotify_fd;
+  Watches* watches;
 };
 }
 }

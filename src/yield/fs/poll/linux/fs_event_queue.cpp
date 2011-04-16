@@ -44,66 +44,63 @@ using std::map;
 using yield::fs::posix::Directory;
 using yield::fs::posix::FileSystem;
 using yield::poll::FDEvent;
-using yield::thread::NonBlockingConcurrentQueue;
 
-class FSEventQueue::Watch : private vector<Watch*> {
+
+class FSEventQueue::Watch {
 public:
-  void close() {
-    if (wd != -1) {
-      inotify_rm_watch(inotify_fd, wd);
-      wd = -1;
-    }
+  ~Watch() {
+    inotify_rm_watch(inotify_fd, wd);
   }
 
+public:
   static Watch*
   create(
-    FSEvent::Type events,
+    FSEvent::Type fs_event_types,
     int inotify_fd,
-    Watch* parent,
     const Path& path,
     bool recursive
   ) {
     uint32_t mask = 0;
 
     if (
-      events & FSEvent::TYPE_DIRECTORY_MODIFY
+      fs_event_types & FSEvent::TYPE_DIRECTORY_MODIFY
       ||
-      events & FSEvent::TYPE_FILE_MODIFY
+      fs_event_types & FSEvent::TYPE_FILE_MODIFY
     )
       mask |= IN_ATTRIB | IN_MODIFY;
 
     if (
-      events & FSEvent::TYPE_DIRECTORY_REMOVE
+      fs_event_types & FSEvent::TYPE_DIRECTORY_REMOVE
       ||
-      events & FSEvent::TYPE_FILE_REMOVE
+      fs_event_types & FSEvent::TYPE_FILE_REMOVE
     )
       mask |= IN_DELETE_SELF;
 
     if (
-      events & FSEvent::TYPE_DIRECTORY_RENAME
+      fs_event_types & FSEvent::TYPE_DIRECTORY_RENAME
       ||
-      events & FSEvent::TYPE_FILE_RENAME
+      fs_event_types & FSEvent::TYPE_FILE_RENAME
     )
       mask |= IN_MOVE_SELF;
 
     if (
-      events & FSEvent::TYPE_DIRECTORY_ADD
+      fs_event_types & FSEvent::TYPE_DIRECTORY_ADD
       ||
-      events & FSEvent::TYPE_FILE_ADD
+      fs_event_types & FSEvent::TYPE_FILE_ADD
     )
       mask |= IN_CREATE;
 
     if (
-      events & FSEvent::TYPE_DIRECTORY_REMOVE
+      fs_event_types & FSEvent::TYPE_DIRECTORY_REMOVE
       ||
-      events & FSEvent::TYPE_FILE_REMOVE
+      fs_event_types & FSEvent::TYPE_FILE_REMOVE
     )
       mask |= IN_DELETE;
 
     if (
-      events & FSEvent::TYPE_DIRECTORY_RENAME
+      fs_event_types & FSEvent::TYPE_DIRECTORY_RENAME
       ||
-      events & FSEvent::TYPE_FILE_RENAME
+      fs_event_types & FSEvent::TYPE_FILE_RENAME
     )
       mask |= IN_MOVED_FROM | IN_MOVED_TO;
 
@@ -113,14 +110,13 @@ public:
 
       Watch* watch
       = new Watch(
-        events,
-        inotify_fd,
-        path.split().second,
-        parent,
-        path,
-        recursive,
-        inotify_wd
-      );
+          fs_event_types,
+          inotify_fd,
+          path.split().second,
+          path,
+          recursive,
+          inotify_wd
+        );
 
       if (directory != NULL) {
         if (recursive) {
@@ -130,7 +126,7 @@ public:
               if (dirent->ISDIR() && !dirent->is_hidden() && !dirent->is_special()) {
                 Path child_path = path / dirent->get_name();
                 Watch* child_watch
-                  = create(events, inotify_fd, watch, child_path, recursive);
+                  = create(fs_event_types, inotify_fd, watch, child_path, recursive);
                 if (child_watch != NULL)
                   watch->push_back(child_watch);
               }
@@ -148,176 +144,241 @@ public:
       return NULL;
   }
 
-  Watch* find_watch(int wd) {
-    if (this->wd == wd)
-      return this;
-    else {
-      for (iterator watch_i = begin(); watch_i != end(); ++watch_i) {
-        debug_assert_ne(*watch_i, NULL);
-        Watch* watch = (*watch_i)->find_watch(wd);
-        if (watch != NULL)
-          return watch;
-      }
-
-      return NULL;
-    }
+public:
+  FSEvent::Type get_fs_event_types() const {
+    return fs_event_types;
   }
 
-  operator int() const {
+  const Path& get_path() const {
+    return path;
+  }
+
+  int get_wd() const {
     return wd;
   }
 
+  bool is_recursive() const {
+    return recursive;
+  }
+
+public:
   void
   read(
     const inotify_event& inotify_event_,
-    EventHandler& fs_event_handler
-  ) {
-    uint32_t cookie = inotify_event_.cookie;
-    uint32_t mask = inotify_event_.mask;
-    bool isdir = (mask & IN_ISDIR) == IN_ISDIR;
-    Path name, path;
-    if (inotify_event_.len > 1) {
-      // len includes a NULL terminator, but may also include
-      // one or more bytes of padding. Do a strlen to find the real length.
-      name = Path(inotify_event_.name); //, inotify_event_.len - 1);
-      path = this->path / name;
-    }
+    EventHandler& fs_event_handler,
+    Watches& watches
+  );
 
-    for (;;) { // Mask can have multiple bits set.
-      // Keep looping until we find one that matches events.
-      FSEvent::Type type;
-
-      if ((mask & IN_ATTRIB) == IN_ATTRIB) {
-        mask ^= IN_ATTRIB;
-
-        if (isdir)
-          type = FSEvent::TYPE_DIRECTORY_MODIFY;
-        else
-          type = FSEvent::TYPE_FILE_MODIFY;
-      } else if ((mask & IN_CREATE) == IN_CREATE) {
-        mask ^= IN_CREATE;
-
-        if (isdir) {
-          if (recursive) {
-            Watch* child_watch
-              = create(events, inotify_fd, this, path, recursive);
-            if (child_watch != NULL)
-              push_back(child_watch);
-          }
-
-          type = FSEvent::TYPE_DIRECTORY_ADD;
-        } else
-          type = FSEvent::TYPE_FILE_ADD;
-      } else if (
-          (mask & IN_DELETE) == IN_DELETE
-          ||
-          (mask & IN_MOVED_FROM) == IN_MOVED_FROM
-      ) {
-        if (isdir) {
-          bool found_child_watch = false;
-          for (iterator watch_i = begin(); watch_i != end(); ++watch_i) {
-            if ((*watch_i)->name == name) {
-              found_child_watch = true;
-              (*watch_i)->close();
-              delete *watch_i;
-              erase(watch_i);
-
-              if ((mask & IN_DELETE) == IN_DELETE) {
-                mask ^= IN_DELETE;
-                type = FSEvent::TYPE_DIRECTORY_REMOVE;
-              } else {
-                mask ^= IN_MOVED_FROM;
-                old_names[cookie] = name;
-                type = 0;
-              }
-
-              break;
-            }
-          }
-
-          debug_assert(found_child_watch);
-        } else {
-          if ((mask & IN_DELETE) == IN_DELETE) {
-            mask ^= IN_DELETE;
-            type = FSEvent::TYPE_FILE_REMOVE;
-          } else {
-            mask ^= IN_MOVED_FROM;
-            old_names[cookie] = name;
-            type = 0;
-          }
-        }
-      } else if ((mask & IN_MOVED_TO) == IN_MOVED_TO) {
-        mask ^= IN_MOVED_TO;
-
-        map<uint32_t, Path>::iterator old_name_i = old_names.find(cookie);
-        debug_assert_ne(old_name_i, old_names.end());
-
-        if (isdir) {
-          if (recursive) {
-            Watch* child_watch
-              = create(events, inotify_fd, this, path, recursive);
-            if (child_watch != NULL)
-              push_back(child_watch);
-          }
-
-          type = FSEvent::TYPE_DIRECTORY_RENAME;
-        } else
-          type = FSEvent::TYPE_FILE_RENAME;
-
-        if ((events & type) == type) {
-          FSEvent* fs_event
-            = new FSEvent(this->path / old_name_i->second, path, type);
-          old_names.erase(old_name_i);
-          fs_event_handler.handle(*fs_event);
-        } else {
-          old_names.erase(old_name_i);
-          continue;
-        }
-      } else if ((mask & IN_MOVE_SELF) == IN_MOVE_SELF)
-        DebugBreak();
-      else
-        return;
-
-      if (type != 0 && (events & type) == type)
-        fs_event_handler.handle(*new FSEvent(path, type));
-    }
+public:
+  // yield::Object
+  Watch& inc_ref() {
+    return Object::inc_ref(*this);
   }
 
 private:
   Watch(
-    FSEvent::Type events,
+    FSEvent::Type fs_event_types,
     int inotify_fd,
-    const Path& name,
-    Watch* parent,
     const Path& path,
     bool recursive,
     int wd
-  )
-    : events(events),
+  ) : fs_event_types(fs_event_types),
       inotify_fd(inotify_fd),
-      name(name),
       path(path),
-      parent(parent),
       recursive(recursive),
       wd(wd)
   { }
 
 private:
-  FSEvent::Type events;
+  FSEvent::Type fs_event_types;
   int inotify_fd;
-  Path name;
   map<uint32_t, Path> old_names;
   Path path;
-  Watch* parent;
   bool recursive;
   int wd;
 };
 
 
+class FSEventQueue::Watches {
+public:
+  ~Watches() {
+    for (
+      map<Path, Watch*>::iterator watch_i = watches_by_path.begin();
+      watch_i != watches.end();
+      ++watch_i
+    )
+      delete watch_i->second;
+  }
+
+public:
+  Watch* find(const Path& path) {
+    map<Path, Watch*>::iterator watch_i = watches_by_path.find(path);
+    if (watch_i != watches_by_path.end())
+      return watch_i->second;
+    else
+      return NULL;
+  }
+
+  Watch* find(int wd) {
+    map<int, Watch*>::iterator watch_i = watches_by_wd(wd);
+    if (watch_i != watches_by_wd.end())
+      return watch_i->second;
+    else
+      return NULL;
+  }
+
+  Watch* erase(const Path& path) {
+    map<Path, Watch*>::iterator watch_i = watches_by_path.find(path);
+    if (watch_i != NULL) {
+      Watch* watch = watch_i->second;
+      watches_by_path.erase(watch_i);
+      
+      map<Path, Watch*>::watch_j = watches_by_wd.find(watch->wd);
+      debug_assert_ne(watch_j, watches_by_wd.end());
+      watches_by_wd.erase(watch_j);
+      
+      return watch;
+    } else
+      return NULL;
+  }
+
+  void insert(Watch& watch) {
+    debug_assert_eq(
+      watches_by_path.find(watch.get_path()),
+      watches_by_path.end()
+    );
+
+    watches_by_path[watches.get_path()] = &watch;
+
+    debug_assert_eq(
+      watches_by_wd.find(watch.get_wd()),
+      watches_by_wd.end()
+    );
+
+    watches_by_wd[watch.get_wd()] = &watch;
+  }
+
+public:
+  map<Path, Watch*> watches_by_path;
+  map<Path, Watch*> watches_by_wd;
+};
+
+
+void
+FSEventQueue::Watch::read(
+  const inotify_event& inotify_event_,
+  EventHandler& fs_event_handler,
+  Watches& watches
+) {
+  uint32_t cookie = inotify_event_.cookie;
+  uint32_t mask = inotify_event_.mask;
+  bool isdir = (mask & IN_ISDIR) == IN_ISDIR;
+  Path name, path;
+  if (inotify_event_.len > 1) {
+    // len includes a NULL terminator, but may also include
+    // one or more bytes of padding. Do a strlen to find the real length.
+    name = Path(inotify_event_.name); //, inotify_event_.len - 1);
+    path = this->path / name;
+  }
+
+  for (;;) { // Mask can have multiple bits set.
+    // Keep looping until we find one that matches fs_event_types.
+    FSEvent::Type fs_event_type;
+
+    if ((mask & IN_ATTRIB) == IN_ATTRIB) {
+      mask ^= IN_ATTRIB;
+
+      if (isdir)
+        fs_event_type = FSEvent::TYPE_DIRECTORY_MODIFY;
+      else
+        fs_event_type = FSEvent::TYPE_FILE_MODIFY;
+    } else if ((mask & IN_CREATE) == IN_CREATE) {
+      mask ^= IN_CREATE;
+
+      if (isdir) {
+        if (recursive) {
+          Watch* child_watch
+            = create(fs_event_types, inotify_fd, path, recursive);
+
+          if (child_watch != NULL)
+            watches.insert(*child_watch);
+        }
+
+        fs_event_type = FSEvent::TYPE_DIRECTORY_ADD;
+      } else
+        fs_event_type = FSEvent::TYPE_FILE_ADD;
+    } else if (
+        (mask & IN_DELETE) == IN_DELETE
+        ||
+        (mask & IN_MOVED_FROM) == IN_MOVED_FROM
+    ) {
+      if (isdir) {
+        Watch* child_watch = watches.erase(path);
+        debug_assert_ne(child_watch, NULL);
+        child_watch->close();
+        delete child_watch;
+
+        if ((mask & IN_DELETE) == IN_DELETE) {
+          mask ^= IN_DELETE;
+          fs_event_type = FSEvent::TYPE_DIRECTORY_REMOVE;
+        } else {
+          mask ^= IN_MOVED_FROM;
+          old_names[cookie] = name;
+          fs_event_type = 0;
+        }
+      } else {
+        if ((mask & IN_DELETE) == IN_DELETE) {
+          mask ^= IN_DELETE;
+          fs_event_type = FSEvent::TYPE_FILE_REMOVE;
+        } else {
+          mask ^= IN_MOVED_FROM;
+          old_names[cookie] = name;
+          fs_event_type = 0;
+        }
+      }
+    } else if ((mask & IN_MOVED_TO) == IN_MOVED_TO) {
+      mask ^= IN_MOVED_TO;
+
+      map<uint32_t, Path>::iterator old_name_i = old_names.find(cookie);
+      debug_assert_ne(old_name_i, old_names.end());
+
+      if (isdir) {
+        if (recursive) {
+          Watch* child_watch
+            = create(fs_event_types, inotify_fd, path, recursive);
+          if (child_watch != NULL)
+            watches.insert(*child_watch);
+        }
+
+        fs_event_type = FSEvent::TYPE_DIRECTORY_RENAME;
+      } else
+        fs_event_type = FSEvent::TYPE_FILE_RENAME;
+
+      if ((fs_event_types & fs_event_type) == fs_event_type) {
+        FSEvent* fs_event
+          = new FSEvent(this->path / old_name_i->second, path, fs_event_type);
+        old_names.erase(old_name_i);
+        fs_event_handler.handle(*fs_event);
+      } else {
+        old_names.erase(old_name_i);
+        continue;
+      }
+    } else if ((mask & IN_MOVE_SELF) == IN_MOVE_SELF)
+      DebugBreak();
+    else
+      return;
+
+    if (fs_event_type != 0 && (fs_event_types & fs_event_type) == fs_event_type)
+      fs_event_handler.handle(*new FSEvent(path, fs_event_type));
+  }
+}
+
 FSEventQueue::FSEventQueue() {
   inotify_fd = inotify_init();
   if (inotify_fd != -1) {
-    if (!fd_event_queue.associate(inotify_fd, POLLIN)) {
+    if (fd_event_queue.associate(inotify_fd, POLLIN)) {
+      watches = new Watches;
+    } else {
       close(inotify_fd);
       throw Exception();
     }
@@ -327,33 +388,36 @@ FSEventQueue::FSEventQueue() {
 
 FSEventQueue::~FSEventQueue() {
   close(inotify_fd);
-
-  for (
-    map<Path, Watch*>::iterator watch_i = watches.begin();
-    watch_i != watches.end();
-    ++watch_i
-  )
-    // Don't need to close the Watch here, since the inotify_fd close does that
-    delete watch_i->second;
+  delete watches;
 }
 
 bool
 FSEventQueue::associate(
   const Path& path,
-  FSEvent::Type events,
+  FSEvent::Type fs_event_types,
   bool recursive
 ) {
-  map<Path, Watch*>::iterator watch_i = watches.find(path);
-  if (watch_i == watches.end()) {
-    Watch* watch = Watch::create(events, inotify_fd, NULL, path, recursive);
-    if (watch != NULL) {
-      watches[path] = watch;
+  Watch* watch = watches->find(path);
+  if (watch != NULL) {
+    if (
+      watch->get_fs_event_types() == fs_event_types
+      &&
+      watch->get_is_recursive() == recursive
+    )
       return true;
+    else {
+      watch = watches->erase(path);
+      debug_assert_ne(watch, NULL);
+      delete watch;
     }
-  } else
-    DebugBreak(); // Modify the existing watch
+  }
 
-  return false;
+  watch = Watch::create(fs_event_types, inotify_fd, path, recursive);
+  if (watch != NULL) {
+    watches->insert(*watch);
+    return true;
+  } else
+    return false;
 }
 
 YO_NEW_REF Event* FSEventQueue::dequeue(const Time& timeout) {
@@ -362,31 +426,25 @@ YO_NEW_REF Event* FSEventQueue::dequeue(const Time& timeout) {
     if (event->get_type_id() == FDEvent::TYPE_ID) {
       FDEvent* fd_event = static_cast<FDEvent*>(event);
       if (fd_event->get_fd() == inotify_fd) {
-        char inotify_events[(sizeof(inotify_event) + PATH_MAX) * 16];
+        char inotify_fs_event_types[(sizeof(inotify_event) + PATH_MAX) * 16];
         ssize_t read_ret
-          = ::read(inotify_fd, inotify_events, sizeof(inotify_events));
+          = ::read(inotify_fd, inotify_fs_event_types, sizeof(inotify_fs_event_types));
 
         if (read_ret > 0) {
-          const char* inotify_events_p = inotify_events;
-          const char* inotify_events_pe
-            = inotify_events + static_cast<size_t>(read_ret);
+          const char* inotify_fs_event_types_p = inotify_fs_event_types;
+          const char* inotify_fs_event_types_pe
+            = inotify_fs_event_types + static_cast<size_t>(read_ret);
 
           do {
             const inotify_event* inotify_event_
-              = reinterpret_cast<const inotify_event*>(inotify_events_p);
+              = reinterpret_cast<const inotify_event*>(inotify_fs_event_types_p);
 
-            for (
-              map<Path, Watch*>::iterator watch_i = watches.begin();
-              watch_i != watches.end();
-              ++watch_i
-            ) {
-              Watch* watch = watch_i->second->find_watch(inotify_event_->wd);
-              if (watch != NULL)
-                watch->read(*inotify_event_, *this);
-            }
+            Watch* watch = watches->find(inotify_event_->wd);
+            if (watch != NULL)
+              watch->read(*inotify_event_, *this);
 
-            inotify_events_p += sizeof(inotify_event) + inotify_event_->len;
-          } while (inotify_events_p < inotify_events_pe);
+            inotify_fs_event_types_p += sizeof(inotify_event) + inotify_event_->len;
+          } while (inotify_fs_event_types_p < inotify_fs_event_types_pe);
 
           return fd_event_queue.trydequeue();
         }

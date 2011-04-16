@@ -41,6 +41,7 @@ namespace yield {
 namespace fs {
 namespace poll {
 namespace win32 {
+using std::map;
 using std::stack;
 using yield::aio::win32::AIOCB;
 using yield::aio::win32::AIOQueue;
@@ -54,29 +55,29 @@ public:
 public:
   Watch(
     YO_NEW_REF Directory& directory,
-    FSEvent::Type events,
+    FSEvent::Type fs_event_types,
     const Path& path,
     bool recursive
   ) : directory(&directory),
-      path(path),
-      events(events) {
+      fs_event_types(fs_event_types),
+      path(path) {
     bWatchSubtree = recursive ? TRUE : FALSE;
 
     dwNotifyFilter = 0;
 
     if (
-      events & FSEvent::TYPE_DIRECTORY_ADD
+      fs_event_types & FSEvent::TYPE_DIRECTORY_ADD
       ||
-      events & FSEvent::TYPE_DIRECTORY_REMOVE
+      fs_event_types & FSEvent::TYPE_DIRECTORY_REMOVE
       ||
-      events & FSEvent::TYPE_DIRECTORY_RENAME
+      fs_event_types & FSEvent::TYPE_DIRECTORY_RENAME
     )
       dwNotifyFilter |= FILE_NOTIFY_CHANGE_DIR_NAME;
 
     if (
-      events & FSEvent::TYPE_DIRECTORY_MODIFY
+      fs_event_types & FSEvent::TYPE_DIRECTORY_MODIFY
       ||
-      events & FSEvent::TYPE_FILE_MODIFY
+      fs_event_types & FSEvent::TYPE_FILE_MODIFY
     ) {
       dwNotifyFilter |= FILE_NOTIFY_CHANGE_ATTRIBUTES |
                         FILE_NOTIFY_CHANGE_CREATION |
@@ -86,11 +87,11 @@ public:
     }
 
     if (
-      events & FSEvent::TYPE_FILE_ADD
+      fs_event_types & FSEvent::TYPE_FILE_ADD
       ||
-      events & FSEvent::TYPE_FILE_REMOVE
+      fs_event_types & FSEvent::TYPE_FILE_REMOVE
       ||
-      events & FSEvent::TYPE_FILE_RENAME
+      fs_event_types & FSEvent::TYPE_FILE_RENAME
     )
       dwNotifyFilter |= FILE_NOTIFY_CHANGE_FILE_NAME;
 
@@ -115,8 +116,16 @@ public:
   }
 
 public:
+  FSEvent::Type get_fs_event_types() const {
+    return fs_event_types;
+  }
+
   const Path& get_path() const {
     return path;
+  }
+
+  bool is_recursive() const {
+    return bWatchSubtree == TRUE;
   }
 
 public:
@@ -162,7 +171,7 @@ public:
             } else
               type = FSEvent::TYPE_FILE_RENAME;
 
-            if ((events & type) == type)
+            if ((fs_event_types & type) == type)
               fs_event_handler.handle(*new FSEvent(old_paths.top(), path, type));
 
             old_paths.pop();
@@ -213,7 +222,7 @@ public:
             break;
             }
 
-            if ((events & type) == type)
+            if ((fs_event_types & type) == type)
               fs_event_handler.handle(*new FSEvent(path, type));
           }
         }
@@ -288,7 +297,7 @@ private:
   BOOL bWatchSubtree;
   Directory* directory;
   DWORD dwNotifyFilter;
-  FSEvent::Type events;
+  FSEvent::Type fs_event_types;
   vector<Path> known_directory_paths;
   stack<Path> old_paths;
   Path path;
@@ -307,7 +316,7 @@ private:
 
 FSEventQueue::~FSEventQueue() {
   for (
-    std::map<Path, Watch*>::iterator watch_i = watches.begin();
+    map<Path, Watch*>::iterator watch_i = watches.begin();
     watch_i != watches.end();
     ++watch_i
   ) {
@@ -319,30 +328,39 @@ FSEventQueue::~FSEventQueue() {
 bool
 FSEventQueue::associate(
   const Path& path,
-  FSEvent::Type events,
+  FSEvent::Type fs_event_types,
   bool recursive
 ) {
-  std::map<Path, Watch*>::iterator watch_i = watches.find(path);
-  if (watch_i == watches.end()) {
-    Directory* directory = FileSystem().opendir(path);
-    if (directory != NULL) {
-      if (aio_queue.associate(*directory)) {
-        Watch* watch = new Watch(*directory, events, path, recursive);
-        if (watch->read(*this)) {
-          watches[path] = watch;
-          return true;
-        } else {
-          Watch::dec_ref(*watch);
-          return false;
-        }
-      } else
+  map<Path, Watch*>::iterator watch_i = watches.find(path);
+  if (watch_i != watches.end()) {
+    Watch* watch = watch_i->second;
+    if (
+      watch->get_fs_event_types() == fs_event_types
+      &&
+      watch->is_recursive() == recursive
+    )
+      return true;
+    else {
+      watches.erase(watch_i);
+      watch->close();
+    }
+  }
+
+  Directory* directory = FileSystem().opendir(path);
+  if (directory != NULL) {
+    if (aio_queue.associate(*directory)) {
+      Watch* watch = new Watch(*directory, fs_event_types, path, recursive);
+      if (watch->read(*this)) {
+        watches[path] = watch;
+        return true;
+      } else {
+        Watch::dec_ref(*watch);
         return false;
+      }
     } else
       return false;
-  } else {
-    DebugBreak(); // Modify the existing watch
+  } else
     return false;
-  }
 }
 
 YO_NEW_REF Event* FSEventQueue::dequeue(const Time& timeout) {
@@ -370,7 +388,7 @@ YO_NEW_REF Event* FSEventQueue::dequeue(const Time& timeout) {
 }
 
 bool FSEventQueue::dissociate(const Path& path) {
-  std::map<Path, Watch*>::iterator watch_i = watches.find(path);
+  map<Path, Watch*>::iterator watch_i = watches.find(path);
   if (watch_i != watches.end()) {
     Watch* watch = watch_i->second;
     watch->close(); // Don't delete until it comes back to the completion port
