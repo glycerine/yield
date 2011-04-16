@@ -45,7 +45,7 @@ public:
 public:
   bool associate(
     const Path& path,
-    FSEvent::Type fs_event_types = FSEvent::TYPE_ALL,
+    FSEvent::Type fs_event_types = FSEvent::TYPE_ALL
   );
 
   bool dissociate(const Path& path);

@@ -28,6 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "fs_event_queue.hpp"
+#include "yield/assert.hpp"
 #include "yield/exception.hpp"
 #include "yield/fs/posix/directory.hpp"
 #include "yield/fs/posix/file_system.hpp"
@@ -35,6 +36,7 @@
 
 #include <errno.h>
 #include <iostream>
+#include <map>
 #include <sys/inotify.h>
 
 namespace yield {
@@ -71,10 +73,6 @@ public:
     return wd;
   }
 
-  bool is_recursive() const {
-    return recursive;
-  }
-
 public:
   void
   read(
@@ -87,7 +85,6 @@ private:
   int inotify_fd;
   map<uint32_t, Path> old_names;
   Path path;
-  bool recursive;
   int wd;
 };
 
@@ -95,7 +92,7 @@ private:
 class FSEventQueue::Watches : private map<int, Watch*> {
 public:
   ~Watches() {
-    for (iterator watch_i = begin(); watch_i != end(); ++watch_i) {
+    for (iterator watch_i = begin(); watch_i != end(); ++watch_i)
       delete watch_i->second;
   }
 
@@ -140,14 +137,9 @@ public:
 FSEventQueue::Watch::Watch(
   FSEvent::Type fs_event_types,
   int inotify_fd,
-  const Path& path,
-  bool recursive,
-  Watches& watches
+  const Path& path
 ) : fs_event_types(fs_event_types),
-    inotify_fd(inotify_fd),
-    path(path),
-    recursive(recursive),
-    watches(watches) {
+    path(path) {
   uint32_t mask = 0;
 
   if (
@@ -233,13 +225,13 @@ FSEventQueue::Watch::read(
         fs_event_type = FSEvent::TYPE_DIRECTORY_ADD;
       else
         fs_event_type = FSEvent::TYPE_FILE_ADD;
-    } else if (mask & IN_DELETE) == IN_DELETE) {
+    } else if ((mask & IN_DELETE) == IN_DELETE) {
       mask ^= IN_DELETE;
       if (isdir)
         fs_event_type = FSEvent::TYPE_DIRECTORY_REMOVE;
       else
         fs_event_type = FSEvent::TYPE_FILE_REMOVE;
-    } else if ((mask & IN_MOVED_FROM) == IN_MOVED_FROM)
+    } else if ((mask & IN_MOVED_FROM) == IN_MOVED_FROM) {
       mask ^= IN_MOVED_FROM;
       old_names[cookie] = name;
       fs_event_type = 0;
@@ -308,7 +300,7 @@ FSEventQueue::associate(
   }
 
   try {
-    watch = new Watch(fs_event_types, inotify_fd, path, recursive, *watches);
+    watch = new Watch(fs_event_types, inotify_fd, path);
     watches->insert(*watch);
     return true;
   } catch (Exception&) {
