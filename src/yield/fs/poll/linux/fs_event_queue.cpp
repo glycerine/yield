@@ -84,7 +84,7 @@ public:
   );
 
 private:
-  vector<Watch*> child_watches;
+  vector<Watch*> child_wds;
   FSEvent::Type fs_event_types;
   int inotify_fd;
   map<uint32_t, Path> old_names;
@@ -97,9 +97,9 @@ private:
 
 class FSEventQueue::Watches : private map<int, Watch*> {
 public:
-  ~Watches() {
-    for (iterator watch_i = begin(); watch_i != end(); ++watch_i)
-      delete watch_i->second;
+  void clear() {
+    while (!empty())
+      delete begin()->second;
   }
 
 public:
@@ -120,18 +120,21 @@ public:
       return NULL;
   }
 
-  void erase(Watch& watch) {
+  bool erase(const Watch& watch) {
     iterator watch_i = map<int, Watch*>::find(watch.get_wd());
-    debug_assert_ne(watch_i, end());
-    debug_assert_eq(watch_i->second, &watch);
-    map<int, Watch*>::erase(watch_i);
+    if (watch_i != end()) {
+      debug_assert_eq(watch_i->second, &watch);
+      map<int, Watch*>::erase(watch_i);
+      return true;
+    } else
+      return false;
   }
 
   Watch* erase(const Path& path) {
     for (iterator watch_i = begin(); watch_i != end(); ++watch_i) {
       if (watch_i->second->get_path() == path) {
         Watch* watch = watch_i->second;
-        erase(watch_i);
+        map<int, Watch*>::erase(watch_i);
         return watch;
       }
     }
@@ -141,7 +144,7 @@ public:
 
   void insert(Watch& watch) {
     iterator watch_i = map<int, Watch*>::find(watch.get_wd());
-    debug_assert_eq(watch_i, map<int, Watch*>::end());
+    debug_assert_eq(watch_i, end());
     map<int, Watch*>::insert(make_pair(watch.get_wd(), &watch));
   }
 };
@@ -224,7 +227,7 @@ FSEventQueue::Watch::Watch(
             Path child_path = path / dirent->get_name();
 
             try {
-              Watch* child_watch              
+              Watch* child_watch
                 = new Watch(
                     fs_event_types,
                     inotify_fd,
@@ -233,10 +236,11 @@ FSEventQueue::Watch::Watch(
                     watches
                   );
 
-              child_watches.push_back(child_watch);
+              child_wds.push_back(child_watch);
               watches.insert(*child_watch);
             } catch (Exception&) {
             }
+          }
         } while (directory->read(*dirent));
 
         Directory::Entry::dec_ref(*dirent);
@@ -249,14 +253,17 @@ FSEventQueue::Watch::Watch(
 
 FSEventQueue::Watch::~Watch() {
   watches.erase(*this);
+
   inotify_rm_watch(inotify_fd, wd);
 
   for (
-    vector<Watch*>::child_watch_i = child_watches.begin();
-    child_watch_i != child_watches.end();
-    ++child_watch_i
-  )
-    delete *child_watch_i;
+    vector<Watch*>::iterator child_wd = child_wds.begin();
+    child_wd_i != child_wds.end();
+    ++child_wd_i
+  ) {
+    Watch* child_watch = watches.erase(*child_wd_i);
+    delete child_watch;
+  }
 }
 
 void
@@ -295,7 +302,7 @@ FSEventQueue::Watch::read(
             Watch* child_watch
               = new Watch(fs_event_types, inotify_fd, path, recursive, watches);
 
-            child_watches.append(child_watch);
+            child_wds.push_back(child_watch->get_wd());
             watches.insert(*child_watch);
           } catch (Exception&) {
           }
@@ -311,8 +318,20 @@ FSEventQueue::Watch::read(
     ) {
       if (isdir) {
         Watch* child_watch = watches.erase(path);
-        debug_assert_ne(child_watch, NULL);
-        delete child_watch;
+        if (child_watch != NULL) {
+          for (
+            vector<int>::iterator child_wd_i = child_wds.begin();
+            child_wd_i != child_wds.end();
+            ++child_wd_i
+          ) {
+            if (*child_wd_i == child_watch->get_wd()) {
+              child_mds.erase(child_wd_i);
+              break;
+            }
+          }
+
+          Watch::dec_ref(*child_watch);
+        }
 
         if ((mask & IN_DELETE) == IN_DELETE) {
           mask ^= IN_DELETE;
@@ -342,8 +361,8 @@ FSEventQueue::Watch::read(
         if (recursive) {
           try {
             Watch* child_watch
-             = new Watch(fs_event_types, inotify_fd, path, recursive, watches);
-            child_watches.push_back(child_watch);
+              = new Watch(fs_event_types, inotify_fd, path, recursive, watches);
+            child_wds.push_back(child_watch->get_wd());
             watches.insert(*child_watch);
           } catch (Exception&) {
           }
@@ -387,6 +406,7 @@ FSEventQueue::FSEventQueue() {
 
 FSEventQueue::~FSEventQueue() {
   close(inotify_fd);
+  watches->clear();
   delete watches;
 }
 
