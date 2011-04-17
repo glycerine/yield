@@ -95,12 +95,10 @@
   <ItemGroup Label="ClIncludeItems">
     <ClInclude Include="..\..\..\include\yield\thread\blocking_concurrent_queue.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\condition_variable.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\fiber.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\lightweight_mutex.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\mutex.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\mutex_holder.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\non_blocking_concurrent_queue.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\performance_counter_set.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\pipe.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\processor_set.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\reader_writer_lock.hpp" />
@@ -134,8 +132,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClInclude Include="..\..\..\src\yield\thread\darwin\thread.hpp" />
-    <ClCompile Include="..\..\..\src\yield\thread\fiber.cpp">
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\thread\lightweight_mutex.cpp">
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\thread\linux\processor_set.cpp">
@@ -153,8 +149,6 @@
     </ClCompile>
     <ClInclude Include="..\..\..\src\yield\thread\linux\thread.hpp" />
     <ClCompile Include="..\..\..\src\yield\thread\mutex.cpp">
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\thread\performance_counter_set.cpp">
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\thread\posix\condition_variable.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -191,11 +185,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\thread\semaphore.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\thread\sunos\cpc_performance_counter_set.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\sunos\cpc_performance_counter_set.hpp" />
     <ClCompile Include="..\..\..\src\yield\thread\sunos\processor_set.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -212,24 +201,10 @@
     <ClInclude Include="..\..\..\src\yield\thread\sunos\thread.hpp" />
     <ClCompile Include="..\..\..\src\yield\thread\thread.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\thread\unix\fiber.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\unix\fiber.hpp" />
-    <ClCompile Include="..\..\..\src\yield\thread\unix\papi_performance_counter_set.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\unix\papi_performance_counter_set.hpp" />
     <ClCompile Include="..\..\..\src\yield\thread\win32\condition_variable.cpp">
       <ObjectFileName>$(IntDir)win32\condition_variable.obj</ObjectFileName>
     </ClCompile>
     <ClInclude Include="..\..\..\src\yield\thread\win32\condition_variable.hpp" />
-    <ClCompile Include="..\..\..\src\yield\thread\win32\fiber.cpp">
-      <ObjectFileName>$(IntDir)win32\fiber.obj</ObjectFileName>
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\win32\fiber.hpp" />
     <ClCompile Include="..\..\..\src\yield\thread\win32\lightweight_mutex.cpp">
       <ObjectFileName>$(IntDir)win32\lightweight_mutex.obj</ObjectFileName>
     </ClCompile>

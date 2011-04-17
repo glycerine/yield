@@ -16,9 +16,6 @@
     <Filter Include="Source Files\sunos">
       <UniqueIdentifier>{cc5308cb-fca8-4f9c-b5e8-e428ffb546c6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\unix">
-      <UniqueIdentifier>{f3f24244-104f-4971-8a96-c499bc6f247b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\win32">
       <UniqueIdentifier>{a217b98d-ee11-47c0-ae32-4686c31e1b17}</UniqueIdentifier>
     </Filter>
@@ -35,9 +32,6 @@
     <ClInclude Include="..\..\..\include\yield\thread\condition_variable.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\thread\fiber.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\yield\thread\lightweight_mutex.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -48,9 +42,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\yield\thread\non_blocking_concurrent_queue.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\thread\performance_counter_set.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\yield\thread\pipe.hpp">
@@ -115,9 +106,6 @@
     <ClInclude Include="..\..\..\src\yield\thread\darwin\thread.hpp">
       <Filter>Source Files\darwin</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\thread\fiber.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\thread\lightweight_mutex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -137,9 +125,6 @@
       <Filter>Source Files\linux</Filter>
     </ClInclude>
     <ClCompile Include="..\..\..\src\yield\thread\mutex.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\thread\performance_counter_set.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\thread\posix\condition_variable.cpp">
@@ -184,12 +169,6 @@
     <ClCompile Include="..\..\..\src\yield\thread\semaphore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\thread\sunos\cpc_performance_counter_set.cpp">
-      <Filter>Source Files\sunos</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\sunos\cpc_performance_counter_set.hpp">
-      <Filter>Source Files\sunos</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\src\yield\thread\sunos\processor_set.cpp">
       <Filter>Source Files\sunos</Filter>
     </ClCompile>
@@ -208,28 +187,10 @@
     <ClCompile Include="..\..\..\src\yield\thread\thread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\thread\unix\fiber.cpp">
-      <Filter>Source Files\unix</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\unix\fiber.hpp">
-      <Filter>Source Files\unix</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\thread\unix\papi_performance_counter_set.cpp">
-      <Filter>Source Files\unix</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\unix\papi_performance_counter_set.hpp">
-      <Filter>Source Files\unix</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\src\yield\thread\win32\condition_variable.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
     <ClInclude Include="..\..\..\src\yield\thread\win32\condition_variable.hpp">
-      <Filter>Source Files\win32</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\thread\win32\fiber.cpp">
-      <Filter>Source Files\win32</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\win32\fiber.hpp">
       <Filter>Source Files\win32</Filter>
     </ClInclude>
     <ClCompile Include="..\..\..\src\yield\thread\win32\lightweight_mutex.cpp">
