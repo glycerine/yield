@@ -33,7 +33,6 @@
 #include "yield/auto_object.hpp"
 #include "yield/object.hpp"
 
-
 namespace yield {
 namespace thread {
 #if defined(_WIN32)
@@ -53,11 +52,20 @@ public:
   Fiber(Runnable& runnable);
   ~Fiber();
 
+public:
   void* getspecific(uintptr_t key);
+
+public:
   uintptr_t key_create();
   bool key_delete(uintptr_t key);
+
+public:
   static auto_Object<Fiber> self();
+
+public:
   bool setspecific(uintptr_t key, void* value);
+
+public:
   void yield();
   void yield(Fiber& to_fiber);
 

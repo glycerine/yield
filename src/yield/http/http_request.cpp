@@ -56,7 +56,10 @@ HTTPRequest::Method HTTPRequest::Method::PUT(14, "PUT", 3);
 HTTPRequest::Method HTTPRequest::Method::TRACE(15, "TRACE", 5);
 HTTPRequest::Method HTTPRequest::Method::UNLOCK(16, "UNLOCK", 6);
 
-HTTPRequest::Method HTTPRequest::Method::parse(const char* method) {
+HTTPRequest::Method
+HTTPRequest::Method::parse(
+  const char* method
+) throw(Exception) {
   if (method != NULL) {
     switch (method[0]) {
     case 'D': return DELETE;

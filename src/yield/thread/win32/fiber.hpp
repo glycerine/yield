@@ -32,12 +32,9 @@
 
 #include "yield/types.hpp"
 
-
-
 namespace yield {
 namespace thread {
 class Runnable;
-
 
 namespace win32 {
 class Fiber {
@@ -45,20 +42,34 @@ public:
   Fiber(Runnable& runnable);
   ~Fiber();
 
+public:
   Runnable* get_runnable() const {
     return runnable;
   }
+
+public:
   void* getspecific(uintptr_t key);
   uintptr_t key_create();
   bool key_delete(uintptr_t key);
+
+public:
   bool is_running() const {
     return state == STATE_RUNNING;
+
   }
+
+public:
   operator void* () const {
     return handle;
   }
+
+public:
   static Fiber* self();
+
+public:
   bool setspecific(uintptr_t key, void* value);
+
+public:
   void yield();
   void yield(Fiber& to_fiber);
 

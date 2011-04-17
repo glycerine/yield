@@ -369,7 +369,9 @@ INCLUDE_FILE_PATHS["yield.sockets"]
 
 INCLUDE_FILE_PATHS["yield.sockets.aio"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "sockets", "aio", "aiocb.hpp"), # before accept_aiocb
+    path_join(INCLUDE_DIR_PATH, "yield", "sockets", "aio", "nbio_queue.hpp"), # before aio_queue
     path_join(INCLUDE_DIR_PATH, "yield", "sockets", "aio", "win32", "aio_queue.hpp"), # before aio_queue
+
 ] + \
 INCLUDE_FILE_PATHS["yield.sockets.aio"]
 
@@ -385,7 +387,7 @@ INCLUDE_FILE_PATHS["yield.thread"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "thread", "mutex.hpp"),
     path_join(INCLUDE_DIR_PATH, "yield", "thread", "condition_variable.hpp"), # before synchronized_queue
     path_join(INCLUDE_DIR_PATH, "yield", "thread", "synchronized_queue.hpp"), # Before synchronized_event_queue
-    path_join(INCLUDE_DIR_PATH, "yield", "thread", "thread.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "thread", "thread.hpp")
 ] + \
 INCLUDE_FILE_PATHS["yield.thread"]
 
@@ -395,9 +397,11 @@ SOURCE_FILE_PATHS["yield.fs"] = [
 SOURCE_FILE_PATHS["yield.fs"]
 
 SOURCE_FILE_PATHS["yield.thread"] = [
+    path_join(SRC_DIR_PATH, "yield", "thread", "posix", "thread.hpp"), # before linux::thread, et al.
     path_join(SRC_DIR_PATH, "yield", "thread", "win32", "mutex.hpp"), # before condition_variable
     path_join(SRC_DIR_PATH, "yield", "thread", "win32", "lightweight_mutex.hpp"), # before condition_variable
     path_join(SRC_DIR_PATH, "yield", "thread", "win32", "semaphore.hpp"), # before condition_variable
+
 ] + \
 SOURCE_FILE_PATHS["yield.thread"]
 

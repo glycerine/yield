@@ -32,46 +32,66 @@
 
 #include "yield/types.hpp"
 
-
 namespace yield {
 class Time;
-
 
 namespace thread {
 class Runnable;
 
-
 namespace win32 {
 class ProcessorSet;
-
 
 class Thread {
 public:
   Thread(Runnable&);
   ~Thread();
 
+public:
   bool cancel();
+
+public:
   Runnable* get_runnable() const {
     return runnable;
   }
+
+public:
   void* getspecific(uintptr_t key);
+
+public:
   bool join();
+
+public:
   bool is_running() {
     return state == STATE_RUNNING;
   }
+
+public:
   uintptr_t key_create();
   bool key_delete(uintptr_t key);
+
+public:
   void nanosleep(const Time&);
+
+public:
   static Thread* self();
+
+public:
   void set_name(const char* name);
+
+public:
   bool setaffinity(uint16_t logical_processor_i);
   bool setaffinity(const ProcessorSet& logical_processor_set);
+
+public:
   bool setspecific(uintptr_t key, void* value);
+
+public:
   void yield();
 
 private:
   Thread(void* handle, unsigned long id);
 
+private:
   static unsigned long __stdcall run(void*);
 
 private:

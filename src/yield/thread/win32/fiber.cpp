@@ -33,12 +33,10 @@
 
 #include <Windows.h>
 
-
 namespace yield {
 namespace thread {
 namespace win32 {
 HANDLE Fiber::first_fiber_handle = NULL;
-
 
 Fiber::Fiber(Runnable& runnable)
   : runnable(&runnable) {

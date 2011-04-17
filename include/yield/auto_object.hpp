@@ -30,9 +30,8 @@
 #ifndef _YIELD_AUTO_OBJECT_HPP_
 #define _YIELD_AUTO_OBJECT_HPP_
 
-#include "yield/exception.hpp"
+#include <exception>
 #include "yield/object.hpp"
-
 
 namespace yield {
 // Similar to auto_ptr, but using object references instead of delete
@@ -48,7 +47,7 @@ public:
   auto_Object(YO_NEW_REF ObjectType* object)
     : object(*object) {
     if (object == NULL)
-      throw Exception();
+      throw std::exception();
   }
 
   auto_Object(YO_NEW_REF ObjectType& object)

@@ -35,7 +35,6 @@
 
 #include <Windows.h>
 
-
 namespace yield {
 namespace thread {
 namespace win32 {

@@ -31,13 +31,10 @@
 #define _YIELD_THREAD_THREAD_HPP_
 
 #include "yield/auto_object.hpp"
-#include "yield/object.hpp"
 #include "yield/thread/runnable.hpp"
-
 
 namespace yield {
 class Time;
-
 
 namespace thread {
 class ProcessorSet;
@@ -72,21 +69,44 @@ public:
   Thread(Runnable&);
   ~Thread();
 
+public:
   bool cancel();
+
+public:
   Runnable* get_runnable() const;
+
+public:
   void* getspecific(uintptr_t key);
+
+public:
   bool is_running() const;
+
+public:
   bool join();
+
+public:
   uintptr_t key_create();
   bool key_delete(uintptr_t key);
+
+public:
   void nanosleep(const Time&);
+
+public:
   static auto_Object<Thread> self();
+
+public:
   void set_name(const char* name);
+
+public:
   bool setaffinity(uint16_t logical_processor_i);
   bool setaffinity(const ProcessorSet& logical_processor_set);
+
+public:
   bool setspecific(uintptr_t key, intptr_t value);
   bool setspecific(uintptr_t key, uintptr_t value);
   bool setspecific(uintptr_t key, void* value);
+
+public:
   void yield();
 
 private:

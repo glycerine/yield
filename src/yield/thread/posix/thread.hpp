@@ -30,18 +30,13 @@
 #ifndef _YIELD_THREAD_POSIX_THREAD_HPP_
 #define _YIELD_THREAD_POSIX_THREAD_HPP_
 
-#include "yield/types.hpp"
-
 #include <pthread.h>
-
 
 namespace yield {
 class Time;
 
-
 namespace thread {
 class Runnable;
-
 
 namespace posix {
 class Thread {
@@ -49,23 +44,39 @@ public:
   Thread(Runnable&);
   ~Thread();
 
+public:
   bool cancel();
+
+public:
   Runnable* get_runnable() {
     return runnable;
   }
+
+public:
   void* getspecific(uintptr_t key);
+
+public:
   bool is_running() const {
     return state == STATE_RUNNING;
   }
+
+public:
   bool join();
+
+public:
   uintptr_t key_create();
   bool key_delete(uintptr_t key);
+
+public:
   void nanosleep(const Time&);
+
+public:
   bool setspecific(uintptr_t key, void* value);
 
 protected:
   Thread(pthread_t);
 
+protected:
   virtual void* run();
 
 private:

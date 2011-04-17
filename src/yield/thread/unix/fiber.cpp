@@ -27,29 +27,24 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/thread/fiber.hpp"
+#include "fiber.hpp"
+#include "yield/exception.hpp"
+#include "yield/thread/runnable.hpp"
 #undef unix
-
 
 namespace yield {
 namespace thread {
 namespace unix {
 #ifdef YIELD_HAVE_UNIX_PTH
+Fiber::Fiber(Runnable& runnable)
+  pth = pth_spawn(PTH_ATTR_DEFAULT, run, fiber);
+  if (pth == NULL)
+    throw Exception();
+}
+
 Fiber::Fiber(pth_t pth)
   : pth(pth)
 { }
-
-Fiber* Fiber::create(Runnable& runnable) {
-  Fiber* fiber = new Fiber(runnable);
-
-  pth_t pth = pth_spawn(PTH_ATTR_DEFAULT, run, fiber);
-  if (pth != NULL)
-    return fiber;
-  else
-    delete fiber;
-
-  return NULL;
-}
 
 void* Fiber::getspecific(uintptr_t key) {
   return pth_key_getdata(key);
