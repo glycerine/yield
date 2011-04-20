@@ -48,12 +48,8 @@ std::ostream& operator<<(std::ostream& os, sendAIOCB& send_aiocb) {
       ", " <<
       "flags=" << send_aiocb.get_flags() <<
       ", " <<
-      "peername=";
-      if (send_aiocb.get_peername() != NULL)
-        os << *send_aiocb.get_peername();
-      else
-        os << "NULL";
-      os <<
+      "peername=" << send_aiocb.get_peername() <<
+      ", " <<
       "return=" << send_aiocb.get_return() <<
       "," <<
       "socket=" << send_aiocb.get_socket() <<

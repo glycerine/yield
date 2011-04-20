@@ -34,13 +34,17 @@
 #include "yield/stage/stage.hpp"
 
 namespace yield {
+class Log;
+
 namespace http {
 namespace server {
 class HTTPServer : public yield::stage::Stage {
 public:
   HTTPServer(
     YO_NEW_REF EventHandler& http_request_handler,
-    const yield::sockets::SocketAddress& sockname
+    const yield::sockets::SocketAddress& sockname,
+    Log* error_log = NULL,
+    Log* trace_log = NULL
   );
 };
 }

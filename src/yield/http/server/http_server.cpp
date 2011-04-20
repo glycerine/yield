@@ -35,8 +35,13 @@ namespace http {
 namespace server {
 HTTPServer::HTTPServer(
   YO_NEW_REF EventHandler& http_request_handler,
-  const yield::sockets::SocketAddress& sockname
-) : Stage(http_request_handler, *new HTTPRequestQueue(sockname)) {
+  const yield::sockets::SocketAddress& sockname,
+  Log* error_log,
+  Log* trace_log
+) : Stage(
+      http_request_handler,
+      *new HTTPRequestQueue(sockname, error_log, trace_log)
+    ) {
 }
 }
 }

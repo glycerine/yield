@@ -77,10 +77,10 @@ ssize_t NamedPipe::readv(const iovec* iov, int iovlen) {
   }
 }
 
-bool NamedPipe::set_blocking_mode(bool blocking_mode) {
-  DWORD lpMode = blocking_mode ? PIPE_WAIT : PIPE_NOWAIT;
-  return SetNamedPipeHandleState(*this, &lpMode, NULL, NULL) == TRUE;
-}
+//bool NamedPipe::set_blocking_mode(bool blocking_mode) {
+//  DWORD lpMode = blocking_mode ? PIPE_WAIT : PIPE_NOWAIT;
+//  return SetNamedPipeHandleState(*this, &lpMode, NULL, NULL) == TRUE;
+//}
 
 bool NamedPipe::sync() {
   return true;

@@ -75,6 +75,22 @@ public:
 
 
 template <class SocketType>
+class SocketSetBlockingModeTest : public yunit::Test {
+public:
+  // Test
+  void run() {
+    auto_Object<SocketType> socket_ = SocketType::create();
+
+    if (!socket_->set_blocking_mode(true))
+      throw Exception();
+
+    if (!socket_->set_blocking_mode(false))
+      throw Exception();
+  }
+};
+
+
+template <class SocketType>
 class SocketShutdownTest : public yunit::Test {
 public:
   // Test
@@ -103,10 +119,8 @@ template <class SocketType>
 class SocketTestSuite : public ChannelTestSuite {
 public:
   SocketTestSuite()
-    : ChannelTestSuite
-    (
-      *new SocketPairFactory
-      (
+    : ChannelTestSuite(
+      *new SocketPairFactory(
         SocketType::DOMAIN_DEFAULT,
         SocketType::TYPE,
         SocketType::PROTOCOL
@@ -115,6 +129,7 @@ public:
     add("Socket::bind", new SocketBindTest<SocketType>);
     add("Socket::getfqdn()", new SocketGetFQDNTest);
     add("Socket::gethostname", new SocketGetHostNameTest);
+    add("Socket::set_blocking_mode",new SocketSetBlockingModeTest<SocketType>);
     add("Socket::shutdown", new SocketShutdownTest<SocketType>);
   }
 };

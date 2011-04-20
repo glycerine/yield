@@ -38,28 +38,6 @@ recvAIOCB::~recvAIOCB() {
   Buffer::dec_ref(buffer);
 }
 
-void recvAIOCB::set_return(ssize_t return_) {
-  if (return_ > 0) {
-    Buffer* buffer = &get_buffer();
-    size_t ret = static_cast<size_t>(return_);
-
-    for (;;) {
-      size_t buffer_left = buffer->capacity() - buffer->size();
-
-      if (ret <= buffer_left) {
-        buffer->resize(buffer->size() + ret);
-        break;
-      } else {
-        buffer->resize(buffer->capacity());
-        ret -= buffer_left;
-        buffer = buffer->get_next_buffer();
-      }
-    }
-  }
-
-  AIOCB::set_return(return_);
-}
-
 std::ostream& operator<<(std::ostream& os, recvAIOCB& recv_aiocb) {
   os <<
     recv_aiocb.get_type_name() <<
@@ -73,7 +51,7 @@ std::ostream& operator<<(std::ostream& os, recvAIOCB& recv_aiocb) {
       "peername=" << recv_aiocb.get_peername() <<
       ", " <<
       "return=" << recv_aiocb.get_return() <<
-      "," <<
+      ", " <<
       "socket=" << recv_aiocb.get_socket() <<
     ")";
   return os;

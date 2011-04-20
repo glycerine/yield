@@ -77,6 +77,20 @@ void Buffer::alloc(size_t alignment, size_t capacity) {
     throw std::bad_alloc();
 }
 
+iovec Buffer::as_read_iovec() {
+  iovec read_iovec;
+  read_iovec.iov_base = data_;
+  read_iovec.iov_len = capacity_ - size_;
+  return read_iovec;
+}
+
+iovec Buffer::as_write_iovec() const {
+  iovec write_iovec;
+  write_iovec.iov_base = data_;
+  write_iovec.iov_len = size_;
+  return write_iovec;
+}
+
 Buffer&
 Buffer::copy(
   size_t alignment,
@@ -122,6 +136,15 @@ std::ostream& operator<<(std::ostream& os, const Buffer& buffer) {
       "size=" << buffer.size() <<
     ")";
   return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const Buffer* buffer) {
+  if (buffer != NULL)
+    return operator<<(os, *buffer);
+  else {
+    os << "NULL";
+    return os;
+  }
 }
 
 bool Buffer::operator==(const Buffer& other) const {

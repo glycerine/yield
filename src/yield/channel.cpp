@@ -1,4 +1,4 @@
-// yield/sockets/aio/aio_queue.hpp
+// yield/channel.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,24 +27,49 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_SOCKETS_AIO_AIO_QUEUE_HPP_
-#define _YIELD_SOCKETS_AIO_AIO_QUEUE_HPP_
-
-#ifdef _WIN32
-#include "yield/sockets/aio/win32/aio_queue.hpp"
-#endif
-#include "yield/sockets/aio/nbio_queue.hpp"
+#include "yield/buffer.hpp"
+#include "yield/buffers.hpp"
+#include "yield/channel.hpp"
 
 namespace yield {
-namespace sockets {
-namespace aio {
-//#ifdef _WIN32
-//typedef win32::AIOQueue AIOQueue;
-//#else
-typedef NBIOQueue AIOQueue;
-//#endif
-}
-}
+ssize_t Channel::read(Buffer& buffer) {
+  if (buffer.get_next_buffer() == NULL) {
+    ssize_t read_ret = read(buffer, buffer.capacity() - buffer.size());
+    if (read_ret > 0)
+      buffer.resize(buffer.size() + static_cast<size_t>(read_ret));
+    return read_ret;
+  } else {
+    vector<iovec> iov;
+    Buffers::as_read_iovecs(buffer, iov);
+    ssize_t readv_ret = readv(&iov[0], iov.size());
+    if (readv_ret > 0)
+      Buffers::resize(buffer, static_cast<size_t>(readv_ret));
+    return readv_ret;
+  }
 }
 
-#endif
+ssize_t Channel::read(const iovec& iov) {
+  return read(iov.iov_base, iov.iov_len);
+}
+
+ssize_t Channel::write(const Buffer& buffer) {
+  if (buffer.get_next_buffer() == NULL)
+    return write(buffer, buffer.size());
+  else {
+    vector<iovec> iov;
+    Buffers::as_write_iovecs(buffer, iov);
+    return writev(&iov[0], iov.size());
+  }
+}
+
+ssize_t Channel::write(const iovec& iov) {
+  return write(iov.iov_base, iov.iov_len);
+}
+
+ssize_t Channel::writev(const iovec* iov, int iovlen) {
+  string buf;
+  for (int iov_i = 0; iov_i < iovlen; ++iov_i)
+    buf.append(static_cast<char*>(iov[iov_i].iov_base), iov[iov_i].iov_len);
+  return write(buf.data(), buf.size());
+}
+}

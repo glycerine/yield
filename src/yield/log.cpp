@@ -270,21 +270,21 @@ bool Log::Level::operator>=(const Level& other) const {
 
 
 Log::Stream::Stream(Log& log, Log::Level level)
-  : log(log), level(level)
+  : std::ostream(&buf), log(log), level(level)
 { }
 
 Log::Stream::Stream(const Stream& other)
-  : log(other.log.inc_ref()), level(other.level)
+  : std::ostream(&buf), log(other.log.inc_ref()), level(other.level)
 { }
 
 Log::Stream::~Stream() {
-  if (level <= log.get_level() && !oss.str().empty()) {
+  if (level <= log.get_level() && !buf.str().empty()) {
     std::ostringstream stamped_oss;
     stamped_oss << static_cast<uint32_t>(DateTime::now().as_unix_date_time_s());
     stamped_oss << " ";
     stamped_oss << static_cast<const char*>(log.get_level());
     stamped_oss << ": ";
-    stamped_oss << oss.str();
+    stamped_oss << buf.str();
     stamped_oss << std::endl;
 
     log.write(stamped_oss.str(), level);

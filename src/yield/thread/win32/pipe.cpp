@@ -97,11 +97,6 @@ ssize_t Pipe::End::readv(const iovec* iov, int iovlen) {
   }
 }
 
-bool Pipe::End::set_blocking_mode(bool blocking_mode) {
-  SetLastError(ERROR_NOT_SUPPORTED);
-  return false;
-}
-
 ssize_t Pipe::End::write(const void* buf, size_t buflen) {
   DWORD dwBytesWritten;
   if

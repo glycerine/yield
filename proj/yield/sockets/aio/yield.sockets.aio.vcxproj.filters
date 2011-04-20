@@ -4,9 +4,6 @@
     <Filter Include="Source Files">
       <UniqueIdentifier>{c54989f0-a3bc-4f67-9bfa-39d0e25392ab}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\posix">
-      <UniqueIdentifier>{2ce37865-2e71-4938-bbaf-3f40cba7aee0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\win32">
       <UniqueIdentifier>{c2dc7a76-de01-4462-b955-0fb1e912d9c0}</UniqueIdentifier>
     </Filter>
@@ -58,17 +55,11 @@
     <ClCompile Include="..\..\..\..\src\yield\sockets\aio\nbio_queue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\posix\accept_aiocb.cpp">
-      <Filter>Source Files\posix</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\sockets\aio\recv_aiocb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\sockets\aio\send_aiocb.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\win32\accept_aiocb.cpp">
-      <Filter>Source Files\win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\sockets\aio\win32\aio_queue.cpp">
       <Filter>Source Files\win32</Filter>

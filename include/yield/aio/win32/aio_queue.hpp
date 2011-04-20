@@ -52,10 +52,7 @@ public:
 
 public:
   // yield::EventQueue
-  YO_NEW_REF Event& dequeue() {
-    return EventQueue::dequeue();
-  }
-
+  YO_NEW_REF Event& dequeue();
   virtual YO_NEW_REF Event* dequeue(const Time& timeout);
   virtual bool enqueue(YO_NEW_REF Event& event);
 

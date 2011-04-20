@@ -71,7 +71,7 @@ public:
     this->error = error;
   }
 
-  virtual void set_return(ssize_t return_) {
+  void set_return(ssize_t return_) {
     this->return_ = return_;
   }
 

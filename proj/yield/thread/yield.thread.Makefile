@@ -42,7 +42,7 @@ ifeq ($(UNAME), Linux)
 	LIBS += -lrt -lstdc++ -lpthread
 endif
 ifeq ($(UNAME), Solaris)
-	LIBS += -lm -lrt -lstdc++ -lcpc -lkstat
+	LIBS += -lm -lrt -lstdc++ -lkstat
 endif
 LIBS += -lyield
 

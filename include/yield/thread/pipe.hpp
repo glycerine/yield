@@ -34,26 +34,29 @@
 #include "yield/channel_pair.hpp"
 #include "yield/exception.hpp"
 
-
 namespace yield {
 namespace thread {
 class Pipe : public ChannelPair {
 public:
   class End : public Channel {
   public:
-    End(fd_t fd) : fd(fd) { }
+    End(fd_t fd) : fd(fd)
+    { }
+
     ~End() {
       close();
     }
 
-    // Channel
-    bool close();
+  public:
     operator fd_t() const {
       return fd;
     }
+
+  public:
+    // yield::Channel
+    bool close();
     ssize_t read(void* buf, size_t buflen);
     ssize_t readv(const iovec* iov, int iovlen);
-    bool set_blocking_mode(bool blocking_mode);
     ssize_t write(const void* buf, size_t buflen);
     ssize_t writev(const iovec* iov, int iovlen);
 
@@ -87,9 +90,11 @@ public:
   End& get_read_end() {
     return *ends[0];
   }
+
   End& get_write_end() {
     return *ends[1];
   }
+
   End& operator[](size_t n) {
     return *ends[n];
   }
@@ -98,6 +103,7 @@ public:
   Channel& get_read_channel() {
     return get_read_end();
   }
+
   Channel& get_write_channel() {
     return get_write_end();
   }

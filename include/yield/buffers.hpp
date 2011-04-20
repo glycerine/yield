@@ -1,4 +1,4 @@
-// yield/sockets/aio/aio_queue.hpp
+// yield/buffers.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,24 +27,20 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_SOCKETS_AIO_AIO_QUEUE_HPP_
-#define _YIELD_SOCKETS_AIO_AIO_QUEUE_HPP_
+#ifndef _YIELD_BUFFERS_HPP_
+#define _YIELD_BUFFERS_HPP_
 
-#ifdef _WIN32
-#include "yield/sockets/aio/win32/aio_queue.hpp"
-#endif
-#include "yield/sockets/aio/nbio_queue.hpp"
+#include "yield/types.hpp"
 
 namespace yield {
-namespace sockets {
-namespace aio {
-//#ifdef _WIN32
-//typedef win32::AIOQueue AIOQueue;
-//#else
-typedef NBIOQueue AIOQueue;
-//#endif
-}
-}
+class Buffer;
+
+class Buffers {
+public:
+  static void as_read_iovecs(Buffer& buffers, OUT vector<iovec>&);
+  static void as_write_iovecs(const Buffer& buffers, OUT vector<iovec>&);
+  static void resize(Buffer& buffers, size_t size);
+};
 }
 
 #endif

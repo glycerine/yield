@@ -217,6 +217,18 @@ void HTTPRequest::respond(Exception& exception) {
   Request::respond(exception);
 }
 
+std::ostream& operator<<(std::ostream& os, const HTTPRequest& http_request) {
+  os << 
+    http_request.get_type_name() <<
+    "(" <<
+      "content_length=" << http_request.get_content_length() <<
+      ", " <<
+      "method=" << http_request.get_method() <<
+      ", " <<
+      "uri=" << http_request.get_uri() <<
+    ")";
+  return os;
+}
 
 std::ostream& operator<<(std::ostream& os, const HTTPRequest::Method& method) {
   os << method.get_name();

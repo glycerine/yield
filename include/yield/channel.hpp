@@ -33,6 +33,8 @@
 #include "yield/object.hpp"
 
 namespace yield {
+class Buffer;
+
 class Channel : public Object {
 public:
   virtual ~Channel() { }
@@ -41,15 +43,16 @@ public:
   virtual bool close() = 0;
 
 public:
+  ssize_t read(Buffer& buffer);
+  ssize_t read(const iovec& iov);
   virtual ssize_t read(void* buf, size_t buflen) = 0;
   virtual ssize_t readv(const iovec* iov, int iovlen) = 0;
 
 public:
-  virtual bool set_blocking_mode(bool blocking_mode) = 0;
-
-public:
+  ssize_t write(const Buffer& buffer);
+  ssize_t write(const iovec& iov);
   virtual ssize_t write(const void* buf, size_t buflen) = 0;
-  virtual ssize_t writev(const iovec* iov, int iovlen) = 0;
+  virtual ssize_t writev(const iovec* iov, int iovlen);
 
 public:
   // yield::Object

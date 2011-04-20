@@ -66,10 +66,6 @@ public:
     return "yield::fs::aio::preadAIOCB";
   }
 
-public:
-  // yield::aio::AIOCB
-  void set_return(ssize_t return_);
-
 private:
   Buffer& buffer;
 };

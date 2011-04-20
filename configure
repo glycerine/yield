@@ -181,7 +181,7 @@ LIBS = {
     "yield.thread": {
         "freebsd": ["pthread"],
         "linux": ["pthread"],
-        "sunos": ["cpc", "kstat"],
+        "sunos": ["kstat"],
     },
 
 #    "yield.uuid": {

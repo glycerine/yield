@@ -43,7 +43,7 @@ public:
 public:
   recvAIOCB(
     Socket& socket_,
-    Buffer& buffer,
+    YO_NEW_REF Buffer& buffer,
     const Socket::MessageFlags& flags
   ) : AIOCB(socket_),
       buffer(buffer),
@@ -78,10 +78,6 @@ public:
   const char* get_type_name() const {
     return "yield::sockets::aio::recvAIOCB";
   }
-
-public:
-  // yield::aio::AIOCB
-  void set_return(ssize_t return_);
 
 private:
   Buffer& buffer;

@@ -65,12 +65,7 @@ std::ostream& operator<<(std::ostream& os, connectAIOCB& connect_aiocb) {
       ", " <<
       "return=" << connect_aiocb.get_return() <<
       ", " <<
-      "send_buffer=";
-      if (connect_aiocb.get_send_buffer() != NULL)
-        os << *connect_aiocb.get_send_buffer();
-      else
-        os << "NULL";
-      os <<
+      "send_buffer=" << connect_aiocb.get_send_buffer() <<
       "," <<
       "socket=" << connect_aiocb.get_socket() <<
     ")";

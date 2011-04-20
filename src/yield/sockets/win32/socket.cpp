@@ -70,8 +70,7 @@ socket_t Socket::create(int domain, int type, int protocol) {
   if (socket_ != INVALID_SOCKET) {
     if (domain == AF_INET6) {
       DWORD ipv6only = 0; // Allow dual-mode sockets
-      ::setsockopt
-      (
+      ::setsockopt(
         socket_,
         IPPROTO_IPV6,
         IPV6_V6ONLY,
@@ -90,10 +89,8 @@ string Socket::getfqdn() {
   GetComputerNameExA(ComputerNameDnsHostname, NULL, &dwFQDNLength);
   if (dwFQDNLength > 0) {
     char* fqdn_temp = new char[dwFQDNLength];
-    if
-    (
-      GetComputerNameExA
-      (
+    if (
+      GetComputerNameExA(
         ComputerNameDnsFullyQualified,
         fqdn_temp,
         &dwFQDNLength
@@ -114,10 +111,8 @@ string Socket::gethostname() {
   GetComputerNameExA(ComputerNameDnsHostname, NULL, &dwHostNameLength);
   if (dwHostNameLength > 0) {
     char* hostname_temp = new char[dwHostNameLength];
-    if
-    (
-      GetComputerNameExA
-      (
+    if (
+      GetComputerNameExA(
         ComputerNameDnsHostname,
         hostname_temp,
         &dwHostNameLength
@@ -135,10 +130,8 @@ string Socket::gethostname() {
 
 bool Socket::getpeername(OUT SocketAddress& peername) const {
   socklen_t peernamelen = peername.len();
-  if
-  (
-    ::getpeername
-    (
+  if (
+    ::getpeername(
       *this,
       peername,
       &peernamelen
@@ -153,10 +146,8 @@ bool Socket::getpeername(OUT SocketAddress& peername) const {
 bool Socket::getsockname(OUT SocketAddress& sockname) const {
   socklen_t socknamelen = sockname.len();
 
-  if
-  (
-    ::getsockname
-    (
+  if (
+    ::getsockname(
       *this,
       sockname,
       &socknamelen
@@ -168,39 +159,35 @@ bool Socket::getsockname(OUT SocketAddress& sockname) const {
     return false;
 }
 
-ssize_t Socket::recv(void* buf, size_t buflen, const MessageFlags& flags) {
-  return ::recv
-         (
-           *this,
-           static_cast<char*>(buf),
-           static_cast<int>(buflen),
-           flags
-         ); // No real advantage to WSARecv on Win for one buffer
-}
-
 ssize_t
-Socket::recvfrom
-(
+Socket::recv(
   void* buf,
   size_t buflen,
   const MessageFlags& flags,
-  SocketAddress& peername
+  SocketAddress* peername
 ) {
-  socklen_t namelen = peername.len();
-  return ::recvfrom
-         (
-           *this,
-           static_cast<char*>(buf),
-           buflen,
-           flags,
-           reinterpret_cast<sockaddr*>(&peername),
-           &namelen
-         );
+  if (peername == NULL) {
+    return ::recv(
+             *this,
+             static_cast<char*>(buf),
+             static_cast<int>(buflen),
+             flags
+           ); // No real advantage to WSARecv on Win for one buffer
+  } else {
+    socklen_t peernamelen = peername->len();
+    return ::recvfrom(
+             *this,
+             static_cast<char*>(buf),
+             buflen,
+             flags,
+             reinterpret_cast<sockaddr*>(peername),
+             &peernamelen
+           );
+  }
 }
 
 ssize_t
-Socket::recvmsg
-(
+Socket::recvmsg(
   const iovec* iov,
   int iovlen,
   const MessageFlags& flags,
@@ -217,14 +204,11 @@ Socket::recvmsg
 #endif
 
   ssize_t recv_ret;
-
-
   if (peername != NULL) {
     socklen_t peernamelen = peername->len();
 
     recv_ret
-    = WSARecvFrom
-      (
+    = WSARecvFrom(
         *this,
 #ifdef _WIN64
         & wsabufs[0],
@@ -241,8 +225,7 @@ Socket::recvmsg
       );
   } else {
     recv_ret
-    = WSARecv
-      (
+    = WSARecv(
         *this,
 #ifdef _WIN64
         & wsabufs[0],
@@ -264,38 +247,51 @@ Socket::recvmsg
 }
 
 ssize_t
-Socket::send
-(
+Socket::send(
   const void* buf,
   size_t buflen,
-  const MessageFlags& flags
+  const MessageFlags& flags,
+  const SocketAddress* peername
 ) {
-  DWORD dwNumberOfBytesSent;
-  WSABUF wsabuf;
-  wsabuf.len = static_cast<ULONG>(buflen);
-  wsabuf.buf = const_cast<char*>(static_cast<const char*>(buf));
+  if (peername == NULL) {
+    DWORD dwNumberOfBytesSent;
+    WSABUF wsabuf;
+    wsabuf.len = static_cast<ULONG>(buflen);
+    wsabuf.buf = const_cast<char*>(static_cast<const char*>(buf));
 
-  ssize_t send_ret
-  = WSASend
-    (
-      *this,
-      &wsabuf,
-      1,
-      &dwNumberOfBytesSent,
-      static_cast<DWORD>(flags),
-      NULL,
-      NULL
-    );
+    ssize_t send_ret
+    = WSASend(
+        *this,
+        &wsabuf,
+        1,
+        &dwNumberOfBytesSent,
+        static_cast<DWORD>(flags),
+        NULL,
+        NULL
+      );
 
-  if (send_ret >= 0)
-    return static_cast<ssize_t>(dwNumberOfBytesSent);
-  else
-    return send_ret;
+    if (send_ret >= 0)
+      return static_cast<ssize_t>(dwNumberOfBytesSent);
+    else
+      return send_ret;
+  } else {
+    peername = peername->filter(get_domain());
+    if (peername != NULL) {
+      return ::sendto(
+               *this,
+               static_cast<const char*>(buf),
+               buflen,
+               flags,
+               *peername,
+               peername->len()
+             );
+    } else
+      return -1;
+  }
 }
 
 ssize_t
-Socket::sendmsg
-(
+Socket::sendmsg(
   const iovec* iov,
   int iovlen,
   const MessageFlags& flags,
@@ -355,29 +351,6 @@ Socket::sendmsg
     return send_ret;
 }
 
-ssize_t
-Socket::sendto
-(
-  const void* buf,
-  size_t buflen,
-  const MessageFlags& flags,
-  const SocketAddress& _peername
-) {
-  const SocketAddress* peername = _peername.filter(get_domain());
-  if (peername != NULL) {
-    return ::sendto
-           (
-             *this,
-             static_cast<const char*>(buf),
-             buflen,
-             flags,
-             *peername,
-             peername->len()
-           );
-  } else
-    return -1;
-}
-
 bool Socket::set_blocking_mode(bool blocking_mode) {
   unsigned long val = blocking_mode ? 0UL : 1UL;
   return ::ioctlsocket(*this, FIONBIO, &val) != SOCKET_ERROR;
@@ -387,8 +360,7 @@ bool Socket::setsockopt(Option option, bool onoff) {
   switch (option) {
   case OPTION_SO_KEEPALIVE: {
     int optval = onoff ? 1 : 0;
-    return ::setsockopt
-           (
+    return ::setsockopt(
              *this,
              SOL_SOCKET,
              SO_KEEPALIVE,
@@ -402,8 +374,7 @@ bool Socket::setsockopt(Option option, bool onoff) {
     linger optval;
     optval.l_onoff = onoff ? 1 : 0;
     optval.l_linger = 0;
-    return ::setsockopt
-           (
+    return ::setsockopt(
              *this,
              SOL_SOCKET,
              SO_LINGER,

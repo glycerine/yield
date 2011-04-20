@@ -225,33 +225,6 @@ public:
 };
 
 
-class ChannelSetBlockingModeTest : public ChannelTest {
-public:
-  ChannelSetBlockingModeTest(ChannelPairFactory& channel_pair_factory)
-    : ChannelTest(channel_pair_factory)
-  { }
-
-  // Test
-  void run() {
-    if
-    (
-      !get_read_channel().set_blocking_mode(true)
-      &&
-      Exception::get_last_error_code() != ENOTSUP
-    )
-      throw Exception();
-
-    if
-    (
-      !get_write_channel().set_blocking_mode(false)
-      &&
-      Exception::get_last_error_code() != ENOTSUP
-    )
-      throw Exception();
-  }
-};
-
-
 class ChannelWriteTest : public ChannelTest {
 public:
   ChannelWriteTest(ChannelPairFactory& channel_pair_factory)
@@ -347,11 +320,6 @@ public:
     add(
       "Channel::readv( iov, 2 )",
       new ChannelReadVTwoTest(channel_pair_factory)
-    );
-
-    add(
-      "Channel::set_blocking_mode",
-      new ChannelSetBlockingModeTest(channel_pair_factory)
     );
 
     add(

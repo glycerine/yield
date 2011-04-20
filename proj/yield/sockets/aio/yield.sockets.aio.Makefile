@@ -48,20 +48,8 @@ D_FILE_PATHS := $(shell find ../../../../build/yield/sockets/aio -name "*.d")
 
 
 O_FILE_PATHS += ../../../../build/yield/sockets/aio/accept_aiocb.o ../../../../build/yield/sockets/aio/aiocb.o ../../../../build/yield/sockets/aio/connect_aiocb.o ../../../../build/yield/sockets/aio/nbio_queue.o ../../../../build/yield/sockets/aio/recv_aiocb.o ../../../../build/yield/sockets/aio/send_aiocb.o
-ifeq ($(UNAME), Darwin)
-	O_FILE_PATHS += ../../../../build/yield/sockets/aio/posix/accept_aiocb.o
-endif
-ifeq ($(UNAME), FreeBSD)
-	O_FILE_PATHS += ../../../../build/yield/sockets/aio/posix/accept_aiocb.o
-endif
-ifeq ($(UNAME), Linux)
-	O_FILE_PATHS += ../../../../build/yield/sockets/aio/posix/accept_aiocb.o
-endif
-ifeq ($(UNAME), Solaris)
-	O_FILE_PATHS += ../../../../build/yield/sockets/aio/posix/accept_aiocb.o
-endif
 ifeq ($(UNAME), MINGW32)
-	O_FILE_PATHS += ../../../../build/yield/sockets/aio/win32/accept_aiocb.o ../../../../build/yield/sockets/aio/win32/aio_queue.o
+	O_FILE_PATHS += ../../../../build/yield/sockets/aio/win32/aio_queue.o
 endif
 
 
@@ -104,10 +92,6 @@ depclean:
 	-mkdir -p ../../../../build/yield/sockets/aio 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/sockets/aio/nbio_queue.o -MD $(CXXFLAGS) ../../../../src/yield/sockets/aio/nbio_queue.cpp
 
-../../../../build/yield/sockets/aio/posix/accept_aiocb.o: ../../../../src/yield/sockets/aio/posix/accept_aiocb.cpp
-	-mkdir -p ../../../../build/yield/sockets/aio/posix 2>/dev/null
-	$(CXX) -c -o ../../../../build/yield/sockets/aio/posix/accept_aiocb.o -MD $(CXXFLAGS) ../../../../src/yield/sockets/aio/posix/accept_aiocb.cpp
-
 ../../../../build/yield/sockets/aio/recv_aiocb.o: ../../../../src/yield/sockets/aio/recv_aiocb.cpp
 	-mkdir -p ../../../../build/yield/sockets/aio 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/sockets/aio/recv_aiocb.o -MD $(CXXFLAGS) ../../../../src/yield/sockets/aio/recv_aiocb.cpp
@@ -115,10 +99,6 @@ depclean:
 ../../../../build/yield/sockets/aio/send_aiocb.o: ../../../../src/yield/sockets/aio/send_aiocb.cpp
 	-mkdir -p ../../../../build/yield/sockets/aio 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/sockets/aio/send_aiocb.o -MD $(CXXFLAGS) ../../../../src/yield/sockets/aio/send_aiocb.cpp
-
-../../../../build/yield/sockets/aio/win32/accept_aiocb.o: ../../../../src/yield/sockets/aio/win32/accept_aiocb.cpp
-	-mkdir -p ../../../../build/yield/sockets/aio/win32 2>/dev/null
-	$(CXX) -c -o ../../../../build/yield/sockets/aio/win32/accept_aiocb.o -MD $(CXXFLAGS) ../../../../src/yield/sockets/aio/win32/accept_aiocb.cpp
 
 ../../../../build/yield/sockets/aio/win32/aio_queue.o: ../../../../src/yield/sockets/aio/win32/aio_queue.cpp
 	-mkdir -p ../../../../build/yield/sockets/aio/win32 2>/dev/null

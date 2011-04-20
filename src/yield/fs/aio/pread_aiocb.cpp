@@ -35,25 +35,25 @@
 namespace yield {
 namespace fs {
 namespace aio {
-void preadAIOCB::set_return(ssize_t return_) {
-  if (return_ >= 0) {
-    Buffer* buffer = &get_buffer();
-    for (;;) {
-      size_t buffer_left = buffer->capacity() - buffer->size();
-
-      if (static_cast<size_t>(return_) <= buffer_left) {
-        buffer->resize(buffer->size() + return_);
-        break;
-      } else {
-        buffer->resize(buffer->capacity());
-        return_ -= buffer_left;
-        buffer = buffer->get_next_buffer();
-      }
-    }
-  }
-
-  AIOCB::set_return(return_);
-}
+//void preadAIOCB::set_return(ssize_t return_) {
+//  if (return_ >= 0) {
+//    Buffer* buffer = &get_buffer();
+//    for (;;) {
+//      size_t buffer_left = buffer->capacity() - buffer->size();
+//
+//      if (static_cast<size_t>(return_) <= buffer_left) {
+//        buffer->resize(buffer->size() + return_);
+//        break;
+//      } else {
+//        buffer->resize(buffer->capacity());
+//        return_ -= buffer_left;
+//        buffer = buffer->get_next_buffer();
+//      }
+//    }
+//  }
+//
+//  AIOCB::set_return(return_);
+//}
 
 //preadAIOCB::RetryStatus preadAIOCB::retry() {
 //  ssize_t return_;

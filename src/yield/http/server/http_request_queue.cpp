@@ -29,6 +29,7 @@
 
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
+#include "yield/log.hpp"
 #include "yield/http/http_message_body_chunk.hpp"
 #include "yield/http/http_request.hpp"
 #include "yield/http/http_request_parser.hpp"
@@ -96,16 +97,23 @@ public:
   Connection(
     AIOQueue& aio_queue,
     SocketAddress& peername,
-    TCPSocket& socket_
+    TCPSocket& socket_,
+    Log* error_log = NULL,
+    Log* trace_log = NULL
   ) : aio_queue(aio_queue.inc_ref()),
+      error_log(Object::inc_ref(error_log)),      
       peername(peername.inc_ref()),
-      socket_(static_cast<TCPSocket&>(socket_.inc_ref()))
+      socket_(static_cast<TCPSocket&>(socket_.inc_ref())),
+      trace_log(Object::inc_ref(trace_log))
   { }
 
   ~Connection() {
     close();
 
+    AIOQueue::dec_ref(aio_queue);
+    Log::dec_ref(error_log);
     StreamSocket::dec_ref(socket_);
+    Log::dec_ref(trace_log);
   }
 
 public:
@@ -156,7 +164,7 @@ public:
 public:
   // yield::Object
   const char* get_type_name() const {
-    return "yield::http::HTTPServer::Connection";
+    return "yield::http::server::HTTPRequestQueue::Connection";
   }
 
   Connection& inc_ref() {
@@ -240,6 +248,9 @@ private:
 
       case HTTPRequest::TYPE_ID: {
         HTTPRequest& http_request = static_cast<HTTPRequest&>(object);
+        if (trace_log != NULL)
+          trace_log->get_stream() << get_type_name() 
+            << ": parsed " << http_request;
         http_request.set_response_handler(*this);
         aio_queue.enqueue(http_request);
       }
@@ -248,6 +259,9 @@ private:
       case HTTPResponse::TYPE_ID: {
         HTTPResponse& http_response = static_cast<HTTPResponse&>(object);
         debug_assert_eq(http_response.get_status_code(), 400);
+        if (trace_log != NULL)
+          trace_log->get_stream() << get_type_name() 
+            << ": parsed " << http_response;
         handle(http_response);
         return;
       }
@@ -262,14 +276,21 @@ private:
 
 private:
   AIOQueue& aio_queue;
+  Log* error_log;
   SocketAddress& peername;
   TCPSocket& socket_;
+  Log* trace_log;
 };
 
 
-HTTPRequestQueue::HTTPRequestQueue(const SocketAddress& sockname)
-  : aio_queue(*new AIOQueue),
-    socket_(*new TCPSocket(sockname.get_family())) {
+HTTPRequestQueue::HTTPRequestQueue(
+  const SocketAddress& sockname,
+  Log* error_log,
+  Log* trace_log
+) : aio_queue(*new AIOQueue(error_log, trace_log)),
+    error_log(Object::inc_ref(error_log)),
+    socket_(*new TCPSocket(sockname.get_family())),
+    trace_log(Object::inc_ref(trace_log)) {
 
   if (aio_queue.associate(socket_)) {
     if (socket_.bind(sockname)) {
@@ -294,7 +315,9 @@ HTTPRequestQueue::~HTTPRequestQueue() {
   socket_.close();
 
   AIOQueue::dec_ref(aio_queue);
+  Log::dec_ref(error_log);
   TCPSocket::dec_ref(socket_);
+  Log::dec_ref(trace_log);
 }
 
 YO_NEW_REF Event* HTTPRequestQueue::dequeue(const Time& timeout) {
@@ -304,32 +327,18 @@ YO_NEW_REF Event* HTTPRequestQueue::dequeue(const Time& timeout) {
     case acceptAIOCB::TYPE_ID: {
       acceptAIOCB& accept_aiocb = static_cast<acceptAIOCB&>(*event);
 
-      if (accept_aiocb.get_error() == 0) {
+      if (accept_aiocb.get_return() >= 0) {
         StreamSocket& accepted_socket = *accept_aiocb.get_accepted_socket();
 
         if (aio_queue.associate(accepted_socket)) {
           Connection& connection
             = *new Connection(
                      aio_queue,
-                     accept_aiocb.get_peername(),
-                     static_cast<TCPSocket&>(accepted_socket)
+                     *accept_aiocb.get_peername(),
+                     static_cast<TCPSocket&>(accepted_socket),
+                     error_log,
+                     trace_log
                    );
-
-          //if (get_trace_log() != NULL) {
-          //  Buffer* recv_buffer = accept_aiocb.get_recv_buffer();
-          //  if (recv_buffer != NULL) {
-          //    get_trace_log()->get_stream(Log::INFO) <<
-          //                                           connection.get_log_prefix() <<
-          //                                           ": accepted connection from " <<
-          //                                           accept_aiocb.get_peername() << " with data ";
-          //    get_trace_log()->write(*recv_buffer, Log::DEBUG);
-          //  } else {
-          //    get_trace_log()->get_stream(Log::INFO) <<
-          //                                           connection.get_log_prefix() <<
-          //                                           ": accepted connection from " <<
-          //                                           accept_aiocb.get_peername();
-          //  }
-          //}
 
           connection.handle(accept_aiocb);
         } else
@@ -352,35 +361,10 @@ YO_NEW_REF Event* HTTPRequestQueue::dequeue(const Time& timeout) {
       Connection& connection
         = static_cast<Connection&>(recv_aiocb.get_connection());
 
-      if (recv_aiocb.get_error() == 0) {
-        if (recv_aiocb.get_return() > 0) {
-          //if (this->get_trace_log() != NULL) {
-          //  this->get_trace_log()->get_stream(Log::INFO) <<
-          //      connection.get_log_prefix() << ": received ";
-          //  this->get_trace_log()->write(recv_aiocb.get_buffer(), Log::INFO);
-          //}
-
-          connection.handle(recv_aiocb);
-        } else {
-          //if (this->get_trace_log() != NULL) {
-          //  this->get_trace_log()->get_stream(Log::INFO) <<
-          //      connection.get_log_prefix() << ": normal connection shutdown";
-          //}
-
-          connection.handle(recv_aiocb);
-
-          Connection::dec_ref(connection);
-        }
-      } else {
-        //if (this->get_error_log() != NULL) {
-        //  this->get_error_log()->get_stream(Log::ERR) <<
-        //      connection.get_log_prefix() << ": " <<
-        //      "error in " << recv_aiocb.get_type_name() << ": " <<
-        //      Exception(recv_aiocb.get_error());
-        //}
-
+      if (recv_aiocb.get_return() > 0)
         connection.handle(recv_aiocb);
-
+      else {
+        connection.handle(recv_aiocb);
         Connection::dec_ref(connection);
       }
     }
@@ -391,24 +375,10 @@ YO_NEW_REF Event* HTTPRequestQueue::dequeue(const Time& timeout) {
         = static_cast<Connection::sendAIOCB&>(*event);
       Connection& connection = send_aiocb.get_connection();
 
-      if (send_aiocb.get_error() == 0) {
-        //if (this->get_trace_log() != NULL) {
-        //  this->get_trace_log()->get_stream(Log::INFO) <<
-        //      connection.get_log_prefix() << ": sent ";
-        //  this->get_trace_log()->write(send_aiocb.get_buffer(), Log::INFO);
-        //}
-
+      if (send_aiocb.get_return() >= 0)
         connection.handle(send_aiocb);
-      } else {
-        //if (this->get_error_log() != NULL) {
-        //  this->get_error_log()->get_stream(Log::ERR) <<
-        //      connection.get_log_prefix() << ": " <<
-        //      "error in " << send_aiocb.get_type_name() << ":" <<
-        //      Exception(send_aiocb.get_error());
-        //}
-
+      else {
         connection.handle(send_aiocb);
-
         Connection::dec_ref(connection);
       }
     }

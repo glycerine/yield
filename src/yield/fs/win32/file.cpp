@@ -451,11 +451,6 @@ uint64_t File::seek(int64_t offset, uint8_t whence) {
     return static_cast<uint64_t>(-1);
 }
 
-bool File::set_blocking_mode(bool) {
-  SetLastError(ERROR_NOT_SUPPORTED);
-  return false;
-}
-
 bool File::setlk(const Lock& lock) {
   return setlk(lock, false);
 }

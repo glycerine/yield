@@ -33,6 +33,8 @@
 #include "yield/sockets/aio/aio_queue.hpp"
 
 namespace yield {
+class Log;
+
 namespace sockets {
 class SocketAddress;
 class TCPSocket;
@@ -42,7 +44,12 @@ namespace http {
 namespace server {
 class HTTPRequestQueue : public EventQueue {
 public:
-  HTTPRequestQueue(const yield::sockets::SocketAddress& sockname);
+  HTTPRequestQueue(
+    const yield::sockets::SocketAddress& sockname,
+    Log* error_log = NULL,
+    Log* trace_log = NULL
+  );
+
   ~HTTPRequestQueue();
 
 public:
@@ -59,7 +66,9 @@ private:
 
 private:
   yield::sockets::aio::AIOQueue& aio_queue;
+  Log* error_log;
   yield::sockets::TCPSocket& socket_;
+  Log* trace_log;
 };
 }
 }

@@ -60,7 +60,6 @@ SocketAddress::IN_LOOPBACK(
   0
 );
 
-
 SocketAddress::SocketAddress(const SocketAddress& other, uint16_t port) {
   memcpy_s(&addr, sizeof(addr), &other.addr, sizeof(other.addr));
 
@@ -281,6 +280,40 @@ socklen_t SocketAddress::len(int family) const {
     DebugBreak();
     return 0;
   }
+}
+
+std::ostream& operator<<(std::ostream& os, const SocketAddress& sockaddr_) {
+  if (sockaddr_.get_family() != 0) {
+    string nodename;
+    if (sockaddr_.getnameinfo(nodename, true)) {
+      os << nodename;
+      switch (sockaddr_.get_family()) {
+      case AF_INET: {
+        os << ":" <<
+          ntohs(
+            reinterpret_cast<const sockaddr_in*>(
+              static_cast<const sockaddr*>(sockaddr_)
+            )->sin_port
+          );
+      }
+      break;
+
+      case AF_INET6: {
+        os << ":" <<
+          ntohs(
+            reinterpret_cast<const sockaddr_in6*>(
+              static_cast<const sockaddr*>(sockaddr_)
+            )->sin6_port
+          );
+      }
+      break;
+      }
+    }
+    else
+      os << "(unknown)";
+  } else
+    os << "(unknown)";
+  return os;
 }
 }
 }

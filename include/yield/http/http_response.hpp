@@ -33,7 +33,6 @@
 #include "yield/response.hpp"
 #include "yield/http/http_message.hpp"
 
-
 namespace yield {
 namespace http {
 class HTTPResponse : public Response, public HTTPMessage<HTTPResponse> {
@@ -87,6 +86,8 @@ private:
 private:
   uint16_t status_code;
 };
+
+std::ostream& operator<<(std::ostream&, const HTTPResponse&);
 }
 }
 

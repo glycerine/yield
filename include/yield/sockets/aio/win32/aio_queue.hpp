@@ -33,22 +33,42 @@
 #include "yield/aio/win32/aio_queue.hpp"
 
 namespace yield {
+class Log;
+
 namespace sockets {
 namespace aio {
 namespace win32 {
 class AIOQueue : public yield::aio::win32::AIOQueue {
 public:
+  AIOQueue(Log* error_log = NULL, Log* trace_log = NULL);
+  ~AIOQueue();
+
+public:
   bool associate(socket_t socket_);
 
 public:
   // yield::Object
+  const char* get_type_name() const {
+    return "yield::sockets::aio::win32::AIOQueue";
+  }
+
   AIOQueue& inc_ref() {
     return Object::inc_ref(*this);
   }
 
 public:
   // yield::EventQueue
+  YO_NEW_REF Event& dequeue();
+  YO_NEW_REF Event* dequeue(const Time& timeout);
   bool enqueue(YO_NEW_REF Event& event);
+
+private:
+  template <class AIOCBType> void log_completion(AIOCBType& aiocb);
+  template <class AIOCBType> void log_enqueue(AIOCBType& aiocb);
+  template <class AIOCBType> void log_error(AIOCBType& aiocb);
+
+private:
+  Log *error_log, *trace_log;
 };
 }
 }

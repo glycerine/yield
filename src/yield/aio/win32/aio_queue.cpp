@@ -55,6 +55,10 @@ bool AIOQueue::associate(fd_t fd) {
          ) != INVALID_HANDLE_VALUE;
 }
 
+YO_NEW_REF Event& AIOQueue::dequeue() {
+  return EventQueue::dequeue();
+}
+
 YO_NEW_REF Event* AIOQueue::dequeue(const Time& timeout) {
   DWORD dwBytesTransferred = 0;
   ULONG_PTR ulCompletionKey = 0;

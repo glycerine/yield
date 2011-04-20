@@ -47,12 +47,20 @@ class sendAIOCB;
 
 class NBIOQueue : public EventQueue {
 public:
+  NBIOQueue(Log* error_log = NULL, Log* trace_log = NULL);
+  ~NBIOQueue();
+
+public:
   bool associate(socket_t) {
     return true;
   }
 
 public:
   // yield::Object
+  const char* get_type_name() const {
+    return "yield::sockets::aio::NBIOQueue";
+  }
+
   NBIOQueue& inc_ref() {
     return Object::inc_ref(*this);
   }
@@ -85,6 +93,19 @@ private:
       memset(aiocb_queues, 0, sizeof(aiocb_queues));
     }
 
+  public:
+    bool empty() const {
+      for (uint8_t aiocb_queue_i = 0; aiocb_queue_i < 4; ++aiocb_queue_i) {
+        if (aiocb_queues[aiocb_queue_i] != NULL)
+          return false;
+      }
+      return true;
+    }
+
+  public:
+    static uint8_t get_aiocb_priority(const AIOCB& aiocb);
+
+  public:
     AIOCB* aiocb_queues[4]; // accept, connect, send, recv
   };
 
@@ -96,8 +117,16 @@ private:
   RetryStatus retry(sendAIOCB& send_aiocb);
 
 private:
+  template <class AIOCBType> void log_completion(AIOCBType&);
+  template <class AIOCBType> void log_error(AIOCBType&);
+  template <class AIOCBType> void log_retry(AIOCBType&);
+  template <class AIOCBType> void log_wouldblock(AIOCBType&, RetryStatus);
+
+private:
+  Log* error_log;
   yield::sockets::poll::SocketEventQueue socket_event_queue;
   std::map<socket_t, SocketState*> state;
+  Log* trace_log;
 };
 }
 }

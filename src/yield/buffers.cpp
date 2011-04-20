@@ -1,4 +1,4 @@
-// yield/sockets/aio/posix/accept_aiocb.cpp
+// yield/buffers.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,28 +27,48 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/assert.hpp"
 #include "yield/buffer.hpp"
-#include "yield/sockets/socket_address.hpp"
-#include "yield/sockets/stream_socket.hpp"
-#include "yield/sockets/aio/accept_aiocb.hpp"
+#include "yield/buffers.hpp"
 
 namespace yield {
-namespace sockets {
-namespace aio {
-acceptAIOCB::acceptAIOCB(StreamSocket& socket_, YO_NEW_REF Buffer* recv_buffer)
-  : AIOCB(socket_),
-    peername(*new SocketAddress),
-    recv_buffer(recv_buffer) {
-  accepted_socket = NULL;
-  if (recv_buffer != NULL)
-    debug_assert_eq(recv_buffer->get_next_buffer(), NULL);
+void
+Buffers::as_read_iovecs(
+  Buffer& buffers,
+  OUT vector<iovec>& read_iovecs
+) {
+  Buffer* next_buffer = &buffers;
+  do {
+    read_iovecs.push_back(next_buffer->as_read_iovec());
+    next_buffer = next_buffer->get_next_buffer();
+  } while (next_buffer != NULL);
 }
 
-void acceptAIOCB::set_return(ssize_t return_) {
-  if (return_ > 0)
-    recv_buffer->resize(recv_buffer->size() + return_);
+void
+Buffers::as_write_iovecs(
+  const Buffer& buffers,
+  OUT vector<iovec>& write_iovecs
+) {
+  const Buffer* next_buffer = &buffers;
+  do {
+    write_iovecs.push_back(next_buffer->as_write_iovec());
+    next_buffer = next_buffer->get_next_buffer();
+  } while (next_buffer != NULL);
 }
-}
+
+void Buffers::resize(Buffer& buffers, size_t size) {
+  Buffer* next_buffer = &buffers;
+  for (;;) {
+    size_t next_buffer_left
+      = next_buffer->capacity() - next_buffer->size();
+
+    if (size <= next_buffer_left) {
+      next_buffer->resize(next_buffer->size() + size);
+      break;
+    } else {
+      next_buffer->resize(next_buffer->capacity());
+      size -= next_buffer_left;
+      next_buffer = next_buffer->get_next_buffer();
+    }
+  }
 }
 }

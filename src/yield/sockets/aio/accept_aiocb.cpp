@@ -27,6 +27,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "yield/assert.hpp"
 #include "yield/buffer.hpp"
 #include "yield/sockets/stream_socket.hpp"
 #include "yield/sockets/aio/accept_aiocb.hpp"
@@ -34,6 +35,15 @@
 namespace yield {
 namespace sockets {
 namespace aio {
+acceptAIOCB::acceptAIOCB(StreamSocket& socket_, YO_NEW_REF Buffer* recv_buffer)
+  : AIOCB(socket_),
+    recv_buffer(recv_buffer) {
+  accepted_socket = NULL;
+  peername = NULL;
+  if (recv_buffer != NULL)
+    debug_assert_eq(recv_buffer->get_next_buffer(), NULL);
+}
+
 acceptAIOCB::~acceptAIOCB() {
   StreamSocket::dec_ref(accepted_socket);
   SocketAddress::dec_ref(peername);
@@ -52,25 +62,27 @@ acceptAIOCB::set_accepted_socket(
   this->accepted_socket = &accepted_socket;
 }
 
+void acceptAIOCB::set_peername(YO_NEW_REF SocketAddress* peername) {
+  SocketAddress::dec_ref(this->peername);
+  this->peername = peername;
+}
+
+void acceptAIOCB::set_recv_buffer(YO_NEW_REF Buffer* recv_buffer) {
+  Buffer::dec_ref(this->recv_buffer);
+  this->recv_buffer = recv_buffer;
+}
+
 std::ostream& operator<<(std::ostream& os, acceptAIOCB& accept_aiocb) {
   os <<
     accept_aiocb.get_type_name() <<
-    "(";
-      if (accept_aiocb.get_accepted_socket() != NULL)
-        os << *accept_aiocb.get_accepted_socket();
-      else
-        os << "NULL";
-      os <<
+    "(" <<
+      "accepted_socket=" << accept_aiocb.get_accepted_socket() <<
+      ", " <<
       "error=" << accept_aiocb.get_error() <<
       ", " <<
       "peername=" << accept_aiocb.get_peername() <<
       ", " <<
-      "recv_buffer=";
-      if (accept_aiocb.get_recv_buffer() != NULL)
-        os << *accept_aiocb.get_recv_buffer();
-      else
-        os << "NULL";
-      os <<
+      "recv_buffer=" << accept_aiocb.get_recv_buffer() <<
       ", " <<
       "return=" << accept_aiocb.get_return() <<
       ", " <<

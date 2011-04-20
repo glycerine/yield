@@ -95,6 +95,7 @@
     <ClInclude Include="..\..\include\yield\atomic.hpp" />
     <ClInclude Include="..\..\include\yield\auto_object.hpp" />
     <ClInclude Include="..\..\include\yield\buffer.hpp" />
+    <ClInclude Include="..\..\include\yield\buffers.hpp" />
     <ClInclude Include="..\..\include\yield\channel.hpp" />
     <ClInclude Include="..\..\include\yield\channel_pair.hpp" />
     <ClInclude Include="..\..\include\yield\config.hpp" />
@@ -114,6 +115,10 @@
 
   <ItemGroup Label="ClCompileItems">
     <ClCompile Include="..\..\src\yield\buffer.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\src\yield\buffers.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\src\yield\channel.cpp">
     </ClCompile>
     <ClCompile Include="..\..\src\yield\date_time.cpp">
     </ClCompile>

@@ -40,7 +40,6 @@
 #include <arpa/inet.h> // for socklen_t
 #endif
 
-
 struct addrinfo;
 struct sockaddr;
 struct sockaddr_in;
@@ -48,12 +47,10 @@ struct sockaddr_in6;
 struct in_addr;
 struct in6_addr;
 
-
 #ifdef _WIN32
-#pragma warning( push )
-#pragma warning( disable: 4521 ) // Multiple copy constructors
+#pragma warning(push)
+#pragma warning(disable: 4521) // Multiple copy constructors
 #endif
-
 
 namespace yield {
 namespace sockets {
@@ -191,6 +188,8 @@ public:
     return len(get_family());
   }
 
+  static socklen_t len(int family);
+
 public:
   operator string() const {
     std::ostringstream repr;
@@ -198,11 +197,11 @@ public:
     return repr.str();
   }
 
-  operator sockaddr* () {
+  operator sockaddr*() {
     return reinterpret_cast<sockaddr*>(&addr);
   }
 
-  operator const sockaddr* () const {
+  operator const sockaddr*() const {
     return reinterpret_cast<const sockaddr*>(&addr);
   }
 
@@ -228,8 +227,7 @@ public:
   }
 
 private:
-  SocketAddress
-  (
+  SocketAddress(
     uint32_t in_addr_,
     const struct in6_addr& in6_addr_,
     uint16_t port
@@ -247,13 +245,10 @@ private:
   }
 
   void
-  init
-  (
+  init(
     const char* nodename,
     const char* servname
   ) throw(Exception);
-
-  socklen_t len(int family) const;
 
 private:
   struct {
@@ -266,25 +261,26 @@ private:
   SocketAddress* next_socket_address;
 };
 
+std::ostream& operator<<(std::ostream&, const SocketAddress&);
+
 static inline
 std::ostream&
-operator<<
-(
+operator<<(
   std::ostream& os,
-  const SocketAddress& sockaddr_
+  SocketAddress* socket_address
 ) {
-  string nodename;
-  if (sockaddr_.getnameinfo(nodename, true))
-    os << nodename;
-  else os << "(unknown)";
-  return os;
+  if (socket_address != NULL)
+    return operator<<(os, *socket_address);
+  else {
+    os << "NULL";
+    return os;
+  }
 }
 }
 }
-
 
 #ifdef _WIN32
-#pragma warning( pop )
+#pragma warning(pop)
 #endif
 //
 

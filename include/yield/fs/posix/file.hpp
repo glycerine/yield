@@ -149,8 +149,10 @@ public:
 public:
   virtual bool datasync();
 
+public:
   YO_NEW_REF Lock* getlk(const File::Lock&);
 
+public:
   YO_NEW_REF Map*
   mmap(
     size_t length = SIZE_MAX,
@@ -159,44 +161,55 @@ public:
     bool shared = true
   );
 
+public;
   virtual YO_NEW_REF ExtendedAttributes* openxattrs();
 
+public:
+  operator fd_t() const {
+    return fd;
+  }
+
+public:
   ssize_t pread(void*, size_t, uint64_t);
   ssize_t preadv(const iovec*, int, uint64_t);
 
+public:
   ssize_t pwrite(const void*, size_t, uint64_t);
   ssize_t pwritev(const iovec*, int, uint64_t);
 
+public:
   uint64_t seek(int64_t offset, uint8_t whence = SEEK_SET);
 
+public:
   bool setlk(const Lock&);
   bool setlkw(const Lock&);
 
+public:
   YO_NEW_REF Stat* stat();
 
+public:
   bool sync();
 
+public:
   uint64_t tell();
 
+public:
   bool truncate(uint64_t new_size);
 
+public:
   bool unlk(const Lock&);
 
 public:
-  // Object
+  // yield::Object
   File& inc_ref() {
     return Object::inc_ref(*this);
   }
 
 public:
-  // Channel
+  // yield::Channel
   bool close();
-  operator fd_t() const {
-    return fd;
-  }
   ssize_t read(void* buf, size_t buflen);
   ssize_t readv(const iovec* iov, int iovlen);
-  bool set_blocking_mode(bool blocking_mode);
   ssize_t write(const void* buf, size_t buflen);
   ssize_t writev(const iovec* iov, int iovlen);
 

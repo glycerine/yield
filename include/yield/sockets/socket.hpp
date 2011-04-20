@@ -31,6 +31,8 @@
 #define _YIELD_SOCKETS_SOCKET_HPP_
 
 #include "yield/auto_object.hpp"
+#include "yield/buffer.hpp"
+#include "yield/buffers.hpp"
 #include "yield/channel.hpp"
 #include "yield/exception.hpp"
 #include "yield/sockets/socket_address.hpp"
@@ -136,52 +138,97 @@ public:
   }
 
 public:
-#ifdef _WIN32
   operator socket_t() const {
     return socket_;
+  }
+
+#ifdef _WIN32
+  operator fd_t() const {
+    return socket_to_fd(socket_);
   }
 #endif
 
 public:
-  virtual ssize_t recv(void* buf, size_t len, const MessageFlags&);
-
-  virtual
   ssize_t
-  recvfrom(
+  recv(
+    Buffer& buffer,
+    const MessageFlags& flags,
+    SocketAddress* peername = NULL
+  ) {
+    if (buffer.get_next_buffer() == NULL) {
+      ssize_t recv_ret = recv(buffer.as_read_iovec(), flags, peername);
+      if (recv_ret > 0) 
+        buffer.resize(buffer.size() + static_cast<size_t>(recv_ret));
+      return recv_ret;
+    } else {
+      vector<iovec> iov;
+      Buffers::as_read_iovecs(buffer, iov);
+      ssize_t recv_ret = recvmsg(&iov[0], iov.size(), flags, peername);
+      if (recv_ret > 0)
+        Buffers::resize(buffer, static_cast<size_t>(recv_ret));
+      return recv_ret;
+    }
+  }
+
+  ssize_t
+  recv(
+    const iovec& iov,
+    const MessageFlags& flags,
+    SocketAddress* peername = NULL
+  ) {
+    return recv(iov.iov_base, iov.iov_len, flags, peername);
+  }
+
+  virtual ssize_t
+  recv(
     void* buf,
     size_t len,
-    const MessageFlags&,
-    SocketAddress& peername
+    const MessageFlags& flags,
+    SocketAddress* peername = NULL
   );
 
   virtual ssize_t
   recvmsg(
     const iovec* iov,
     int iovlen,
-    const MessageFlags&,
+    const MessageFlags& flags,
     SocketAddress* peername = NULL
   );
 
 public:
-  virtual ssize_t send(const void*, size_t, const MessageFlags&);
+  ssize_t
+  send(
+    const Buffer& buffer,
+    const MessageFlags& flags,
+    const SocketAddress* peername = NULL
+  ) {
+    if (buffer.get_next_buffer() == NULL)
+      return send(buffer, buffer.size(), flags, peername);
+    else {
+      vector<iovec> iov;
+      Buffers::as_write_iovecs(buffer, iov);
+      return sendmsg(&iov[0], iov.size(), flags, peername);
+    }
+  }
+
+  virtual ssize_t
+  send(
+    const void* buf,
+    size_t len,
+    const MessageFlags& flags,
+    const SocketAddress* peername = NULL
+  );
 
   virtual ssize_t
   sendmsg(
     const iovec* iov,
     int iovlen,
-    const MessageFlags&,
+    const MessageFlags& flags,
     const SocketAddress* peername = NULL
   );
 
-  virtual ssize_t
-  sendto(
-    const void* buf,
-    size_t len,
-    const MessageFlags&,
-    const SocketAddress& peername
-  );
-
 public:
+  virtual bool set_blocking_mode(bool blocking_mode);
   virtual bool setsockopt(Option option, bool onoff);
 
 public:
@@ -205,10 +252,6 @@ public:
   // yield::Channel
   virtual bool close();
 
-  operator fd_t() const {
-    return socket_to_fd(socket_);
-  }
-
   ssize_t read(void* buf, size_t buflen) {
     return recv(buf, buflen, 0);
   }
@@ -216,8 +259,6 @@ public:
   ssize_t readv(const iovec* iov, int iovlen) {
     return recvmsg(iov, iovlen, 0);
   }
-
-  virtual bool set_blocking_mode(bool blocking);
 
   ssize_t write(const void* buf, size_t buflen) {
     return send(buf, buflen, 0);
@@ -237,13 +278,30 @@ private:
 
 static inline std::ostream& operator<<(std::ostream& os, Socket& socket_) {
     os << 
-       socket_.get_type_name() << 
-       "(" <<
-         *socket_.getsockname() <<
-         "/" <<
-         *socket_.getpeername() <<
-       ")";
+      socket_.get_type_name() <<
+      "(";
+        SocketAddress sockname;
+        if (socket_.getsockname(sockname))
+          os << sockname;
+        else
+          os << "(unknown)";
+        os << "/";
+        SocketAddress peername;
+        if (socket_.getpeername(peername))
+          os << peername;
+        else
+          os << "(unknown)";
+      os << ")";
     return os;
+}
+
+static inline std::ostream& operator<<(std::ostream& os, Socket* socket_) {
+  if (socket_ != NULL)
+    return operator<<(os, *socket_);
+  else {
+    os << "NULL";
+    return os;
+  }
 }
 }
 }

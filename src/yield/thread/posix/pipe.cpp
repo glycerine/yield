@@ -31,7 +31,6 @@
 
 #include <fcntl.h>
 
-
 namespace yield {
 namespace thread {
 bool Pipe::pipe(fd_t ends[2]) {
@@ -56,17 +55,6 @@ ssize_t Pipe::End::read(void* buf, size_t buflen) {
 
 ssize_t Pipe::End::readv(const iovec* iov, int iovlen) {
   return ::readv(*this, iov, iovlen);
-}
-
-bool Pipe::End::set_blocking_mode(bool blocking_mode) {
-  int current_fcntl_flags = fcntl(*this, F_GETFL, 0);
-  if (blocking_mode) {
-    if ((current_fcntl_flags & O_NONBLOCK) == O_NONBLOCK)
-      return fcntl(*this, F_SETFL, current_fcntl_flags ^ O_NONBLOCK) != -1;
-    else
-      return true;
-  } else
-    return fcntl(*this, F_SETFL, current_fcntl_flags | O_NONBLOCK) != -1;
 }
 
 ssize_t Pipe::End::write(const void* buf, size_t buflen) {

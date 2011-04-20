@@ -247,5 +247,16 @@ HTTPResponse::HTTPResponse(
 
   set_field("Date", DateTime::now());
 }
+
+std::ostream& operator<<(std::ostream& os, const HTTPResponse& http_response) {
+  os << 
+    http_response.get_type_name() <<
+    "(" <<
+      "content_length=" << http_response.get_content_length() <<
+      ", " <<
+      "status_code=" << http_response.get_status_code() <<
+    ")";
+  return os;
+}
 }
 }

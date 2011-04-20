@@ -74,14 +74,12 @@ SocketAddress::SocketAddress(const SocketAddress& other, uint16_t port) {
 void SocketAddress::assign(const addrinfo& addrinfo_) {
   static_assert(sizeof(addr) == sizeof(sockaddr_storage), "");
 
-  debug_assert_eq
-  (
+  debug_assert_eq(
     len(addrinfo_.ai_family),
     static_cast<socklen_t>(addrinfo_.ai_addrlen)
   );
 
-  memcpy_s
-  (
+  memcpy_s(
     &addr,
     sizeof(addr),
     addrinfo_.ai_addr,
@@ -153,8 +151,7 @@ const SocketAddress* SocketAddress::filter(int family) const {
 
 
 SocketAddress*
-SocketAddress::getaddrinfo
-(
+SocketAddress::getaddrinfo(
   const char* nodename,
   const char* servname
 ) {
@@ -168,8 +165,7 @@ SocketAddress::getaddrinfo
 }
 
 addrinfo*
-SocketAddress::_getaddrinfo
-(
+SocketAddress::_getaddrinfo(
   const char* nodename,
   const char* servname
 ) {
@@ -199,9 +195,8 @@ SocketAddress::_getaddrinfo
     return NULL;
 }
 
-
-bool SocketAddress::getnameinfo
-(
+bool
+SocketAddress::getnameinfo(
   OUT char* nodename,
   size_t nodename_len,
   bool numeric
@@ -212,8 +207,7 @@ bool SocketAddress::getnameinfo
   const SocketAddress* next_socket_address = this;
 
   do {
-    if
-    (
+    if (
       ::getnameinfo
       (
         *this,
@@ -234,8 +228,7 @@ bool SocketAddress::getnameinfo
 }
 
 void
-SocketAddress::init
-(
+SocketAddress::init(
   const char* nodename,
   const char* servname
 )
@@ -249,18 +242,47 @@ throw(Exception) {
     throw Exception();
 }
 
-socklen_t SocketAddress::len(int family) const {
+socklen_t SocketAddress::len(int family) {
   switch (family) {
-  case 0:
-    return sizeof(addr);
-  case AF_INET:
-    return sizeof(sockaddr_in);
-  case AF_INET6:
-    return sizeof(sockaddr_in6);
-  default:
-    DebugBreak();
-    return 0;
+  case 0: return sizeof(sockaddr_storage);
+  case AF_INET: return sizeof(sockaddr_in);
+  case AF_INET6: return sizeof(sockaddr_in6);
+  default: DebugBreak(); return 0;
   }
+}
+
+std::ostream& operator<<(std::ostream& os, const SocketAddress& sockaddr_) {
+  if (sockaddr_.get_family() != 0) {
+    string nodename;
+    if (sockaddr_.getnameinfo(nodename, true)) {
+      os << nodename;
+      switch (sockaddr_.get_family()) {
+      case AF_INET: {
+        os << ":" <<
+          ntohs(
+            reinterpret_cast<const sockaddr_in*>(
+              static_cast<const sockaddr*>(sockaddr_)
+            )->sin_port
+          );
+      }
+      break;
+
+      case AF_INET6: {
+        os << ":" <<
+          ntohs(
+            reinterpret_cast<const sockaddr_in6*>(
+              static_cast<const sockaddr*>(sockaddr_)
+            )->sin6_port
+          );
+      }
+      break;
+      }
+    }
+    else
+      os << "(unknown)";
+  } else
+    os << "(unknown)";
+  return os;
 }
 }
 }

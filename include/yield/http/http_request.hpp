@@ -190,6 +190,7 @@ private:
   yield::uri::URI uri;
 };
 
+std::ostream& operator<<(std::ostream&, const HTTPRequest&);
 std::ostream& operator<<(std::ostream&, const HTTPRequest::Method&);
 }
 }

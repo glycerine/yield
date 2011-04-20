@@ -76,24 +76,16 @@ public:
   };
 
 
-  class Stream {
+  class Stream : public std::ostream {
   public:
     Stream(Log& log, Level);
     Stream(const Stream& other);
     ~Stream();
 
-  public:
-    template <typename T>
-    Stream& operator<<(T t) {
-      if (level <= log.get_level())
-        oss << t;
-      return *this;
-    }
-
   private:
+    std::stringbuf buf;
     Log& log;
     Level level;
-    std::ostringstream oss;
   };
 
 public:

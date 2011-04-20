@@ -28,7 +28,9 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../../win32/winsock.hpp"
+#include "yield/assert.hpp"
 #include "yield/buffer.hpp"
+#include "yield/log.hpp"
 #include "yield/sockets/stream_socket.hpp"
 #include "yield/sockets/aio/accept_aiocb.hpp"
 #include "yield/sockets/aio/connect_aiocb.hpp"
@@ -42,15 +44,122 @@ namespace aio {
 namespace win32 {
 static LPFN_ACCEPTEX lpfnAcceptEx = NULL;
 static LPFN_CONNECTEX lpfnConnectEx = NULL;
+static LPFN_GETACCEPTEXSOCKADDRS lpfnGetAcceptExSockaddrs = NULL;
+
+AIOQueue::AIOQueue(Log *error_log, Log* trace_log)
+  : error_log(Object::inc_ref(error_log)),
+    trace_log(Object::inc_ref(trace_log)) {
+}
+
+AIOQueue::~AIOQueue() {
+  Log::dec_ref(error_log);
+  Log::dec_ref(trace_log);
+}
 
 bool AIOQueue::associate(socket_t socket_) {
   return yield::aio::win32::AIOQueue::associate(socket_to_fd(socket_));
 }
 
-bool AIOQueue::enqueue(Event& event) {
+YO_NEW_REF Event& AIOQueue::dequeue() {
+  return yield::aio::win32::AIOQueue::dequeue();
+}
+
+YO_NEW_REF Event* AIOQueue::dequeue(const Time& timeout) {
+  Event* event = yield::aio::win32::AIOQueue::dequeue(timeout);
+
+  if (event != NULL) {
+    switch (event->get_type_id()) {
+    case acceptAIOCB::TYPE_ID: {
+      acceptAIOCB& accept_aiocb = static_cast<acceptAIOCB&>(*event);
+
+      if (accept_aiocb.get_return() > 0) {
+        // accept_aiocb.return does NOT include the size of the
+        // local and remote socket addresses.
+
+        StreamSocket& accepted_socket
+          = *accept_aiocb.get_accepted_socket();
+        Buffer& recv_buffer = *accept_aiocb.get_recv_buffer();
+
+        int optval = accept_aiocb.get_socket();
+        setsockopt(
+          accepted_socket,
+          SOL_SOCKET,
+          SO_UPDATE_ACCEPT_CONTEXT,
+          reinterpret_cast<char*>(&optval),
+          sizeof(optval)
+        );
+
+        DWORD dwLocalAddressLength
+          = SocketAddress::len(accepted_socket.get_domain()) + 16;
+        DWORD dwRemoteAddressLength = dwLocalAddressLength;
+        DWORD dwReceiveDataLength =
+            recv_buffer.capacity() - recv_buffer.size() -
+              (dwLocalAddressLength + dwRemoteAddressLength);
+
+        sockaddr* peername = NULL;
+        socklen_t peernamelen;
+        sockaddr* sockname;
+        socklen_t socknamelen;
+
+        lpfnGetAcceptExSockaddrs(
+          static_cast<char*>(recv_buffer) + recv_buffer.size(),
+          dwReceiveDataLength,
+          dwLocalAddressLength,
+          dwRemoteAddressLength,
+          &sockname,
+          &socknamelen,
+          &peername,
+          &peernamelen
+        );
+
+        if (peername != NULL) {
+          accept_aiocb.set_peername(
+            new SocketAddress(*peername, accepted_socket.get_domain())
+          );
+        }
+
+        recv_buffer.resize(recv_buffer.size() + accept_aiocb.get_return());
+      }
+
+      log_completion(accept_aiocb);
+    }
+    break;
+
+    case connectAIOCB::TYPE_ID: {
+      log_completion(static_cast<connectAIOCB&>(*event));
+    }
+    break;
+
+    case recvAIOCB::TYPE_ID: {
+      recvAIOCB& recv_aiocb = static_cast<recvAIOCB&>(*event);
+
+      if (recv_aiocb.get_return() > 0) {
+        Buffers::resize(
+          recv_aiocb.get_buffer(),
+          static_cast<size_t>(recv_aiocb.get_return())
+        );
+      }
+
+      log_completion(recv_aiocb);
+    }
+    break;
+
+    case sendAIOCB::TYPE_ID: {
+      log_completion(static_cast<sendAIOCB&>(*event));
+    }
+    break;
+    }
+  }
+
+  return event;
+}
+
+bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
   switch (event.get_type_id()) {
   case acceptAIOCB::TYPE_ID: {
     acceptAIOCB& accept_aiocb = static_cast<acceptAIOCB&>(event);
+
+    log_enqueue(accept_aiocb);
 
     if (lpfnAcceptEx == NULL) {
       GUID GuidAcceptEx = WSAID_ACCEPTEX;
@@ -67,8 +176,33 @@ bool AIOQueue::enqueue(Event& event) {
         NULL
       );
 
-      if (lpfnAcceptEx == NULL)
+      if (lpfnAcceptEx == NULL) {
+        accept_aiocb.set_error(WSAGetLastError());
+        log_error(accept_aiocb);
         return false;
+      }
+    }
+
+    if (lpfnGetAcceptExSockaddrs == NULL) {
+      DWORD dwBytes;
+      GUID GuidGetAcceptExSockAddrs = WSAID_GETACCEPTEXSOCKADDRS;
+      WSAIoctl(
+        accept_aiocb.get_socket(),
+        SIO_GET_EXTENSION_FUNCTION_POINTER,
+        &GuidGetAcceptExSockAddrs,
+        sizeof(GuidGetAcceptExSockAddrs),
+        &lpfnGetAcceptExSockaddrs,
+        sizeof(lpfnGetAcceptExSockaddrs),
+        &dwBytes,
+        NULL,
+        NULL
+      );
+
+      if (lpfnGetAcceptExSockaddrs == NULL) {
+        accept_aiocb.set_error(WSAGetLastError());
+        log_error(accept_aiocb);
+        return false;
+      }
     }
 
     StreamSocket* accepted_socket = accept_aiocb.get_socket().dup();
@@ -77,30 +211,63 @@ bool AIOQueue::enqueue(Event& event) {
       accept_aiocb.set_accepted_socket(*accepted_socket);
 
       DWORD dwBytesReceived;
+      DWORD dwLocalAddressLength
+        = SocketAddress::len(accepted_socket->get_domain()) + 16;
+      DWORD dwReceiveDataLength;
+      DWORD dwRemoteAddressLength = dwLocalAddressLength;
 
-      return lpfnAcceptEx(
-                accept_aiocb.get_socket(),
-                *accepted_socket,
-                static_cast<char*>(*accept_aiocb.get_recv_buffer()) +
-                  accept_aiocb.get_recv_buffer()->size(),
-                accept_aiocb.get_recv_buffer()->capacity()
-                  - accept_aiocb.get_recv_buffer()->size()
-                  - ((accept_aiocb.get_peername().len() + 16) * 2),
-                accept_aiocb.get_peername().len() + 16,
-                accept_aiocb.get_peername().len() + 16,
-                &dwBytesReceived,
-                accept_aiocb
-              ) == TRUE
-              ||
-              WSAGetLastError() == WSA_IO_PENDING;
-    } else
-      return false;
+      Buffer* recv_buffer = accept_aiocb.get_recv_buffer();
+      if (recv_buffer != NULL) {
+        if (
+          recv_buffer->get_next_buffer() == NULL
+          &&
+          recv_buffer->capacity() - recv_buffer->size()
+          >=
+          dwLocalAddressLength + dwRemoteAddressLength
+        ) {
+          dwReceiveDataLength =
+            recv_buffer->capacity() - recv_buffer->size() -
+              (dwLocalAddressLength + dwRemoteAddressLength);
+        }
+        else {
+          accept_aiocb.set_error(WSAEINVAL);
+          log_error(accept_aiocb);
+          return false;
+        }
+      } else {
+        recv_buffer = new Buffer(dwLocalAddressLength + dwRemoteAddressLength);
+        accept_aiocb.set_recv_buffer(recv_buffer);
+        dwReceiveDataLength = 0;
+      }
 
+      if (
+        lpfnAcceptEx(
+          accept_aiocb.get_socket(),
+          *accepted_socket,
+          static_cast<char*>(*recv_buffer) + recv_buffer->size(),
+          dwReceiveDataLength,
+          dwLocalAddressLength,
+          dwRemoteAddressLength,
+          &dwBytesReceived,
+          accept_aiocb
+        ) == TRUE
+        ||
+        WSAGetLastError() == WSA_IO_PENDING
+      )
+        return true;
+    }
+
+    accept_aiocb.set_error(WSAGetLastError());
+    log_error(accept_aiocb);
+
+    return false;
   }
   break;
 
   case connectAIOCB::TYPE_ID: {
     connectAIOCB& connect_aiocb = static_cast<connectAIOCB&>(event);
+
+    log_enqueue(connect_aiocb);
 
     if (lpfnConnectEx == NULL) {
       DWORD dwBytes;
@@ -117,8 +284,11 @@ bool AIOQueue::enqueue(Event& event) {
         NULL
       );
 
-      if (lpfnConnectEx == NULL)
+      if (lpfnConnectEx == NULL) {
+        connect_aiocb.set_error(WSAGetLastError());
+        log_error(connect_aiocb);
         return false;
+      }
     }
 
     const SocketAddress* peername
@@ -139,79 +309,90 @@ bool AIOQueue::enqueue(Event& event) {
 
       DWORD dwBytesSent;
 
-      return lpfnConnectEx(
-               connect_aiocb.get_socket(),
-               *peername,
-               peername->len(),
-               lpSendBuffer,
-               dwSendDataLength,
-               &dwBytesSent,
-               connect_aiocb
-             )
-             ||
-             WSAGetLastError() == WSA_IO_PENDING;
-    } else
-      return false;
+      if (
+        lpfnConnectEx(
+          connect_aiocb.get_socket(),
+          *peername,
+          peername->len(),
+          lpSendBuffer,
+          dwSendDataLength,
+          &dwBytesSent,
+          connect_aiocb
+        )
+        ||
+        WSAGetLastError() == WSA_IO_PENDING
+      )
+        return true;
+    }
+
+    connect_aiocb.set_error(WSAGetLastError());
+    log_error(connect_aiocb);
+
+    return false;
   }
   break;
 
   case recvAIOCB::TYPE_ID: {
     recvAIOCB& recv_aiocb = static_cast<recvAIOCB&>(event);
 
+    log_enqueue(recv_aiocb);
+
     DWORD dwFlags = static_cast<DWORD>(recv_aiocb.get_flags());
     sockaddr* lpFrom = recv_aiocb.get_peername();
     socklen_t lpFromlen = recv_aiocb.get_peername().len();
 
     if (recv_aiocb.get_buffer().get_next_buffer() == NULL) {
-      WSABUF wsabuf;
-      wsabuf.buf = static_cast<char*>(recv_aiocb.get_buffer())
-                     + recv_aiocb.get_buffer().size();
-      wsabuf.len = recv_aiocb.get_buffer().capacity()
-                     - recv_aiocb.get_buffer().size();
+      iovec wsabuf = recv_aiocb.get_buffer().as_read_iovec();
 
-      return WSARecvFrom(
-                recv_aiocb.get_socket(),
-                &wsabuf,
-                1,
-                NULL,
-                &dwFlags,
-                lpFrom,
-                &lpFromlen,
-                recv_aiocb,
-                NULL
-              ) == 0
-              ||
-              WSAGetLastError() == WSA_IO_PENDING;
+      if (
+        WSARecvFrom(
+          recv_aiocb.get_socket(),
+          reinterpret_cast<WSABUF*>(&wsabuf),
+          1,
+          NULL,
+          &dwFlags,
+          lpFrom,
+          &lpFromlen,
+          recv_aiocb,
+          NULL
+        ) == 0
+        ||
+        WSAGetLastError() == WSA_IO_PENDING
+      )
+        return true;
     } else { // Scatter I/O
-      vector<WSABUF> wsabufs;
-      Buffer* next_buffer = &recv_aiocb.get_buffer();
-      do {
-        WSABUF wsabuf;
-        wsabuf.buf = static_cast<char*>(*next_buffer) + next_buffer->size();
-        wsabuf.len = next_buffer->capacity() - next_buffer->size();
-        wsabufs.push_back(wsabuf);
-        next_buffer = next_buffer->get_next_buffer();
-      } while (next_buffer != NULL);
+      vector<iovec> wsabufs;
+      Buffers::as_read_iovecs(recv_aiocb.get_buffer(), wsabufs);
 
-      return WSARecvFrom(
-                recv_aiocb.get_socket(),
-                &wsabufs[0],
-                wsabufs.size(),
-                NULL,
-                &dwFlags,
-                lpFrom,
-                &lpFromlen,
-                recv_aiocb,
-                NULL
-              ) == 0
-              ||
-              WSAGetLastError() == WSA_IO_PENDING;;
+      if (
+        WSARecvFrom(
+          recv_aiocb.get_socket(),
+          reinterpret_cast<WSABUF*>(&wsabufs[0]),
+          wsabufs.size(),
+          NULL,
+          &dwFlags,
+          lpFrom,
+          &lpFromlen,
+          recv_aiocb,
+          NULL
+        ) == 0
+        ||
+        WSAGetLastError() == WSA_IO_PENDING
+      )
+        return true;
     }
+
+    recv_aiocb.set_error(WSAGetLastError());
+    log_error(recv_aiocb);
+
+    return true;
   }
   break;
 
   case sendAIOCB::TYPE_ID: {
     sendAIOCB& send_aiocb = static_cast<sendAIOCB&>(event);
+
+    log_enqueue(send_aiocb);
 
     const sockaddr* lpTo = NULL;
     socklen_t iToLen = 0;
@@ -223,59 +404,85 @@ bool AIOQueue::enqueue(Event& event) {
       if (peername != NULL) {
         lpTo = *peername;
         iToLen = peername->len();
-      } else
+      } else {
+        send_aiocb.set_error(WSAGetLastError());
+        log_error(send_aiocb);
         return false;
+      }
     }
 
     if (send_aiocb.get_buffer().get_next_buffer() == NULL) {
-      WSABUF wsabuf;
-      wsabuf.buf = send_aiocb.get_buffer();
-      wsabuf.len = send_aiocb.get_buffer().size();
+      iovec wsabuf = send_aiocb.get_buffer().as_write_iovec();
 
-      return WSASendTo(
-                send_aiocb.get_socket(),
-                &wsabuf,
-                1,
-                NULL,
-                send_aiocb.get_flags(),
-                lpTo,
-                iToLen,
-                send_aiocb,
-                NULL
-              ) == 0
-              ||
-              WSAGetLastError() == WSA_IO_PENDING;
+      if (
+        WSASendTo(
+          send_aiocb.get_socket(),
+          reinterpret_cast<WSABUF*>(&wsabuf),
+          1,
+          NULL,
+          send_aiocb.get_flags(),
+          lpTo,
+          iToLen,
+          send_aiocb,
+          NULL
+        ) == 0
+        ||
+        WSAGetLastError() == WSA_IO_PENDING
+      )
+        return true;
     } else { // Gather I/O
-      vector<WSABUF> wsabufs;
-      Buffer* next_buffer = &send_aiocb.get_buffer();
-      do {
-        WSABUF wsabuf;
-        wsabuf.buf = static_cast<char*>(*next_buffer);
-        wsabuf.len = next_buffer->size();
-        wsabufs.push_back(wsabuf);
-        next_buffer = next_buffer->get_next_buffer();
-      } while (next_buffer != NULL);
+      vector<iovec> wsabufs;
+      Buffers::as_write_iovecs(send_aiocb.get_buffer(), wsabufs);
 
-      return WSASendTo(
-                send_aiocb.get_socket(),
-                &wsabufs[0],
-                wsabufs.size(),
-                NULL,
-                send_aiocb.get_flags(),
-                lpTo,
-                iToLen,
-                send_aiocb,
-                NULL
-              ) == 0
-              ||
-              WSAGetLastError() == WSA_IO_PENDING;
+      if (
+        WSASendTo(
+          send_aiocb.get_socket(),
+          reinterpret_cast<WSABUF*>(&wsabufs[0]),
+          wsabufs.size(),
+          NULL,
+          send_aiocb.get_flags(),
+          lpTo,
+          iToLen,
+          send_aiocb,
+          NULL
+        ) == 0
+        ||
+        WSAGetLastError() == WSA_IO_PENDING
+      )
+        return true;
     }
+
+    send_aiocb.set_error(WSAGetLastError());
+    log_error(send_aiocb);
+
+    return false;
   }
   break;
 
   default:
     return yield::aio::win32::AIOQueue::enqueue(event);
   }
+}
+
+template <class AIOCBType> void AIOQueue::log_completion(AIOCBType& aiocb) {
+  if (aiocb.get_return() >= 0) {
+    if (trace_log != NULL)
+      trace_log->get_stream() << get_type_name() << ": completed " << aiocb;
+  } else
+    log_error(aiocb);
+}
+
+template <class AIOCBType> void AIOQueue::log_enqueue(AIOCBType& aiocb) {
+  if (trace_log != NULL)
+    trace_log->get_stream() << get_type_name() << ": enqueuing " << aiocb;
+}
+
+template <class AIOCBType> void AIOQueue::log_error(AIOCBType& aiocb) {
+  if (error_log != NULL)
+    error_log->get_stream() << get_type_name() << ": error on " << aiocb;
+
+  if (trace_log != NULL)
+    trace_log->get_stream() << get_type_name() << ": error on " << aiocb;
 }
 }
 }

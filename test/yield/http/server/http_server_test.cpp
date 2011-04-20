@@ -28,6 +28,8 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../test_http_request_handler.hpp"
+#include "yield/auto_object.hpp"
+#include "yield/log.hpp"
 #include "yield/http/server/http_server.hpp"
 #include "yunit.hpp"
 
@@ -41,7 +43,9 @@ namespace server {
 //}
 
 TEST(HTTPServer, visit) {
-  HTTPServer http_server(*new TestHTTPRequestHandler, 8000);
+  auto_Object<Log> trace_log = Log::open(std::cerr, Log::DEBUG);
+  HTTPServer
+    http_server(*new TestHTTPRequestHandler, 8000, NULL, &trace_log.get());
   for (;;)
     http_server.visit();
 }

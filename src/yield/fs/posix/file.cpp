@@ -213,17 +213,6 @@ uint64_t File::seek(int64_t offset, uint8_t whence) {
   return lseek(*this, offset, whence);
 }
 
-bool File::set_blocking_mode(bool blocking_mode) {
-  int current_fcntl_flags = fcntl(*this, F_GETFL, 0);
-  if (blocking_mode) {
-    if ((current_fcntl_flags & O_NONBLOCK) == O_NONBLOCK)
-      return fcntl(*this, F_SETFL, current_fcntl_flags ^ O_NONBLOCK) == 0;
-    else
-      return true;
-  } else
-    return fcntl(*this, F_SETFL, current_fcntl_flags | O_NONBLOCK) == 0;
-}
-
 bool File::setlk(const Lock& lock) {
   flock flock_ = lock;
   return fcntl(*this, F_SETLK, &flock_) == 0;

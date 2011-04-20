@@ -58,7 +58,7 @@ public:
     return accepted_socket;
   }
 
-  SocketAddress& get_peername() {
+  SocketAddress* get_peername() {
     return peername;
   }
 
@@ -70,6 +70,8 @@ public:
 
 public:
   void set_accepted_socket(YO_NEW_REF StreamSocket& accepted_socket);
+  void set_peername(YO_NEW_REF SocketAddress* peername);
+  void set_recv_buffer(YO_NEW_REF Buffer* recv_buffer);
 
 public:
   // yield::Object
@@ -81,13 +83,9 @@ public:
     return "yield::sockets::aio::acceptAIOCB";
   }
 
-public:
-  // yield::aio::AIOCB
-  void set_return(ssize_t return_);
-
 private:
   StreamSocket* accepted_socket;
-  SocketAddress& peername;
+  SocketAddress* peername;
   Buffer* recv_buffer;
 };
 

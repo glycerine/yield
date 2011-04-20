@@ -46,6 +46,10 @@ public:
   virtual ~Buffer();
 
 public:
+  iovec as_read_iovec();
+  iovec as_write_iovec() const;
+
+public:
   Buffer& copy() const {
     return copy(*this);
   }
@@ -100,7 +104,7 @@ public:
   }
 
 public:
-  Buffer* get_next_buffer() {
+  Buffer* get_next_buffer() const {
     return next_buffer;
   }
 
@@ -140,6 +144,10 @@ public:
 
   operator const void* () const {
     return data();
+  }
+
+  operator iovec() const {
+    return as_write_iovec();
   }
 
   char operator[](int n) {
@@ -226,6 +234,7 @@ private:
 };
 
 std::ostream& operator<<(std::ostream&, const Buffer&);
+std::ostream& operator<<(std::ostream&, const Buffer*);
 }
 
 #endif

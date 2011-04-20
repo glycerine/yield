@@ -56,7 +56,7 @@ public:
   }
 
   virtual const char* get_type_name() const {
-    return "";
+    return "yield::Object";
   }
 
 public:
