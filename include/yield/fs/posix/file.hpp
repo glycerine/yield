@@ -213,6 +213,7 @@ public:
   ssize_t read(void* buf, size_t buflen);
   ssize_t readv(const iovec* iov, int iovlen);
   ssize_t write(const void* buf, size_t buflen);
+  ssize_t writev(const iovec* iov, int iovlen);
 
 private:
   fd_t fd;

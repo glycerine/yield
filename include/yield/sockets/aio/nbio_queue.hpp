@@ -37,6 +37,8 @@
 #include <map>
 
 namespace yield {
+class Log;
+
 namespace sockets {
 namespace aio {
 class AIOCB;

@@ -32,26 +32,30 @@
 
 #include "../posix/thread.hpp"
 
-
 namespace yield {
 namespace thread {
 namespace linux {
 class ProcessorSet;
 
-
 class Thread : public yield::thread::posix::Thread {
 public:
   Thread(Runnable&);
 
+public:
   static Thread* self();
+
+public:
   bool setaffinity(uint16_t logical_processor_i);
   bool setaffinity(const ProcessorSet& logical_processor_set);
+
+public:
   void yield();
 
 private:
   Thread(pthread_t, pid_t);
 
-  // posix::Thread
+private:
+  // yield::thread::posix::Thread
   void* run();
 
 private:

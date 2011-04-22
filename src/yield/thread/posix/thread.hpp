@@ -30,6 +30,8 @@
 #ifndef _YIELD_THREAD_POSIX_THREAD_HPP_
 #define _YIELD_THREAD_POSIX_THREAD_HPP_
 
+#include "yield/types.hpp"
+
 #include <pthread.h>
 
 namespace yield {

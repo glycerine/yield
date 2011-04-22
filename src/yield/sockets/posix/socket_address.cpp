@@ -232,8 +232,7 @@ SocketAddress::getnameinfo(
   do {
     if
     (
-      ::getnameinfo
-      (
+      ::getnameinfo(
         *this,
         len(),
         nodename,
@@ -266,7 +265,7 @@ throw(Exception) {
     throw Exception();
 }
 
-socklen_t SocketAddress::len(int family) const {
+socklen_t SocketAddress::len(int family) {
   switch (family) {
   case 0:
     return sizeof(addr);

@@ -34,6 +34,7 @@
 #elif defined(__MACH__)
 #include "../darwin/extended_attributes.hpp"
 #endif
+#include "yield/buffers.hpp"
 #include "yield/fs/posix/file.hpp"
 #include "yield/fs/posix/stat.hpp"
 
