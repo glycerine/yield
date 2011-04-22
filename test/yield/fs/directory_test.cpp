@@ -29,6 +29,7 @@
 
 #include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
+#include "yield/exception.hpp"
 #include "yield/fs/directory.hpp"
 #include "yield/fs/file_system.hpp"
 #include "yunit.hpp"

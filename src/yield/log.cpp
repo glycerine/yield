@@ -37,7 +37,6 @@
 #include <stdlib.h> // For atoi
 #endif
 
-
 namespace yield {
 class ostreamLog : public Log {
 public:
@@ -53,16 +52,6 @@ public:
 private:
   std::ostream& os;
 };
-
-
-Log::Level Log::EMERG("EMERG", 0);
-Log::Level Log::ALERT("ALERT", 1);
-Log::Level Log::CRIT("CRIT", 2);
-Log::Level Log::ERR("ERR", 3);
-Log::Level Log::WARNING("WARNING", 4);
-Log::Level Log::NOTICE("NOTICE", 5);
-Log::Level Log::INFO("INFO", 6);
-Log::Level Log::DEBUG("DEBUG", 7);
 
 
 Log::Log(const Level& level)
@@ -135,6 +124,15 @@ void Log::write(const void* str, size_t str_len) {
 }
 
 
+Log::Level Log::Level::EMERG("EMERG", 0);
+Log::Level Log::Level::ALERT("ALERT", 1);
+Log::Level Log::Level::CRIT("CRIT", 2);
+Log::Level Log::Level::ERR("ERR", 3);
+Log::Level Log::Level::WARNING("WARNING", 4);
+Log::Level Log::Level::NOTICE("NOTICE", 5);
+Log::Level Log::Level::INFO("INFO", 6);
+Log::Level Log::Level::DEBUG("DEBUG", 7);
+
 Log::Level::Level(const char* level)
   : level_string(level) {
   init(level, strlen(level));
@@ -149,30 +147,14 @@ Log::Level::Level(const string& level)
 Log::Level::Level(uint8_t level)
   : level_uint8(level) {
   switch (level) {
-  case 0:
-    level_string = "EMERG";
-    break;
-  case 1:
-    level_string = "ALERT";
-    break;
-  case 2:
-    level_string = "CRIT";
-    break;
-  case 3:
-    level_string = "ERR";
-    break;
-  case 4:
-    level_string = "WARNING";
-    break;
-  case 5:
-    level_string = "NOTICE";
-    break;
-  case 6:
-    level_string = "INFO";
-    break;
-  default:
-    level_string = "DEBUG";
-    break;
+  case 0: level_string = "EMERG"; break;
+  case 1: level_string = "ALERT"; break;
+  case 2: level_string = "CRIT"; break;
+  case 3: level_string = "ERR"; break;
+  case 4: level_string = "WARNING"; break;
+  case 5: level_string = "NOTICE"; break;
+  case 6: level_string = "INFO"; break;
+  default: level_string = "DEBUG"; break;
   }
 }
 
@@ -188,8 +170,7 @@ void Log::Level::init(const char* level, size_t level_len) {
   level_uint8 = static_cast<uint8_t>(atoi(level));
 
   if (level_uint8 == 0) {
-    if
-    (
+    if (
       (level_len == 5 && memcmp(level, "EMERG", 5) == 0) ||
       (level_len == 9 && memcmp(level, "LOG_EMERG", 9) == 0) ||
       (level_len == 9 && memcmp(level, "EMERGENCY", 9) == 0) ||
@@ -198,46 +179,40 @@ void Log::Level::init(const char* level, size_t level_len) {
     )
       level_uint8 = EMERG;
 
-    else if
-    (
+    else if (
       (level_len == 5 && memcmp(level, "ALERT", 5) == 0) ||
       (level_len == 9 && memcmp(level, "LOG_ALERT", 9) == 0)
     )
       level_uint8 = ALERT;
 
-    else if
-    (
+    else if (
       (level_len == 4 && memcmp(level, "CRIT", 4) == 0) ||
       (level_len == 8 && memcmp(level, "LOG_CRIT", 8) == 0) ||
       (level_len == 8 && memcmp(level, "CRITICAL", 8) == 0)
     )
       level_uint8 = CRIT;
 
-    else if
-    (
+    else if (
       (level_len == 3 && memcmp(level, "ERR", 3) == 0) ||
       (level_len == 7 && memcmp(level, "LOG_ERR", 7) == 0) ||
       (level_len == 5 && memcmp(level, "ERROR", 5) == 0)
     )
       level_uint8 = ERR;
 
-    else if
-    (
+    else if (
       (level_len == 7 && memcmp(level, "WARNING", 7) == 0) ||
       (level_len == 11 && memcmp(level, "LOG_WARNING", 11) == 0) ||
       (level_len == 4 && memcmp(level, "WARN", 4) == 0)
     )
       level_uint8 = WARNING;
 
-    else if
-    (
+    else if (
       (level_len == 6 && memcmp(level, "NOTICE", 6) == 0) ||
       (level_len == 10 && memcmp(level, "LOG_NOTICE", 10) == 0)
     )
       level_uint8 = NOTICE;
 
-    else if
-    (
+    else if (
       (level_len == 4 && memcmp(level, "INFO", 4) == 0) ||
       (level_len == 8 && memcmp(level, "LOG_INFO", level_len) == 0)
     )

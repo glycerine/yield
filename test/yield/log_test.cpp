@@ -44,7 +44,7 @@ public:
   { }
 
   void setup() {
-    log = &Log::open(log_oss, Log::DEBUG);
+    log = &Log::open(log_oss, Log::Level::DEBUG);
   }
 
   void teardown() {
@@ -88,12 +88,12 @@ TEST_EX(Log, write_ignore, LogTest) {
 }
 
 TEST_EX(Log, write_c_string, LogTest) {
-  get_log().write(get_test_string().c_str(), Log::EMERG);
+  get_log().write(get_test_string().c_str(), Log::Level::EMERG);
   throw_assert_eq(get_log_oss().str().size(), get_test_string().size());
 }
 
 TEST_EX(Log, write_string, LogTest) {
-  get_log().write(get_test_string(), Log::EMERG);
+  get_log().write(get_test_string(), Log::Level::EMERG);
   throw_assert_eq(get_log_oss().str().size(), get_test_string().size());
 }
 
@@ -109,43 +109,43 @@ TEST_EX(Log, write_unprintable, LogTest) {
   (
     unprintable_string,
     get_test_string().size(),
-    Log::EMERG
+    Log::Level::EMERG
   );
 
   throw_assert_ge(get_log_oss().str().size(), get_test_string().size());
 }
 
 TEST(Log, Level_compare) {
-  throw_assert_eq(Log::EMERG, Log::EMERG);
-  throw_assert_lt(Log::EMERG, Log::ALERT);
-  throw_assert_le(Log::EMERG, Log::ALERT);
-  throw_assert_gt(Log::ALERT, Log::EMERG);
-  throw_assert_ge(Log::ALERT, Log::EMERG);
+  throw_assert_eq(Log::Level::EMERG, Log::Level::EMERG);
+  throw_assert_lt(Log::Level::EMERG, Log::Level::ALERT);
+  throw_assert_le(Log::Level::EMERG, Log::Level::ALERT);
+  throw_assert_gt(Log::Level::ALERT, Log::Level::EMERG);
+  throw_assert_ge(Log::Level::ALERT, Log::Level::EMERG);
 }
 
 TEST(Log, Level_from_int) {
-  throw_assert_eq(Log::Level(static_cast<uint8_t>(0)), Log::EMERG);
-  throw_assert_eq(Log::Level(static_cast<uint8_t>(1)), Log::ALERT);
-  throw_assert_eq(Log::Level(static_cast<uint8_t>(2)), Log::CRIT);
-  throw_assert_eq(Log::Level(static_cast<uint8_t>(3)), Log::ERR);
-  throw_assert_eq(Log::Level(static_cast<uint8_t>(4)), Log::WARNING);
-  throw_assert_eq(Log::Level(static_cast<uint8_t>(5)), Log::NOTICE);
-  throw_assert_eq(Log::Level(static_cast<uint8_t>(6)), Log::INFO);
-  throw_assert_eq(Log::Level(static_cast<uint8_t>(7)), Log::DEBUG);
+  throw_assert_eq(Log::Level(static_cast<uint8_t>(0)), Log::Level::EMERG);
+  throw_assert_eq(Log::Level(static_cast<uint8_t>(1)), Log::Level::ALERT);
+  throw_assert_eq(Log::Level(static_cast<uint8_t>(2)), Log::Level::CRIT);
+  throw_assert_eq(Log::Level(static_cast<uint8_t>(3)), Log::Level::ERR);
+  throw_assert_eq(Log::Level(static_cast<uint8_t>(4)), Log::Level::WARNING);
+  throw_assert_eq(Log::Level(static_cast<uint8_t>(5)), Log::Level::NOTICE);
+  throw_assert_eq(Log::Level(static_cast<uint8_t>(6)), Log::Level::INFO);
+  throw_assert_eq(Log::Level(static_cast<uint8_t>(7)), Log::Level::DEBUG);
 }
 
 TEST(Log, Level_from_c_string) {
-  throw_assert_eq(Log::Level("EMERG"), Log::EMERG);
-  throw_assert_eq(Log::Level("ALERT"), Log::ALERT);
-  throw_assert_eq(Log::Level("CRIT"), Log::CRIT);
-  throw_assert_eq(Log::Level("ERR"), Log::ERR);
-  throw_assert_eq(Log::Level("WARNING"), Log::WARNING);
-  throw_assert_eq(Log::Level("NOTICE"), Log::NOTICE);
-  throw_assert_eq(Log::Level("INFO"), Log::INFO);
-  throw_assert_eq(Log::Level("DEBUG"), Log::DEBUG);
+  throw_assert_eq(Log::Level("EMERG"), Log::Level::EMERG);
+  throw_assert_eq(Log::Level("ALERT"), Log::Level::ALERT);
+  throw_assert_eq(Log::Level("CRIT"), Log::Level::CRIT);
+  throw_assert_eq(Log::Level("ERR"), Log::Level::ERR);
+  throw_assert_eq(Log::Level("WARNING"), Log::Level::WARNING);
+  throw_assert_eq(Log::Level("NOTICE"), Log::Level::NOTICE);
+  throw_assert_eq(Log::Level("INFO"), Log::Level::INFO);
+  throw_assert_eq(Log::Level("DEBUG"), Log::Level::DEBUG);
 }
 
 TEST(Log, Level_from_string) {
-  throw_assert_eq(Log::Level(string("EMERG")), Log::EMERG);
+  throw_assert_eq(Log::Level(string("EMERG")), Log::Level::EMERG);
 }
 }

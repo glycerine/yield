@@ -41,6 +41,17 @@ class Log : public Object {
 public:
   class Level {
   public:
+    // Adapted from syslog levels
+    static Level EMERG;
+    static Level ALERT;
+    static Level CRIT;
+    static Level ERR;
+    static Level WARNING;
+    static Level NOTICE;
+    static Level INFO;
+    static Level DEBUG;
+
+  public:
     Level(const char* level);
     Level(const string& level);
     Level(uint8_t level);
@@ -89,17 +100,6 @@ public:
   };
 
 public:
-  // Adapted from syslog levels
-  static Level EMERG;
-  static Level ALERT;
-  static Level CRIT;
-  static Level ERR;
-  static Level WARNING;
-  static Level NOTICE;
-  static Level INFO;
-  static Level DEBUG;
-
-public:
   virtual ~Log() { }
 
 public:
@@ -116,7 +116,7 @@ public:
   }
 
 public:
-  static YO_NEW_REF Log& open(std::ostream&, const Level& = ERR);
+  static YO_NEW_REF Log& open(std::ostream&, const Level& = Level::ERR);
 
 public:
   void write(const char*, const Level&);

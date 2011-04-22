@@ -44,7 +44,8 @@ public:
   FileLog(const Path& file_path, const Level& level);
   ~FileLog();
 
-  // Log
+public:
+  // yield::Log
   void write(const char* str, size_t str_len);
 
 private:

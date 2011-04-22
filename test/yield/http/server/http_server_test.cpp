@@ -43,7 +43,7 @@ namespace server {
 //}
 
 TEST(HTTPServer, visit) {
-  auto_Object<Log> trace_log = Log::open(std::cerr, Log::DEBUG);
+  auto_Object<Log> trace_log = Log::open(std::cerr, Log::Level::DEBUG);
   HTTPServer
     http_server(*new TestHTTPRequestHandler, 8000, NULL, &trace_log.get());
   for (;;)

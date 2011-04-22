@@ -32,14 +32,13 @@
 #include "yield/auto_object.hpp"
 #include "yunit.hpp"
 
-
 TEST_SUITE(auto_Object);
 
 namespace yield {
 TEST(auto_Object, null) {
   try {
     auto_Object<TestObject>(NULL);
-  } catch (Exception&) {
+  } catch (std::exception&) {
     return;
   }
 

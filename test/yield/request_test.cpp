@@ -31,6 +31,7 @@
 #include "yield/assert.hpp"
 #include "yield/event_handler.hpp"
 #include "yield/request.hpp"
+#include "yield/response.hpp"
 #include "yunit.hpp"
 
 

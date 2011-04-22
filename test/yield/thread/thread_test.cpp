@@ -29,11 +29,11 @@
 
 #include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
+#include "yield/exception.hpp"
 #include "yield/time.hpp"
 #include "yield/thread/mutex.hpp"
 #include "yield/thread/thread.hpp"
 #include "yunit.hpp"
-
 
 TEST_SUITE(Thread);
 
