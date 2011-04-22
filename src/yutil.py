@@ -460,8 +460,7 @@ def treepaths(paths):
         str_path = str(path)
         subtree = tree
         path_segments = str_path.split(os_sep)
-        for path_segment_i in xrange(len(path_segments)):
-            path_segment = path_segments[path_segment_i]
+        for path_segment_i, path_segment in enumerate(path_segments):
             if path_segment_i < len(path_segments) - 1:
                 dir_path = os_sep.join(path_segments[:path_segment_i + 1])
                 try:

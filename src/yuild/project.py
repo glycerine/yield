@@ -50,7 +50,6 @@ class Project(object):
     def __init__(
         self,
         name,
-        output_file_path,
         source_file_paths,
         build_dir_path=None,
         cxxdefines=None,
@@ -61,6 +60,7 @@ class Project(object):
         libpath=None,
         libs=None,
         ldflags=None,
+        output_file_path=None,
         project_dir_path=None,
         project_references=None,
         source_dir_path=None,

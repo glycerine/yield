@@ -145,6 +145,7 @@ for py_source_file_extension in PY_SOURCE_FILE_EXTENSIONS:
     COMMENT_PREFIXES[py_source_file_extension] = COMMENT_PREFIXES["py"]
     COMMENT_SUFFIXES[py_source_file_extension] = COMMENT_SUFFIXES["py"]
     INDENT_SPACES[py_source_file_extension] = INDENT_SPACES["py"]
+PY_SOURCE_FILE_FNMATCH_PATTERNS = ['*' + ext for ext in PY_SOURCE_FILE_EXTENSIONS]
 
 SOURCE_FILE_EXTENSIONS = {}
 for source_file_extension in C_SOURCE_FILE_EXTENSIONS:
@@ -159,12 +160,12 @@ for source_file_extension in RAGEL_FILE_EXTENSIONS:
 SOURCE_FILE_FNMATCH_PATTERNS = ['*' + ext for ext in SOURCE_FILE_EXTENSIONS.iterkeys()]
 
 SYS_PLATFORM_CHECKS = {
-    '*': 'True:',
+    '*': 'True',
     "bsd": 'sys.platform == "darwin" or "bsd" in sys.platform',
     "darwin": 'sys.platform == "darwin"',
-    "freebsd": 'sys.platform.startswith( "freebsd" )',
-    "linux": 'sys.platform.startswith( "linux" )',
-    "sunos": 'sys.platform.startswith( "sunos" )',
+    "freebsd": 'sys.platform.startswith("freebsd")',
+    "linux": 'sys.platform.startswith("linux")',
+    "sunos": 'sys.platform.startswith("sunos")',
     "win32": 'sys.platform == "win32"',
 }
 SYS_PLATFORM_CHECKS["posix"] = \

@@ -29,6 +29,7 @@
 
 from makefile import *
 from platform_dict import *
+from setup_py import *
 from source_files import *
 from vcproj import *
 from vcxproj import *
