@@ -1,4 +1,4 @@
-// yield/sockets/datagram_socket.hpp
+// datagram_socket_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,52 +27,17 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_SOCKETS_DATAGRAM_SOCKET_HPP_
-#define _YIELD_SOCKETS_DATAGRAM_SOCKET_HPP_
+#include "yield/auto_object.hpp"
+#include "yield/sockets/udp_socket.hpp"
+#include "yunit.hpp"
 
-#include "yield/sockets/socket.hpp"
+TEST_SUITE(DatagramSocket);
 
 namespace yield {
 namespace sockets {
-class DatagramSocket : public Socket {
-public:
-  static int TYPE; // SOCK_DGRAM
-
-public:
-  DatagramSocket(int domain, int protocol = PROTOCOL_DEFAULT)
-    : Socket(domain, TYPE, protocol)
-  { }
-
-  DatagramSocket(int domain, int protocol, socket_t socket_)
-    : Socket(domain, TYPE, protocol, socket_)
-  { }
-
-  virtual ~DatagramSocket() { }
-
-public:
-  static YO_NEW_REF DatagramSocket*
-  create(
-    int domain,
-    int protocol = PROTOCOL_DEFAULT
-  ) {
-    socket_t socket_ = Socket::create(domain, TYPE, protocol);
-    if (socket_ != static_cast<socket_t>(-1))
-      return new DatagramSocket(domain, protocol, socket_);
-    else
-      return NULL;
-  }
-
-public:
-  // yield::Object
-  const char* get_type_name() const {
-    return "yield::sockets::DatagramSocket";
-  }
-
-  DatagramSocket& inc_ref() {
-    return Object::inc_ref(*this);
-  }
-};
+TEST(DatagramSocket, create) {
+  auto_Object<DatagramSocket> socket_
+    = DatagramSocket::create(UDPSocket::DOMAIN_DEFAULT);
 }
 }
-
-#endif
+}

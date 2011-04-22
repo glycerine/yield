@@ -44,13 +44,11 @@ public:
 
 public:
   ssize_t read(Buffer& buffer);
-  ssize_t read(const iovec& iov);
   virtual ssize_t read(void* buf, size_t buflen) = 0;
   virtual ssize_t readv(const iovec* iov, int iovlen) = 0;
 
 public:
   ssize_t write(const Buffer& buffer);
-  ssize_t write(const iovec& iov);
   virtual ssize_t write(const void* buf, size_t buflen) = 0;
   virtual ssize_t writev(const iovec* iov, int iovlen);
 

@@ -51,25 +51,29 @@ public:
 
   ~SocketPair();
 
+public:
   static YO_NEW_REF SocketPair*
-  create
-  (
+  create(
     int domain = DOMAIN_DEFAULT,
     int type = TYPE_DEFAULT,
     int protocol = Socket::PROTOCOL_DEFAULT
   );
 
+public:
   Socket& first() const {
     return *sockets[0];
   }
+
   Socket& second() const {
     return *sockets[1];
   }
 
-  // ChannelPair
+public:
+  // yield::ChannelPair
   Channel& get_read_channel() {
     return first();
   }
+
   Channel& get_write_channel() {
     return second();
   }
@@ -77,6 +81,7 @@ public:
 private:
   SocketPair(YO_NEW_REF Socket**);
 
+private:
   static bool socketpair(int domain, int type, int protocol, Socket**);
 
 private:

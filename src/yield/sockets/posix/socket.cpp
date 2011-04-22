@@ -108,8 +108,7 @@ string Socket::getfqdn() {
         strncpy(fqdn, hostents->h_name, 256);
       } else {
         for (uint8_t i = 0; hostents->h_aliases[i] != NULL; i++) {
-          if
-          (
+          if (
             strchr(hostents->h_aliases[i], '.') != NULL &&
             strstr(hostents->h_name, "localhost") == NULL
           ) {
@@ -133,10 +132,8 @@ string Socket::gethostname() {
 
 bool Socket::getpeername(OUT SocketAddress& peername) const {
   socklen_t peernamelen = peername.len();
-  if
-  (
-    ::getpeername
-    (
+  if (
+    ::getpeername(
       *this,
       peername,
       &peernamelen
@@ -151,10 +148,8 @@ bool Socket::getpeername(OUT SocketAddress& peername) const {
 bool Socket::getsockname(OUT SocketAddress& sockname) const {
   socklen_t socknamelen = sockname.len();
 
-  if
-  (
-    ::getsockname
-    (
+  if (
+    ::getsockname(
       *this,
       sockname,
       &socknamelen

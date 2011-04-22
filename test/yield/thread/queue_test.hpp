@@ -44,7 +44,7 @@ class QueueTest : public yunit::Test { };
 template <class QueueType>
 class QueueCreateTest : public QueueTest<QueueType> {
 public:
-  // Test
+  // yunit::Test
   void run() {
     QueueType();
   }
@@ -54,7 +54,7 @@ public:
 template <class QueueType>
 class QueueDequeueTest : public QueueTest<QueueType> {
 public:
-  // Test
+  // yunit::Test
   void run() {
     QueueType queue;
 
@@ -72,7 +72,7 @@ public:
 template <class QueueType>
 class QueueEnqueueTest : public QueueTest<QueueType> {
 public:
-  // Test
+  // yunit::Test
   void run() {
     QueueType queue;
 
@@ -85,7 +85,7 @@ public:
 template <class QueueType>
 class QueueFullTest : public QueueTest<QueueType> {
 public:
-  // Test
+  // yunit::Test
   void run() {
     QueueType queue;
 

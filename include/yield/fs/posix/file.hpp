@@ -161,7 +161,7 @@ public:
     bool shared = true
   );
 
-public;
+public:
   virtual YO_NEW_REF ExtendedAttributes* openxattrs();
 
 public:
@@ -170,12 +170,14 @@ public:
   }
 
 public:
-  ssize_t pread(void*, size_t, uint64_t);
-  ssize_t preadv(const iovec*, int, uint64_t);
+  ssize_t pread(Buffer& buffer, uint64_t offset);
+  ssize_t pread(void* buf, size_t len, uint64_t offset);
+  ssize_t preadv(const iovec* iov, int iovlen, uint64_t offset);
 
 public:
-  ssize_t pwrite(const void*, size_t, uint64_t);
-  ssize_t pwritev(const iovec*, int, uint64_t);
+  ssize_t pwrite(const Buffer& buffer, uint64_t offset);
+  ssize_t pwrite(const void* buf, size_t len, uint64_t offset);
+  ssize_t pwritev(const iovec* iov, int iovlen, uint64_t);
 
 public:
   uint64_t seek(int64_t offset, uint8_t whence = SEEK_SET);
@@ -211,7 +213,6 @@ public:
   ssize_t read(void* buf, size_t buflen);
   ssize_t readv(const iovec* iov, int iovlen);
   ssize_t write(const void* buf, size_t buflen);
-  ssize_t writev(const iovec* iov, int iovlen);
 
 private:
   fd_t fd;

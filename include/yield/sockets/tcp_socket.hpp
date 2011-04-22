@@ -32,7 +32,6 @@
 
 #include "yield/sockets/stream_socket.hpp"
 
-
 namespace yield {
 namespace sockets {
 class TCPSocket : public StreamSocket {
@@ -82,7 +81,7 @@ public:
   }
 
 protected:
-  // StreamSocket
+  // yield::sockets::StreamSocket
   virtual StreamSocket* dup2(socket_t socket_) {
     return new TCPSocket(get_domain(), socket_);
   }

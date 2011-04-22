@@ -73,6 +73,7 @@ protected:
     Buffer::dec_ref(test_buffer);
   }
 
+protected:
   AIOQueueType& get_aio_queue() const {
     return *aio_queue;
   }
@@ -138,7 +139,7 @@ public:
       static_cast<size_t>(out_aiocb->get_return()),
       this->get_test_nbytes()
     );
-    //throw_assert_eq(*buffer, this->get_test_buffer());
+    throw_assert_eq(*buffer, this->get_test_buffer());
   }
 };
 
@@ -186,8 +187,8 @@ public:
         static_cast<size_t>(read_ret),
         this->get_test_nbytes()
       );
-      //buffer->resize(static_cast<size_t>(read_ret));
-      //throw_assert_eq(*buffer, this->get_test_buffer());
+      buffer->resize(static_cast<size_t>(read_ret));
+      throw_assert_eq(*buffer, this->get_test_buffer());
     }
   }
 };
@@ -198,17 +199,16 @@ class AIOQueueTestSuite : public EventQueueTestSuite<AIOQueueType> {
 public:
   AIOQueueTestSuite() {
     add("AIOQueue::dequeue", new EventQueueDequeueTest<AIOQueueType>);
+
     add("AIOQueue + pread", new AIOQueuePReadTest<AIOQueueType>);
     add("AIOQueue + pwrite", new AIOQueueWriteTest<AIOQueueType>);
 
-    add
-    (
+    add(
       "AIOQueue::timeddequeue",
       new EventQueueTimedDequeueTest<AIOQueueType>
     );
 
-    add
-    (
+    add(
       "AIOQueue::trydequeue",
       new EventQueueTryDequeueTest<AIOQueueType>
     );

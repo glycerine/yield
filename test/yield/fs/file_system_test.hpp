@@ -88,7 +88,7 @@ private:
 
 class FileSystemCreatTest : public FileSystemTest {
 public:
-  // Test
+  // yunit::Test
   void run() {
     File* file = FileSystem().creat(get_test_file_name());
     if (file != NULL)
@@ -101,7 +101,7 @@ public:
 
 class FileSystemExistsTest : public FileSystemTest {
 public:
-  // Test
+  // yunit::Test
   void run() {
     if (!FileSystem().exists(get_test_file_name()))
       throw Exception();
@@ -113,7 +113,7 @@ public:
 
 class FileSystemIsDirTest : public FileSystemTest {
 public:
-  // Test
+  // yunit::Test
   void run() {
     FileSystem().mkdir(get_test_dir_name());
     throw_assert(FileSystem().isdir(get_test_dir_name()));
@@ -125,7 +125,7 @@ public:
 
 class FileSystemIsFileTest : public FileSystemTest {
 public:
-  // Test
+  // yunit::Test
   void run() {
     throw_assert(FileSystem().isfile(get_test_file_name()));
     FileSystem().mkdir(get_test_dir_name());
@@ -137,7 +137,7 @@ public:
 
 class FileSystemLinkTest : public FileSystemTest {
 public:
-  // Test
+  // yunit::Test
   void run() {
     if (FileSystem().link(get_test_file_name(), get_test_link_name()))
       return;
@@ -149,7 +149,7 @@ public:
 
 class FileSystemMkdirTest : public FileSystemTest {
 public:
-  // Test
+  // yunit::Test
   void run() {
     if (!FileSystem().mkdir(get_test_dir_name()))
       throw Exception();
@@ -159,7 +159,7 @@ public:
 
 class FileSystemMktreeTest : public FileSystemTest {
 public:
-  // Test
+  // yunit::Test
   void run() {
     Path subdir_path(Path("file_system_test") + Path("subdir"));
     if (!FileSystem().mktree(subdir_path)) throw Exception();
@@ -170,7 +170,7 @@ public:
 
 class FileSystemOpenTest : public FileSystemTest {
 public:
-  // Test
+  // yunit::Test
   void run() {
     auto_Object<File> file = FileSystem().open(get_test_file_name());
 
@@ -199,7 +199,7 @@ public:
 
 class FileSystemRenameTest : public FileSystemTest {
 public:
-  // Test
+  // yunit::Test
   void run() {
     if (!FileSystem().rename(get_test_file_name(), Path("file_system_test2.txt")))
       throw Exception();
@@ -210,7 +210,7 @@ public:
 
 class FileSystemRmDirTest : public FileSystemTest {
 public:
-  // Test
+  // yunit::Test
   void run() {
     FileSystem().mkdir(get_test_dir_name());
     if (!FileSystem().rmdir(get_test_dir_name()))
@@ -221,7 +221,7 @@ public:
 
 class FileSystemRmTreeTest : public FileSystemTest {
 public:
-  // Test
+  // yunit::Test
   void run() {
     if (!FileSystem().mkdir(get_test_dir_name()))
       throw Exception();
@@ -239,7 +239,7 @@ public:
 
 class FileSystemStatTest : public FileSystemTest {
 public:
-  // Test
+  // yunit::Test
   void run() {
     DateTime now = DateTime::now();
     auto_Object<Stat> stbuf = FileSystem().stat(get_test_file_name());
@@ -258,7 +258,7 @@ public:
 
 class FileSystemStatVFSTest : public FileSystemTest {
 public:
-  // Test
+  // yunit::Test
   void run() {
     FileSystem().mkdir(get_test_dir_name());
     struct statvfs stbuf;
@@ -275,7 +275,7 @@ public:
 
 class FileSystemTouchTest : public FileSystemTest {
 public:
-  // Test
+  // yunit::Test
   void run() {
     if (!FileSystem().touch(get_test_file_name()))
       throw Exception();
@@ -289,7 +289,7 @@ public:
 
 class FileSystemTruncateTest : public FileSystemTest {
 public:
-  // Test
+  // yunit::Test
   void run() {
     {
       auto_Object<File> file
@@ -312,7 +312,7 @@ public:
 
 class FileSystemUnlinkTest : public FileSystemTest {
 public:
-  // Test
+  // yunit::Test
   void run() {
     if (!FileSystem().unlink(get_test_file_name()))
       throw Exception();
@@ -322,7 +322,7 @@ public:
 
 class FileSystemUtimeTest : public FileSystemTest {
 public:
-  // Test
+  // yunit::Test
   void run() {
     DateTime atime = DateTime::now(),
              mtime = DateTime::now();

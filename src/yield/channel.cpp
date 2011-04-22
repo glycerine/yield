@@ -48,10 +48,6 @@ ssize_t Channel::read(Buffer& buffer) {
   }
 }
 
-ssize_t Channel::read(const iovec& iov) {
-  return read(iov.iov_base, iov.iov_len);
-}
-
 ssize_t Channel::write(const Buffer& buffer) {
   if (buffer.get_next_buffer() == NULL)
     return write(buffer, buffer.size());
@@ -60,10 +56,6 @@ ssize_t Channel::write(const Buffer& buffer) {
     Buffers::as_write_iovecs(buffer, iov);
     return writev(&iov[0], iov.size());
   }
-}
-
-ssize_t Channel::write(const iovec& iov) {
-  return write(iov.iov_base, iov.iov_len);
 }
 
 ssize_t Channel::writev(const iovec* iov, int iovlen) {

@@ -53,7 +53,7 @@ public:
       test_file_name("stat_test.txt")
   { }
 
-  // Test
+  // yunit::Test
   void setup() {
     teardown();
 

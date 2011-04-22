@@ -41,7 +41,7 @@ namespace yield {
 namespace thread {
 class ThreadTest : public yunit::Test {
 public:
-  // Test
+  // yunit::Test
   void setup() {
     mutex = new Mutex;
     mutex->lock();

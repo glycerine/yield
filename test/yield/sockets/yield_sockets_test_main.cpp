@@ -31,13 +31,20 @@
 
 #include <iostream>
 
+extern yunit::TestSuite& DatagramSocketTestSuite();
 extern yunit::TestSuite& SocketAddressTestSuite();
 extern yunit::TestSuite& SocketPairTestSuite();
+extern yunit::TestSuite& StreamSocketTestSuite();
 extern yunit::TestSuite& TCPSocketTestSuite();
 extern yunit::TestSuite& UDPSocketTestSuite();
 
 int main(int, char**) {
   int failed_test_case_count = 0;
+
+  // DatagramSocket
+  std::cout << "DatagramSocket:" << std::endl;
+  failed_test_case_count += DatagramSocketTestSuite().run();
+  std::cout << std::endl;
 
   // SocketAddress
   std::cout << "SocketAddress:" << std::endl;
@@ -47,6 +54,11 @@ int main(int, char**) {
   // SocketPair
   std::cout << "SocketPair:" << std::endl;
   failed_test_case_count += SocketPairTestSuite().run();
+  std::cout << std::endl;
+
+  // StreamSocket
+  std::cout << "StreamSocket:" << std::endl;
+  failed_test_case_count += StreamSocketTestSuite().run();
   std::cout << std::endl;
 
   // TCPSocket

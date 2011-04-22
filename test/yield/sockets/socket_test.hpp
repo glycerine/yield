@@ -41,7 +41,7 @@ namespace sockets {
 template <class SocketType>
 class SocketBindTest : public yunit::Test {
 public:
-  // Test
+  // yunit::Test
   void run() {
     auto_Object<SocketType> socket_ = SocketType::create();
     if (!socket_->bind(SocketAddress(SocketAddress::IN_ANY, 31000)))
@@ -52,7 +52,7 @@ public:
 
 class SocketGetFQDNTest : public yunit::Test {
 public:
-  // Test
+  // yunit::Test
   void run() {
     string hostname = Socket::gethostname();
     string fqdn = Socket::getfqdn();
@@ -65,7 +65,7 @@ public:
 
 class SocketGetHostNameTest : public yunit::Test {
 public:
-  // Test
+  // yunit::Test
   void run() {
     string hostname = Socket::gethostname();
     throw_assert_false(hostname.empty());
@@ -77,7 +77,7 @@ public:
 template <class SocketType>
 class SocketSetBlockingModeTest : public yunit::Test {
 public:
-  // Test
+  // yunit::Test
   void run() {
     auto_Object<SocketType> socket_ = SocketType::create();
 
@@ -93,7 +93,7 @@ public:
 template <class SocketType>
 class SocketShutdownTest : public yunit::Test {
 public:
-  // Test
+  // yunit::Test
   void run() {
     {
       auto_Object<SocketType> socket_ = SocketType::create();
@@ -130,7 +130,7 @@ public:
     add("Socket::getfqdn()", new SocketGetFQDNTest);
     add("Socket::gethostname", new SocketGetHostNameTest);
     add("Socket::set_blocking_mode",new SocketSetBlockingModeTest<SocketType>);
-    add("Socket::shutdown", new SocketShutdownTest<SocketType>);
+    //add("Socket::shutdown", new SocketShutdownTest<SocketType>);
   }
 };
 }

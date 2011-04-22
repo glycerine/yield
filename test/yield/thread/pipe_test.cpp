@@ -36,7 +36,7 @@ namespace thread {
 class PipeFactory : public ChannelPairFactory {
 public:
   // yield::ChannelPairFactory
-  ChannelPair& createChannelPair() {
+  ChannelPair& create_channel_pair() {
     return *new Pipe;
   }
 };

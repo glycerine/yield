@@ -48,6 +48,7 @@ public:
     : Socket(domain, TYPE, protocol, socket_)
   { }
 
+public:
   YO_NEW_REF StreamSocket* accept() {
     SocketAddress peername;
     return accept(peername);
@@ -69,6 +70,7 @@ public:
       return NULL;
   }
 
+public:
   virtual YO_NEW_REF StreamSocket* dup() {
     return create(get_domain(), get_protocol());
   }

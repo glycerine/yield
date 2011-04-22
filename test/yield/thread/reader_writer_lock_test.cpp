@@ -40,7 +40,7 @@ namespace yield {
 namespace thread {
 class ReaderWriterLockTest : public yunit::Test {
 public:
-  // Test
+  // yunit::Test
   void setup() {
     rwlock = new ReaderWriterLock;
   }
@@ -62,7 +62,7 @@ TEST_EX(ReaderWriterLock, rdlock, ReaderWriterLockTest) {
 
 class ReaderWriterLockMultiReaderTest : public ReaderWriterLockTest {
 public:
-  // Test
+  // yunit::Test
   virtual void run() {
     bool rdlock_ret = rwlock->rdlock();
     throw_assert(rdlock_ret);

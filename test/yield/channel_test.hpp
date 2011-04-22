@@ -30,20 +30,22 @@
 #ifndef _YIELD_CHANNEL_TEST_HPP_
 #define _YIELD_CHANNEL_TEST_HPP_
 
+#include "yield/auto_object.hpp"
 #include "yield/assert.hpp"
+#include "yield/buffer.hpp"
 #include "yield/channel.hpp"
 #include "yield/channel_pair.hpp"
 #include "yield/exception.hpp"
 #include "yunit.hpp"
-
 
 namespace yield {
 class ChannelPairFactory : public Object {
 public:
   virtual ~ChannelPairFactory() { }
 
-  virtual ChannelPair& createChannelPair() = 0;
+  virtual ChannelPair& create_channel_pair() = 0;
 
+public:
   // yield::Object
   ChannelPairFactory& inc_ref() {
     return Object::inc_ref(*this);
@@ -58,7 +60,7 @@ public:
   }
 
   virtual void setup() {
-    channel_pair = &channel_pair_factory.createChannelPair();
+    channel_pair = &channel_pair_factory.create_channel_pair();
   }
 
   virtual void teardown() {
@@ -72,54 +74,64 @@ protected:
       test_string("test string")
   { }
 
+protected:
   Channel& get_read_channel() {
     return channel_pair->get_read_channel();
   }
+
   const string& get_test_string() const {
     return test_string;
   }
+
   Channel& get_write_channel() {
     return channel_pair->get_write_channel();
+  }
+
+protected:
+  void check_read(const void* buf, ssize_t read_ret) {
+    if (read_ret >= 0) {
+      throw_assert_eq(
+        static_cast<size_t>(read_ret),
+        get_test_string().size()
+     );
+
+      throw_assert_eq(
+        memcmp(buf, get_test_string().data(), get_test_string().size()),
+        0
+     );
+    } else
+      throw Exception();
+  }
+
+  void check_write(ssize_t write_ret) {
+    if (write_ret >= 0) {
+      throw_assert_eq(
+        static_cast<size_t>(write_ret),
+        get_test_string().size()
+     );
+    } else
+      throw Exception();
   }
 
   void read() {
     string test_string;
     test_string.resize(get_test_string().size());
-    ssize_t read_ret
-    = get_read_channel().read
-      (
+    check_read(
+      test_string.data(),
+      get_read_channel().read(
         const_cast<char*>(test_string.data()),
         test_string.capacity()
-      );
-
-    if (read_ret >= 0) {
-      throw_assert_eq
-      (
-        static_cast<size_t>(read_ret),
-        get_test_string().size()
-      );
-
-      throw_assert_eq(test_string, get_test_string());
-    } else
-      throw Exception();
+     )
+   );
   }
 
   void write() {
-    ssize_t write_ret
-    = get_write_channel().write
-      (
+    check_write(
+      get_write_channel().write(
         get_test_string().data(),
         get_test_string().size()
-      );
-
-    if (write_ret >= 0) {
-      throw_assert_eq
-      (
-        static_cast<size_t>(write_ret),
-        get_test_string().size()
-      );
-    } else
-      throw Exception();
+     )
+   );
   }
 
 private:
@@ -135,7 +147,8 @@ public:
     : ChannelTest(channel_pair_factory)
   { }
 
-  // Test
+public:
+  // yunit::Test
   void run() {
     if (!get_read_channel().close())
       throw Exception();
@@ -149,10 +162,27 @@ public:
     : ChannelTest(channel_pair_factory)
   { }
 
-  // Test
-  virtual void run() {
+public:
+  // yunit::Test
+  void run() {
     this->write();
     this->read();
+  }
+};
+
+
+class ChannelReadBufferTest : public ChannelTest {
+public:
+  ChannelReadBufferTest(ChannelPairFactory& channel_pair_factory)
+    : ChannelTest(channel_pair_factory)
+  { }
+
+public:
+  // yunit::Test
+  void run() {
+    this->write();
+    auto_Object<Buffer> test_buffer = new Buffer(get_test_string().size());
+    check_read(*test_buffer, get_read_channel().read(*test_buffer));
   }
 };
 
@@ -163,8 +193,9 @@ public:
     : ChannelTest(channel_pair_factory)
   { }
 
-  // Test
-  virtual void run() {
+public:
+  // yunit::Test
+  void run() {
     this->write();
 
     string test_string;
@@ -173,17 +204,10 @@ public:
     iov.iov_base = const_cast<char*>(test_string.data());
     iov.iov_len = test_string.size();
 
-    ssize_t readv_ret = get_read_channel().readv(&iov, 1);
-    if (readv_ret >= 0) {
-      throw_assert_eq
-      (
-        static_cast<size_t>(readv_ret),
-        get_test_string().size()
-      );
-
-      throw_assert_eq(test_string, get_test_string());
-    } else
-      throw Exception();
+    check_read(
+      test_string.data(),
+      get_read_channel().readv(&iov, 1)
+   );
   }
 };
 
@@ -194,33 +218,23 @@ public:
     : ChannelTest(channel_pair_factory)
   { }
 
-  // Test
-  virtual void run() {
+public:
+  // yunit::Test
+  void run() {
     this->write();
 
+    string test_string;
+    test_string.resize(get_test_string().size());
     iovec iov[2];
-
-    string test;
-    test.resize(4);
-    iov[0].iov_base = const_cast<char*>(test.data());
+    iov[0].iov_base = const_cast<char*>(test_string.data());
     iov[0].iov_len = 4;
-
-    string _string;
-    _string.resize(7);
-    iov[1].iov_base = const_cast<char*>(_string.data());
+    iov[1].iov_base = const_cast<char*>(test_string.data()) + 4;
     iov[1].iov_len = 7;
 
-    ssize_t readv_ret = get_read_channel().readv(iov, 2);
-    if (readv_ret >= 0) {
-      throw_assert_eq
-      (
-        static_cast<size_t>(readv_ret),
-        get_test_string().size()
-      );
-      throw_assert_eq(test, "test");
-      throw_assert_eq(_string, " string");
-    } else
-      throw Exception();
+    check_read(
+      test_string.data(),
+      get_read_channel().readv(iov, 2)
+   );
   }
 };
 
@@ -231,9 +245,27 @@ public:
     : ChannelTest(channel_pair_factory)
   { }
 
-  // Test
-  virtual void run() {
+public:
+  // yunit::Test
+  void run() {
     this->write();
+    this->read();
+  }
+};
+
+
+class ChannelWriteBufferTest : public ChannelTest {
+public:
+  ChannelWriteBufferTest(ChannelPairFactory& channel_pair_factory)
+    : ChannelTest(channel_pair_factory)
+  { }
+
+public:
+  // yunit::Test
+  void run() {
+    auto_Object<Buffer> test_buffer = Buffer::copy(get_test_string());
+    check_write(get_write_channel().write(*test_buffer));
+
     this->read();
   }
 };
@@ -245,22 +277,13 @@ public:
     : ChannelTest(channel_pair_factory)
   { }
 
-  // Test
-  virtual void run() {
+public:
+  // yunit::Test
+  void run() {
     iovec iov;
     iov.iov_base = const_cast<char*>(get_test_string().data());
     iov.iov_len = get_test_string().size();
-    ssize_t writev_ret
-    = get_write_channel().writev(&iov, 1);
-
-    if (writev_ret >= 0) {
-      throw_assert_eq
-      (
-        static_cast<size_t>(writev_ret),
-        get_test_string().size()
-      );
-    } else
-      throw Exception();
+    check_write(get_write_channel().writev(&iov, 1));
 
     this->read();
   }
@@ -273,28 +296,16 @@ public:
     : ChannelTest(channel_pair_factory)
   { }
 
-  // Test
-  virtual void run() {
+public:
+  // yunit::Test
+  void run() {
     iovec iov[2];
-
     iov[0].iov_base = const_cast<char*>(get_test_string().data());
     iov[0].iov_len = 4;
-
     iov[1].iov_base
     = const_cast<char*>(get_test_string().data()) + 4;
     iov[1].iov_len = get_test_string().size() - 4;
-
-    ssize_t writev_ret
-    = get_write_channel().writev(iov, 2);
-
-    if (writev_ret >= 0) {
-      throw_assert_eq
-      (
-        static_cast<size_t>(writev_ret),
-        get_test_string().size()
-      );
-    } else
-      throw Exception();
+    check_write(get_write_channel().writev(iov, 2));
 
     this->read();
   }
@@ -313,12 +324,17 @@ public:
     add("Channel::read", new ChannelReadTest(channel_pair_factory));
 
     add(
-      "Channel::readv( iov, 1 )",
+      "Channel::read(Buffer)",
+      new ChannelReadBufferTest(channel_pair_factory)
+    );
+
+    add(
+      "Channel::readv(iov, 1)",
       new ChannelReadVOneTest(channel_pair_factory)
     );
 
     add(
-      "Channel::readv( iov, 2 )",
+      "Channel::readv(iov, 2)",
       new ChannelReadVTwoTest(channel_pair_factory)
     );
 
@@ -328,12 +344,17 @@ public:
     );
 
     add(
-      "Channel::writev( iov, 1 )",
+      "Channel::write(Bufffer)",
+      new ChannelWriteBufferTest(channel_pair_factory)
+    );
+
+    add(
+      "Channel::writev(iov, 1)",
       new ChannelWriteVOneTest(channel_pair_factory)
     );
 
     add(
-      "Channel::writev( iov, 2 )",
+      "Channel::writev(iov, 2)",
       new ChannelWriteVTwoTest(channel_pair_factory)
     );
   }

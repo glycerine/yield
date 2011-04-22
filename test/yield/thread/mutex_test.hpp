@@ -42,7 +42,7 @@ namespace thread {
 template <class MutexType>
 class MutexTest : public yunit::Test {
 public:
-  // Test
+  // yunit::Test
   void setup() {
     mutex = new MutexType;
   }
@@ -59,7 +59,7 @@ protected:
 template <class MutexType>
 class MutexLockTest : public MutexTest<MutexType> {
 public:
-  // Test
+  // yunit::Test
   void run() {
     auto_Object<Thread> thread = new Thread(thread_run, this);
 
@@ -83,7 +83,7 @@ private:
 template <class MutexType>
 class MutexTryLockTest : public MutexTest<MutexType> {
 public:
-  // Test
+  // yunit::Test
   void run() {
     auto_Object<Thread> thread = new Thread(thread_run, this);
 

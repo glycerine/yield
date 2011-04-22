@@ -28,6 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/assert.hpp"
+#include "yield/buffers.hpp"
 #include "yield/fs/win32/file.hpp"
 #include "yield/fs/win32/stat.hpp"
 
@@ -211,6 +212,23 @@ File::mmap(
          );
 }
 
+ssize_t File::pread(Buffer& buffer, uint64_t offset) {
+  if (buffer.get_next_buffer() == NULL) {
+    ssize_t pread_ret
+      = pread(buffer, buffer.capacity() - buffer.size(), offset);
+    if (pread_ret > 0)
+      buffer.resize(buffer.size() + static_cast<size_t>(pread_ret));
+    return pread_ret;
+  } else {
+    vector<iovec> iov;
+    Buffers::as_read_iovecs(buffer, iov);
+    ssize_t preadv_ret = preadv(&iov[0], iov.size(), offset);
+    if (preadv_ret > 0)
+      Buffers::resize(buffer, preadv_ret);
+    return preadv_ret;
+  }
+}
+
 ssize_t File::pread(void* buf, size_t buflen, uint64_t offset) {
   OVERLAPPED overlapped;
   ZeroMemory(&overlapped, sizeof(overlapped));
@@ -227,10 +245,8 @@ ssize_t File::pread(void* buf, size_t buflen, uint64_t offset) {
       return static_cast<ssize_t>(dwNumberOfBytesRead);
     } else if (GetLastError() == ERROR_IO_PENDING) {
       DWORD dwNumberOfBytesTransferred;
-      if
-      (
-        GetOverlappedResult
-        (
+      if (
+        GetOverlappedResult(
           *this,
           &overlapped,
           &dwNumberOfBytesTransferred,
@@ -277,10 +293,8 @@ ssize_t File::preadv(const iovec* iov, int iovlen, uint64_t offset) {
       dwNumberOfBytesToRead += iov[iov_i].iov_len;
     }
 
-    if
-    (
-      ReadFileScatter
-      (
+    if (
+      ReadFileScatter(
         *this,
         aSegmentArray,
         dwNumberOfBytesToRead,
@@ -292,10 +306,8 @@ ssize_t File::preadv(const iovec* iov, int iovlen, uint64_t offset) {
     ) {
       // You always have to call GetOverlappedResult with ReadFileScatter
       DWORD dwNumberOfBytesTransferred;
-      if
-      (
-        GetOverlappedResult
-        (
+      if (
+        GetOverlappedResult(
           *this,
           &overlapped,
           &dwNumberOfBytesTransferred,
@@ -316,6 +328,16 @@ ssize_t File::preadv(const iovec* iov, int iovlen, uint64_t offset) {
   return -1;
 }
 
+ssize_t File::pwrite(const Buffer& buffer, uint64_t offset) {
+  if (buffer.get_next_buffer() == NULL)
+    return pwrite(buffer, buffer.size(), offset);
+  else {
+    vector<iovec> iov;
+    Buffers::as_write_iovecs(buffer, iov);
+    return pwritev(&iov[0], iov.size(), offset);
+  }
+}
+
 ssize_t File::pwrite(const void* buf, size_t buflen, uint64_t offset) {
   OVERLAPPED overlapped;
   ZeroMemory(&overlapped, sizeof(overlapped));
@@ -332,10 +354,8 @@ ssize_t File::pwrite(const void* buf, size_t buflen, uint64_t offset) {
       return static_cast<ssize_t>(dwNumberOfBytesWritten);
     } else if (GetLastError() == ERROR_IO_PENDING) {
       DWORD dwNumberOfBytesTransferred;
-      if
-      (
-        GetOverlappedResult
-        (
+      if (
+        GetOverlappedResult(
           *this,
           &overlapped,
           &dwNumberOfBytesTransferred,
@@ -361,8 +381,7 @@ ssize_t File::pwritev(const iovec* iov, int iovlen, uint64_t offset) {
       else {
         string buffer;
         for (int iov_i = 0; iov_i < iovlen; iov_i++) {
-          buffer.append
-          (
+          buffer.append(
             static_cast<const char*>(iov[iov_i].iov_base),
             iov[iov_i].iov_len
           );
@@ -390,10 +409,8 @@ ssize_t File::pwritev(const iovec* iov, int iovlen, uint64_t offset) {
       dwNumberOfBytesToWrite += iov[iov_i].iov_len;
     }
 
-    if
-    (
-      WriteFileGather
-      (
+    if (
+      WriteFileGather(
         *this,
         aSegmentArray,
         dwNumberOfBytesToWrite,
@@ -406,10 +423,8 @@ ssize_t File::pwritev(const iovec* iov, int iovlen, uint64_t offset) {
       return static_cast<ssize_t>(dwNumberOfBytesToWrite);
     } else if (GetLastError() == ERROR_IO_PENDING) {
       DWORD dwNumberOfBytesTransferred;
-      if
-      (
-        GetOverlappedResult
-        (
+      if (
+        GetOverlappedResult(
           *this,
           &overlapped,
           &dwNumberOfBytesTransferred,
@@ -473,10 +488,8 @@ bool File::setlk(const Lock& lock, bool wait) {
     overlapped.Offset = static_cast<DWORD>(lock.get_start());
     overlapped.OffsetHigh = static_cast<DWORD>(lock.get_start() >> 32);
 
-    if
-    (
-      LockFileEx
-      (
+    if (
+      LockFileEx(
         *this,
         dwFlags,
         0,
@@ -487,8 +500,7 @@ bool File::setlk(const Lock& lock, bool wait) {
     ) {
       DWORD dwNumberOfBytesTransferred;
 
-      return GetOverlappedResult
-             (
+      return GetOverlappedResult(
                *this,
                &overlapped,
                &dwNumberOfBytesTransferred,
@@ -529,8 +541,7 @@ bool File::truncate(uint64_t new_size) {
 }
 
 bool File::unlk(const Lock& lock) {
-  return UnlockFile
-         (
+  return UnlockFile(
            *this,
            static_cast<DWORD>(lock.get_start()),
            static_cast<DWORD>(lock.get_start() >> 32),

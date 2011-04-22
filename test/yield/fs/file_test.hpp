@@ -56,6 +56,7 @@ public:
     FileSystem().unlink(path);
   }
 
+public:
   File& get_read_file() {
     if (read_file == NULL) {
       get_write_file();
@@ -76,6 +77,7 @@ public:
     return *write_file;
   }
 
+public:
   // yield::ChannelPair
   Channel& get_read_channel() {
     return get_read_file();
@@ -96,8 +98,9 @@ public:
   FilePairFactory(const Path& path) : path(path) {
   }
 
+public:
   // yield::ChannelPairFactory
-  ChannelPair& createChannelPair() {
+  ChannelPair& create_channel_pair() {
     return *new FilePair(path);
   }
 
@@ -112,6 +115,7 @@ public:
     : ChannelTest(file_pair_factory)
   { }
 
+public:
   File& get_read_file() {
     return static_cast<File&>(get_read_channel());
   }
@@ -128,6 +132,7 @@ public:
     : FileTest(file_pair_factory)
   { }
 
+public:
   // yunit::Test
   void run() {
     get_write_file().write(
@@ -152,6 +157,7 @@ public:
     : FileTest(file_pair_factory)
   { }
 
+public:
   // yunit::Test
   void run() {
     auto_Object<File::Map> mmf = get_read_file().mmap();
@@ -240,6 +246,7 @@ public:
     : FileTest(file_pair_factory)
   { }
 
+public:
   // yunit::Test
   void run() {
     write();
@@ -268,6 +275,7 @@ public:
     : FileTest(file_pair_factory)
   { }
 
+public:
   // yunit::Test
   void run() {
     write();
@@ -295,6 +303,7 @@ public:
     : FileTest(file_pair_factory)
   { }
 
+public:
   // yunit::Test
   void run() {
     write();
@@ -324,6 +333,7 @@ public:
     : FileTest(file_pair_factory)
   { }
 
+public:
   // yunit::Test
   void run() {
     ssize_t pwrite_ret = get_write_file().pwrite(" string", 7, 4);
@@ -349,6 +359,7 @@ public:
     : FileTest(file_pair_factory)
   { }
 
+public:
   // yunit::Test
   void run() {
     iovec iov;
@@ -379,6 +390,7 @@ public:
     : FileTest(file_pair_factory)
   { }
 
+public:
   // yunit::Test
   void run() {
     ssize_t pwrite_ret = get_write_file().pwrite(" string", 7, 4);
@@ -409,6 +421,7 @@ public:
     : FileTest(file_pair_factory)
   { }
 
+public:
   // yunit::Test
   void run() {
     write();
@@ -433,8 +446,7 @@ public:
     string _string;
     _string.resize(7);
     ssize_t read_ret
-    = get_read_file().read
-      (
+    = get_read_file().read(
         const_cast<char*>(_string.data()),
         _string.size()
       );
@@ -453,6 +465,7 @@ public:
     : FileTest(file_pair_factory)
   { }
 
+public:
   // yunit::Test
   void run() {
     if (get_write_file().setlk(File::Lock(0, 256)))
@@ -469,6 +482,7 @@ public:
     : FileTest(file_pair_factory)
   { }
 
+public:
   // yunit::Test
   void run() {
     if (get_write_file().setlkw(File::Lock(0, 256)))
@@ -485,6 +499,8 @@ public:
     : FileTest(file_pair_factory)
   { }
 
+public:
+  // yunit::Test
   void run() {
     DateTime now = DateTime::now();
     auto_Object<Stat> stbuf = get_write_file().stat();
@@ -506,6 +522,7 @@ public:
     : FileTest(file_pair_factory)
   { }
 
+public:
   // yunit::Test
   void run() {
     get_write_file().write(
@@ -530,6 +547,7 @@ public:
     : FileTest(file_pair_factory)
   { }
 
+public:
   // yunit::Test
   void run() {
     throw_assert_eq(get_read_file().tell(), 0);
@@ -551,6 +569,7 @@ public:
     : FileTest(file_pair_factory)
   { }
 
+public:
   // yunit::Test
   void run() {
     write();
@@ -569,6 +588,7 @@ public:
     : FileTest(file_pair_factory)
   { }
 
+public:
   // yunit::Test
   void run() {
     if (get_write_file().setlkw(File::Lock(0, 256))) {

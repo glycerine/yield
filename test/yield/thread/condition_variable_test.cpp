@@ -40,7 +40,7 @@ namespace yield {
 namespace thread {
 class ConditionVariableTest : public yunit::Test {
 public:
-  // Test
+  // yunit::Test
   void setup() {
     cond = new ConditionVariable;
   }

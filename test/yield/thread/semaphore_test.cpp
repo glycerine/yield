@@ -41,7 +41,7 @@ namespace yield {
 namespace thread {
 class SemaphoreTest : public yunit::Test {
 public:
-  // Test
+  // yunit::Test
   void setup() {
     semaphore = new Semaphore();
   }

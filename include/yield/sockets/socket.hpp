@@ -156,7 +156,8 @@ public:
     SocketAddress* peername = NULL
   ) {
     if (buffer.get_next_buffer() == NULL) {
-      ssize_t recv_ret = recv(buffer.as_read_iovec(), flags, peername);
+      iovec iov = buffer.as_read_iovec();
+      ssize_t recv_ret = recv(iov.iov_base, iov.iov_len, flags, peername);
       if (recv_ret > 0) 
         buffer.resize(buffer.size() + static_cast<size_t>(recv_ret));
       return recv_ret;
@@ -172,19 +173,25 @@ public:
 
   ssize_t
   recv(
-    const iovec& iov,
-    const MessageFlags& flags,
-    SocketAddress* peername = NULL
-  ) {
-    return recv(iov.iov_base, iov.iov_len, flags, peername);
-  }
-
-  virtual ssize_t
-  recv(
     void* buf,
     size_t len,
     const MessageFlags& flags,
-    SocketAddress* peername = NULL
+    SocketAddress* peername
+  ) {
+    if (peername == NULL)
+      return recv(buf, len, flags);
+    else
+      return recvfrom(buf, len, flags, *peername);
+  }
+
+  virtual ssize_t recv(void* buf, size_t len, const MessageFlags& flags);
+
+  virtual ssize_t
+  recvfrom(
+    void* buf,
+    size_t len,
+    const MessageFlags& flags,
+    SocketAddress& peername
   );
 
   virtual ssize_t
@@ -202,8 +209,10 @@ public:
     const MessageFlags& flags,
     const SocketAddress* peername = NULL
   ) {
-    if (buffer.get_next_buffer() == NULL)
-      return send(buffer, buffer.size(), flags, peername);
+    if (buffer.get_next_buffer() == NULL) {
+      iovec iov = buffer.as_write_iovec();
+      return send(iov.iov_base, iov.iov_len, flags, peername);
+    }
     else {
       vector<iovec> iov;
       Buffers::as_write_iovecs(buffer, iov);
@@ -211,13 +220,20 @@ public:
     }
   }
 
-  virtual ssize_t
+  ssize_t
   send(
     const void* buf,
     size_t len,
     const MessageFlags& flags,
-    const SocketAddress* peername = NULL
-  );
+    const SocketAddress* peername
+  ) {
+    if (peername == NULL)
+      return send(buf, len, flags);
+    else
+      return sendto(buf, len, flags, *peername);
+  }
+
+  virtual ssize_t send(const void* buf, size_t len, const MessageFlags& flags);
 
   virtual ssize_t
   sendmsg(
@@ -225,6 +241,14 @@ public:
     int iovlen,
     const MessageFlags& flags,
     const SocketAddress* peername = NULL
+  );
+
+  virtual ssize_t
+  sendto(
+    const void* buf,
+    size_t len,
+    const MessageFlags& flags,
+    const SocketAddress& peername
   );
 
 public:

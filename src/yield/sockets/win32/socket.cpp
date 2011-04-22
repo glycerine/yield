@@ -163,27 +163,32 @@ ssize_t
 Socket::recv(
   void* buf,
   size_t buflen,
-  const MessageFlags& flags,
-  SocketAddress* peername
+  const MessageFlags& flags
 ) {
-  if (peername == NULL) {
-    return ::recv(
-             *this,
-             static_cast<char*>(buf),
-             static_cast<int>(buflen),
-             flags
-           ); // No real advantage to WSARecv on Win for one buffer
-  } else {
-    socklen_t peernamelen = peername->len();
-    return ::recvfrom(
-             *this,
-             static_cast<char*>(buf),
-             buflen,
-             flags,
-             reinterpret_cast<sockaddr*>(peername),
-             &peernamelen
-           );
-  }
+  return ::recv(
+            *this,
+            static_cast<char*>(buf),
+            static_cast<int>(buflen),
+            flags
+          ); // No real advantage to WSARecv on Win for one buffer
+}
+
+ssize_t
+Socket::recvfrom(
+  void* buf,
+  size_t buflen,
+  const MessageFlags& flags,
+  SocketAddress& peername
+) {
+  socklen_t peernamelen = peername.len();
+  return ::recvfrom(
+            *this,
+            static_cast<char*>(buf),
+            buflen,
+            flags,
+            static_cast<sockaddr*>(peername),
+            &peernamelen
+          );
 }
 
 ssize_t
@@ -204,7 +209,22 @@ Socket::recvmsg(
 #endif
 
   ssize_t recv_ret;
-  if (peername != NULL) {
+  if (peername == NULL) {
+    recv_ret
+    = WSARecv(
+        *this,
+#ifdef _WIN64
+        & wsabufs[0],
+#else
+        reinterpret_cast<WSABUF*>(const_cast<iovec*>(iov)),
+#endif
+        iovlen,
+        &dwNumberOfBytesRecvd,
+        &dwFlags,
+        NULL,
+        NULL
+      );
+  } else {
     socklen_t peernamelen = peername->len();
 
     recv_ret
@@ -223,24 +243,9 @@ Socket::recvmsg(
         NULL,
         NULL
       );
-  } else {
-    recv_ret
-    = WSARecv(
-        *this,
-#ifdef _WIN64
-        & wsabufs[0],
-#else
-        reinterpret_cast<WSABUF*>(const_cast<iovec*>(iov)),
-#endif
-        iovlen,
-        &dwNumberOfBytesRecvd,
-        &dwFlags,
-        NULL,
-        NULL
-      );
   }
 
-  if (recv_ret > 0)
+  if (recv_ret == 0)
     return static_cast<ssize_t>(dwNumberOfBytesRecvd);
   else
     return recv_ret;
@@ -250,44 +255,28 @@ ssize_t
 Socket::send(
   const void* buf,
   size_t buflen,
-  const MessageFlags& flags,
-  const SocketAddress* peername
+  const MessageFlags& flags
 ) {
-  if (peername == NULL) {
-    DWORD dwNumberOfBytesSent;
-    WSABUF wsabuf;
-    wsabuf.len = static_cast<ULONG>(buflen);
-    wsabuf.buf = const_cast<char*>(static_cast<const char*>(buf));
+  DWORD dwNumberOfBytesSent;
+  WSABUF wsabuf;
+  wsabuf.len = static_cast<ULONG>(buflen);
+  wsabuf.buf = const_cast<char*>(static_cast<const char*>(buf));
 
-    ssize_t send_ret
-    = WSASend(
-        *this,
-        &wsabuf,
-        1,
-        &dwNumberOfBytesSent,
-        static_cast<DWORD>(flags),
-        NULL,
-        NULL
-      );
+  ssize_t send_ret
+  = WSASend(
+      *this,
+      &wsabuf,
+      1,
+      &dwNumberOfBytesSent,
+      static_cast<DWORD>(flags),
+      NULL,
+      NULL
+    );
 
-    if (send_ret >= 0)
-      return static_cast<ssize_t>(dwNumberOfBytesSent);
-    else
-      return send_ret;
-  } else {
-    peername = peername->filter(get_domain());
-    if (peername != NULL) {
-      return ::sendto(
-               *this,
-               static_cast<const char*>(buf),
-               buflen,
-               flags,
-               *peername,
-               peername->len()
-             );
-    } else
-      return -1;
-  }
+  if (send_ret >= 0)
+    return static_cast<ssize_t>(dwNumberOfBytesSent);
+  else
+    return send_ret;
 }
 
 ssize_t
@@ -307,7 +296,22 @@ Socket::sendmsg(
 #endif
   ssize_t send_ret;
 
-  if (peername != NULL) {
+  if (peername == NULL) {
+    send_ret
+    = WSASend(
+        *this,
+#ifdef _WIN64
+        & wsabufs[0],
+#else
+        reinterpret_cast<WSABUF*>(const_cast<iovec*>(iov)),
+#endif
+        iovlen,
+        &dwNumberOfBytesSent,
+        static_cast<DWORD>(flags),
+        NULL,
+        NULL
+      );
+  } else {
     peername = peername->filter(get_domain());
     if (peername != NULL) {
       send_ret
@@ -328,27 +332,33 @@ Socket::sendmsg(
         );
     } else
       return -1;
-  } else {
-    send_ret
-    = WSASend(
-        *this,
-#ifdef _WIN64
-        & wsabufs[0],
-#else
-        reinterpret_cast<WSABUF*>(const_cast<iovec*>(iov)),
-#endif
-        iovlen,
-        &dwNumberOfBytesSent,
-        static_cast<DWORD>(flags),
-        NULL,
-        NULL
-      );
   }
 
   if (send_ret >= 0)
     return static_cast<ssize_t>(dwNumberOfBytesSent);
   else
     return send_ret;
+}
+
+ssize_t
+Socket::sendto(
+  const void* buf,
+  size_t buflen,
+  const MessageFlags& flags,
+  const SocketAddress& _peername
+) {
+  const SocketAddress* peername = _peername.filter(get_domain());
+  if (peername != NULL) {
+    return ::sendto(
+              *this,
+              static_cast<const char*>(buf),
+              buflen,
+              flags,
+              *peername,
+              peername->len()
+            );
+  } else
+    return -1;
 }
 
 bool Socket::set_blocking_mode(bool blocking_mode) {

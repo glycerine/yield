@@ -12,6 +12,9 @@
 
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\test\yield\sockets\datagram_socket_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\test\yield\sockets\socket_address_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -24,6 +27,9 @@
     <ClInclude Include="..\..\..\test\yield\sockets\socket_test.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\..\test\yield\sockets\stream_socket_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\test\yield\sockets\tcp_socket_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

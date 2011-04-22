@@ -163,10 +163,12 @@ public:
   }
 
 public:
+  ssize_t pread(Buffer& buffer, uint64_t offset);
   ssize_t pread(void*, size_t, uint64_t);
   ssize_t preadv(const iovec*, int, uint64_t);
 
 public:
+  ssize_t pwrite(const Buffer& buffer, uint64_t offset);
   ssize_t pwrite(const void*, size_t, uint64_t);
   ssize_t pwritev(const iovec*, int, uint64_t);
 
