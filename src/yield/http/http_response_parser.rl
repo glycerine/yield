@@ -51,14 +51,13 @@ Object& HTTPResponseParser::parse() {
       uint16_t fields_offset;
       size_t content_length;
       if (parse_fields(fields_offset, content_length)) {
-        uint16_t body_offset;
-        if (parse_body(content_length, body_offset)) {
+        Object* body;
+        if (parse_body(content_length, body)) {
           return *new HTTPResponse(
-                   body_offset,
-                   buffer,
+                   body,
                    connection_id,
-                   content_length,
                    fields_offset,
+                   buffer,
                    http_version,
                    status_code
                 );

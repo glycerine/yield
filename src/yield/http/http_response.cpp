@@ -34,31 +34,31 @@
 namespace yield {
 namespace http {
 HTTPResponse::HTTPResponse(
-  uint16_t body_offset,
-  Buffer& buffer,
+  YO_NEW_REF Object* body,
   uint32_t connection_id,
-  size_t content_length,
   uint16_t fields_offset,
+  Buffer& header,
   float http_version,
   uint16_t status_code
-) : HTTPMessage<HTTPResponse>(
-      body_offset,
-      buffer,
-      connection_id,
-      content_length,
-      fields_offset,
-      http_version
-    ),
-    status_code(status_code)
+)
+: HTTPMessage<HTTPResponse>(
+    body,
+    connection_id,
+    fields_offset,
+    header,
+    http_version
+  ),
+  status_code(status_code)
 { }
 
 HTTPResponse::HTTPResponse(
   uint16_t status_code,
-  YO_NEW_REF Buffer* body,
+  YO_NEW_REF Object* body,
   uint32_t connection_id,
   float http_version
-) : HTTPMessage<HTTPResponse>(body, connection_id, http_version),
-    status_code(status_code) {
+)
+: HTTPMessage<HTTPResponse>(body, connection_id, http_version),
+  status_code(status_code) {
   const char* status_line;
   size_t status_line_len;
 
@@ -241,9 +241,9 @@ HTTPResponse::HTTPResponse(
     break;
   }
 
-  get_buffer().put(status_line, status_line_len);
+  header.put(status_line, status_line_len);
 
-  mark_fields_offset();
+  fields_offset = static_cast<uint16_t>(header.size());
 
   set_field("Date", DateTime::now());
 }
@@ -252,8 +252,6 @@ std::ostream& operator<<(std::ostream& os, const HTTPResponse& http_response) {
   os << 
     http_response.get_type_name() <<
     "(" <<
-      "content_length=" << http_response.get_content_length() <<
-      ", " <<
       "status_code=" << http_response.get_status_code() <<
     ")";
   return os;

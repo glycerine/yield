@@ -100,21 +100,19 @@ HTTPRequest::Method::parse(
 }
 
 HTTPRequest::HTTPRequest(
-  uint16_t body_offset,
-  Buffer& buffer,
+  YO_NEW_REF Object* body,
   uint32_t connection_id,
-  size_t content_length,
   uint16_t fields_offset,
+  Buffer& header,
   float http_version,
   Method method,
   const yield::uri::URI& uri
 )
-  : HTTPMessage<HTTPRequest>(
-      body_offset,
-      buffer,
+: HTTPMessage<HTTPRequest>(
+      body,
       connection_id,
-      content_length,
       fields_offset,
+      header,
       http_version
   ),
   creation_date_time(DateTime::now()),
@@ -125,7 +123,7 @@ HTTPRequest::HTTPRequest(
 HTTPRequest::HTTPRequest(
   Method method,
   const yield::uri::URI& uri,
-  YO_NEW_REF Buffer* body,
+  YO_NEW_REF Object* body,
   uint32_t connection_id,
   float http_version
 )
@@ -133,22 +131,22 @@ HTTPRequest::HTTPRequest(
     creation_date_time(DateTime::now()),
     method(method),
     uri(uri) {
-  get_buffer().put(method.get_name(), method.get_name_len());
+  header.put(method.get_name(), method.get_name_len());
 
-  get_buffer().put(' ');
+  header.put(' ');
 
   iovec uri_path;
   uri.get_path(uri_path);
-  get_buffer().put(uri_path);
+  header.put(uri_path);
 
   if (http_version == 1.1f)
-    get_buffer().put(" HTTP/1.1\r\n", 11);
+    header.put(" HTTP/1.1\r\n", 11);
   else if (http_version == 1.0f)
-    get_buffer().put(" HTTP/1.0\r\n", 11);
+    header.put(" HTTP/1.0\r\n", 11);
   else
     DebugBreak();
 
-  mark_fields_offset();
+  fields_offset = static_cast<uint16_t>(header.size());
 
   if (uri.has_host()) {
     iovec uri_host;
@@ -222,8 +220,6 @@ std::ostream& operator<<(std::ostream& os, const HTTPRequest& http_request) {
   os << 
     http_request.get_type_name() <<
     "(" <<
-      "content_length=" << http_request.get_content_length() <<
-      ", " <<
       "method=" << http_request.get_method() <<
       ", " <<
       "uri=" << http_request.get_uri() <<

@@ -143,8 +143,12 @@ AccessLog::CommonFormat::operator()
   entry << "HTTP/" << request_http_version;
   entry << "\" ";
   entry << http_response.get_status_code() << " ";
-  if (http_response.get_body() != NULL)
-    entry << http_response.get_content_length();
+  if (
+    http_response.get_body() != NULL
+    &&
+    http_response.get_body()->get_type_id() == Buffer::TYPE_ID
+  )
+    entry << *static_cast<Buffer*>(http_response.get_body());
   else
     entry << "-";
   entry << "\r\n";

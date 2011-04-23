@@ -45,14 +45,16 @@ public:
   const static size_t CONTENT_LENGTH_CHUNKED = SIZE_MAX;
 
 public:
-  void* get_body() const;
+  void finalize();
 
-  uint32_t get_connection_id() const {
-    return connection_id;
+public:
+  Object* get_body() const {
+    return body;
   }
 
-  size_t get_content_length() const {
-    return content_length;
+public:
+  uint32_t get_connection_id() const {
+    return connection_id;
   }
 
 public:
@@ -78,6 +80,11 @@ public:
   void get_fields(OUT vector<pair<iovec, iovec> >& fields) const;
 
 public:
+  Buffer& get_header() const {
+    return header;
+  }
+
+public:
   float get_http_version() const {
     return http_version;
   }
@@ -93,12 +100,12 @@ public:
   }
 
 public:
-  operator Buffer& ();
-
-public:
   string operator[](const char* name) {
     return get_field(name);
   }
+
+public:
+  void set_body(YO_NEW_REF Object* body);
 
 public:
   // set_field(..., const char* value)
@@ -218,37 +225,28 @@ public:
 
 protected:
   HTTPMessage(
-    uint16_t body_offset,
-    Buffer& buffer,
+    YO_NEW_REF Object* body,
     uint32_t connection_id,
-    size_t content_length,
-    uint16_t fields_offset,
     float http_version
   );
 
   HTTPMessage(
-    YO_NEW_REF Buffer* body,
+    YO_NEW_REF Object* body,
     uint32_t connection_id,
+    uint16_t fields_offset,
+    Buffer& header,
     float http_version
   );
 
   virtual ~HTTPMessage();
 
-  void finalize();
-
-  Buffer& get_buffer() {
-    return buffer;
-  }
-
-  bool is_finalized() const;
-  void mark_fields_offset();
+protected:
+  Buffer& header;
+  uint16_t fields_offset;
 
 private:
-  uint16_t body_offset;
-  Buffer& buffer;
+  Object* body;
   uint32_t connection_id;
-  size_t content_length;
-  uint16_t fields_offset;
   float http_version;
 };
 }

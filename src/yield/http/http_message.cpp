@@ -49,52 +49,42 @@ namespace http {
 template <class HTTPMessageType>
 HTTPMessage<HTTPMessageType>::
 HTTPMessage(
-  uint16_t body_offset,
-  Buffer& buffer,
-  uint32_t connection_id,
-  size_t content_length,
-  uint16_t fields_offset,
-  float http_version
-) : body_offset(body_offset),
-    buffer(buffer.inc_ref()),
-    connection_id(connection_id),
-    content_length(content_length),
-    fields_offset(fields_offset),
-    http_version(http_version)
-{ }
-
-template <class HTTPMessageType>
-HTTPMessage<HTTPMessageType>::
-HTTPMessage(
-  YO_NEW_REF Buffer* body,
+  YO_NEW_REF Object* body,
   uint32_t connection_id,
   float http_version
-) : buffer(*new Buffer(Buffer::getpagesize(), Buffer::getpagesize())),
+) : body(body),
     connection_id(connection_id),
+    header(*new Buffer(Buffer::getpagesize(), Buffer::getpagesize())),
     http_version(http_version) {
-  if (body != NULL) {
-    body_offset = UINT16_MAX;
-    buffer.set_next_buffer(body);
-    content_length = body->size();
-  } else {
-    body_offset = 0;
-    content_length = 0;
-  }
-
   fields_offset = 0;
 }
 
 template <class HTTPMessageType>
+HTTPMessage<HTTPMessageType>::
+HTTPMessage(
+  YO_NEW_REF Object* body,
+  uint32_t connection_id,
+  uint16_t fields_offset,
+  Buffer& header,
+  float http_version
+) : body(body),
+    connection_id(connection_id),
+    fields_offset(fields_offset),
+    header(header.inc_ref()),
+    http_version(http_version) {
+}
+
+template <class HTTPMessageType>
 HTTPMessage<HTTPMessageType>::~HTTPMessage() {
-  Buffer::dec_ref(buffer);
+  Object::dec_ref(body);
+  Buffer::dec_ref(header);
 }
 
 template <class HTTPMessageType>
 void HTTPMessage<HTTPMessageType>::finalize() {
-  if (!is_finalized()) {
-    set_field("Content-Length", 14, content_length);
-    buffer.put("\r\n", 2);
-  }
+  if (body != NULL && body->get_type_id() == Buffer::TYPE_ID)
+    set_field("Content-Length", 14, static_cast<Buffer*>(body)->size());
+  header.put("\r\n", 2);
 }
 
 template <class HTTPMessageType>
@@ -111,16 +101,6 @@ get_date_field(
 }
 
 template <class HTTPMessageType>
-void* HTTPMessage<HTTPMessageType>::get_body() const {
-  if (buffer.get_next_buffer() != NULL)
-    return *buffer.get_next_buffer();
-  else if (body_offset > 0)
-    return static_cast<char*>(buffer) + body_offset;
-  else
-    return NULL;
-}
-
-template <class HTTPMessageType>
 bool
 HTTPMessage<HTTPMessageType>::get_field(
   const char* name,
@@ -131,8 +111,8 @@ HTTPMessage<HTTPMessageType>::get_field(
   name_iov.iov_base = const_cast<char*>(name);
   name_iov.iov_len = name_len;
   return HTTPMessageParser::parse_field(
-           static_cast<const char*>(buffer) + fields_offset,
-           static_cast<const char*>(buffer) + buffer.size(),
+           static_cast<const char*>(header) + fields_offset,
+           static_cast<const char*>(header) + header.size(),
            name_iov,
            value
          );
@@ -144,33 +124,16 @@ HTTPMessage<HTTPMessageType>::get_fields(
   OUT vector<pair<iovec, iovec> >& fields
 ) const {
   return HTTPMessageParser::parse_fields(
-           static_cast<const char*>(buffer) + fields_offset,
-           static_cast<const char*>(buffer) + buffer.size(),
+           static_cast<const char*>(header) + fields_offset,
+           static_cast<const char*>(header) + header.size(),
            fields
          );
 }
 
 template <class HTTPMessageType>
-bool HTTPMessage<HTTPMessageType>::is_finalized() const {
-  debug_assert_gt(buffer.size(), 4);
-
-  return strncmp(
-            static_cast<char*>(buffer) + buffer.size() - 4,
-            "\r\n\r\n",
-            4
-          )
-          == 0;
-}
-
-template <class HTTPMessageType>
-void HTTPMessage<HTTPMessageType>::mark_fields_offset() {
-  fields_offset = static_cast<uint16_t>(buffer.size());
-}
-
-template <class HTTPMessageType>
-HTTPMessage<HTTPMessageType>::operator Buffer& () {
-  finalize();
-  return buffer;
+void HTTPMessage<HTTPMessageType>::set_body(YO_NEW_REF Object* body) {
+  Object::dec_ref(this->body);
+  this->body = body;
 }
 
 template <class HTTPMessageType>
@@ -181,13 +144,13 @@ set_field(
   size_t name_len,
   const DateTime & value
 ) {
-  static const char* HTTPWeekDays[] = {
-    "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
-  };
-
-  static const char* HTTPMonths[] = {
+  static const char* months[] = {
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+  };
+
+  static const char* week_days[] = {
+    "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
   };
 
   char date[30];
@@ -202,9 +165,9 @@ set_field(
       30,
       _TRUNCATE,
       "%s, %02d %s %04d %02d:%02d:%02d GMT",
-      HTTPWeekDays[utc_system_time.wDayOfWeek],
+      week_days[utc_system_time.wDayOfWeek],
       utc_system_time.wDay,
-      HTTPMonths[utc_system_time.wMonth - 1],
+      months[utc_system_time.wMonth - 1],
       utc_system_time.wYear,
       utc_system_time.wHour,
       utc_system_time.wMinute,
@@ -218,9 +181,9 @@ set_field(
       date,
       30,
       "%s, %02d %s %04d %02d:%02d:%02d GMT",
-      HTTPWeekDays[utc_tm.tm_wday],
+      week_days[utc_tm.tm_wday],
       utc_tm.tm_mday,
-      HTTPMonths[utc_tm.tm_mon],
+      months[utc_tm.tm_mon],
       utc_tm.tm_year + 1900,
       utc_tm.tm_hour,
       utc_tm.tm_min,
@@ -264,12 +227,10 @@ set_field(
   debug_assert_gt(name_len, 0);
   debug_assert_gt(value_len, 0);
 
-  if (!is_finalized()) {
-    buffer.put(name, name_len);
-    buffer.put(": ", 2);
-    buffer.put(value, value_len);
-    buffer.put("\r\n");
-  }
+  header.put(name, name_len);
+  header.put(": ", 2);
+  header.put(value, value_len);
+  header.put("\r\n");
 
   return static_cast<HTTPMessageType&>(*this);
 }

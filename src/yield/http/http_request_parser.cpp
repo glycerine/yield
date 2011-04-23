@@ -115,14 +115,13 @@ Object& HTTPRequestParser::parse() {
       uint16_t fields_offset;
       size_t content_length;
       if (parse_fields(fields_offset, content_length)) {
-        uint16_t body_offset;
-        if (parse_body(content_length, body_offset)) {
+        Object* body;
+        if (parse_body(content_length, body)) {
           return *new HTTPRequest(
-                   body_offset,
-                   buffer,
+                   body,
                    connection_id,
-                   content_length,
                    fields_offset,
+                   buffer,
                    http_version,
                    method,
                    uri
@@ -3335,115 +3334,115 @@ _match:
       }
       break;
       case 12:
-        /* #line 155 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
+        /* #line 154 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::Method::CONNECT;
       }
       break;
       case 13:
-        /* #line 156 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
+        /* #line 155 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::Method::COPY;
       }
       break;
       case 14:
-        /* #line 157 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
+        /* #line 156 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::Method::DELETE;
       }
       break;
       case 15:
-        /* #line 158 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
+        /* #line 157 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::Method::GET;
       }
       break;
       case 16:
-        /* #line 159 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
+        /* #line 158 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::Method::HEAD;
       }
       break;
       case 17:
-        /* #line 160 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
+        /* #line 159 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::Method::LOCK;
       }
       break;
       case 18:
-        /* #line 161 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
+        /* #line 160 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::Method::MKCOL;
       }
       break;
       case 19:
-        /* #line 162 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
+        /* #line 161 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::Method::MOVE;
       }
       break;
       case 20:
-        /* #line 163 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
+        /* #line 162 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::Method::OPTIONS;
       }
       break;
       case 21:
-        /* #line 164 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
+        /* #line 163 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::Method::PATCH;
       }
       break;
       case 22:
-        /* #line 165 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
+        /* #line 164 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::Method::POST;
       }
       break;
       case 23:
-        /* #line 166 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
+        /* #line 165 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::Method::PROPFIND;
       }
       break;
       case 24:
-        /* #line 167 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
+        /* #line 166 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::Method::PROPPATCH;
       }
       break;
       case 25:
-        /* #line 168 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
+        /* #line 167 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::Method::PUT;
       }
       break;
       case 26:
-        /* #line 169 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
+        /* #line 168 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::Method::TRACE;
       }
       break;
       case 27:
-        /* #line 170 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
+        /* #line 169 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
       {
         method = HTTPRequest::Method::UNLOCK;
       }
       break;
       case 28:
-        /* #line 175 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
+        /* #line 174 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
       {
         path.iov_base = p;
       }
       break;
       case 29:
-        /* #line 176 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
+        /* #line 175 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
       {
         path.iov_len = p - static_cast<char*>(path.iov_base);
       }
       break;
       case 30:
-        /* #line 186 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
+        /* #line 185 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
       { {
           p++;
           goto _out;
@@ -3463,7 +3462,7 @@ _out:
     {}
   }
 
-  /* #line 191 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
+  /* #line 190 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_request_parser.rl" */
 
 
   return cs != request_line_parser_error;

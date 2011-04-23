@@ -167,7 +167,7 @@ TEST(HTTPMessageParser, WellFormedNormalBody) {
   HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
   throw_assert_ne(http_request, NULL);
   throw_assert_ne(http_request->get_body(), NULL);
-  throw_assert_eq(http_request->get_content_length(), 2);
+  throw_assert_eq(static_cast<Buffer*>(http_request->get_body())->size(), 2);
   HTTPRequest::dec_ref(http_request);
 }
 
@@ -199,7 +199,7 @@ TEST(HTTPMessageParser, WellFormedPipelinedNormalBody) {
     throw_assert_eq(http_request->get_http_version(), 1.1F);
     throw_assert_eq((*http_request)["Host"], "localhost");
     throw_assert_ne(http_request->get_body(), NULL);
-    throw_assert_eq(http_request->get_content_length(), 2);
+    throw_assert_eq(static_cast<Buffer*>(http_request->get_body())->size(), 2);
     HTTPRequest::dec_ref(http_request);
   }
   {
@@ -208,7 +208,7 @@ TEST(HTTPMessageParser, WellFormedPipelinedNormalBody) {
     throw_assert_eq(http_request->get_http_version(), 1.1F);
     throw_assert_eq((*http_request)["Host"], "localhost");
     throw_assert_ne(http_request->get_body(), NULL);
-    throw_assert_eq(http_request->get_content_length(), 2);
+    throw_assert_eq(static_cast<Buffer*>(http_request->get_body())->size(), 2);
     HTTPRequest::dec_ref(http_request);
   }
 }

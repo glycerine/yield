@@ -43,7 +43,9 @@ TEST(HTTPMessage, get_body) {
   auto_Object<Buffer> body = Buffer::copy("body");
   throw_assert_eq(
     memcmp(
-      HTTPRequest(HTTPRequest::Method::GET, "/", &body->inc_ref()).get_body(),
+      *static_cast<Buffer*>(
+        HTTPRequest(HTTPRequest::Method::GET, "/", &body->inc_ref()).get_body()
+      ),
       "body",
       4
     ),
@@ -55,19 +57,6 @@ TEST(HTTPMessage, get_connection_id) {
   throw_assert_eq(
     HTTPRequest(HTTPRequest::Method::GET, "/", NULL, 1).get_connection_id(),
     1
-  );
-}
-
-TEST(HTTPMessage, get_content_length) {
-  throw_assert_eq(
-    HTTPRequest(HTTPRequest::Method::GET, "/").get_content_length(),
-    0
-  );
-
-  auto_Object<Buffer> body = Buffer::copy("body");
-  throw_assert_eq(
-    HTTPRequest(HTTPRequest::Method::GET, "/", &body->inc_ref()).get_content_length(),
-    4
   );
 }
 

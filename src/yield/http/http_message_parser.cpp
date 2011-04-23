@@ -97,17 +97,17 @@ HTTPMessageParser::~HTTPMessageParser() {
 bool
 HTTPMessageParser::parse_body(
   size_t content_length,
-  OUT uint16_t& body_offset
+  OUT YO_NEW_REF Object*& body
 ) {
   if (
     content_length == 0
     ||
     content_length == HTTPRequest::CONTENT_LENGTH_CHUNKED
   ) {
-    body_offset = 0;
+    body = NULL;
     return true;
   } else if (static_cast<size_t>(eof - p) >= content_length) {
-    body_offset = p - ps;
+    body = &Buffer::copy(p, content_length);
     p += content_length;
     return true;
   } else

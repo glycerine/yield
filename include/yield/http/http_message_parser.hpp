@@ -64,7 +64,7 @@ protected:
   ~HTTPMessageParser();
 
 protected:
-  bool parse_body(size_t content_length, OUT uint16_t& body_offset);
+  bool parse_body(size_t content_length, OUT YO_NEW_REF Object*& body);
   Object* parse_body_chunk();
   bool parse_fields(OUT uint16_t& fields_offset, OUT size_t& content_length);
 

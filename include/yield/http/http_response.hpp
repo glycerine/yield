@@ -42,7 +42,7 @@ public:
 public:
   HTTPResponse(
     uint16_t status_code,
-    YO_NEW_REF Buffer* body = NULL,
+    YO_NEW_REF Object* body = NULL,
     uint32_t connection_id = 0,
     float http_version = 1.1f
   );
@@ -74,11 +74,10 @@ private:
   friend class HTTPResponseParser;
 
   HTTPResponse(
-    uint16_t body_offset,
-    Buffer& buffer,
+    YO_NEW_REF Object* body,
     uint32_t connection_id,
-    size_t content_length,
     uint16_t fields_offset,
+    Buffer& header,
     float http_version,
     uint16_t status_code
   );

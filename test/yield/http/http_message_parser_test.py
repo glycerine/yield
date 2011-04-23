@@ -69,7 +69,7 @@ class HTTPMessageParserTest(list):
         if http_message_instance is None:
             http_message_instance = decamel(self.http_message_type)
 
-        self.append("throw_assert_eq(%(http_message_instance)s->get_content_length(), 2);" % locals())
+        self.append("throw_assert_eq(static_cast<Buffer*>(%(http_message_instance)s->get_body())->size(), 2);" % locals())
 
     def ASSERT_BODY_NONNULL(self, http_message_instance=None):
         if http_message_instance is None:

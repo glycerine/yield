@@ -139,12 +139,13 @@ public:
     )
       parse(*accept_aiocb.get_recv_buffer());
     else {
-      enqueue(
-        *new recvAIOCB(
-          *this,
-          *new Buffer(Buffer::getpagesize(), Buffer::getpagesize())
-        )
-      );
+      Buffer* recv_buffer
+        = new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
+      recvAIOCB* recv_aiocb = new recvAIOCB(*this, *recv_buffer);
+      if (!aio_queue.enqueue(*recv_aiocb)) {
+        recvAIOCB::dec_ref(*recv_aiocb);
+        Connection::dec_ref(*this);
+      }
     }
 
     acceptAIOCB::dec_ref(accept_aiocb);
@@ -192,40 +193,45 @@ public:
   }
 
 private:
-  void enqueue(YO_NEW_REF recvAIOCB& recv_aiocb) {
-    if (!aio_queue.enqueue(recv_aiocb)) {
-      recvAIOCB::dec_ref(recv_aiocb);
-      Connection::dec_ref(*this);
-    }
-  }
-
-  void enqueue(YO_NEW_REF sendAIOCB& send_aiocb) {
-    if (!aio_queue.enqueue(send_aiocb)) {
-      sendAIOCB::dec_ref(send_aiocb);
-      Connection::dec_ref(*this);
-    }
-  }
-
-private:
   void handle(YO_NEW_REF HTTPMessageBodyChunk& http_message_body_chunk) {
     Buffer* send_buffer;
     if (http_message_body_chunk.data() != NULL)
       send_buffer = &http_message_body_chunk.data()->inc_ref();
     else
       send_buffer = &Buffer::copy("0\r\n\r\n", 5);
-
-    enqueue(*new sendAIOCB(*this, *send_buffer));
-
     HTTPMessageBodyChunk::dec_ref(http_message_body_chunk);
+
+    sendAIOCB* send_aiocb = new sendAIOCB(*this, *send_buffer);
+    if (!aio_queue.enqueue(*send_aiocb)) {
+      sendAIOCB::dec_ref(*send_aiocb);
+      Connection::dec_ref(*this);
+    }
   }
 
   void handle(YO_NEW_REF HTTPResponse& http_response) {
-    sendAIOCB* send_aiocb
-    = new sendAIOCB(*this, static_cast<Buffer&>(http_response).inc_ref());
-
-    enqueue(*send_aiocb);
-
+    http_response.finalize();
+    Buffer& http_response_header = http_response.get_header().inc_ref();
+    Object* http_response_body = Object::inc_ref(http_response.get_body());
     HTTPResponse::dec_ref(http_response);
+
+    if (http_response_body != NULL) {
+      switch (http_response_body->get_type_id()) {
+      case Buffer::TYPE_ID: {
+        http_response_header.set_next_buffer(
+          static_cast<Buffer*>(http_response_body)
+        );
+      }
+      break;
+
+      default: DebugBreak();
+      }
+    }
+
+    sendAIOCB* send_aiocb = new sendAIOCB(*this, http_response_header);
+    if (!aio_queue.enqueue(*send_aiocb)) {
+      sendAIOCB::dec_ref(*send_aiocb);
+      Connection::dec_ref(*this);
+    }
   }
 
 private:
@@ -241,10 +247,13 @@ private:
       switch (object.get_type_id()) {
       case Buffer::TYPE_ID: {
         Buffer& next_recv_buffer = static_cast<Buffer&>(object);
-        enqueue(*new recvAIOCB(*this, next_recv_buffer));
-        return;
+        recvAIOCB* recv_aiocb = new recvAIOCB(*this, next_recv_buffer);
+        if (!aio_queue.enqueue(*recv_aiocb)) {
+          recvAIOCB::dec_ref(*recv_aiocb);
+          Connection::dec_ref(*this);
+        }
       }
-      break;
+      return;
 
       case HTTPRequest::TYPE_ID: {
         HTTPRequest& http_request = static_cast<HTTPRequest&>(object);
