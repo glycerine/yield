@@ -47,6 +47,19 @@ __all__ = ["Project"]
 
 
 class Project(object):
+    TYPE_GUI = 1
+    TYPE_PROGRAM = 2
+    TYPE_PYTHON_EXTENSION = 3
+    TYPE_SHARED_LIBRARY = 4
+    TYPE_STATIC_LIBRARY = 5
+    TYPES = (
+        TYPE_GUI,
+        TYPE_PROGRAM,
+        TYPE_PYTHON_EXTENSION,
+        TYPE_SHARED_LIBRARY,
+        TYPE_STATIC_LIBRARY
+    )
+
     def __init__(
         self,
         name,
@@ -64,7 +77,7 @@ class Project(object):
         project_dir_path=None,
         project_references=None,
         source_dir_path=None,
-        type="lib",
+        type=TYPE_STATIC_LIBRARY,
         *args,
         **kwds
     ):
@@ -73,7 +86,14 @@ class Project(object):
         self.__libs = PlatformDict(libs)
         self.__ldflags = PlatformDict(ldflags)
         self.__name = static_cast(name, str)
-        self.__type = static_cast(type, str)
+
+        if type == self.TYPE_PROGRAM or \
+           type == self.TYPE_PYTHON_EXTENSION or \
+           type == self.TYPE_SHARED_LIBRARY or \
+           type == self.TYPE_STATIC_LIBRARY:
+            self.__type = type
+        else:
+            raise ValueError, type
 
         if project_dir_path is not None: # Must be set first
             project_dir_path = static_cast(project_dir_path, str)

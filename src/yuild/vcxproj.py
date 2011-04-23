@@ -58,19 +58,6 @@ __all__ = [
 
 
 # Constants
-CONFIGURATION_TYPE = {
-    "lib": "StaticLibrary",
-    "dll": "DynamicLibrary",
-    "exe": "Application",
-    "gui": "Application",
-}
-
-SUBSYSTEM = {
-    "dll": "WINDOWS",
-    "exe": "CONSOLE",
-    "gui": "WINDOWS"
-}
-
 INDENT_SPACES = ' ' * 2
 
 
@@ -182,6 +169,24 @@ USER_PROPS_IMPORT_GROUP = """\
 
 
 class VCXProj(VCProj):
+    CONFIGURATION_TYPE = {
+        VCProj.TYPE_GUI: "Application",
+        VCProj.TYPE_PROGRAM: "Application",
+        VCProj.TYPE_PYTHON_EXTENSION: "DynamicLibrary",
+        VCProj.TYPE_SHARED_LIBRARY: "DynamicLibrary",
+        VCProj.TYPE_STATIC_LIBRARY: "StaticLibrary",
+    }
+    assert len(CONFIGURATION_TYPE) == len(VCProj.TYPES)
+
+    SUBSYSTEM = {
+        VCProj.TYPE_GUI: "WINDOWS",
+        VCProj.TYPE_PROGRAM: "CONSOLE",
+        VCProj.TYPE_PYTHON_EXTENSION: "WINDOWS",
+        VCProj.TYPE_SHARED_LIBRARY: "WINDOWS",
+        VCProj.TYPE_STATIC_LIBRARY: "WINDOWS",
+    }
+    assert len(SUBSYSTEM) == len(VCProj.TYPES)
+
     def __get_header_items(self):
         return visit_source_file_tree(
                    self.get_include_file_tree(),
@@ -248,7 +253,7 @@ class VCXProj(VCProj):
                 Condition = "Condition=\"%(Condition)s\"" % locals()
 
                 # Configuration property groups
-                ConfigurationType = CONFIGURATION_TYPE[self.get_type()]
+                ConfigurationType = self.CONFIGURATION_TYPE[self.get_type()]
                 UseDebugLibraries = Configuration == "Debug" and "true" or "false"
                 configuration_property_group = CONFIGURATION_PROPERTY_GROUP % locals()
                 configuration_property_group = indent(INDENT_SPACES, configuration_property_group)
@@ -264,23 +269,22 @@ class VCXProj(VCProj):
                 IntDir = self.get_IntermediateDirectory()
                 OutDir = self.get_OutputDirectory()
                 OutputFile = self.get_OutputFile()
-                if OutputFile == self.get_name() or \
-                   OutputFile == self.get_name() + '.' + self.get_type():
-                    # OutputFile = TargetExt = TargetName = ""
-                    OutputFile = TargetExt = TargetName = ""
-                else:
-                    TargetName, TargetExt = splitext(OutputFile)
-                    if len(TargetExt) == 0 or TargetExt == '.' + self.get_type():
-                        TargetExt = ""
-                    else:
-                        TargetExt = """<TargetExt %(Condition)s>%(TargetExt)s</TargetExt>""" % locals()
-                        TargetExt = '\n' + indent(INDENT_SPACES, TargetExt)
 
-                    if TargetName == self.get_name():
-                        TargetName = ""
-                    else:
-                        TargetName = """<TargetName %(Condition)s>%(TargetName)s</TargetName>""" % locals()
-                        TargetName = '\n' + indent(INDENT_SPACES, TargetName)
+                TargetName, TargetExt = splitext(OutputFile)
+                if len(TargetExt) == 0:
+                    pass
+                elif self.get_type() != VCProj.TYPE_PYTHON_EXTENSION and\
+                     TargetExt == self.OUTPUT_FILE_EXT[self.get_type()]:
+                    TargetExt = ""
+                else:
+                    TargetExt = """<TargetExt %(Condition)s>%(TargetExt)s</TargetExt>""" % locals()
+                    TargetExt = '\n' + indent(INDENT_SPACES, TargetExt)
+
+                if TargetName == self.get_name():
+                    TargetName = ""
+                else:
+                    TargetName = """<TargetName %(Condition)s>%(TargetName)s</TargetName>""" % locals()
+                    TargetName = '\n' + indent(INDENT_SPACES, TargetName)
 
                 paths_property_group = PATHS_PROPERTY_GROUP % locals()
                 paths_property_group = indent(INDENT_SPACES, paths_property_group)
@@ -303,7 +307,7 @@ class VCXProj(VCProj):
                     GenerateDebugInformation = "false"
 
                 if ConfigurationType == "Application" or ConfigurationType == "DynamicLibrary":
-                    SubSystem = SUBSYSTEM[self.get_type()]
+                    SubSystem = self.SUBSYSTEM[self.get_type()]
                     AdditionalOptions = ' '.join(self.get_ldflags().get("win32", []))
                     LibLink = LINK_ITEM_DEFINITION % locals()
                 else:

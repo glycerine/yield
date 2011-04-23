@@ -48,6 +48,7 @@ import sys
 import traceback
 
 from yuild import Makefile, TopLevelMakefile, \
+                  Project, \
                   SourceFiles, \
                   VCXProj, VCXProjFilters, VCXProjUser, VCXSln
 from yuild.constant import C_CXX_INCLUDE_FILE_FNMATCH_PATTERNS, \
@@ -664,7 +665,10 @@ if options.generate_proj:
     vcxprojs = []
 
     for project_name in options.project_names:
-        for project_name_suffix, project_type in (("", "lib"), ("_test", "exe")):
+        for project_name_suffix, project_type in (
+            ("", Project.TYPE_STATIC_LIBRARY),
+            ("_test", Project.TYPE_PROGRAM)
+        ):
             project = {
                "build_dir_path": {
                    "*": path_join(ROOT_DIR_PATH, "build", path_sep.join(project_name.split('.'))),

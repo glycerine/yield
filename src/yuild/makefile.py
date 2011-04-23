@@ -88,6 +88,32 @@ endif""" % locals())
 
 
 class Makefile(Project):
+    OUTPUT_FILE_EXT = {
+        Project.TYPE_GUI: "",
+        Project.TYPE_PROGRAM: "",
+        Project.TYPE_PYTHON_EXTENSION: ".so",
+        Project.TYPE_SHARED_LIBRARY: ".so",
+        Project.TYPE_STATIC_LIBRARY: ".a"
+    }
+
+    OUTPUT_FILE_PREFIX = {
+        Project.TYPE_GUI: "",
+        Project.TYPE_PROGRAM: "",
+        Project.TYPE_PYTHON_EXTENSION: "",
+        Project.TYPE_SHARED_LIBRARY: "lib",
+        Project.TYPE_STATIC_LIBRARY: "lib"
+    }
+    assert len(OUTPUT_FILE_PREFIX) == len(Project.TYPES)
+
+    OUTPUT_FILE_RECIPE = {
+        Project.TYPE_PROGRAM: "$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)",
+        Project.TYPE_SHARED_LIBRARY: "$(LINK.cpp) -shared $(O_FILE_PATHS) -o $@ $(LIBS)",
+        Project.TYPE_STATIC_LIBRARY: "$(AR) -r $@ $(O_FILE_PATHS)"
+    }
+    OUTPUT_FILE_RECIPE[Project.TYPE_GUI] = OUTPUT_FILE_RECIPE[Project.TYPE_PROGRAM]
+    OUTPUT_FILE_RECIPE[Project.TYPE_PYTHON_EXTENSION] = OUTPUT_FILE_RECIPE[Project.TYPE_SHARED_LIBRARY]
+    assert len(OUTPUT_FILE_RECIPE) == len(Project.TYPES)
+
     def __str__(self):
         my_dir_path = "" # "$(dir $(lastword $(MAKEFILE_LIST)))"
 
@@ -187,8 +213,6 @@ endif""")
             )
         o_file_paths = '\n'.join(o_file_paths)
 
-        lcov_rule = ""
-
         source_file_rules = deduplist(source_file_rules)
         source_file_rules.sort()
         source_file_rules = '\n'.join(source_file_rules)
@@ -196,18 +220,16 @@ endif""")
         # output_file_path
         output_file_path = self.get_output_file_path()['*']
         output_dir_path, output_file_name = path_split(output_file_path)
-        if self.get_type() == "dll":
-            if len(splitext(output_file_name)[1]) == 0:
-                if not output_file_name.startswith("lib"):
-                    output_file_name = "lib" + output_file_name
-                if not output_file_name.endswith(".so"):
-                    output_file_name += ".so"
-            output_file_path = path_join(output_dir_path, output_file_name)
-            output_file_path_recipe = "$(LINK.cpp) -shared $(O_FILE_PATHS) -o $@ $(LIBS)"
-        elif self.get_type() == "exe":
+        if not output_file_name.startswith(self.OUTPUT_FILE_PREFIX[self.get_type()]):
+            output_file_name = self.OUTPUT_FILE_PREFIX[self.get_type()] + output_file_name
+        if len(splitext(output_file_name)[1]) == 0:
+            output_file_name += self.OUTPUT_FILE_EXT[self.get_type()]
+        output_file_path = path_join(output_dir_path, output_file_name)
+        output_file_recipe = self.OUTPUT_FILE_RECIPE[self.get_type()]
+
+        if self.get_type() == Project.TYPE_PROGRAM:
             name = self.get_name()
             output_file_path = posixpath(output_file_path)
-            output_file_path_recipe = "$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)"
             lcov_rule = """
             
 lcov: %(output_file_path)s
@@ -219,20 +241,13 @@ lcov: %(output_file_path)s
     -cp -R %(name)s_lcov_html-$(TIMESTAMP) /mnt/hgfs/minorg/Desktop
     zip -qr %(name)s_lcov_html-$(TIMESTAMP).zip %(name)s_lcov_html-$(TIMESTAMP)/*
     rm -fr %(name)s_lcov_html-$(TIMESTAMP)""" % locals()
-        elif self.get_type() == "lib":
-            if len(splitext(output_file_name)[1]) == 0:
-                if not output_file_name.startswith("lib"):
-                    output_file_name = "lib" + output_file_name
-                if not output_file_name.endswith(".a"):
-                    output_file_name += ".a"
-                output_file_path = path_join(output_dir_path, output_file_name)
-            output_file_path_recipe = "$(AR) -r $@ $(O_FILE_PATHS)"
         else:
-            raise NotImplementedError, self.get_type()
+            lcov_rule = ""
+
         output_dir_path = my_dir_path + posixpath(output_dir_path)
         output_file_path = my_dir_path + posixpath(output_file_path)
 
-        output_file_path_prerequisites = ["$(O_FILE_PATHS)"]
+        output_file_prerequisites = ["$(O_FILE_PATHS)"]
         project_reference_rules = []
         for project_reference in self.get_project_references().get('*', []):
             project_reference_makefile_path = project_reference
@@ -273,7 +288,7 @@ lcov: %(output_file_path)s
                                 )
                             )
 
-                        output_file_path_prerequisites.append(
+                        output_file_prerequisites.append(
                             project_reference_output_file_path
                         )
 
@@ -296,7 +311,7 @@ lcov: %(output_file_path)s
                     break
 
         project_reference_rules = lpad("\n\n\n", "\n\n".join(project_reference_rules))
-        output_file_path_prerequisites = ' '.join(output_file_path_prerequisites)
+        output_file_prerequisites = ' '.join(output_file_prerequisites)
 
         return ("""\
 TIMESTAMP=$(shell date +%%Y%%m%%dT%%H%%M%%S)
@@ -319,9 +334,9 @@ depclean:
 
 -include $(D_FILE_PATHS)%(lcov_rule)s%(project_reference_rules)s
 
-%(output_file_path)s: %(output_file_path_prerequisites)s
+%(output_file_path)s: %(output_file_prerequisites)s
     -mkdir -p %(output_dir_path)s 2>/dev/null
-    %(output_file_path_recipe)s
+    %(output_file_recipe)s
 
 %(source_file_rules)s""" % locals()).replace(' ' * 4, '\t')
 

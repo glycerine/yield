@@ -35,7 +35,15 @@ from yuild.constant import C_CXX_SOURCE_FILE_FNMATCH_PATTERNS, \
                            SYS_PLATFORM_CHECKS
 from yuild.project import Project
 
-from yutil import lpad, pad, posixpath, posixpaths, quote, quotestrlist, relpath, treepaths
+from yutil import lpad, \
+                  pad, \
+                  posixpath, \
+                  posixpaths, \
+                  quote, \
+                  quotestrlist, \
+                  relpath, \
+                  strlist, \
+                  treepaths
 
 
 # Constants
@@ -48,6 +56,7 @@ class SetupPy(Project):
         author=None,
         author_email=None,
         description=None,
+        scripts=None,
         url=None,
         version="1.0",
         **kwds
@@ -61,6 +70,7 @@ class SetupPy(Project):
         if description is None:
             description = self.get_name()
         self.__description = description
+        self.__scripts = strlist(scripts)
         self.__url = url
         self.__version = version
 
@@ -77,6 +87,12 @@ class SetupPy(Project):
 
         if self.__author_email is not None:
             kwds["author_email"] = quote(self.__author_email)
+
+        if len(self.__scripts) > 0:
+            kwds["scripts"] = \
+                '[' + \
+                ", ".join(quotestrlist(posixpaths(self.__scripts))) + \
+                ']'
 
         if self.__url is not None:
             kwds["url"] = quote(self.__url)

@@ -44,22 +44,6 @@ from yuild.project import Project
 __all__ = ["VCProj"]
 
 
-# Constants
-CONFIGURATION_TYPE = {
-    "dll": 2,
-    "exe": 1,
-    "gui": 1,
-    "lib": 4
-}
-
-SUBSYSTEM = {
-    "dll": 0,
-    "exe": 0,
-    "gui": 2,
-    "lib": 0
-}
-
-
 # Templates
 CONFIGURATION = """\
 <Configuration
@@ -146,6 +130,33 @@ VC_LINKER_TOOL = """\
 
 
 class VCProj(Project):
+    CONFIGURATION_TYPE = {
+        Project.TYPE_GUI: 1,
+        Project.TYPE_PROGRAM: 1,
+        Project.TYPE_PYTHON_EXTENSION: 2,
+        Project.TYPE_SHARED_LIBRARY: 2,
+        Project.TYPE_STATIC_LIBRARY: 4
+    }
+    assert len(CONFIGURATION_TYPE) == len(Project.TYPES)
+
+    SUBSYSTEM = {
+        Project.TYPE_GUI: 2,
+        Project.TYPE_PROGRAM: 0,
+        Project.TYPE_PYTHON_EXTENSION: 0,
+        Project.TYPE_SHARED_LIBRARY: 0,
+        Project.TYPE_STATIC_LIBRARY: 0
+    }
+    assert len(SUBSYSTEM) == len(Project.TYPES)
+
+    OUTPUT_FILE_EXT = {
+        Project.TYPE_GUI: "exe",
+        Project.TYPE_PROGRAM: ".exe",
+        Project.TYPE_PYTHON_EXTENSION: ".pyd",
+        Project.TYPE_SHARED_LIBRARY: ".dll",
+        Project.TYPE_STATIC_LIBRARY: ".lib"
+    }
+    assert len(OUTPUT_FILE_EXT) == len(Project.TYPES)
+
     def get_AdditionalDependencies(self, sep=' '):
         AdditionalDependencies = []
         for lib in self.get_libs().get("win32", combine_platforms=True, default=[]):
@@ -195,12 +206,7 @@ class VCProj(Project):
     def get_OutputFile(self):
         OutputFile = split(self.get_output_file_path()["win32"])[1]
         if len(splitext(OutputFile)[1]) == 0:
-            if self.get_type() == "dll":
-                OutputFile += ".dll"
-            elif type == "exe":
-                OutputFile += ".exe"
-            elif type == "lib":
-                OutputFile += ".lib"
+            OutputFile += self.OUTPUT_FILE_EXT[self.get_type()]
         return OutputFile
 
     def get_PreprocessorDefinitions(self):
@@ -210,30 +216,19 @@ class VCProj(Project):
     def get_RootNamespace(self):
         return self.get_name()
 
-    def get_type(self):
-        type = Project.get_type(self)
-        if type in ("exe", "dll", "gui", "lib"):
-            return type
-        elif type == "bin":
-            return "exe"
-        elif type == "so":
-            return "dll"
-        else:
-            raise ValueError, type
-
     def __str__(self):
         AdditionalDependencies = self.get_AdditionalDependencies()
         AdditionalIncludeDirectories = self.get_AdditionalIncludeDirectories()
         AdditionalLibraryDirectories = ntpaths(self.get_libpath()["win32"])
         AdditionalLibraryDirectories = ';'.join(AdditionalLibraryDirectories)
-        ConfigurationType = CONFIGURATION_TYPE[self.get_type()]
+        ConfigurationType = self.CONFIGURATION_TYPE[self.get_type()]
         IntermediateDirectory = self.get_IntermediateDirectory()
         Name = self.get_Name()
         OutputDirectory = self.get_OutputDirectory()
         OutputFile = self.get_OutputFile()
         PreprocessorDefinitions = self.get_PreprocessorDefinitions()
         RootNamespace = self.get_RootNamespace()
-        SubSystem = SUBSYSTEM[self.get_type()]
+        SubSystem = self.SUBSYSTEM[self.get_type()]
 
         try:
             vcproj_file = \
@@ -293,7 +288,7 @@ class VCProj(Project):
                 RuntimeLibrary = 2
 
             tools = [VC_CL_COMPILER_TOOL % locals()]
-            if self.get_type() == "lib":
+            if self.get_type() == self.TYPE_STATIC_LIBRARY:
                 tools.append(VC_LIBRARIAN_TOOL % locals())
             else:
                 tools.append(VC_LINKER_TOOL % locals())
