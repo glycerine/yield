@@ -33,6 +33,7 @@ from yuild.constant import C_CXX_SOURCE_FILE_FNMATCH_PATTERNS, \
                            INDENT_SPACES, \
                            PY_SOURCE_FILE_FNMATCH_PATTERNS, \
                            SYS_PLATFORM_CHECKS
+from yuild.platform_dict import PlatformDict
 from yuild.project import Project
 
 from yutil import lpad, \
@@ -70,32 +71,60 @@ class SetupPy(Project):
         if description is None:
             description = self.get_name()
         self.__description = description
-        self.__scripts = strlist(scripts)
+        self.__scripts = PlatformDict(scripts)
         self.__url = url
         self.__version = version
 
     def __str__(self):
         INDENT_SPACES = globals()["INDENT_SPACES"]
-        name = self.get_name()
         source_dir_path = self.get_source_dir_path()['*']
-        version = self.__version
 
-        kwds = {}
+        constants = []
+        for constant, platform_dict in (
+            ("DEFINE_MACROS", self.get_cxxdefines()),
+            ("EXTRA_COMPILE_ARGS", self.get_cxxflags()),
+            ("EXTRA_LINK_ARGS", self.get_ldflags()),
+            ("INCLUDE_DIRS", self.get_cxxpath()),
+            ("LIBRARIES", self.get_libs()),
+            ("LIBRARY_DIRS", self.get_libpath()),
+            ("SCRIPTS", self.__scripts)
+        ):
+            constant_values = [constant + " = []" % locals()]
+            for platform, values in platform_dict.iteritems():
+                values = strlist(values)
+                if (constant == "SCRIPTS" or constant.endswith("_DIRS")):
+                    values = posixpaths(values)
+                values = ", ".join(quotestrlist(values))
+                if platform == '*':
+                    if len(constant_values) == 1:
+                        constant_values = [constant + "= [%(values)s]" % locals()]
+                    else:
+                        constant_values.append("%(constant)s.extend([%(values)s])" % locals())
+                else:
+                    sys_platform_check = SYS_PLATFORM_CHECKS[platform]
+                    constant_values.append("""\
+if %(sys_platform_check)s:
+%(INDENT_SPACES)s%(constant)s.extend([%(values)s])""" % locals())
+            constants.append('\n'.join(constant_values))
+        constants = "\n\n".join(constants)
+
+
+        setup_kwds = {
+            "name": quote(self.get_name()),
+            "version": quote(str(self.__version))
+        }
 
         if self.__author is not None:
-            kwds["author"] = quote(self.__author)
+            setup_kwds["author"] = quote(self.__author)
 
         if self.__author_email is not None:
-            kwds["author_email"] = quote(self.__author_email)
+            setup_kwds["author_email"] = quote(self.__author_email)
 
         if len(self.__scripts) > 0:
-            kwds["scripts"] = \
-                '[' + \
-                ", ".join(quotestrlist(posixpaths(self.__scripts))) + \
-                ']'
+            setup_kwds["scripts"] = "SCRIPTS"
 
         if self.__url is not None:
-            kwds["url"] = quote(self.__url)
+            setup_kwds["url"] = quote(self.__url)
 
         c_cxx_source_files = \
             self.get_source_files().filter(C_CXX_SOURCE_FILE_FNMATCH_PATTERNS)
@@ -123,32 +152,10 @@ class SetupPy(Project):
                         ", ".join(posixpaths(ext_source_file_paths))
                     ext_module = \
                         """\
-Extension("%(ext_module_name)s", [%(ext_source_file_paths)s], define_macros=define_macros, include_dirs=include_dirs, libraries=libraries)""" % locals()
+Extension("%(ext_module_name)s", [%(ext_source_file_paths)s], **Extension_kwds)""" % locals()
                     ext_modules.append(ext_module)
             if len(ext_modules) > 0:
-                Extension_kwds = []
-                for Extension_kwd, platform_dict in (
-                    ("define_macros", self.get_cxxdefines()),
-                    ("extra_compile_args", self.get_cxxflags()),
-                    ("extra_link_args", self.get_ldflags()),
-                    ("include_dirs", self.get_cxxpath()),
-                    ("libraries", self.get_libs()),
-                    ("library_dirs", self.get_libpath()),
-                ):
-                    Extension_kwd_values = []
-                    for platform, str_values in platform_dict.iteritems():
-                        sys_platform_check = SYS_PLATFORM_CHECKS[platform]
-                        values = ", ".join(quotestrlist(str_values))
-                        Extension_kwd_values.append("""\
-if %(sys_platform_check)s:
-    %(Extension_kwd)s.extend([%(values)s])""" % locals())
-                    Extension_kwd_values = lpad('\n', '\n'.join(Extension_kwd_values))
-                    Extension_kwds.append("""\
-%(Extension_kwd)s = []%(Extension_kwd_values)s""" % locals())
-                Extension_kwds = pad("\n\n\n", "\n\n".join(Extension_kwds), '\n')
-                kwds["ext_modules"] = '[' + ", ".join(ext_modules) + ']'
-        else:
-            Extension_kwds = ""
+                setup_kwds["ext_modules"] = '[' + ", ".join(ext_modules) + ']'
 
         py_source_files = \
             self.get_source_files().filter(PY_SOURCE_FILE_FNMATCH_PATTERNS)
@@ -158,27 +165,41 @@ if %(sys_platform_check)s:
                     relpath(py_source_file.get_path(), source_dir_path)
                     for py_source_file in py_source_files
                 ])
-            kwds["package_dir"] = '{"": "%s"}' % posixpath(source_dir_path)
-            kwds["packages"] = \
+            setup_kwds["package_dir"] = '{"": "%s"}' % posixpath(source_dir_path)
+            setup_kwds["packages"] = \
                 '[' + \
                 ", ".join([quote(package)
                            for package in py_source_file_tree.keys()]) + \
                 ']'
 
-        kwds = \
+        setup_kwds = \
             '\n'.join([
-                INDENT_SPACES + key + '=' + kwds[key] + ','
-                for key in sorted(kwds.keys())
+                INDENT_SPACES + key + '=' + setup_kwds[key] + ','
+                for key in sorted(setup_kwds.keys())
             ])
 
         return """\
 from distutils.core import setup, Extension
-import sys%(Extension_kwds)s
+import sys
+
+
+# Platform-specific constants
+%(constants)s
+
+
+# **kwds for Extensions
+Extension_kwds = {    
+    "define_macros": DEFINE_MACROS,
+    "extra_compile_args": EXTRA_COMPILE_ARGS,
+    "extra_link_args": EXTRA_LINK_ARGS,
+    "include_dirs": INCLUDE_DIRS,
+    "library_dirs": LIBRARY_DIRS,
+    "libraries": LIBRARIES    
+}
+
 
 setup(
-%(INDENT_SPACES)sname="%(name)s",
-%(INDENT_SPACES)sversion="%(version)s",
-%(kwds)s
+%(setup_kwds)s
 )
 
 """ % locals()
