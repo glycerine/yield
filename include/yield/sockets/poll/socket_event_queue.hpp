@@ -54,7 +54,7 @@ public:
   bool associate(socket_t socket_, int16_t events);
   bool dissociate(socket_t socket_);
 
-  // EventQueue
+  // yield::EventQueue
   YO_NEW_REF Event& dequeue() {
     return EventQueue::dequeue();
   }

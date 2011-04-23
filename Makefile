@@ -107,7 +107,7 @@ yield.i18n: yield
 yield.i18n_test: yield.i18n
 	$(MAKE) -C proj/yield/i18n -f yield.i18n_test.Makefile
 
-yield.poll: yield
+yield.poll: yield.thread
 	$(MAKE) -C proj/yield/poll -f yield.poll.Makefile
 
 yield.poll_test: yield.poll

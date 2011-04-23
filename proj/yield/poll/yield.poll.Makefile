@@ -35,13 +35,16 @@ ifeq ($(UNAME), MINGW32)
 endif
 
 
+ifeq ($(UNAME), FreeBSD)
+	LIBS += -lpthread
+endif
 ifeq ($(UNAME), Linux)
-	LIBS += -lrt -lstdc++
+	LIBS += -lpthread -lrt -lstdc++
 endif
 ifeq ($(UNAME), Solaris)
-	LIBS += -lm -lrt -lstdc++
+	LIBS += -lkstat -lm -lrt -lstdc++
 endif
-LIBS += -lyield
+LIBS += -lyield_thread -lyield
 
 
 D_FILE_PATHS := $(shell find ../../../build/yield/poll -name "*.d")
@@ -80,11 +83,11 @@ depclean:
 -include $(D_FILE_PATHS)
 
 
-../../../lib/yield/libyield.a:
-	$(MAKE) -C .. yield.Makefile
+../../../lib/yield/libyield_thread.a:
+	$(MAKE) -C ../thread yield.thread.Makefile
 
 
-../../../lib/yield/libyield_poll.a: $(O_FILE_PATHS) ../../../lib/yield/libyield.a
+../../../lib/yield/libyield_poll.a: $(O_FILE_PATHS) ../../../lib/yield/libyield_thread.a
 	-mkdir -p ../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(O_FILE_PATHS)
 

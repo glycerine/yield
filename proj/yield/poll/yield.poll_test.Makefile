@@ -35,13 +35,16 @@ ifeq ($(UNAME), MINGW32)
 endif
 
 
+ifeq ($(UNAME), FreeBSD)
+	LIBS += -lpthread
+endif
 ifeq ($(UNAME), Linux)
-	LIBS += -lrt -lstdc++
+	LIBS += -lpthread -lrt -lstdc++
 endif
 ifeq ($(UNAME), Solaris)
-	LIBS += -lm -lrt -lstdc++
+	LIBS += -lkstat -lm -lrt -lstdc++
 endif
-LIBS += -lyield_poll -lyield
+LIBS += -lyield_poll -lyield_thread -lyield
 
 
 D_FILE_PATHS := $(shell find ../../../build/yield/poll -name "*.d")

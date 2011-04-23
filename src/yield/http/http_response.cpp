@@ -34,7 +34,7 @@
 namespace yield {
 namespace http {
 HTTPResponse::HTTPResponse(
-  void* body,
+  uint16_t body_offset,
   Buffer& buffer,
   uint32_t connection_id,
   size_t content_length,
@@ -42,7 +42,7 @@ HTTPResponse::HTTPResponse(
   float http_version,
   uint16_t status_code
 ) : HTTPMessage<HTTPResponse>(
-      body,
+      body_offset,
       buffer,
       connection_id,
       content_length,

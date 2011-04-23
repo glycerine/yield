@@ -174,7 +174,7 @@ private:
   friend class HTTPRequestParser;
 
   HTTPRequest(
-    void* body,
+    uint16_t body_offset,
     Buffer& buffer,
     uint32_t connection_id,
     size_t content_length,

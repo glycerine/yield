@@ -64,17 +64,20 @@ HTTPMessageParser::~HTTPMessageParser() {
   Buffer::dec_ref(buffer);
 }
 
-bool HTTPMessageParser::parse_body(size_t content_length, void*& body) {
-  if
-  (
+bool
+HTTPMessageParser::parse_body(
+  size_t content_length,
+  OUT uint16_t& body_offset
+) {
+  if (
     content_length == 0
     ||
     content_length == HTTPRequest::CONTENT_LENGTH_CHUNKED
  ) {
-    body = NULL;
+    body_offset = 0;
     return true;
   } else if (static_cast<size_t>(eof - p) >= content_length) {
-    body = p;
+    body_offset = p - ps;
     p += content_length;
     return true;
   } else
@@ -249,11 +252,9 @@ HTTPMessageParser::parse_fields(
 
     include rfc2616 "rfc2616.rl";
 
-    main :=
-    (
+    main := (
       field % {
-        if
-        (
+        if (
           field_name.iov_len == 14
           &&
           (
@@ -266,21 +267,19 @@ HTTPMessageParser::parse_fields(
           char* endptr = nptr + field_value.iov_len;
           content_length = static_cast<size_t>(strtol(nptr, &endptr, 10));
         }
-        else if
-        (
+        else if (
           field_name.iov_len == 17
-          &&
-          (
+          && (
             memcmp(field_name.iov_base, "Transfer-Encoding", 17) == 0
             ||
             memcmp(field_name.iov_base, "Transfer-encoding", 17) == 0
-         )
+          )
           &&
           memcmp(field_value.iov_base, "chunked", 7) == 0
         )
           content_length = HTTPRequest::CONTENT_LENGTH_CHUNKED;
       }
-   )* crlf
+    )* crlf
     @{ fbreak; }
     $err{ return false; };
 

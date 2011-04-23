@@ -27,12 +27,13 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include <sstream> // for std::ostringstream
 #include "yield/assert.hpp"
 #include "yield/buffer.hpp"
 #include "yield/exception.hpp"
 #include "yield/http/http_request.hpp"
 #include "yield/http/http_response.hpp"
+
+#include <sstream> // for std::ostringstream
 
 namespace yield {
 namespace http {
@@ -99,7 +100,7 @@ HTTPRequest::Method::parse(
 }
 
 HTTPRequest::HTTPRequest(
-  void* body,
+  uint16_t body_offset,
   Buffer& buffer,
   uint32_t connection_id,
   size_t content_length,
@@ -109,7 +110,7 @@ HTTPRequest::HTTPRequest(
   const yield::uri::URI& uri
 )
   : HTTPMessage<HTTPRequest>(
-      body,
+      body_offset,
       buffer,
       connection_id,
       content_length,

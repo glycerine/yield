@@ -66,7 +66,7 @@
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>yield_fs_poll.lib;yield_aio.lib;yield_poll.lib;yield_fs.lib;yield_i18n.lib;yield.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_fs_poll.lib;yield_aio.lib;yield_poll.lib;yield_thread.lib;yield_fs.lib;yield_i18n.lib;yield.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -86,7 +86,7 @@
       <WarningLevel>Level4</WarningLevel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>yield_fs_poll.lib;yield_aio.lib;yield_poll.lib;yield_fs.lib;yield_i18n.lib;yield.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_fs_poll.lib;yield_aio.lib;yield_poll.lib;yield_thread.lib;yield_fs.lib;yield_i18n.lib;yield.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>

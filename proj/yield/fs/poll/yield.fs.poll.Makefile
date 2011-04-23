@@ -39,15 +39,15 @@ ifeq ($(UNAME), Darwin)
 	LIBS += -liconv
 endif
 ifeq ($(UNAME), FreeBSD)
-	LIBS += -liconv -lintl
+	LIBS += -lpthread -liconv -lintl
 endif
 ifeq ($(UNAME), Linux)
-	LIBS += -lrt -lstdc++
+	LIBS += -lpthread -lrt -lstdc++
 endif
 ifeq ($(UNAME), Solaris)
-	LIBS += -liconv -lm -lrt -lstdc++
+	LIBS += -lkstat -liconv -lm -lrt -lstdc++
 endif
-LIBS += -lyield_aio -lyield_poll -lyield_fs -lyield_i18n -lyield
+LIBS += -lyield_aio -lyield_poll -lyield_thread -lyield_fs -lyield_i18n -lyield
 
 
 D_FILE_PATHS := $(shell find ../../../../build/yield/fs/poll -name "*.d")

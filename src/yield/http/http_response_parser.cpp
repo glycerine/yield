@@ -27,7 +27,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/* #line 1 "src\\yield\\http\\http_response_parser.rl" */
+/* #line 1 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
 // yield/http/http_response_parser.rl
 
 // Copyright (c) 2011 Minor Gordon
@@ -80,13 +80,11 @@ Object& HTTPResponseParser::parse() {
     if (parse_status_line(http_version, status_code)) {
       uint16_t fields_offset;
       size_t content_length;
-
       if (parse_fields(fields_offset, content_length)) {
-        void* body;
-
-        if (parse_body(content_length, body)) {
+        uint16_t body_offset;
+        if (parse_body(content_length, body_offset)) {
           return *new HTTPResponse(
-                   body,
+                   body_offset,
                    buffer,
                    connection_id,
                    content_length,
@@ -136,7 +134,7 @@ HTTPResponseParser::parse_status_line(
   int cs;
 
 
-  /* #line 2 "src\\yield\\http\\http_response_parser.cpp" */
+  /* #line 2 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.cpp" */
   static const char _status_line_parser_actions[] = {
     0, 1, 0, 1, 1, 1, 2, 1,
     3
@@ -202,12 +200,12 @@ HTTPResponseParser::parse_status_line(
   static const int status_line_parser_en_main = 1;
 
 
-  /* #line 66 "src\\yield\\http\\http_response_parser.cpp" */
+  /* #line 66 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.cpp" */
   {
     cs = status_line_parser_start;
   }
 
-  /* #line 69 "src\\yield\\http\\http_response_parser.cpp" */
+  /* #line 69 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.cpp" */
   {
     int _klen;
     unsigned int _trans;
@@ -278,19 +276,19 @@ _match:
     while (_nacts-- > 0) {
       switch (*_acts++) {
       case 0:
-        /* #line 32 "src\\yield\\http\\rfc2616.rl" */
+        /* #line 33 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         http_version = static_cast<float>(atof(p));
       }
       break;
       case 1:
-        /* #line 115 "src\\yield\\http\\http_response_parser.rl" */
+        /* #line 113 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
       {
         status_code = static_cast<uint16_t>(atoi(p));
       }
       break;
       case 2:
-        /* #line 122 "src\\yield\\http\\http_response_parser.rl" */
+        /* #line 120 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
       { {
           p++;
           goto _out;
@@ -298,12 +296,12 @@ _match:
       }
       break;
       case 3:
-        /* #line 123 "src\\yield\\http\\http_response_parser.rl" */
+        /* #line 121 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
       {
         return false;
       }
       break;
-      /* #line 152 "src\\yield\\http\\http_response_parser.cpp" */
+      /* #line 152 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.cpp" */
       }
     }
 
@@ -318,12 +316,12 @@ _again:
       while (__nacts-- > 0) {
         switch (*__acts++) {
         case 3:
-          /* #line 123 "src\\yield\\http\\http_response_parser.rl" */
+          /* #line 121 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
         {
           return false;
         }
         break;
-        /* #line 169 "src\\yield\\http\\http_response_parser.cpp" */
+        /* #line 169 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.cpp" */
         }
       }
     }
@@ -332,7 +330,7 @@ _out:
     {}
   }
 
-  /* #line 128 "src\\yield\\http\\http_response_parser.rl" */
+  /* #line 126 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
 
 
   return cs != status_line_parser_error;

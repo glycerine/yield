@@ -33,7 +33,7 @@
 #include "../../win32/winsock.hpp"
 #include "yield/event_queue.hpp"
 #include "yield/sockets/socket_pair.hpp"
-#include "yield/thread/non_blocking_concurrent_queue.hpp"
+#include "yield/thread/blocking_concurrent_queue.hpp"
 
 namespace yield {
 namespace sockets {
@@ -44,14 +44,14 @@ namespace win32 {
 class Selector
   : public EventQueue,
     private vector<socket_t>,
-    private yield::thread::NonBlockingConcurrentQueue<Event, 32> {
+    private yield::thread::BlockingConcurrentQueue<Event> {
 public:
   Selector();
 
   bool associate(socket_t socket_, int16_t events);
   bool dissociate(socket_t socket_);
 
-  // EventQueue
+  // yield::EventQueue
   YO_NEW_REF Event& dequeue() {
     return EventQueue::dequeue();
   }

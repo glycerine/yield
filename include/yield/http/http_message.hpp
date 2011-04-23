@@ -45,9 +45,7 @@ public:
   const static size_t CONTENT_LENGTH_CHUNKED = SIZE_MAX;
 
 public:
-  void* get_body() const {
-    return body;
-  }
+  void* get_body() const;
 
   uint32_t get_connection_id() const {
     return connection_id;
@@ -220,7 +218,7 @@ public:
 
 protected:
   HTTPMessage(
-    void* body,
+    uint16_t body_offset,
     Buffer& buffer,
     uint32_t connection_id,
     size_t content_length,
@@ -246,7 +244,7 @@ protected:
   void mark_fields_offset();
 
 private:
-  void* body;
+  uint16_t body_offset;
   Buffer& buffer;
   uint32_t connection_id;
   size_t content_length;

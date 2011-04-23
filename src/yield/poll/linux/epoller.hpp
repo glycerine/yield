@@ -31,7 +31,7 @@
 #define _YIELD_POLL_LINUX_EPOLLER_HPP_
 
 #include "yield/event_queue.hpp"
-#include "yield/thread/non_blocking_concurrent_queue.hpp"
+#include "yield/thread/blocking_concurrent_queue.hpp"
 
 #include <sys/epoll.h>
 
@@ -41,7 +41,7 @@ namespace poll {
 namespace linux {
 class EPoller
   : public EventQueue,
-    private yield::thread::NonBlockingConcurrentQueue<Event, 32> {
+    private yield::thread::BlockingConcurrentQueue<Event> {
 public:
   EPoller();
   ~EPoller();
@@ -49,7 +49,7 @@ public:
   bool associate(fd_t fd, uint16_t events);
   bool dissociate(fd_t fd);
 
-  // EventQueue
+  // yield::EventQueue
   YO_NEW_REF Event* dequeue(const Time& timeout);
   bool enqueue(YO_NEW_REF Event& event);
 

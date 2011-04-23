@@ -36,8 +36,7 @@ namespace yield {
 namespace sockets {
 namespace poll {
 namespace win32 {
-using yield::thread::NonBlockingConcurrentQueue;
-
+using yield::thread::BlockingConcurrentQueue;
 
 #if _WIN32_WINNT >= 0x0600
 WSAPoller::WSAPoller() {
@@ -51,8 +50,7 @@ WSAPoller::associate(
   int16_t events
 ) {
   if (events > 0) {
-    for
-    (
+    for (
       vector<pollfd>::iterator pollfd_i = pollfds.begin();
       pollfd_i != pollfds.end();
       ++pollfd_i
@@ -88,7 +86,7 @@ Event* WSAPoller::dequeue(const Time& timeout) {
           pollfd_.revents = 0;
           char m;
           wake_socket_pair.first().read(&m, 1);
-          return NonBlockingConcurrentQueue<Event, 32>::trydequeue();
+          return BlockingConcurrentQueue<Event>::trydequeue();
         }
         else {
           uint16_t revents = pollfd_.revents;
@@ -125,10 +123,11 @@ bool WSAPoller::dissociate(socket_t socket_) {
 }
 
 bool WSAPoller::enqueue(Event& event) {
-  bool ret = NonBlockingConcurrentQueue<Event, 32>::enqueue(event);
-  debug_assert(ret);
-  wake_socket_pair.second().write("m", 1);
-  return ret;
+  if (BlockingConcurrentQueue<Event>::enqueue(event)) {
+    wake_socket_pair.second().write("m", 1);
+    return true;
+  } else
+    return false;
 }
 #endif
 }

@@ -66,7 +66,7 @@
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>yield.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_thread.lib;yield.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -85,7 +85,7 @@
       <WarningLevel>Level4</WarningLevel>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>yield.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_thread.lib;yield.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -127,8 +127,8 @@
   </ItemGroup>
 
   <ItemGroup Label="ProjectReferenceItems">
-    <ProjectReference Include="..\yield.vcxproj">
-      <Project>{d810cb13-1ad8-4e83-937c-dccc9c7105eb}</Project>
+    <ProjectReference Include="..\thread\yield.thread.vcxproj">
+      <Project>{2285eac5-e9b9-436c-bc3f-5ad7f7869316}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>

@@ -84,13 +84,11 @@ Object& HTTPRequestParser::parse() {
 
       uint16_t fields_offset;
       size_t content_length;
-
       if (parse_fields(fields_offset, content_length)) {
-        void* body;
-
-        if (parse_body(content_length, body)) {
+        uint16_t body_offset;
+        if (parse_body(content_length, body_offset)) {
           return *new HTTPRequest(
-                   body,
+                   body_offset,
                    buffer,
                    connection_id,
                    content_length,

@@ -40,8 +40,7 @@
 namespace yield {
 namespace poll {
 namespace linux {
-using yield::thread::NonBlockingConcurrentQueue;
-
+using yield::thread::BlockingConcurrentQueue;
 
 EPoller::EPoller() {
   epfd = epoll_create(32768);
@@ -86,7 +85,7 @@ bool EPoller::associate(fd_t fd, uint16_t events) {
 }
 
 YO_NEW_REF Event* EPoller::dequeue(const Time& timeout) {
-  Event* event = NonBlockingConcurrentQueue<Event, 32>::trydequeue();
+  Event* event = BlockingConcurrentQueue<Event>::trydequeue();
   if (event != NULL)
     return event;
   else {
@@ -99,7 +98,7 @@ YO_NEW_REF Event* EPoller::dequeue(const Time& timeout) {
       if (epoll_event_.data.fd == wake_fd) {
         uint64_t data;
         read(wake_fd, &data, sizeof(data));
-        return NonBlockingConcurrentQueue<Event, 32>::trydequeue();
+        return BlockingConcurrentQueue<Event>::trydequeue();
       } else
         return new FDEvent(epoll_event_.events, epoll_event_.data.fd);
     } else if (ret == 0 || errno == EINTR)
@@ -123,11 +122,12 @@ bool EPoller::dissociate(fd_t fd) {
 }
 
 bool EPoller::enqueue(Event& event) {
-  bool ret = NonBlockingConcurrentQueue<Event, 32>::enqueue(event);
-  debug_assert(ret);
-  uint64_t data = 1;
-  write(wake_fd, &data, sizeof(data));
-  return ret;
+  if (BlockingConcurrentQueue<Event>::enqueue(event)) {
+    uint64_t data = 1;
+    write(wake_fd, &data, sizeof(data));
+    return true;
+  } else
+    return false;
 }
 }
 }

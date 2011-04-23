@@ -28,7 +28,6 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "selector.hpp"
-#include "yield/assert.hpp"
 #include "yield/exception.hpp"
 #include "yield/sockets/poll/socket_event.hpp"
 
@@ -36,7 +35,7 @@ namespace yield {
 namespace sockets {
 namespace poll {
 namespace win32 {
-using yield::thread::NonBlockingConcurrentQueue;
+using yield::thread::BlockingConcurrentQueue;
 
 Selector::Selector() {
   FD_ZERO(&except_fd_set);
@@ -113,8 +112,7 @@ Event* Selector::dequeue(const Time& timeout) {
   timeout_tv.tv_usec = (timeout.ns() % Time::NS_IN_S) / Time::NS_IN_US;
 
   int ret
-  = select
-    (
+  = select(
       0,
       &read_fd_set_copy,
       &write_fd_set_copy,
@@ -136,8 +134,7 @@ Event* Selector::dequeue(const Time& timeout) {
         // not every socket
       }
 
-      if
-      (
+      if (
         ret > 0
         &&
         FD_ISSET(socket_, &read_fd_set_copy)
@@ -146,8 +143,7 @@ Event* Selector::dequeue(const Time& timeout) {
         ret--;
       }
 
-      if
-      (
+      if (
         ret > 0
         &&
         FD_ISSET(socket_, &write_fd_set_copy)
@@ -160,7 +156,7 @@ Event* Selector::dequeue(const Time& timeout) {
         if (socket_ == wake_socket_pair.first()) {
           char m;
           wake_socket_pair.second().read(&m, 1);
-          return NonBlockingConcurrentQueue<Event, 32>::trydequeue();
+          return BlockingConcurrentQueue<Event>::trydequeue();
         }
         else
           return new SocketEvent(events, socket_);
@@ -174,8 +170,7 @@ Event* Selector::dequeue(const Time& timeout) {
 }
 
 bool Selector::dissociate(socket_t socket_) {
-  for
-  (
+  for (
     iterator socket_i = begin();
     socket_i != end();
     ++socket_i
@@ -193,10 +188,11 @@ bool Selector::dissociate(socket_t socket_) {
 }
 
 bool Selector::enqueue(Event& event) {
-  bool ret = NonBlockingConcurrentQueue<Event, 32>::enqueue(event);
-  debug_assert(ret);
-  wake_socket_pair.second().write("m", 1);
-  return ret;
+  if (BlockingConcurrentQueue<Event>::enqueue(event)) {
+    wake_socket_pair.second().write("m", 1);
+    return true;
+  } else
+    return false;
 }
 }
 }

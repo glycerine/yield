@@ -49,14 +49,13 @@ namespace http {
 template <class HTTPMessageType>
 HTTPMessage<HTTPMessageType>::
 HTTPMessage(
-  void* body,
+  uint16_t body_offset,
   Buffer& buffer,
   uint32_t connection_id,
   size_t content_length,
   uint16_t fields_offset,
   float http_version
-)
-  : body(body),
+) : body_offset(body_offset),
     buffer(buffer.inc_ref()),
     connection_id(connection_id),
     content_length(content_length),
@@ -70,16 +69,15 @@ HTTPMessage(
   YO_NEW_REF Buffer* body,
   uint32_t connection_id,
   float http_version
-)
-  : buffer(*new Buffer(Buffer::getpagesize(), Buffer::getpagesize())),
+) : buffer(*new Buffer(Buffer::getpagesize(), Buffer::getpagesize())),
     connection_id(connection_id),
     http_version(http_version) {
   if (body != NULL) {
-    this->body = *body;
+    body_offset = UINT16_MAX;
     buffer.set_next_buffer(body);
     content_length = body->size();
   } else {
-    this->body = NULL;
+    body_offset = 0;
     content_length = 0;
   }
 
@@ -110,6 +108,16 @@ get_date_field(
     return HTTPMessageParser::parse_date(value);
   else
     return DateTime::INVALID_DATE_TIME;
+}
+
+template <class HTTPMessageType>
+void* HTTPMessage<HTTPMessageType>::get_body() const {
+  if (buffer.get_next_buffer() != NULL)
+    return *buffer.get_next_buffer();
+  else if (body_offset > 0)
+    return static_cast<char*>(buffer) + body_offset;
+  else
+    return NULL;
 }
 
 template <class HTTPMessageType>

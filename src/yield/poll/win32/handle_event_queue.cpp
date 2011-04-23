@@ -28,18 +28,15 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "handle_event_queue.hpp"
-#include "yield/assert.hpp"
 #include "yield/exception.hpp"
 #include "yield/poll/fd_event.hpp"
 
 #include <Windows.h>
 
-
 namespace yield {
 namespace poll {
 namespace win32 {
-using yield::thread::NonBlockingConcurrentQueue;
-
+using yield::thread::BlockingConcurrentQueue;
 
 HandleEventQueue::HandleEventQueue() {
   HANDLE hWakeEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
@@ -55,8 +52,7 @@ HandleEventQueue::~HandleEventQueue() {
 
 bool HandleEventQueue::associate(fd_t fd, uint16_t events) {
   if (fds.size() < MAXIMUM_WAIT_OBJECTS) {
-    for
-    (
+    for (
       vector<fd_t>::const_iterator fd_i = fds.begin();
       fd_i != fds.end();
       ++fd_i
@@ -72,8 +68,7 @@ bool HandleEventQueue::associate(fd_t fd, uint16_t events) {
 }
 
 bool HandleEventQueue::dissociate(fd_t fd) {
-  for
-  (
+  for (
     vector<fd_t>::iterator fd_i = fds.begin();
     fd_i != fds.end();
     ++fd_i
@@ -91,8 +86,7 @@ bool HandleEventQueue::dissociate(fd_t fd) {
 
 Event* HandleEventQueue::dequeue(const Time& timeout) {
   DWORD dwRet
-  = WaitForMultipleObjectsEx
-    (
+  = WaitForMultipleObjectsEx(
       fds.size(),
       &fds[0],
       FALSE,
@@ -101,7 +95,7 @@ Event* HandleEventQueue::dequeue(const Time& timeout) {
     );
 
   if (dwRet == WAIT_OBJECT_0)
-    return NonBlockingConcurrentQueue<Event, 32>::trydequeue();
+    return BlockingConcurrentQueue<Event>::trydequeue();
   else if (dwRet > WAIT_OBJECT_0 && dwRet < WAIT_OBJECT_0 + fds.size())
     return new FDEvent(POLLIN | POLLOUT, fds[dwRet - WAIT_OBJECT_0]);
   else
@@ -109,10 +103,11 @@ Event* HandleEventQueue::dequeue(const Time& timeout) {
 }
 
 bool HandleEventQueue::enqueue(Event& event) {
-  bool ret = NonBlockingConcurrentQueue<Event, 32>::enqueue(event);
-  debug_assert(ret);
-  SetEvent(fds[0]);
-  return ret;
+  if (BlockingConcurrentQueue<Event>::enqueue(event)) {
+    SetEvent(fds[0]);
+    return true;
+  } else
+    return false;
 }
 }
 }

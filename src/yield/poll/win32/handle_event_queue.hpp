@@ -31,15 +31,14 @@
 #define _YIELD_POLL_WIN32_HANDLE_EVENT_QUEUE_HPP_
 
 #include "yield/event_queue.hpp"
-#include "yield/thread/non_blocking_concurrent_queue.hpp"
-
+#include "yield/thread/blocking_concurrent_queue.hpp"
 
 namespace yield {
 namespace poll {
 namespace win32 {
 class HandleEventQueue
   : public EventQueue,
-    private yield::thread::NonBlockingConcurrentQueue<Event, 32> {
+    private yield::thread::BlockingConcurrentQueue<Event> {
 public:
   HandleEventQueue();
   ~HandleEventQueue();
@@ -47,7 +46,7 @@ public:
   bool associate(fd_t fd, uint16_t events);
   bool dissociate(fd_t fd);
 
-  // EventQueue
+  // yield::EventQueue
   bool enqueue(YO_NEW_REF Event& event);
   YO_NEW_REF Event* dequeue(const Time& timeout);
 
