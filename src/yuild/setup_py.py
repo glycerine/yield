@@ -27,7 +27,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from os.path import join as path_join
+from os.path import dirname, join as path_join, sep as path_sep
 
 from yuild.constant import C_CXX_SOURCE_FILE_FNMATCH_PATTERNS, \
                            INDENT_SPACES, \
@@ -138,16 +138,17 @@ if %(sys_platform_check)s:
             ext_modules = []
             for ext_module_name in c_cxx_source_file_tree.iterkeys():
                 ext_source_file_paths = []
-                def visit_source_file_tree(node):
+                def visit_c_cxx_source_file_tree(node):
                     if isinstance(node, dict):
                         for src_path, node in node.iteritems():
-                            visit_source_file_tree(node)
+                            visit_c_cxx_source_file_tree(node)
                     else:
                         ext_source_file_paths.append(
                             quote(posixpath(path_join(source_dir_path, node)))
                         )
-                visit_source_file_tree(c_cxx_source_file_tree[ext_module_name])
+                visit_c_cxx_source_file_tree(c_cxx_source_file_tree[ext_module_name])
                 if len(ext_source_file_paths) > 0:
+                    ext_source_file_paths.sort()
                     ext_source_file_paths = \
                         ", ".join(posixpaths(ext_source_file_paths))
                     ext_module = \
@@ -160,17 +161,16 @@ Extension("%(ext_module_name)s", [%(ext_source_file_paths)s], **Extension_kwds)"
         py_source_files = \
             self.get_source_files().filter(PY_SOURCE_FILE_FNMATCH_PATTERNS)
         if len(py_source_files) > 0:
-            py_source_file_tree = \
-                treepaths([
-                    relpath(py_source_file.get_path(), source_dir_path)
-                    for py_source_file in py_source_files
-                ])
+            packages = []
+            for py_source_file in py_source_files:
+                py_source_file_relpath = relpath(py_source_file.get_path(), source_dir_path)
+                py_source_dir_relpath = dirname(py_source_file_relpath)
+                package = quote('.'.join(py_source_dir_relpath.split(path_sep)))
+                if package not in packages:
+                    packages.append(package)
+            packages.sort()
+            setup_kwds["packages"] = '[' + ", ".join(packages) + ']'
             setup_kwds["package_dir"] = '{"": "%s"}' % posixpath(source_dir_path)
-            setup_kwds["packages"] = \
-                '[' + \
-                ", ".join([quote(package)
-                           for package in py_source_file_tree.keys()]) + \
-                ']'
 
         setup_kwds = \
             '\n'.join([
