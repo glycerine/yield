@@ -39,7 +39,9 @@ class Buffers {
 public:
   static void as_read_iovecs(Buffer& buffers, OUT vector<iovec>&);
   static void as_write_iovecs(const Buffer& buffers, OUT vector<iovec>&);
-  static void resize(Buffer& buffers, size_t size);
+
+public:
+  static void put(Buffer& buffers, const void* data, size_t size);
 };
 }
 

@@ -158,15 +158,15 @@ public:
     if (buffer.get_next_buffer() == NULL) {
       iovec iov = buffer.as_read_iovec();
       ssize_t recv_ret = recv(iov.iov_base, iov.iov_len, flags, peername);
-      if (recv_ret > 0) 
-        buffer.resize(buffer.size() + static_cast<size_t>(recv_ret));
+      if (recv_ret > 0)
+        buffer.put(NULL, static_cast<size_t>(recv_ret));
       return recv_ret;
     } else {
       vector<iovec> iov;
       Buffers::as_read_iovecs(buffer, iov);
       ssize_t recv_ret = recvmsg(&iov[0], iov.size(), flags, peername);
       if (recv_ret > 0)
-        Buffers::resize(buffer, static_cast<size_t>(recv_ret));
+        Buffers::put(buffer, NULL, static_cast<size_t>(recv_ret));
       return recv_ret;
     }
   }

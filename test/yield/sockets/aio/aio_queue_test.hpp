@@ -206,7 +206,8 @@ public:
       throw Exception();
 
     auto_Object<Buffer> buffer = new Buffer(4096);
-    buffer->put('m', 512);
+    for (uint16_t i = 0; i < 512; ++i)
+      buffer->put('m');
 
     auto_Object<sendAIOCB> aiocb
     = new sendAIOCB(sockets.first(), buffer->inc_ref(), 0);

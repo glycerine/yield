@@ -30,4 +30,4 @@
 #include "../aio_queue_test.hpp"
 #include "yield/fs/aio/win32/aio_queue.hpp"
 
-TEST_SUITE_EX(Win32FileAIOQueue, yield::fs::aio::AIOQueueTestSuite<yield::fs::aio::win32::AIOQueue>);
+TEST_SUITE_EX(Win32AIOQueue, yield::fs::aio::AIOQueueTestSuite<yield::fs::aio::win32::AIOQueue>);

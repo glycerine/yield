@@ -53,7 +53,7 @@ LIBS += -lyield_aio -lyield_fs -lyield_i18n -lyield_thread -lyield
 D_FILE_PATHS := $(shell find ../../../../build/yield/fs/aio -name "*.d")
 
 
-O_FILE_PATHS += ../../../../build/yield/fs/aio/pread_aiocb.o ../../../../build/yield/fs/aio/pwrite_aiocb.o
+O_FILE_PATHS += ../../../../build/yield/fs/aio/aiocb.o
 ifeq ($(UNAME), Darwin)
 	O_FILE_PATHS += ../../../../build/yield/fs/aio/posix/aio_queue.o
 endif
@@ -98,17 +98,13 @@ depclean:
 	-mkdir -p ../../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(O_FILE_PATHS)
 
+../../../../build/yield/fs/aio/aiocb.o: ../../../../src/yield/fs/aio/aiocb.cpp
+	-mkdir -p ../../../../build/yield/fs/aio 2>/dev/null
+	$(CXX) -c -o ../../../../build/yield/fs/aio/aiocb.o -MD $(CXXFLAGS) ../../../../src/yield/fs/aio/aiocb.cpp
+
 ../../../../build/yield/fs/aio/posix/aio_queue.o: ../../../../src/yield/fs/aio/posix/aio_queue.cpp
 	-mkdir -p ../../../../build/yield/fs/aio/posix 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/fs/aio/posix/aio_queue.o -MD $(CXXFLAGS) ../../../../src/yield/fs/aio/posix/aio_queue.cpp
-
-../../../../build/yield/fs/aio/pread_aiocb.o: ../../../../src/yield/fs/aio/pread_aiocb.cpp
-	-mkdir -p ../../../../build/yield/fs/aio 2>/dev/null
-	$(CXX) -c -o ../../../../build/yield/fs/aio/pread_aiocb.o -MD $(CXXFLAGS) ../../../../src/yield/fs/aio/pread_aiocb.cpp
-
-../../../../build/yield/fs/aio/pwrite_aiocb.o: ../../../../src/yield/fs/aio/pwrite_aiocb.cpp
-	-mkdir -p ../../../../build/yield/fs/aio 2>/dev/null
-	$(CXX) -c -o ../../../../build/yield/fs/aio/pwrite_aiocb.o -MD $(CXXFLAGS) ../../../../src/yield/fs/aio/pwrite_aiocb.cpp
 
 ../../../../build/yield/fs/aio/win32/aio_queue.o: ../../../../src/yield/fs/aio/win32/aio_queue.cpp
 	-mkdir -p ../../../../build/yield/fs/aio/win32 2>/dev/null

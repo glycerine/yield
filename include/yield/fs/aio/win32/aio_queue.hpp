@@ -39,6 +39,11 @@ namespace win32 {
 class AIOQueue : public yield::aio::win32::AIOQueue {
 public:
   // yield::EventQueue
+  YO_NEW_REF Event& dequeue() {
+    return yield::aio::win32::AIOQueue::dequeue();
+  }
+
+  YO_NEW_REF Event* dequeue(const Time& timeout);
   bool enqueue(YO_NEW_REF Event& event);
 };
 }

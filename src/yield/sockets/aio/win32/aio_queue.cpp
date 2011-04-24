@@ -118,7 +118,7 @@ YO_NEW_REF Event* AIOQueue::dequeue(const Time& timeout) {
           );
         }
 
-        recv_buffer.resize(recv_buffer.size() + accept_aiocb.get_return());
+        recv_buffer.put(NULL, accept_aiocb.get_return());
       }
 
       log_completion(accept_aiocb);
@@ -134,8 +134,9 @@ YO_NEW_REF Event* AIOQueue::dequeue(const Time& timeout) {
       recvAIOCB& recv_aiocb = static_cast<recvAIOCB&>(*event);
 
       if (recv_aiocb.get_return() > 0) {
-        Buffers::resize(
+        Buffers::put(
           recv_aiocb.get_buffer(),
+          NULL,
           static_cast<size_t>(recv_aiocb.get_return())
         );
       }

@@ -191,14 +191,14 @@ ssize_t File::pread(Buffer& buffer, uint64_t offset) {
     ssize_t pread_ret
       = pread(buffer, buffer.capacity() - buffer.size(), offset);
     if (pread_ret > 0)
-      buffer.resize(buffer.size() + static_cast<size_t>(pread_ret));
+      buffer.put(NULL, static_cast<size_t>(pread_ret));
     return pread_ret;
   } else {
     vector<iovec> iov;
     Buffers::as_read_iovecs(buffer, iov);
     ssize_t preadv_ret = preadv(&iov[0], iov.size(), offset);
     if (preadv_ret > 0)
-      Buffers::resize(buffer, preadv_ret);
+      Buffers::put(buffer, NULL, preadv_ret);
     return preadv_ret;
   }
 }
@@ -227,6 +227,10 @@ ssize_t File::pwrite(const void* buf, size_t buflen, uint64_t offset) {
 
 ssize_t File::pwritev(const iovec* iov, int iovlen, uint64_t offset) {
   return ::pwritev(*this, iov, iovlen, offset);
+}
+
+ssize_t File::read(Buffer& buffer) {
+  return Channel::read(buffer);
 }
 
 ssize_t File::read(void* buf, size_t buflen) {
@@ -275,6 +279,10 @@ bool File::unlk(const Lock& lock) {
   flock flock_ = lock;
   flock_.l_type = F_UNLCK;
   return fcntl(*this, F_SETLK, &flock_) == 0;
+}
+
+ssize_t File::write(const Buffer& buffer) {
+  return Channel::write(buffer);
 }
 
 ssize_t File::write(const void* buf, size_t buflen) {

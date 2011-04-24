@@ -106,13 +106,11 @@
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
+    <ClCompile Include="..\..\..\..\src\yield\fs\aio\aiocb.cpp">
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\fs\aio\posix\aio_queue.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\fs\aio\pread_aiocb.cpp">
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\fs\aio\pwrite_aiocb.cpp">
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\fs\aio\win32\aio_queue.cpp">
       <ObjectFileName>$(IntDir)win32\aio_queue.obj</ObjectFileName>

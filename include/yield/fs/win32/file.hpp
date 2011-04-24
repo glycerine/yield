@@ -203,8 +203,10 @@ public:
 public:
   // yield::Channel
   bool close();
+  ssize_t read(Buffer& buffer);
   ssize_t read(void* buf, size_t buflen);
   ssize_t readv(const iovec* iov, int iovlen);
+  ssize_t write(const Buffer& buffer);
   ssize_t write(const void* buf, size_t buflen);
   ssize_t writev(const iovec* iov, int iovlen);
 

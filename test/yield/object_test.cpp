@@ -59,6 +59,6 @@ TEST(Object, inc_ref) {
 TEST(Object, rtti) {
   TestObject test_object;
   throw_assert_eq(test_object.get_type_id(), 0);
-  throw_assert_eq(strlen(test_object.get_type_name()), 0);
+  throw_assert_eq(strcmp(test_object.get_type_name(), "yield::Object"), 0);
 }
 }

@@ -140,12 +140,12 @@ TEST(Buffer, operator_cast) {
 
 TEST(Buffer, operator_equals_Buffer) {
   auto_Object<Buffer> buffer1 = new Buffer(2);
-  buffer1->put('m', 2);
+  buffer1->put("mm");
 
   auto_Object<Buffer> buffer2 = new Buffer(4);
-  buffer2->put('m', 2);
+  buffer2->put("mm");
   throw_assert_eq(*buffer1, *buffer2);
-  buffer2->put('m', 2);
+  buffer2->put("mm");
   throw_assert_ne(*buffer1, *buffer2);
 
   auto_Object<Buffer> buffer3 = new Buffer(2);
@@ -216,19 +216,19 @@ TEST(Buffer, put_string) {
   throw_assert_eq(memcmp(*buffer, "m", 1), 0);
 }
 
-TEST(Buffer, resize) {
-  auto_Object<Buffer> buffer = new Buffer(2);
-  throw_assert_eq(buffer->size(), 0);
-
-  buffer->resize(1);
-  throw_assert_eq(buffer->size(), 1);
-
-  buffer->resize(0);
-  throw_assert_eq(buffer->size(), 0);
-
-  buffer->resize(buffer->capacity());
-  throw_assert_eq(buffer->size(), buffer->capacity());
-}
+//TEST(Buffer, resize) {
+//  auto_Object<Buffer> buffer = new Buffer(2);
+//  throw_assert_eq(buffer->size(), 0);
+//
+//  buffer->resize(1);
+//  throw_assert_eq(buffer->size(), 1);
+//
+//  buffer->resize(0);
+//  throw_assert_eq(buffer->size(), 0);
+//
+//  buffer->resize(buffer->capacity());
+//  throw_assert_eq(buffer->size(), buffer->capacity());
+//}
 
 TEST(Buffer, set_next_buffer) {
   auto_Object<Buffer> buffer = new Buffer(2);
@@ -241,7 +241,10 @@ TEST(Buffer, size) {
   throw_assert_eq(buffer->size(), 0);
   buffer->put('m');
   throw_assert_eq(buffer->size(), 1);
-  buffer->put('m', buffer->capacity() - 1);
+  while (buffer->size() < buffer->capacity())
+    buffer->put('m');
+  throw_assert_eq(buffer->size(), buffer->capacity());
+  buffer->put('m');
   throw_assert_eq(buffer->size(), buffer->capacity());
 }
 }

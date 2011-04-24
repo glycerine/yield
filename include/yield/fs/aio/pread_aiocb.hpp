@@ -45,7 +45,7 @@ public:
   preadAIOCB(File& file, YO_NEW_REF Buffer& buffer, uint64_t offset)
     : AIOCB(file, offset),
       buffer(buffer) {
-    }
+  }
 
   ~preadAIOCB() {
     Buffer::dec_ref(buffer);

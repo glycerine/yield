@@ -36,14 +36,14 @@ ssize_t Channel::read(Buffer& buffer) {
   if (buffer.get_next_buffer() == NULL) {
     ssize_t read_ret = read(buffer, buffer.capacity() - buffer.size());
     if (read_ret > 0)
-      buffer.resize(buffer.size() + static_cast<size_t>(read_ret));
+      buffer.put(NULL, static_cast<size_t>(read_ret));
     return read_ret;
   } else {
     vector<iovec> iov;
     Buffers::as_read_iovecs(buffer, iov);
     ssize_t readv_ret = readv(&iov[0], iov.size());
     if (readv_ret > 0)
-      Buffers::resize(buffer, static_cast<size_t>(readv_ret));
+      Buffers::put(buffer, NULL, static_cast<size_t>(readv_ret));
     return readv_ret;
   }
 }

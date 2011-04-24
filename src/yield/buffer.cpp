@@ -100,7 +100,7 @@ Buffer::copy(
 ) {
   Buffer* buffer = new Buffer(alignment, capacity);
   memcpy_s(*buffer, buffer->capacity(), data, size);
-  buffer->resize(size);
+  buffer->size_ = size;
   return *buffer;
 }
 
@@ -168,19 +168,20 @@ bool Buffer::operator==(const string& other) const {
     return false;
 }
 
-void Buffer::put(char data, size_t repeat_count) {
-  for (size_t char_i = 0; char_i < repeat_count; char_i++)
-    put(&data, 1);
-}
-
 void Buffer::put(const void* data, size_t size) {
   if (size_ + size <= capacity_) {
-    memcpy_s(
-      static_cast<char*>(data_) + size_,
-      capacity_ - size_,
-      data,
-      size
-    );
+    if (
+      data != NULL
+      &&
+      (data < data_ || data > static_cast<char*>(data_) + capacity_)
+    ) {
+      memcpy_s(
+        static_cast<char*>(data_) + size_,
+        capacity_ - size_,
+        data,
+        size
+      );
+    }
 
     size_ += size;
   }

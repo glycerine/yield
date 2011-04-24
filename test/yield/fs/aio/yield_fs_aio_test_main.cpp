@@ -32,26 +32,26 @@
 #include <iostream>
 
 #ifdef __unix__
-extern yunit::TestSuite& POSIXFileAIOQueueTestSuite();
+extern yunit::TestSuite& POSIXAIOQueueTestSuite();
 #endif
 #ifdef _WIN32
-extern yunit::TestSuite& Win32FileAIOQueueTestSuite();
+extern yunit::TestSuite& Win32AIOQueueTestSuite();
 #endif
 
 int main(int, char**) {
   int failed_test_case_count = 0;
 
 #ifdef __unix__
-  // POSIXFileAIOQueue
-  std::cout << "POSIXFileAIOQueue:" << std::endl;
-  failed_test_case_count += POSIXFileAIOQueueTestSuite().run();
+  // POSIXAIOQueue
+  std::cout << "POSIXAIOQueue:" << std::endl;
+  failed_test_case_count += POSIXAIOQueueTestSuite().run();
   std::cout << std::endl;
 #endif
 
 #ifdef _WIN32
-  // Win32FileAIOQueue
-  std::cout << "Win32FileAIOQueue:" << std::endl;
-  failed_test_case_count += Win32FileAIOQueueTestSuite().run();
+  // Win32AIOQueue
+  std::cout << "Win32AIOQueue:" << std::endl;
+  failed_test_case_count += Win32AIOQueueTestSuite().run();
   std::cout << std::endl;
 #endif
 

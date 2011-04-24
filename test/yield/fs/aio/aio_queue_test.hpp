@@ -65,8 +65,7 @@ public:
 protected:
   AIOQueueTest() : 
       test_buffer(Buffer::copy("aio_queue_test")),
-      test_file_name("aio_queue_test.txt"),
-      test_nbytes(14) {
+      test_file_name("aio_queue_test.txt") {
   }
 
   ~AIOQueueTest() {
@@ -86,15 +85,10 @@ protected:
     return test_file_name;
   }
 
-  size_t get_test_nbytes() const {
-    return test_nbytes;
-  }
-
 private:
   AIOQueueType* aio_queue;
   Buffer& test_buffer;
   Path test_file_name;
-  size_t test_nbytes;
 };
 
 
@@ -108,18 +102,16 @@ public:
 
     {
       auto_Object<File> file = FileSystem().creat(this->get_test_file_name());
-
-      file->write(
-        this->get_test_buffer(),
-        this->get_test_nbytes()
+      ssize_t write_ret = file->write(this->get_test_buffer());
+      throw_assert_eq(
+        write_ret,
+        static_cast<ssize_t>(this->get_test_buffer().size())
       );
+      file->sync();
     }
 
     auto_Object<File> file
-    = FileSystem().open(
-        this->get_test_file_name(),
-        O_ASYNC | O_RDONLY
-      );
+      = FileSystem().open(this->get_test_file_name(), O_ASYNC|O_RDONLY);
 
     if (!this->get_aio_queue().associate(*file))
       throw Exception();
@@ -137,7 +129,7 @@ public:
     throw_assert_eq(out_aiocb->get_error(), 0);
     throw_assert_eq(
       static_cast<size_t>(out_aiocb->get_return()),
-      this->get_test_nbytes()
+      this->get_test_buffer().size()
     );
     throw_assert_eq(*buffer, this->get_test_buffer());
   }
@@ -145,16 +137,15 @@ public:
 
 
 template <class AIOQueueType>
-class AIOQueueWriteTest : public AIOQueueTest<AIOQueueType> {
+class AIOQueuePWriteTest : public AIOQueueTest<AIOQueueType> {
 public:
   // yunit::Test
   void run() {
     {
       auto_Object<File> file
-      = FileSystem().open
-        (
+      = FileSystem().open(
           this->get_test_file_name(),
-          O_ASYNC | O_CREAT | O_TRUNC | O_WRONLY
+          O_ASYNC|O_CREAT|O_TRUNC|O_WRONLY
         );
 
       if (!this->get_aio_queue().associate(*file))
@@ -170,10 +161,9 @@ public:
       = object_cast<pwriteAIOCB>(this->get_aio_queue().dequeue());
       throw_assert_eq(&out_aiocb.get(), &aiocb.get());
       throw_assert_eq(out_aiocb->get_error(), 0);
-      throw_assert_eq
-      (
+      throw_assert_eq(
         static_cast<size_t>(out_aiocb->get_return()),
-        this->get_test_nbytes()
+        this->get_test_buffer().size()
       );
     }
 
@@ -181,13 +171,12 @@ public:
       auto_Object<File> file
       = FileSystem().open(this->get_test_file_name());
       auto_Object<Buffer> buffer = new Buffer(4096);
-      ssize_t read_ret = file->read(*buffer, buffer->capacity());
+      ssize_t read_ret = file->read(*buffer);
       throw_assert_gt(read_ret, 0);
       throw_assert_eq(
         static_cast<size_t>(read_ret),
-        this->get_test_nbytes()
+        this->get_test_buffer().size()
       );
-      buffer->resize(static_cast<size_t>(read_ret));
       throw_assert_eq(*buffer, this->get_test_buffer());
     }
   }
@@ -201,7 +190,7 @@ public:
     add("AIOQueue::dequeue", new EventQueueDequeueTest<AIOQueueType>);
 
     add("AIOQueue + pread", new AIOQueuePReadTest<AIOQueueType>);
-    add("AIOQueue + pwrite", new AIOQueueWriteTest<AIOQueueType>);
+    add("AIOQueue + pwrite", new AIOQueuePWriteTest<AIOQueueType>);
 
     add(
       "AIOQueue::timeddequeue",

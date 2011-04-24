@@ -27,6 +27,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "yield/assert.hpp"
 #include "yield/buffer.hpp"
 #include "yield/buffers.hpp"
 
@@ -55,17 +56,19 @@ Buffers::as_write_iovecs(
   } while (next_buffer != NULL);
 }
 
-void Buffers::resize(Buffer& buffers, size_t size) {
+void Buffers::put(Buffer& buffers, const void* data, size_t size) {
+  debug_assert_eq(data, NULL);
+
   Buffer* next_buffer = &buffers;
   for (;;) {
     size_t next_buffer_left
       = next_buffer->capacity() - next_buffer->size();
 
     if (size <= next_buffer_left) {
-      next_buffer->resize(next_buffer->size() + size);
+      next_buffer->put(NULL, size);
       break;
     } else {
-      next_buffer->resize(next_buffer->capacity());
+      next_buffer->put(NULL, next_buffer_left);
       size -= next_buffer_left;
       next_buffer = next_buffer->get_next_buffer();
     }

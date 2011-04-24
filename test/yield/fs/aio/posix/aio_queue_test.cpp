@@ -30,4 +30,4 @@
 #include "yield/fs/aio/posix/aio_queue.hpp"
 #include "../aio_queue_test.hpp"
 
-TEST_SUITE_EX(POSIXFileAIOQueue, yield::fs::aio::AIOQueueTestSuite<yield::fs::aio::posix::AIOQueue>);
+TEST_SUITE_EX(POSIXAIOQueue, yield::fs::aio::AIOQueueTestSuite<yield::fs::aio::posix::AIOQueue>);

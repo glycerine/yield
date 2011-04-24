@@ -27,6 +27,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "yield/buffers.hpp"
 #include "yield/fs/aio/fdatasync_aiocb.hpp"
 #include "yield/fs/aio/fsync_aiocb.hpp"
 #include "yield/fs/aio/pread_aiocb.hpp"
@@ -41,11 +42,34 @@ namespace yield {
 namespace fs {
 namespace aio {
 namespace win32 {
+YO_NEW_REF Event* AIOQueue::dequeue(const Time& timeout) {
+  Event* event = yield::aio::win32::AIOQueue::dequeue(timeout);
+  if (event != NULL) {
+    switch (event->get_type_id()) {
+    case preadAIOCB::TYPE_ID: {
+      preadAIOCB& pread_aiocb = static_cast<preadAIOCB&>(*event);
+
+      if (pread_aiocb.get_return() > 0) {
+        Buffers::put(
+          pread_aiocb.get_buffer(),
+          NULL,
+          static_cast<size_t>(pread_aiocb.get_return())
+        );
+      }
+    }
+    break;
+    }
+  }
+
+  return event;
+}
+
 bool AIOQueue::enqueue(Event& event) {
   switch (event.get_type_id()) {
   case fdatasyncAIOCB::TYPE_ID: {
   case fsyncAIOCB::TYPE_ID: {
     AIOCB& aiocb = static_cast<AIOCB&>(event);
+
     if (aiocb.get_file().sync()) {
       aiocb.set_error(0);
       return yield::aio::win32::AIOQueue::enqueue(event);
@@ -58,11 +82,13 @@ bool AIOQueue::enqueue(Event& event) {
 
   case preadAIOCB::TYPE_ID: {
     preadAIOCB& pread_aiocb = static_cast<preadAIOCB&>(event);
+
     if (pread_aiocb.get_buffer().get_next_buffer() == NULL) {
       return ReadFile(
                pread_aiocb.get_file(),
                pread_aiocb.get_buffer(),
-               pread_aiocb.get_buffer().size(),
+               pread_aiocb.get_buffer().capacity()
+                - pread_aiocb.get_buffer().size(),
                NULL,
                pread_aiocb
              ) == TRUE
@@ -74,9 +100,10 @@ bool AIOQueue::enqueue(Event& event) {
       Buffer* next_buffer = &pread_aiocb.get_buffer();
       do {
         FILE_SEGMENT_ELEMENT file_segment_element;
-        file_segment_element.Buffer = *next_buffer;
+        file_segment_element.Buffer =
+          static_cast<char*>(*next_buffer) + next_buffer->size();
         aSegmentArray.push_back(file_segment_element);
-        nNumberOfBytesToRead += next_buffer->size();
+        nNumberOfBytesToRead += next_buffer->capacity() - next_buffer->size();
         next_buffer = next_buffer->get_next_buffer();
       } while (next_buffer != NULL);
 
@@ -95,6 +122,7 @@ bool AIOQueue::enqueue(Event& event) {
 
   case pwriteAIOCB::TYPE_ID: {
     pwriteAIOCB& pwrite_aiocb = static_cast<pwriteAIOCB&>(event);
+
     if (pwrite_aiocb.get_buffer().get_next_buffer() == NULL) {
       return WriteFile(
                 pwrite_aiocb.get_file(),
@@ -132,6 +160,7 @@ bool AIOQueue::enqueue(Event& event) {
 
   case setlkAIOCB::TYPE_ID: {
     setlkAIOCB& setlk_aiocb = static_cast<setlkAIOCB&>(event);
+
     return LockFileEx(
              setlk_aiocb.get_file(),
              setlk_aiocb.get_flock().is_exclusive()
@@ -149,6 +178,7 @@ bool AIOQueue::enqueue(Event& event) {
 
   case unlkAIOCB::TYPE_ID: {
     unlkAIOCB& unlk_aiocb = static_cast<unlkAIOCB&>(event);
+
     return UnlockFileEx(
              unlk_aiocb.get_file(),
              0,

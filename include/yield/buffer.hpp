@@ -176,7 +176,7 @@ public:
   }
 
   void put(char data) {
-    put(data, 1);
+    put(&data, sizeof(data));
   }
 
   void put(const char* data) {
@@ -191,15 +191,9 @@ public:
     put(data.iov_base, data.iov_len);
   }
 
-  void put(char data, size_t repeat_count);
   void put(const void* data, size_t size);
 
 public:
-  void resize(size_t size) {
-    if (size <= capacity())
-      this->size_ = size;
-  }
-
   void set_next_buffer(YO_NEW_REF Buffer*);
   void set_next_buffer(YO_NEW_REF Buffer&);
 

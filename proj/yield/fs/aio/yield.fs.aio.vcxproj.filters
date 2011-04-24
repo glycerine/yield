@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files\posix">
-      <UniqueIdentifier>{7e5baf2f-817b-4669-84cf-340a87e1c4a8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files">
       <UniqueIdentifier>{b087566d-10e2-4fb9-b272-bc759fd8a627}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\posix">
+      <UniqueIdentifier>{7e5baf2f-817b-4669-84cf-340a87e1c4a8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\win32">
       <UniqueIdentifier>{8529d304-8c35-44cf-ab6b-88ba3ae084b5}</UniqueIdentifier>
@@ -55,14 +55,11 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\yield\fs\aio\aiocb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\fs\aio\posix\aio_queue.cpp">
       <Filter>Source Files\posix</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\fs\aio\pread_aiocb.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\fs\aio\pwrite_aiocb.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\fs\aio\win32\aio_queue.cpp">
       <Filter>Source Files\win32</Filter>
