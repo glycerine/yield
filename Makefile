@@ -1,4 +1,4 @@
-all: yield yield.aio yield.aio_test yield.fs yield.fs.aio yield.fs.aio_test yield.fs.poll yield.fs.poll_test yield.fs_test yield.http yield.http.server yield.http.server_test yield.http_test yield.i18n yield.i18n_test yield.poll yield.poll_test yield.sockets yield.sockets.aio yield.sockets.aio_test yield.sockets.poll yield.sockets.poll_test yield.sockets_test yield.stage yield.stage_test yield.thread yield.thread_test yield.uri yield.uri_test yield_test
+all: yield yield.aio yield.aio_test yield.fs yield.fs.poll yield.fs.poll_test yield.fs_test yield.http yield.http.server yield.http.server_test yield.http_test yield.i18n yield.i18n_test yield.poll yield.poll_test yield.sockets yield.sockets.aio yield.sockets.aio_test yield.sockets.poll yield.sockets.poll_test yield.sockets_test yield.stage yield.stage_test yield.thread yield.thread_test yield.uri yield.uri_test yield_test
 
 clean:
 	$(MAKE) -C proj/yield -f yield.Makefile clean
@@ -7,8 +7,6 @@ clean:
 	$(MAKE) -C proj/yield/aio -f yield.aio_test.Makefile clean
 	$(MAKE) -C proj/yield/fs -f yield.fs.Makefile clean
 	$(MAKE) -C proj/yield/fs -f yield.fs_test.Makefile clean
-	$(MAKE) -C proj/yield/fs/aio -f yield.fs.aio.Makefile clean
-	$(MAKE) -C proj/yield/fs/aio -f yield.fs.aio_test.Makefile clean
 	$(MAKE) -C proj/yield/fs/poll -f yield.fs.poll.Makefile clean
 	$(MAKE) -C proj/yield/fs/poll -f yield.fs.poll_test.Makefile clean
 	$(MAKE) -C proj/yield/http -f yield.http.Makefile clean
@@ -39,8 +37,6 @@ depclean:
 	$(MAKE) -C proj/yield/aio -f yield.aio_test.Makefile depclean
 	$(MAKE) -C proj/yield/fs -f yield.fs.Makefile depclean
 	$(MAKE) -C proj/yield/fs -f yield.fs_test.Makefile depclean
-	$(MAKE) -C proj/yield/fs/aio -f yield.fs.aio.Makefile depclean
-	$(MAKE) -C proj/yield/fs/aio -f yield.fs.aio_test.Makefile depclean
 	$(MAKE) -C proj/yield/fs/poll -f yield.fs.poll.Makefile depclean
 	$(MAKE) -C proj/yield/fs/poll -f yield.fs.poll_test.Makefile depclean
 	$(MAKE) -C proj/yield/http -f yield.http.Makefile depclean
@@ -70,12 +66,6 @@ yield.aio: yield
 
 yield.aio_test: yield.aio
 	$(MAKE) -C proj/yield/aio -f yield.aio_test.Makefile
-
-yield.fs.aio: yield.aio yield.fs yield.thread
-	$(MAKE) -C proj/yield/fs/aio -f yield.fs.aio.Makefile
-
-yield.fs.aio_test: yield.fs.aio
-	$(MAKE) -C proj/yield/fs/aio -f yield.fs.aio_test.Makefile
 
 yield.fs.poll: yield.aio yield.poll yield.fs
 	$(MAKE) -C proj/yield/fs/poll -f yield.fs.poll.Makefile

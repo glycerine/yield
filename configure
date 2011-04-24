@@ -80,7 +80,6 @@ PROJECT_REFERENCES = {
     "yield": tuple(),
     "yield.aio": ("yield",),
     "yield.fs": ("yield.i18n",),
-    "yield.fs.aio": ("yield.aio", "yield.fs", "yield.thread"),
     "yield.fs.poll": ("yield.aio", "yield.poll", "yield.fs"),
     "yield.http": ("yield.uri",),
     "yield.http.server": ("yield.fs", "yield.http", "yield.sockets.aio", "yield.stage"),
@@ -345,12 +344,6 @@ INCLUDE_FILE_PATHS["yield.fs"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "fs", "stat.hpp"), # before directory
 ] + \
 INCLUDE_FILE_PATHS["yield.fs"]
-
-INCLUDE_FILE_PATHS["yield.fs.aio"] = [
-    path_join(INCLUDE_DIR_PATH, "yield", "fs", "aio", "posix", "aio_queue.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "fs", "aio", "win32", "aio_queue.hpp"),
-] + \
-INCLUDE_FILE_PATHS["yield.fs.aio"]
 
 INCLUDE_FILE_PATHS["yield.i18n"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "i18n", "posix", "code.hpp"),
