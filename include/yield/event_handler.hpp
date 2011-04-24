@@ -43,7 +43,7 @@ public:
 
   virtual void handle(Event& event) = 0;
 
-  // Object
+  // yield::Object
   EventHandler& inc_ref() {
     return Object::inc_ref(*this);
   }

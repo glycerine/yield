@@ -90,7 +90,7 @@ public:
     }
 
   public:
-    // Object
+    // yield::Object
     Lock& inc_ref() {
       return Object::inc_ref(*this);
     }

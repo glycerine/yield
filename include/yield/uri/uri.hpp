@@ -160,7 +160,7 @@ public:
   }
 
 public:
-  // Object
+  // yield::Object
   URI& inc_ref() {
     return Object::inc_ref(*this);
   }

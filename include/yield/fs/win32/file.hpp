@@ -75,7 +75,7 @@ public:
       return exclusive;
     }
 
-    // Object
+    // yield::Object
     File::Lock& inc_ref() {
       return Object::inc_ref(*this);
     }

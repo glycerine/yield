@@ -56,7 +56,7 @@ public:
     int flags = 0
   );
 
-  // Object
+  // yield::Object
   ExtendedAttributes& inc_ref() {
     return Object::inc_ref(*this);
   }

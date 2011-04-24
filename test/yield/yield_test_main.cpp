@@ -87,7 +87,7 @@ int main(int, char**) {
   failed_test_case_count += MessageTestSuite().run();
   std::cout << std::endl;
 
-  // Object
+  // yield::Object
   std::cout << "Object:" << std::endl;
   failed_test_case_count += ObjectTestSuite().run();
   std::cout << std::endl;

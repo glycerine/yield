@@ -108,7 +108,7 @@ public:
   Directory(DIR* dirp, const Path& path);
   virtual ~Directory();
 
-  // Object
+  // yield::Object
   Directory& inc_ref() {
     return Object::inc_ref(*this);
   }
