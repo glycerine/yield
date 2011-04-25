@@ -34,7 +34,7 @@ namespace yield {
 namespace sockets {
 namespace aio {
 AIOCB::AIOCB(Socket& socket_)
-  : yield::aio::AIOCB(socket_, 0),
+  : yield::aio::AIOCB(socket_),
     socket_(socket_.inc_ref()) {
   next_aiocb = NULL; 
 }

@@ -34,18 +34,12 @@
 namespace yield {
 namespace aio {
 namespace posix {
-AIOCB::AIOCB(fd_t fd, off_t offset) {
-  memset(&aiocb_, 0, sizeof(aiocb_));
-  aiocb_.aio_fildes = fd;
-  aiocb_.aio_offset = offset;
-  //aiocb_.aio_sigevent.sigev_notify = SIGEV_THREAD;
-  //aiocb_.aio_sigevent.sigev_notify_attributes = NULL;
-  //aiocb_.aio_sigevent.sigev_notify_function = notify_function;
-  //aiocb_.aio_sigevent.sigev_value.sival_ptr = this;
+AIOCB::AIOCB(fd_t fd) {
+  init(fd, 0);
+}
 
-  completion_handler = NULL;
-  error = 0;
-  return_ = -1;
+AIOCB::AIOCB(fd_t fd, off_t offset) {
+  init(fd, offset);
 }
 
 //AIOCB::~AIOCB() {
@@ -55,6 +49,20 @@ AIOCB::AIOCB(fd_t fd, off_t offset) {
 //bool AIOCB::cancel() {
 //  return aio_cancel(aiocb_.aio_fildes, *this) == AIO_CANCELED;
 //}
+
+void AIOCB::init(fd_t fd, off_t offset) {
+  memset(&aiocb_, 0, sizeof(aiocb_));
+  aiocb_.aio_fildes = fd;
+  aiocb_.aio_offset = offset;
+  //aiocb_.aio_sigevent.sigev_notify = SIGEV_THREAD;
+  //aiocb_.aio_sigevent.sigev_notify_attributes = NULL;
+  //aiocb_.aio_sigevent.sigev_notify_function = notify_function;
+  //aiocb_.aio_sigevent.sigev_value.sival_ptr = this;
+
+  //completion_handler = NULL;
+  error = 0;
+  return_ = -1;
+}
 
 //void AIOCB::notify_function(sigval_t sigval) {
 //  AIOCB& aiocb = *static_cast<AIOCB*>(sigval.sival_ptr);

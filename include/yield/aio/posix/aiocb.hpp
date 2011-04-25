@@ -44,13 +44,6 @@ public:
   const static uint32_t TYPE_ID = 4212504993UL;
 
 public:
-  virtual ~AIOCB();
-
-public:
-  //EventHandler* get_completion_handler() {
-  //  return completion_handler;
-  //}
-
   uint32_t get_error() const {
     return error;
   }
@@ -69,8 +62,6 @@ public:
   }
 
 public:
-  //void set_completion_handler(EventHandler& completion_handler);
-
   void set_error(uint32_t error) {
     this->error = error;
   }
@@ -94,19 +85,19 @@ public:
   }
 
 protected:
-  AIOCB(fd_t, off_t offset);
+  AIOCB(fd_t fd);
+  AIOCB(fd_t fd, off_t offset);
 
 protected:
   void set_offset(off_t offset) {
     aiocb_.aio_offset = offset;
   }
 
-//private:
-//  static void notify_function(sigval_t sigval);
+private:
+  void init(fd_t fd, off_t offset);
 
 private:
   aiocb aiocb_;
-  //EventHandler* completion_handler;
   uint32_t error;
   ssize_t return_;
 };

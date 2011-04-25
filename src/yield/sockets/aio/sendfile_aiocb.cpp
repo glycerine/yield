@@ -35,6 +35,7 @@
 #ifdef _WIN32
 #include <Windows.h>
 #else
+#include <sys/stat.h>
 #include <unistd.h>
 #endif
 
@@ -56,18 +57,21 @@ sendfileAIOCB::sendfileAIOCB(StreamSocket& socket_, fd_t fd)
 
     ULARGE_INTEGER uliFileSize;
     uliFileSize.LowPart = GetFileSize(fd, &uliFileSize.HighPart);
-    if (uliFileSize.LowPart != INVALID_FILE_SIZE)
-      this->nbytes = static_cast<size_t>(uliFileSize.QuadPart);
-    else
+    if (uliFileSize.LowPart != INVALID_FILE_SIZE) {
+      nbytes
+        = static_cast<size_t>(uliFileSize.QuadPart - uliFilePointer.QuadPart);
+    } else
       throw Exception();
   } else
     throw Exception();
 #else
   off_t offset = lseek(fd, 0, SEEK_CUR);
   if (offset != static_cast<off_t>(-1)) {
+    set_offset(offset);
+
     struct stat stbuf;
     if (fstat(fd, &stbuf) == 0)
-      init(fd, stbuf.st_size, offset);
+      nbytes = stbuf.st_size - offset;
     else
       throw Exception();
   } else

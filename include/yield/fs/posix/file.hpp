@@ -180,7 +180,7 @@ public:
 public:
   ssize_t pwrite(const Buffer& buffer, off_t offset);
   ssize_t pwrite(const void* buf, size_t buflen, off_t offset);
-  ssize_t pwritev(const iovec* iov, int iovlen, uint64_t);
+  ssize_t pwritev(const iovec* iov, int iovlen, off_t offset);
 
 public:
   off_t seek(off_t offset, uint8_t whence = SEEK_SET);

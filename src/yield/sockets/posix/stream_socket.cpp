@@ -57,7 +57,7 @@ bool StreamSocket::listen() {
 ssize_t StreamSocket::sendfile(fd_t fd, off_t offset, size_t nbytes) {
 #if defined(__linux__)
   off_t* p_offset = &offset;
-	ssize_t sendfile_ret = ::sendfile(my_socket, fd, &p_offset, nbytes);
+  ssize_t sendfile_ret = ::sendfile(*this, fd, p_offset, nbytes);
   if (sendfile_ret > 0)
     return sendfile_ret;
   else if (sendfile_ret == 0 && errno == EWOULDBLOCK) // Linux "feature"
@@ -66,8 +66,8 @@ ssize_t StreamSocket::sendfile(fd_t fd, off_t offset, size_t nbytes) {
     return sendfile_ret;
 #elif defined(__FreeBSD__) || defined(__MACH__)
   off_t sbytes;
-	int sendfile_ret = ::sendfile(fd, socket, offset, nbytes, NULL, &sbytes, 0);
-	if (sendfile_ret == 0)
+  int sendfile_ret = ::sendfile(*this, socket, offset, nbytes, NULL, &sbytes, 0);
+  if (sendfile_ret == 0)
     return sbytes;
   else
     return sendfile_ret;
