@@ -55,14 +55,14 @@ TEST(Path, copy) {
   throw_assert_eq(TEST_FILE_NAME, path_copy);
 }
 
-//TEST( Path, cast )
+//TEST(Path, cast)
 //{
-//  Path path( TEST_FILE_NAME );
+//  Path path(TEST_FILE_NAME);
 //  string path_str = path;
-//  throw_assert_eq( path, path_str );
+//  throw_assert_eq(path, path_str);
 //#ifdef _WIN32
-//  wstring path_wstr = ( wstring )path;
-//  throw_assert_eq( path, path_wstr );
+//  wstring path_wstr = (wstring)path;
+//  throw_assert_eq(path, path_wstr);
 //#endif
 //}
 
@@ -72,34 +72,34 @@ TEST(Path, empty) {
   throw_assert(empty_path.empty());
 }
 
-//TEST( Path, ends_with_separator )
+//TEST(Path, ends_with_separator)
 //{
 //#ifdef _WIN32
 //  {
-//    Path path( L"test_dir\\" );
+//    Path path(L"test_dir\\");
 //    const string& narrow_path = path;
 //    throw_assert_ne
 //    (
 //      narrow_path[narrow_path.size()-1],
 //      Path::SEPARATOR
-//    );
+//   );
 //    const wstring& wide_path = path;
-//    throw_assert_ne( wide_path[wide_path.size()-1], Path::SEPARATOR );
+//    throw_assert_ne(wide_path[wide_path.size()-1], Path::SEPARATOR);
 //  }
 //#endif
 //
 //  {
-//    Path path( TEST_FILE_NAME );
+//    Path path(TEST_FILE_NAME);
 //    path = path + Path::SEPARATOR_STRING;
 //    const string& narrow_path = path;
 //    throw_assert_ne
 //    (
 //      narrow_path[narrow_path.size()-1],
 //      Path::SEPARATOR
-//    );
+//   );
 //#ifdef _WIN32
 //    const wstring& wide_path = path;
-//    throw_assert_ne( wide_path[wide_path.size()-1], Path::SEPARATOR );
+//    throw_assert_ne(wide_path[wide_path.size()-1], Path::SEPARATOR);
 //#endif
 //  }
 //}

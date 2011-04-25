@@ -47,15 +47,15 @@ public:
   virtual ~AIOCB();
 
 public:
-  EventHandler* get_completion_handler() {
-    return completion_handler;
-  }
+  //EventHandler* get_completion_handler() {
+  //  return completion_handler;
+  //}
 
   uint32_t get_error() const {
     return error;
   }
 
-  uint64_t get_offset() const {
+  off_t get_offset() const {
     return aiocb_.aio_offset;
   }
 
@@ -69,7 +69,7 @@ public:
   }
 
 public:
-  void set_completion_handler(EventHandler& completion_handler);
+  //void set_completion_handler(EventHandler& completion_handler);
 
   void set_error(uint32_t error) {
     this->error = error;
@@ -94,14 +94,19 @@ public:
   }
 
 protected:
-  AIOCB(fd_t, uint64_t offset);
+  AIOCB(fd_t, off_t offset);
 
-private:
-  static void notify_function(sigval_t sigval);
+protected:
+  void set_offset(off_t offset) {
+    aiocb_.aio_offset = offset;
+  }
+
+//private:
+//  static void notify_function(sigval_t sigval);
 
 private:
   aiocb aiocb_;
-  EventHandler* completion_handler;
+  //EventHandler* completion_handler;
   uint32_t error;
   ssize_t return_;
 };

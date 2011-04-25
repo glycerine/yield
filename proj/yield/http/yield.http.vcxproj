@@ -97,7 +97,6 @@
     <ClInclude Include="..\..\..\include\yield\http\http_message_body_chunk.hpp" />
     <ClInclude Include="..\..\..\include\yield\http\http_message_parser.hpp" />
     <ClInclude Include="..\..\..\include\yield\http\http_request.hpp" />
-    <ClInclude Include="..\..\..\include\yield\http\http_request_handler.hpp" />
     <ClInclude Include="..\..\..\include\yield\http\http_request_parser.hpp" />
     <ClInclude Include="..\..\..\include\yield\http\http_response.hpp" />
     <ClInclude Include="..\..\..\include\yield\http\http_response_parser.hpp" />
@@ -113,8 +112,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\http\http_request.cpp">
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\http\http_request_handler.cpp">
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\http\http_request_parser.cpp">
     </ClCompile>

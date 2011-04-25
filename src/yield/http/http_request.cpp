@@ -197,7 +197,7 @@ void HTTPRequest::respond(uint16_t status_code, const char* body) {
   respond(status_code, Buffer::copy(body));
 }
 
-void HTTPRequest::respond(uint16_t status_code, YO_NEW_REF Buffer* body) {
+void HTTPRequest::respond(uint16_t status_code, YO_NEW_REF Object* body) {
   respond(
     *new HTTPResponse(
            status_code,
@@ -208,7 +208,7 @@ void HTTPRequest::respond(uint16_t status_code, YO_NEW_REF Buffer* body) {
   );
 }
 
-void HTTPRequest::respond(uint16_t status_code, YO_NEW_REF Buffer& body) {
+void HTTPRequest::respond(uint16_t status_code, YO_NEW_REF Object& body) {
   respond(status_code, &body);
 }
 

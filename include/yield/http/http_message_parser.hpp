@@ -55,7 +55,7 @@ public:
   parse_fields(
     const char* ps,
     const char* pe,
-    OUT vector< pair<iovec, iovec> >& fields
+    OUT vector< std::pair<iovec, iovec> >& fields
   );
 
 protected:

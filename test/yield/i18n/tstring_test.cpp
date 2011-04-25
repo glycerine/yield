@@ -87,7 +87,7 @@ TEST(tstring, init_from_w_iovec) {
 }
 
 TEST(tstring, init_from_wstring) {
-  tstring ts(wstring(L"tstring"));
+  tstring ts(std::wstring(L"tstring"));
   throw_assert_eq(ts.size(), 7);
 }
 #endif

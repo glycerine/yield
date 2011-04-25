@@ -53,19 +53,19 @@ tstring::tstring(const char* s, size_t len, Code code) {
 }
 
 tstring::tstring(wchar_t s)
-  : wstring(&s, 1)
+  : std::wstring(&s, 1)
 { }
 
 tstring::tstring(const wchar_t* s)
-  : wstring(s)
+  : std::wstring(s)
 { }
 
 tstring::tstring(const wchar_t* s, size_t len)
-  : wstring(s, len)
+  : std::wstring(s, len)
 { }
 
-tstring::tstring(const wstring& s)
-  : wstring(s)
+tstring::tstring(const std::wstring& s)
+  : std::wstring(s)
 { }
 
 string tstring::encode(Code tocode) const {

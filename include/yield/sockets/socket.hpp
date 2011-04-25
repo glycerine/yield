@@ -144,7 +144,7 @@ public:
 
 #ifdef _WIN32
   operator fd_t() const {
-    return socket_to_fd(socket_);
+    return reinterpret_cast<fd_t>(socket_);
   }
 #endif
 
@@ -184,7 +184,7 @@ public:
       return recvfrom(buf, len, flags, *peername);
   }
 
-  virtual ssize_t recv(void* buf, size_t len, const MessageFlags& flags);
+  virtual ssize_t recv(void* buf, size_t buflen, const MessageFlags& flags);
 
   virtual ssize_t
   recvfrom(
@@ -233,7 +233,7 @@ public:
       return sendto(buf, len, flags, *peername);
   }
 
-  virtual ssize_t send(const void* buf, size_t len, const MessageFlags& flags);
+  virtual ssize_t send(const void* buf, size_t buflen, const MessageFlags& flags);
 
   virtual ssize_t
   sendmsg(

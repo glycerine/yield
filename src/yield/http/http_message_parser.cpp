@@ -1268,7 +1268,7 @@ void
 HTTPMessageParser::parse_fields(
   const char* ps,
   const char* pe,
-  OUT vector< pair<iovec, iovec> >& fields
+  OUT vector< std::pair<iovec, iovec> >& fields
 ) {
   int cs;
   char* p = const_cast<char*>(ps);
@@ -1436,7 +1436,7 @@ _match:
       case 4:
         /* #line 228 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
       {
-        fields.push_back(make_pair(field_name, field_value));
+        fields.push_back(std::make_pair(field_name, field_value));
       }
       break;
       /* #line 1104 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.cpp" */

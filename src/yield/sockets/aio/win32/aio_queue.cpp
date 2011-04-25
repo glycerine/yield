@@ -36,6 +36,7 @@
 #include "yield/sockets/aio/connect_aiocb.hpp"
 #include "yield/sockets/aio/recv_aiocb.hpp"
 #include "yield/sockets/aio/send_aiocb.hpp"
+#include "yield/sockets/aio/sendfile_aiocb.hpp"
 #include "yield/sockets/aio/win32/aio_queue.hpp"
 
 namespace yield {
@@ -45,6 +46,7 @@ namespace win32 {
 static LPFN_ACCEPTEX lpfnAcceptEx = NULL;
 static LPFN_CONNECTEX lpfnConnectEx = NULL;
 static LPFN_GETACCEPTEXSOCKADDRS lpfnGetAcceptExSockaddrs = NULL;
+static LPFN_TRANSMITFILE lpfnTransmitFile = NULL;
 
 AIOQueue::AIOQueue(Log *error_log, Log* trace_log)
   : error_log(Object::inc_ref(error_log)),
@@ -54,10 +56,6 @@ AIOQueue::AIOQueue(Log *error_log, Log* trace_log)
 AIOQueue::~AIOQueue() {
   Log::dec_ref(error_log);
   Log::dec_ref(trace_log);
-}
-
-bool AIOQueue::associate(socket_t socket_) {
-  return yield::aio::win32::AIOQueue::associate(socket_to_fd(socket_));
 }
 
 YO_NEW_REF Event& AIOQueue::dequeue() {
@@ -455,6 +453,53 @@ bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
 
     send_aiocb.set_error(WSAGetLastError());
     log_error(send_aiocb);
+
+    return false;
+  }
+  break;
+
+  case sendfileAIOCB::TYPE_ID: {
+    sendfileAIOCB& sendfile_aiocb = static_cast<sendfileAIOCB&>(event);
+
+    if (lpfnTransmitFile == NULL) {
+      GUID GuidTransmitFile = WSAID_TRANSMITFILE;
+      DWORD dwBytes;
+      WSAIoctl(
+        sendfile_aiocb.get_socket(),
+        SIO_GET_EXTENSION_FUNCTION_POINTER,
+        &GuidTransmitFile,
+        sizeof(GuidTransmitFile),
+        &lpfnTransmitFile,
+        sizeof(lpfnTransmitFile),
+        &dwBytes,
+        NULL,
+        NULL
+      );
+
+      if (lpfnTransmitFile == NULL) {
+        sendfile_aiocb.set_error(WSAGetLastError());
+        log_error(sendfile_aiocb);
+        return false;
+      }
+    }
+
+    if (
+      lpfnTransmitFile(
+        sendfile_aiocb.get_socket(),
+        sendfile_aiocb.get_fd(),
+        sendfile_aiocb.get_nbytes(),
+        0,
+        sendfile_aiocb,
+        NULL,
+        0
+      )
+      ||
+      WSAGetLastError() == WSA_IO_PENDING
+    )
+      return true;
+
+    sendfile_aiocb.set_error(WSAGetLastError());
+    log_error(sendfile_aiocb);
 
     return false;
   }

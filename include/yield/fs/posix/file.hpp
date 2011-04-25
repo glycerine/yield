@@ -44,6 +44,9 @@ class Stat;
 
 class File : public Channel {
 public:
+  const static uint32_t TYPE_ID = 672174917UL;
+
+public:
   class Lock : public Object {
   public:
     Lock(
@@ -156,7 +159,7 @@ public:
   YO_NEW_REF Map*
   mmap(
     size_t length = SIZE_MAX,
-    uint64_t offset = 0,
+    off_t offset = 0,
     bool read_only = false,
     bool shared = true
   );
@@ -170,17 +173,17 @@ public:
   }
 
 public:
-  ssize_t pread(Buffer& buffer, uint64_t offset);
-  ssize_t pread(void* buf, size_t len, uint64_t offset);
-  ssize_t preadv(const iovec* iov, int iovlen, uint64_t offset);
+  ssize_t pread(Buffer& buffer, off_t offset);
+  ssize_t pread(void* buf, size_t buflen, off_t offset);
+  ssize_t preadv(const iovec* iov, int iovlen, off_t offset);
 
 public:
-  ssize_t pwrite(const Buffer& buffer, uint64_t offset);
-  ssize_t pwrite(const void* buf, size_t len, uint64_t offset);
+  ssize_t pwrite(const Buffer& buffer, off_t offset);
+  ssize_t pwrite(const void* buf, size_t buflen, off_t offset);
   ssize_t pwritev(const iovec* iov, int iovlen, uint64_t);
 
 public:
-  uint64_t seek(int64_t offset, uint8_t whence = SEEK_SET);
+  off_t seek(off_t offset, uint8_t whence = SEEK_SET);
 
 public:
   bool setlk(const Lock&);
@@ -193,16 +196,24 @@ public:
   bool sync();
 
 public:
-  uint64_t tell();
+  off_t tell();
 
 public:
-  bool truncate(uint64_t new_size);
+  bool truncate(off_t length);
 
 public:
   bool unlk(const Lock&);
 
 public:
   // yield::Object
+  uint32_t get_type_id() const {
+    return TYPE_ID;
+  }
+
+  const char* get_type_name() const {
+    return "yield::fs::posix::File";
+  }
+
   File& inc_ref() {
     return Object::inc_ref(*this);
   }

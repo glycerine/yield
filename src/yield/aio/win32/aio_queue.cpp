@@ -55,6 +55,10 @@ bool AIOQueue::associate(fd_t fd) {
          ) != INVALID_HANDLE_VALUE;
 }
 
+bool AIOQueue::associate(socket_t socket_) {
+  return associate(reinterpret_cast<fd_t>(socket_));
+}
+
 YO_NEW_REF Event& AIOQueue::dequeue() {
   return EventQueue::dequeue();
 }

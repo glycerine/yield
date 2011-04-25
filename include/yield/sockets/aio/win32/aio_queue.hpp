@@ -44,7 +44,9 @@ public:
   ~AIOQueue();
 
 public:
-  bool associate(socket_t socket_);
+  bool associate(socket_t socket_) {
+    return yield::aio::win32::AIOQueue::associate(socket_);
+  }
 
 public:
   // yield::Object

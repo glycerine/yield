@@ -90,7 +90,7 @@ TEST(iconv, utf8_to_iso88591) {
 
 #ifdef _WIN32
 TEST(iconv, utf8_to_wide) {
-  wstring outbuf;
+  std::wstring outbuf;
   if (!iconv(Code::WCHAR_T, Code::UTF8)(TEST_STRING_UTF8, outbuf))
     throw Exception();
   throw_assert_false(outbuf.empty());

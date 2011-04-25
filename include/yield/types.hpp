@@ -32,10 +32,8 @@
 
 #include "yield/config.hpp"
 
-
 #define __STDC_LIMIT_MACROS 1
 #include <stdint.h>
-
 
 #ifndef _WIN32
 #include <sys/types.h>
@@ -58,32 +56,14 @@
 #endif
 #endif
 
-
 #ifndef _WIN32
 #include <cstring>
 using std::memcpy;
 #endif
 #include <string>
 using std::string;
-using std::wstring;
-#include <utility>
-using std::make_pair;
-using std::pair;
 #include <vector>
 using std::vector;
-
-
-#ifndef DLLEXPORT
-#ifdef _WIN32
-#define DLLEXPORT extern "C" __declspec(dllexport)
-#else
-#if defined( __GNUC__ ) && __GNUC__ >= 4
-#define DLLEXPORT extern "C" __attribute__ ( visibility( "default" ) )
-#else
-#define DLLEXPORT extern "C"
-#endif
-#endif
-#endif
 
 #ifndef IN
 #define IN
@@ -95,14 +75,15 @@ using std::vector;
 #define OUT
 #endif
 
-
 #ifdef _WIN32
 struct iovec {
   size_t iov_len;
   void* iov_base;
 };
-#endif
 
+typedef long off_t;
+typedef intptr_t ssize_t;
+#endif
 
 namespace yield {
 #if defined(_WIN64)
@@ -130,28 +111,7 @@ typedef int socklen_t;
 #else
 typedef int socket_t;
 #endif
-
-#ifdef _WIN32
-typedef intptr_t ssize_t;
-#endif
-
-
-inline socket_t fd_to_socket(fd_t fd) {
-#ifdef _WIN32
-  return reinterpret_cast<socket_t>(fd);
-#else
-  return fd;
-#endif
 }
-
-inline fd_t socket_to_fd(socket_t socket_) {
-#ifdef _WIN32
-  return reinterpret_cast<fd_t>(socket_);
-#else
-  return socket_;
-#endif
-}
-
 
 #ifndef _WIN32
 inline void
@@ -164,6 +124,5 @@ memcpy_s(
   memcpy(dest, src, src_len);
 }
 #endif
-}
 
 #endif

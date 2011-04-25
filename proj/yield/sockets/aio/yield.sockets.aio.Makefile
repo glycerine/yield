@@ -50,7 +50,7 @@ LIBS += -lyield_aio -lyield_sockets_poll -lyield_poll -lyield_thread -lyield_soc
 D_FILE_PATHS := $(shell find ../../../../build/yield/sockets/aio -name "*.d")
 
 
-O_FILE_PATHS += ../../../../build/yield/sockets/aio/accept_aiocb.o ../../../../build/yield/sockets/aio/aiocb.o ../../../../build/yield/sockets/aio/connect_aiocb.o ../../../../build/yield/sockets/aio/nbio_queue.o ../../../../build/yield/sockets/aio/recv_aiocb.o ../../../../build/yield/sockets/aio/send_aiocb.o
+O_FILE_PATHS += ../../../../build/yield/sockets/aio/accept_aiocb.o ../../../../build/yield/sockets/aio/aiocb.o ../../../../build/yield/sockets/aio/connect_aiocb.o ../../../../build/yield/sockets/aio/nbio_queue.o ../../../../build/yield/sockets/aio/recv_aiocb.o ../../../../build/yield/sockets/aio/send_aiocb.o ../../../../build/yield/sockets/aio/sendfile_aiocb.o
 ifeq ($(UNAME), MINGW32)
 	O_FILE_PATHS += ../../../../build/yield/sockets/aio/win32/aio_queue.o
 endif
@@ -102,6 +102,10 @@ depclean:
 ../../../../build/yield/sockets/aio/send_aiocb.o: ../../../../src/yield/sockets/aio/send_aiocb.cpp
 	-mkdir -p ../../../../build/yield/sockets/aio 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/sockets/aio/send_aiocb.o -MD $(CXXFLAGS) ../../../../src/yield/sockets/aio/send_aiocb.cpp
+
+../../../../build/yield/sockets/aio/sendfile_aiocb.o: ../../../../src/yield/sockets/aio/sendfile_aiocb.cpp
+	-mkdir -p ../../../../build/yield/sockets/aio 2>/dev/null
+	$(CXX) -c -o ../../../../build/yield/sockets/aio/sendfile_aiocb.o -MD $(CXXFLAGS) ../../../../src/yield/sockets/aio/sendfile_aiocb.cpp
 
 ../../../../build/yield/sockets/aio/win32/aio_queue.o: ../../../../src/yield/sockets/aio/win32/aio_queue.cpp
 	-mkdir -p ../../../../build/yield/sockets/aio/win32 2>/dev/null

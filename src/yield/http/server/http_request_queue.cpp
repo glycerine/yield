@@ -30,6 +30,7 @@
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
 #include "yield/log.hpp"
+#include "yield/fs/file.hpp"
 #include "yield/http/http_message_body_chunk.hpp"
 #include "yield/http/http_request.hpp"
 #include "yield/http/http_request_parser.hpp"
@@ -40,10 +41,12 @@
 #include "yield/sockets/aio/aio_queue.hpp"
 #include "yield/sockets/aio/recv_aiocb.hpp"
 #include "yield/sockets/aio/send_aiocb.hpp"
+#include "yield/sockets/aio/sendfile_aiocb.hpp"
 
 namespace yield {
 namespace http {
 namespace server {
+using yield::fs::File;
 using yield::sockets::SocketAddress;
 using yield::sockets::StreamSocket;
 using yield::sockets::TCPSocket;
@@ -89,6 +92,17 @@ public:
   public:
     sendAIOCB(Connection& connection, YO_NEW_REF Buffer& buffer)
       : yield::sockets::aio::sendAIOCB(connection.get_socket(), buffer, 0),
+        HTTPRequestQueue::Connection::AIOCB(connection)
+    { }
+  };
+
+public:
+  class sendfileAIOCB
+    : public yield::sockets::aio::sendfileAIOCB,
+      public HTTPRequestQueue::Connection::AIOCB {
+  public:
+    sendfileAIOCB(Connection& connection, fd_t fd)
+      : yield::sockets::aio::sendfileAIOCB(connection.get_socket(), fd),
         HTTPRequestQueue::Connection::AIOCB(connection)
     { }
   };
@@ -162,6 +176,10 @@ public:
     sendAIOCB::dec_ref(send_aiocb);
   }
 
+  void handle(YO_NEW_REF sendfileAIOCB& sendfile_aiocb) {
+    sendfileAIOCB::dec_ref(sendfile_aiocb);
+  }
+
 public:
   // yield::Object
   const char* get_type_name() const {
@@ -220,6 +238,24 @@ private:
         http_response_header.set_next_buffer(
           static_cast<Buffer*>(http_response_body)
         );
+      }
+      break;
+
+      case File::TYPE_ID: {
+        sendAIOCB* send_aiocb = new sendAIOCB(*this, http_response_header);
+        if (aio_queue.enqueue(*send_aiocb)) {
+          sendfileAIOCB* sendfile_aiocb
+            = new sendfileAIOCB(*this, *static_cast<File*>(http_response_body));
+          if (aio_queue.enqueue(*sendfile_aiocb))
+            return;
+          else {
+            sendfileAIOCB::dec_ref(*sendfile_aiocb);
+            Connection::dec_ref(*this);
+          }
+        } else {
+          sendAIOCB::dec_ref(*send_aiocb);
+          Connection::dec_ref(*this);
+        }
       }
       break;
 
@@ -388,6 +424,20 @@ YO_NEW_REF Event* HTTPRequestQueue::dequeue(const Time& timeout) {
         connection.handle(send_aiocb);
       else {
         connection.handle(send_aiocb);
+        Connection::dec_ref(connection);
+      }
+    }
+    break;
+
+    case Connection::sendfileAIOCB::TYPE_ID: {
+      Connection::sendfileAIOCB& sendfile_aiocb
+        = static_cast<Connection::sendfileAIOCB&>(*event);
+      Connection& connection = sendfile_aiocb.get_connection();
+
+      if (sendfile_aiocb.get_return() >= 0)
+        connection.handle(sendfile_aiocb);
+      else {
+        connection.handle(sendfile_aiocb);
         Connection::dec_ref(connection);
       }
     }

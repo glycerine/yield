@@ -43,6 +43,7 @@ public:
 
 public:
   bool associate(fd_t fd);
+  bool associate(socket_t socket_);
 
 public:
   // yield::Object

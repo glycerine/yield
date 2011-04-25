@@ -54,7 +54,7 @@ public:
   Path(wchar_t path) : tstring(path) { }
   Path(const wchar_t* path) : tstring(path) { }
   Path(const wchar_t* path, size_t path_len) : tstring(path, path_len) { }
-  Path(const wstring& path) : tstring(path) { }
+  Path(const std::wstring& path) : tstring(path) { }
 
   Path parent_path() const {
     if (size() > 1 || operator[](0) != SEPARATOR) {

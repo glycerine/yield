@@ -94,6 +94,7 @@
 
   <ItemGroup Label="ClIncludeItems">
     <ClInclude Include="..\..\..\..\include\yield\http\server\access_log.hpp" />
+    <ClInclude Include="..\..\..\..\include\yield\http\server\http_request_handler.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\http\server\http_request_queue.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\http\server\http_server.hpp" />
   </ItemGroup>
@@ -104,6 +105,8 @@
     <ClCompile Include="..\..\..\..\src\yield\http\server\file_access_log.cpp">
     </ClCompile>
     <ClInclude Include="..\..\..\..\src\yield\http\server\file_access_log.hpp" />
+    <ClCompile Include="..\..\..\..\src\yield\http\server\http_request_handler.cpp">
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\http\server\http_request_queue.cpp">
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\http\server\http_server.cpp">

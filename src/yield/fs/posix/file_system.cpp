@@ -263,10 +263,6 @@ bool FileSystem::touch(const Path& path, mode_t mode) {
     return false;
 }
 
-bool FileSystem::truncate(const Path& path, uint64_t new_size) {
-  return ::truncate(path.c_str(), new_size) == 0;
-}
-
 bool FileSystem::unlink(const Path& path) {
   return ::unlink(path.c_str()) == 0;
 }

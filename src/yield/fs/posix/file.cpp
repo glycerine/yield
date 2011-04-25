@@ -147,7 +147,7 @@ File::Lock* File::getlk(const Lock& lock) {
 YO_NEW_REF File::Map*
 File::mmap(
   size_t length,
-  uint64_t offset,
+  off_t offset,
   bool read_only,
   bool shared
 ) {
@@ -186,7 +186,7 @@ YO_NEW_REF ExtendedAttributes* File::openxattrs() {
   return NULL;
 }
 
-ssize_t File::pread(Buffer& buffer, uint64_t offset) {
+ssize_t File::pread(Buffer& buffer, off_t offset) {
   if (buffer.get_next_buffer() == NULL) {
     ssize_t pread_ret
       = pread(buffer, buffer.capacity() - buffer.size(), offset);
@@ -203,15 +203,15 @@ ssize_t File::pread(Buffer& buffer, uint64_t offset) {
   }
 }
 
-ssize_t File::pread(void* buf, size_t buflen, uint64_t offset) {
+ssize_t File::pread(void* buf, size_t buflen, off_t offset) {
   return ::pread(*this, buf, buflen, offset);
 }
 
-ssize_t File::preadv(const iovec* iov, int iovlen, uint64_t offset) {
+ssize_t File::preadv(const iovec* iov, int iovlen, off_t offset) {
   return ::preadv(*this, iov, iovlen, offset);
 }
 
-ssize_t File::pwrite(const Buffer& buffer, uint64_t offset) {
+ssize_t File::pwrite(const Buffer& buffer, off_t offset) {
   if (buffer.get_next_buffer() == NULL)
     return pwrite(buffer, buffer.size(), offset);
   else {
@@ -221,11 +221,11 @@ ssize_t File::pwrite(const Buffer& buffer, uint64_t offset) {
   }
 }
 
-ssize_t File::pwrite(const void* buf, size_t buflen, uint64_t offset) {
+ssize_t File::pwrite(const void* buf, size_t buflen, off_t offset) {
   return ::pwrite(*this, buf, buflen, offset);
 }
 
-ssize_t File::pwritev(const iovec* iov, int iovlen, uint64_t offset) {
+ssize_t File::pwritev(const iovec* iov, int iovlen, off_t offset) {
   return ::pwritev(*this, iov, iovlen, offset);
 }
 
@@ -241,7 +241,7 @@ ssize_t File::readv(const iovec* iov, int iovlen) {
   return ::readv(*this, iov, iovlen);
 }
 
-uint64_t File::seek(int64_t offset, uint8_t whence) {
+off_t File::seek(off_t offset, uint8_t whence) {
   return lseek(*this, offset, whence);
 }
 
@@ -267,12 +267,12 @@ bool File::sync() {
   return fsync(*this) == 0;
 }
 
-uint64_t File::tell() {
+off_t File::tell() {
   return lseek(*this, 0, SEEK_CUR);
 }
 
-bool File::truncate(uint64_t new_size) {
-  return ::ftruncate(*this, new_size) == 0;
+bool File::truncate(off_t length) {
+  return ::ftruncate(*this, length) == 0;
 }
 
 bool File::unlk(const Lock& lock) {

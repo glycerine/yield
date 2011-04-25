@@ -39,9 +39,6 @@
     <ClCompile Include="..\..\..\test\yield\http\http_response_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\test\yield\http\test_http_request_handler.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\test\yield\http\yield_http_test_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

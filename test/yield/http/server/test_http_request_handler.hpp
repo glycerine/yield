@@ -1,4 +1,4 @@
-// yield/http/client/http_client.hpp
+// test_http_request_handler.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,68 +27,41 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_HTTP_CLIENT_HTTP_CLIENT_HPP_
-#define _YIELD_HTTP_CLIENT_HTTP_CLIENT_HPP_
+#ifndef _YIELD_HTTP_SERVER_TEST_HTTP_REQUEST_HANDLER_HPP_
+#define _YIELD_HTTP_SERVER_TEST_HTTP_REQUEST_HANDLER_HPP_
 
-#include "yield/sockets/client/stream_socket_client.hpp"
+#include "yield/assert.hpp"
+#include "yield/fs/file.hpp"
+#include "yield/fs/file_system.hpp"
+#include "yield/fs/path.hpp"
+#include "yield/http/server/http_request_handler.hpp"
 
 namespace yield {
-class Log;
-namespace stage {
-class Stage;
-}
-
 namespace http {
-class HTTPRequest;
-class HTTPResponse;
+namespace server {
+class TestHTTPRequestHandler : public HTTPRequestHandler {
+  void handle(YO_NEW_REF HTTPRequest& http_request) {
+    if (http_request.get_uri().get_path() == "/")
+      http_request.respond(200, "Hello world");
+    else if (http_request.get_uri().get_path() == "/drop")
+      ;
+    else if (http_request.get_uri().get_path() == "/sendfile") {
+      yield::fs::File* file
+#ifdef _WIN32
+        = yield::fs::FileSystem().open("yield.http.server.Makefile");
+#else
+        = yield::fs::FileSystem().open("Makefile");
+#endif
+      if (file != NULL)
+        http_request.respond(200, *file);
+      else
+        http_request.respond(404);
+    }
+    else
+      http_request.respond(404);
 
-namespace client {
-class HTTPClient : public yield::sockets::client::StreamSocketClient {
-public:
-  HTTPClient(
-    const yield::uri::URI& uri,
-    Log* error_log = NULL,
-    Log* trace_log = NULL
-  );
-
-  HTTPClient(
-    const Configuration& configuration,
-    const yield::uri::URI& uri,
-    Log* reror_log = NULL,
-    Log* trace_log = NULL
-  );
-
-  ~HTTPClient();
-
-public:
-  static YO_NEW_REF HTTPResponse& GET(const yield::uri::URI& uri);
-
-  //static
-  //YO_NEW_REF HTTPResponse&
-  //PUT
-  //(
-  //  const yield::uri::URI& uri,
-  //  YO_NEW_REF Buffer& body
-  //);
-
-public:
-  // Object
-  HTTPClient& inc_ref() {
-    return Object::inc_ref(*this);
+    HTTPRequest::dec_ref(http_request);
   }
-
-private:
-  class Connection;
-
-private:
-  void init();
-
-private:
-  // Stage
-  void service(YO_NEW_REF Event& event);
-
-private:
-  vector<Connection*> connections;
 };
 }
 }

@@ -46,6 +46,7 @@ class acceptAIOCB;
 class connectAIOCB;
 class recvAIOCB;
 class sendAIOCB;
+class sendfileAIOCB;
 
 class NBIOQueue : public EventQueue {
 public:
@@ -105,11 +106,17 @@ private:
     }
 
   public:
-    static uint8_t get_aiocb_priority(const AIOCB& aiocb);
-
-  public:
     AIOCB* aiocb_queues[4]; // accept, connect, send, recv
   };
+
+private:
+  template <class AIOCBType> void log_completion(AIOCBType&);
+  template <class AIOCBType> void log_error(AIOCBType&);
+  template <class AIOCBType> void log_retry(AIOCBType&);
+  template <class AIOCBType> void log_wouldblock(AIOCBType&, RetryStatus);
+
+private:
+  static uint8_t get_aiocb_priority(const AIOCB& aiocb);
 
 private:
   RetryStatus retry(AIOCB& aiocb);
@@ -117,12 +124,7 @@ private:
   RetryStatus retry(connectAIOCB& connect_aiocb);
   RetryStatus retry(recvAIOCB& recv_aiocb);
   RetryStatus retry(sendAIOCB& send_aiocb);
-
-private:
-  template <class AIOCBType> void log_completion(AIOCBType&);
-  template <class AIOCBType> void log_error(AIOCBType&);
-  template <class AIOCBType> void log_retry(AIOCBType&);
-  template <class AIOCBType> void log_wouldblock(AIOCBType&, RetryStatus);
+  RetryStatus retry(sendfileAIOCB& sendfile_aiocb);
 
 private:
   Log* error_log;

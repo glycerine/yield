@@ -52,8 +52,8 @@ public:
   );
 
   bool operator()(const string& inbuf, string& outbuf);
-  bool operator()(const string& inbuf, wstring& outbuf);
-  bool operator()(const wstring& inbuf, string& outbuf);
+  bool operator()(const string& inbuf, std::wstring& outbuf);
+  bool operator()(const std::wstring& inbuf, string& outbuf);
 
 private:
   Code fromcode, tocode;

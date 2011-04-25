@@ -57,7 +57,7 @@ public:
     return error;
   }
 
-  uint64_t get_offset() const;
+  off_t get_offset() const;
 
   ssize_t get_return() const {
     return return_;
@@ -91,8 +91,11 @@ public:
 
 protected:
   AIOCB();
-  AIOCB(uint64_t offset);  
-  AIOCB(fd_t, uint64_t offset);
+  AIOCB(off_t offset);  
+  AIOCB(fd_t, off_t offset);
+
+protected:
+  void set_offset(off_t offset);
 
 private:
   typedef struct {
@@ -112,7 +115,7 @@ private:
   } OVERLAPPED;
 
 private:
-  void init(uint64_t offset);
+  void init(off_t offset);
 
 private:
   OVERLAPPED overlapped;

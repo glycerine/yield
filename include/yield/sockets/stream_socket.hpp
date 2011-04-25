@@ -79,6 +79,9 @@ public:
   virtual bool listen();
 
 public:
+  virtual ssize_t sendfile(fd_t fd, off_t offset, size_t nbytes);
+
+public:
   virtual bool want_accept() const;
   virtual bool want_connect() const;
 

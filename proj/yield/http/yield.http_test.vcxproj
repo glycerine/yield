@@ -123,7 +123,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\test\yield\http\http_response_test.cpp">
     </ClCompile>
-    <ClInclude Include="..\..\..\test\yield\http\test_http_request_handler.hpp" />
     <ClCompile Include="..\..\..\test\yield\http\yield_http_test_main.cpp">
     </ClCompile>
   </ItemGroup>

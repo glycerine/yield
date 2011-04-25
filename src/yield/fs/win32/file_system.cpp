@@ -312,16 +312,6 @@ bool FileSystem::touch(const Path& path) {
     return false;
 }
 
-bool FileSystem::truncate(const Path& path, uint64_t new_size) {
-  File* file = open(path, O_CREAT | O_WRONLY);
-  if (file != NULL) {
-    file->truncate(new_size);
-    File::dec_ref(*file);
-    return true;
-  } else
-    return false;
-}
-
 bool FileSystem::unlink(const Path& path) {
   return DeleteFileW(path.c_str()) == TRUE;
 }

@@ -66,7 +66,7 @@ tstring::tstring(const wchar_t* s, size_t len) {
   init(s, len);
 }
 
-tstring::tstring(const wstring& s) {
+tstring::tstring(const std::wstring& s) {
   init(s.data(), s.size());
 }
 

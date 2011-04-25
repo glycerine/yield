@@ -39,6 +39,12 @@ AIOCB::AIOCB(Socket& socket_)
   next_aiocb = NULL; 
 }
 
+AIOCB::AIOCB(Socket& socket_, off_t offset)
+  : yield::aio::AIOCB(socket_, offset),
+    socket_(socket_.inc_ref()) {
+  next_aiocb = NULL; 
+}
+
 AIOCB::~AIOCB() {
   AIOCB::dec_ref(next_aiocb);
   Socket::dec_ref(socket_);

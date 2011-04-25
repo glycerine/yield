@@ -37,7 +37,7 @@
 namespace yield {
 namespace i18n {
 namespace win32 {
-class tstring : public wstring {
+class tstring : public std::wstring {
 public:
   tstring() { }
 
@@ -49,7 +49,7 @@ public:
   tstring(wchar_t s);
   tstring(const wchar_t* s);
   tstring(const wchar_t* s, size_t len);
-  tstring(const wstring& s);
+  tstring(const std::wstring& s);
 
   string encode(Code tocode) const;
 

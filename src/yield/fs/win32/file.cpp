@@ -136,7 +136,7 @@ bool File::datasync() {
 YO_NEW_REF File::Map*
 File::mmap(
   size_t length,
-  uint64_t offset,
+  off_t offset,
   bool read_only,
   bool shared
 ) {
@@ -144,7 +144,7 @@ File::mmap(
     ULARGE_INTEGER uliFileSize;
     uliFileSize.LowPart = GetFileSize(*this, &uliFileSize.HighPart);
     if (uliFileSize.LowPart != INVALID_FILE_SIZE)
-      length = uliFileSize.LowPart;
+      length = static_cast<size_t>(uliFileSize.QuadPart);
     else
       return NULL;
   }
@@ -212,7 +212,7 @@ File::mmap(
          );
 }
 
-ssize_t File::pread(Buffer& buffer, uint64_t offset) {
+ssize_t File::pread(Buffer& buffer, off_t offset) {
   if (buffer.get_next_buffer() == NULL) {
     ssize_t pread_ret
       = pread(buffer, buffer.capacity() - buffer.size(), offset);
@@ -229,7 +229,7 @@ ssize_t File::pread(Buffer& buffer, uint64_t offset) {
   }
 }
 
-ssize_t File::pread(void* buf, size_t buflen, uint64_t offset) {
+ssize_t File::pread(void* buf, size_t buflen, off_t offset) {
   OVERLAPPED overlapped;
   ZeroMemory(&overlapped, sizeof(overlapped));
 
@@ -237,7 +237,9 @@ ssize_t File::pread(void* buf, size_t buflen, uint64_t offset) {
 
   if (overlapped.hEvent != INVALID_HANDLE_VALUE) {
     overlapped.Offset = static_cast<DWORD>(offset);
+#ifdef _WIN64
     overlapped.OffsetHigh = static_cast<DWORD>(offset >> 32);
+#endif
 
     DWORD dwNumberOfBytesRead;
     if (ReadFile(*this, buf, buflen, &dwNumberOfBytesRead, &overlapped)) {
@@ -264,7 +266,7 @@ ssize_t File::pread(void* buf, size_t buflen, uint64_t offset) {
   return -1;
 }
 
-ssize_t File::preadv(const iovec* iov, int iovlen, uint64_t offset) {
+ssize_t File::preadv(const iovec* iov, int iovlen, off_t offset) {
   for (int iov_i = 0; iov_i < iovlen; iov_i++) {
     if (!Buffer::is_page_aligned(iov[iov_i])) {
       if (iovlen == 1)
@@ -283,7 +285,9 @@ ssize_t File::preadv(const iovec* iov, int iovlen, uint64_t offset) {
 
   if (overlapped.hEvent != INVALID_HANDLE_VALUE) {
     overlapped.Offset = static_cast<DWORD>(offset);
+#ifdef _WIN64
     overlapped.OffsetHigh = static_cast<DWORD>(offset >> 32);
+#endif
 
     FILE_SEGMENT_ELEMENT* aSegmentArray = new FILE_SEGMENT_ELEMENT[iovlen];
     DWORD dwNumberOfBytesToRead = 0;
@@ -328,7 +332,7 @@ ssize_t File::preadv(const iovec* iov, int iovlen, uint64_t offset) {
   return -1;
 }
 
-ssize_t File::pwrite(const Buffer& buffer, uint64_t offset) {
+ssize_t File::pwrite(const Buffer& buffer, off_t offset) {
   if (buffer.get_next_buffer() == NULL)
     return pwrite(buffer, buffer.size(), offset);
   else {
@@ -338,7 +342,7 @@ ssize_t File::pwrite(const Buffer& buffer, uint64_t offset) {
   }
 }
 
-ssize_t File::pwrite(const void* buf, size_t buflen, uint64_t offset) {
+ssize_t File::pwrite(const void* buf, size_t buflen, off_t offset) {
   OVERLAPPED overlapped;
   ZeroMemory(&overlapped, sizeof(overlapped));
 
@@ -346,7 +350,9 @@ ssize_t File::pwrite(const void* buf, size_t buflen, uint64_t offset) {
 
   if (overlapped.hEvent != INVALID_HANDLE_VALUE) {
     overlapped.Offset = static_cast<DWORD>(offset);
+#ifdef _WIN64
     overlapped.OffsetHigh = static_cast<DWORD>(offset >> 32);
+#endif
 
     DWORD dwNumberOfBytesWritten;
     if (WriteFile(*this, buf, buflen, &dwNumberOfBytesWritten, &overlapped)) {
@@ -373,7 +379,7 @@ ssize_t File::pwrite(const void* buf, size_t buflen, uint64_t offset) {
   return -1;
 }
 
-ssize_t File::pwritev(const iovec* iov, int iovlen, uint64_t offset) {
+ssize_t File::pwritev(const iovec* iov, int iovlen, off_t offset) {
   for (int iov_i = 0; iov_i < iovlen; iov_i++) {
     if (!Buffer::is_page_aligned(iov[iov_i])) {
       if (iovlen == 1)
@@ -399,7 +405,9 @@ ssize_t File::pwritev(const iovec* iov, int iovlen, uint64_t offset) {
 
   if (overlapped.hEvent != INVALID_HANDLE_VALUE) {
     overlapped.Offset = static_cast<DWORD>(offset);
+#ifdef _WIN64
     overlapped.OffsetHigh = static_cast<DWORD>(offset >> 32);
+#endif
 
     FILE_SEGMENT_ELEMENT* aSegmentArray = new FILE_SEGMENT_ELEMENT[iovlen];
     DWORD dwNumberOfBytesToWrite = 0;
@@ -457,17 +465,17 @@ ssize_t File::readv(const iovec* iov, int iovlen) {
   return preadv(iov, iovlen, tell());
 }
 
-uint64_t File::seek(int64_t offset, uint8_t whence) {
+off_t File::seek(off_t offset, uint8_t whence) {
   LARGE_INTEGER liOffset;
   liOffset.QuadPart = offset;
 
   liOffset.LowPart
-  = SetFilePointer(*this, liOffset.LowPart, &liOffset.HighPart, whence);
+    = SetFilePointer(*this, liOffset.LowPart, &liOffset.HighPart, whence);
 
   if (liOffset.LowPart != INVALID_SET_FILE_POINTER)
-    return liOffset.QuadPart;
+    return static_cast<off_t>(liOffset.QuadPart);
   else
-    return static_cast<uint64_t>(-1);
+    return static_cast<off_t>(-1);
 }
 
 bool File::setlk(const Lock& lock) {
@@ -528,17 +536,17 @@ bool File::sync() {
   return FlushFileBuffers(*this) != 0;
 }
 
-uint64_t File::tell() {
+off_t File::tell() {
   ULARGE_INTEGER uliFilePointer;
   LONG lFilePointerHigh = 0;
   uliFilePointer.LowPart
-  = SetFilePointer(*this, 0, &lFilePointerHigh, FILE_CURRENT);
+    = SetFilePointer(*this, 0, &lFilePointerHigh, FILE_CURRENT);
   uliFilePointer.HighPart = lFilePointerHigh;
-  return static_cast<uint64_t>(uliFilePointer.QuadPart);
+  return static_cast<off_t>(uliFilePointer.QuadPart);
 }
 
-bool File::truncate(uint64_t new_size) {
-  if (seek(new_size, SEEK_SET) == new_size)
+bool File::truncate(off_t length) {
+  if (seek(length, SEEK_SET) == length)
     return SetEndOfFile(*this) != 0;
   else
     return false;

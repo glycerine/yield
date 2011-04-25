@@ -209,7 +209,7 @@ void
 HTTPMessageParser::parse_fields(
   const char* ps,
   const char* pe,
-  OUT vector< pair<iovec, iovec> >& fields
+  OUT vector< std::pair<iovec, iovec> >& fields
 ) {
   int cs;
   char* p = const_cast<char*>(ps);
@@ -225,7 +225,7 @@ HTTPMessageParser::parse_fields(
     include rfc2616 "rfc2616.rl";
 
     main := (
-      field @ { fields.push_back(make_pair(field_name, field_value)); }
+      field @ { fields.push_back(std::make_pair(field_name, field_value)); }
     )*;
 
     write data;

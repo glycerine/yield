@@ -30,12 +30,14 @@
 #include "yield/sockets/stream_socket.hpp"
 
 #include <errno.h>
+#ifdef __linux__
+#include <sys/sendfile.h>
+#endif
 #include <sys/socket.h>
 
 namespace yield {
 namespace sockets {
 int StreamSocket::TYPE = SOCK_STREAM;
-
 
 StreamSocket* StreamSocket::accept(SocketAddress& peername) {
   socklen_t peernamelen = peername.len();
@@ -50,6 +52,28 @@ StreamSocket* StreamSocket::accept(SocketAddress& peername) {
 
 bool StreamSocket::listen() {
   return ::listen(*this, SOMAXCONN) != -1;
+}
+
+ssize_t StreamSocket::sendfile(fd_t fd, off_t offset, size_t nbytes) {
+#if defined(__linux__)
+  off_t* p_offset = &offset;
+	ssize_t sendfile_ret = ::sendfile(my_socket, fd, &p_offset, nbytes);
+  if (sendfile_ret > 0)
+    return sendfile_ret;
+  else if (sendfile_ret == 0 && errno == EWOULDBLOCK) // Linux "feature"
+    return -1;
+  else
+    return sendfile_ret;
+#elif defined(__FreeBSD__) || defined(__MACH__)
+  off_t sbytes;
+	int sendfile_ret = ::sendfile(fd, socket, offset, nbytes, NULL, &sbytes, 0);
+	if (sendfile_ret == 0)
+    return sbytes;
+  else
+    return sendfile_ret;
+#else
+#error
+#endif
 }
 
 bool StreamSocket::want_accept() const {

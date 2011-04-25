@@ -47,7 +47,7 @@ LIBS += -lyield_uri -lyield
 D_FILE_PATHS := $(shell find ../../../build/yield/http -name "*.d")
 
 
-O_FILE_PATHS += ../../../build/yield/http/http_message.o ../../../build/yield/http/http_message_parser.o ../../../build/yield/http/http_request.o ../../../build/yield/http/http_request_handler.o ../../../build/yield/http/http_request_parser.o ../../../build/yield/http/http_response.o ../../../build/yield/http/http_response_parser.o
+O_FILE_PATHS += ../../../build/yield/http/http_message.o ../../../build/yield/http/http_message_parser.o ../../../build/yield/http/http_request.o ../../../build/yield/http/http_request_parser.o ../../../build/yield/http/http_response.o ../../../build/yield/http/http_response_parser.o
 
 
 all: ../../../lib/yield/libyield_http.a
@@ -80,10 +80,6 @@ depclean:
 ../../../build/yield/http/http_request.o: ../../../src/yield/http/http_request.cpp
 	-mkdir -p ../../../build/yield/http 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/http/http_request.o -MD $(CXXFLAGS) ../../../src/yield/http/http_request.cpp
-
-../../../build/yield/http/http_request_handler.o: ../../../src/yield/http/http_request_handler.cpp
-	-mkdir -p ../../../build/yield/http 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/http/http_request_handler.o -MD $(CXXFLAGS) ../../../src/yield/http/http_request_handler.cpp
 
 ../../../build/yield/http/http_request_parser.o: ../../../src/yield/http/http_request_parser.cpp
 	-mkdir -p ../../../build/yield/http 2>/dev/null

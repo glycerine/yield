@@ -100,6 +100,7 @@
     <ClInclude Include="..\..\..\..\include\yield\sockets\aio\nbio_queue.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\sockets\aio\recv_aiocb.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\sockets\aio\send_aiocb.hpp" />
+    <ClInclude Include="..\..\..\..\include\yield\sockets\aio\sendfile_aiocb.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\sockets\aio\win32\aio_queue.hpp" />
   </ItemGroup>
 
@@ -115,6 +116,8 @@
     <ClCompile Include="..\..\..\..\src\yield\sockets\aio\recv_aiocb.cpp">
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\sockets\aio\send_aiocb.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\sendfile_aiocb.cpp">
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\sockets\aio\win32\aio_queue.cpp">
       <ObjectFileName>$(IntDir)win32\aio_queue.obj</ObjectFileName>

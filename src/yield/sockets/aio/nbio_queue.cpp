@@ -38,6 +38,7 @@
 #include "yield/sockets/aio/connect_aiocb.hpp"
 #include "yield/sockets/aio/recv_aiocb.hpp"
 #include "yield/sockets/aio/send_aiocb.hpp"
+#include "yield/sockets/aio/sendfile_aiocb.hpp"
 #include "yield/sockets/poll/socket_event.hpp"
 
 namespace yield {
@@ -118,7 +119,8 @@ Event* NBIOQueue::dequeue(const Time& timeout) {
     case acceptAIOCB::TYPE_ID:
     case connectAIOCB::TYPE_ID:
     case recvAIOCB::TYPE_ID:
-    case sendAIOCB::TYPE_ID: {
+    case sendAIOCB::TYPE_ID:
+    case sendfileAIOCB::TYPE_ID: {
       AIOCB* aiocb = static_cast<AIOCB*>(event);
 
       map<socket_t, SocketState*>::iterator socket_state_i
@@ -135,13 +137,13 @@ Event* NBIOQueue::dequeue(const Time& timeout) {
         }
 
         SocketState* socket_state = new SocketState();
-        uint8_t aiocb_priority = SocketState::get_aiocb_priority(*aiocb);
+        uint8_t aiocb_priority = get_aiocb_priority(*aiocb);
         socket_state->aiocb_queues[aiocb_priority] = aiocb;
         this->state[aiocb->get_socket()] = socket_state;
       } else {
         SocketState* socket_state = socket_state_i->second;
 
-        uint8_t aiocb_priority = SocketState::get_aiocb_priority(*aiocb);
+        uint8_t aiocb_priority = get_aiocb_priority(*aiocb);
 
         // Check if there's already an AIOCB with an equal or higher priority
         // on this socket. If not, retry aiocb.
@@ -194,6 +196,17 @@ bool NBIOQueue::enqueue(Event& event) {
   return socket_event_queue.enqueue(event);
 }
 
+uint8_t NBIOQueue::get_aiocb_priority(const AIOCB& aiocb) {
+  switch (aiocb.get_type_id()) {
+  case acceptAIOCB::TYPE_ID: return 0;
+  case connectAIOCB::TYPE_ID: return 1;
+  case recvAIOCB::TYPE_ID: return 3;
+  case sendAIOCB::TYPE_ID: return 2;
+  case sendfileAIOCB::TYPE_ID: return 2;
+  default: DebugBreak(); return 0;
+  }
+}
+
 template <class AIOCBType> void NBIOQueue::log_completion(AIOCBType& aiocb) {
   if (trace_log != NULL)
     trace_log->get_stream() << "NBIOQueue: " << aiocb << " completed.";
@@ -234,6 +247,7 @@ NBIOQueue::RetryStatus NBIOQueue::retry(AIOCB& aiocb) {
   case connectAIOCB::TYPE_ID: return retry(static_cast<connectAIOCB&>(aiocb));
   case recvAIOCB::TYPE_ID: return retry(static_cast<recvAIOCB&>(aiocb));
   case sendAIOCB::TYPE_ID: return retry(static_cast<sendAIOCB&>(aiocb));
+  case sendfileAIOCB::TYPE_ID: return retry(static_cast<sendfileAIOCB&>(aiocb));
   default: DebugBreak(); return RETRY_STATUS_ERROR;
   }
 }
@@ -362,6 +376,10 @@ NBIOQueue::RetryStatus NBIOQueue::retry(sendAIOCB& send_aiocb) {
         );
 
     if (send_ret >= 0) {
+      debug_assert_eq(
+        static_cast<size_t>(send_ret),
+        send_aiocb.get_buffer().size()
+      );
       send_aiocb.set_return(send_ret);
       log_completion(send_aiocb);
       return RETRY_STATUS_COMPLETE;
@@ -380,14 +398,38 @@ NBIOQueue::RetryStatus NBIOQueue::retry(sendAIOCB& send_aiocb) {
   return RETRY_STATUS_ERROR;
 }
 
-uint8_t NBIOQueue::SocketState::get_aiocb_priority(const AIOCB& aiocb) {
-  switch (aiocb.get_type_id()) {
-  case acceptAIOCB::TYPE_ID: return 0;
-  case connectAIOCB::TYPE_ID: return 1;
-  case recvAIOCB::TYPE_ID: return 3;
-  case sendAIOCB::TYPE_ID: return 2;
-  default: DebugBreak(); return 0;
+NBIOQueue::RetryStatus NBIOQueue::retry(sendfileAIOCB& sendfile_aiocb) {
+  log_retry(sendfile_aiocb);
+
+  if (sendfile_aiocb.get_socket().set_blocking_mode(true)) {
+    ssize_t sendfile_ret
+      = sendfile_aiocb.get_socket().sendfile(
+          sendfile_aiocb.get_fd(),
+          sendfile_aiocb.get_offset(),
+          sendfile_aiocb.get_nbytes()
+        );
+
+    if (sendfile_ret >= 0) {
+      debug_assert_eq(
+        static_cast<size_t>(sendfile_ret),
+        sendfile_aiocb.get_nbytes()
+      );
+      sendfile_aiocb.set_return(sendfile_ret);
+      log_completion(sendfile_aiocb);
+      return RETRY_STATUS_COMPLETE;
+    } else if (sendfile_aiocb.get_socket().want_send()) {
+      log_wouldblock(sendfile_aiocb, RETRY_STATUS_WANT_WRITE);
+      return RETRY_STATUS_WANT_WRITE;
+    }
+    else if (sendfile_aiocb.get_socket().want_recv()) {
+      log_wouldblock(sendfile_aiocb, RETRY_STATUS_WANT_READ);
+      return RETRY_STATUS_WANT_READ;
+    }
   }
+
+  sendfile_aiocb.set_error(Exception::get_last_error_code());
+  log_error(sendfile_aiocb);
+  return RETRY_STATUS_ERROR;
 }
 }
 }

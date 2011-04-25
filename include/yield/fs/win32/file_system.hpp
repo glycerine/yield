@@ -104,8 +104,6 @@ public:
 
   bool touch(const Path&);
 
-  bool truncate(const Path&, uint64_t);
-
   bool unlink(const Path&);
 
   bool utime(const Path&, const DateTime& atime, const DateTime& mtime);

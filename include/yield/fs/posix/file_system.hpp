@@ -104,8 +104,6 @@ public:
 
   bool touch(const Path&, mode_t mode = FILE_MODE_DEFAULT);
 
-  bool truncate(const Path&, uint64_t new_size);
-
   bool unlink(const Path&);
 
   bool utime(const Path&, const DateTime& atime, const DateTime& mtime);

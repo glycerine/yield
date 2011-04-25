@@ -77,7 +77,7 @@ public:
 
   bool get_field(const char* name, size_t name_len, OUT iovec& value) const;
 
-  void get_fields(OUT vector<pair<iovec, iovec> >& fields) const;
+  void get_fields(OUT vector<std::pair<iovec, iovec> >& fields) const;
 
 public:
   Buffer& get_header() const {

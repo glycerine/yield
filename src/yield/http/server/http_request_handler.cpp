@@ -1,4 +1,4 @@
-// yield_http_client_test_main.cpp
+// yield/http/http_request_handler.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,19 +27,29 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yunit.hpp"
+#include "yield/http/server/http_request_handler.hpp"
 
 #include <iostream>
 
-extern yunit::TestSuite& HTTPClientTestSuite();
+namespace yield {
+namespace http {
+void HTTPRequestHandler::handle(YO_NEW_REF Event& event) {
+  switch (event.get_type_id()) {
+  case HTTPRequest::TYPE_ID: {
+    handle(static_cast<HTTPRequest&>(event));
+  }
+  break;
 
-int main(int, char**) {
-  int failed_test_case_count = 0;
-
-  // HTTPClient
-  std::cout << "HTTPClient:" << std::endl;
-  failed_test_case_count += HTTPClientTestSuite().run();
-  std::cout << std::endl;
-
-  return failed_test_case_count;
+  default: {
+    std::cerr <<
+      "yield::http::server::HTTPRequestHandler: " <<
+      "dropping unrecognized Event type " <<
+      event.get_type_name() <<
+      std::endl;
+    Event::dec_ref(event);
+  }
+  break;
+  }
+}
+}
 }

@@ -38,6 +38,9 @@
     <ClInclude Include="..\..\..\..\include\yield\sockets\aio\send_aiocb.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\include\yield\sockets\aio\sendfile_aiocb.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\include\yield\sockets\aio\win32\aio_queue.hpp">
       <Filter>Header Files\win32</Filter>
     </ClInclude>
@@ -59,6 +62,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\sockets\aio\send_aiocb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\sendfile_aiocb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\sockets\aio\win32\aio_queue.cpp">

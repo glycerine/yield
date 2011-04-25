@@ -69,6 +69,7 @@ public:
 
 protected:
   AIOCB(Socket& socket_);
+  AIOCB(Socket& socket_, off_t offset);
 
 private:
   AIOCB* next_aiocb;

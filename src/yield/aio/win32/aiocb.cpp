@@ -41,11 +41,11 @@ AIOCB::AIOCB() {
   init(0);
 }
 
-AIOCB::AIOCB(uint64_t offset) {
+AIOCB::AIOCB(off_t offset) {
   init(offset);
 }
 
-AIOCB::AIOCB(fd_t, uint64_t offset) {
+AIOCB::AIOCB(fd_t, off_t offset) {
   init(offset);
 }
 
@@ -89,23 +89,33 @@ AIOCB& AIOCB::cast(::OVERLAPPED& lpOverlapped) {
 //  aiocb.get_completion_handler()->handle(aiocb);
 //}
 
-uint64_t AIOCB::get_offset() const {
+off_t AIOCB::get_offset() const {
+#ifdef _WIN64
   return static_cast<uint64_t>(overlapped.OffsetHigh << 32)
          |
          overlapped.Offset;
+#else
+  return overlapped.Offset;
+#endif
 }
 
-void AIOCB::init(uint64_t offset) {
+void AIOCB::init(off_t offset) {
   error = 0;
   memset(&overlapped, 0, sizeof(overlapped));
-  overlapped.Offset = static_cast<uint32_t>(offset);
-  overlapped.OffsetHigh = static_cast<uint32_t>(offset >> 32);
+  set_offset(offset);
   return_ = -1;
   this_aiocb = this;
 }
 
 AIOCB::operator ::OVERLAPPED* () {
   return reinterpret_cast<::OVERLAPPED*>(&overlapped);
+}
+
+void AIOCB::set_offset(off_t offset) {
+  overlapped.Offset = static_cast<uint32_t>(offset);
+#ifdef _WIN64
+  overlapped.OffsetHigh = static_cast<uint32_t>(offset >> 32);
+#endif
 }
 }
 }

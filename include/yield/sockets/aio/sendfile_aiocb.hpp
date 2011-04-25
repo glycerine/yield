@@ -1,4 +1,4 @@
-// http_client_test.cpp
+// yield/sockets/aio/sendfile_aiocb.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,6 +27,57 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "http_client_test.hpp"
+#ifndef _YIELD_SOCKETS_AIO_SENDFILE_AIOCB_HPP_
+#define _YIELD_SOCKETS_AIO_SENDFILE_AIOCB_HPP_
 
-TEST_SUITE_EX(HTTPClient, yield::http::client::HTTPClientTestSuite);
+#include "yield/sockets/aio/aiocb.hpp"
+
+namespace yield {
+namespace sockets {
+class streamSocket;
+
+namespace aio {
+class sendfileAIOCB : public AIOCB {
+public:
+  const static uint32_t TYPE_ID = 2151573397UL;
+
+public:
+  sendfileAIOCB(StreamSocket&, fd_t fd);
+  sendfileAIOCB(StreamSocket&, fd_t fd, off_t offset, size_t nbytes);
+  ~sendfileAIOCB();
+
+public:
+  fd_t get_fd() {
+    return fd;
+  }
+
+  size_t get_nbytes() const {
+    return nbytes;
+  }
+
+  StreamSocket& get_socket();
+
+public:
+  // yield::Object
+  uint32_t get_type_id() const {
+    return TYPE_ID;
+  }
+
+  const char* get_type_name() const {
+    return "yield::sockets::aio::sendfileAIOCB";
+  }
+
+private:
+  void init(fd_t fd);
+
+private:
+  fd_t fd;
+  size_t nbytes;
+};
+
+std::ostream& operator<<(std::ostream&, sendfileAIOCB&);
+}
+}
+}
+
+#endif

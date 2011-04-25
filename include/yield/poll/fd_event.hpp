@@ -71,7 +71,7 @@ public:
 
 #ifdef _WIN32
   FDEvent(uint16_t events, socket_t socket_)
-    : events(events), fd(socket_to_fd(socket_))
+    : events(events), fd(reinterpret_cast<fd_t>(socket_))
   { }
 #endif
 
@@ -85,7 +85,11 @@ public:
   }
 
   socket_t get_socket() const {
-    return fd_to_socket(get_fd());
+#ifdef _WIN32
+    return reinterpret_cast<socket_t>(get_fd());
+#else
+    return get_fd();
+#endif
   }
 
 public:

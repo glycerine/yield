@@ -53,7 +53,7 @@ LIBS += -lyield_fs -lyield_i18n -lyield_http -lyield_uri -lyield_sockets_aio -ly
 D_FILE_PATHS := $(shell find ../../../../build/yield/http/server -name "*.d")
 
 
-O_FILE_PATHS += ../../../../build/yield/http/server/access_log.o ../../../../build/yield/http/server/file_access_log.o ../../../../build/yield/http/server/http_request_queue.o ../../../../build/yield/http/server/http_server.o
+O_FILE_PATHS += ../../../../build/yield/http/server/access_log.o ../../../../build/yield/http/server/file_access_log.o ../../../../build/yield/http/server/http_request_handler.o ../../../../build/yield/http/server/http_request_queue.o ../../../../build/yield/http/server/http_server.o
 
 
 all: ../../../../lib/yield/libyield_http_server.a
@@ -94,6 +94,10 @@ depclean:
 ../../../../build/yield/http/server/file_access_log.o: ../../../../src/yield/http/server/file_access_log.cpp
 	-mkdir -p ../../../../build/yield/http/server 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/http/server/file_access_log.o -MD $(CXXFLAGS) ../../../../src/yield/http/server/file_access_log.cpp
+
+../../../../build/yield/http/server/http_request_handler.o: ../../../../src/yield/http/server/http_request_handler.cpp
+	-mkdir -p ../../../../build/yield/http/server 2>/dev/null
+	$(CXX) -c -o ../../../../build/yield/http/server/http_request_handler.o -MD $(CXXFLAGS) ../../../../src/yield/http/server/http_request_handler.cpp
 
 ../../../../build/yield/http/server/http_request_queue.o: ../../../../src/yield/http/server/http_request_queue.cpp
 	-mkdir -p ../../../../build/yield/http/server 2>/dev/null

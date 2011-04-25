@@ -32,8 +32,9 @@
 
 namespace yield {
 namespace sockets {
-int StreamSocket::TYPE = SOCK_STREAM;
+static LPFN_TRANSMITFILE lpfnTransmitFile = NULL;
 
+int StreamSocket::TYPE = SOCK_STREAM;
 
 StreamSocket* StreamSocket::accept(SocketAddress& peername) {
   socklen_t peernamelen = peername.len();
@@ -48,6 +49,71 @@ StreamSocket* StreamSocket::accept(SocketAddress& peername) {
 
 bool StreamSocket::listen() {
   return ::listen(*this, SOMAXCONN) != -1;
+}
+
+ssize_t StreamSocket::sendfile(fd_t fd, off_t offset, size_t nbytes) {
+  if (lpfnTransmitFile == NULL) {
+    GUID GuidTransmitFile = WSAID_TRANSMITFILE;
+    DWORD dwBytes;
+    WSAIoctl(
+      *this,
+      SIO_GET_EXTENSION_FUNCTION_POINTER,
+      &GuidTransmitFile,
+      sizeof(GuidTransmitFile),
+      &lpfnTransmitFile,
+      sizeof(lpfnTransmitFile),
+      &dwBytes,
+      NULL,
+      NULL
+    );
+
+    if (lpfnTransmitFile == NULL)
+      return -1;
+  }
+
+  OVERLAPPED overlapped;
+  ZeroMemory(&overlapped, sizeof(overlapped));
+
+  overlapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+
+  if (overlapped.hEvent != INVALID_HANDLE_VALUE) {
+    overlapped.Offset = static_cast<DWORD>(offset);
+#ifdef _WIN64
+    overlapped.OffsetHigh = static_cast<DWORD>(offset >> 32);
+#endif
+
+    if (
+      lpfnTransmitFile(
+        *this,
+        fd,
+        nbytes,
+        0,
+        &overlapped,
+        NULL,
+        0
+      ) == TRUE
+    ) {
+      CloseHandle(overlapped.hEvent);
+      return nbytes;
+    } else if (WSAGetLastError() == WSA_IO_PENDING) {
+      DWORD dwNumberOfBytesTransferred;
+      if (
+        GetOverlappedResult(
+          *this,
+          &overlapped,
+          &dwNumberOfBytesTransferred,
+          TRUE
+        )
+      ) {
+        CloseHandle(overlapped.hEvent);
+        return static_cast<ssize_t>(dwNumberOfBytesTransferred);
+      }
+    }
+
+    CloseHandle(overlapped.hEvent);
+  }
+
+  return -1;
 }
 
 bool StreamSocket::want_accept() const {

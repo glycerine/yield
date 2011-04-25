@@ -173,7 +173,7 @@ bool iconv::operator()(const string& inbuf, string& outbuf) {
   return false;
 }
 
-bool iconv::operator()(const string& inbuf, wstring& outbuf) {
+bool iconv::operator()(const string& inbuf, std::wstring& outbuf) {
   int outbuf_w_len
   = MultiByteToWideChar
     (
@@ -210,7 +210,7 @@ bool iconv::operator()(const string& inbuf, wstring& outbuf) {
   return false;
 }
 
-bool iconv::operator()(const wstring& inbuf, string& outbuf) {
+bool iconv::operator()(const std::wstring& inbuf, string& outbuf) {
   int outbuf_c_len
   = WideCharToMultiByte
     (

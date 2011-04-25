@@ -49,7 +49,7 @@ public:
   tstring(wchar_t s);
   tstring(const wchar_t* s);
   tstring(const wchar_t* s, size_t len);
-  tstring(const wstring& s);
+  tstring(const std::wstring& s);
 
   string encode(Code tocode) const;
 
