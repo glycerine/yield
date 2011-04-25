@@ -35,7 +35,6 @@
 
 #include <queue>
 
-
 namespace yield {
 namespace thread {
 template <class ElementType>

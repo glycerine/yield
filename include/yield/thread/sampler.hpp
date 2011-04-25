@@ -34,7 +34,6 @@
 
 #include <algorithm> // for std::sort
 
-
 namespace yield {
 namespace thread {
 template <typename SampleType, size_t ArraySize>

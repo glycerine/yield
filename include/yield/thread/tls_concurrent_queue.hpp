@@ -36,11 +36,9 @@
 
 #include <stack>
 
-
 namespace yield {
 namespace thread {
 using yield::thread::Thread;
-
 
 template <class ElementType>
 class TLSConcurrentQueue : private BlockingConcurrentQueue<ElementType> {

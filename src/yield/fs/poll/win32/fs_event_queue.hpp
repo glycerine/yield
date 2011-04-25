@@ -30,10 +30,10 @@
 #ifndef _YIELD_FS_POLL_WIN32_FS_EVENT_QUEUE_HPP_
 #define _YIELD_FS_POLL_WIN32_FS_EVENT_QUEUE_HPP_
 
-#include <map>
-
 #include "yield/aio/win32/aio_queue.hpp"
 #include "yield/fs/poll/fs_event.hpp"
+
+#include <map>
 
 namespace yield {
 namespace fs {

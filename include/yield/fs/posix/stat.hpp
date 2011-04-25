@@ -35,7 +35,6 @@
 
 #include <sys/stat.h>
 
-
 namespace yield {
 namespace fs {
 namespace posix {

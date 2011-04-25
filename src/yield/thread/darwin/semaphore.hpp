@@ -34,7 +34,6 @@
 
 #include <mach/semaphore.h>
 
-
 namespace yield {
 namespace thread {
 namespace darwin {

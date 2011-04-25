@@ -34,7 +34,6 @@
 
 #include <port.h>
 
-
 namespace yield {
 namespace poll {
 namespace sunos {

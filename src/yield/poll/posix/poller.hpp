@@ -35,7 +35,6 @@
 
 #include <sys/poll.h>
 
-
 namespace yield {
 namespace poll {
 namespace posix {

@@ -34,7 +34,6 @@
 
 #include <sched.h> // For cpu_set_t
 
-
 namespace yield {
 namespace thread {
 namespace linux {

@@ -35,7 +35,6 @@
 
 #include <sys/epoll.h>
 
-
 namespace yield {
 namespace poll {
 namespace linux {

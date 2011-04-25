@@ -30,8 +30,9 @@
 #ifndef _YIELD_AUTO_OBJECT_HPP_
 #define _YIELD_AUTO_OBJECT_HPP_
 
-#include <exception>
 #include "yield/object.hpp"
+
+#include <exception>
 
 namespace yield {
 // Similar to auto_ptr, but using object references instead of delete

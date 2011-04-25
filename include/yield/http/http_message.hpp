@@ -30,8 +30,9 @@
 #ifndef _YIELD_HTTP_HTTP_MESSAGE_HPP_
 #define _YIELD_HTTP_HTTP_MESSAGE_HPP_
 
-#include <utility> // for std::pair
 #include "yield/object.hpp"
+
+#include <utility> // for std::pair
 
 namespace yield {
 class Buffer;
