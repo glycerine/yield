@@ -237,9 +237,7 @@ ssize_t File::pread(void* buf, size_t buflen, off_t offset) {
 
   if (overlapped.hEvent != INVALID_HANDLE_VALUE) {
     overlapped.Offset = static_cast<DWORD>(offset);
-#ifdef _WIN64
     overlapped.OffsetHigh = static_cast<DWORD>(offset >> 32);
-#endif
 
     DWORD dwNumberOfBytesRead;
     if (ReadFile(*this, buf, buflen, &dwNumberOfBytesRead, &overlapped)) {
@@ -285,9 +283,7 @@ ssize_t File::preadv(const iovec* iov, int iovlen, off_t offset) {
 
   if (overlapped.hEvent != INVALID_HANDLE_VALUE) {
     overlapped.Offset = static_cast<DWORD>(offset);
-#ifdef _WIN64
     overlapped.OffsetHigh = static_cast<DWORD>(offset >> 32);
-#endif
 
     FILE_SEGMENT_ELEMENT* aSegmentArray = new FILE_SEGMENT_ELEMENT[iovlen];
     DWORD dwNumberOfBytesToRead = 0;
@@ -350,9 +346,7 @@ ssize_t File::pwrite(const void* buf, size_t buflen, off_t offset) {
 
   if (overlapped.hEvent != INVALID_HANDLE_VALUE) {
     overlapped.Offset = static_cast<DWORD>(offset);
-#ifdef _WIN64
     overlapped.OffsetHigh = static_cast<DWORD>(offset >> 32);
-#endif
 
     DWORD dwNumberOfBytesWritten;
     if (WriteFile(*this, buf, buflen, &dwNumberOfBytesWritten, &overlapped)) {
@@ -405,9 +399,7 @@ ssize_t File::pwritev(const iovec* iov, int iovlen, off_t offset) {
 
   if (overlapped.hEvent != INVALID_HANDLE_VALUE) {
     overlapped.Offset = static_cast<DWORD>(offset);
-#ifdef _WIN64
     overlapped.OffsetHigh = static_cast<DWORD>(offset >> 32);
-#endif
 
     FILE_SEGMENT_ELEMENT* aSegmentArray = new FILE_SEGMENT_ELEMENT[iovlen];
     DWORD dwNumberOfBytesToWrite = 0;

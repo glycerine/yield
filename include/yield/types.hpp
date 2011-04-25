@@ -35,7 +35,17 @@
 #define __STDC_LIMIT_MACROS 1
 #include <stdint.h>
 
-#ifndef _WIN32
+#ifdef _WIN32
+struct iovec {
+  size_t iov_len;
+  void* iov_base;
+};
+
+typedef int64_t _off_t;
+typedef int64_t off_t;
+#define _OFF_T_DEFINED
+typedef intptr_t ssize_t;
+#else
 #include <sys/types.h>
 #include <sys/uio.h> // For struct iovec
 #ifdef __sun
@@ -73,16 +83,6 @@ using std::vector;
 #endif
 #ifndef OUT
 #define OUT
-#endif
-
-#ifdef _WIN32
-struct iovec {
-  size_t iov_len;
-  void* iov_base;
-};
-
-typedef long off_t;
-typedef intptr_t ssize_t;
 #endif
 
 namespace yield {

@@ -90,13 +90,9 @@ AIOCB& AIOCB::cast(::OVERLAPPED& lpOverlapped) {
 //}
 
 off_t AIOCB::get_offset() const {
-#ifdef _WIN64
   return static_cast<uint64_t>(overlapped.OffsetHigh << 32)
          |
          overlapped.Offset;
-#else
-  return overlapped.Offset;
-#endif
 }
 
 void AIOCB::init(off_t offset) {
@@ -113,9 +109,7 @@ AIOCB::operator ::OVERLAPPED* () {
 
 void AIOCB::set_offset(off_t offset) {
   overlapped.Offset = static_cast<uint32_t>(offset);
-#ifdef _WIN64
   overlapped.OffsetHigh = static_cast<uint32_t>(offset >> 32);
-#endif
 }
 }
 }
