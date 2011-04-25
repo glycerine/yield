@@ -367,7 +367,7 @@ NBIOQueue::RetryStatus NBIOQueue::retry(recvAIOCB& recv_aiocb) {
 NBIOQueue::RetryStatus NBIOQueue::retry(sendAIOCB& send_aiocb) {
   log_retry(send_aiocb);
 
-  if (send_aiocb.get_socket().set_blocking_mode(false)) {
+  if (send_aiocb.get_socket().set_blocking_mode(true)) {
     ssize_t send_ret
       = send_aiocb.get_socket().send(
           send_aiocb.get_buffer(),
