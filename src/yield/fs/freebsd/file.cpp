@@ -44,7 +44,7 @@ File::~File() {
 
 yield::fs::ExtendedAttributes* File::openxattrs() {
   if (xattrs == NULL) {
-    fd_t dup_fd = dup(*this);
+    fd_t dup_fd = ::dup(*this);
     if (dup_fd != -1)
       xattrs = new ExtendedAttributes(dup_fd);
     else

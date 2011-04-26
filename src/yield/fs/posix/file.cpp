@@ -38,6 +38,7 @@
 #include "yield/fs/posix/file.hpp"
 #include "yield/fs/posix/stat.hpp"
 
+#include <cstdio>
 #include <errno.h>
 #include <fcntl.h>
 #include <stdlib.h>
