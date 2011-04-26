@@ -32,6 +32,7 @@
 #include "yield/fs/win32/file.hpp"
 #include "yield/fs/win32/stat.hpp"
 
+#include <io.h>
 #include <Windows.h>
 
 namespace yield {
@@ -131,6 +132,28 @@ bool File::close() {
 
 bool File::datasync() {
   return FlushFileBuffers(*this) != 0;
+}
+
+YO_NEW_REF File* File::dup(fd_t fd) {
+  fd_t dup_fd;
+  if (
+    DuplicateHandle(
+      GetCurrentProcess(),
+      fd,
+      GetCurrentProcess(),
+      &dup_fd,
+      0,
+      FALSE,
+      DUPLICATE_SAME_ACCESS
+    )
+  )
+    return new File(dup_fd);
+  else
+    return NULL;
+}
+
+YO_NEW_REF File* File::dup(FILE* file) {
+  return dup(reinterpret_cast<fd_t>(_get_osfhandle(_fileno(file))));
 }
 
 YO_NEW_REF File::Map*

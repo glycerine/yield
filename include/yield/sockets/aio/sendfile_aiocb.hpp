@@ -32,6 +32,8 @@
 
 #include "yield/sockets/aio/aiocb.hpp"
 
+#include <stdio.h>
+
 namespace yield {
 namespace sockets {
 class streamSocket;

@@ -151,6 +151,30 @@ public:
 };
 
 
+class FileDupTest : public FileTest {
+public:
+  FileDupTest(FilePairFactory& file_pair_factory)
+    : FileTest(file_pair_factory)
+  { }
+
+public:
+  // yunit::Test
+  void run() {
+    File* dup_file = get_read_file().dup();
+    if (dup_file != NULL)
+      File::dec_ref(*dup_file);
+    else
+      throw Exception();
+
+    dup_file = File::dup(static_cast<fd_t>(get_read_file()));
+    if (dup_file != NULL)
+      File::dec_ref(*dup_file);
+    else
+      throw Exception();
+  }
+};
+
+
 class FileMapTest : public FileTest {
 public:
   FileMapTest(FilePairFactory& file_pair_factory)
@@ -552,7 +576,7 @@ public:
   void run() {
     throw_assert_eq(get_read_file().tell(), 0);
 
-    uint64_t seek_ret = get_read_file().seek(1024);
+    off_t seek_ret = get_read_file().seek(1024);
     throw_assert_eq(seek_ret, 1024);
     throw_assert_eq(get_read_file().tell(), seek_ret);
 
@@ -608,7 +632,9 @@ public:
 
     add("File::datasync", new FileDataSyncTest(file_pair_factory));
 
-    add("File::Map", new FileMapTest(file_pair_factory));
+    add("File::dup", new FileDupTest(file_pair_factory));
+
+    add("File::map", new FileMapTest(file_pair_factory));
 
     add("File::pread", new FilePReadTest(file_pair_factory));
 

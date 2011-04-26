@@ -133,6 +133,18 @@ bool File::datasync() {
   return sync();
 }
 
+YO_NEW_REF File* File::dup(fd_t fd) {
+  fd_t dup_fd = ::dup(fd);
+  if (dup_fd != -1)
+    return new File(dup_fd);
+  else
+    return NULL;
+}
+
+YO_NEW_REF File* File::dup(FILE* file) {
+  return dup(fileno(file));
+}
+
 File::Lock* File::getlk(const Lock& lock) {
   flock flock_ = lock;
   if (fcntl(*this, F_GETLK, &flock_) == 0) {

@@ -149,7 +149,15 @@ public:
   ~File();
 
 public:
-  virtual bool datasync();
+  bool datasync();
+
+public:
+  YO_NEW_REF File* dup() {
+    return dup(fd);
+  }
+
+  static YO_NEW_REF File* dup(fd_t fd);
+  static YO_NEW_REF File* dup(FILE* file);
 
 public:
   YO_NEW_REF Map*
@@ -186,7 +194,7 @@ public:
   YO_NEW_REF Stat* stat();
 
 public:
-  virtual bool sync();
+  bool sync();
 
 public:
   off_t tell();

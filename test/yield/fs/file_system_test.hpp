@@ -288,29 +288,6 @@ public:
 };
 
 
-class FileSystemTruncateTest : public FileSystemTest {
-public:
-  // yunit::Test
-  void run() {
-    {
-      auto_Object<File> file
-      = FileSystem().open(get_test_file_name(), O_WRONLY);
-      ssize_t write_ret = file->write("test", 4);
-      if (write_ret != 4) throw Exception();
-      if (!file->sync()) throw Exception();
-      auto_Object<Stat> stbuf = FileSystem().stat(get_test_file_name());
-      throw_assert_eq(stbuf->get_size(), 4);
-    }
-
-    if (FileSystem().truncate(get_test_file_name(), 0)) {
-      auto_Object<Stat> stbuf = FileSystem().stat(get_test_file_name());
-      throw_assert_eq(stbuf->get_size(), 0);
-    } else
-      throw Exception();
-  }
-};
-
-
 class FileSystemUnlinkTest : public FileSystemTest {
 public:
   // yunit::Test
@@ -366,8 +343,6 @@ public:
     add("FileSystem::statvfs", new FileSystemStatVFSTest);
 
     add("FileSystem::touch", new FileSystemTouchTest);
-
-    add("FileSystem::truncate", new FileSystemTruncateTest);
 
     add("FileSystem::unlink", new FileSystemUnlinkTest);
 

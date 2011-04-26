@@ -153,6 +153,14 @@ public:
   virtual bool datasync();
 
 public:
+  YO_NEW_REF File* dup() {
+    return dup(fd);
+  }
+
+  static YO_NEW_REF File* dup(fd_t fd);
+  static YO_NEW_REF File* dup(FILE* file);
+
+public:
   YO_NEW_REF Lock* getlk(const File::Lock&);
 
 public:
