@@ -42,6 +42,9 @@ public:
 
 public:
   static void put(Buffer& buffers, const void* data, size_t size);
+
+public:
+  static size_t size(const Buffer& buffers);
 };
 }
 

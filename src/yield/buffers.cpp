@@ -74,4 +74,16 @@ void Buffers::put(Buffer& buffers, const void* data, size_t size) {
     }
   }
 }
+
+size_t Buffers::size(const Buffer& buffers) {
+  size_t size = 0;
+
+  const Buffer* next_buffer = &buffers;
+  do {
+    size += next_buffer->size();
+    next_buffer = next_buffer->get_next_buffer();
+  } while (next_buffer != NULL);
+
+  return size;
+}
 }

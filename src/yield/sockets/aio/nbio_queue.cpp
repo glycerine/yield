@@ -378,7 +378,7 @@ NBIOQueue::RetryStatus NBIOQueue::retry(sendAIOCB& send_aiocb) {
     if (send_ret >= 0) {
       debug_assert_eq(
         static_cast<size_t>(send_ret),
-        send_aiocb.get_buffer().size()
+        Buffers::size(send_aiocb.get_buffer())
       );
       send_aiocb.set_return(send_ret);
       log_completion(send_aiocb);

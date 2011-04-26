@@ -50,7 +50,7 @@ LIBS += -lyield_thread -lyield
 D_FILE_PATHS := $(shell find ../../../build/yield/thread -name "*.d")
 
 
-O_FILE_PATHS += ../../../build/yield/thread/blocking_concurrent_queue_test.o ../../../build/yield/thread/condition_variable_test.o ../../../build/yield/thread/lightweight_mutex_test.o ../../../build/yield/thread/mutex_test.o ../../../build/yield/thread/non_blocking_concurrent_queue_test.o ../../../build/yield/thread/performance_counter_set_test.o ../../../build/yield/thread/pipe_test.o ../../../build/yield/thread/processor_set_test.o ../../../build/yield/thread/reader_writer_lock_test.o ../../../build/yield/thread/sampler_test.o ../../../build/yield/thread/semaphore_test.o ../../../build/yield/thread/synchronized_event_queue_test.o ../../../build/yield/thread/synchronized_queue_test.o ../../../build/yield/thread/synchronized_response_queue_test.o ../../../build/yield/thread/thread_test.o ../../../build/yield/thread/tls_concurrent_queue_test.o ../../../build/yield/thread/unit_concurrent_queue_test.o ../../../build/yield/thread/yield_thread_test_main.o
+O_FILE_PATHS += ../../../build/yield/thread/blocking_concurrent_queue_test.o ../../../build/yield/thread/condition_variable_test.o ../../../build/yield/thread/lightweight_mutex_test.o ../../../build/yield/thread/mutex_test.o ../../../build/yield/thread/non_blocking_concurrent_queue_test.o ../../../build/yield/thread/pipe_test.o ../../../build/yield/thread/processor_set_test.o ../../../build/yield/thread/reader_writer_lock_test.o ../../../build/yield/thread/sampler_test.o ../../../build/yield/thread/semaphore_test.o ../../../build/yield/thread/synchronized_event_queue_test.o ../../../build/yield/thread/synchronized_queue_test.o ../../../build/yield/thread/synchronized_response_queue_test.o ../../../build/yield/thread/thread_test.o ../../../build/yield/thread/tls_concurrent_queue_test.o ../../../build/yield/thread/unit_concurrent_queue_test.o ../../../build/yield/thread/yield_thread_test_main.o
 
 
 all: ../../../bin/yield/yield_thread_test
@@ -101,10 +101,6 @@ lcov: ../../../bin/yield/yield_thread_test
 ../../../build/yield/thread/non_blocking_concurrent_queue_test.o: ../../../test/yield/thread/non_blocking_concurrent_queue_test.cpp
 	-mkdir -p ../../../build/yield/thread 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/thread/non_blocking_concurrent_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/thread/non_blocking_concurrent_queue_test.cpp
-
-../../../build/yield/thread/performance_counter_set_test.o: ../../../test/yield/thread/performance_counter_set_test.cpp
-	-mkdir -p ../../../build/yield/thread 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/thread/performance_counter_set_test.o -MD $(CXXFLAGS) ../../../test/yield/thread/performance_counter_set_test.cpp
 
 ../../../build/yield/thread/pipe_test.o: ../../../test/yield/thread/pipe_test.cpp
 	-mkdir -p ../../../build/yield/thread 2>/dev/null
