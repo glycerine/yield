@@ -43,6 +43,7 @@ namespace yield {
 namespace fs {
 namespace poll {
 namespace linux {
+using std::make_pair;
 using std::map;
 using yield::fs::posix::Directory;
 using yield::fs::posix::FileSystem;

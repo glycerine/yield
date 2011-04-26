@@ -106,7 +106,7 @@ TEST(HTTPMessage, get_fields) {
   http_request->set_field("Host", "localhost");
   http_request->set_field("XHost", "localhost");
 
-  vector< pair<iovec, iovec> > fields;
+  vector< std::pair<iovec, iovec> > fields;
   http_request->get_fields(fields);
   throw_assert_eq(fields.size(), 2);
   throw_assert_eq(fields[0].first.iov_len, 4);
