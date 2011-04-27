@@ -89,8 +89,12 @@ Object& HTTPResponseParser::parse() {
           );
       p = ps;
       return next_buffer;
-    } else // Error parsing
-      return *new HTTPResponse(400, NULL, connection_id, http_version);
+    } else { // Error parsing
+      HTTPResponse* http_response
+        = new HTTPResponse(400, NULL, connection_id, http_version);
+      http_response->set_field("Content-Length", 14, "0", 1);
+      return *http_response;
+    }
   } else // p == eof
     return *new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
 }
@@ -108,11 +112,13 @@ HTTPResponseParser::parse_status_line(
 
     include rfc2616 "rfc2616.rl";
 
+    # RFC 2616 6.1.1
     status_code = digit+
                   >{ status_code = static_cast<uint16_t>(atoi(p)); };
 
     reason_phrase = (alpha | ' ')+;
 
+    # RFC 2616 6.1
     status_line = http_version ' '+ status_code ' '+ reason_phrase crlf;
 
     main := status_line

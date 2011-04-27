@@ -43,7 +43,7 @@ std::ostream& operator<<(std::ostream& os, sendAIOCB& send_aiocb) {
     send_aiocb.get_type_name() <<
     "(" <<
       "buffer=" << send_aiocb.get_buffer() <<
-      "," <<
+      ", " <<
       "error=" << send_aiocb.get_error() <<
       ", " <<
       "flags=" << send_aiocb.get_flags() <<

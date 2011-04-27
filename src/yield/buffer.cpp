@@ -128,10 +128,30 @@ bool Buffer::is_page_aligned(const void* ptr) {
 }
 
 std::ostream& operator<<(std::ostream& os, const Buffer& buffer) {
+  string data_str(1, '\"');
+  if (buffer.size() > 0) {
+    const uint8_t* data = static_cast<const uint8_t*>(buffer.data());
+    size_t max_size = (buffer.size() < 128) ? buffer.size() : 128;
+    for (size_t data_i = 0; data_i < max_size; data_i++)
+      if (
+        data[data_i] == '\r' ||
+        data[data_i] == '\n' ||
+        (data[data_i] >= 32 && data[data_i] <= 126)
+      )
+        data_str.append(1, static_cast<char>(data[data_i]));
+      else
+        data_str.append(1, '?');
+  }
+  data_str.append(1, '\"');
+
   os <<
     buffer.get_type_name() <<
     "(" <<
       "capacity=" << buffer.capacity() <<
+      ", " <<
+      "data=" << data_str <<
+      ", " <<
+      "next_buffer=" << buffer.get_next_buffer() <<
       ", " <<
       "size=" << buffer.size() <<
     ")";

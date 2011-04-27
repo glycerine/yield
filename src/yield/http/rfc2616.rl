@@ -27,11 +27,11 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%%{  machine rfc2616;  alphtype unsigned char;  include rfc822 "rfc822.rl";  separators = '(' | ')' | '<' | '>' | '@' |               ',' | ';' | ':' | '\\' | "'" |               '/' | '[' | ']' | '?' | '=' |               '{' | '}' | ' ' | '\t';  text = extend -- ctl;  token = (ascii -- (ctl | separators))+;  qdtext = text -- '\"';  quoted_string = '\"' (qdtext | quoted_pair)* '\"';  http_version = "HTTP/"
+%%{  machine rfc2616;  alphtype unsigned char;  include rfc822 "rfc822.rl";  separators = '(' | ')' | '<' | '>' | '@' |               ',' | ';' | ':' | '\\' | "'" |               '/' | '[' | ']' | '?' | '=' |               '{' | '}' | ' ' | '\t';  text = extend -- ctl;  token = (ascii -- (ctl | separators))+;  qdtext = text -- '\"';  quoted_string = '\"' (qdtext | quoted_pair)* '\"';  http_version = "HTTP/"
                  (
                    (digit+ '.' digit+)
                    >{ http_version = static_cast<float>(atof(p)); }
-                 );  hour = digit{2} >{ hour = atoi(p); };
+                 );  hour = digit{2} >{ hour = atoi(p); };
   minute = digit{2} >{ minute = atoi(p); };
   second = digit{2} >{ second = atoi(p); };
   time = hour ':' minute ':' second;

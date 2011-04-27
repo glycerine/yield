@@ -198,14 +198,23 @@ void HTTPRequest::respond(uint16_t status_code, const char* body) {
 }
 
 void HTTPRequest::respond(uint16_t status_code, YO_NEW_REF Object* body) {
-  respond(
-    *new HTTPResponse(
+  HTTPResponse* http_response
+    = new HTTPResponse(
            status_code,
            body,
            get_connection_id(),
            get_http_version()
-         )
-  );
+         );
+
+  if (body != NULL && body->get_type_id() == Buffer::TYPE_ID) {
+    http_response->set_field(
+      "Content-Length",
+      14,
+      static_cast<Buffer*>(body)->size()
+    );
+  }
+
+  respond(*http_response);
 }
 
 void HTTPRequest::respond(uint16_t status_code, YO_NEW_REF Object& body) {

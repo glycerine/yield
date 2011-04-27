@@ -43,7 +43,7 @@ std::ostream& operator<<(std::ostream& os, recvAIOCB& recv_aiocb) {
     recv_aiocb.get_type_name() <<
     "(" <<
       "buffer=" << recv_aiocb.get_buffer() <<
-      "," <<
+      ", " <<
       "error=" << recv_aiocb.get_error() <<
       ", " <<
       "flags=" << recv_aiocb.get_flags() <<

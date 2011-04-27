@@ -124,8 +124,12 @@ Object& HTTPRequestParser::parse() {
           );
       p = ps;
       return next_buffer;
-    } else // Error parsing
-      return *new HTTPResponse(400, NULL, connection_id, http_version);
+    } else { // Error parsing
+      HTTPResponse* http_response
+        = new HTTPResponse(400, NULL, connection_id, http_version);
+      http_response->set_field("Content-Length", 14, "0", 1);
+      return *http_response;
+    }
   } else // p == eof
     return *new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
 }
@@ -150,6 +154,7 @@ bool HTTPRequestParser::parse_request_line(
       include rfc2616 "rfc2616.rl";
       include rfc3986 "../../../include/yield/uri/rfc3986.rl";
 
+      # RFC 2616 5.1.1
       method
         = ("CONNECT" % { method = HTTPRequest::Method::CONNECT; }) |
           ("COPY" % { method = HTTPRequest::Method::COPY; }) |
@@ -168,6 +173,13 @@ bool HTTPRequestParser::parse_request_line(
           ("TRACE" % { method = HTTPRequest::Method::TRACE; }) |
           ("UNLOCK" % { method = HTTPRequest::Method::UNLOCK; });
 
+      # RFC 2616 5.1.2
+      # Per the spec, Request-URI = "*" | absoluteURI | abs_path | authority
+      # absoluteURI is fully-qualified (http://host...), for use with proxies.
+      # authority is (userinfo "@")? host (":" port)?, used with CONNECT.
+      # abs_path is the common form, but it does NOT include a ["?" query],
+      #   only path segments.
+      # -> an oversight in the spec, corrected here.
       request_uri = (
           (
             '*'
@@ -175,10 +187,11 @@ bool HTTPRequestParser::parse_request_line(
             %{ path.iov_len = p - static_cast<char*>(path.iov_base); }
           ) |
           absolute_uri |
-          path_absolute |
+          (path_absolute ("?" query)?) |
           authority
-       );
+      );
 
+      # RFC 2616 5.1
       request_line = method ' '+ request_uri ' '+ http_version crlf;
 
       main := request_line

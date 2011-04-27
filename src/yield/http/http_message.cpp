@@ -82,8 +82,6 @@ HTTPMessage<HTTPMessageType>::~HTTPMessage() {
 
 template <class HTTPMessageType>
 void HTTPMessage<HTTPMessageType>::finalize() {
-  if (body != NULL && body->get_type_id() == Buffer::TYPE_ID)
-    set_field("Content-Length", 14, static_cast<Buffer*>(body)->size());
   header.put("\r\n", 2);
 }
 

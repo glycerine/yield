@@ -39,84 +39,83 @@
   pchar         = unreserved | pct_encoded | sub_delims | ":" | "@";
 
 
-  IPvFuture     = "v" xdigit+ "." ( unreserved | sub_delims | ":" )+;
+  IPvFuture     = "v" xdigit+ "." (unreserved | sub_delims | ":")+;
 
   dec_octet     = digit |
-                  ( [1-9] digit ) |
-                  ( "1" digit{2}  ) |
-                  ( "2" [0-4] digit ) |
-                  ( "25" [0-5] );
+                  ([1-9] digit) |
+                  ("1" digit{2} ) |
+                  ("2" [0-4] digit) |
+                  ("25" [0-5]);
   IPv4address   = dec_octet "." dec_octet "." dec_octet "." dec_octet;
 
-  h16           = ( xdigit{4} )+;
-  ls32          = ( h16 ":" h16 ) | IPv4address;
-  IPv6address   = ( ( h16 ":" ){6} ls32 ) |
-                  ( "::" ( h16 ":" ){5} ls32 ) |
-                  ( h16? "::" ( h16 ":" ){4} ls32 ) |
-                  ( ( ( ( h16 ":" ){1} )* h16 )? "::" ( h16 ":" ){3} ls32 ) |
-                  ( ( ( ( h16 ":" ){2} )* h16 )? "::" ( h16 ":" ){2} ls32 ) |
-                  ( ( ( ( h16 ":" ){3} )* h16 )? "::" h16 ":"   ls32 ) |
-                  ( ( ( ( h16 ":" ){4} )* h16 )? "::" ls32 ) |
-                  ( ( ( ( h16 ":" ){5} )* h16 )? "::" h16 ) |
-                  ( ( ( ( h16 ":" ){6} )* h16 )? "::" );
+  h16           = (xdigit{4})+;
+  ls32          = (h16 ":" h16) | IPv4address;
+  IPv6address   = ((h16 ":"){6} ls32) |
+                  ("::" (h16 ":"){5} ls32) |
+                  (h16? "::" (h16 ":"){4} ls32) |
+                  ((((h16 ":"){1})* h16)? "::" (h16 ":"){3} ls32) |
+                  ((((h16 ":"){2})* h16)? "::" (h16 ":"){2} ls32) |
+                  ((((h16 ":"){3})* h16)? "::" h16 ":"   ls32) |
+                  ((((h16 ":"){4})* h16)? "::" ls32) |
+                  ((((h16 ":"){5})* h16)? "::" h16) |
+                  ((((h16 ":"){6})* h16)? "::");
 
-  ip_literal    = "[" ( IPv6address | IPvFuture  ) "]";
+  ip_literal    = "[" (IPv6address | IPvFuture ) "]";
 
 
-  scheme        = ( alpha ( alpha | digit | "+" | "-" | "." )* )
+  scheme        = (alpha (alpha | digit | "+" | "-" | ".")*)
                   >{ scheme.iov_base = p; }
-                  %{ scheme.iov_len =  p - static_cast<char*>( scheme.iov_base ); };
+                  %{ scheme.iov_len =  p - static_cast<char*>(scheme.iov_base); };
 
-
-  userinfo      = ( unreserved | pct_encoded | sub_delims | ":" )*
+  userinfo      = (unreserved | pct_encoded | sub_delims | ":")*
                   >{ userinfo.iov_base = p; }
-                  %{ userinfo.iov_len = p - static_cast<char*>( userinfo.iov_base ); };
+                  %{ userinfo.iov_len = p - static_cast<char*>(userinfo.iov_base); };
 
-  reg_name      = ( unreserved | pct_encoded | sub_delims )*;
-  host          = ( ip_literal | IPv4address | reg_name )
+  reg_name      = (unreserved | pct_encoded | sub_delims)*;
+  host          = (ip_literal | IPv4address | reg_name)
                   >{ host.iov_base = p; }
-                  %{ host.iov_len = p - static_cast<char*>( host.iov_base ); };
+                  %{ host.iov_len = p - static_cast<char*>(host.iov_base); };
 
   port          = digit*
-                  >{ port = static_cast<uint16_t>( atoi( p ) ); };
+                  >{ port = static_cast<uint16_t>(atoi(p)); };
 
-  authority     = ( userinfo "@" )? host ( ":" port )?;
+  authority     = (userinfo "@")? host (":" port)?;
 
 
   action path_enter { path.iov_base = p; }
-  action path_leave { path.iov_len = p - static_cast<char*>( path.iov_base ); }
+  action path_leave { path.iov_len = p - static_cast<char*>(path.iov_base); }
 
   segment       = pchar*;
   segment_nz    = pchar+;
-  segment_nz_nc = ( unreserved | pct_encoded | sub_delims | "@" )+;
-  path_abempty  = ( "/" segment )* >path_enter %path_leave;
-  path_absolute = ( "/" ( segment_nz ( "/" segment )* )? ) >path_enter %path_leave;
-  path_noscheme = ( segment_nz_nc ( "/" segment )* ) >path_enter %path_leave;
-  path_rootless = ( segment_nz ( "/" segment )* ) >path_enter %path_leave;
+  segment_nz_nc = (unreserved | pct_encoded | sub_delims | "@")+;
+  path_abempty  = ("/" segment)* >path_enter %path_leave;
+  path_absolute = ("/" (segment_nz ("/" segment)*)?) >path_enter %path_leave;
+  path_noscheme = (segment_nz_nc ("/" segment)*) >path_enter %path_leave;
+  path_rootless = (segment_nz ("/" segment)*) >path_enter %path_leave;
   path_empty    = empty;
 
-  hier_part = ( "//" authority path_abempty ) |
+  hier_part = ("//" authority path_abempty) |
               path_absolute |
               path_rootless |
               path_empty;
 
 
-  query         = ( pchar | "/" | "?" )*
+  query         = (pchar | "/" | "?")*
                   >{ query.iov_base = p; }
-                  %{ query.iov_len = p - static_cast<char*>( query.iov_base ); };
-  fragment      = ( pchar | "/" | "?" )*
+                  %{ query.iov_len = p - static_cast<char*>(query.iov_base); };
+  fragment      = (pchar | "/" | "?")*
                   >{ fragment.iov_base = p; }
-                  %{ fragment.iov_len = p - static_cast<char*>( fragment.iov_base ); };
+                  %{ fragment.iov_len = p - static_cast<char*>(fragment.iov_base); };
 
 
-  relative_part = ( "//" authority path_abempty ) |
+  relative_part = ("//" authority path_abempty) |
                   path_absolute |
                   path_noscheme |
                   path_empty;
-  relative_ref  = relative_part ( "?" query )? ( "#" fragment )?;
+  relative_ref  = relative_part ("?" query)? ("#" fragment)?;
 
 
-  absolute_uri  = scheme ":" hier_part ( "?" query )?;
-  uri           = scheme ":" hier_part ( "?" query )? ( "#" fragment )?;
+  absolute_uri  = scheme ":" hier_part ("?" query)?;
+  uri           = scheme ":" hier_part ("?" query)? ("#" fragment)?;
   uri_reference = uri | relative_ref;
 }%%

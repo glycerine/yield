@@ -66,7 +66,7 @@ std::ostream& operator<<(std::ostream& os, connectAIOCB& connect_aiocb) {
       "return=" << connect_aiocb.get_return() <<
       ", " <<
       "send_buffer=" << connect_aiocb.get_send_buffer() <<
-      "," <<
+      ", " <<
       "socket=" << connect_aiocb.get_socket() <<
     ")";
   return os;
