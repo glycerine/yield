@@ -106,7 +106,7 @@ yield.poll_test: yield.poll
 yield.sockets.aio: yield.aio yield.sockets.poll
 	$(MAKE) -C proj/yield/sockets/aio -f yield.sockets.aio.Makefile
 
-yield.sockets.aio_test: yield.sockets.aio
+yield.sockets.aio_test: yield.fs yield.sockets.aio
 	$(MAKE) -C proj/yield/sockets/aio -f yield.sockets.aio_test.Makefile
 
 yield.sockets.poll: yield.poll yield.sockets

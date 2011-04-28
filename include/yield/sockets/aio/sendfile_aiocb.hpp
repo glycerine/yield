@@ -36,7 +36,7 @@
 
 namespace yield {
 namespace sockets {
-class streamSocket;
+class StreamSocket;
 
 namespace aio {
 class sendfileAIOCB : public AIOCB {

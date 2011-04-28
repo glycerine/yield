@@ -35,16 +35,19 @@ ifeq ($(UNAME), MINGW32)
 endif
 
 
+ifeq ($(UNAME), Darwin)
+	LIBS += -liconv
+endif
 ifeq ($(UNAME), FreeBSD)
-	LIBS += -lpthread
+	LIBS += -liconv -lintl -lpthread
 endif
 ifeq ($(UNAME), Linux)
 	LIBS += -lpthread -lrt -lstdc++
 endif
 ifeq ($(UNAME), Solaris)
-	LIBS += -lkstat -lnsl -lsocket -lm -lrt -lstdc++
+	LIBS += -liconv -lkstat -lnsl -lsocket -lm -lrt -lstdc++
 endif
-LIBS += -lyield_sockets_aio -lyield_aio -lyield_sockets_poll -lyield_poll -lyield_thread -lyield_sockets -lyield
+LIBS += -lyield_fs -lyield_i18n -lyield_sockets_aio -lyield_aio -lyield_sockets_poll -lyield_poll -lyield_thread -lyield_sockets -lyield
 
 
 D_FILE_PATHS := $(shell find ../../../../build/yield/sockets/aio -name "*.d")
@@ -77,11 +80,15 @@ lcov: ../../../../bin/yield/yield_sockets_aio_test
 	rm -fr yield.sockets.aio_test_lcov_html-$(TIMESTAMP)
 
 
+../../../../lib/yield/libyield_fs.a:
+	$(MAKE) -C ../../fs yield.fs.Makefile
+
+
 ../../../../lib/yield/libyield_sockets_aio.a:
 	$(MAKE) -C . yield.sockets.aio.Makefile
 
 
-../../../../bin/yield/yield_sockets_aio_test: $(O_FILE_PATHS) ../../../../lib/yield/libyield_sockets_aio.a
+../../../../bin/yield/yield_sockets_aio_test: $(O_FILE_PATHS) ../../../../lib/yield/libyield_fs.a ../../../../lib/yield/libyield_sockets_aio.a
 	-mkdir -p ../../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 

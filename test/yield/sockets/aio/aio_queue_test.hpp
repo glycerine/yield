@@ -35,11 +35,16 @@
 #include "yield/auto_object.hpp"
 #include "yield/buffer.hpp"
 #include "yield/exception.hpp"
+#include "yield/fs/file.hpp"
+#include "yield/fs/file_system.hpp"
+#include "yield/fs/path.hpp"
+#include "yield/fs/stat.hpp"
 #include "yield/sockets/socket_pair.hpp"
+#include "yield/sockets/tcp_socket.hpp"
 #include "yield/sockets/aio/recv_aiocb.hpp"
 #include "yield/sockets/aio/send_aiocb.hpp"
+#include "yield/sockets/aio/sendfile_aiocb.hpp"
 #include "yunit.hpp"
-
 
 namespace yield {
 namespace sockets {
@@ -48,13 +53,12 @@ template <class AIOQueueType>
 class AIOQueueTest : public yunit::Test {
 public:
   // yunit::Test
-  void setup() {
+  virtual void setup() {
     aio_queue = new AIOQueueType;
   }
 
-  void teardown() {
+  virtual void teardown() {
     delete aio_queue;
-    aio_queue = NULL;
   }
 
 protected:
@@ -225,6 +229,46 @@ public:
 
 
 template <class AIOQueueType>
+class AIOQueueSendFileTest : public AIOQueueTest<AIOQueueType> {
+public:
+  // yunit::Test
+  void run() {
+    SocketPair sockets(TCPSocket::DOMAIN_DEFAULT, TCPSocket::TYPE);
+    if (!this->get_aio_queue().associate(sockets.first()))
+      throw Exception();
+
+    auto_Object<yield::fs::File> file
+      = yield::fs::FileSystem().open("AIOQueueSendFileTest.txt");
+    auto_Object<yield::fs::Stat> stbuf = file->stat();
+
+    auto_Object<sendfileAIOCB> aiocb
+      = new sendfileAIOCB(static_cast<StreamSocket&>(sockets.first()), *file);
+    throw_assert_eq(aiocb->get_nbytes(), stbuf->get_size());
+    throw_assert_eq(aiocb->get_offset(), 0);
+
+    if (!this->get_aio_queue().enqueue(aiocb->inc_ref()))
+      throw Exception();
+
+    auto_Object<sendfileAIOCB> out_aiocb
+      = object_cast<sendfileAIOCB>(this->get_aio_queue().dequeue());
+    throw_assert_eq(&out_aiocb.get(), &aiocb.get());
+    throw_assert_eq(out_aiocb->get_error(), 0);
+    throw_assert_eq(out_aiocb->get_return(), stbuf->get_size());
+  }
+
+  void setup() {
+    AIOQueueTest<AIOQueueType>::setup();
+    yield::fs::FileSystem().touch("AIOQueueSendFileTest.txt");
+  }
+
+  void teardown() {
+    yield::fs::FileSystem().unlink("AIOQueueSendFileTest.txt");
+    AIOQueueTest<AIOQueueType>::teardown();
+  }
+};
+
+
+template <class AIOQueueType>
 class AIOQueueTestSuite : public EventQueueTestSuite<AIOQueueType> {
 public:
   AIOQueueTestSuite() {
@@ -237,6 +281,7 @@ public:
     add("AIOQueue + recv split", new AIOQueueRecvSplitTest<AIOQueueType>);
 
     add("AIOQueue + send", new AIOQueueSendTest<AIOQueueType>);
+    add("AIOQueue + sendfile", new AIOQueueSendFileTest<AIOQueueType>);
 
     add(
       "AIOQueue::timeddequeue",

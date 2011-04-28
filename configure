@@ -95,6 +95,8 @@ PROJECT_REFERENCES = {
 
 PROJECT_NAMES = PROJECT_REFERENCES.keys()
 
+PROJECT_REFERENCES["yield.sockets.aio_test"] = ("yield.fs", "yield.sockets.aio")
+
 AUTHOR = "Minor Gordon"
 
 #AUTOCONF = {
@@ -205,9 +207,7 @@ for project_name in PROJECT_NAMES:
     PROJECT_DIR_PATHS[project_name + "_test"] = project_dir_path
 
 for project_name in PROJECT_NAMES:
-    PROJECT_REFERENCES[project_name + "_test"] = [project_name]
-    if project_name == "yield.http.client":
-        PROJECT_REFERENCES[project_name + "_test"].append("yield.http.server")
+    PROJECT_REFERENCES.setdefault(project_name + "_test", [project_name])
 
 # Expand project references so that the list has dependencies going left -> right, e.g.
 # if project A depends on project B depends on project C, the order will be [A, B, C]
