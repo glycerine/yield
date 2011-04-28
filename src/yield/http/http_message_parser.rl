@@ -123,6 +123,82 @@ Object* HTTPMessageParser::parse_body_chunk() {
     return NULL;
 }
 
+bool
+HTTPMessageParser::parse_content_length_field(
+  const char* ps,
+  const char* pe,
+  OUT size_t& content_length
+) {
+  int cs;
+  char* p = const_cast<char*>(ps);
+
+  iovec field_name = {0}, field_value = {0};
+
+  // Don't look for the trailing CRLF before the body,
+  // since it may not be present yet.
+  %%{
+    machine content_length_field_parser;
+    alphtype unsigned char;
+
+    include rfc2616 "rfc2616.rl";
+
+    main := (
+      field @ {
+        if (
+          parse_content_length_field(
+            field_name,
+            field_value,
+            content_length
+          )
+        )
+          return true;
+      }
+    )*;
+
+    write data;
+    write init;
+    write exec;
+  }%%
+
+  return false;
+}
+
+bool
+HTTPMessageParser::parse_content_length_field(
+  const iovec& field_name,
+  const iovec& field_value,
+  OUT size_t& content_length
+) {
+  if (
+    field_name.iov_len == 14
+    &&
+    (
+      memcmp(field_name.iov_base, "Content-Length", 14) == 0
+      ||
+      memcmp(field_name.iov_base, "Content-length", 14) == 0
+    )
+  ) {
+    char* nptr = static_cast<char*>(field_value.iov_base);
+    char* endptr = nptr + field_value.iov_len;
+    content_length = static_cast<size_t>(strtol(nptr, &endptr, 10));
+    return true;
+  }
+  else if (
+    field_name.iov_len == 17
+    && (
+      memcmp(field_name.iov_base, "Transfer-Encoding", 17) == 0
+      ||
+      memcmp(field_name.iov_base, "Transfer-encoding", 17) == 0
+    )
+    &&
+    memcmp(field_value.iov_base, "chunked", 7) == 0
+  ) {
+    content_length = HTTPRequest::CONTENT_LENGTH_CHUNKED;
+    return true;
+  } else
+    return false;
+}
+
 DateTime HTTPMessageParser::parse_date(const iovec& date) {
 return parse_date(
           static_cast<const char*>(date.iov_base),
@@ -254,30 +330,11 @@ HTTPMessageParser::parse_fields(
 
     main := (
       field % {
-        if (
-          field_name.iov_len == 14
-          &&
-          (
-            memcmp(field_name.iov_base, "Content-Length", 14) == 0
-            ||
-            memcmp(field_name.iov_base, "Content-length", 14) == 0
-          )
-        ) {
-          char* nptr = static_cast<char*>(field_value.iov_base);
-          char* endptr = nptr + field_value.iov_len;
-          content_length = static_cast<size_t>(strtol(nptr, &endptr, 10));
-        }
-        else if (
-          field_name.iov_len == 17
-          && (
-            memcmp(field_name.iov_base, "Transfer-Encoding", 17) == 0
-            ||
-            memcmp(field_name.iov_base, "Transfer-encoding", 17) == 0
-          )
-          &&
-          memcmp(field_value.iov_base, "chunked", 7) == 0
-        )
-          content_length = HTTPRequest::CONTENT_LENGTH_CHUNKED;
+        parse_content_length_field(
+          field_name,
+          field_value,
+          content_length
+        );
       }
     )* crlf
     @{ fbreak; }

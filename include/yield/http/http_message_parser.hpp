@@ -40,6 +40,13 @@ class HTTPBodyChunk;
 
 class HTTPMessageParser {
 public:
+  static bool
+  parse_content_length_field(
+    const char* ps,
+    const char* pe,
+    OUT size_t& content_length
+  );
+
   static DateTime parse_date(const iovec& date);
   static DateTime parse_date(const char* ps, const char* pe);
 
@@ -73,6 +80,14 @@ protected:
   uint32_t connection_id;
   const char* eof;
   char *p, *ps;
+
+private:
+  static bool
+  parse_content_length_field(
+    const iovec& field_name,
+    const iovec& field_value,
+    OUT size_t& content_length
+  );
 };
 }
 }

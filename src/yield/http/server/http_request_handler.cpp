@@ -1,4 +1,4 @@
-// yield/http/http_request_handler.cpp
+// yield/http/server/http_request_handler.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -42,10 +42,10 @@ void HTTPRequestHandler::handle(YO_NEW_REF Event& event) {
 
   default: {
     std::cerr <<
-      "yield::http::server::HTTPRequestHandler: " <<
-      "dropping unrecognized Event type " <<
-      event.get_type_name() <<
-      std::endl;
+              "yield::http::server::HTTPRequestHandler: " <<
+              "dropping unrecognized Event type " <<
+              event.get_type_name() <<
+              std::endl;
     Event::dec_ref(event);
   }
   break;
