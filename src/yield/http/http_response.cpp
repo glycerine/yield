@@ -31,6 +31,8 @@
 #include "yield/http/http_request.hpp"
 #include "yield/http/http_response.hpp"
 
+#include <sstream>
+
 namespace yield {
 namespace http {
 HTTPResponse::HTTPResponse(
@@ -249,10 +251,27 @@ HTTPResponse::HTTPResponse(
 }
 
 std::ostream& operator<<(std::ostream& os, const HTTPResponse& http_response) {
+  std::ostringstream body;
+  if (http_response.get_body() != NULL) {
+    if (http_response.get_body()->get_type_id() == Buffer::TYPE_ID)
+      body << static_cast<Buffer*>(http_response.get_body());
+    else
+      body << http_response.get_body()->get_type_name();
+  } else
+    body << "NULL";
+
   os << 
     http_response.get_type_name() <<
     "(" <<
+      "connection_id=" << http_response.get_connection_id() <<
+      ", " <<
+      "content_length=" << http_response.get_content_length() <<
+      ", " <<
+      "http_version=" << http_response.get_http_version() <<
+      ", " <<
       "status_code=" << http_response.get_status_code() <<
+      ", " <<
+      "body=" << body.str() <<
     ")";
   return os;
 }

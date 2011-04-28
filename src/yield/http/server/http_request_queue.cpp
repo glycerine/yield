@@ -108,6 +108,9 @@ public:
   };
 
 public:
+  enum State { STATE_CONNECTED, STATE_ERROR };
+
+public:
   Connection(
     AIOQueue& aio_queue,
     SocketAddress& peername,
@@ -119,7 +122,9 @@ public:
       peername(peername.inc_ref()),
       socket_(static_cast<TCPSocket&>(socket_.inc_ref())),
       trace_log(Object::inc_ref(trace_log))
-  { }
+  {
+    state = STATE_CONNECTED;
+  }
 
   ~Connection() {
     close();
@@ -144,6 +149,10 @@ public:
     return socket_;
   }
 
+  State get_state() const {
+    return state;
+  }
+
 public:
   void handle(YO_NEW_REF acceptAIOCB& accept_aiocb) {
     if (
@@ -158,7 +167,7 @@ public:
       recvAIOCB* recv_aiocb = new recvAIOCB(*this, *recv_buffer);
       if (!aio_queue.enqueue(*recv_aiocb)) {
         recvAIOCB::dec_ref(*recv_aiocb);
-        Connection::dec_ref(*this);
+        state = STATE_ERROR;
       }
     }
 
@@ -222,7 +231,7 @@ private:
     sendAIOCB* send_aiocb = new sendAIOCB(*this, *send_buffer);
     if (!aio_queue.enqueue(*send_aiocb)) {
       sendAIOCB::dec_ref(*send_aiocb);
-      Connection::dec_ref(*this);
+      state = STATE_ERROR;
     }
   }
 
@@ -250,11 +259,11 @@ private:
             return;
           else {
             sendfileAIOCB::dec_ref(*sendfile_aiocb);
-            Connection::dec_ref(*this);
+            state = STATE_ERROR;
           }
         } else {
           sendAIOCB::dec_ref(*send_aiocb);
-          Connection::dec_ref(*this);
+          state = STATE_ERROR;
         }
       }
       break;
@@ -266,7 +275,7 @@ private:
     sendAIOCB* send_aiocb = new sendAIOCB(*this, http_response_header);
     if (!aio_queue.enqueue(*send_aiocb)) {
       sendAIOCB::dec_ref(*send_aiocb);
-      Connection::dec_ref(*this);
+      state = STATE_ERROR;
     }
   }
 
@@ -286,7 +295,7 @@ private:
         recvAIOCB* recv_aiocb = new recvAIOCB(*this, next_recv_buffer);
         if (!aio_queue.enqueue(*recv_aiocb)) {
           recvAIOCB::dec_ref(*recv_aiocb);
-          Connection::dec_ref(*this);
+          state = STATE_ERROR;
         }
       }
       return;
@@ -324,6 +333,7 @@ private:
   Log* error_log;
   SocketAddress& peername;
   TCPSocket& socket_;
+  State state;
   Log* trace_log;
 };
 
@@ -340,14 +350,10 @@ HTTPRequestQueue::HTTPRequestQueue(
   if (aio_queue.associate(socket_)) {
     if (socket_.bind(sockname)) {
       if (socket_.listen()) {
-        if (
-          aio_queue.enqueue(
-            *new acceptAIOCB(
-                   socket_,
-                   new Buffer(Buffer::getpagesize(), Buffer::getpagesize())
-                 )
-          )
-        )
+        Buffer* recv_buffer
+          = new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
+        acceptAIOCB* accept_aiocb = new acceptAIOCB(socket_, recv_buffer);
+        if (aio_queue.enqueue(*accept_aiocb))
           return;
       }
     }
@@ -357,6 +363,15 @@ HTTPRequestQueue::HTTPRequestQueue(
 }
 
 HTTPRequestQueue::~HTTPRequestQueue() {
+  for (
+    vector<Connection*>::iterator connection_i = connections.begin();
+    connection_i != connections.end();
+    ++connection_i
+  ) {
+    (*connection_i)->close();
+    Connection::dec_ref(**connection_i);
+  }
+
   socket_.close();
 
   AIOQueue::dec_ref(aio_queue);
@@ -370,76 +385,28 @@ YO_NEW_REF Event* HTTPRequestQueue::dequeue(const Time& timeout) {
   if (event != NULL) {
     switch (event->get_type_id()) {
     case acceptAIOCB::TYPE_ID: {
-      acceptAIOCB& accept_aiocb = static_cast<acceptAIOCB&>(*event);
-
-      if (accept_aiocb.get_return() >= 0) {
-        StreamSocket& accepted_socket = *accept_aiocb.get_accepted_socket();
-
-        if (aio_queue.associate(accepted_socket)) {
-          Connection& connection
-            = *new Connection(
-                     aio_queue,
-                     *accept_aiocb.get_peername(),
-                     static_cast<TCPSocket&>(accepted_socket),
-                     error_log,
-                     trace_log
-                   );
-
-          connection.handle(accept_aiocb);
-        } else
-          DebugBreak();
-      } else
-        DebugBreak();
-
-      aio_queue.enqueue(
-        *new acceptAIOCB(
-                socket_,
-                new Buffer(Buffer::getpagesize(), Buffer::getpagesize())
-              )
-      );
+      handle(static_cast<acceptAIOCB&>(*event));
     }
     break;
 
     case Connection::recvAIOCB::TYPE_ID: {
-      Connection::recvAIOCB& recv_aiocb
-        = static_cast<Connection::recvAIOCB&>(*event);
-      Connection& connection
-        = static_cast<Connection&>(recv_aiocb.get_connection());
-
-      if (recv_aiocb.get_return() > 0)
-        connection.handle(recv_aiocb);
-      else {
-        connection.handle(recv_aiocb);
-        Connection::dec_ref(connection);
-      }
+      handle<Connection::recvAIOCB>(
+        static_cast<Connection::recvAIOCB&>(*event)
+      );
     }
     break;
 
     case Connection::sendAIOCB::TYPE_ID: {
-      Connection::sendAIOCB& send_aiocb
-        = static_cast<Connection::sendAIOCB&>(*event);
-      Connection& connection = send_aiocb.get_connection();
-
-      if (send_aiocb.get_return() >= 0)
-        connection.handle(send_aiocb);
-      else {
-        connection.handle(send_aiocb);
-        Connection::dec_ref(connection);
-      }
+      handle<Connection::sendAIOCB>(
+        static_cast<Connection::sendAIOCB&>(*event)
+      );
     }
     break;
 
     case Connection::sendfileAIOCB::TYPE_ID: {
-      Connection::sendfileAIOCB& sendfile_aiocb
-        = static_cast<Connection::sendfileAIOCB&>(*event);
-      Connection& connection = sendfile_aiocb.get_connection();
-
-      if (sendfile_aiocb.get_return() >= 0)
-        connection.handle(sendfile_aiocb);
-      else {
-        connection.handle(sendfile_aiocb);
-        Connection::dec_ref(connection);
-      }
+      handle<Connection::sendfileAIOCB>(
+        static_cast<Connection::sendfileAIOCB&>(*event)
+      );
     }
     break;
 
@@ -452,6 +419,66 @@ YO_NEW_REF Event* HTTPRequestQueue::dequeue(const Time& timeout) {
 
 bool HTTPRequestQueue::enqueue(YO_NEW_REF Event& event) {
   return aio_queue.enqueue(event);
+}
+
+void HTTPRequestQueue::handle(YO_NEW_REF acceptAIOCB& accept_aiocb) {
+  if (accept_aiocb.get_return() >= 0) {
+    StreamSocket& accepted_socket = *accept_aiocb.get_accepted_socket();
+
+    if (aio_queue.associate(accepted_socket)) {
+      Connection* connection
+        = new Connection(
+                  aio_queue,
+                  *accept_aiocb.get_peername(),
+                  static_cast<TCPSocket&>(accepted_socket),
+                  error_log,
+                  trace_log
+                );
+
+      connection->handle(accept_aiocb);
+
+      if (connection->get_state() == Connection::STATE_CONNECTED)
+        connections.push_back(connection);
+      else
+        Connection::dec_ref(*connection);
+    } else {
+      accepted_socket.shutdown();
+      accepted_socket.close();
+      StreamSocket::dec_ref(accepted_socket);
+    }
+  } else {
+    acceptAIOCB::dec_ref(accept_aiocb);
+  }
+
+  Buffer* recv_buffer
+    = new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
+  acceptAIOCB* next_accept_aiocb = new acceptAIOCB(socket_, recv_buffer);
+  if (!aio_queue.enqueue(*next_accept_aiocb))
+    acceptAIOCB::dec_ref(next_accept_aiocb);
+}
+
+template <class AIOCBType>
+void HTTPRequestQueue::handle(YO_NEW_REF AIOCBType& aiocb) {
+  Connection& connection = aiocb.get_connection();
+  if (connection.get_state() == Connection::STATE_CONNECTED) {
+    connection.handle(aiocb);
+
+    if (connection.get_state() == Connection::STATE_ERROR) {
+      for (
+        vector<Connection*>::iterator connection_i = connections.begin();
+        connection_i != connections.end();
+        ++connection_i
+      ) {
+        if (*connection_i == &connection) {
+          connections.erase(connection_i);
+          connection.close();
+          Connection::dec_ref(connection);
+        }
+      }
+    }
+  }
+  else
+    AIOCBType::dec_ref(aiocb);
 }
 }
 }

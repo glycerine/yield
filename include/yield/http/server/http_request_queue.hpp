@@ -36,6 +36,9 @@ namespace yield {
 class Log;
 
 namespace sockets {
+namespace aio {
+class acceptAIOCB;
+}
 class SocketAddress;
 class TCPSocket;
 }
@@ -65,7 +68,12 @@ private:
   class Connection;
 
 private:
+  void handle(YO_NEW_REF yield::sockets::aio::acceptAIOCB& accept_aiocb);
+  template <class AIOCBType> void handle(YO_NEW_REF AIOCBType& aiocb);
+
+private:
   yield::sockets::aio::AIOQueue& aio_queue;
+  vector<Connection*> connections;
   Log* error_log;
   yield::sockets::TCPSocket& socket_;
   Log* trace_log;

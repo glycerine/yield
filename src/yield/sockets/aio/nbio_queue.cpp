@@ -209,7 +209,7 @@ uint8_t NBIOQueue::get_aiocb_priority(const AIOCB& aiocb) {
 
 template <class AIOCBType> void NBIOQueue::log_completion(AIOCBType& aiocb) {
   if (trace_log != NULL)
-    trace_log->get_stream() << "NBIOQueue: " << aiocb << " completed.";
+    trace_log->get_stream() << "NBIOQueue: completed " << aiocb;
 }
 
 template <class AIOCBType> void NBIOQueue::log_error(AIOCBType& aiocb) {

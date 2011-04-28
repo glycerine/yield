@@ -59,6 +59,8 @@ public:
   }
 
 public:
+  size_t get_content_length() const;
+
   DateTime get_date_field(const char* name = "Date") const;
 
   string get_field(const char* name, const char* default_value = "") const {

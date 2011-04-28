@@ -226,12 +226,29 @@ void HTTPRequest::respond(Exception& exception) {
 }
 
 std::ostream& operator<<(std::ostream& os, const HTTPRequest& http_request) {
+  std::ostringstream body;
+  if (http_request.get_body() != NULL) {
+    if (http_request.get_body()->get_type_id() == Buffer::TYPE_ID)
+      body << static_cast<Buffer*>(http_request.get_body());
+    else
+      body << http_request.get_body()->get_type_name();
+  } else
+    body << "NULL";
+
   os << 
     http_request.get_type_name() <<
     "(" <<
+      "connection_id=" << http_request.get_connection_id() <<
+      ", " <<
+      "content_length=" << http_request.get_content_length() << 
+      ", " <<
+      "creation_date_time=" << http_request.get_creation_date_time() <<
+      ", " <<
       "method=" << http_request.get_method() <<
       ", " <<
       "uri=" << http_request.get_uri() <<
+      ", " <<
+      "body=" << body.str() <<
     ")";
   return os;
 }

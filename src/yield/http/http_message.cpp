@@ -99,12 +99,20 @@ void HTTPMessage<HTTPMessageType>::finalize() {
   header.put("\r\n", 2);
 }
 
+
 template <class HTTPMessageType>
-DateTime 
-HTTPMessage<HTTPMessageType>::
-get_date_field(
-  const char* name
-) const {
+size_t HTTPMessage<HTTPMessageType>::get_content_length() const {
+  size_t content_length = 0;
+  HTTPMessageParser::parse_content_length_field(
+    static_cast<const char*>(header) + fields_offset,
+    static_cast<const char*>(header) + header.size(),
+    content_length
+  );
+  return content_length;
+}
+
+template <class HTTPMessageType>
+DateTime HTTPMessage<HTTPMessageType>::get_date_field(const char* name) const {
   iovec value;
   if (get_field(name, value))
     return HTTPMessageParser::parse_date(value);
