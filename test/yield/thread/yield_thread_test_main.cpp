@@ -36,7 +36,6 @@ extern yunit::TestSuite& ConditionVariableTestSuite();
 extern yunit::TestSuite& LightweightMutexTestSuite();
 extern yunit::TestSuite& MutexTestSuite();
 extern yunit::TestSuite& NonBlockingConcurrentQueueTestSuite();
-extern yunit::TestSuite& PerformanceCounterSetTestSuite();
 extern yunit::TestSuite& PipeTestSuite();
 extern yunit::TestSuite& ProcessorSetTestSuite();
 extern yunit::TestSuite& ReaderWriterLockTestSuite();
@@ -75,11 +74,6 @@ int main(int, char**) {
   // NonBlockingConcurrentQueue
   std::cout << "NonBlockingConcurrentQueue:" << std::endl;
   failed_test_case_count += NonBlockingConcurrentQueueTestSuite().run();
-  std::cout << std::endl;
-
-  // PerformanceCounterSet
-  std::cout << "PerformanceCounterSet:" << std::endl;
-  failed_test_case_count += PerformanceCounterSetTestSuite().run();
   std::cout << std::endl;
 
   // Pipe

@@ -47,7 +47,7 @@ LIBS += -lyield
 D_FILE_PATHS := $(shell find ../../build/yield -name "*.d")
 
 
-O_FILE_PATHS += ../../build/yield/atomic_test.o ../../build/yield/auto_object_test.o ../../build/yield/buffer_test.o ../../build/yield/date_time_test.o ../../build/yield/event_test.o ../../build/yield/exception_test.o ../../build/yield/log_test.o ../../build/yield/message_test.o ../../build/yield/object_test.o ../../build/yield/request_test.o ../../build/yield/response_test.o ../../build/yield/time_test.o ../../build/yield/yield_test_main.o
+O_FILE_PATHS += ../../build/yield/atomic_test.o ../../build/yield/auto_object_test.o ../../build/yield/buffer_test.o ../../build/yield/buffers_test.o ../../build/yield/date_time_test.o ../../build/yield/event_test.o ../../build/yield/exception_test.o ../../build/yield/log_test.o ../../build/yield/message_test.o ../../build/yield/object_test.o ../../build/yield/request_test.o ../../build/yield/response_test.o ../../build/yield/time_test.o ../../build/yield/yield_test_main.o
 
 
 all: ../../bin/yield/yield_test
@@ -90,6 +90,10 @@ lcov: ../../bin/yield/yield_test
 ../../build/yield/buffer_test.o: ../../test/yield/buffer_test.cpp
 	-mkdir -p ../../build/yield 2>/dev/null
 	$(CXX) -c -o ../../build/yield/buffer_test.o -MD $(CXXFLAGS) ../../test/yield/buffer_test.cpp
+
+../../build/yield/buffers_test.o: ../../test/yield/buffers_test.cpp
+	-mkdir -p ../../build/yield 2>/dev/null
+	$(CXX) -c -o ../../build/yield/buffers_test.o -MD $(CXXFLAGS) ../../test/yield/buffers_test.cpp
 
 ../../build/yield/date_time_test.o: ../../test/yield/date_time_test.cpp
 	-mkdir -p ../../build/yield 2>/dev/null

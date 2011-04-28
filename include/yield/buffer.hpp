@@ -50,6 +50,11 @@ public:
   iovec as_write_iovec() const;
 
 public:
+  size_t capacity() const {
+    return capacity_;
+  }
+
+public:
   Buffer& copy() const {
     return copy(*this);
   }
@@ -83,24 +88,16 @@ public:
   );
 
 public:
-  size_t capacity() const {
-    return capacity_;
-  }
-
   void* data() {
     return data_;
-  }
-
-  bool empty() const {
-    return size() == 0;
   }
 
   const void* data() const {
     return data_;
   }
 
-  size_t size() const {
-    return size_;
+  bool empty() const {
+    return size() == 0;
   }
 
 public:
@@ -196,6 +193,11 @@ public:
 public:
   void set_next_buffer(YO_NEW_REF Buffer*);
   void set_next_buffer(YO_NEW_REF Buffer&);
+
+public:
+  size_t size() const {
+    return size_;
+  }
 
 public:
   // yield::Object

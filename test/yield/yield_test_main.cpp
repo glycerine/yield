@@ -33,6 +33,7 @@
 
 extern yunit::TestSuite& atomicTestSuite();
 extern yunit::TestSuite& auto_ObjectTestSuite();
+extern yunit::TestSuite& BuffersTestSuite();
 extern yunit::TestSuite& BufferTestSuite();
 extern yunit::TestSuite& DateTimeTestSuite();
 extern yunit::TestSuite& EventTestSuite();
@@ -55,6 +56,11 @@ int main(int, char**) {
   // auto_Object
   std::cout << "auto_Object:" << std::endl;
   failed_test_case_count += auto_ObjectTestSuite().run();
+  std::cout << std::endl;
+
+  // Buffers
+  std::cout << "Buffers:" << std::endl;
+  failed_test_case_count += BuffersTestSuite().run();
   std::cout << std::endl;
 
   // Buffer
@@ -87,7 +93,7 @@ int main(int, char**) {
   failed_test_case_count += MessageTestSuite().run();
   std::cout << std::endl;
 
-  // yield::Object
+  // Object
   std::cout << "Object:" << std::endl;
   failed_test_case_count += ObjectTestSuite().run();
   std::cout << std::endl;

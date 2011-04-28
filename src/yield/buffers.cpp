@@ -60,19 +60,22 @@ void Buffers::put(Buffer& buffers, const void* data, size_t size) {
   debug_assert_eq(data, NULL);
 
   Buffer* next_buffer = &buffers;
-  for (;;) {
+  do {
     size_t next_buffer_left
       = next_buffer->capacity() - next_buffer->size();
 
-    if (size <= next_buffer_left) {
-      next_buffer->put(NULL, size);
-      break;
-    } else {
-      next_buffer->put(NULL, next_buffer_left);
-      size -= next_buffer_left;
-      next_buffer = next_buffer->get_next_buffer();
+    if (next_buffer_left > 0) {
+      if (size <= next_buffer_left) {
+        next_buffer->put(NULL, size);
+        break;
+      } else {
+        next_buffer->put(NULL, next_buffer_left);
+        size -= next_buffer_left;
+      }
     }
-  }
+
+    next_buffer = next_buffer->get_next_buffer();
+  } while (next_buffer != NULL);
 }
 
 size_t Buffers::size(const Buffer& buffers) {

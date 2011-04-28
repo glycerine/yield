@@ -3,7 +3,7 @@
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
 
-// This source path is part of the Yield project.
+// This source file is part of the Yield project.
 
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:

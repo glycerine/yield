@@ -138,13 +138,5 @@ class SourceFiles(list):
             for source_file in self:
                 if source_file.get_path().endswith(file_ext):
                     source_files.append(source_file.get_combined_repr())
-        source_files = "\n\n".join(source_files)
 
-        return """\
-%(comment_prefix)s Generated at %(current_date_time)s by %(current_user)s %(comment_suffix)s
-
-
-%(source_files)s
-
-
-""" % locals()
+        return "\n\n".join(source_files)
