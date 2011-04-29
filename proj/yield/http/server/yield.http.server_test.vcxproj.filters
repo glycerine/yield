@@ -12,12 +12,9 @@
 
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\test\yield\http\server\http_server_test.cpp">
+    <ClCompile Include="..\..\..\..\test\yield\http\server\http_request_queue_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\..\test\yield\http\server\test_http_request_handler.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\..\test\yield\http\server\yield_http_server_test_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -40,7 +40,7 @@ namespace aio {
 namespace win32 {
 class AIOQueue : public yield::aio::win32::AIOQueue {
 public:
-  AIOQueue(Log* error_log = NULL, Log* trace_log = NULL);
+  AIOQueue(YO_NEW_REF Log* error_log = NULL, YO_NEW_REF Log* trace_log = NULL);
   ~AIOQueue();
 
 public:

@@ -30,6 +30,7 @@
 #ifndef _YIELD_HTTP_SERVER_HTTP_REQUEST_QUEUE_HPP_
 #define _YIELD_HTTP_SERVER_HTTP_REQUEST_QUEUE_HPP_
 
+#include "yield/sockets/socket_address.hpp"
 #include "yield/sockets/aio/aio_queue.hpp"
 
 namespace yield {
@@ -49,8 +50,8 @@ class HTTPRequestQueue : public EventQueue {
 public:
   HTTPRequestQueue(
     const yield::sockets::SocketAddress& sockname,
-    Log* error_log = NULL,
-    Log* trace_log = NULL
+    YO_NEW_REF Log* error_log = NULL,
+    YO_NEW_REF Log* trace_log = NULL
   );
 
   ~HTTPRequestQueue();

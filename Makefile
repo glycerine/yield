@@ -79,7 +79,7 @@ yield.fs: yield.i18n
 yield.fs_test: yield.fs
 	$(MAKE) -C proj/yield/fs -f yield.fs_test.Makefile
 
-yield.http.server: yield.fs yield.http yield.sockets.aio yield.stage
+yield.http.server: yield.fs yield.http yield.sockets.aio
 	$(MAKE) -C proj/yield/http/server -f yield.http.server.Makefile
 
 yield.http.server_test: yield.http.server

@@ -50,7 +50,11 @@ class sendfileAIOCB;
 
 class NBIOQueue : public EventQueue {
 public:
-  NBIOQueue(Log* error_log = NULL, Log* trace_log = NULL);
+  NBIOQueue(
+    YO_NEW_REF Log* error_log = NULL,
+    YO_NEW_REF Log* trace_log = NULL
+  );
+
   ~NBIOQueue();
 
 public:

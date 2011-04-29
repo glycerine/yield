@@ -1,4 +1,4 @@
-// test_http_request_handler.hpp
+// http_server_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,20 +27,30 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_HTTP_SERVER_TEST_HTTP_REQUEST_HANDLER_HPP_
-#define _YIELD_HTTP_SERVER_TEST_HTTP_REQUEST_HANDLER_HPP_
-
-#include "yield/assert.hpp"
+#include "../../event_queue_test.hpp"
+#include "yield/auto_object.hpp"
+#include "yield/log.hpp"
 #include "yield/fs/file.hpp"
 #include "yield/fs/file_system.hpp"
 #include "yield/fs/path.hpp"
-#include "yield/http/server/http_request_handler.hpp"
+#include "yield/http/http_request.hpp"
+#include "yield/http/server/http_request_queue.hpp"
+#include "yunit.hpp"
 
 namespace yield {
 namespace http {
 namespace server {
-class TestHTTPRequestHandler : public HTTPRequestHandler {
-  void handle(YO_NEW_REF HTTPRequest& http_request) {
+class TestHTTPRequestQueue : public HTTPRequestQueue {
+public:
+  TestHTTPRequestQueue(YO_NEW_REF Log* trace_log = NULL)
+    : HTTPRequestQueue(8000, NULL, trace_log) {
+  }
+};
+
+
+class HTTPRequestQueueTest : public yunit::Test {
+protected:
+  void handle(HTTPRequest& http_request) {
     if (http_request.get_uri().get_path() == "/")
       http_request.respond(200, "Hello world");
     else if (http_request.get_uri().get_path() == "/drop")
@@ -60,11 +70,45 @@ class TestHTTPRequestHandler : public HTTPRequestHandler {
     else
       http_request.respond(404);
 
-    HTTPRequest::dec_ref(http_request);
+    //HTTPRequest::dec_ref(http_request);
+  }
+};
+
+
+class HTTPRequestQueueDequeueHTTPRequestTest : public HTTPRequestQueueTest {
+public:
+  // yunit::Test
+  void run() {
+    TestHTTPRequestQueue http_request_queue(&Log::open(std::cout));
+    auto_Object<HTTPRequest> http_request
+      = object_cast<HTTPRequest>(http_request_queue.dequeue());
+    handle(*http_request);
+  }
+};
+
+
+class HTTPRequestQueueTestSuite
+  : public EventQueueTestSuite<TestHTTPRequestQueue> {
+public:
+  HTTPRequestQueueTestSuite() {
+    add(
+      "HTTPRequestQueue::dequeue -> Event",
+      new EventQueueDequeueTest<TestHTTPRequestQueue>
+    );
+
+    //add(
+    //  "HTTPRequestQueue::dequeue -> HTTPRequest",
+    //  new HTTPRequestQueueDequeueHTTPRequestTest
+    //);
+
+    add(
+      "HTTPRequestQueue::timeddequeue -> Event",
+      new EventQueueTimedDequeueTest<TestHTTPRequestQueue>
+    );
   }
 };
 }
 }
 }
 
-#endif
+TEST_SUITE_EX(HTTPRequestQueue, yield::http::server::HTTPRequestQueueTestSuite);

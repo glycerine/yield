@@ -118,7 +118,7 @@ public:
     Log* error_log = NULL,
     Log* trace_log = NULL
   ) : aio_queue(aio_queue.inc_ref()),
-      error_log(Object::inc_ref(error_log)),      
+      error_log(Object::inc_ref(error_log)),
       peername(peername.inc_ref()),
       socket_(static_cast<TCPSocket&>(socket_.inc_ref())),
       trace_log(Object::inc_ref(trace_log))
@@ -340,8 +340,8 @@ private:
 
 HTTPRequestQueue::HTTPRequestQueue(
   const SocketAddress& sockname,
-  Log* error_log,
-  Log* trace_log
+  YO_NEW_REF Log* error_log,
+  YO_NEW_REF Log* trace_log
 ) : aio_queue(*new AIOQueue(error_log, trace_log)),
     error_log(Object::inc_ref(error_log)),
     socket_(*new TCPSocket(sockname.get_family())),
@@ -381,40 +381,51 @@ HTTPRequestQueue::~HTTPRequestQueue() {
 }
 
 YO_NEW_REF Event* HTTPRequestQueue::dequeue(const Time& timeout) {
-  Event* event = aio_queue.dequeue(timeout);
-  if (event != NULL) {
-    switch (event->get_type_id()) {
-    case acceptAIOCB::TYPE_ID: {
-      handle(static_cast<acceptAIOCB&>(*event));
-    }
-    break;
+  Time timeout_remaining(timeout);
 
-    case Connection::recvAIOCB::TYPE_ID: {
-      handle<Connection::recvAIOCB>(
-        static_cast<Connection::recvAIOCB&>(*event)
-      );
-    }
-    break;
+  for (;;) {
+    Time start_time = Time::now();
 
-    case Connection::sendAIOCB::TYPE_ID: {
-      handle<Connection::sendAIOCB>(
-        static_cast<Connection::sendAIOCB&>(*event)
-      );
-    }
-    break;
+    Event* event = aio_queue.dequeue(timeout);
 
-    case Connection::sendfileAIOCB::TYPE_ID: {
-      handle<Connection::sendfileAIOCB>(
-        static_cast<Connection::sendfileAIOCB&>(*event)
-      );
-    }
-    break;
+    if (event != NULL) {
+      switch (event->get_type_id()) {
+      case acceptAIOCB::TYPE_ID: {
+        handle(static_cast<acceptAIOCB&>(*event));
+      }
+      break;
 
-    default: return event;
+      case Connection::recvAIOCB::TYPE_ID: {
+        handle<Connection::recvAIOCB>(
+          static_cast<Connection::recvAIOCB&>(*event)
+        );
+      }
+      break;
+
+      case Connection::sendAIOCB::TYPE_ID: {
+        handle<Connection::sendAIOCB>(
+          static_cast<Connection::sendAIOCB&>(*event)
+        );
+      }
+      break;
+
+      case Connection::sendfileAIOCB::TYPE_ID: {
+        handle<Connection::sendfileAIOCB>(
+          static_cast<Connection::sendfileAIOCB&>(*event)
+        );
+      }
+      break;
+
+      default: return event;
+      }
     }
+
+    Time elapsed_time = Time::now() - start_time;
+    if (timeout_remaining > elapsed_time)
+      timeout_remaining -= elapsed_time;
+    else
+      return NULL;
   }
-
-  return NULL;
 }
 
 bool HTTPRequestQueue::enqueue(YO_NEW_REF Event& event) {

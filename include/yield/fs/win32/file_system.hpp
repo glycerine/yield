@@ -49,7 +49,6 @@ struct statvfs {
   unsigned long f_namemax;  // Maximum filename length.
 };
 
-
 namespace yield {
 class DateTime;
 

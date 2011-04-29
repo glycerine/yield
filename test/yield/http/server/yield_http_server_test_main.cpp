@@ -31,14 +31,14 @@
 
 #include <iostream>
 
-extern yunit::TestSuite& HTTPServerTestSuite();
+extern yunit::TestSuite& HTTPRequestQueueTestSuite();
 
 int main(int, char**) {
   int failed_test_case_count = 0;
 
-  // HTTPServer
-  std::cout << "HTTPServer:" << std::endl;
-  failed_test_case_count += HTTPServerTestSuite().run();
+  // HTTPRequestQueue
+  std::cout << "HTTPRequestQueue:" << std::endl;
+  failed_test_case_count += HTTPRequestQueueTestSuite().run();
   std::cout << std::endl;
 
   return failed_test_case_count;
