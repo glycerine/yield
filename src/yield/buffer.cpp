@@ -131,16 +131,36 @@ std::ostream& operator<<(std::ostream& os, const Buffer& buffer) {
   string data_str(1, '\"');
   if (buffer.size() > 0) {
     const uint8_t* data = static_cast<const uint8_t*>(buffer.data());
-    size_t max_size = (buffer.size() < 128) ? buffer.size() : 128;
-    for (size_t data_i = 0; data_i < max_size; data_i++)
-      if (
-        data[data_i] == '\r' ||
-        data[data_i] == '\n' ||
-        (data[data_i] >= 32 && data[data_i] <= 126)
-      )
-        data_str.append(1, static_cast<char>(data[data_i]));
-      else
-        data_str.append(1, '?');
+    
+    for (uint8_t data_range_i = 0; data_range_i < 2; ++data_range_i) {
+      size_t data_i_min, data_i_max;
+      if (buffer.size() <= 131) {
+        if (data_range_i == 0) {
+          data_i_min = 0; data_i_max = buffer.size();
+        } else
+          break;
+      } else {
+        if (data_range_i == 0) {
+          data_i_min = 0; data_i_max = 64;
+        } else {
+          data_str.append("...");
+          data_i_min = buffer.size() - 64; data_i_max = buffer.size();
+        }
+      }
+
+      for (size_t data_i = data_i_min; data_i < data_i_max; ++data_i) {
+        if (
+          data[data_i] == '\r'
+          ||
+          data[data_i] == '\n'
+          ||
+          (data[data_i] >= 32 && data[data_i] <= 126)
+        )
+          data_str.append(1, static_cast<char>(data[data_i]));
+        else
+          data_str.append(1, '?');
+      }
+    }
   }
   data_str.append(1, '\"');
 
