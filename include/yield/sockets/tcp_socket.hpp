@@ -37,8 +37,13 @@ namespace sockets {
 class TCPSocket : public StreamSocket {
 public:
   static int DOMAIN_DEFAULT; // AF_INET
-  const static Option OPTION_TCP_NODELAY = 4;
   static int PROTOCOL; // IPPROTO_TCP
+
+public:
+  class Option {
+  public:
+    const static int NODELAY;
+  };
 
 public:
   TCPSocket(int domain = DOMAIN_DEFAULT)
@@ -72,7 +77,7 @@ public:
 
 public:
   // yield::sockets::Socket
-  virtual bool setsockopt(Option option, bool onoff);
+  virtual bool setsockopt(int option_name, int option_value);
 
 public:
   // yield::sockets::StreamSocket

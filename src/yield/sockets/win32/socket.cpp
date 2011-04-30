@@ -33,6 +33,12 @@
 
 namespace yield {
 namespace sockets {
+const int Socket::Option::KEEPALIVE = SO_KEEPALIVE;
+const int Socket::Option::LINGER = SO_LINGER;
+const int Socket::Option::RCVBUF = SO_RCVBUF;
+const int Socket::Option::REUSEADDR = SO_REUSEADDR;
+const int Socket::Option::SNDBUF = SNDBUF;
+
 bool Socket::bind(const SocketAddress& _name) {
   const SocketAddress* name = _name.filter(get_domain());
   if (name != NULL)
@@ -366,24 +372,17 @@ bool Socket::set_blocking_mode(bool blocking_mode) {
   return ::ioctlsocket(*this, FIONBIO, &val) != SOCKET_ERROR;
 }
 
-bool Socket::setsockopt(Option option, bool onoff) {
-  switch (option) {
-  case OPTION_SO_KEEPALIVE: {
-    int optval = onoff ? 1 : 0;
-    return ::setsockopt(
-             *this,
-             SOL_SOCKET,
-             SO_KEEPALIVE,
-             reinterpret_cast<char*>(&optval),
-             static_cast<int>(sizeof(optval))
-           ) == 0;
-  }
-  break;
-
-  case OPTION_SO_LINGER: {
+bool Socket::setsockopt(int option_name, int option_value) {
+  if (option_name == Option::LINGER) {
     linger optval;
-    optval.l_onoff = onoff ? 1 : 0;
-    optval.l_linger = 0;
+    if (option_value > 0) {
+      optval.l_onoff = 1;
+      optval.l_linger = static_cast<u_short>(option_value);
+    } else {
+      optval.l_onoff = 0;
+      optval.l_linger = 0;
+    }
+
     return ::setsockopt(
              *this,
              SOL_SOCKET,
@@ -392,12 +391,14 @@ bool Socket::setsockopt(Option option, bool onoff) {
              static_cast<int>(sizeof(optval))
            ) == 0;
   }
-  break;
 
-  default:
-    return false;
-    break;
-  }
+  return ::setsockopt(
+            *this,
+            SOL_SOCKET,
+            option_name,
+            reinterpret_cast<char*>(&option_value),
+            static_cast<int>(sizeof(option_value))
+          ) == 0;
 }
 
 bool Socket::shutdown(bool shut_rd, bool shut_wr) {

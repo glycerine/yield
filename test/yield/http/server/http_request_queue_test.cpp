@@ -80,7 +80,7 @@ public:
   void run() {
     TestHTTPRequestQueue http_request_queue(&Log::open(std::cout));
     auto_Object<HTTPRequest> http_request
-    = object_cast<HTTPRequest>(http_request_queue.dequeue());
+    = object_cast<HTTPRequest>(http_request_queue.dequeue(30.0));
     handle(*http_request);
   }
 };
@@ -95,10 +95,10 @@ public:
       new EventQueueDequeueTest<TestHTTPRequestQueue>
     );
 
-    //add(
-    //  "HTTPRequestQueue::dequeue -> HTTPRequest",
-    //  new HTTPRequestQueueDequeueHTTPRequestTest
-    //);
+    add(
+      "HTTPRequestQueue::dequeue -> HTTPRequest",
+      new HTTPRequestQueueDequeueHTTPRequestTest
+    );
 
     add(
       "HTTPRequestQueue::timeddequeue -> Event",

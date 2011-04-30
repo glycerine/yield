@@ -47,6 +47,7 @@ namespace yield {
 namespace http {
 namespace server {
 using yield::fs::File;
+using yield::sockets::Socket;
 using yield::sockets::SocketAddress;
 using yield::sockets::StreamSocket;
 using yield::sockets::TCPSocket;
@@ -125,19 +126,12 @@ public:
   }
 
   ~Connection() {
-    close();
-
     AIOQueue::dec_ref(aio_queue);
     Log::dec_ref(log);
     StreamSocket::dec_ref(socket_);
   }
 
 public:
-  void close() {
-    get_socket().shutdown();
-    get_socket().close();
-  }
-
   SocketAddress& get_peername() const {
     return peername;
   }
@@ -341,15 +335,21 @@ HTTPRequestQueue::HTTPRequestQueue(
     log(Object::inc_ref(log)),
     socket_(*new TCPSocket(sockname.get_family())) {
   if (aio_queue.associate(socket_)) {
-    if (socket_.bind(sockname)) {
-      if (socket_.listen()) {
-        Buffer* recv_buffer
-          = new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
-        acceptAIOCB* accept_aiocb = new acceptAIOCB(socket_, recv_buffer);
-        if (aio_queue.enqueue(*accept_aiocb))
-          return;
+#ifdef __linux__
+    if (socket_.setsockopt(Socket::Option::REUSEADDR, true)) {
+#endif
+      if (socket_.bind(sockname)) {
+        if (socket_.listen()) {
+          Buffer* recv_buffer
+            = new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
+          acceptAIOCB* accept_aiocb = new acceptAIOCB(socket_, recv_buffer);
+          if (aio_queue.enqueue(*accept_aiocb))
+            return;
+        }
       }
+#ifdef __linux__
     }
+#endif
   }
 
   throw Exception();
@@ -361,8 +361,13 @@ HTTPRequestQueue::~HTTPRequestQueue() {
     connection_i != connections.end();
     ++connection_i
   ) {
-    (*connection_i)->close();
-    Connection::dec_ref(**connection_i);
+    Connection* connection = *connection_i;
+    TCPSocket& socket_ = connection->get_socket();
+    socket_.set_blocking_mode(true);
+    socket_.setsockopt(Socket::Option::LINGER, 30);
+    socket_.shutdown();
+    socket_.close();
+    Connection::dec_ref(*connection);
   }
 
   socket_.close();
@@ -473,7 +478,7 @@ void HTTPRequestQueue::handle(YO_NEW_REF AIOCBType& aiocb) {
       ) {
         if (*connection_i == &connection) {
           connections.erase(connection_i);
-          connection.close();
+          connection.get_socket().close();
           Connection::dec_ref(connection);
         }
       }

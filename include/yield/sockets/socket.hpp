@@ -58,9 +58,14 @@ public:
   };
 
 public:
-  typedef uint32_t Option;
-  const static Option OPTION_SO_KEEPALIVE = 1;
-  const static Option OPTION_SO_LINGER = 2;
+  class Option {
+  public:
+    const static int KEEPALIVE;
+    const static int LINGER;
+    const static int RCVBUF;
+    const static int REUSEADDR;
+    const static int SNDBUF;
+  };
 
   const static int PROTOCOL_DEFAULT = 0;
 
@@ -253,7 +258,13 @@ public:
 
 public:
   virtual bool set_blocking_mode(bool blocking_mode);
-  virtual bool setsockopt(Option option, bool onoff);
+
+public:
+  bool setsockopt(int option_name, bool option_value) {
+    return setsockopt(option_name, option_value ? 1 : 0);
+  }
+
+  virtual bool setsockopt(int option_name, int option_value);
 
 public:
   virtual bool shutdown(bool shut_rd = true, bool shut_wr = true);
