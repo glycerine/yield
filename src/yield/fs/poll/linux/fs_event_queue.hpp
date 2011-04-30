@@ -64,6 +64,7 @@ private:
 private:
   yield::poll::FDEventQueue fd_event_queue;
   int inotify_fd;
+  Log* log;
   Watches* watches;
 };
 }

@@ -30,6 +30,7 @@
 #include "fs_event_queue.hpp"
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
+#include "yield/log.hpp"
 #include "yield/fs/posix/directory.hpp"
 #include "yield/fs/posix/file_system.hpp"
 #include "yield/poll/fd_event.hpp"
@@ -78,6 +79,11 @@ public:
 
 public:
   void read(const inotify_event&, EventHandler& fs_event_handler);
+
+public:
+  const char* get_type_name() const {
+    return "yield::fs::poll::linux::FSEventQueue::Watch";
+  }
 
 private:
   FSEvent::Type fs_event_types;
@@ -220,11 +226,11 @@ FSEventQueue::Watch::read(
     log->get_stream(Log::Level::DEBUG) <<
       get_type_name() << "(path=" << get_path() << ", wd=" << get_wd() << ")"
       << ": read inotify_event(" <<
-        "cookie=" << inotify_event.cookie <<
+        "cookie=" << inotify_event_.cookie <<
         ", "
         "mask=" << inotify_event_.mask <<
         ", "
-        "name=" << name
+        "name=" << name <<
       ")";
   }
 
@@ -309,7 +315,7 @@ FSEventQueue::Watch::read(
   }
 }
 
-FSEventQueue::FSEventQueue() {
+FSEventQueue::FSEventQueue(YO_NEW_REF Log* log) : log(log) {
   inotify_fd = inotify_init();
   if (inotify_fd != -1) {
     if (fd_event_queue.associate(inotify_fd, POLLIN)) {
@@ -323,7 +329,8 @@ FSEventQueue::FSEventQueue() {
 }
 
 FSEventQueue::~FSEventQueue() {
-  close(inotify_fd);  
+  close(inotify_fd);
+  Log::dec_ref(log);
   delete watches;
 }
 

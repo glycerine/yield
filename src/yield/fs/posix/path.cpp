@@ -36,7 +36,6 @@ const Path Path::CURRENT_DIRECTORY('.');
 const Path Path::PARENT_DIRECTORY("..");
 const char Path::SEPARATOR = '/';
 
-
 std::pair<Path, Path> Path::splitext() const {
   size_type last_dot  = find_last_of(".");
   if (last_dot == 0 || last_dot == npos)
@@ -46,7 +45,7 @@ std::pair<Path, Path> Path::splitext() const {
 }
 
 std::ostream& operator<<(std::ostream& os, const Path& path) {
-  os << path;
+  os << path.encode(yield::i18n::Code::CHAR);
   return os;
 }
 }
