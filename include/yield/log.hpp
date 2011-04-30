@@ -116,13 +116,13 @@ public:
   }
 
 public:
-  static YO_NEW_REF Log& open(std::ostream&, const Level& = Level::ERR);
+  static YO_NEW_REF Log& open(std::ostream&, const Level& = Level::DEBUG);
 
 public:
-  void write(const char*, const Level&);
-  void write(const string&, const Level&);
-  void write(const Buffer&, const Level&);
-  void write(const void*, size_t, const Level&);
+  void write(const char* message, const Level& level);
+  void write(const string& message, const Level& level);
+  void write(const Buffer& message, const Level& level);
+  void write(const void* message, size_t message_len, const Level& level);
 
 public:
   // yield::Object

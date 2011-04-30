@@ -244,13 +244,16 @@ protected:
   virtual ~HTTPMessage();
 
 protected:
-  Buffer& header;
-  uint16_t fields_offset;
+  void set_fields_offset(uint16_t fields_offset) {
+    this->fields_offset = fields_offset;
+  }
 
 private:
   Object* body;
   uint32_t connection_id;
+  uint16_t fields_offset;
   float http_version;
+  Buffer& header;
 };
 }
 }

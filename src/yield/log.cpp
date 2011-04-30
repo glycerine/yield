@@ -45,8 +45,8 @@ public:
   { }
 
   // Log
-  void write(const char* str, size_t str_len) {
-    os.write(str, str_len);
+  void write(const char* message, size_t message_len) {
+    os.write(message, message_len);
   }
 
 private:
@@ -62,31 +62,31 @@ Log& Log::open(std::ostream& os, const Level& level) {
   return *new ostreamLog(os, level);
 }
 
-void Log::write(const char* str, const Level& level) {
-  write(str, strnlen(str, UINT16_MAX), level);
+void Log::write(const char* message, const Level& level) {
+  write(message, strnlen(message, UINT16_MAX), level);
 }
 
-void Log::write(const string& str, const Level& level) {
-  write(str.c_str(), str.size(), level);
+void Log::write(const string& message, const Level& level) {
+  write(message.c_str(), message.size(), level);
 }
 
 void Log::write(const Buffer& buffer, const Level& level) {
   write(buffer, buffer.size(), level);
 }
 
-void Log::write(const void* str, size_t str_len, const Level& level) {
+void Log::write(const void* message, size_t message_len, const Level& level) {
   if (level <= this->level)
-    write(str, str_len);
+    write(message, message_len);
 }
 
-void Log::write(const void* str, size_t str_len) {
+void Log::write(const void* message, size_t message_len) {
   bool str_is_printable = true;
-  for (size_t str_i = 0; str_i < str_len; str_i++) {
+  for (size_t message_i = 0; message_i < message_len; message_i++) {
     if (
-      static_cast<const uint8_t*>(str)[str_i] == '\r' ||
-      static_cast<const uint8_t*>(str)[str_i] == '\n' ||
-      (static_cast<const uint8_t*>(str)[str_i] >= 32 &&
-        static_cast<const uint8_t*>(str)[str_i] <= 126)
+      static_cast<const uint8_t*>(message)[message_i] == '\r' ||
+      static_cast<const uint8_t*>(message)[message_i] == '\n' ||
+      (static_cast<const uint8_t*>(message)[message_i] >= 32 &&
+        static_cast<const uint8_t*>(message)[message_i] <= 126)
     )
       continue;
     else {
@@ -96,19 +96,19 @@ void Log::write(const void* str, size_t str_len) {
   }
 
   if (str_is_printable)
-    write(reinterpret_cast<const char*>(str), str_len);
+    write(reinterpret_cast<const char*>(message), message_len);
   else {
-    char* printable_str = new char[str_len * 3];
+    char* printable_str = new char[message_len * 3];
     size_t printable_str_len = 0;
 
-    for (size_t str_i = 0; str_i < str_len; str_i++) {
-      char hex_digit = (static_cast<const uint8_t*>(str)[str_i] >> 4) & 0x0F;
+    for (size_t message_i = 0; message_i < message_len; message_i++) {
+      char hex_digit = (static_cast<const uint8_t*>(message)[message_i] >> 4) & 0x0F;
       if (hex_digit >= 0 && hex_digit <= 9)
         printable_str[printable_str_len++] = '0' + hex_digit;
       else
         printable_str[printable_str_len++] = 'A' + hex_digit - 10;
 
-      hex_digit = static_cast<const uint8_t*>(str)[str_i] & 0x0F;
+      hex_digit = static_cast<const uint8_t*>(message)[message_i] & 0x0F;
       if (hex_digit >= 0 && hex_digit <= 9)
         printable_str[printable_str_len++] = '0' + hex_digit;
       else

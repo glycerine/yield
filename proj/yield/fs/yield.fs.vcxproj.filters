@@ -28,7 +28,7 @@
       <UniqueIdentifier>{47c7f151-9d0f-4d67-9fe0-14bdc5dbeaf3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\posix">
-      <UniqueIdentifier>{cbefc4f5-df46-4eb6-9d36-23e97e146a74}</UniqueIdentifier>
+      <UniqueIdentifier>{b77c9b22-96a1-45fc-946c-c03cbefe85ca}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\win32">
       <UniqueIdentifier>{be0d996a-da37-4d29-9a29-269d38b9f23c}</UniqueIdentifier>

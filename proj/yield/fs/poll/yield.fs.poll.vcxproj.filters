@@ -25,6 +25,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\fs_event.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\fs_event_queue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -34,12 +34,14 @@
 #include "yield/poll/fd_event_queue.hpp"
 
 namespace yield {
+class Log;
+
 namespace fs {
 namespace poll {
 namespace linux {
 class FSEventQueue : public EventQueue {
 public:
-  FSEventQueue();
+  FSEventQueue(YO_NEW_REF Log* log = NULL);
   ~FSEventQueue();
 
 public:

@@ -98,6 +98,8 @@
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\fs_event.cpp">
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\fs_event_queue.cpp">
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\linux\fs_event_queue.cpp">

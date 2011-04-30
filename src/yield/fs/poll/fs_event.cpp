@@ -1,4 +1,4 @@
-// yield/http/server/http_request_queue.hpp
+// yield/fs/poll/fs_event.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,58 +27,52 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_HTTP_SERVER_HTTP_REQUEST_QUEUE_HPP_
-#define _YIELD_HTTP_SERVER_HTTP_REQUEST_QUEUE_HPP_
-
-#include "yield/sockets/socket_address.hpp"
-#include "yield/sockets/aio/aio_queue.hpp"
+#include "yield/fs/poll/fs_event.hpp"
 
 namespace yield {
-class Log;
-
-namespace sockets {
-namespace aio {
-class acceptAIOCB;
-}
-class SocketAddress;
-class TCPSocket;
-}
-
-namespace http {
-namespace server {
-class HTTPRequestQueue : public EventQueue {
-public:
-  HTTPRequestQueue(
-    const yield::sockets::SocketAddress& sockname,
-    YO_NEW_REF Log* log = NULL
-  );
-
-  ~HTTPRequestQueue();
-
-public:
-  // yield::EventQueue
-  YO_NEW_REF Event& dequeue() {
-    return EventQueue::dequeue();
+namespace fs {
+namespace poll {
+std::ostream& operator<<(std::ostream& os, const FSEvent& fs_event) {
+  std::string type;
+  switch (fs_event.get_type()) {
+  case FSEvent::TYPE_DIRECTORY_ADD: type = "DIRECTORY_ADD"; break;
+  case FSEvent::TYPE_DIRECTORY_MODIFY: type = "DIRECTORY_MODIFY"; break;
+  case FSEvent::TYPE_DIRECTORY_REMOVE: type = "DIRECTORY_REMOVE"; break;
+  case FSEvent::TYPE_DIRECTORY_RENAME: type = "DIRECTORY_RENAME"; break;
+  case FSEvent::TYPE_FILE_ADD: type = "FILE_ADD"; break;
+  case FSEvent::TYPE_FILE_MODIFY: type = "FILE_MODIFY"; break;
+  case FSEvent::TYPE_FILE_REMOVE: type = "FILE_REMOVE"; break;
+  case FSEvent::TYPE_FILE_RENAME: type = "FILE_RENAME"; break;
   }
 
-  YO_NEW_REF Event* dequeue(const Time& timeout);
-  bool enqueue(YO_NEW_REF Event&);
+  switch (fs_event.get_type()) {
+  case FSEvent::TYPE_DIRECTORY_RENAME:
+  case FSEvent::TYPE_FILE_RENAME: {
+    os <<
+      fs_event.get_type_name() <<
+      "("
+        "type=" << type <<
+        ", " <<
+        "old_path=" << fs_event.get_old_path() <<
+        ", "
+        "new_path=" << fs_event.get_new_path() <<
+      ")";
+  }
+  break;
 
-private:
-  class Connection;
+  default: {
+    os <<
+      fs_event.get_type_name() <<
+      "("
+        "type=" << type <<
+        ", " <<
+        "path=" << fs_event.get_path() <<
+      ")";
+  }
+  }
 
-private:
-  void handle(YO_NEW_REF yield::sockets::aio::acceptAIOCB& accept_aiocb);
-  template <class AIOCBType> void handle(YO_NEW_REF AIOCBType& aiocb);
-
-private:
-  yield::sockets::aio::AIOQueue& aio_queue;
-  vector<Connection*> connections;
-  Log* log;
-  yield::sockets::TCPSocket& socket_;
-};
+  return os;
 }
 }
 }
-
-#endif
+}

@@ -48,7 +48,7 @@ class FSEventQueue;
 
 class FSEventQueue : public EventQueue {
 public:
-  FSEventQueue();
+  FSEventQueue(YO_NEW_REF Log* log = NULL);
   ~FSEventQueue();
 
 public:

@@ -54,11 +54,13 @@ public:
   Watch(
     FSEvent::Type fs_event_types,
     int inotify_fd,
-    const Path& path
+    const Path& path,
+    Log* log = NULL
   );
 
   ~Watch() {
     inotify_rm_watch(inotify_fd, wd);
+    Log::dec_ref(log);
   }
 
 public:
@@ -75,15 +77,12 @@ public:
   }
 
 public:
-  void
-  read(
-    const inotify_event& inotify_event_,
-    EventHandler& fs_event_handler
-  );
+  void read(const inotify_event&, EventHandler& fs_event_handler);
 
 private:
   FSEvent::Type fs_event_types;
   int inotify_fd;
+  Log* log;
   map<uint32_t, Path> old_names;
   Path path;
   int wd;
@@ -138,8 +137,10 @@ public:
 FSEventQueue::Watch::Watch(
   FSEvent::Type fs_event_types,
   int inotify_fd,
-  const Path& path
+  const Path& path,
+  Log* log
 ) : fs_event_types(fs_event_types),
+    log(Object::inc_ref(log)),
     path(path) {
   uint32_t mask = 0;
 
@@ -187,8 +188,15 @@ FSEventQueue::Watch::Watch(
 
   wd = inotify_add_watch(inotify_fd, path.c_str(), mask);
   if (wd == -1) {
-    std::cerr << "FSEventQueue: error adding watch for " << path << std::endl;
-    throw Exception();
+    Exception exception;
+
+    if (log != NULL) {
+      log->get_stream(Log::Level::ERR) <<
+        get_type_name() << "(path=" << path << ")" <<
+          ": error adding watch for " << path << ": " << exception;
+    }
+
+    throw exception;
   }
 }
 
@@ -208,7 +216,20 @@ FSEventQueue::Watch::read(
     path = this->path / name;
   }
 
-  for (;;) { // Mask can have multiple bits set.
+  if (log != NULL) {
+    log->get_stream(Log::Level::DEBUG) <<
+      get_type_name() << "(path=" << get_path() << ", wd=" << get_wd() << ")"
+      << ": read inotify_event(" <<
+        "cookie=" << inotify_event.cookie <<
+        ", "
+        "mask=" << inotify_event_.mask <<
+        ", "
+        "name=" << name
+      ")";
+  }
+
+  for (;;) {
+    // Mask can have multiple bits set.
     // Keep looping until we find one that matches fs_event_types.
     FSEvent::Type fs_event_type;
 
@@ -251,18 +272,40 @@ FSEventQueue::Watch::read(
         FSEvent* fs_event
           = new FSEvent(this->path / old_name_i->second, path, fs_event_type);
         old_names.erase(old_name_i);
+
+        if (log != NULL) {
+          log->get_stream(Log::Level::DEBUG) <<
+            get_type_name() <<
+              "(path=" << get_path() << ", wd=" << get_wd() << ")" <<
+              ": read " << *fs_event;
+        }
+
         fs_event_handler.handle(*fs_event);
-      } else {
+      } else
         old_names.erase(old_name_i);
-        continue;
-      }
+
+      continue;
     } else if ((mask & IN_MOVE_SELF) == IN_MOVE_SELF)
       DebugBreak();
     else
       return;
 
-    if (fs_event_type != 0 && (fs_event_types & fs_event_type) == fs_event_type)
-      fs_event_handler.handle(*new FSEvent(path, fs_event_type));
+    if (
+      fs_event_type != 0
+      &&
+      (fs_event_types & fs_event_type) == fs_event_type
+    ) {
+      FSEvent* fs_event = new FSEvent(path, fs_event_type);
+
+      if (log != NULL) {
+        log->get_stream(Log::Level::DEBUG) <<
+          get_type_name() <<
+            "(path=" << get_path() << ", wd=" << get_wd() << ")" <<
+            ": read " << *fs_event;
+      }
+
+      fs_event_handler.handle(*fs_event);
+    }
   }
 }
 
@@ -301,7 +344,7 @@ FSEventQueue::associate(
   }
 
   try {
-    watch = new Watch(fs_event_types, inotify_fd, path);
+    watch = new Watch(fs_event_types, inotify_fd, path, log);
     watches->insert(*watch);
     return true;
   } catch (Exception&) {
@@ -315,25 +358,25 @@ YO_NEW_REF Event* FSEventQueue::dequeue(const Time& timeout) {
     if (event->get_type_id() == FDEvent::TYPE_ID) {
       FDEvent* fd_event = static_cast<FDEvent*>(event);
       if (fd_event->get_fd() == inotify_fd) {
-        char inotify_fs_event_types[(sizeof(inotify_event) + PATH_MAX) * 16];
+        char inotify_events[(sizeof(inotify_event) + PATH_MAX) * 16];
         ssize_t read_ret
-          = ::read(inotify_fd, inotify_fs_event_types, sizeof(inotify_fs_event_types));
+          = ::read(inotify_fd, inotify_events, sizeof(inotify_events));
 
         if (read_ret > 0) {
-          const char* inotify_fs_event_types_p = inotify_fs_event_types;
-          const char* inotify_fs_event_types_pe
-            = inotify_fs_event_types + static_cast<size_t>(read_ret);
+          const char* inotify_events_p = inotify_events;
+          const char* inotify_events_pe
+            = inotify_events + static_cast<size_t>(read_ret);
 
           do {
             const inotify_event* inotify_event_
-              = reinterpret_cast<const inotify_event*>(inotify_fs_event_types_p);
+              = reinterpret_cast<const inotify_event*>(inotify_events_p);
 
             Watch* watch = watches->find(inotify_event_->wd);
             if (watch != NULL)
               watch->read(*inotify_event_, *this);
 
-            inotify_fs_event_types_p += sizeof(inotify_event) + inotify_event_->len;
-          } while (inotify_fs_event_types_p < inotify_fs_event_types_pe);
+            inotify_events_p += sizeof(inotify_event) + inotify_event_->len;
+          } while (inotify_events_p < inotify_events_pe);
 
           return fd_event_queue.trydequeue();
         }

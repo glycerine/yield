@@ -1,4 +1,4 @@
-// http_server_test.cpp
+// http_request_queue_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -42,8 +42,8 @@ namespace http {
 namespace server {
 class TestHTTPRequestQueue : public HTTPRequestQueue {
 public:
-  TestHTTPRequestQueue(YO_NEW_REF Log* trace_log = NULL)
-    : HTTPRequestQueue(8000, NULL, trace_log) {
+  TestHTTPRequestQueue(YO_NEW_REF Log* log = NULL)
+    : HTTPRequestQueue(8000, log) {
   }
 };
 
@@ -58,16 +58,15 @@ protected:
     else if (http_request.get_uri().get_path() == "/sendfile") {
       yield::fs::File* file
 #ifdef _WIN32
-        = yield::fs::FileSystem().open("yield.http.server.Makefile");
+      = yield::fs::FileSystem().open("yield.http.server.Makefile");
 #else
-        = yield::fs::FileSystem().open("Makefile");
+      = yield::fs::FileSystem().open("Makefile");
 #endif
       if (file != NULL)
         http_request.respond(200, *file);
       else
         http_request.respond(404);
-    }
-    else
+    } else
       http_request.respond(404);
 
     //HTTPRequest::dec_ref(http_request);
@@ -81,14 +80,14 @@ public:
   void run() {
     TestHTTPRequestQueue http_request_queue(&Log::open(std::cout));
     auto_Object<HTTPRequest> http_request
-      = object_cast<HTTPRequest>(http_request_queue.dequeue());
+    = object_cast<HTTPRequest>(http_request_queue.dequeue());
     handle(*http_request);
   }
 };
 
 
 class HTTPRequestQueueTestSuite
-  : public EventQueueTestSuite<TestHTTPRequestQueue> {
+    : public EventQueueTestSuite<TestHTTPRequestQueue> {
 public:
   HTTPRequestQueueTestSuite() {
     add(

@@ -48,14 +48,11 @@ static LPFN_CONNECTEX lpfnConnectEx = NULL;
 static LPFN_GETACCEPTEXSOCKADDRS lpfnGetAcceptExSockaddrs = NULL;
 static LPFN_TRANSMITFILE lpfnTransmitFile = NULL;
 
-AIOQueue::AIOQueue(YO_NEW_REF Log *error_log, YO_NEW_REF Log* trace_log)
-  : error_log(error_log),
-    trace_log(trace_log) {
+AIOQueue::AIOQueue(YO_NEW_REF Log* log) : log(log) {
 }
 
 AIOQueue::~AIOQueue() {
-  Log::dec_ref(error_log);
-  Log::dec_ref(trace_log);
+  Log::dec_ref(log);
 }
 
 YO_NEW_REF Event& AIOQueue::dequeue() {
@@ -512,23 +509,25 @@ bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
 
 template <class AIOCBType> void AIOQueue::log_completion(AIOCBType& aiocb) {
   if (aiocb.get_return() >= 0) {
-    if (trace_log != NULL)
-      trace_log->get_stream() << get_type_name() << ": completed " << aiocb;
+    if (log != NULL)
+      log->get_stream(Log::Level::DEBUG) <<
+        get_type_name() << ": completed " << aiocb;
   } else
     log_error(aiocb);
 }
 
 template <class AIOCBType> void AIOQueue::log_enqueue(AIOCBType& aiocb) {
-  if (trace_log != NULL)
-    trace_log->get_stream() << get_type_name() << ": enqueuing " << aiocb;
+  if (log != NULL) {
+    log->get_stream(Log::Level::DEBUG) <<
+      get_type_name() << ": enqueuing " << aiocb;
+  }
 }
 
 template <class AIOCBType> void AIOQueue::log_error(AIOCBType& aiocb) {
-  if (error_log != NULL)
-    error_log->get_stream() << get_type_name() << ": error on " << aiocb;
-
-  if (trace_log != NULL)
-    trace_log->get_stream() << get_type_name() << ": error on " << aiocb;
+  if (log != NULL) {
+    log->get_stream(Log::Level::ERR) <<
+        get_type_name() << ": error on " << aiocb;
+  }
 }
 }
 }

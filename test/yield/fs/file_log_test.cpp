@@ -1,4 +1,4 @@
-// yield/aio/posix/aio_queue.hpp
+// file_log_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,17 +27,47 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_AIO_POSIX_AIO_QUEUE_HPP_
-#define _YIELD_AIO_POSIX_AIO_QUEUE_HPP_
+#include "yield/assert.hpp"
+#include "yield/fs/file_log.hpp"
+#include "yield/fs/file_system.hpp"
+#include "yunit.hpp"
 
-#include "yield/event_queue.hpp"
+TEST_SUITE(FileLog);
 
 namespace yield {
-namespace aio {
-namespace posix {
-typedef EventQueue AIOQueue;
-}
-}
+namespace fs {
+class FileLogTest : public yunit::Test {
+public:
+  void setup() {
+    teardown();
+  }
+
+  void teardown() {
+    FileSystem().unlink(get_test_file_path());
+  }
+
+protected:
+  FileLogTest() : test_file_path("FileLogTest.txt") {
+  }
+
+protected:
+  const Path& get_test_file_path() const {
+    return test_file_path;
+  }
+
+private:
+  Path test_file_path;
+};
+
+TEST_EX(FileLog, constructor, FileLogTest) {
+  FileLog file_log(get_test_file_path());
 }
 
-#endif
+TEST_EX(FileLog, write, FileLogTest) {
+  throw_assert_false(FileSystem().exists(get_test_file_path()));
+  FileLog file_log(get_test_file_path());
+  file_log.write("test", Log::Level::DEBUG);
+  throw_assert(FileSystem().exists(get_test_file_path()));
+}
+}
+}

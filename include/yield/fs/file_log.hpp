@@ -41,10 +41,27 @@ namespace yield {
 namespace fs {
 class FileLog : public yield::Log {
 public:
-  FileLog(const Path& file_path, const Level& level);
+  FileLog(const Path& file_path, const Level& level = Level::DEBUG);
   ~FileLog();
 
 public:
+  void write(const char* message, const Level& level) {
+    Log::write(message, level);
+  }
+
+  void write(const string& message, const Level& level) {
+    Log::write(message, level);
+  }
+
+  void write(const Buffer& message, const Level& level) {
+    Log::write(message, level);
+  }
+
+  void write(const void* message, size_t message_len, const Level& level) {
+    Log::write(message, message_len, level);
+  }
+
+private:
   // yield::Log
   void write(const char* str, size_t str_len);
 

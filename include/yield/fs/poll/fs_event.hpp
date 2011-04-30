@@ -116,6 +116,8 @@ private:
   Path new_path, old_path;
   Type type;
 };
+
+std::ostream& operator<<(std::ostream&, const FSEvent&);
 }
 }
 }

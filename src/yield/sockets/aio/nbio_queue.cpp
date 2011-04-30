@@ -47,14 +47,11 @@ namespace aio {
 using std::map;
 using yield::sockets::poll::SocketEvent;
 
-NBIOQueue::NBIOQueue(YO_NEW_REF Log* error_log, YO_NEW_REF Log* trace_log)
-  : error_log(error_log),
-    trace_log(trace_log) {
+NBIOQueue::NBIOQueue(YO_NEW_REF Log* log) : log(log) {
 }
 
 NBIOQueue::~NBIOQueue() {
-  Log::dec_ref(error_log);
-  Log::dec_ref(trace_log);
+  Log::dec_ref(log);
 }
 
 Event* NBIOQueue::dequeue(const Time& timeout) {
@@ -63,7 +60,7 @@ Event* NBIOQueue::dequeue(const Time& timeout) {
   for (;;) {
     Time start_time = Time::now();
 
-    Event* event = socket_event_queue.dequeue(timeout);
+    Event* event = socket_event_queue.dequeue(timeout_remaining);
 
     if (event != NULL) {
       switch (event->get_type_id()) {
@@ -215,26 +212,29 @@ uint8_t NBIOQueue::get_aiocb_priority(const AIOCB& aiocb) {
 }
 
 template <class AIOCBType> void NBIOQueue::log_completion(AIOCBType& aiocb) {
-  if (trace_log != NULL)
-    trace_log->get_stream() << "NBIOQueue: completed " << aiocb;
+  if (log != NULL) {
+    log->get_stream(Log::Level::DEBUG) <<
+      get_type_name() << ": completed " << aiocb;
+  }
 }
 
 template <class AIOCBType> void NBIOQueue::log_error(AIOCBType& aiocb) {
-  if (error_log != NULL)
-    error_log->get_stream() << get_type_name() << ": error on " << aiocb;
-
-  if (trace_log != NULL)
-    trace_log->get_stream() << get_type_name() << ": error on " << aiocb;
+  if (log != NULL) {
+    log->get_stream(Log::Level::DEBUG) <<
+      get_type_name() << ": error on " << aiocb;
+  }
 }
 
 template <class AIOCBType> void NBIOQueue::log_retry(AIOCBType& aiocb) {
-  if (trace_log != NULL)
-    trace_log->get_stream() << get_type_name() << ": retrying " << aiocb;
+  if (log != NULL) {
+    log->get_stream(Log::Level::DEBUG) <<
+      get_type_name() << ": retrying " << aiocb;
+  }
 }
 
 template <class AIOCBType>
 void NBIOQueue::log_wouldblock(AIOCBType& aiocb, RetryStatus retry_status) {
-  if (trace_log != NULL) {
+  if (log != NULL) {
     const char* retry_status_str;
     switch (retry_status) {
       case RETRY_STATUS_WANT_READ: retry_status_str = "read"; break;
@@ -242,7 +242,7 @@ void NBIOQueue::log_wouldblock(AIOCBType& aiocb, RetryStatus retry_status) {
       default: DebugBreak(); retry_status_str = ""; break;
     }
 
-    trace_log->get_stream() << 
+    log->get_stream(Log::Level::DEBUG) << 
       get_type_name() << ": " <<
         aiocb << " would block on " << retry_status_str;
   }

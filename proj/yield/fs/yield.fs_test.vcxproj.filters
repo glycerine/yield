@@ -21,6 +21,9 @@
     <ClCompile Include="..\..\..\test\yield\fs\directory_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\test\yield\fs\file_log_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClInclude Include="..\..\..\test\yield\fs\file_system_test.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>

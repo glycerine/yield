@@ -53,7 +53,7 @@ LIBS += -lyield_aio -lyield_poll -lyield_thread -lyield_fs -lyield_i18n -lyield
 D_FILE_PATHS := $(shell find ../../../../build/yield/fs/poll -name "*.d")
 
 
-O_FILE_PATHS += ../../../../build/yield/fs/poll/fs_event_queue.o
+O_FILE_PATHS += ../../../../build/yield/fs/poll/fs_event.o ../../../../build/yield/fs/poll/fs_event_queue.o
 ifeq ($(UNAME), Linux)
 	O_FILE_PATHS += ../../../../build/yield/fs/poll/linux/fs_event_queue.o
 endif
@@ -88,6 +88,10 @@ depclean:
 ../../../../lib/yield/libyield_fs_poll.a: $(O_FILE_PATHS) ../../../../lib/yield/libyield_aio.a ../../../../lib/yield/libyield_poll.a ../../../../lib/yield/libyield_fs.a
 	-mkdir -p ../../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(O_FILE_PATHS)
+
+../../../../build/yield/fs/poll/fs_event.o: ../../../../src/yield/fs/poll/fs_event.cpp
+	-mkdir -p ../../../../build/yield/fs/poll 2>/dev/null
+	$(CXX) -c -o ../../../../build/yield/fs/poll/fs_event.o -MD $(CXXFLAGS) ../../../../src/yield/fs/poll/fs_event.cpp
 
 ../../../../build/yield/fs/poll/fs_event_queue.o: ../../../../src/yield/fs/poll/fs_event_queue.cpp
 	-mkdir -p ../../../../build/yield/fs/poll 2>/dev/null

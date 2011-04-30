@@ -36,11 +36,14 @@
 #include <map>
 
 namespace yield {
+class Log;
+
 namespace fs {
 namespace poll {
 namespace win32 {
 class FSEventQueue : public EventQueue {
 public:
+  FSEventQueue(YO_NEW_REF Log* log = NULL);
   ~FSEventQueue();
 
 public:
@@ -61,6 +64,7 @@ private:
 
 private:
   yield::aio::win32::AIOQueue aio_queue;
+  Log* log;
   std::map<Path, Watch*> watches;
 };
 }

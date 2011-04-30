@@ -37,11 +37,11 @@
 namespace yield {
 namespace fs {
 namespace poll {
-FSEventQueue::FSEventQueue() {
+FSEventQueue::FSEventQueue(YO_NEW_REF Log* log) {
 #if defined(__linux__)
-  pimpl = new linux::FSEventQueue;
+  pimpl = new linux::FSEventQueue(log);
 #elif defined(_WIN32)
-  pimpl = new win32::FSEventQueue;
+  pimpl = new win32::FSEventQueue(log);
 #endif
 }
 

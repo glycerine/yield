@@ -243,9 +243,9 @@ HTTPResponse::HTTPResponse(
     break;
   }
 
-  header.put(status_line, status_line_len);
+  get_header().put(status_line, status_line_len);
 
-  fields_offset = static_cast<uint16_t>(header.size());
+  set_fields_offset(static_cast<uint16_t>(get_header().size()));
 
   set_field("Date", DateTime::now());
 }

@@ -53,7 +53,7 @@ LIBS += -lyield_fs -lyield_i18n -lyield
 D_FILE_PATHS := $(shell find ../../../build/yield/fs -name "*.d")
 
 
-O_FILE_PATHS += ../../../build/yield/fs/directory_test.o ../../../build/yield/fs/named_pipe_test.o ../../../build/yield/fs/path_test.o ../../../build/yield/fs/yield_fs_test_main.o
+O_FILE_PATHS += ../../../build/yield/fs/directory_test.o ../../../build/yield/fs/file_log_test.o ../../../build/yield/fs/named_pipe_test.o ../../../build/yield/fs/path_test.o ../../../build/yield/fs/yield_fs_test_main.o
 ifeq ($(UNAME), Darwin)
 	O_FILE_PATHS += ../../../build/yield/fs/posix/file_system_test.o ../../../build/yield/fs/posix/file_test.o ../../../build/yield/fs/posix/stat_test.o
 endif
@@ -103,6 +103,10 @@ lcov: ../../../bin/yield/yield_fs_test
 ../../../build/yield/fs/directory_test.o: ../../../test/yield/fs/directory_test.cpp
 	-mkdir -p ../../../build/yield/fs 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/fs/directory_test.o -MD $(CXXFLAGS) ../../../test/yield/fs/directory_test.cpp
+
+../../../build/yield/fs/file_log_test.o: ../../../test/yield/fs/file_log_test.cpp
+	-mkdir -p ../../../build/yield/fs 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/fs/file_log_test.o -MD $(CXXFLAGS) ../../../test/yield/fs/file_log_test.cpp
 
 ../../../build/yield/fs/named_pipe_test.o: ../../../test/yield/fs/named_pipe_test.cpp
 	-mkdir -p ../../../build/yield/fs 2>/dev/null

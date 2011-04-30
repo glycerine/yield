@@ -131,22 +131,22 @@ HTTPRequest::HTTPRequest(
     creation_date_time(DateTime::now()),
     method(method),
     uri(uri) {
-  header.put(method.get_name(), method.get_name_len());
+  get_header().put(method.get_name(), method.get_name_len());
 
-  header.put(' ');
+  get_header().put(' ');
 
   iovec uri_path;
   uri.get_path(uri_path);
-  header.put(uri_path);
+  get_header().put(uri_path);
 
   if (http_version == 1.1f)
-    header.put(" HTTP/1.1\r\n", 11);
+    get_header().put(" HTTP/1.1\r\n", 11);
   else if (http_version == 1.0f)
-    header.put(" HTTP/1.0\r\n", 11);
+    get_header().put(" HTTP/1.0\r\n", 11);
   else
     DebugBreak();
 
-  fields_offset = static_cast<uint16_t>(header.size());
+  set_fields_offset(static_cast<uint16_t>(get_header().size()));
 
   if (uri.has_host()) {
     iovec uri_host;

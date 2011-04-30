@@ -29,9 +29,6 @@
     <ClInclude Include="..\..\..\include\yield\aio\aiocb.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\aio\posix\aio_queue.hpp">
-      <Filter>Header Files\posix</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\yield\aio\posix\aiocb.hpp">
       <Filter>Header Files\posix</Filter>
     </ClInclude>

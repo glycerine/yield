@@ -31,6 +31,7 @@
 #include "yield/assert.hpp"
 #include "yield/date_time.hpp"
 #include "yield/exception.hpp"
+#include "yield/log.hpp"
 #include "yield/fs/file_system.hpp"
 #include "yield/fs/poll/fs_event_queue.hpp"
 #include "yunit.hpp"
@@ -84,7 +85,7 @@ TEST_EX(FSEventQueue, associate, FSEventQueueTest) {
 }
 
 TEST_EX(FSEventQueue, associate_twice, FSEventQueueTest) {
-  FSEventQueue fs_event_queue;
+  FSEventQueue fs_event_queue(&Log::open(std::cout));
 
   if (!fs_event_queue.associate(get_test_root_path()))
     throw Exception();
@@ -97,7 +98,7 @@ TEST_EX(FSEventQueue, associate_twice, FSEventQueueTest) {
 }
 
 TEST_EX(FSEventQueue, directory_add, FSEventQueueTest) {
-  FSEventQueue fs_event_queue;
+  FSEventQueue fs_event_queue(&Log::open(std::cout));
   if (!fs_event_queue.associate(get_test_root_path()))
     throw Exception();
 
@@ -114,7 +115,7 @@ TEST_EX(FSEventQueue, directory_add, FSEventQueueTest) {
 //  if (!FileSystem().mkdir(get_test_directory_path()))
 //    throw Exception();
 //
-//  FSEventQueue fs_event_queue;
+//  FSEventQueue fs_event_queue(&Log::open(std::cout));
 //  if (!fs_event_queue.associate(get_test_root_path()))
 //    throw Exception();
 //
@@ -132,7 +133,7 @@ TEST_EX(FSEventQueue, directory_remove, FSEventQueueTest) {
   if (!FileSystem().mkdir(get_test_directory_path()))
     throw Exception();
 
-  FSEventQueue fs_event_queue;
+  FSEventQueue fs_event_queue(&Log::open(std::cout));
   if (!fs_event_queue.associate(get_test_root_path()))
     throw Exception();
 
@@ -153,7 +154,7 @@ TEST_EX(FSEventQueue, directory_remove, FSEventQueueTest) {
 //  if (!FileSystem().mkdir(test_subdirectory_path))
 //    throw Exception();
 //
-//  FSEventQueue fs_event_queue;
+//  FSEventQueue fs_event_queue(&Log::open(std::cout));
 //  if (!fs_event_queue.associate(get_test_root_path()))
 //    throw Exception();
 //
@@ -175,7 +176,7 @@ TEST_EX(FSEventQueue, directory_rename, FSEventQueueTest) {
     if (!FileSystem().rmdir(new_test_directory_path))
       throw Exception();
 
-  FSEventQueue fs_event_queue;
+  FSEventQueue fs_event_queue(&Log::open(std::cout));
   if (!fs_event_queue.associate(get_test_root_path()))
     throw Exception();
 
@@ -192,7 +193,7 @@ TEST_EX(FSEventQueue, directory_rename, FSEventQueueTest) {
 }
 
 TEST_EX(FSEventQueue, dissociate, FSEventQueueTest) {
-  FSEventQueue fs_event_queue;
+  FSEventQueue fs_event_queue(&Log::open(std::cout));
   fs_event_queue.associate(get_test_root_path());
 
   if (!FileSystem().touch(get_test_file_path()))
@@ -206,7 +207,7 @@ TEST_EX(FSEventQueue, dissociate, FSEventQueueTest) {
 }
 
 TEST_EX(FSEventQueue, file_add, FSEventQueueTest) {
-  FSEventQueue fs_event_queue;
+  FSEventQueue fs_event_queue(&Log::open(std::cout));
   if (!fs_event_queue.associate(get_test_root_path()))
     throw Exception();
 
@@ -223,7 +224,7 @@ TEST_EX(FSEventQueue, file_add, FSEventQueueTest) {
 //  if (!FileSystem().mkdir(get_test_directory_path()))
 //    throw Exception();
 //
-//  FSEventQueue fs_event_queue;
+//  FSEventQueue fs_event_queue(&Log::open(std::cout));
 //  if (!fs_event_queue.associate(get_test_root_path()))
 //    throw Exception();
 //
@@ -241,7 +242,7 @@ TEST_EX(FSEventQueue, file_modify, FSEventQueueTest) {
   if (!FileSystem().touch(get_test_file_path()))
     throw Exception();
 
-  FSEventQueue fs_event_queue;
+  FSEventQueue fs_event_queue(&Log::open(std::cout));
   if (!fs_event_queue.associate(get_test_root_path()))
     throw Exception();
 
@@ -259,7 +260,7 @@ TEST_EX(FSEventQueue, file_remove, FSEventQueueTest) {
   if (!FileSystem().touch(get_test_file_path()))
     throw Exception();
 
-  FSEventQueue fs_event_queue;
+  FSEventQueue fs_event_queue(&Log::open(std::cout));
   if (!fs_event_queue.associate(get_test_root_path()))
     throw Exception();
 
@@ -280,7 +281,7 @@ TEST_EX(FSEventQueue, file_remove, FSEventQueueTest) {
 //  if (!FileSystem().touch(test_file_path))
 //    throw Exception();
 //
-//  FSEventQueue fs_event_queue;
+//  FSEventQueue fs_event_queue(&Log::open(std::cout));
 //  if (!fs_event_queue.associate(get_test_root_path()))
 //    throw Exception();
 //
@@ -302,7 +303,7 @@ TEST_EX(FSEventQueue, file_rename, FSEventQueueTest) {
     if (!FileSystem().unlink(new_test_file_path))
       throw Exception();
 
-  FSEventQueue fs_event_queue;
+  FSEventQueue fs_event_queue(&Log::open(std::cout));
   if (!fs_event_queue.associate(get_test_root_path()))
     throw Exception();
 

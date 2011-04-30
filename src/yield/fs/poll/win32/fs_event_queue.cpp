@@ -29,6 +29,7 @@
 
 #include "fs_event_queue.hpp"
 #include "yield/assert.hpp"
+#include "yield/log.hpp"
 #include "yield/aio/win32/aiocb.hpp"
 #include "yield/fs/win32/directory.hpp"
 #include "yield/fs/win32/file_system.hpp"
@@ -56,9 +57,11 @@ public:
   Watch(
     YO_NEW_REF Directory& directory,
     FSEvent::Type fs_event_types,
-    const Path& path
-  ) : directory(&directory),
+    const Path& path,
+    Log* log = NULL
+  ) : directory(&directory),      
       fs_event_types(fs_event_types),
+      log(Object::inc_ref(log)),
       path(path) {
     dwNotifyFilter = 0;
 
@@ -106,6 +109,8 @@ public:
 
   ~Watch() {
     close();
+
+    Log::dec_ref(log);
   }
 
 public:
@@ -113,6 +118,7 @@ public:
     if (directory != NULL) {
       CancelIoEx(*directory, *this);
       directory->close();
+      Directory::dec_ref(*directory);
       directory = NULL;
     }
   }
@@ -147,6 +153,17 @@ public:
              );
         Path path = this->path / name;
 
+        if (log != NULL) {
+          log->get_stream(Log::Level::DEBUG) <<
+            get_type_name() <<
+            "(path=" << get_path() << "): " <<
+            "read FILE_NOTIFY_INFORMATION(" <<
+              "Action=" << file_notify_info->Action <<
+              ", "
+              "FileName=" << name <<
+            ")";
+        }
+
         if (file_notify_info->Action == FILE_ACTION_RENAMED_OLD_NAME) {
           for (
             vector<Path>::iterator subdirectory_name_i
@@ -173,8 +190,15 @@ public:
             } else
               type = FSEvent::TYPE_FILE_RENAME;
 
-            if ((fs_event_types & type) == type)
-              fs_event_handler.handle(*new FSEvent(old_paths.top(), path, type));
+            if ((fs_event_types & type) == type) {
+              FSEvent* fs_event = new FSEvent(old_paths.top(), path, type);
+              if (log != NULL) {
+                log->get_stream(Log::Level::DEBUG) <<
+                  get_type_name() <<
+                    "(path=" << get_path() << "): returning " << *fs_event;
+              }
+              fs_event_handler.handle(*fs_event);
+            }
 
             old_paths.pop();
           } else {
@@ -223,8 +247,15 @@ public:
             break;
             }
 
-            if ((fs_event_types & type) == type)
-              fs_event_handler.handle(*new FSEvent(path, type));
+            if ((fs_event_types & type) == type) {
+              FSEvent* fs_event = new FSEvent(path, type);
+              if (log != NULL) {
+                log->get_stream(Log::Level::DEBUG) <<
+                  get_type_name() <<
+                    "(path=" << get_path() << "): returning " << *fs_event;
+              }
+              fs_event_handler.handle(*fs_event);
+            }
           }
         }
 
@@ -270,9 +301,15 @@ public:
   }
 
 private:
+  Watch(const Watch&) {
+    DebugBreak();
+  }
+
+private:
   Directory* directory;
   DWORD dwNotifyFilter;
   FSEvent::Type fs_event_types;
+  Log* log;
   stack<Path> old_paths;
   Path path;
   vector<Path> subdirectory_names;
@@ -289,6 +326,9 @@ private:
 };
 
 
+FSEventQueue::FSEventQueue(YO_NEW_REF Log* log) : log(log) {
+}
+
 FSEventQueue::~FSEventQueue() {
   for (
     map<Path, Watch*>::iterator watch_i = watches.begin();
@@ -298,6 +338,8 @@ FSEventQueue::~FSEventQueue() {
     watch_i->second->close();
     delete watch_i->second;
   }
+
+  Log::dec_ref(log);
 }
 
 bool FSEventQueue::associate(const Path& path, FSEvent::Type fs_event_types) {
@@ -315,7 +357,7 @@ bool FSEventQueue::associate(const Path& path, FSEvent::Type fs_event_types) {
   Directory* directory = FileSystem().opendir(path);
   if (directory != NULL) {
     if (aio_queue.associate(*directory)) {
-      Watch* watch = new Watch(*directory, fs_event_types, path);
+      Watch* watch = new Watch(*directory, fs_event_types, path, log);
       if (watch->read(*this)) {
         watches[path] = watch;
         return true;

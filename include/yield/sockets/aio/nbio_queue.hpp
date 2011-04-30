@@ -50,11 +50,7 @@ class sendfileAIOCB;
 
 class NBIOQueue : public EventQueue {
 public:
-  NBIOQueue(
-    YO_NEW_REF Log* error_log = NULL,
-    YO_NEW_REF Log* trace_log = NULL
-  );
-
+  NBIOQueue(YO_NEW_REF Log* log = NULL);
   ~NBIOQueue();
 
 public:
@@ -131,10 +127,9 @@ private:
   RetryStatus retry(sendfileAIOCB& sendfile_aiocb);
 
 private:
-  Log* error_log;
+  Log* log;
   yield::sockets::poll::SocketEventQueue socket_event_queue;
   std::map<socket_t, SocketState*> state;
-  Log* trace_log;
 };
 }
 }

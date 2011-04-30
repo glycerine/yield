@@ -115,13 +115,11 @@ public:
     AIOQueue& aio_queue,
     SocketAddress& peername,
     TCPSocket& socket_,
-    Log* error_log = NULL,
-    Log* trace_log = NULL
+    Log* log = NULL
   ) : aio_queue(aio_queue.inc_ref()),
-      error_log(Object::inc_ref(error_log)),
+      log(Object::inc_ref(log)),
       peername(peername.inc_ref()),
-      socket_(static_cast<TCPSocket&>(socket_.inc_ref())),
-      trace_log(Object::inc_ref(trace_log))
+      socket_(static_cast<TCPSocket&>(socket_.inc_ref()))
   {
     state = STATE_CONNECTED;
   }
@@ -130,9 +128,8 @@ public:
     close();
 
     AIOQueue::dec_ref(aio_queue);
-    Log::dec_ref(error_log);
+    Log::dec_ref(log);
     StreamSocket::dec_ref(socket_);
-    Log::dec_ref(trace_log);
   }
 
 public:
@@ -302,8 +299,8 @@ private:
 
       case HTTPRequest::TYPE_ID: {
         HTTPRequest& http_request = static_cast<HTTPRequest&>(object);
-        if (trace_log != NULL)
-          trace_log->get_stream() << get_type_name() 
+        if (log != NULL)
+          log->get_stream(Log::Level::DEBUG) << get_type_name() 
             << ": parsed " << http_request;
         http_request.set_response_handler(*this);
         aio_queue.enqueue(http_request);
@@ -313,8 +310,8 @@ private:
       case HTTPResponse::TYPE_ID: {
         HTTPResponse& http_response = static_cast<HTTPResponse&>(object);
         debug_assert_eq(http_response.get_status_code(), 400);
-        if (trace_log != NULL)
-          trace_log->get_stream() << get_type_name() 
+        if (log != NULL)
+          log->get_stream(Log::Level::DEBUG) << get_type_name() 
             << ": parsed " << http_response;
         handle(http_response);
         return;
@@ -330,23 +327,19 @@ private:
 
 private:
   AIOQueue& aio_queue;
-  Log* error_log;
+  Log* log;
   SocketAddress& peername;
   TCPSocket& socket_;
   State state;
-  Log* trace_log;
 };
 
 
 HTTPRequestQueue::HTTPRequestQueue(
   const SocketAddress& sockname,
-  YO_NEW_REF Log* error_log,
-  YO_NEW_REF Log* trace_log
-) : aio_queue(*new AIOQueue(error_log, trace_log)),
-    error_log(Object::inc_ref(error_log)),
-    socket_(*new TCPSocket(sockname.get_family())),
-    trace_log(Object::inc_ref(trace_log)) {
-
+  YO_NEW_REF Log* log
+) : aio_queue(*new AIOQueue(log)),
+    log(Object::inc_ref(log)),
+    socket_(*new TCPSocket(sockname.get_family())) {
   if (aio_queue.associate(socket_)) {
     if (socket_.bind(sockname)) {
       if (socket_.listen()) {
@@ -375,9 +368,8 @@ HTTPRequestQueue::~HTTPRequestQueue() {
   socket_.close();
 
   AIOQueue::dec_ref(aio_queue);
-  Log::dec_ref(error_log);
+  Log::dec_ref(log);
   TCPSocket::dec_ref(socket_);
-  Log::dec_ref(trace_log);
 }
 
 YO_NEW_REF Event* HTTPRequestQueue::dequeue(const Time& timeout) {
@@ -386,7 +378,7 @@ YO_NEW_REF Event* HTTPRequestQueue::dequeue(const Time& timeout) {
   for (;;) {
     Time start_time = Time::now();
 
-    Event* event = aio_queue.dequeue(timeout);
+    Event* event = aio_queue.dequeue(timeout_remaining);
 
     if (event != NULL) {
       switch (event->get_type_id()) {
@@ -442,8 +434,7 @@ void HTTPRequestQueue::handle(YO_NEW_REF acceptAIOCB& accept_aiocb) {
                   aio_queue,
                   *accept_aiocb.get_peername(),
                   static_cast<TCPSocket&>(accepted_socket),
-                  error_log,
-                  trace_log
+                  log                  
                 );
 
       connection->handle(accept_aiocb);
