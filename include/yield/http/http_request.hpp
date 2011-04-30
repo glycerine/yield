@@ -130,7 +130,7 @@ public:
     const yield::uri::URI& uri,
     YO_NEW_REF Object* body = NULL,
     uint32_t connection_id = 0,
-    float http_version = 1.1f
+    uint8_t http_version = 1
   );
 
 public:
@@ -178,7 +178,7 @@ private:
     uint32_t connection_id,
     uint16_t fields_offset,
     Buffer& header,
-    float http_version,
+    uint8_t http_version,
     Method method,
     const yield::uri::URI& uri
   );

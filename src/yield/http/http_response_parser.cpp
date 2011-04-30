@@ -74,9 +74,8 @@ Object& HTTPResponseParser::parse() {
   if (p < eof) {
     ps = p;
 
-    float http_version = 1.1F;
-    uint16_t status_code = 200;
-
+    uint8_t http_version;
+    uint16_t status_code;
     if (parse_status_line(http_version, status_code)) {
       uint16_t fields_offset;
       size_t content_length;
@@ -131,8 +130,8 @@ Object& HTTPResponseParser::parse() {
 
 bool
 HTTPResponseParser::parse_status_line(
-  float& http_version,
-  uint16_t& status_code
+  OUT uint8_t& http_version,
+  OUT uint16_t& status_code
 ) {
   int cs;
 
@@ -140,60 +139,59 @@ HTTPResponseParser::parse_status_line(
   /* #line 2 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.cpp" */
   static const char _status_line_parser_actions[] = {
     0, 1, 0, 1, 1, 1, 2, 1,
-    3
+    3, 1, 4
   };
 
   static const char _status_line_parser_key_offsets[] = {
-    0, 0, 1, 2, 3, 4, 5, 7,
-    10, 12, 15, 18, 21, 26, 32, 33
+    0, 0, 1, 2, 3, 4, 5, 6,
+    7, 9, 10, 13, 16, 21, 27, 28
   };
 
   static const unsigned char _status_line_parser_trans_keys[] = {
-    72u, 84u, 84u, 80u, 47u, 48u, 57u, 46u,
-    48u, 57u, 48u, 57u, 32u, 48u, 57u, 32u,
-    48u, 57u, 32u, 48u, 57u, 32u, 65u, 90u,
-    97u, 122u, 13u, 32u, 65u, 90u, 97u, 122u,
-    10u, 0
+    72u, 84u, 84u, 80u, 47u, 49u, 46u, 48u,
+    49u, 32u, 32u, 48u, 57u, 32u, 48u, 57u,
+    32u, 65u, 90u, 97u, 122u, 13u, 32u, 65u,
+    90u, 97u, 122u, 10u, 0
   };
 
   static const char _status_line_parser_single_lengths[] = {
-    0, 1, 1, 1, 1, 1, 0, 1,
-    0, 1, 1, 1, 1, 2, 1, 0
+    0, 1, 1, 1, 1, 1, 1, 1,
+    2, 1, 1, 1, 1, 2, 1, 0
   };
 
   static const char _status_line_parser_range_lengths[] = {
-    0, 0, 0, 0, 0, 0, 1, 1,
-    1, 1, 1, 1, 2, 2, 0, 0
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 1, 1, 2, 2, 0, 0
   };
 
   static const char _status_line_parser_index_offsets[] = {
     0, 0, 2, 4, 6, 8, 10, 12,
-    15, 17, 20, 23, 26, 30, 35, 37
+    14, 17, 19, 22, 25, 29, 34, 36
   };
 
   static const char _status_line_parser_indicies[] = {
     1, 0, 2, 0, 3, 0, 4, 0,
-    5, 0, 6, 0, 7, 8, 0, 9,
-    0, 10, 9, 0, 10, 11, 0, 12,
-    13, 0, 14, 14, 14, 0, 15, 14,
-    14, 14, 0, 16, 0, 0, 0
+    5, 0, 6, 0, 7, 0, 8, 9,
+    0, 10, 0, 10, 11, 0, 12, 13,
+    0, 14, 14, 14, 0, 15, 14, 14,
+    14, 0, 16, 0, 0, 0
   };
 
   static const char _status_line_parser_trans_targs[] = {
     0, 2, 3, 4, 5, 6, 7, 8,
-    7, 9, 10, 11, 12, 11, 13, 14,
+    9, 9, 10, 11, 12, 11, 13, 14,
     15
   };
 
   static const char _status_line_parser_trans_actions[] = {
-    7, 0, 0, 0, 0, 0, 1, 0,
-    0, 0, 0, 3, 0, 0, 0, 0,
-    5
+    9, 0, 0, 0, 0, 0, 0, 0,
+    1, 3, 0, 5, 0, 0, 0, 0,
+    7
   };
 
   static const char _status_line_parser_eof_actions[] = {
-    0, 7, 7, 7, 7, 7, 7, 7,
-    7, 7, 7, 7, 7, 7, 7, 0
+    0, 9, 9, 9, 9, 9, 9, 9,
+    9, 9, 9, 9, 9, 9, 9, 0
   };
 
   static const int status_line_parser_start = 1;
@@ -203,12 +201,12 @@ HTTPResponseParser::parse_status_line(
   static const int status_line_parser_en_main = 1;
 
 
-  /* #line 66 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.cpp" */
+  /* #line 65 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.cpp" */
   {
     cs = status_line_parser_start;
   }
 
-  /* #line 69 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.cpp" */
+  /* #line 68 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.cpp" */
   {
     int _klen;
     unsigned int _trans;
@@ -279,32 +277,38 @@ _match:
     while (_nacts-- > 0) {
       switch (*_acts++) {
       case 0:
-        /* #line 33 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 32 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
-        http_version = static_cast<float>(atof(p));
+        http_version = 0;
       }
       break;
       case 1:
-        /* #line 117 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
+        /* #line 33 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+      {
+        http_version = 1;
+      }
+      break;
+      case 2:
+        /* #line 116 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
       {
         status_code = static_cast<uint16_t>(atoi(p));
       }
       break;
-      case 2:
-        /* #line 125 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
+      case 3:
+        /* #line 124 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
       { {
           p++;
           goto _out;
         }
       }
       break;
-      case 3:
-        /* #line 126 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
+      case 4:
+        /* #line 125 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
       {
         return false;
       }
       break;
-      /* #line 152 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.cpp" */
+      /* #line 154 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.cpp" */
       }
     }
 
@@ -318,13 +322,13 @@ _again:
       unsigned int __nacts = (unsigned int) * __acts++;
       while (__nacts-- > 0) {
         switch (*__acts++) {
-        case 3:
-          /* #line 126 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
+        case 4:
+          /* #line 125 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
         {
           return false;
         }
         break;
-        /* #line 169 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.cpp" */
+        /* #line 171 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.cpp" */
         }
       }
     }
@@ -333,7 +337,7 @@ _out:
     {}
   }
 
-  /* #line 131 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
+  /* #line 130 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
 
 
   return cs != status_line_parser_error;

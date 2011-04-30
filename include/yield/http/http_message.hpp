@@ -88,7 +88,7 @@ public:
   }
 
 public:
-  float get_http_version() const {
+  uint8_t get_http_version() const {
     return http_version;
   }
 
@@ -230,7 +230,7 @@ protected:
   HTTPMessage(
     YO_NEW_REF Object* body,
     uint32_t connection_id,
-    float http_version
+    uint8_t http_version
   );
 
   HTTPMessage(
@@ -238,7 +238,7 @@ protected:
     uint32_t connection_id,
     uint16_t fields_offset,
     Buffer& header,
-    float http_version
+    uint8_t http_version
   );
 
   virtual ~HTTPMessage();
@@ -252,7 +252,7 @@ private:
   Object* body;
   uint32_t connection_id;
   uint16_t fields_offset;
-  float http_version;
+  uint8_t http_version;
   Buffer& header;
 };
 }

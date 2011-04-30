@@ -44,9 +44,8 @@ Object& HTTPResponseParser::parse() {
   if (p < eof) {
     ps = p;
 
-    float http_version = 1.1F;
-    uint16_t status_code = 200;
-
+    uint8_t http_version;
+    uint16_t status_code;
     if (parse_status_line(http_version, status_code)) {
       uint16_t fields_offset;
       size_t content_length;
@@ -101,8 +100,8 @@ Object& HTTPResponseParser::parse() {
 
 bool
 HTTPResponseParser::parse_status_line(
-  float& http_version,
-  uint16_t& status_code
+  OUT uint8_t& http_version,
+  OUT uint16_t& status_code
 ) {
   int cs;
 

@@ -412,7 +412,7 @@ _resume:
           case 0: {
             _widec = (short)(256u + ((*p) - 0u));
             if (
-              /* #line 99 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+              /* #line 100 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
               seen_chunk_size++ < chunk_size) _widec += 256;
             break;
           }
@@ -482,37 +482,37 @@ _match:
     while (_nacts-- > 0) {
       switch (*_acts++) {
       case 0:
-        /* #line 82 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 83 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         field_name.iov_base = p;
       }
       break;
       case 1:
-        /* #line 82 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 83 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         field_name.iov_len = p - static_cast<char*>(field_name.iov_base);
       }
       break;
       case 2:
-        /* #line 82 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 83 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         field_value.iov_base = p;
       }
       break;
       case 3:
-        /* #line 82 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 83 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         field_value.iov_len = p - static_cast<char*>(field_value.iov_base);
       }
       break;
       case 4:
-        /* #line 83 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 84 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         chunk_size_p = p;
       }
       break;
       case 5:
-        /* #line 85 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 86 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         char* chunk_size_pe = p;
         chunk_size
@@ -522,13 +522,13 @@ _match:
       }
       break;
       case 6:
-        /* #line 100 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 101 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         chunk_data_p = p;
       }
       break;
       case 7:
-        /* #line 106 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 107 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         chunk_size = 0;
       }
@@ -739,25 +739,25 @@ _match:
     while (_nacts-- > 0) {
       switch (*_acts++) {
       case 0:
-        /* #line 82 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 83 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         field_name.iov_base = p;
       }
       break;
       case 1:
-        /* #line 82 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 83 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         field_name.iov_len = p - static_cast<char*>(field_name.iov_base);
       }
       break;
       case 2:
-        /* #line 82 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 83 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         field_value.iov_base = p;
       }
       break;
       case 3:
-        /* #line 82 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 83 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         field_value.iov_len = p - static_cast<char*>(field_value.iov_base);
       }
@@ -1151,37 +1151,37 @@ _match:
     while (_nacts-- > 0) {
       switch (*_acts++) {
       case 0:
-        /* #line 34 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 35 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         hour = atoi(p);
       }
       break;
       case 1:
-        /* #line 35 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 36 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         minute = atoi(p);
       }
       break;
       case 2:
-        /* #line 36 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 37 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         second = atoi(p);
       }
       break;
       case 3:
-        /* #line 38 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
-      {
-        day = atoi(p);
-      }
-      break;
-      case 4:
         /* #line 39 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         day = atoi(p);
       }
       break;
+      case 4:
+        /* #line 40 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+      {
+        day = atoi(p);
+      }
+      break;
       case 5:
-        /* #line 46 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 47 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         switch (*(p - 1)) {
         case 'b':
@@ -1234,14 +1234,14 @@ _match:
       }
       break;
       case 6:
-        /* #line 77 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 78 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         year = atoi(p);
         year += (year < 50 ? 2000 : 1900);
       }
       break;
       case 7:
-        /* #line 78 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 79 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         year = atoi(p);
       }
@@ -1441,25 +1441,25 @@ _match:
     while (_nacts-- > 0) {
       switch (*_acts++) {
       case 0:
-        /* #line 82 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 83 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         field_name.iov_base = p;
       }
       break;
       case 1:
-        /* #line 82 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 83 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         field_name.iov_len = p - static_cast<char*>(field_name.iov_base);
       }
       break;
       case 2:
-        /* #line 82 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 83 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         field_value.iov_base = p;
       }
       break;
       case 3:
-        /* #line 82 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 83 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         field_value.iov_len = p - static_cast<char*>(field_value.iov_base);
       }
@@ -1648,25 +1648,25 @@ _match:
     while (_nacts-- > 0) {
       switch (*_acts++) {
       case 0:
-        /* #line 82 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 83 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         field_name.iov_base = p;
       }
       break;
       case 1:
-        /* #line 82 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 83 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         field_name.iov_len = p - static_cast<char*>(field_name.iov_base);
       }
       break;
       case 2:
-        /* #line 82 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 83 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         field_value.iov_base = p;
       }
       break;
       case 3:
-        /* #line 82 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 83 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         field_value.iov_len = p - static_cast<char*>(field_value.iov_base);
       }
@@ -1854,25 +1854,25 @@ _match:
     while (_nacts-- > 0) {
       switch (*_acts++) {
       case 0:
-        /* #line 82 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 83 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         field_name.iov_base = p;
       }
       break;
       case 1:
-        /* #line 82 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 83 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         field_name.iov_len = p - static_cast<char*>(field_name.iov_base);
       }
       break;
       case 2:
-        /* #line 82 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 83 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         field_value.iov_base = p;
       }
       break;
       case 3:
-        /* #line 82 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 83 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
       {
         field_value.iov_len = p - static_cast<char*>(field_value.iov_base);
       }

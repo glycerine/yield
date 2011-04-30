@@ -51,7 +51,7 @@ public:
 
 private:
   bool parse_request_line(
-    OUT float& http_version,
+    OUT uint8_t& http_version,
     OUT HTTPRequest::Method& method,
     OUT iovec& uri_fragment,
     OUT iovec& uri_host,

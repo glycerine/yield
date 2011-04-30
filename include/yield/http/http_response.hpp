@@ -44,7 +44,7 @@ public:
     uint16_t status_code,
     YO_NEW_REF Object* body = NULL,
     uint32_t connection_id = 0,
-    float http_version = 1.1f
+    uint8_t http_version = 1
   );
 
   virtual ~HTTPResponse() { }
@@ -78,7 +78,7 @@ private:
     uint32_t connection_id,
     uint16_t fields_offset,
     Buffer& header,
-    float http_version,
+    uint8_t http_version,
     uint16_t status_code
   );
 

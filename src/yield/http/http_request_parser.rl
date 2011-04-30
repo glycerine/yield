@@ -47,7 +47,7 @@ Object& HTTPRequestParser::parse() {
   if (p < eof) {
     ps = p;
 
-    float http_version;
+    uint8_t http_version;
     HTTPRequest::Method method;
     iovec uri_fragment = { 0 };
     iovec uri_host = { 0 };
@@ -135,7 +135,7 @@ Object& HTTPRequestParser::parse() {
 }
 
 bool HTTPRequestParser::parse_request_line(
-  OUT float& http_version,
+  OUT uint8_t& http_version,
   OUT HTTPRequest::Method& method,
   OUT iovec& fragment,
   OUT iovec& host,

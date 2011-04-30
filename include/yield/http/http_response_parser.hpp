@@ -49,7 +49,7 @@ public:
   Object& parse();
 
 private:
-  bool parse_status_line(float& http_version, uint16_t& status_code);
+  bool parse_status_line(uint8_t& http_version, uint16_t& status_code);
 };
 }
 }

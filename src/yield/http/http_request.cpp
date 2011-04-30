@@ -104,7 +104,7 @@ HTTPRequest::HTTPRequest(
   uint32_t connection_id,
   uint16_t fields_offset,
   Buffer& header,
-  float http_version,
+  uint8_t http_version,
   Method method,
   const yield::uri::URI& uri
 )
@@ -125,7 +125,7 @@ HTTPRequest::HTTPRequest(
   const yield::uri::URI& uri,
   YO_NEW_REF Object* body,
   uint32_t connection_id,
-  float http_version
+  uint8_t http_version
 )
   : HTTPMessage<HTTPRequest>(body, connection_id, http_version),
     creation_date_time(DateTime::now()),
@@ -139,12 +139,10 @@ HTTPRequest::HTTPRequest(
   uri.get_path(uri_path);
   get_header().put(uri_path);
 
-  if (http_version == 1.1f)
-    get_header().put(" HTTP/1.1\r\n", 11);
-  else if (http_version == 1.0f)
+  if (http_version == 0)
     get_header().put(" HTTP/1.0\r\n", 11);
   else
-    DebugBreak();
+    get_header().put(" HTTP/1.1\r\n", 11);
 
   set_fields_offset(static_cast<uint16_t>(get_header().size()));
 
@@ -243,6 +241,9 @@ std::ostream& operator<<(std::ostream& os, const HTTPRequest& http_request) {
       "content_length=" << http_request.get_content_length() << 
       ", " <<
       "creation_date_time=" << http_request.get_creation_date_time() <<
+      ", " <<
+      "http_version=" <<
+        static_cast<uint16_t>(http_request.get_http_version()) <<
       ", " <<
       "method=" << http_request.get_method() <<
       ", " <<

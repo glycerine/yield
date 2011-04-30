@@ -40,7 +40,7 @@ HTTPResponse::HTTPResponse(
   uint32_t connection_id,
   uint16_t fields_offset,
   Buffer& header,
-  float http_version,
+  uint8_t http_version,
   uint16_t status_code
 )
 : HTTPMessage<HTTPResponse>(
@@ -57,7 +57,7 @@ HTTPResponse::HTTPResponse(
   uint16_t status_code,
   YO_NEW_REF Object* body,
   uint32_t connection_id,
-  float http_version
+  uint8_t http_version
 )
 : HTTPMessage<HTTPResponse>(body, connection_id, http_version),
   status_code(status_code) {
@@ -267,7 +267,8 @@ std::ostream& operator<<(std::ostream& os, const HTTPResponse& http_response) {
       ", " <<
       "content_length=" << http_response.get_content_length() <<
       ", " <<
-      "http_version=" << http_response.get_http_version() <<
+      "http_version=" <<
+        static_cast<uint16_t>(http_response.get_http_version()) <<
       ", " <<
       "status_code=" << http_response.get_status_code() <<
       ", " <<

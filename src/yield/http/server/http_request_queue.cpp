@@ -227,6 +227,11 @@ private:
   }
 
   void handle(YO_NEW_REF HTTPResponse& http_response) {
+    if (log != NULL) {
+      log->get_stream(Log::Level::DEBUG) << get_type_name() 
+        << ": sending " << http_response;
+    }
+
     http_response.finalize();
     Buffer& http_response_header = http_response.get_header().inc_ref();
     Object* http_response_body = Object::inc_ref(http_response.get_body());
@@ -293,9 +298,12 @@ private:
 
       case HTTPRequest::TYPE_ID: {
         HTTPRequest& http_request = static_cast<HTTPRequest&>(object);
-        if (log != NULL)
+
+        if (log != NULL) {
           log->get_stream(Log::Level::DEBUG) << get_type_name() 
             << ": parsed " << http_request;
+        }
+
         http_request.set_response_handler(*this);
         aio_queue.enqueue(http_request);
       }
@@ -304,9 +312,12 @@ private:
       case HTTPResponse::TYPE_ID: {
         HTTPResponse& http_response = static_cast<HTTPResponse&>(object);
         debug_assert_eq(http_response.get_status_code(), 400);
-        if (log != NULL)
+
+        if (log != NULL) {
           log->get_stream(Log::Level::DEBUG) << get_type_name() 
             << ": parsed " << http_response;
+        }
+
         handle(http_response);
         return;
       }

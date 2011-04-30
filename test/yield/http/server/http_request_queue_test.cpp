@@ -79,9 +79,11 @@ public:
   // yunit::Test
   void run() {
     TestHTTPRequestQueue http_request_queue(&Log::open(std::cout));
-    auto_Object<HTTPRequest> http_request
-    = object_cast<HTTPRequest>(http_request_queue.dequeue(30.0));
-    handle(*http_request);
+    for (;;) {
+      auto_Object<HTTPRequest> http_request
+      = object_cast<HTTPRequest>(http_request_queue.dequeue(30.0));
+      handle(*http_request);
+    }
   }
 };
 
