@@ -34,7 +34,7 @@
 #include "yield/auto_object.hpp"
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
-#include "yield/poll/fd_event_queue.hpp"
+#include "yield/poll/fd_event.hpp"
 #include "yunit.hpp"
 
 #ifdef _WIN32
@@ -45,11 +45,9 @@
 
 namespace yield {
 namespace poll {
-template <class FDEventQueueType>
 class FDEventQueueTest : public yunit::Test {
 public:
   FDEventQueueTest() {
-    fd_event_queue = NULL;
 #ifdef _WIN32
     fds[0] = fds[1] = INVALID_HANDLE_VALUE;
 #else
@@ -59,23 +57,15 @@ public:
 
   // yunit::Test
   void setup() {
-    fd_event_queue = new FDEventQueueType;
-
 #ifdef _WIN32
-    if (CreatePipe(&fds[0], &fds[1], NULL, 0))
+    if (!CreatePipe(&fds[0], &fds[1], NULL, 0))
 #else
-    if (pipe(fds) != -1)
+    if (pipe(fds) != 0)
 #endif
-      return;
-    else {
-      delete fd_event_queue;
       throw Exception();
-    }
   }
 
   void teardown() {
-    delete fd_event_queue;
-
 #ifdef _WIN32
     if (fds[0] != INVALID_HANDLE_VALUE)
       CloseHandle(fds[0]);
@@ -88,10 +78,6 @@ public:
   }
 
 protected:
-  FDEventQueueType& get_fd_event_queue() const {
-    return *fd_event_queue;
-  }
-
   fd_t get_read_fd() const {
     return fds[0];
   }
@@ -111,93 +97,97 @@ protected:
   }
 
 private:
-  FDEventQueueType* fd_event_queue;
   fd_t fds[2];
 };
 
 
 template <class FDEventQueueType>
-class FDEventQueueAssociateTest
-    : public FDEventQueueTest<FDEventQueue> {
+class FDEventQueueAssociateTest : public FDEventQueueTest {
 public:
   void run() {
-    if (!get_fd_event_queue().associate(get_read_fd(), POLLIN))
+    if (!FDEventQueueType().associate(get_read_fd(), POLLIN))
       throw Exception();
   }
 };
 
 
 template <class FDEventQueueType>
-class FDEventQueueAssociateChangeTest
-    : public FDEventQueueTest<FDEventQueue> {
+class FDEventQueueAssociateChangeTest : public FDEventQueueTest {
 public:
   void run() {
-    if (!get_fd_event_queue().associate(get_read_fd(), POLLIN))
+    FDEventQueueType fd_event_queue;
+
+    if (!fd_event_queue.associate(get_read_fd(), POLLIN))
       throw Exception();
 
-    if (!get_fd_event_queue().associate(get_read_fd(), POLLOUT))
+    if (!fd_event_queue.associate(get_read_fd(), POLLOUT))
       throw Exception();
   }
 };
 
 
 template <class FDEventQueueType>
-class FDEventQueueAssociateTwoTest
-    : public FDEventQueueTest<FDEventQueue> {
+class FDEventQueueAssociateTwoTest : public FDEventQueueTest {
 public:
   void run() {
-    if (!get_fd_event_queue().associate(get_read_fd(), POLLIN))
+    FDEventQueueType fd_event_queue;
+
+    if (!fd_event_queue.associate(get_read_fd(), POLLIN))
       throw Exception();
 
-    if (!get_fd_event_queue().associate(get_write_fd(), POLLOUT))
+    if (!fd_event_queue.associate(get_write_fd(), POLLOUT))
       throw Exception();
   }
 };
 
 
 template <class FDEventQueueType>
-class FDEventQueueAssociateZeroTest : public FDEventQueueTest<FDEventQueue> {
+class FDEventQueueAssociateZeroTest : public FDEventQueueTest {
 public:
   void run() {
-    if (!get_fd_event_queue().associate(get_read_fd(), POLLIN))
+    FDEventQueueType fd_event_queue;
+
+    if (!fd_event_queue.associate(get_read_fd(), POLLIN))
       throw Exception();
 
-    if (!get_fd_event_queue().associate(get_read_fd(), 0))
+    if (!fd_event_queue.associate(get_read_fd(), 0))
       throw Exception();
 
-    this->signal_pipe();
+    signal_pipe();
 
-    Event* event = get_fd_event_queue().dequeue(0);
+    Event* event = fd_event_queue.dequeue(0);
     throw_assert_eq(event, NULL);
   }
 };
 
 
 template <class FDEventQueueType>
-class FDEventQueueDequeueFDEventTest
-    : public FDEventQueueTest<FDEventQueue> {
+class FDEventQueueDequeueFDEventTest : public FDEventQueueTest {
 public:
   void run() {
-    if (!get_fd_event_queue().associate(get_read_fd(), POLLIN))
+    FDEventQueueType fd_event_queue;
+
+    if (!fd_event_queue.associate(get_read_fd(), POLLIN))
       throw Exception();
 
-    this->signal_pipe();
+    signal_pipe();
 
-    auto_Object<Event> event = get_fd_event_queue().dequeue();
+    auto_Object<Event> event = fd_event_queue.dequeue();
   }
 };
 
 
 template <class FDEventQueueType>
-class FDEventQueueDequeueWritableFDEventTest
-  : public FDEventQueueTest<FDEventQueue> {
+class FDEventQueueDequeueWritableFDEventTest : public FDEventQueueTest {
 public:
   void run() {
-    if (!get_fd_event_queue().associate(get_write_fd(), POLLOUT))
+    FDEventQueueType fd_event_queue;
+
+    if (!fd_event_queue.associate(get_write_fd(), POLLOUT))
       throw Exception();
 
     auto_Object<FDEvent> fd_event
-    = object_cast<FDEvent>(get_fd_event_queue().dequeue());
+    = object_cast<FDEvent>(fd_event_queue.dequeue());
     throw_assert_eq(fd_event->get_fd(), get_write_fd());
     throw_assert
     (
@@ -210,40 +200,42 @@ public:
 
 
 template <class FDEventQueueType>
-class FDEventQueueDissociateTest
-    : public FDEventQueueTest<FDEventQueue> {
+class FDEventQueueDissociateTest : public FDEventQueueTest {
 public:
   void run() {
-    if (!get_fd_event_queue().associate(get_read_fd(), POLLIN))
+    FDEventQueueType fd_event_queue;
+
+    if (!fd_event_queue.associate(get_read_fd(), POLLIN))
       throw Exception();
 
-    if (!get_fd_event_queue().dissociate(get_read_fd()))
+    if (!fd_event_queue.dissociate(get_read_fd()))
       throw Exception();
 
-    this->signal_pipe();
+    signal_pipe();
 
-    Event* event = get_fd_event_queue().trydequeue();
+    Event* event = fd_event_queue.trydequeue();
     throw_assert_eq(event, NULL);
 
-    if (!get_fd_event_queue().associate(get_read_fd(), POLLIN))
+    if (!fd_event_queue.associate(get_read_fd(), POLLIN))
       throw Exception(); // associate after dissociate should succeed
   }
 };
 
 
 template <class FDEventQueueType>
-class FDEventTimedDequeueFDEventTest
-    : public FDEventQueueTest<FDEventQueue> {
+class FDEventTimedDequeueFDEventTest : public FDEventQueueTest {
 public:
   void run() {
-    if (!get_fd_event_queue().associate(get_read_fd(), POLLIN))
+    FDEventQueueType fd_event_queue;
+
+    if (!fd_event_queue.associate(get_read_fd(), POLLIN))
       throw Exception();
 
-    this->signal_pipe();
+    signal_pipe();
 
     Time start_time(Time::now());
     auto_Object<FDEvent> fd_event
-    = object_cast<FDEvent>(get_fd_event_queue().dequeue(10.0));
+    = object_cast<FDEvent>(fd_event_queue.dequeue(10.0));
     Time elapsed_time(Time::now() - start_time);
     throw_assert_le(elapsed_time, Time(10.0));
   }
@@ -251,62 +243,62 @@ public:
 
 
 template <class FDEventQueueType>
-class FDEventQueueTestSuite : public EventQueueTestSuite<FDEventQueue> {
+class FDEventQueueTestSuite : public EventQueueTestSuite<FDEventQueueType> {
 public:
   FDEventQueueTestSuite() {
     add(
       "FDEventQueue::associate",
-      new FDEventQueueAssociateTest<FDEventQueue>
+      new FDEventQueueAssociateTest<FDEventQueueType>
     );
 
     add(
       "FDEventQueue::associate change",
-      new FDEventQueueAssociateChangeTest<FDEventQueue>
+      new FDEventQueueAssociateChangeTest<FDEventQueueType>
     );
 
     add(
       "FDEventQueue::associate x 2",
-      new FDEventQueueAssociateTwoTest<FDEventQueue>
+      new FDEventQueueAssociateTwoTest<FDEventQueueType>
     );
 
     add(
       "FDEventQueue::associate(fd, 0)",
-      new FDEventQueueAssociateZeroTest<FDEventQueue>
+      new FDEventQueueAssociateZeroTest<FDEventQueueType>
     );
 
     add(
       "FDEventQueue::dequeue -> Event",
-      new EventQueueDequeueTest<FDEventQueue>
+      new EventQueueDequeueTest<FDEventQueueType>
     );
 
     add(
       "FDEventQueue::dequeue -> FDEvent",
-      new FDEventQueueDequeueFDEventTest<FDEventQueue>
+      new FDEventQueueDequeueFDEventTest<FDEventQueueType>
     );
 
     add(
       "FDEventQueue::dequeue -> FDEvent(fd, POLLOUT)",
-      new FDEventQueueDequeueWritableFDEventTest<FDEventQueue>
+      new FDEventQueueDequeueWritableFDEventTest<FDEventQueueType>
     );
 
     add(
       "FDEventQueue::dissociate",
-      new FDEventQueueDissociateTest<FDEventQueue>
+      new FDEventQueueDissociateTest<FDEventQueueType>
     );
 
     add(
       "FDEventQueue::timeddequeue -> Event",
-      new EventQueueTimedDequeueTest<FDEventQueue>
+      new EventQueueTimedDequeueTest<FDEventQueueType>
     );
 
     add(
       "FDEventQueue::timeddequeue -> FDEvent",
-      new FDEventTimedDequeueFDEventTest<FDEventQueue>
+      new FDEventTimedDequeueFDEventTest<FDEventQueueType>
     );
 
     add(
       "FDEventQueue::trydequeue -> Event",
-      new EventQueueTryDequeueTest<FDEventQueue>
+      new EventQueueTryDequeueTest<FDEventQueueType>
     );
   }
 };

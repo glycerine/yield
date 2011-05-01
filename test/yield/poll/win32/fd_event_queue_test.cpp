@@ -28,6 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../fd_event_queue_test.hpp"
+#include "yield/poll/win32/fd_event_queue.hpp"
 
 TEST_SUITE_EX(
   Win32FDEventQueue,
