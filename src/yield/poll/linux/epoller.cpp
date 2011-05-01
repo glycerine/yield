@@ -48,7 +48,9 @@ EPoller::EPoller() {
   if (epfd != -1) {
     wake_fd = eventfd(0, 0);
     if (wake_fd != -1) {
-      if (!associate(wake_fd, POLLIN))
+      if (associate(wake_fd, POLLIN))
+        return;
+      else {
         error_code = static_cast<uint32_t>(errno);
         close(wake_fd);
       }
