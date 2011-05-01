@@ -50,14 +50,12 @@ FDEventQueue::FDEventQueue() {
     if (wake_fd != -1) {
       if (associate(wake_fd, POLLIN))
         return;
-      else {
+      else
         error_code = static_cast<uint32_t>(errno);
-        close(wake_fd);
-      }
-    } else {
+      close(wake_fd);
+    } else
       error_code = static_cast<uint32_t>(errno);
-      close(epfd);
-    }
+    close(epfd);
   } else
     error_code = static_cast<uint32_t>(errno);
 
@@ -106,7 +104,6 @@ YO_NEW_REF Event* FDEventQueue::dequeue(const Time& timeout) {
     } else if (ret == 0 || errno == EINTR)
       return NULL;
     else {
-      std::cerr << "FDEventQueue: encountered unexpected error: " << Exception() << std::endl;
       debug_break();
       return NULL;
     }

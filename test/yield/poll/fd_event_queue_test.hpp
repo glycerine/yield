@@ -189,8 +189,7 @@ public:
     auto_Object<FDEvent> fd_event
     = object_cast<FDEvent>(fd_event_queue.dequeue());
     throw_assert_eq(fd_event->get_fd(), get_write_fd());
-    throw_assert
-    (
+    throw_assert(
       (*fd_event & POLLOUT) == POLLOUT
       ||
       (*fd_event & POLLWRNORM) == POLLWRNORM
@@ -218,6 +217,11 @@ public:
 
     if (!fd_event_queue.associate(get_read_fd(), POLLIN))
       throw Exception(); // associate after dissociate should succeed
+
+    if (!fd_event_queue.dissociate(get_read_fd()))
+      throw Exception();
+
+    throw_assert_false(fd_event_queue.dissociate(get_read_fd()));
   }
 };
 
