@@ -36,55 +36,48 @@ TEST_SUITE(FDEvent);
 namespace yield {
 namespace poll {
 TEST(FDEvent, constructors) {
-  FDEvent();
-  FDEvent(POLLIN, static_cast<fd_t>(0));
+  FDEvent(static_cast<fd_t>(0), FDEvent::TYPE_READ_READY);
 #ifdef _WIN32
-  FDEvent(POLLIN, static_cast<socket_t>(0));
+  FDEvent(static_cast<socket_t>(0), FDEvent::TYPE_READ_READY);
 #endif
 }
 
-TEST(FDEvent, get_events) {
-  throw_assert_eq(FDEvent(POLLIN, static_cast<fd_t>(0)).get_events(), POLLIN);
-}
-
 TEST(FDEvent, get_fd) {
-  throw_assert_eq(FDEvent(POLLIN, static_cast<fd_t>(0)).get_fd(), 0);
-}
-
-TEST(FDEvent, get_socket) {
-  throw_assert_eq(FDEvent(POLLIN, static_cast<socket_t>(0)).get_socket(), 0);
-}
-
-TEST(FDEvent, get_type_id) {
-  throw_assert_eq(FDEvent().get_type_id(), FDEvent::TYPE_ID);
-}
-
-TEST(FDEvent, get_type_name) {
   throw_assert_eq(
-    strcmp(FDEvent().get_type_name(), "yield::poll::FDEvent"),
+    FDEvent(static_cast<fd_t>(0), FDEvent::TYPE_READ_READY).get_fd(),
     0
   );
 }
 
-TEST(FDEvent, operator_uint16_t) {
+TEST(FDEvent, get_socket) {
   throw_assert_eq(
-    static_cast<uint16_t>(FDEvent(POLLIN, static_cast<fd_t>(0))),
-    POLLIN
+    FDEvent(static_cast<socket_t>(0), FDEvent::TYPE_READ_READY).get_socket(),
+    0
   );
 }
 
-TEST(FDEvent, set_events) {
-  FDEvent fd_event;
-  throw_assert_ne(fd_event.get_events(), POLLOUT);
-  fd_event.set_events(POLLOUT);
-  throw_assert_eq(fd_event.get_events(), POLLOUT);
+TEST(FDEvent, get_type) {
+  throw_assert_eq(
+    FDEvent(static_cast<fd_t>(0), FDEvent::TYPE_READ_READY).get_type(),
+    FDEvent::TYPE_READ_READY
+  );
 }
 
-TEST(FDEvent, set_fd) {
-  FDEvent fd_event;
-  throw_assert_ne(fd_event.get_fd(), 0);
-  fd_event.set_fd(0);
-  throw_assert_eq(fd_event.get_fd(), 0);
+TEST(FDEvent, get_type_id) {
+  throw_assert_eq(
+    FDEvent(static_cast<fd_t>(0), FDEvent::TYPE_READ_READY).get_type_id(),
+    FDEvent::TYPE_ID
+  );
+}
+
+TEST(FDEvent, get_type_name) {
+  throw_assert_eq(
+    strcmp(
+      FDEvent(static_cast<fd_t>(0), FDEvent::TYPE_READ_READY).get_type_name(),
+      "yield::poll::FDEvent"
+    ),
+    0
+  );
 }
 }
 }

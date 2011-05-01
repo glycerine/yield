@@ -58,8 +58,8 @@ FDEventQueue::~FDEventQueue() {
   close(wake_pipe[1]);
 }
 
-bool FDEventQueue::associate(fd_t fd, uint16_t events) {
-  if (events > 0) {
+bool FDEventQueue::associate(fd_t fd, uint16_t fd_event_types) {
+  if (fd_event_types > 0) {
     for
     (
       vector<pollfd>::iterator pollfd_i = pollfds.begin();
@@ -67,7 +67,7 @@ bool FDEventQueue::associate(fd_t fd, uint16_t events) {
       ++pollfd_i
     ) {
       if ((*pollfd_i).fd == fd) {
-        (*pollfd_i).events = events;
+        (*pollfd_i).events = fd_event_types;
         return true;
       }
     }
@@ -75,7 +75,7 @@ bool FDEventQueue::associate(fd_t fd, uint16_t events) {
     pollfd pollfd_;
     memset(&pollfd_, 0, sizeof(pollfd_));
     pollfd_.fd = fd;
-    pollfd_.events = events;
+    pollfd_.events = fd_event_types;
     pollfds.push_back(pollfd_);
     return true;
   } else

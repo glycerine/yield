@@ -105,7 +105,7 @@ template <class FDEventQueueType>
 class FDEventQueueAssociateTest : public FDEventQueueTest {
 public:
   void run() {
-    if (!FDEventQueueType().associate(get_read_fd(), POLLIN))
+    if (!FDEventQueueType().associate(get_read_fd(), FDEvent::TYPE_READ_READY))
       throw Exception();
   }
 };
@@ -117,10 +117,10 @@ public:
   void run() {
     FDEventQueueType fd_event_queue;
 
-    if (!fd_event_queue.associate(get_read_fd(), POLLIN))
+    if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY))
       throw Exception();
 
-    if (!fd_event_queue.associate(get_read_fd(), POLLOUT))
+    if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_WRITE_READY))
       throw Exception();
   }
 };
@@ -132,10 +132,10 @@ public:
   void run() {
     FDEventQueueType fd_event_queue;
 
-    if (!fd_event_queue.associate(get_read_fd(), POLLIN))
+    if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY))
       throw Exception();
 
-    if (!fd_event_queue.associate(get_write_fd(), POLLOUT))
+    if (!fd_event_queue.associate(get_write_fd(), FDEvent::TYPE_WRITE_READY))
       throw Exception();
   }
 };
@@ -147,7 +147,7 @@ public:
   void run() {
     FDEventQueueType fd_event_queue;
 
-    if (!fd_event_queue.associate(get_read_fd(), POLLIN))
+    if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY))
       throw Exception();
 
     if (!fd_event_queue.associate(get_read_fd(), 0))
@@ -167,7 +167,7 @@ public:
   void run() {
     FDEventQueueType fd_event_queue;
 
-    if (!fd_event_queue.associate(get_read_fd(), POLLIN))
+    if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY))
       throw Exception();
 
     signal_pipe();
@@ -183,17 +183,13 @@ public:
   void run() {
     FDEventQueueType fd_event_queue;
 
-    if (!fd_event_queue.associate(get_write_fd(), POLLOUT))
+    if (!fd_event_queue.associate(get_write_fd(), FDEvent::TYPE_WRITE_READY))
       throw Exception();
 
     auto_Object<FDEvent> fd_event
     = object_cast<FDEvent>(fd_event_queue.dequeue());
     throw_assert_eq(fd_event->get_fd(), get_write_fd());
-    throw_assert(
-      (*fd_event & POLLOUT) == POLLOUT
-      ||
-      (*fd_event & POLLWRNORM) == POLLWRNORM
-   );
+    throw_assert_eq(fd_event->get_type(), FDEvent::TYPE_WRITE_READY);
   }
 };
 
@@ -204,7 +200,7 @@ public:
   void run() {
     FDEventQueueType fd_event_queue;
 
-    if (!fd_event_queue.associate(get_read_fd(), POLLIN))
+    if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY))
       throw Exception();
 
     if (!fd_event_queue.dissociate(get_read_fd()))
@@ -215,7 +211,7 @@ public:
     Event* event = fd_event_queue.trydequeue();
     throw_assert_eq(event, NULL);
 
-    if (!fd_event_queue.associate(get_read_fd(), POLLIN))
+    if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY))
       throw Exception(); // associate after dissociate should succeed
 
     if (!fd_event_queue.dissociate(get_read_fd()))
@@ -232,7 +228,7 @@ public:
   void run() {
     FDEventQueueType fd_event_queue;
 
-    if (!fd_event_queue.associate(get_read_fd(), POLLIN))
+    if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY))
       throw Exception();
 
     signal_pipe();
@@ -281,7 +277,7 @@ public:
     );
 
     add(
-      "FDEventQueue::dequeue -> FDEvent(fd, POLLOUT)",
+      "FDEventQueue::dequeue -> FDEvent(fd, FDEvent::TYPE_WRITE_READY)",
       new FDEventQueueDequeueWritableFDEventTest<FDEventQueueType>
     );
 

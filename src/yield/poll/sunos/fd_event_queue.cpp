@@ -41,14 +41,13 @@ EventPort::~EventPort() {
   close(port);
 }
 
-bool EventPort::associate(fd_t fd, uint16_t events) {
-  if (events > 0) {
-    return port_associate
-           (
+bool EventPort::associate(fd_t fd, uint16_t fd_event_types) {
+  if (fd_event_types > 0) {
+    return port_associate(
              port,
              PORT_SOURCE_FD,
              fd,
-             events,
+             fd_event_types,
              NULL
            ) != -1;
   } else {

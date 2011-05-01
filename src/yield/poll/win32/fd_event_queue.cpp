@@ -50,8 +50,8 @@ FDEventQueue::~FDEventQueue() {
   CloseHandle(fds[0]);
 }
 
-bool FDEventQueue::associate(fd_t fd, uint16_t events) {
-  if (events != 0) {
+bool FDEventQueue::associate(fd_t fd, uint16_t fd_event_types) {
+  if (fd_event_types != 0) {
     if (fds.size() < MAXIMUM_WAIT_OBJECTS) {
       for (
         vector<fd_t>::const_iterator fd_i = fds.begin();
@@ -100,7 +100,7 @@ Event* FDEventQueue::dequeue(const Time& timeout) {
   if (dwRet == WAIT_OBJECT_0)
     return BlockingConcurrentQueue<Event>::trydequeue();
   else if (dwRet > WAIT_OBJECT_0 && dwRet < WAIT_OBJECT_0 + fds.size())
-    return new FDEvent(POLLIN | POLLOUT, fds[dwRet - WAIT_OBJECT_0]);
+    return new FDEvent(fds[dwRet - WAIT_OBJECT_0], FDEvent::TYPE_READ_READY);
   else
     return NULL;
 }

@@ -43,11 +43,11 @@ FDEventQueue::~FDEventQueue() {
   close(wake_pipe[1]);
 }
 
-bool FDEventQueue::associate(fd_t fd, uint16_t events) {
-  if (events > 0) {
+bool FDEventQueue::associate(fd_t fd, uint16_t fd_event_types) {
+  if (fd_event_types > 0) {
     kevent kevent_;
 
-    if (events & POLLIN) {
+    if (fd_event_types & POLLIN) {
       EV_SET(&kevent_, fd, EVFILT_READ, EV_ADD, 0, 0, context);
       if (kevent(kq, &kevent_, 1, 0, 0, NULL) == -1)
         return false;
@@ -56,7 +56,7 @@ bool FDEventQueue::associate(fd_t fd, uint16_t events) {
       kevent(kq, &kevent_, 1, 0, 0, NULL);   // Ignore the result
     }
 
-    if (events & POLLOUT) {
+    if (fd_event_types & POLLOUT) {
       EV_SET(&kevent_, fd, EVFILT_WRITE, EV_ADD, 0, 0, context);
       if (kevent(kq, &kevent_, 1, 0, 0, NULL) == -1)
         return false;

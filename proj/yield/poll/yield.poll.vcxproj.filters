@@ -4,6 +4,9 @@
     <Filter Include="Source Files\bsd">
       <UniqueIdentifier>{6fb3997c-7b95-437f-8193-ccb8fa5a2870}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{1e4eec29-e7e7-4003-9be5-66f509b02d61}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source Files\linux">
       <UniqueIdentifier>{9df0b52b-3650-4244-9cef-8667bbd9f624}</UniqueIdentifier>
     </Filter>
@@ -15,9 +18,6 @@
     </Filter>
     <Filter Include="Source Files\win32">
       <UniqueIdentifier>{af1776a3-f3f9-42d0-9b1c-b8d07493e97c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{1e4eec29-e7e7-4003-9be5-66f509b02d61}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -66,6 +66,9 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\src\yield\poll\bsd\fd_event_queue.cpp">
       <Filter>Source Files\bsd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\poll\fd_event.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\poll\linux\fd_event_queue.cpp">
       <Filter>Source Files\linux</Filter>

@@ -1,4 +1,4 @@
-// yield/poll/fd_event.hpp
+// yield/poll/fd_event.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,62 +27,52 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_POLL_FD_EVENT_HPP_
-#define _YIELD_POLL_FD_EVENT_HPP_
+#include "yield/assert.hpp"
+#include "yield/poll/fd_event.hpp"
 
-#include "yield/event.hpp"
+#ifndef _WIN32
+#include <poll.h>
+#endif
 
 namespace yield {
 namespace poll {
-class FDEvent : public Event {
-public:
-  const static uint32_t TYPE_ID = 117149474;
-
-public:
-  typedef uint16_t Type;
-  const static Type TYPE_ERROR;
-  const static Type TYPE_HUP;
-  const static Type TYPE_READ_READY;
-  const static Type TYPE_WRITE_READY;
-
-public:
-  FDEvent(fd_t fd, Type type);
 #ifdef _WIN32
-  FDEvent(socket_t socket_, Type type);
-#endif
-
-public:
-  fd_t get_fd() const {
-    return fd;
-  }
-
-  socket_t get_socket() const {
-#ifdef _WIN32
-    return reinterpret_cast<socket_t>(get_fd());
+const FDEvent::Type FDEvent::TYPE_ERROR = 0x0001;
+const FDEvent::Type FDEvent::TYPE_HUP = 0x0002;
+const FDEvent::Type FDEvent::TYPE_READ_READY = 0x0100 | 0x0200;
+const FDEvent::Type FDEvent::TYPE_WRITE_READY = 0x0200;
 #else
-    return get_fd();
+const FDEvent::Type FDEvent::TYPE_ERROR = POLLERR;
+const FDEvent::Type FDEvent::TYPE_HUP = POLLHUP;
+const FDEvent::Type FDEvent::TYPE_READ_READY = POLLIN;
+const FDEvent::Type FDEvent::TYPE_WRITE_READY = POLLOUT;
 #endif
-  }
 
-  Type get_type() const {
-    return type;
-  }
-
-public:
-  // yield::Object
-  virtual uint32_t get_type_id() const {
-    return TYPE_ID;
-  }
-
-  virtual const char* get_type_name() const {
-    return "yield::poll::FDEvent";
-  }
-
-private:
-  fd_t fd;
-  Type type;
-};
-}
+FDEvent::FDEvent(fd_t fd, Type type) : fd(fd), type(type) {
+  debug_assert(
+    type == TYPE_ERROR
+    ||
+    type == TYPE_HUP
+    ||
+    type == TYPE_READ_READY
+    ||
+    type == TYPE_WRITE_READY
+  );
 }
 
+#ifdef _WIN32
+FDEvent::FDEvent(socket_t socket_, Type type)
+  : fd(reinterpret_cast<fd_t>(socket_)), type(type) {
+  debug_assert(
+    type == TYPE_ERROR
+    ||
+    type == TYPE_HUP
+    ||
+    type == TYPE_READ_READY
+    ||
+    type == TYPE_WRITE_READY
+  );
+}
 #endif
+}
+}

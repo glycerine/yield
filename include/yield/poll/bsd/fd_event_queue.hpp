@@ -42,7 +42,7 @@ public:
   ~FDEventQueue();
   static FDEventQueue* create();
 
-  bool associate(fd_t fd, uint16_t events);
+  bool associate(fd_t fd, uint16_t fd_event_types);
   bool dissociate(fd_t fd);
 
   // FDEventQueue

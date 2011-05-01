@@ -50,6 +50,7 @@ LIBS += -lyield_thread -lyield
 D_FILE_PATHS := $(shell find ../../../build/yield/poll -name "*.d")
 
 
+O_FILE_PATHS += ../../../build/yield/poll/fd_event.o
 ifeq ($(UNAME), Darwin)
 	O_FILE_PATHS += ../../../build/yield/poll/bsd/fd_event_queue.o
 	O_FILE_PATHS += ../../../build/yield/poll/posix/fd_event_queue.o
@@ -93,6 +94,10 @@ depclean:
 ../../../build/yield/poll/bsd/fd_event_queue.o: ../../../src/yield/poll/bsd/fd_event_queue.cpp
 	-mkdir -p ../../../build/yield/poll/bsd 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/poll/bsd/fd_event_queue.o -MD $(CXXFLAGS) ../../../src/yield/poll/bsd/fd_event_queue.cpp
+
+../../../build/yield/poll/fd_event.o: ../../../src/yield/poll/fd_event.cpp
+	-mkdir -p ../../../build/yield/poll 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/poll/fd_event.o -MD $(CXXFLAGS) ../../../src/yield/poll/fd_event.cpp
 
 ../../../build/yield/poll/linux/fd_event_queue.o: ../../../src/yield/poll/linux/fd_event_queue.cpp
 	-mkdir -p ../../../build/yield/poll/linux 2>/dev/null

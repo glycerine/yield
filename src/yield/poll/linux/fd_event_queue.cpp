@@ -67,12 +67,12 @@ FDEventQueue::~FDEventQueue() {
   close(wake_fd);
 }
 
-bool FDEventQueue::associate(fd_t fd, uint16_t events) {
-  if (events > 0) {
+bool FDEventQueue::associate(fd_t fd, uint16_t fd_event_types) {
+  if (fd_event_types > 0) {
     epoll_event epoll_event_;
     memset(&epoll_event_, 0, sizeof(epoll_event_));
     epoll_event_.data.fd = fd;
-    epoll_event_.events = events;
+    epoll_event_.events = fd_event_types;
 
     if (epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &epoll_event_) == 0)
       return true;
@@ -100,7 +100,7 @@ YO_NEW_REF Event* FDEventQueue::dequeue(const Time& timeout) {
         read(wake_fd, &data, sizeof(data));
         return BlockingConcurrentQueue<Event>::trydequeue();
       } else
-        return new FDEvent(epoll_event_.events, epoll_event_.data.fd);
+        return new FDEvent(epoll_event_.data.fd, epoll_event_.events);
     } else if (ret == 0 || errno == EINTR)
       return NULL;
     else {
