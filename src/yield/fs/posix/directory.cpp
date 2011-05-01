@@ -84,7 +84,7 @@ bool Directory::read(OUT Entry*& entry) {
       else if (S_ISSOCK(stbuf.st_mode)) entry_type = Entry::TYPE_SOCK;
       else {
         entry_type = Entry::TYPE_REG;
-        DebugBreak();
+        debug_break();
       }
 
       if (entry == NULL)

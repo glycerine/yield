@@ -47,7 +47,7 @@ ProcessorSet::ProcessorSet() {
 #elif defined(_WIN32)
   pimpl = new win32::ProcessorSet;
 #else
-  DebugBreak();
+  debug_break();
 #endif
 }
 

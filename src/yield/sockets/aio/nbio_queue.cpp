@@ -207,7 +207,7 @@ uint8_t NBIOQueue::get_aiocb_priority(const AIOCB& aiocb) {
   case recvAIOCB::TYPE_ID: return 3;
   case sendAIOCB::TYPE_ID: return 2;
   case sendfileAIOCB::TYPE_ID: return 2;
-  default: DebugBreak(); return 0;
+  default: debug_break(); return 0;
   }
 }
 
@@ -239,7 +239,7 @@ void NBIOQueue::log_wouldblock(AIOCBType& aiocb, RetryStatus retry_status) {
     switch (retry_status) {
       case RETRY_STATUS_WANT_READ: retry_status_str = "read"; break;
       case RETRY_STATUS_WANT_WRITE: retry_status_str = "write"; break;
-      default: DebugBreak(); retry_status_str = ""; break;
+      default: debug_break(); retry_status_str = ""; break;
     }
 
     log->get_stream(Log::Level::DEBUG) << 
@@ -255,7 +255,7 @@ NBIOQueue::RetryStatus NBIOQueue::retry(AIOCB& aiocb) {
   case recvAIOCB::TYPE_ID: return retry(static_cast<recvAIOCB&>(aiocb));
   case sendAIOCB::TYPE_ID: return retry(static_cast<sendAIOCB&>(aiocb));
   case sendfileAIOCB::TYPE_ID: return retry(static_cast<sendfileAIOCB&>(aiocb));
-  default: DebugBreak(); return RETRY_STATUS_ERROR;
+  default: debug_break(); return RETRY_STATUS_ERROR;
   }
 }
 

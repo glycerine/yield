@@ -180,8 +180,7 @@ public:
           old_paths.push(path);
         } else {
           if (file_notify_info->Action == FILE_ACTION_RENAMED_NEW_NAME) {
-            if (old_paths.empty())
-              DebugBreak();
+            debug_assert_false(old_paths.empty());
 
             FSEvent::Type type;
             if (FileSystem().isdir(path)) {
@@ -242,7 +241,7 @@ public:
 
             default: {
               type = FSEvent::TYPE_DIRECTORY_ADD;
-              DebugBreak();
+              debug_break();
             }
             break;
             }
@@ -302,7 +301,7 @@ public:
 
 private:
   Watch(const Watch&) {
-    DebugBreak();
+    debug_break();
   }
 
 private:

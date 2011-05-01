@@ -27,10 +27,10 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "yield/assert.hpp"
 #include "yield/thread/system_configuration.hpp"
 
 #include <Windows.h>
-
 
 namespace yield {
 namespace thread {
@@ -43,9 +43,7 @@ long SystemConfiguration::operator()(Variable variable) {
     return available_info.dwNumberOfProcessors;
   }
 
-  default:
-    DebugBreak();
-    return -1;
+  default: debug_break(); return -1;
   }
 }
 }

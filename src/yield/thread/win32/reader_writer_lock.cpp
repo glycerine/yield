@@ -121,12 +121,12 @@ void ReaderWriterLock::rdunlock() {
 }
 
 bool ReaderWriterLock::tryrdlock() {
-  DebugBreak();
+  debug_break();
   return false;
 }
 
 bool ReaderWriterLock::trywrlock() {
-  DebugBreak();
+  debug_break();
   return false;
 }
 

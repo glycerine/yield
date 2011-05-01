@@ -105,7 +105,7 @@ YO_NEW_REF Event* EPoller::dequeue(const Time& timeout) {
       return NULL;
     else {
      std::cerr << "EPoller: encountered unexpected error: " << Exception() << std::endl;
-     DebugBreak();
+     debug_break();
      return NULL;
     }
   }

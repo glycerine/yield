@@ -205,7 +205,7 @@ public:
     break;
 
     default:
-      DebugBreak();
+      debug_break();
       break;
     }
   }
@@ -264,7 +264,7 @@ private:
       }
       break;
 
-      default: DebugBreak();
+      default: debug_break();
       }
     }
 
@@ -324,7 +324,7 @@ private:
       break;
 
       default:
-        DebugBreak();
+        debug_break();
         break;
       }
     }

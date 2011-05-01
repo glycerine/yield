@@ -52,7 +52,7 @@ bool NamedPipe::connect() {
   } else
     return false;
 #else
-  DebugBreak();
+  debug_break();
   return false;
 #endif
 }

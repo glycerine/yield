@@ -62,7 +62,7 @@ SocketAddress::SocketAddress(const SocketAddress& other, uint16_t port) {
   break;
 
   default:
-    DebugBreak();
+    debug_break();
   }
 
   if (other.next_socket_address != NULL)
@@ -247,7 +247,7 @@ socklen_t SocketAddress::len(int family) {
   case 0: return sizeof(sockaddr_storage);
   case AF_INET: return sizeof(sockaddr_in);
   case AF_INET6: return sizeof(sockaddr_in6);
-  default: DebugBreak(); return 0;
+  default: debug_break(); return 0;
   }
 }
 

@@ -43,7 +43,7 @@ long SystemConfiguration::operator()(Variable variable) {
   }
 
   default:
-    DebugBreak();
+    debug_break();
     return -1;
   }
 }

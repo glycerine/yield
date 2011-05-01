@@ -292,7 +292,7 @@ FSEventQueue::Watch::read(
 
       continue;
     } else if ((mask & IN_MOVE_SELF) == IN_MOVE_SELF)
-      DebugBreak();
+      debug_break();
     else
       return;
 

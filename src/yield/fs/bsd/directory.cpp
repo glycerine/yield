@@ -64,7 +64,7 @@ bool Directory::read(OUT Entry*& entry) {
       entry_type = Entry::TYPE_SOCK;
       break;
     default:
-      DebugBreak();
+      debug_break();
       entry_type = Entry::TYPE_REG;
       break;
     }

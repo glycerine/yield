@@ -32,25 +32,14 @@
 
 #include "yield/config.hpp"
 
-#include <cassert>
 #include <cstdio> // for snprintf
 #include <exception> // for std::exception
-
 
 #if defined(_WIN32)
 extern "C" {
   __declspec(dllimport) void __stdcall DebugBreak();
 }
-#elif defined(__GNUC__)
-static inline void DebugBreak() {
-  asm("int $3");
-}
-#else
-static inline void DebugBreak() {
-  *reinterpret_cast<int*>(0) = 0xabadcafe;
-}
 #endif
-
 
 namespace yield {
 class AssertionException : public std::exception {
@@ -67,7 +56,7 @@ public:
       line,
       file,
       message
-    );
+   );
   }
 
   // std::exception
@@ -80,68 +69,78 @@ private:
 };
 
 
-#define debug_assert( a )\
+#if defined(_WIN32)
+#define debug_break() DebugBreak()
+#elif defined(__GNUC__)
+#define debug_break() asm("int $3")
+#else
+#define debug_break() *reinterpret_cast<int*>(0) = 0xabadcafe
+#endif
+
+#define debug_assert(a) { if (!((a) == true)) debug_break(); }
+#define debug_assert_eq(a, b) debug_assert((a) == (b));
+#define debug_assert_false(a) debug_assert((a) == false);
+#define debug_assert_ge(a, b) debug_assert((a) >= (b));
+#define debug_assert_gt(a, b) debug_assert((a) > (b));
+#define debug_assert_le(a, b) debug_assert((a) <= (b));
+#define debug_assert_lt(a, b) debug_assert((a) < (b));
+#define debug_assert_ne(a, b) debug_assert((a) != (b));
+#define debug_assert_true(a) { if (!((a) == true)) debug_break(); }
+
+
+#define throw_assert(a)\
   {\
-    if ( !( ( a ) == true ) )\
-      DebugBreak();\
+    if (!((a) == true))\
+      throw ::yield::AssertionException(__FILE__, __LINE__, #a" != true");\
   }
 
-#define debug_assert_eq( a, b ) debug_assert( ( a ) == ( b ) );
-#define debug_assert_false( a ) debug_assert( ( a ) == false );
-#define debug_assert_ge( a, b ) debug_assert( ( a ) >= ( b ) );
-#define debug_assert_gt( a, b ) debug_assert( ( a ) > ( b ) );
-#define debug_assert_le( a, b ) debug_assert( ( a ) <= ( b ) );
-#define debug_assert_lt( a, b ) debug_assert( ( a ) < ( b ) );
-#define debug_assert_ne( a, b ) debug_assert( ( a ) != ( b ) );
-
-
-#define throw_assert( a )\
+#define throw_assert_eq(a, b)\
   {\
-    if ( !( ( a ) == true ) )\
-      throw yield::AssertionException( __FILE__, __LINE__, #a" != true" );\
+    if (!((a) == (b)))\
+      throw ::yield::AssertionException(__FILE__, __LINE__, #a" != "#b);\
   }
 
-#define throw_assert_eq( a, b )\
+#define throw_assert_false(a)\
   {\
-    if ( !( ( a ) == ( b ) ) )\
-      throw yield::AssertionException( __FILE__, __LINE__, #a" != "#b );\
+    if (!((a) == false))\
+      throw ::yield::AssertionException(__FILE__, __LINE__, #a" != false");\
   }
 
-#define throw_assert_false( a )\
+#define throw_assert_ge(a, b)\
   {\
-    if ( !( ( a ) == false ) )\
-      throw yield::AssertionException( __FILE__, __LINE__, #a" != false" );\
+    if (!((a) >= (b)))\
+      throw ::yield::AssertionException(__FILE__, __LINE__, #a" < "#b);\
   }
 
-#define throw_assert_ge( a, b )\
+#define throw_assert_gt(a, b)\
   {\
-    if ( !( ( a ) >= ( b ) ) )\
-      throw yield::AssertionException( __FILE__, __LINE__, #a" < "#b );\
+    if (!((a) > (b)))\
+      throw ::yield::AssertionException(__FILE__, __LINE__, #a" <= "#b);\
   }
 
-#define throw_assert_gt( a, b )\
+#define throw_assert_le(a, b)\
   {\
-    if ( !( ( a ) > ( b ) ) )\
-      throw yield::AssertionException( __FILE__, __LINE__, #a" <= "#b );\
+    if (!((a) <= (b)))\
+      throw ::yield::AssertionException(__FILE__, __LINE__, #a" > "#b);\
   }
 
-#define throw_assert_le( a, b )\
+#define throw_assert_lt(a, b)\
   {\
-    if ( !( ( a ) <= ( b ) ) )\
-      throw yield::AssertionException( __FILE__, __LINE__, #a" > "#b );\
+    if (!((a) < (b)))\
+      throw ::yield::AssertionException(__FILE__, __LINE__, #a" >= "#b);\
   }
 
-#define throw_assert_lt( a, b )\
+#define throw_assert_ne(a, b)\
   {\
-    if ( !( ( a ) < ( b ) ) )\
-      throw yield::AssertionException( __FILE__, __LINE__, #a" >= "#b );\
-  }
-
-#define throw_assert_ne( a, b )\
-  {\
-    if ( !( ( a ) != ( b ) ) )\
-      throw yield::AssertionException( __FILE__, __LINE__, #a" == "#b );\
+    if (!((a) != (b)))\
+      throw ::yield::AssertionException(__FILE__, __LINE__, #a" == "#b);\
   }
 }
+
+#define throw_assert_true(a)\
+  {\
+    if (!((a) == true))\
+      throw ::yield::AssertionException(__FILE__, __LINE__, #a" != true");\
+  }
 
 #endif

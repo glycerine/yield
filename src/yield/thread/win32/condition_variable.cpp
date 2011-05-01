@@ -28,6 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "condition_variable.hpp"
+#include "yield/assert.hpp"
 #include "yield/exception.hpp"
 #include "yield/time.hpp"
 #include "yield/thread/mutex.hpp"
@@ -132,7 +133,7 @@ bool ConditionVariable::wait() {
     } else
       return mutex.lock();
   } else {
-    DebugBreak();
+    debug_break();
     waiters_count_lock.lock();
     waiters_count--;
     waiters_count_lock.unlock();

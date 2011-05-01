@@ -99,7 +99,7 @@ bool File::Map::unmap() {
       file_mapping = NULL;
       return true;
     } else {
-      DebugBreak();
+      debug_break();
       return false;
     }
   } else {

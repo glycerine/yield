@@ -69,7 +69,7 @@ void Stage::enqueue(YO_NEW_REF Event& event) {
   else {
     //cerr << event_handler.get_type_name() <<
     //  ": event queue full, stopping.";
-    DebugBreak();
+    debug_break();
   }
 }
 
