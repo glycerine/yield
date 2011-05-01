@@ -1,4 +1,4 @@
-// yield/poll/linux/epoller.cpp
+// yield/poll/linux/fd_event_queue.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,10 +27,10 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "epoller.hpp"
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
 #include "yield/poll/fd_event.hpp"
+#include "yield/poll/linux/fd_event_queue.hpp"
 
 #include <iostream>
 #include <errno.h>
@@ -42,7 +42,7 @@ namespace poll {
 namespace linux {
 using yield::thread::BlockingConcurrentQueue;
 
-EPoller::EPoller() {
+FDEventQueue::FDEventQueue() {
   uint32_t error_code;
   epfd = epoll_create(32768);
   if (epfd != -1) {
@@ -64,12 +64,12 @@ EPoller::EPoller() {
   throw Exception(error_code);
 }
 
-EPoller::~EPoller() {
+FDEventQueue::~FDEventQueue() {
   close(epfd);
   close(wake_fd);
 }
 
-bool EPoller::associate(fd_t fd, uint16_t events) {
+bool FDEventQueue::associate(fd_t fd, uint16_t events) {
   if (events > 0) {
     epoll_event epoll_event_;
     memset(&epoll_event_, 0, sizeof(epoll_event_));
@@ -86,7 +86,7 @@ bool EPoller::associate(fd_t fd, uint16_t events) {
     return dissociate(fd);
 }
 
-YO_NEW_REF Event* EPoller::dequeue(const Time& timeout) {
+YO_NEW_REF Event* FDEventQueue::dequeue(const Time& timeout) {
   Event* event = BlockingConcurrentQueue<Event>::trydequeue();
   if (event != NULL)
     return event;
@@ -106,14 +106,14 @@ YO_NEW_REF Event* EPoller::dequeue(const Time& timeout) {
     } else if (ret == 0 || errno == EINTR)
       return NULL;
     else {
-     std::cerr << "EPoller: encountered unexpected error: " << Exception() << std::endl;
-     debug_break();
-     return NULL;
+      std::cerr << "FDEventQueue: encountered unexpected error: " << Exception() << std::endl;
+      debug_break();
+      return NULL;
     }
   }
 }
 
-bool EPoller::dissociate(fd_t fd) {
+bool FDEventQueue::dissociate(fd_t fd) {
   // From the man page: In kernel versions before 2.6.9,
   // the EPOLL_CTL_DEL operation required a non-NULL pointer in event,
   // even though this argument is ignored. Since kernel 2.6.9,
@@ -123,7 +123,7 @@ bool EPoller::dissociate(fd_t fd) {
   return epoll_ctl(epfd, EPOLL_CTL_DEL, fd, &epoll_event_) == 0;
 }
 
-bool EPoller::enqueue(Event& event) {
+bool FDEventQueue::enqueue(Event& event) {
   if (BlockingConcurrentQueue<Event>::enqueue(event)) {
     uint64_t data = 1;
     write(wake_fd, &data, sizeof(data));

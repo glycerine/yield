@@ -27,9 +27,9 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "fd_event_queue_test.hpp"
+#include "../fd_event_queue_test.hpp"
 
 TEST_SUITE_EX(
-  FDEventQueue,
-  yield::poll::FDEventQueueTestSuite<yield::poll::FDEventQueue>
+  SunOSFDEventQueue,
+  yield::poll::FDEventQueueTestSuite<yield::poll::sunos::FDEventQueue>
 );

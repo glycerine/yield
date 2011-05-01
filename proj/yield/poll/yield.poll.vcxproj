@@ -93,37 +93,35 @@
   </ItemDefinitionGroup>
 
   <ItemGroup Label="ClIncludeItems">
+    <ClInclude Include="..\..\..\include\yield\poll\bsd\fd_event_queue.hpp" />
     <ClInclude Include="..\..\..\include\yield\poll\fd_event.hpp" />
     <ClInclude Include="..\..\..\include\yield\poll\fd_event_queue.hpp" />
+    <ClInclude Include="..\..\..\include\yield\poll\linux\fd_event_queue.hpp" />
+    <ClInclude Include="..\..\..\include\yield\poll\posix\fd_event_queue.hpp" />
+    <ClInclude Include="..\..\..\include\yield\poll\sunos\fd_event_queue.hpp" />
+    <ClInclude Include="..\..\..\include\yield\poll\win32\fd_event_queue.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
-    <ClCompile Include="..\..\..\src\yield\poll\bsd\kqueue.cpp">
+    <ClCompile Include="..\..\..\src\yield\poll\bsd\fd_event_queue.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\poll\bsd\kqueue.hpp" />
-    <ClCompile Include="..\..\..\src\yield\poll\fd_event_queue.cpp">
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\poll\linux\epoller.cpp">
+    <ClCompile Include="..\..\..\src\yield\poll\linux\fd_event_queue.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\poll\linux\epoller.hpp" />
-    <ClCompile Include="..\..\..\src\yield\poll\posix\poller.cpp">
+    <ClCompile Include="..\..\..\src\yield\poll\posix\fd_event_queue.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\poll\posix\poller.hpp" />
-    <ClCompile Include="..\..\..\src\yield\poll\sunos\event_port.cpp">
+    <ClCompile Include="..\..\..\src\yield\poll\sunos\fd_event_queue.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\poll\sunos\event_port.hpp" />
-    <ClCompile Include="..\..\..\src\yield\poll\win32\handle_event_queue.cpp">
-      <ObjectFileName>$(IntDir)win32\handle_event_queue.obj</ObjectFileName>
+    <ClCompile Include="..\..\..\src\yield\poll\win32\fd_event_queue.cpp">
+      <ObjectFileName>$(IntDir)win32\fd_event_queue.obj</ObjectFileName>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\poll\win32\handle_event_queue.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ProjectReferenceItems">

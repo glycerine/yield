@@ -1,4 +1,4 @@
-// yield/poll/sunos/event_port.hpp
+// yield/poll/win32/fd_event_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,33 +27,44 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_POLL_SUNOS_EVENT_PORT_HPP_
-#define _YIELD_POLL_SUNOS_EVENT_PORT_HPP_
+#ifndef _YIELD_POLL_WIN32_FD_EVENT_QUEUE_HPP_
+#define _YIELD_POLL_WIN32_FD_EVENT_QUEUE_HPP_
 
-#include "yield/poll/fd_event_queue.hpp"
-
-#include <port.h>
+#include "yield/event_queue.hpp"
+#include "yield/thread/blocking_concurrent_queue.hpp"
 
 namespace yield {
 namespace poll {
-namespace sunos {
-class EventPort : public FDEventQueue {
+namespace win32 {
+class FDEventQueue
+  : public EventQueue,
+    private yield::thread::BlockingConcurrentQueue<Event> {
 public:
-  ~EventPort();
-  static EventPort* create();
+  FDEventQueue();
+  ~FDEventQueue();
 
-  // FDEventQueue
+public:
   bool associate(fd_t fd, uint16_t events);
-  int16_t dequeue(FDEvent* fd_events, int16_t fd_events_len, const Time& timeout);
   bool dissociate(fd_t fd);
-  void wake();
+
+public:
+  // yield::EventQueue
+  YO_NEW_REF Event& dequeue() {
+    return EventQueue::dequeue();
+  }
+  
+  YO_NEW_REF Event* dequeue(const Time& timeout);
+  bool enqueue(YO_NEW_REF Event& event);
+
+  YO_NEW_REF Event* trydequeue() {
+    return EventQueue::trydequeue();
+  }
 
 private:
-  EventPort(int port);
+  FDEventQueue(void* hWakeEvent);
 
 private:
-  int port;
-  vector<port_event_t> port_events;
+  vector<fd_t> fds;
 };
 }
 }

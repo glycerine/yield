@@ -1,4 +1,4 @@
-// yield/poll/win32/handle_event_queue.cpp
+// yield/poll/posix/fd_event_queue.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,87 +27,106 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "handle_event_queue.hpp"
+#include "yield/assert.hpp"
 #include "yield/exception.hpp"
 #include "yield/poll/fd_event.hpp"
+#include "yield/poll/posix/fd_event_queue.hpp"
 
-#include <Windows.h>
+#include <errno.h>
 
 namespace yield {
 namespace poll {
-namespace win32 {
+namespace posix {
 using yield::thread::BlockingConcurrentQueue;
 
-HandleEventQueue::HandleEventQueue() {
-  HANDLE hWakeEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-  if (hWakeEvent != NULL)
-    fds.push_back(hWakeEvent);
-  else
+FDEventQueue::FDEventQueue() {
+  if (pipe(wake_pipe) != -1) {
+    if (associate(wake_pipe[0], POLLIN))
+      return;
+    else {
+      Exception exception;
+      close(wake_pipe[0]);
+      close(wake_pipe[1]);
+      throw exception;
+    }
+  } else
     throw Exception();
 }
 
-HandleEventQueue::~HandleEventQueue() {
-  CloseHandle(fds[0]);
+FDEventQueue::~FDEventQueue() {
+  close(wake_pipe[0]);
+  close(wake_pipe[1]);
 }
 
-bool HandleEventQueue::associate(fd_t fd, uint16_t events) {
-  if (events != 0) {
-    if (fds.size() < MAXIMUM_WAIT_OBJECTS) {
-      for (
-        vector<fd_t>::const_iterator fd_i = fds.begin();
-        fd_i != fds.end();
-        ++fd_i
-      ) {
-        if (*fd_i == fd)
-          return true;
+bool FDEventQueue::associate(fd_t fd, uint16_t events) {
+  if (events > 0) {
+    for
+    (
+      vector<pollfd>::iterator pollfd_i = pollfds.begin();
+      pollfd_i != pollfds.end();
+      ++pollfd_i
+    ) {
+      if ((*pollfd_i).fd == fd) {
+        (*pollfd_i).events = events;
+        return true;
       }
+    }
 
-      fds.push_back(fd);
-      return true;
-    } else
-      return false;
+    pollfd pollfd_;
+    memset(&pollfd_, 0, sizeof(pollfd_));
+    pollfd_.fd = fd;
+    pollfd_.events = events;
+    pollfds.push_back(pollfd_);
+    return true;
   } else
     return dissociate(fd);
 }
 
-bool HandleEventQueue::dissociate(fd_t fd) {
+YO_NEW_REF Event* FDEventQueue::dequeue(const Time& timeout) {
+  int ret =
+    ::poll(&pollfds[0], pollfds.size(), static_cast<int>(timeout.ms()));
+
+  if (ret > 0) {
+    vector<pollfd>::const_iterator pollfd_i = pollfds.begin();
+
+    do {
+      const pollfd& pollfd_ = *pollfd_i;
+
+      if (pollfd_.revents != 0) {
+        if (pollfd_.fd == wake_pipe[0]) {
+          char data;
+          read(wake_pipe[0], &data, sizeof(data));
+          return BlockingConcurrentQueue<Event>::trydequeue();
+        } else
+          return new FDEvent(pollfd_.revents, pollfd_.fd);
+
+        if (--ret == 0) break;
+      }
+    } while (++pollfd_i != pollfds.end());
+  }
+
+  return NULL;
+}
+
+bool FDEventQueue::dissociate(fd_t fd) {
   for (
-    vector<fd_t>::iterator fd_i = fds.begin();
-    fd_i != fds.end();
-    ++fd_i
+    vector<pollfd>::iterator pollfd_i = pollfds.begin();
+    pollfd_i != pollfds.end();
+    ++pollfd_i
   ) {
-    if (*fd_i == fd) {
-      fds.erase(fd_i);
+    if ((*pollfd_i).fd == fd) {
+      pollfds.erase(pollfd_i);
       return true;
     }
   }
 
-  SetLastError(ERROR_INVALID_HANDLE);
-
+  errno = ENOENT;
   return false;
 }
 
-Event* HandleEventQueue::dequeue(const Time& timeout) {
-  DWORD dwRet
-  = WaitForMultipleObjectsEx(
-      fds.size(),
-      &fds[0],
-      FALSE,
-      static_cast<DWORD>(timeout.ms()),
-      TRUE
-    );
-
-  if (dwRet == WAIT_OBJECT_0)
-    return BlockingConcurrentQueue<Event>::trydequeue();
-  else if (dwRet > WAIT_OBJECT_0 && dwRet < WAIT_OBJECT_0 + fds.size())
-    return new FDEvent(POLLIN | POLLOUT, fds[dwRet - WAIT_OBJECT_0]);
-  else
-    return NULL;
-}
-
-bool HandleEventQueue::enqueue(Event& event) {
+bool FDEventQueue::enqueue(YO_NEW_REF Event& event) {
   if (BlockingConcurrentQueue<Event>::enqueue(event)) {
-    SetEvent(fds[0]);
+    write(wake_pipe[1], "m", 1);
     return true;
   } else
     return false;

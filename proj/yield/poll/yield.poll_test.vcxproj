@@ -99,10 +99,27 @@
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
-    <ClCompile Include="..\..\..\test\yield\poll\fd_event_queue_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\poll\bsd\fd_event_queue_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClInclude Include="..\..\..\test\yield\poll\fd_event_queue_test.hpp" />
     <ClCompile Include="..\..\..\test\yield\poll\fd_event_test.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\test\yield\poll\linux\fd_event_queue_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\test\yield\poll\posix\fd_event_queue_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\test\yield\poll\sunos\fd_event_queue_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\test\yield\poll\win32\fd_event_queue_test.cpp">
+      <ObjectFileName>$(IntDir)win32\fd_event_queue_test.obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="..\..\..\test\yield\poll\yield_poll_test_main.cpp">
     </ClCompile>

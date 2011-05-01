@@ -1,4 +1,4 @@
-// yield/poll/linux/epoller.hpp
+// fd_event_queue_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,37 +27,9 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_POLL_LINUX_EPOLLER_HPP_
-#define _YIELD_POLL_LINUX_EPOLLER_HPP_
+#include "../fd_event_queue_test.hpp"
 
-#include "yield/event_queue.hpp"
-#include "yield/thread/blocking_concurrent_queue.hpp"
-
-#include <sys/epoll.h>
-
-namespace yield {
-namespace poll {
-namespace linux {
-class EPoller
-  : public EventQueue,
-    private yield::thread::BlockingConcurrentQueue<Event> {
-public:
-  EPoller();
-  ~EPoller();
-
-  bool associate(fd_t fd, uint16_t events);
-  bool dissociate(fd_t fd);
-
-  // yield::EventQueue
-  YO_NEW_REF Event* dequeue(const Time& timeout);
-  bool enqueue(YO_NEW_REF Event& event);
-
-private:
-  int epfd;
-  int wake_fd;
-};
-}
-}
-}
-
-#endif
+TEST_SUITE_EX(
+  BSDFDEventQueue,
+  yield::poll::FDEventQueueTestSuite<yield::poll::bsd::FDEventQueue>
+);

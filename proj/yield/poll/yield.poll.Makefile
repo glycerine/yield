@@ -50,25 +50,24 @@ LIBS += -lyield_thread -lyield
 D_FILE_PATHS := $(shell find ../../../build/yield/poll -name "*.d")
 
 
-O_FILE_PATHS += ../../../build/yield/poll/fd_event_queue.o
 ifeq ($(UNAME), Darwin)
-	O_FILE_PATHS += ../../../build/yield/poll/bsd/kqueue.o
-	O_FILE_PATHS += ../../../build/yield/poll/posix/poller.o
+	O_FILE_PATHS += ../../../build/yield/poll/bsd/fd_event_queue.o
+	O_FILE_PATHS += ../../../build/yield/poll/posix/fd_event_queue.o
 endif
 ifeq ($(UNAME), FreeBSD)
-	O_FILE_PATHS += ../../../build/yield/poll/bsd/kqueue.o
-	O_FILE_PATHS += ../../../build/yield/poll/posix/poller.o
+	O_FILE_PATHS += ../../../build/yield/poll/bsd/fd_event_queue.o
+	O_FILE_PATHS += ../../../build/yield/poll/posix/fd_event_queue.o
 endif
 ifeq ($(UNAME), Linux)
-	O_FILE_PATHS += ../../../build/yield/poll/linux/epoller.o
-	O_FILE_PATHS += ../../../build/yield/poll/posix/poller.o
+	O_FILE_PATHS += ../../../build/yield/poll/linux/fd_event_queue.o
+	O_FILE_PATHS += ../../../build/yield/poll/posix/fd_event_queue.o
 endif
 ifeq ($(UNAME), Solaris)
-	O_FILE_PATHS += ../../../build/yield/poll/posix/poller.o
-	O_FILE_PATHS += ../../../build/yield/poll/sunos/event_port.o
+	O_FILE_PATHS += ../../../build/yield/poll/posix/fd_event_queue.o
+	O_FILE_PATHS += ../../../build/yield/poll/sunos/fd_event_queue.o
 endif
 ifeq ($(UNAME), MINGW32)
-	O_FILE_PATHS += ../../../build/yield/poll/win32/handle_event_queue.o
+	O_FILE_PATHS += ../../../build/yield/poll/win32/fd_event_queue.o
 endif
 
 
@@ -91,26 +90,22 @@ depclean:
 	-mkdir -p ../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(O_FILE_PATHS)
 
-../../../build/yield/poll/bsd/kqueue.o: ../../../src/yield/poll/bsd/kqueue.cpp
+../../../build/yield/poll/bsd/fd_event_queue.o: ../../../src/yield/poll/bsd/fd_event_queue.cpp
 	-mkdir -p ../../../build/yield/poll/bsd 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/poll/bsd/kqueue.o -MD $(CXXFLAGS) ../../../src/yield/poll/bsd/kqueue.cpp
+	$(CXX) -c -o ../../../build/yield/poll/bsd/fd_event_queue.o -MD $(CXXFLAGS) ../../../src/yield/poll/bsd/fd_event_queue.cpp
 
-../../../build/yield/poll/fd_event_queue.o: ../../../src/yield/poll/fd_event_queue.cpp
-	-mkdir -p ../../../build/yield/poll 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/poll/fd_event_queue.o -MD $(CXXFLAGS) ../../../src/yield/poll/fd_event_queue.cpp
-
-../../../build/yield/poll/linux/epoller.o: ../../../src/yield/poll/linux/epoller.cpp
+../../../build/yield/poll/linux/fd_event_queue.o: ../../../src/yield/poll/linux/fd_event_queue.cpp
 	-mkdir -p ../../../build/yield/poll/linux 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/poll/linux/epoller.o -MD $(CXXFLAGS) ../../../src/yield/poll/linux/epoller.cpp
+	$(CXX) -c -o ../../../build/yield/poll/linux/fd_event_queue.o -MD $(CXXFLAGS) ../../../src/yield/poll/linux/fd_event_queue.cpp
 
-../../../build/yield/poll/posix/poller.o: ../../../src/yield/poll/posix/poller.cpp
+../../../build/yield/poll/posix/fd_event_queue.o: ../../../src/yield/poll/posix/fd_event_queue.cpp
 	-mkdir -p ../../../build/yield/poll/posix 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/poll/posix/poller.o -MD $(CXXFLAGS) ../../../src/yield/poll/posix/poller.cpp
+	$(CXX) -c -o ../../../build/yield/poll/posix/fd_event_queue.o -MD $(CXXFLAGS) ../../../src/yield/poll/posix/fd_event_queue.cpp
 
-../../../build/yield/poll/sunos/event_port.o: ../../../src/yield/poll/sunos/event_port.cpp
+../../../build/yield/poll/sunos/fd_event_queue.o: ../../../src/yield/poll/sunos/fd_event_queue.cpp
 	-mkdir -p ../../../build/yield/poll/sunos 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/poll/sunos/event_port.o -MD $(CXXFLAGS) ../../../src/yield/poll/sunos/event_port.cpp
+	$(CXX) -c -o ../../../build/yield/poll/sunos/fd_event_queue.o -MD $(CXXFLAGS) ../../../src/yield/poll/sunos/fd_event_queue.cpp
 
-../../../build/yield/poll/win32/handle_event_queue.o: ../../../src/yield/poll/win32/handle_event_queue.cpp
+../../../build/yield/poll/win32/fd_event_queue.o: ../../../src/yield/poll/win32/fd_event_queue.cpp
 	-mkdir -p ../../../build/yield/poll/win32 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/poll/win32/handle_event_queue.o -MD $(CXXFLAGS) ../../../src/yield/poll/win32/handle_event_queue.cpp
+	$(CXX) -c -o ../../../build/yield/poll/win32/fd_event_queue.o -MD $(CXXFLAGS) ../../../src/yield/poll/win32/fd_event_queue.cpp

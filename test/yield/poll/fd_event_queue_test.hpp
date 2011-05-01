@@ -167,7 +167,7 @@ public:
 
     this->signal_pipe();
 
-    Event* event = get_fd_event_queue().trydequeue();
+    Event* event = get_fd_event_queue().dequeue(0);
     throw_assert_eq(event, NULL);
   }
 };

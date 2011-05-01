@@ -1,4 +1,4 @@
-// yield/poll/bsd/kqueue.hpp
+// yield/poll/bsd/fd_event_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,21 +27,20 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_POLL_BSD_KQUEUE_HPP_
-#define _YIELD_POLL_BSD_KQUEUE_HPP_
+#ifndef _YIELD_POLL_BSD_FD_EVENT_QUEUE_HPP_
+#define _YIELD_POLL_BSD_FD_EVENT_QUEUE_HPP_
 
-#include "yield/poll/fd_event_queue.hpp"
+#include "yield/event_queue.hpp"
 
 #include <sys/event.h>
-
 
 namespace yield {
 namespace poll {
 namespace bsd {
-class Kqueue : public EventQueue {
+class FDEventQueue : public EventQueue {
 public:
-  ~Kqueue();
-  static Kqueue* create();
+  ~FDEventQueue();
+  static FDEventQueue* create();
 
   bool associate(fd_t fd, uint16_t events);
   bool dissociate(fd_t fd);
@@ -51,7 +50,7 @@ public:
   void wake();
 
 private:
-  Kqueue(int kq, int* wake_pipe);
+  FDEventQueue(int kq, int* wake_pipe);
 
 private:
   vector<kevent> kevents;

@@ -1,4 +1,4 @@
-// yield/poll/bsd/kqueue.cpp
+// yield/poll/bsd/fd_event_queue.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -29,22 +29,21 @@
 
 #include "kqueue.hpp"
 
-
 namespace yield {
 namespace poll {
 namespace bsd {
-Kqueue::Kqueue(int kq, int* wake_pipe)
+FDEventQueue::FDEventQueue(int kq, int* wake_pipe)
   : kq(kq) {
   memcpy(this->wake_pipe, wake_pipe, sizeof(this->wake_pipe));
 }
 
-Kqueue::~Kqueue() {
+FDEventQueue::~FDEventQueue() {
   close(kq);
   close(wake_pipe[0]);
   close(wake_pipe[1]);
 }
 
-bool Kqueue::associate(fd_t fd, uint16_t events) {
+bool FDEventQueue::associate(fd_t fd, uint16_t events) {
   if (events > 0) {
     kevent kevent_;
 
@@ -71,7 +70,7 @@ bool Kqueue::associate(fd_t fd, uint16_t events) {
   return true;
 }
 
-Kqueue* Kqueue::create() {
+FDEventQueue* FDEventQueue::create() {
   int kq = kqueue();
   if (kq != -1) {
     int wake_pipe[2];
@@ -79,7 +78,7 @@ Kqueue* Kqueue::create() {
       kevent kevent_;
       EV_SET(&kevent_, wake_pipe[0], EVFILT_READ, EV_ADD, 0, 0, 0);
       if (kevent(kq, &kevent_, 1, 0, 0, NULL) != -1)
-        return new Kqueue(kq, wake_pipe);
+        return new FDEventQueue(kq, wake_pipe);
 
       close(wake_pipe[0]);
       close(wake_pipe[1]);
@@ -91,7 +90,7 @@ Kqueue* Kqueue::create() {
   return NULL;
 }
 
-bool Kqueue::dissociate(fd_t fd) {
+bool FDEventQueue::dissociate(fd_t fd) {
   kevent kfd_events[2];
   EV_SET(&kfd_events[0], fd, EVFILT_READ, EV_DELETE, 0, 0, NULL);
   EV_SET(&kfd_events[1], fd, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
@@ -99,7 +98,7 @@ bool Kqueue::dissociate(fd_t fd) {
 }
 
 int16_t
-Kqueue::poll
+FDEventQueue::poll
 (
   FDEvent* fd_events,
   int16_t fd_events_len,
@@ -134,7 +133,7 @@ Kqueue::poll
     return static_cast<int16_t>(ret);
 }
 
-void Kqueue::wake() {
+void FDEventQueue::wake() {
   write(wake_pipe[1], "m", 1);
 }
 }

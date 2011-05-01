@@ -1,4 +1,4 @@
-// yield/poll/posix/poller.cpp
+// yield/poll/win32/fd_event_queue.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,106 +27,87 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "poller.hpp"
-#include "yield/assert.hpp"
 #include "yield/exception.hpp"
 #include "yield/poll/fd_event.hpp"
+#include "yield/poll/win32/fd_event_queue.hpp"
 
-#include <errno.h>
-
+#include <Windows.h>
 
 namespace yield {
 namespace poll {
-namespace posix {
+namespace win32 {
 using yield::thread::BlockingConcurrentQueue;
 
-Poller::Poller() {
-  if (pipe(wake_pipe) == -1)
+FDEventQueue::FDEventQueue() {
+  HANDLE hWakeEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+  if (hWakeEvent != NULL)
+    fds.push_back(hWakeEvent);
+  else
     throw Exception();
-
-  if (!associate(wake_pipe[0], POLLIN)) {
-    uint32_t error_code = static_cast<uint32_t>(errno);
-    close(wake_pipe[0]);
-    close(wake_pipe[1]);
-    throw Exception(error_code);
-  }
 }
 
-Poller::~Poller() {
-  close(wake_pipe[0]);
-  close(wake_pipe[1]);
+FDEventQueue::~FDEventQueue() {
+  CloseHandle(fds[0]);
 }
 
-bool Poller::associate(fd_t fd, uint16_t events) {
-  if (events > 0) {
-    for
-    (
-      vector<pollfd>::iterator pollfd_i = pollfds.begin();
-      pollfd_i != pollfds.end();
-      ++pollfd_i
-    ) {
-      if ((*pollfd_i).fd == fd) {
-        (*pollfd_i).events = events;
-        return true;
+bool FDEventQueue::associate(fd_t fd, uint16_t events) {
+  if (events != 0) {
+    if (fds.size() < MAXIMUM_WAIT_OBJECTS) {
+      for (
+        vector<fd_t>::const_iterator fd_i = fds.begin();
+        fd_i != fds.end();
+        ++fd_i
+      ) {
+        if (*fd_i == fd)
+          return true;
       }
-    }
 
-    pollfd pollfd_;
-    memset(&pollfd_, 0, sizeof(pollfd_));
-    pollfd_.fd = fd;
-    pollfd_.events = events;
-    pollfds.push_back(pollfd_);
-    return true;
+      fds.push_back(fd);
+      return true;
+    } else
+      return false;
   } else
     return dissociate(fd);
 }
 
-YO_NEW_REF Event* Poller::dequeue(const Time& timeout) {
-  int ret =
-    ::poll(&pollfds[0], pollfds.size(), static_cast<int>(timeout.ms()));
-
-  if (ret > 0) {
-    vector<pollfd>::const_iterator pollfd_i = pollfds.begin();
-
-    do {
-      const pollfd& pollfd_ = *pollfd_i;
-
-      if (pollfd_.revents != 0) {
-        if (pollfd_.fd == wake_pipe[0]) {
-          char data;
-          read(wake_pipe[0], &data, sizeof(data));
-          return BlockingConcurrentQueue<Event>::trydequeue();
-        } else
-          return new FDEvent(pollfd_.revents, pollfd_.fd);
-
-        if (--ret == 0) break;
-      }
-    } while (++pollfd_i != pollfds.end());
-  }
-
-  return NULL;
-}
-
-bool Poller::dissociate(fd_t fd) {
-  for
-  (
-    vector<pollfd>::iterator pollfd_i = pollfds.begin();
-    pollfd_i != pollfds.end();
-    ++pollfd_i
+bool FDEventQueue::dissociate(fd_t fd) {
+  for (
+    vector<fd_t>::iterator fd_i = fds.begin();
+    fd_i != fds.end();
+    ++fd_i
   ) {
-    if ((*pollfd_i).fd == fd) {
-      pollfds.erase(pollfd_i);
+    if (*fd_i == fd) {
+      fds.erase(fd_i);
       return true;
     }
   }
 
-  errno = ENOENT;
+  SetLastError(ERROR_INVALID_HANDLE);
+
   return false;
 }
 
-bool Poller::enqueue(YO_NEW_REF Event& event) {
+Event* FDEventQueue::dequeue(const Time& timeout) {
+  DWORD dwRet
+  = WaitForMultipleObjectsEx(
+      fds.size(),
+      &fds[0],
+      FALSE,
+      static_cast<DWORD>(timeout.ms()),
+      TRUE
+    );
+
+  if (dwRet == WAIT_OBJECT_0)
+    return BlockingConcurrentQueue<Event>::trydequeue();
+  else if (dwRet > WAIT_OBJECT_0 && dwRet < WAIT_OBJECT_0 + fds.size())
+    return new FDEvent(POLLIN | POLLOUT, fds[dwRet - WAIT_OBJECT_0]);
+  else
+    return NULL;
+}
+
+bool FDEventQueue::enqueue(Event& event) {
   if (BlockingConcurrentQueue<Event>::enqueue(event)) {
-    write(wake_pipe[1], "m", 1);
+    SetEvent(fds[0]);
     return true;
   } else
     return false;

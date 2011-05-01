@@ -1,4 +1,4 @@
-// yield/poll/fd_event_queue.cpp
+// yield/poll/posix/fd_event_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,54 +27,47 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#if defined(__FreeBSD__) || defined(__MACH__) || defined(__OpenBSD__)
-#include "bsd/kqueue.hpp"
-#elif defined(__linux__)
-#include "linux/epoller.hpp"
-#elif defined(_WIN32)
-#include "win32/handle_event_queue.hpp"
-#elif defined(YIELD_HAVE_SOLARIS_EVENT_PORTS)
-#include "sunos/event_port.hpp"
-#else
-#include "posix/poller.hpp"
-#endif
-#include "yield/poll/fd_event_queue.hpp"
+#ifndef _YIELD_POLL_POSIX_FD_EVENT_QUEUE_HPP_
+#define _YIELD_POLL_POSIX_FD_EVENT_QUEUE_HPP_
 
+#include "yield/poll/fd_event_queue.hpp"
+#include "yield/thread/blocking_concurrent_queue.hpp"
+
+#include <sys/poll.h>
 
 namespace yield {
 namespace poll {
-FDEventQueue::FDEventQueue() {
-#if defined(__FreeBSD__) || defined(__MACH__) || defined(__OpenBSD__)
-  pimpl = new bsd::Kqueue;
-#elif defined(__linux__)
-  pimpl = new linux::EPoller;
-#elif defined(_WIN32)
-  pimpl = new win32::HandleEventQueue;
-#elif defined(YIELD_HAVE_SOLARIS_EVENT_PORTS)
-  pimpl = new sunos::EventPort;
-#else
-  pimpl = new posix::Poller;
+namespace posix {
+class FDEventQueue
+  : public EventQueue,
+    private yield::thread::BlockingConcurrentQueue<Event> {
+public:
+  FDEventQueue();
+  ~FDEventQueue();
+
+public:
+  bool associate(fd_t fd, uint16_t events);
+  bool dissociate(fd_t fd);
+
+public:
+  // yield::EventQueue
+  YO_NEW_REF Event& dequeue() {
+    return EventQueue::dequeue();
+  }
+
+  YO_NEW_REF Event* dequeue(const Time& timeout);
+  bool enqueue(YO_NEW_REF Event& event);
+
+  YO_NEW_REF Event* trydequeue() {
+    return EventQueue::trydequeue();
+  }
+
+private:
+  vector<pollfd> pollfds;
+  int wake_pipe[2];
+};
+}
+}
+}
+
 #endif
-}
-
-FDEventQueue::~FDEventQueue() {
-  delete pimpl;
-}
-
-bool FDEventQueue::associate(fd_t fd, uint16_t events) {
-  return pimpl->associate(fd, events);
-}
-
-bool FDEventQueue::dissociate(fd_t fd) {
-  return pimpl->dissociate(fd);
-}
-
-YO_NEW_REF Event* FDEventQueue::dequeue(const Time& timeout) {
-  return pimpl->dequeue(timeout);
-}
-
-bool FDEventQueue::enqueue(YO_NEW_REF Event& event) {
-  return pimpl->enqueue(event);
-}
-}
-}
