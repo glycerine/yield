@@ -29,7 +29,8 @@
 
 from os.path import dirname, join as path_join, sep as path_sep
 
-from yuild.constant import C_CXX_SOURCE_FILE_FNMATCH_PATTERNS, \
+from yuild.constant import C_CXX_INCLUDE_FILE_FNMATCH_PATTERNS, \
+                           C_CXX_SOURCE_FILE_FNMATCH_PATTERNS, \
                            INDENT_SPACES, \
                            PY_SOURCE_FILE_FNMATCH_PATTERNS, \
                            SYS_PLATFORM_CHECKS
@@ -57,6 +58,8 @@ class SetupPy(Project):
         author=None,
         author_email=None,
         description=None,
+        license=None,
+        platforms=None,
         scripts=None,
         url=None,
         version="1.0",
@@ -71,6 +74,8 @@ class SetupPy(Project):
         if description is None:
             description = self.get_name()
         self.__description = description
+        self.__license = license
+        self.__platforms = strlist(platforms)
         self.__scripts = PlatformDict(scripts)
         self.__url = url
         self.__version = version
@@ -110,6 +115,8 @@ if %(sys_platform_check)s:
 
 
         setup_kwds = {
+            "description": quote(self.__description),
+            "long_description": quote(self.__description),
             "name": quote(self.get_name()),
             "version": quote(str(self.__version))
         }
@@ -120,11 +127,28 @@ if %(sys_platform_check)s:
         if self.__author_email is not None:
             setup_kwds["author_email"] = quote(self.__author_email)
 
+        if self.__license is not None:
+            setup_kwds["license"] = quote(self.__license)
+
+        if len(self.__platforms) > 0:
+            setup_kwds["platforms"] = '[' + ", ".join(quotestrlist(self.__platforms)) + ']'
+
         if len(self.__scripts) > 0:
             setup_kwds["scripts"] = "SCRIPTS"
 
         if self.__url is not None:
             setup_kwds["url"] = quote(self.__url)
+
+        c_cxx_include_files = \
+            self.get_source_files().filter(C_CXX_INCLUDE_FILE_FNMATCH_PATTERNS)
+        if len(c_cxx_include_files) > 0:
+            setup_kwds["headers"] = \
+                '[' + \
+                ", ".join([
+                    quote(posixpath(c_cxx_include_file.get_path()))
+                    for c_cxx_include_file in c_cxx_include_files
+                ]) + \
+                ']'
 
         c_cxx_source_files = \
             self.get_source_files().filter(C_CXX_SOURCE_FILE_FNMATCH_PATTERNS)
@@ -188,7 +212,7 @@ import sys
 
 
 # **kwds for Extensions
-Extension_kwds = {    
+Extension_kwds = {
     "define_macros": DEFINE_MACROS,
     "extra_compile_args": EXTRA_COMPILE_ARGS,
     "extra_link_args": EXTRA_LINK_ARGS,
