@@ -4,6 +4,7 @@ build/**
 dist/**
 lib/**
 ipch/**
+*lcov*
 *.pyc
 yield.opensdf
 yield.sdf
