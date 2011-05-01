@@ -55,7 +55,7 @@ SocketEventQueue::~SocketEventQueue() {
   delete pimpl;
 }
 
-bool SocketEventQueue::associate(socket_t socket_, int16_t events) {
+bool SocketEventQueue::associate(socket_t socket_, uint16_t events) {
   return pimpl->associate(socket_, events);
 }
 

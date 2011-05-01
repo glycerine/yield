@@ -51,20 +51,23 @@ HandleEventQueue::~HandleEventQueue() {
 }
 
 bool HandleEventQueue::associate(fd_t fd, uint16_t events) {
-  if (fds.size() < MAXIMUM_WAIT_OBJECTS) {
-    for (
-      vector<fd_t>::const_iterator fd_i = fds.begin();
-      fd_i != fds.end();
-      ++fd_i
-    ) {
-      if (*fd_i == fd)
-        return true;
-    }
+  if (events != 0) {
+    if (fds.size() < MAXIMUM_WAIT_OBJECTS) {
+      for (
+        vector<fd_t>::const_iterator fd_i = fds.begin();
+        fd_i != fds.end();
+        ++fd_i
+      ) {
+        if (*fd_i == fd)
+          return true;
+      }
 
-    fds.push_back(fd);
-    return true;
+      fds.push_back(fd);
+      return true;
+    } else
+      return false;
   } else
-    return false;
+    return dissociate(fd);
 }
 
 bool HandleEventQueue::dissociate(fd_t fd) {

@@ -102,6 +102,8 @@
     <ClCompile Include="..\..\..\test\yield\poll\fd_event_queue_test.cpp">
     </ClCompile>
     <ClInclude Include="..\..\..\test\yield\poll\fd_event_queue_test.hpp" />
+    <ClCompile Include="..\..\..\test\yield\poll\fd_event_test.cpp">
+    </ClCompile>
     <ClCompile Include="..\..\..\test\yield\poll\yield_poll_test_main.cpp">
     </ClCompile>
   </ItemGroup>

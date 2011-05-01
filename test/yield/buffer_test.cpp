@@ -241,6 +241,16 @@ TEST(Buffer, print) {
   }
 
   {
+    auto_Object<Buffer> buffer = new Buffer(Buffer::getpagesize());
+    for (uint16_t i = 0; i < Buffer::getpagesize(); ++i)
+      buffer->put('m');
+    std::ostringstream oss;
+    oss << *buffer;
+    throw_assert_ne(oss.str().size(), 0);
+    throw_assert_lt(oss.str().size(), Buffer::getpagesize());
+  }
+
+  {
     std::ostringstream oss;
     oss << &buffer.get();
     throw_assert_ne(oss.str().size(), 0);

@@ -50,7 +50,7 @@ LIBS += -lyield_poll -lyield_thread -lyield
 D_FILE_PATHS := $(shell find ../../../build/yield/poll -name "*.d")
 
 
-O_FILE_PATHS += ../../../build/yield/poll/fd_event_queue_test.o ../../../build/yield/poll/yield_poll_test_main.o
+O_FILE_PATHS += ../../../build/yield/poll/fd_event_queue_test.o ../../../build/yield/poll/fd_event_test.o ../../../build/yield/poll/yield_poll_test_main.o
 
 
 all: ../../../bin/yield/yield_poll_test
@@ -85,6 +85,10 @@ lcov: ../../../bin/yield/yield_poll_test
 ../../../build/yield/poll/fd_event_queue_test.o: ../../../test/yield/poll/fd_event_queue_test.cpp
 	-mkdir -p ../../../build/yield/poll 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/poll/fd_event_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/poll/fd_event_queue_test.cpp
+
+../../../build/yield/poll/fd_event_test.o: ../../../test/yield/poll/fd_event_test.cpp
+	-mkdir -p ../../../build/yield/poll 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/poll/fd_event_test.o -MD $(CXXFLAGS) ../../../test/yield/poll/fd_event_test.cpp
 
 ../../../build/yield/poll/yield_poll_test_main.o: ../../../test/yield/poll/yield_poll_test_main.cpp
 	-mkdir -p ../../../build/yield/poll 2>/dev/null

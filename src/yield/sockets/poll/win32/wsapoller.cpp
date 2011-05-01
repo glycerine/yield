@@ -44,12 +44,8 @@ WSAPoller::WSAPoller() {
     throw Exception();
 }
 
-bool
-WSAPoller::associate(
-  socket_t socket_,
-  int16_t events
-) {
-  if (events > 0) {
+bool WSAPoller::associate(socket_t socket_, uint16_t events) {
+  if (events != 0) {
     for (
       vector<pollfd>::iterator pollfd_i = pollfds.begin();
       pollfd_i != pollfds.end();

@@ -32,6 +32,7 @@
 #include <iostream>
 
 extern yunit::TestSuite& FDEventQueueTestSuite();
+extern yunit::TestSuite& FDEventTestSuite();
 
 int main(int, char**) {
   int failed_test_case_count = 0;
@@ -39,6 +40,11 @@ int main(int, char**) {
   // FDEventQueue
   std::cout << "FDEventQueue:" << std::endl;
   failed_test_case_count += FDEventQueueTestSuite().run();
+  std::cout << std::endl;
+
+  // FDEvent
+  std::cout << "FDEvent:" << std::endl;
+  failed_test_case_count += FDEventTestSuite().run();
   std::cout << std::endl;
 
   return failed_test_case_count;

@@ -46,8 +46,8 @@ Selector::Selector() {
     throw Exception();
 }
 
-bool Selector::associate(socket_t socket_, int16_t events) {
-  if (events > 0) {
+bool Selector::associate(socket_t socket_, uint16_t events) {
+  if (events != 0) {
     for (iterator socket_i = begin(); socket_i != end(); ++socket_i) {
       if (*socket_i == socket_) {
         if (events & POLLERR)
@@ -126,7 +126,7 @@ Event* Selector::dequeue(const Time& timeout) {
     while (ret > 0 && socket_i != end()) {
       socket_t socket_ = *socket_i;
 
-      int16_t events = 0;
+      uint16_t events = 0;
 
       if (FD_ISSET(socket_, &except_fd_set_copy)) {
         events |= POLLERR;

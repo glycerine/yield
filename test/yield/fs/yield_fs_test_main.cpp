@@ -33,6 +33,7 @@
 
 extern yunit::TestSuite& StatTestSuite();
 extern yunit::TestSuite& DirectoryTestSuite();
+extern yunit::TestSuite& FileLogTestSuite();
 extern yunit::TestSuite& NamedPipeTestSuite();
 extern yunit::TestSuite& PathTestSuite();
 #ifdef __unix__
@@ -65,6 +66,11 @@ int main(int, char**) {
   // Directory
   std::cout << "Directory:" << std::endl;
   failed_test_case_count += DirectoryTestSuite().run();
+  std::cout << std::endl;
+
+  // FileLog
+  std::cout << "FileLog:" << std::endl;
+  failed_test_case_count += FileLogTestSuite().run();
   std::cout << std::endl;
 
   // NamedPipe

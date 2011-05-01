@@ -30,6 +30,7 @@
 #ifndef _YIELD_POLL_FD_EVENT_QUEUE_TEST_HPP_
 #define _YIELD_POLL_FD_EVENT_QUEUE_TEST_HPP_
 
+#include "../event_queue_test.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
@@ -116,11 +117,25 @@ private:
 
 
 template <class FDEventQueueType>
-class FDEventQueueAssociateOneTest
+class FDEventQueueAssociateTest
     : public FDEventQueueTest<FDEventQueue> {
 public:
   void run() {
     if (!get_fd_event_queue().associate(get_read_fd(), POLLIN))
+      throw Exception();
+  }
+};
+
+
+template <class FDEventQueueType>
+class FDEventQueueAssociateChangeTest
+    : public FDEventQueueTest<FDEventQueue> {
+public:
+  void run() {
+    if (!get_fd_event_queue().associate(get_read_fd(), POLLIN))
+      throw Exception();
+
+    if (!get_fd_event_queue().associate(get_read_fd(), POLLOUT))
       throw Exception();
   }
 };
@@ -141,7 +156,61 @@ public:
 
 
 template <class FDEventQueueType>
-class FDEventQueueDissociateOneTest
+class FDEventQueueAssociateZeroTest : public FDEventQueueTest<FDEventQueue> {
+public:
+  void run() {
+    if (!get_fd_event_queue().associate(get_read_fd(), POLLIN))
+      throw Exception();
+
+    if (!get_fd_event_queue().associate(get_read_fd(), 0))
+      throw Exception();
+
+    this->signal_pipe();
+
+    Event* event = get_fd_event_queue().trydequeue();
+    throw_assert_eq(event, NULL);
+  }
+};
+
+
+template <class FDEventQueueType>
+class FDEventQueueDequeueFDEventTest
+    : public FDEventQueueTest<FDEventQueue> {
+public:
+  void run() {
+    if (!get_fd_event_queue().associate(get_read_fd(), POLLIN))
+      throw Exception();
+
+    this->signal_pipe();
+
+    auto_Object<Event> event = get_fd_event_queue().dequeue();
+  }
+};
+
+
+template <class FDEventQueueType>
+class FDEventQueueDequeueWritableFDEventTest
+  : public FDEventQueueTest<FDEventQueue> {
+public:
+  void run() {
+    if (!get_fd_event_queue().associate(get_write_fd(), POLLOUT))
+      throw Exception();
+
+    auto_Object<FDEvent> fd_event
+    = object_cast<FDEvent>(get_fd_event_queue().dequeue());
+    throw_assert_eq(fd_event->get_fd(), get_write_fd());
+    throw_assert
+    (
+      (*fd_event & POLLOUT) == POLLOUT
+      ||
+      (*fd_event & POLLWRNORM) == POLLWRNORM
+   );
+  }
+};
+
+
+template <class FDEventQueueType>
+class FDEventQueueDissociateTest
     : public FDEventQueueTest<FDEventQueue> {
 public:
   void run() {
@@ -163,22 +232,7 @@ public:
 
 
 template <class FDEventQueueType>
-class FDEventQueuePollOneBlockingTest
-    : public FDEventQueueTest<FDEventQueue> {
-public:
-  void run() {
-    if (!get_fd_event_queue().associate(get_read_fd(), POLLIN))
-      throw Exception();
-
-    this->signal_pipe();
-
-    auto_Object<Event> event = get_fd_event_queue().dequeue();
-  }
-};
-
-
-template <class FDEventQueueType>
-class FDEventQueuePollOneTimedTest
+class FDEventTimedDequeueFDEventTest
     : public FDEventQueueTest<FDEventQueue> {
 public:
   void run() {
@@ -196,82 +250,63 @@ public:
 };
 
 
-
 template <class FDEventQueueType>
-class FDEventQueueToggleOneTest : public FDEventQueueTest<FDEventQueue> {
-public:
-  void run() {
-    if (!get_fd_event_queue().associate(get_read_fd(), POLLIN))
-      throw Exception();
-
-    if (!get_fd_event_queue().associate(get_read_fd(), 0))
-      throw Exception();
-
-    this->signal_pipe();
-
-    Event* event = get_fd_event_queue().trydequeue();
-    throw_assert_eq(event, NULL);
-  }
-};
-
-
-template <class FDEventQueueType>
-class FDEventQueueWantWriteTest : public FDEventQueueTest<FDEventQueue> {
-public:
-  void run() {
-    if (!get_fd_event_queue().associate(get_write_fd(), POLLOUT))
-      throw Exception();
-
-    auto_Object<FDEvent> fd_event
-    = object_cast<FDEvent>(get_fd_event_queue().dequeue());
-    throw_assert_eq(fd_event->get_fd(), get_write_fd());
-    throw_assert
-    (
-      (*fd_event & POLLOUT) == POLLOUT
-      ||
-      (*fd_event & POLLWRNORM) == POLLWRNORM
-    );
-  }
-};
-
-
-template <class FDEventQueueType>
-class FDEventQueueTestSuite : public yunit::TestSuite {
+class FDEventQueueTestSuite : public EventQueueTestSuite<FDEventQueue> {
 public:
   FDEventQueueTestSuite() {
     add(
-      "FDEventQueue::associate( fd )",
-      new FDEventQueueAssociateOneTest<FDEventQueue>
+      "FDEventQueue::associate",
+      new FDEventQueueAssociateTest<FDEventQueue>
     );
 
     add(
-      "FDEventQueue::associate( fd ) x 2",
+      "FDEventQueue::associate change",
+      new FDEventQueueAssociateChangeTest<FDEventQueue>
+    );
+
+    add(
+      "FDEventQueue::associate x 2",
       new FDEventQueueAssociateTwoTest<FDEventQueue>
     );
 
     add(
-      "FDEventQueue::dissociate( fd )",
-      new FDEventQueueDissociateOneTest<FDEventQueue>
+      "FDEventQueue::associate(fd, 0)",
+      new FDEventQueueAssociateZeroTest<FDEventQueue>
     );
 
     add(
-      "FDEventQueue::poll()",
-      new FDEventQueuePollOneBlockingTest<FDEventQueue>
+      "FDEventQueue::dequeue -> Event",
+      new EventQueueDequeueTest<FDEventQueue>
     );
 
     add(
-      "FDEventQueue::poll( timeout )",
-      new FDEventQueuePollOneTimedTest<FDEventQueue>
+      "FDEventQueue::dequeue -> FDEvent",
+      new FDEventQueueDequeueFDEventTest<FDEventQueue>
     );
 
     add(
-      "FDEventQueue::toggle",
-      new FDEventQueueToggleOneTest<FDEventQueue>
+      "FDEventQueue::dequeue -> FDEvent(fd, POLLOUT)",
+      new FDEventQueueDequeueWritableFDEventTest<FDEventQueue>
     );
 
     add(
-      "FDEventQueue::want_write",
-      new FDEventQueueWantWriteTest<FDEventQueue>
+      "FDEventQueue::dissociate",
+      new FDEventQueueDissociateTest<FDEventQueue>
+    );
+
+    add(
+      "FDEventQueue::timeddequeue -> Event",
+      new EventQueueTimedDequeueTest<FDEventQueue>
+    );
+
+    add(
+      "FDEventQueue::timeddequeue -> FDEvent",
+      new FDEventTimedDequeueFDEventTest<FDEventQueue>
+    );
+
+    add(
+      "FDEventQueue::trydequeue -> Event",
+      new EventQueueTryDequeueTest<FDEventQueue>
     );
   }
 };

@@ -43,23 +43,23 @@ namespace linux {
 using yield::thread::BlockingConcurrentQueue;
 
 EPoller::EPoller() {
+  uint32_t error_code;
   epfd = epoll_create(32768);
-  if (epfd == -1)
-    throw Exception();
+  if (epfd != -1) {
+    wake_fd = eventfd(0, 0);
+    if (wake_fd != -1) {
+      if (!associate(wake_fd, POLLIN))
+        error_code = static_cast<uint32_t>(errno);
+        close(wake_fd);
+      }
+    } else {
+      error_code = static_cast<uint32_t>(errno);
+      close(epfd);
+    }
+  } else
+    error_code = static_cast<uint32_t>(errno);
 
-  wake_fd = eventfd(0, 0);
-  if (wake_fd == -1) {
-    uint32_t error_code = static_cast<uint32_t>(errno);
-    close(epfd);
-    throw Exception(error_code);
-  }
-
-  if (!associate(wake_fd, POLLIN)) {
-    uint32_t error_code = static_cast<uint32_t>(errno);
-    close(epfd);
-    close(wake_fd);
-    throw Exception(error_code);
-  }
+  throw Exception(error_code);
 }
 
 EPoller::~EPoller() {

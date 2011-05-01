@@ -48,7 +48,7 @@ class Selector
 public:
   Selector();
 
-  bool associate(socket_t socket_, int16_t events);
+  bool associate(socket_t socket_, uint16_t events);
   bool dissociate(socket_t socket_);
 
   // yield::EventQueue

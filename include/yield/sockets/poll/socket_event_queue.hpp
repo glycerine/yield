@@ -51,13 +51,16 @@ public:
   SocketEventQueue();
   ~SocketEventQueue();
 
-  bool associate(socket_t socket_, int16_t events);
+public:
+  bool associate(socket_t socket_, uint16_t events);
   bool dissociate(socket_t socket_);
 
+public:
   // yield::EventQueue
   YO_NEW_REF Event& dequeue() {
     return EventQueue::dequeue();
   }
+
   YO_NEW_REF Event* dequeue(const Time& timeout);
   bool enqueue(YO_NEW_REF Event& event);
 
