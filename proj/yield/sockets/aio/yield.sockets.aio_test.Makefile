@@ -71,7 +71,7 @@ depclean:
 			
 lcov: ../../../../bin/yield/yield_sockets_aio_test
 	lcov --directory ../../../../build/yield/sockets/aio --zerocounters
-	../../../../bin/yield/yield_sockets_aio_test
+	-../../../../bin/yield/yield_sockets_aio_test
 	lcov --base-directory . --directory ../../../../build/yield/sockets/aio --capture --output-file yield.sockets.aio_test_lcov-$(TIMESTAMP)
 	mkdir yield.sockets.aio_test_lcov_html-$(TIMESTAMP)
 	genhtml -o yield.sockets.aio_test_lcov_html-$(TIMESTAMP) yield.sockets.aio_test_lcov-$(TIMESTAMP)

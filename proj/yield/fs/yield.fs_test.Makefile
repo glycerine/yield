@@ -83,7 +83,7 @@ depclean:
 			
 lcov: ../../../bin/yield/yield_fs_test
 	lcov --directory ../../../build/yield/fs --zerocounters
-	../../../bin/yield/yield_fs_test
+	-../../../bin/yield/yield_fs_test
 	lcov --base-directory . --directory ../../../build/yield/fs --capture --output-file yield.fs_test_lcov-$(TIMESTAMP)
 	mkdir yield.fs_test_lcov_html-$(TIMESTAMP)
 	genhtml -o yield.fs_test_lcov_html-$(TIMESTAMP) yield.fs_test_lcov-$(TIMESTAMP)

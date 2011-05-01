@@ -65,7 +65,7 @@ depclean:
 			
 lcov: ../../../bin/yield/yield_poll_test
 	lcov --directory ../../../build/yield/poll --zerocounters
-	../../../bin/yield/yield_poll_test
+	-../../../bin/yield/yield_poll_test
 	lcov --base-directory . --directory ../../../build/yield/poll --capture --output-file yield.poll_test_lcov-$(TIMESTAMP)
 	mkdir yield.poll_test_lcov_html-$(TIMESTAMP)
 	genhtml -o yield.poll_test_lcov_html-$(TIMESTAMP) yield.poll_test_lcov-$(TIMESTAMP)

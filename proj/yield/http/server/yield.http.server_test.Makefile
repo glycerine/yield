@@ -68,7 +68,7 @@ depclean:
 			
 lcov: ../../../../bin/yield/yield_http_server_test
 	lcov --directory ../../../../build/yield/http/server --zerocounters
-	../../../../bin/yield/yield_http_server_test
+	-../../../../bin/yield/yield_http_server_test
 	lcov --base-directory . --directory ../../../../build/yield/http/server --capture --output-file yield.http.server_test_lcov-$(TIMESTAMP)
 	mkdir yield.http.server_test_lcov_html-$(TIMESTAMP)
 	genhtml -o yield.http.server_test_lcov_html-$(TIMESTAMP) yield.http.server_test_lcov-$(TIMESTAMP)

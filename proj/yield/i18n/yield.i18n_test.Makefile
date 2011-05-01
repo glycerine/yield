@@ -68,7 +68,7 @@ depclean:
 			
 lcov: ../../../bin/yield/yield_i18n_test
 	lcov --directory ../../../build/yield/i18n --zerocounters
-	../../../bin/yield/yield_i18n_test
+	-../../../bin/yield/yield_i18n_test
 	lcov --base-directory . --directory ../../../build/yield/i18n --capture --output-file yield.i18n_test_lcov-$(TIMESTAMP)
 	mkdir yield.i18n_test_lcov_html-$(TIMESTAMP)
 	genhtml -o yield.i18n_test_lcov_html-$(TIMESTAMP) yield.i18n_test_lcov-$(TIMESTAMP)

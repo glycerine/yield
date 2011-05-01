@@ -62,7 +62,7 @@ depclean:
 			
 lcov: ../../../bin/yield/yield_aio_test
 	lcov --directory ../../../build/yield/aio --zerocounters
-	../../../bin/yield/yield_aio_test
+	-../../../bin/yield/yield_aio_test
 	lcov --base-directory . --directory ../../../build/yield/aio --capture --output-file yield.aio_test_lcov-$(TIMESTAMP)
 	mkdir yield.aio_test_lcov_html-$(TIMESTAMP)
 	genhtml -o yield.aio_test_lcov_html-$(TIMESTAMP) yield.aio_test_lcov-$(TIMESTAMP)

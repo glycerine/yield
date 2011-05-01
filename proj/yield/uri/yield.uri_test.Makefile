@@ -62,7 +62,7 @@ depclean:
 			
 lcov: ../../../bin/yield/yield_uri_test
 	lcov --directory ../../../build/yield/uri --zerocounters
-	../../../bin/yield/yield_uri_test
+	-../../../bin/yield/yield_uri_test
 	lcov --base-directory . --directory ../../../build/yield/uri --capture --output-file yield.uri_test_lcov-$(TIMESTAMP)
 	mkdir yield.uri_test_lcov_html-$(TIMESTAMP)
 	genhtml -o yield.uri_test_lcov_html-$(TIMESTAMP) yield.uri_test_lcov-$(TIMESTAMP)

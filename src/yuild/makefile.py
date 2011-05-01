@@ -234,7 +234,7 @@ endif""")
             
 lcov: %(output_file_path)s
     lcov --directory %(build_dir_path)s --zerocounters
-    %(output_file_path)s
+    -%(output_file_path)s
     lcov --base-directory . --directory %(build_dir_path)s --capture --output-file %(name)s_lcov-$(TIMESTAMP)
     mkdir %(name)s_lcov_html-$(TIMESTAMP)
     genhtml -o %(name)s_lcov_html-$(TIMESTAMP) %(name)s_lcov-$(TIMESTAMP)

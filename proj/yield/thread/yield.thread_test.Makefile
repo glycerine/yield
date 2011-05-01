@@ -65,7 +65,7 @@ depclean:
 			
 lcov: ../../../bin/yield/yield_thread_test
 	lcov --directory ../../../build/yield/thread --zerocounters
-	../../../bin/yield/yield_thread_test
+	-../../../bin/yield/yield_thread_test
 	lcov --base-directory . --directory ../../../build/yield/thread --capture --output-file yield.thread_test_lcov-$(TIMESTAMP)
 	mkdir yield.thread_test_lcov_html-$(TIMESTAMP)
 	genhtml -o yield.thread_test_lcov_html-$(TIMESTAMP) yield.thread_test_lcov-$(TIMESTAMP)

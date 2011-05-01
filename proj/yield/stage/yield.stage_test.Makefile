@@ -65,7 +65,7 @@ depclean:
 			
 lcov: ../../../bin/yield/yield_stage_test
 	lcov --directory ../../../build/yield/stage --zerocounters
-	../../../bin/yield/yield_stage_test
+	-../../../bin/yield/yield_stage_test
 	lcov --base-directory . --directory ../../../build/yield/stage --capture --output-file yield.stage_test_lcov-$(TIMESTAMP)
 	mkdir yield.stage_test_lcov_html-$(TIMESTAMP)
 	genhtml -o yield.stage_test_lcov_html-$(TIMESTAMP) yield.stage_test_lcov-$(TIMESTAMP)
