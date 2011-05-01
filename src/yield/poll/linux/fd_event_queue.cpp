@@ -34,6 +34,7 @@
 
 #include <iostream>
 #include <errno.h>
+#include <poll.h>
 #include <sys/epoll.h>
 #include <sys/eventfd.h>
 
