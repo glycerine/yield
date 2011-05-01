@@ -55,9 +55,11 @@ protected:
   Log& get_log() const {
     return *log;
   }
+
   std::ostringstream& get_log_oss() {
     return log_oss;
   }
+
   const string& get_test_string() {
     return test_string;
   }
@@ -69,12 +71,12 @@ private:
 };
 
 TEST_EX(Log, get_stream, LogTest) {
-  get_log().get_stream() << get_test_string();
+  get_log().get_stream() << get_test_string().c_str();
   throw_assert_ge(get_log_oss().str().size(), get_test_string().size());
 }
 
 TEST_EX(Log, get_stream_ignore, LogTest) {
-  get_log().get_stream(Log::Level(8)) << get_test_string();
+  get_log().get_stream(Log::Level(8)) << get_test_string().c_str();
   throw_assert_eq(get_log_oss().str().size(), 0);
 }
 
