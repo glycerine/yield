@@ -32,6 +32,8 @@
 #include "yield/buffer.hpp"
 #include "yunit.hpp"
 
+#include <sstream>
+
 TEST_SUITE(Buffer);
 
 namespace yield {
@@ -71,6 +73,17 @@ TEST(Buffer, constructor_alignment_capacity) {
 TEST(Buffer, constructor_capacity) {
   auto_Object<Buffer> buffer = new Buffer(2);
   throw_assert_eq(buffer->capacity(), 2);
+}
+
+class TestBuffer : public Buffer {
+public:
+  TestBuffer()
+    : Buffer(Buffer::getpagesize(), static_cast<void*>(NULL)) {
+  }
+};
+
+TEST(Buffer, constructor_capacity_data) {
+  auto_Object<TestBuffer> buffer = new TestBuffer;
 }
 
 TEST(Buffer, copy_alignment_capacity_data_size) {
@@ -218,6 +231,28 @@ TEST(Buffer, operator_equals_string) {
   throw_assert_ne(*buffer, string("text"));
 }
 
+TEST(Buffer, print) {
+  auto_Object<Buffer> buffer = Buffer::copy("test");
+
+  {
+    std::ostringstream oss;
+    oss << *buffer;
+    throw_assert_ne(oss.str().size(), 0);
+  }
+
+  {
+    std::ostringstream oss;
+    oss << &buffer.get();
+    throw_assert_ne(oss.str().size(), 0);
+  }
+
+  {
+    std::ostringstream oss;
+    oss << static_cast<Buffer*>(NULL);
+    throw_assert_eq(oss.str(), "NULL");
+  }
+}
+
 TEST(Buffer, put_Buffer) {
   auto_Object<Buffer> buffer = new Buffer(2);
   auto_Object<Buffer> buffer2 = new Buffer(2);
@@ -282,8 +317,16 @@ TEST(Buffer, put_string) {
 TEST(Buffer, set_next_buffer) {
   auto_Object<Buffer> buffer = new Buffer(2);
   auto_Object<Buffer> buffer2 = new Buffer(2);
+  auto_Object<Buffer> buffer3 = new Buffer(2);
+
   buffer->set_next_buffer(buffer2->inc_ref());
-  buffer->set_next_buffer(&buffer2->inc_ref());
+  throw_assert_eq(buffer->get_next_buffer(), &buffer2.get());
+
+  buffer->set_next_buffer(&buffer3->inc_ref());
+  throw_assert_eq(buffer->get_next_buffer(), &buffer3.get());
+
+  buffer->set_next_buffer(NULL);
+  throw_assert_eq(buffer->get_next_buffer(), NULL);  
 }
 
 TEST(Buffer, size) {

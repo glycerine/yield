@@ -27,12 +27,13 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "yield/auto_object.hpp"
 #include "yield/assert.hpp"
+#include "yield/buffer.hpp"
 #include "yield/log.hpp"
 #include "yunit.hpp"
 
 #include <sstream>
-
 
 TEST_SUITE(Log);
 
@@ -82,6 +83,12 @@ TEST_EX(Log, get_stream_ignore, LogTest) {
 
 TEST_EX(Log, Stream_copy, LogTest) {
   Log::Stream log_stream(get_log().get_stream());
+}
+
+TEST_EX(Log, write_Buffer, LogTest) {
+  auto_Object<Buffer> buffer = Buffer::copy(get_test_string());
+  get_log().write(*buffer, Log::Level::EMERG);
+  throw_assert_eq(get_log_oss().str().size(), get_test_string().size());
 }
 
 TEST_EX(Log, write_ignore, LogTest) {
