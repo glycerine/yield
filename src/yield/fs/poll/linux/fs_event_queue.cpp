@@ -318,7 +318,7 @@ FSEventQueue::Watch::read(
 FSEventQueue::FSEventQueue(YO_NEW_REF Log* log) : log(log) {
   inotify_fd = inotify_init();
   if (inotify_fd != -1) {
-    if (fd_event_queue.associate(inotify_fd, POLLIN)) {
+    if (fd_event_queue.associate(inotify_fd, FDEvent::TYPE_READ_READY)) {
       watches = new Watches;
     } else {
       close(inotify_fd);

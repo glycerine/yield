@@ -253,7 +253,10 @@ public:
       = object_cast<sendfileAIOCB>(this->get_aio_queue().dequeue());
     throw_assert_eq(&out_aiocb.get(), &aiocb.get());
     throw_assert_eq(out_aiocb->get_error(), 0);
-    throw_assert_eq(out_aiocb->get_return(), stbuf->get_size());
+    throw_assert_eq(
+      out_aiocb->get_return(),
+      static_cast<ssize_t>(stbuf->get_size())
+    );
   }
 
   void setup() {
