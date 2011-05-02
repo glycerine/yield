@@ -32,6 +32,9 @@
 
 #include "yield/object.hpp"
 
+struct _FILETIME;
+typedef _FILETIME FILETIME;
+
 struct statvfs {
   unsigned long f_bsize;    // File system block size.
   unsigned long f_frsize;   // Fundamental file system block size.
@@ -106,7 +109,23 @@ public:
   bool unlink(const Path&);
 
   bool utime(const Path&, const DateTime& atime, const DateTime& mtime);
-  bool utime(const Path&, const DateTime& atime, const DateTime& mtime, const DateTime& ctime);
+
+  bool
+  utime(
+    const Path&,
+    const DateTime& atime,
+    const DateTime& mtime,
+    const DateTime& ctime
+  );
+
+private:
+  bool
+  utime(
+    const Path& path,
+    const FILETIME* ftCreationTime,
+    const FILETIME* ftLastAccessTime,
+    const FILETIME* ftLastWriteTime
+  );
 };
 }
 }

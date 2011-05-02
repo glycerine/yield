@@ -322,19 +322,9 @@ FileSystem::utime(
   const DateTime& atime,
   const DateTime& mtime
 ) {
-  File* file = open(path, O_WRONLY);
-  if (file != NULL) {
-    FILETIME ftLastAccessTime = atime;
-    FILETIME ftLastWriteTime = mtime;
-    if (SetFileTime(*file, NULL, &ftLastAccessTime, &ftLastWriteTime)) {
-      File::dec_ref(*file);
-      return true;
-    } else {
-      File::dec_ref(*file);
-      return false;
-    }
-  } else
-    return false;
+  FILETIME ftLastAccessTime = atime;
+  FILETIME ftLastWriteTime = mtime;
+  return utime(path, NULL, &ftLastAccessTime, &ftLastWriteTime);
 }
 
 bool
@@ -344,20 +334,49 @@ FileSystem::utime(
   const DateTime& mtime,
   const DateTime& ctime
 ) {
-  File* file = open(path, O_WRONLY);
-  if (file != NULL) {
-    FILETIME ftCreationTime = ctime;
-    FILETIME ftLastAccessTime = atime;
-    FILETIME ftLastWriteTime = mtime;
-    if (SetFileTime(*file, &ftCreationTime, &ftLastAccessTime, &ftLastWriteTime)) {
-      File::dec_ref(*file);
-      return true;
-    } else {
-      File::dec_ref(*file);
-      return false;
+  FILETIME ftCreationTime = ctime;
+  FILETIME ftLastAccessTime = atime;
+  FILETIME ftLastWriteTime = mtime;
+  return utime(path, &ftCreationTime, &ftLastAccessTime, &ftLastWriteTime);
+}
+
+bool FileSystem::utime(
+  const Path& path,
+  const FILETIME* ftCreationTime,
+  const FILETIME* ftLastAccessTime,
+  const FILETIME* ftLastWriteTime
+) {
+  if (isdir(path)) {
+    HANDLE hDir
+      = CreateFile(
+          path.c_str(),
+          GENERIC_WRITE,
+          FILE_SHARE_READ|FILE_SHARE_DELETE,
+          NULL,
+          OPEN_EXISTING,
+          FILE_FLAG_BACKUP_SEMANTICS,
+          NULL
+        );
+
+    if (hDir != INVALID_HANDLE_VALUE) {
+      if (SetFileTime(hDir, ftCreationTime, ftLastAccessTime, ftLastWriteTime)) {
+        CloseHandle(hDir);
+        return true;
+      } else
+        CloseHandle(hDir);
     }
-  } else
-    return false;
+  } else {
+    File* file = open(path, O_WRONLY);
+    if (file != NULL) {
+      if (SetFileTime(*file, ftCreationTime, ftLastAccessTime, ftLastWriteTime)) {
+        File::dec_ref(*file);
+        return true;
+      } else
+        File::dec_ref(*file);
+    }
+  }
+
+  return false;
 }
 }
 }
