@@ -38,6 +38,7 @@
 #include "yield/log.hpp"
 #include "yield/fs/file_system.hpp"
 #include "yield/fs/path.hpp"
+#include "yield/fs/poll/fs_event.hpp"
 #include "yunit.hpp"
 
 namespace yield {
