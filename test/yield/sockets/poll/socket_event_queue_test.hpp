@@ -214,7 +214,7 @@ public:
         socket_event->get_socket() == this->get_read_socket()
         ||
         socket_event->get_socket() == this->get_write_socket()
-      );
+     );
       throw_assert_eq(socket_event->get_type(), SocketEvent::TYPE_READ_READY);
     }
   }
@@ -261,49 +261,49 @@ class SocketEventQueueTestSuite : public yunit::TestSuite {
 public:
   SocketEventQueueTestSuite() {
     add(
-      "SocketEventQueue::associate( socket )",
+      "SocketEventQueue::associate(socket)",
       new SocketEventQueueAssociateOneTest<SocketEventQueueType>
-    );
+   );
 
     add(
-      "SocketEventQueue::associate( socket ) x 2",
+      "SocketEventQueue::associate(socket) x 2",
       new SocketEventQueueAssociateTwoTest<SocketEventQueueType>
-    );
+   );
 
     add(
-      "SocketEventQueue::dissociate( socket )",
+      "SocketEventQueue::dissociate(socket)",
       new SocketEventQueueDissociateOneTest<SocketEventQueueType>
-    );
+   );
 
     add(
-      "SocketEventQueue::dissociate( socket ) x 2",
+      "SocketEventQueue::dissociate(socket) x 2",
       new SocketEventQueueDissociateTwoTest<SocketEventQueueType>
-    );
+   );
 
     add(
       "SocketEventQueue::poll()",
       new SocketEventQueuePollOneBlockingTest<SocketEventQueueType>
-    );
+   );
 
     add(
-      "SocketEventQueue::poll( timeout )",
+      "SocketEventQueue::poll(timeout)",
       new SocketEventQueuePollOneTimedTest<SocketEventQueueType>
-    );
+   );
 
     add(
       "SocketEventQueue::poll() x 2",
       new SocketEventQueuePollTwoTest<SocketEventQueueType>
-    );
+   );
 
     add(
       "SocketEventQueue::toggle",
       new SocketEventQueueToggleOneTest<SocketEventQueueType>
-    );
+   );
 
     add(
       "SocketEventQueue::want_send",
       new SocketEventQueueWantSendTest<SocketEventQueueType>
-    );
+   );
   }
 };
 }

@@ -274,22 +274,40 @@ public:
   AIOQueueTestSuite() {
     add("AIOQueue::associate", new AIOQueueAssociateTest<AIOQueueType>);
 
-    add("AIOQueue::dequeue", new EventQueueDequeueTest<AIOQueueType>);
-
-    add("AIOQueue + recv", new AIOQueueRecvTest<AIOQueueType>);
-    add("AIOQueue + recv queued", new AIOQueueRecvQueuedTest<AIOQueueType>);
-    add("AIOQueue + recv split", new AIOQueueRecvSplitTest<AIOQueueType>);
-
-    add("AIOQueue + send", new AIOQueueSendTest<AIOQueueType>);
-    add("AIOQueue + sendfile", new AIOQueueSendFileTest<AIOQueueType>);
+    add("AIOQueue::dequeue -> Event", new EventQueueDequeueTest<AIOQueueType>);
 
     add(
-      "AIOQueue::timeddequeue",
+      "AIOQueue::dequeue -> recvAIOCB",
+      new AIOQueueRecvTest<AIOQueueType>
+    );
+
+    add(
+      "AIOQueue::dequeue -> recvAIOCB queued",
+      new AIOQueueRecvQueuedTest<AIOQueueType>
+    );
+
+    add(
+      "AIOQueue::dequeue -> recvAIOCB split",
+      new AIOQueueRecvSplitTest<AIOQueueType>
+    );
+
+    add(
+      "AIOQueue::dequeue -> sendAIOCB",
+      new AIOQueueSendTest<AIOQueueType>
+    );
+
+    add(
+      "AIOQueue::dequeue -> sendfileAIOCB",
+      new AIOQueueSendFileTest<AIOQueueType>
+    );
+
+    add(
+      "AIOQueue::timeddequeue -> Event",
       new EventQueueTimedDequeueTest<AIOQueueType>
     );
 
     add(
-      "AIOQueue::trydequeue",
+      "AIOQueue::trydequeue -> Event",
       new EventQueueTryDequeueTest<AIOQueueType>
     );
   }

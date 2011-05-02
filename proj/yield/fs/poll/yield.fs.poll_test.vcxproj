@@ -99,9 +99,15 @@
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
-    <ClCompile Include="..\..\..\..\test\yield\fs\poll\fs_event_queue_test.cpp">
-    </ClCompile>
+    <ClInclude Include="..\..\..\..\test\yield\fs\poll\fs_event_queue_test.hpp" />
     <ClCompile Include="..\..\..\..\test\yield\fs\poll\fs_event_test.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\test\yield\fs\poll\linux\fs_event_queue_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\test\yield\fs\poll\win32\fs_event_queue_test.cpp">
+      <ObjectFileName>$(IntDir)win32\fs_event_queue_test.obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="..\..\..\..\test\yield\fs\poll\yield_fs_poll_test_main.cpp">
     </ClCompile>

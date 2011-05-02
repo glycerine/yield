@@ -1,4 +1,4 @@
-// yield_fs_poll_test_main.cpp
+// fs_event_queue_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,39 +27,10 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yunit.hpp"
+#include "../fs_event_queue_test.hpp"
+#include "yield/fs/poll/linux/fs_event_queue.hpp"
 
-#include <iostream>
-
-extern yunit::TestSuite& FSEventTestSuite();
-#ifdef __linux__
-extern yunit::TestSuite& LinuxFSEventQueueTestSuite();
-#endif
-#ifdef _WIN32
-extern yunit::TestSuite& Win32FSEventQueueTestSuite();
-#endif
-
-int main(int, char**) {
-  int failed_test_case_count = 0;
-
-  // FSEvent
-  std::cout << "FSEvent:" << std::endl;
-  failed_test_case_count += FSEventTestSuite().run();
-  std::cout << std::endl;
-
-#ifdef __linux__
-  // LinuxFSEventQueue
-  std::cout << "LinuxFSEventQueue:" << std::endl;
-  failed_test_case_count += LinuxFSEventQueueTestSuite().run();
-  std::cout << std::endl;
-#endif
-
-#ifdef _WIN32
-  // Win32FSEventQueue
-  std::cout << "Win32FSEventQueue:" << std::endl;
-  failed_test_case_count += Win32FSEventQueueTestSuite().run();
-  std::cout << std::endl;
-#endif
-
-  return failed_test_case_count;
-}
+TEST_SUITE_EX(
+  LinuxFSEventQueue,
+  yield::fs::poll::FSEventQueueTestSuite<yield::fs::poll::linux::FSEventQueue>
+);
