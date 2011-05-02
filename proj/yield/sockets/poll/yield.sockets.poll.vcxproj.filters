@@ -4,13 +4,13 @@
     <Filter Include="Source Files">
       <UniqueIdentifier>{77683e51-f7b6-4a79-9db1-690661af83b8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\win32">
-      <UniqueIdentifier>{cdb7feec-ef9c-4032-9a0d-84577825175b}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
       <UniqueIdentifier>{ae74aeb4-fda0-4fc4-a415-97fb0825ab27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\win32">
+      <UniqueIdentifier>{012968f8-283d-4032-ae17-a983626692e5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -20,22 +20,13 @@
     <ClInclude Include="..\..\..\..\include\yield\sockets\poll\socket_event_queue.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\include\yield\sockets\poll\win32\socket_event_queue.hpp">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\yield\sockets\poll\socket_event_queue.cpp">
+    <ClCompile Include="..\..\..\..\src\yield\sockets\poll\win32\socket_event_queue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\sockets\poll\win32\selector.cpp">
-      <Filter>Source Files\win32</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\..\..\src\yield\sockets\poll\win32\selector.hpp">
-      <Filter>Source Files\win32</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\..\..\src\yield\sockets\poll\win32\wsapoller.cpp">
-      <Filter>Source Files\win32</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\..\..\src\yield\sockets\poll\win32\wsapoller.hpp">
-      <Filter>Source Files\win32</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

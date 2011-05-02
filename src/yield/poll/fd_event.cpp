@@ -40,7 +40,7 @@ namespace poll {
 const FDEvent::Type FDEvent::TYPE_ERROR = 0x0001;
 const FDEvent::Type FDEvent::TYPE_HUP = 0x0002;
 const FDEvent::Type FDEvent::TYPE_READ_READY = 0x0100 | 0x0200;
-const FDEvent::Type FDEvent::TYPE_WRITE_READY = 0x0200;
+const FDEvent::Type FDEvent::TYPE_WRITE_READY = 0x0010;
 #else
 const FDEvent::Type FDEvent::TYPE_ERROR = POLLERR;
 const FDEvent::Type FDEvent::TYPE_HUP = POLLHUP;

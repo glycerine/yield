@@ -30,51 +30,21 @@
 #ifndef _YIELD_SOCKETS_POLL_SOCKET_EVENT_QUEUE_HPP_
 #define _YIELD_SOCKETS_POLL_SOCKET_EVENT_QUEUE_HPP_
 
-#include "yield/event_queue.hpp"
+#include "yield/sockets/poll/socket_event.hpp"
+#ifdef _WIN32
+#include "yield/sockets/poll/win32/socket_event_queue.hpp"
+#else
+#include "yield/poll/fd_event_queue.hpp"
+#endif
 
 namespace yield {
-namespace poll {
-class FDEventQueue;
-}
-
 namespace sockets {
 namespace poll {
 #ifdef _WIN32
-namespace win32 {
-class WSAPoller;
-class Selector;
-}
-#endif
-
-class SocketEventQueue : public EventQueue {
-public:
-  SocketEventQueue();
-  ~SocketEventQueue();
-
-public:
-  bool associate(socket_t socket_, uint16_t events);
-  bool dissociate(socket_t socket_);
-
-public:
-  // yield::EventQueue
-  YO_NEW_REF Event& dequeue() {
-    return EventQueue::dequeue();
-  }
-
-  YO_NEW_REF Event* dequeue(const Time& timeout);
-  bool enqueue(YO_NEW_REF Event& event);
-
-private:
-#ifdef _WIN32
-#if _WIN32_WINNT >= 0x0600
-  win32::WSAPoller* pimpl;
+typedef win32::SocketEventQueue SocketEventQueue;
 #else
-  win32::Selector* pimpl;
+typedef yield::poll::FDEventQueue SocketEventQueue;
 #endif
-#else
-  yield::poll::FDEventQueue* pimpl;
-#endif
-};
 }
 }
 }

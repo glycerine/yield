@@ -95,19 +95,13 @@
   <ItemGroup Label="ClIncludeItems">
     <ClInclude Include="..\..\..\..\include\yield\sockets\poll\socket_event.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\sockets\poll\socket_event_queue.hpp" />
+    <ClInclude Include="..\..\..\..\include\yield\sockets\poll\win32\socket_event_queue.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
-    <ClCompile Include="..\..\..\..\src\yield\sockets\poll\socket_event_queue.cpp">
+    <ClCompile Include="..\..\..\..\src\yield\sockets\poll\win32\socket_event_queue.cpp">
+      <ObjectFileName>$(IntDir)win32\socket_event_queue.obj</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\sockets\poll\win32\selector.cpp">
-      <ObjectFileName>$(IntDir)win32\selector.obj</ObjectFileName>
-    </ClCompile>
-    <ClInclude Include="..\..\..\..\src\yield\sockets\poll\win32\selector.hpp" />
-    <ClCompile Include="..\..\..\..\src\yield\sockets\poll\win32\wsapoller.cpp">
-      <ObjectFileName>$(IntDir)win32\wsapoller.obj</ObjectFileName>
-    </ClCompile>
-    <ClInclude Include="..\..\..\..\src\yield\sockets\poll\win32\wsapoller.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ProjectReferenceItems">

@@ -1,4 +1,4 @@
-// yield/sockets/poll/win32/wsapoller.hpp
+// yield/sockets/poll/win32/socket_event_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,47 +27,47 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_SOCKETS_POLL_WIN32_WSAPOLLER_HPP_
-#define _YIELD_SOCKETS_POLL_WIN32_WSAPOLLER_HPP_
+#ifndef _YIELD_SOCKETS_POLL_WIN32_SOCKET_EVENT_QUEUE_HPP_
+#define _YIELD_SOCKETS_POLL_WIN32_SOCKET_EVENT_QUEUE_HPP_
 
-#include "../../win32/winsock.hpp"
 #include "yield/event_queue.hpp"
-#include "yield/sockets/socket_pair.hpp"
-#include "yield/thread/blocking_concurrent_queue.hpp"
-
 
 namespace yield {
 namespace sockets {
-namespace poll {
 class SocketPair;
 
-
+namespace poll {
 namespace win32 {
-#if _WIN32_WINNT >= 0x0600
-class WSAPoller
-  : public EventQueue,
-    private yield::thread::BlockingConcurrentQueue<Event> {
+class SocketEventQueue : public EventQueue {
 public:
-  WSAPoller();
+  SocketEventQueue();
+  ~SocketEventQueue();
 
-  bool associate(socket_t socket_, uint16_t events);
+public:  
+  bool associate(socket_t socket_, uint16_t socket_event_types);
   bool dissociate(socket_t socket_);
 
+public:
   // yield::EventQueue
   YO_NEW_REF Event& dequeue() {
     return EventQueue::dequeue();
   }
+
   YO_NEW_REF Event* dequeue(const Time& timeout);
   bool enqueue(YO_NEW_REF Event& event);
+
   YO_NEW_REF Event* trydequeue() {
     return EventQueue::trydequeue();
   }
 
 private:
-  vector<pollfd> pollfds;
-  yield::sockets::SocketPair wake_socket_pair;
+  class SocketPollerSelector;
+  class SocketPoller;
+  class SocketSelector;
+
+private:
+  SocketPollerSelector* pimpl;
 };
-#endif
 }
 }
 }

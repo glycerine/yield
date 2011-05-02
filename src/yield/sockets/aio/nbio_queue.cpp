@@ -74,7 +74,7 @@ Event* NBIOQueue::dequeue(const Time& timeout) {
         debug_assert_ne(socket_state_i, this->state.end());
         SocketState* socket_state = socket_state_i->second;
 
-        uint16_t want_socket_events = 0;
+        uint16_t want_socket_event_types = 0;
 
         for (uint8_t aiocb_priority = 0; aiocb_priority < 4; ++aiocb_priority) {
           AIOCB* aiocb = socket_state->aiocb_queues[aiocb_priority];
@@ -102,17 +102,17 @@ Event* NBIOQueue::dequeue(const Time& timeout) {
 
               return aiocb;
             } else if (aiocb_retry_status == RETRY_STATUS_WANT_READ) {
-              want_socket_events |= POLLIN;
+              want_socket_event_types |= SocketEvent::TYPE_READ_READY;
               break;
             } else if (aiocb_retry_status == RETRY_STATUS_WANT_WRITE) {
-              want_socket_events |= POLLOUT;
+              want_socket_event_types |= SocketEvent::TYPE_WRITE_READY;
               break;
             }
           }
         }
 
-        debug_assert_ne(want_socket_events, 0);
-        socket_event_queue.associate(socket_, want_socket_events);
+        debug_assert_ne(want_socket_event_types, 0);
+        socket_event_queue.associate(socket_, want_socket_event_types);
       }
       break;
 
@@ -130,10 +130,22 @@ Event* NBIOQueue::dequeue(const Time& timeout) {
           switch (retry(*aiocb)) {
           case RETRY_STATUS_COMPLETE:
           case RETRY_STATUS_ERROR: return aiocb;
-          case RETRY_STATUS_WANT_READ:
-            socket_event_queue.associate(aiocb->get_socket(), POLLIN); break;
-          case RETRY_STATUS_WANT_WRITE:
-            socket_event_queue.associate(aiocb->get_socket(), POLLOUT); break;
+
+          case RETRY_STATUS_WANT_READ: {
+            socket_event_queue.associate(
+              aiocb->get_socket(),
+              SocketEvent::TYPE_READ_READY
+            );
+          }
+          break;
+
+          case RETRY_STATUS_WANT_WRITE: {
+            socket_event_queue.associate(
+              aiocb->get_socket(),
+              SocketEvent::TYPE_WRITE_READY
+            );
+          }
+          break;
           }
 
           SocketState* socket_state = new SocketState();
@@ -164,10 +176,22 @@ Event* NBIOQueue::dequeue(const Time& timeout) {
             case RETRY_STATUS_COMPLETE:
             case RETRY_STATUS_ERROR:
               debug_assert_false(socket_state->empty()); return aiocb;
-            case RETRY_STATUS_WANT_READ:
-              socket_event_queue.associate(aiocb->get_socket(), POLLIN); break;
-            case RETRY_STATUS_WANT_WRITE:
-              socket_event_queue.associate(aiocb->get_socket(), POLLOUT); break;
+
+            case RETRY_STATUS_WANT_READ: {
+              socket_event_queue.associate(
+                aiocb->get_socket(),
+                SocketEvent::TYPE_READ_READY
+              );
+            }
+            break;
+
+            case RETRY_STATUS_WANT_WRITE: {
+              socket_event_queue.associate(
+                aiocb->get_socket(),
+                SocketEvent::TYPE_WRITE_READY
+              );
+            }
+            break;
             }
           }
 

@@ -84,7 +84,7 @@ class SocketEventQueueAssociateOneTest
     : public SocketEventQueueTest<SocketEventQueueType> {
 public:
   void run() {
-    if (!this->get_socket_event_queue().associate(this->get_read_socket(), POLLIN))
+    if (!this->get_socket_event_queue().associate(this->get_read_socket(), SocketEvent::TYPE_READ_READY))
       throw Exception();
   }
 };
@@ -95,10 +95,10 @@ class SocketEventQueueAssociateTwoTest
     : public SocketEventQueueTest<SocketEventQueueType> {
 public:
   void run() {
-    if (!this->get_socket_event_queue().associate(this->get_read_socket(), POLLIN))
+    if (!this->get_socket_event_queue().associate(this->get_read_socket(), SocketEvent::TYPE_READ_READY))
       throw Exception();
 
-    if (!this->get_socket_event_queue().associate(this->get_write_socket(), POLLOUT))
+    if (!this->get_socket_event_queue().associate(this->get_write_socket(), SocketEvent::TYPE_WRITE_READY))
       throw Exception();
   }
 };
@@ -109,7 +109,7 @@ class SocketEventQueueDissociateOneTest
     : public SocketEventQueueTest<SocketEventQueueType> {
 public:
   void run() {
-    if (!this->get_socket_event_queue().associate(this->get_read_socket(), POLLIN))
+    if (!this->get_socket_event_queue().associate(this->get_read_socket(), SocketEvent::TYPE_READ_READY))
       throw Exception();
 
     if (!this->get_socket_event_queue().dissociate(this->get_read_socket()))
@@ -120,7 +120,7 @@ public:
     Event* event = this->get_socket_event_queue().trydequeue();
     throw_assert_eq(event, NULL);
 
-    if (!this->get_socket_event_queue().associate(this->get_read_socket(), POLLIN))
+    if (!this->get_socket_event_queue().associate(this->get_read_socket(), SocketEvent::TYPE_READ_READY))
       throw Exception(); // associate after dissociate should succeed
   }
 };
@@ -131,9 +131,9 @@ class SocketEventQueueDissociateTwoTest
     : public SocketEventQueueTest<SocketEventQueueType> {
 public:
   void run() {
-    if (!this->get_socket_event_queue().associate(this->get_read_socket(), POLLIN))
+    if (!this->get_socket_event_queue().associate(this->get_read_socket(), SocketEvent::TYPE_READ_READY))
       throw Exception();
-    if (!this->get_socket_event_queue().associate(this->get_write_socket(), POLLIN))
+    if (!this->get_socket_event_queue().associate(this->get_write_socket(), SocketEvent::TYPE_READ_READY))
       throw Exception();
 
     if (!this->get_socket_event_queue().dissociate(this->get_read_socket()))
@@ -145,7 +145,7 @@ public:
     auto_Object<SocketEvent> socket_event
       = object_cast<SocketEvent>(this->get_socket_event_queue().dequeue());
     throw_assert_eq(socket_event->get_fd(), this->get_write_socket());
-    throw_assert_ne(*socket_event & POLLIN, 0);
+    throw_assert_eq(socket_event->get_type(), SocketEvent::TYPE_READ_READY);
     char m;
     if (socket_event->get_socket() == this->get_read_socket())
       this->get_read_socket().recv(&m, 1, 0);
@@ -163,7 +163,7 @@ class SocketEventQueuePollOneBlockingTest
     : public SocketEventQueueTest<SocketEventQueueType> {
 public:
   void run() {
-    if (!this->get_socket_event_queue().associate(this->get_read_socket(), POLLIN))
+    if (!this->get_socket_event_queue().associate(this->get_read_socket(), SocketEvent::TYPE_READ_READY))
       throw Exception();
 
     this->get_write_socket().send("m", 1, 0);
@@ -179,7 +179,7 @@ class SocketEventQueuePollOneTimedTest
     : public SocketEventQueueTest<SocketEventQueueType> {
 public:
   void run() {
-    if (!this->get_socket_event_queue().associate(this->get_read_socket(), POLLIN))
+    if (!this->get_socket_event_queue().associate(this->get_read_socket(), SocketEvent::TYPE_READ_READY))
       throw Exception();
 
     this->get_write_socket().send("m", 1, 0);
@@ -198,9 +198,9 @@ class SocketEventQueuePollTwoTest
     : public SocketEventQueueTest<SocketEventQueueType> {
 public:
   void run() {
-    if (!this->get_socket_event_queue().associate(this->get_read_socket(), POLLIN))
+    if (!this->get_socket_event_queue().associate(this->get_read_socket(), SocketEvent::TYPE_READ_READY))
       throw Exception();
-    if (!this->get_socket_event_queue().associate(this->get_write_socket(), POLLIN))
+    if (!this->get_socket_event_queue().associate(this->get_write_socket(), SocketEvent::TYPE_READ_READY))
       throw Exception();
 
     this->get_read_socket().send("m", 1, 0);
@@ -215,7 +215,7 @@ public:
         ||
         socket_event->get_socket() == this->get_write_socket()
       );
-      throw_assert_ne(*socket_event & POLLIN, 0);
+      throw_assert_eq(socket_event->get_type(), SocketEvent::TYPE_READ_READY);
     }
   }
 };
@@ -226,10 +226,10 @@ class SocketEventQueueToggleOneTest
     : public SocketEventQueueTest<SocketEventQueueType> {
 public:
   void run() {
-    if (!this->get_socket_event_queue().associate(this->get_read_socket(), POLLIN | POLLOUT))
+    if (!this->get_socket_event_queue().associate(this->get_read_socket(), SocketEvent::TYPE_READ_READY | SocketEvent::TYPE_WRITE_READY))
       throw Exception();
 
-    if (!this->get_socket_event_queue().associate(this->get_read_socket(), POLLIN))
+    if (!this->get_socket_event_queue().associate(this->get_read_socket(), SocketEvent::TYPE_READ_READY))
       throw Exception();
 
     this->get_write_socket().send("m", 1, 0);
@@ -245,13 +245,13 @@ class SocketEventQueueWantSendTest
     : public SocketEventQueueTest<SocketEventQueueType> {
 public:
   void run() {
-    if (!this->get_socket_event_queue().associate(this->get_read_socket(), POLLOUT))
+    if (!this->get_socket_event_queue().associate(this->get_read_socket(), SocketEvent::TYPE_WRITE_READY))
       throw Exception();
 
     auto_Object<SocketEvent> socket_event
     = object_cast<SocketEvent>(this->get_socket_event_queue().dequeue());
     throw_assert_eq(socket_event->get_socket(), this->get_read_socket());
-    throw_assert_ne(*socket_event & POLLOUT, 0);
+    throw_assert_eq(socket_event->get_type(), SocketEvent::TYPE_WRITE_READY);
   }
 };
 
