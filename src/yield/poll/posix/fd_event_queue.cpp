@@ -98,7 +98,7 @@ YO_NEW_REF Event* FDEventQueue::dequeue(const Time& timeout) {
           read(wake_pipe[0], &data, sizeof(data));
           return BlockingConcurrentQueue<Event>::trydequeue();
         } else
-          return new FDEvent(pollfd_.revents, pollfd_.fd);
+          return new FDEvent(pollfd_.fd, pollfd_.revents);
 
         if (--ret == 0) break;
       }
