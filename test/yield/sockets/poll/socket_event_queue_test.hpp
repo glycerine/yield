@@ -30,41 +30,33 @@
 #ifndef _YIELD_SOCKETS_POLL_SOCKET_EVENT_QUEUE_TEST_HPP_
 #define _YIELD_SOCKETS_POLL_SOCKET_EVENT_QUEUE_TEST_HPP_
 
+#include "../../event_queue_test.hpp"
 #include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/exception.hpp"
 #include "yield/sockets/poll/socket_event.hpp"
-#include "yield/sockets/poll/socket_event_queue.hpp"
 #include "yield/sockets/socket_pair.hpp"
 #include "yunit.hpp"
 
 namespace yield {
 namespace sockets {
 namespace poll {
-template <class SocketEventQueueType>
 class SocketEventQueueTest : public yunit::Test {
 public:
   SocketEventQueueTest() {
-    socket_event_queue = NULL;
     sockets = NULL;
   }
 
   // yunit::Test
   void setup() {
-    socket_event_queue = new SocketEventQueueType;
     sockets = new yield::sockets::SocketPair;
   }
 
   void teardown() {
-    delete socket_event_queue;
     delete sockets;
   }
 
 protected:
-  SocketEventQueueType& get_socket_event_queue() const {
-    return *socket_event_queue;
-  }
-
   Socket& get_read_socket() const {
     return sockets->first();
   }
@@ -74,146 +66,156 @@ protected:
   }
 
 private:
-  SocketEventQueueType* socket_event_queue;
-  yield::sockets::SocketPair* sockets;
+  SocketPair* sockets;
 };
 
 
 template <class SocketEventQueueType>
-class SocketEventQueueAssociateOneTest
-    : public SocketEventQueueTest<SocketEventQueueType> {
+class SocketEventQueueAssociateTest : public SocketEventQueueTest {
 public:
   void run() {
-    if (!this->get_socket_event_queue().associate(this->get_read_socket(), SocketEvent::TYPE_READ_READY))
+    if (!SocketEventQueueType().associate(get_read_socket(), SocketEvent::TYPE_READ_READY))
       throw Exception();
   }
 };
 
 
 template <class SocketEventQueueType>
-class SocketEventQueueAssociateTwoTest
-    : public SocketEventQueueTest<SocketEventQueueType> {
+class SocketEventQueueAssociateChangeTest : public SocketEventQueueTest {
 public:
   void run() {
-    if (!this->get_socket_event_queue().associate(this->get_read_socket(), SocketEvent::TYPE_READ_READY))
+    SocketEventQueueType socket_event_queue;
+
+    if (!
+      socket_event_queue.associate(
+        get_read_socket(),
+        SocketEvent::TYPE_READ_READY | SocketEvent::TYPE_WRITE_READY
+      )
+    )
       throw Exception();
 
-    if (!this->get_socket_event_queue().associate(this->get_write_socket(), SocketEvent::TYPE_WRITE_READY))
+    if (!socket_event_queue.associate(get_read_socket(), SocketEvent::TYPE_READ_READY))
+      throw Exception();
+
+    get_write_socket().send("m", 1, 0);
+
+    auto_Object<SocketEvent> socket_event
+    = object_cast<SocketEvent>(socket_event_queue.dequeue());
+  }
+};
+
+
+template <class SocketEventQueueType>
+class SocketEventQueueAssociateTwoTest : public SocketEventQueueTest {
+public:
+  void run() {
+    SocketEventQueueType socket_event_queue;
+
+    if (!socket_event_queue.associate(get_read_socket(), SocketEvent::TYPE_READ_READY))
+      throw Exception();
+
+    if (!socket_event_queue.associate(get_write_socket(), SocketEvent::TYPE_WRITE_READY))
       throw Exception();
   }
 };
 
 
 template <class SocketEventQueueType>
-class SocketEventQueueDissociateOneTest
-    : public SocketEventQueueTest<SocketEventQueueType> {
+class SocketEventQueueDissociateTest : public SocketEventQueueTest {
 public:
   void run() {
-    if (!this->get_socket_event_queue().associate(this->get_read_socket(), SocketEvent::TYPE_READ_READY))
+    SocketEventQueueType socket_event_queue;
+
+    if (!socket_event_queue.associate(get_read_socket(), SocketEvent::TYPE_READ_READY))
       throw Exception();
 
-    if (!this->get_socket_event_queue().dissociate(this->get_read_socket()))
+    if (!socket_event_queue.dissociate(get_read_socket()))
       throw Exception();
 
-    this->get_read_socket().send("m", 1, 0);
+    get_read_socket().send("m", 1, 0);
 
-    Event* event = this->get_socket_event_queue().trydequeue();
+    Event* event = socket_event_queue.trydequeue();
     throw_assert_eq(event, NULL);
 
-    if (!this->get_socket_event_queue().associate(this->get_read_socket(), SocketEvent::TYPE_READ_READY))
+    if (!socket_event_queue.associate(get_read_socket(), SocketEvent::TYPE_READ_READY))
       throw Exception(); // associate after dissociate should succeed
   }
 };
 
 
 template <class SocketEventQueueType>
-class SocketEventQueueDissociateTwoTest
-    : public SocketEventQueueTest<SocketEventQueueType> {
+class SocketEventQueueDissociateTwoTest : public SocketEventQueueTest {
 public:
   void run() {
-    if (!this->get_socket_event_queue().associate(this->get_read_socket(), SocketEvent::TYPE_READ_READY))
+    SocketEventQueueType socket_event_queue;
+
+    if (!socket_event_queue.associate(get_read_socket(), SocketEvent::TYPE_READ_READY))
       throw Exception();
-    if (!this->get_socket_event_queue().associate(this->get_write_socket(), SocketEvent::TYPE_READ_READY))
+    if (!socket_event_queue.associate(get_write_socket(), SocketEvent::TYPE_READ_READY))
       throw Exception();
 
-    if (!this->get_socket_event_queue().dissociate(this->get_read_socket()))
+    if (!socket_event_queue.dissociate(get_read_socket()))
       throw Exception();
 
-    this->get_read_socket().send("m", 1, 0);
-    this->get_write_socket().send("m", 1, 0);
+    get_read_socket().send("m", 1, 0);
+    get_write_socket().send("m", 1, 0);
 
     auto_Object<SocketEvent> socket_event
-      = object_cast<SocketEvent>(this->get_socket_event_queue().dequeue());
-    throw_assert_eq(socket_event->get_fd(), this->get_write_socket());
+      = object_cast<SocketEvent>(socket_event_queue.dequeue());
+    throw_assert_eq(socket_event->get_fd(), get_write_socket());
     throw_assert_eq(socket_event->get_type(), SocketEvent::TYPE_READ_READY);
     char m;
-    if (socket_event->get_socket() == this->get_read_socket())
-      this->get_read_socket().recv(&m, 1, 0);
+    if (socket_event->get_socket() == get_read_socket())
+      get_read_socket().recv(&m, 1, 0);
     else
-      this->get_write_socket().recv(&m, 1, 0);
+      get_write_socket().recv(&m, 1, 0);
 
-    Event* event = this->get_socket_event_queue().trydequeue();
+    Event* event = socket_event_queue.trydequeue();
     throw_assert_eq(event, NULL);
   }
 };
 
 
 template <class SocketEventQueueType>
-class SocketEventQueuePollOneBlockingTest
-    : public SocketEventQueueTest<SocketEventQueueType> {
+class SocketEventQueueDequeueSocketEventTest
+    : public SocketEventQueueTest {
 public:
   void run() {
-    if (!this->get_socket_event_queue().associate(this->get_read_socket(), SocketEvent::TYPE_READ_READY))
+    SocketEventQueueType socket_event_queue;
+
+    if (!socket_event_queue.associate(get_read_socket(), SocketEvent::TYPE_READ_READY))
       throw Exception();
 
-    this->get_write_socket().send("m", 1, 0);
+    get_write_socket().send("m", 1, 0);
 
     auto_Object<SocketEvent> socket_event
-    = object_cast<SocketEvent>(this->get_socket_event_queue().dequeue());
+    = object_cast<SocketEvent>(socket_event_queue.dequeue());
   }
 };
 
 
 template <class SocketEventQueueType>
-class SocketEventQueuePollOneTimedTest
-    : public SocketEventQueueTest<SocketEventQueueType> {
+class SocketEventQueueDequeueTwoSocketEventTest : public SocketEventQueueTest {
 public:
   void run() {
-    if (!this->get_socket_event_queue().associate(this->get_read_socket(), SocketEvent::TYPE_READ_READY))
+    SocketEventQueueType socket_event_queue;
+
+    if (!socket_event_queue.associate(get_read_socket(), SocketEvent::TYPE_READ_READY))
+      throw Exception();
+    if (!socket_event_queue.associate(get_write_socket(), SocketEvent::TYPE_READ_READY))
       throw Exception();
 
-    this->get_write_socket().send("m", 1, 0);
-
-    Time start_time(Time::now());
-    auto_Object<SocketEvent> socket_event
-    = object_cast<SocketEvent>(this->get_socket_event_queue().dequeue(10.0));
-    Time elapsed_time(Time::now() - start_time);
-    throw_assert_le(elapsed_time, Time(10.0));
-  }
-};
-
-
-template <class SocketEventQueueType>
-class SocketEventQueuePollTwoTest
-    : public SocketEventQueueTest<SocketEventQueueType> {
-public:
-  void run() {
-    if (!this->get_socket_event_queue().associate(this->get_read_socket(), SocketEvent::TYPE_READ_READY))
-      throw Exception();
-    if (!this->get_socket_event_queue().associate(this->get_write_socket(), SocketEvent::TYPE_READ_READY))
-      throw Exception();
-
-    this->get_read_socket().send("m", 1, 0);
-    this->get_write_socket().send("m", 1, 0);
+    get_read_socket().send("m", 1, 0);
+    get_write_socket().send("m", 1, 0);
 
     for (uint8_t socket_i = 0; socket_i < 2; socket_i++) {
       auto_Object<SocketEvent> socket_event
-      = object_cast<SocketEvent>(this->get_socket_event_queue().dequeue());
+      = object_cast<SocketEvent>(socket_event_queue.dequeue());
 
       throw_assert(
-        socket_event->get_socket() == this->get_read_socket()
+        socket_event->get_socket() == get_read_socket()
         ||
-        socket_event->get_socket() == this->get_write_socket()
+        socket_event->get_socket() == get_write_socket()
      );
       throw_assert_eq(socket_event->get_type(), SocketEvent::TYPE_READ_READY);
     }
@@ -221,89 +223,109 @@ public:
 };
 
 
-template <class SocketEventQueueType>
-class SocketEventQueueToggleOneTest
-    : public SocketEventQueueTest<SocketEventQueueType> {
-public:
-  void run() {
-    if (!this->get_socket_event_queue().associate(this->get_read_socket(), SocketEvent::TYPE_READ_READY | SocketEvent::TYPE_WRITE_READY))
-      throw Exception();
-
-    if (!this->get_socket_event_queue().associate(this->get_read_socket(), SocketEvent::TYPE_READ_READY))
-      throw Exception();
-
-    this->get_write_socket().send("m", 1, 0);
-
-    auto_Object<SocketEvent> socket_event
-    = object_cast<SocketEvent>(this->get_socket_event_queue().dequeue());
-  }
-};
 
 
 template <class SocketEventQueueType>
-class SocketEventQueueWantSendTest
-    : public SocketEventQueueTest<SocketEventQueueType> {
+class SocketEventDequeueQueueWantSendSocketEventTest : public SocketEventQueueTest {
 public:
   void run() {
-    if (!this->get_socket_event_queue().associate(this->get_read_socket(), SocketEvent::TYPE_WRITE_READY))
+    SocketEventQueueType socket_event_queue;
+
+    if (!socket_event_queue.associate(get_read_socket(), SocketEvent::TYPE_WRITE_READY))
       throw Exception();
 
     auto_Object<SocketEvent> socket_event
-    = object_cast<SocketEvent>(this->get_socket_event_queue().dequeue());
-    throw_assert_eq(socket_event->get_socket(), this->get_read_socket());
+    = object_cast<SocketEvent>(socket_event_queue.dequeue());
+    throw_assert_eq(socket_event->get_socket(), get_read_socket());
     throw_assert_eq(socket_event->get_type(), SocketEvent::TYPE_WRITE_READY);
   }
 };
 
 
 template <class SocketEventQueueType>
-class SocketEventQueueTestSuite : public yunit::TestSuite {
+class SocketEventQueueTimedDequeueSocketEventTest : public SocketEventQueueTest {
+public:
+  void run() {
+    SocketEventQueueType socket_event_queue;
+
+    if (!socket_event_queue.associate(get_read_socket(), SocketEvent::TYPE_READ_READY))
+      throw Exception();
+
+    get_write_socket().send("m", 1, 0);
+
+    Time start_time(Time::now());
+    auto_Object<SocketEvent> socket_event
+    = object_cast<SocketEvent>(socket_event_queue.dequeue(10.0));
+    Time elapsed_time(Time::now() - start_time);
+    throw_assert_le(elapsed_time, Time(10.0));
+  }
+};
+
+
+template <class SocketEventQueueType>
+class SocketEventQueueTestSuite
+  : public EventQueueTestSuite<SocketEventQueueType> {
 public:
   SocketEventQueueTestSuite() {
     add(
-      "SocketEventQueue::associate(socket)",
-      new SocketEventQueueAssociateOneTest<SocketEventQueueType>
-   );
+      "SocketEventQueue::associate",
+      new SocketEventQueueAssociateTest<SocketEventQueueType>
+    );
 
     add(
-      "SocketEventQueue::associate(socket) x 2",
+     "SocketEventQueue::associate change",
+     new SocketEventQueueAssociateChangeTest<SocketEventQueueType>
+    );
+
+    add(
+      "SocketEventQueue::associate x 2",
       new SocketEventQueueAssociateTwoTest<SocketEventQueueType>
-   );
+    );
 
     add(
-      "SocketEventQueue::dissociate(socket)",
-      new SocketEventQueueDissociateOneTest<SocketEventQueueType>
-   );
+      "SocketEventQueue::dissociate",
+      new SocketEventQueueDissociateTest<SocketEventQueueType>
+    );
 
     add(
-      "SocketEventQueue::dissociate(socket) x 2",
+      "SocketEventQueue::dissociate x 2",
       new SocketEventQueueDissociateTwoTest<SocketEventQueueType>
-   );
+    );
 
     add(
-      "SocketEventQueue::poll()",
-      new SocketEventQueuePollOneBlockingTest<SocketEventQueueType>
-   );
+      "SocketEventQueue::dequeue -> Event",
+      new EventQueueDequeueTest<SocketEventQueueType>
+    );
 
     add(
-      "SocketEventQueue::poll(timeout)",
-      new SocketEventQueuePollOneTimedTest<SocketEventQueueType>
-   );
+      "SocketEventQueue::dequeue -> SocketEvent",
+      new SocketEventQueueDequeueSocketEventTest<SocketEventQueueType>
+    );
 
     add(
-      "SocketEventQueue::poll() x 2",
-      new SocketEventQueuePollTwoTest<SocketEventQueueType>
-   );
+      "SocketEventQueue::dequeue x 2 -> SocketEvent",
+      new SocketEventQueueDequeueTwoSocketEventTest<SocketEventQueueType>
+    );
 
     add(
-      "SocketEventQueue::toggle",
-      new SocketEventQueueToggleOneTest<SocketEventQueueType>
-   );
+      "SocketEventQueue::dequeue -> SocketEvent(socket, SocketEvent::TYPE_WRITE_READY)",
+      new SocketEventDequeueQueueWantSendSocketEventTest<SocketEventQueueType>
+    );
 
     add(
-      "SocketEventQueue::want_send",
-      new SocketEventQueueWantSendTest<SocketEventQueueType>
-   );
+      "SocketEventQueue::timeddequeue() -> Event",
+      new EventQueueTimedDequeueTest<SocketEventQueueType>
+    );
+
+    add(
+      "SocketEventQueue::timeddequeue -> SocketEvent",
+      new SocketEventQueueTimedDequeueSocketEventTest<SocketEventQueueType>
+    );
+
+    add(
+      "SocketEventQueue::trydequeue() -> Event",
+      new EventQueueTryDequeueTest<SocketEventQueueType>
+    );
   }
 };
 }

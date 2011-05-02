@@ -28,6 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "socket_event_queue_test.hpp"
+#include "yield/sockets/poll/socket_event_queue.hpp"
 
 TEST_SUITE_EX(
   SocketEventQueue,
