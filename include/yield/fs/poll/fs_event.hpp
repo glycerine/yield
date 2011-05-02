@@ -53,20 +53,8 @@ public:
   const static Type TYPE_FILE_RENAME = 128;
 
 public:
-  FSEvent()
-    : type(TYPE_FILE_ADD)
-  { }
-
-  FSEvent(const Path& path, Type type)
-    : old_path(path), type(type)
-  { }
-
-  FSEvent(
-    const Path& old_path,
-    const Path& new_path,
-    Type type
-  ) : new_path(new_path), old_path(old_path), type(type)
-  { }
+  FSEvent(const Path& path, Type type);
+  FSEvent(const Path& old_path, const Path& new_path, Type type);
 
 public:
   const Path& get_new_path() const {
@@ -83,23 +71,6 @@ public:
 
   Type get_type() const {
     return type;
-  }
-
-public:
-  void set_new_path(const Path& new_path) {
-    this->new_path = new_path;
-  }
-
-  void set_old_path(const Path& old_path) {
-    this->old_path = old_path;
-  }
-
-  void set_path(const Path& path) {
-    this->old_path = path;
-  }
-
-  void set_type(Type type) {
-    this->type = type;
   }
 
 public:

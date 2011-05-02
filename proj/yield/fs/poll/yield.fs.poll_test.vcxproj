@@ -101,6 +101,8 @@
   <ItemGroup Label="ClCompileItems">
     <ClCompile Include="..\..\..\..\test\yield\fs\poll\fs_event_queue_test.cpp">
     </ClCompile>
+    <ClCompile Include="..\..\..\..\test\yield\fs\poll\fs_event_test.cpp">
+    </ClCompile>
     <ClCompile Include="..\..\..\..\test\yield\fs\poll\yield_fs_poll_test_main.cpp">
     </ClCompile>
   </ItemGroup>

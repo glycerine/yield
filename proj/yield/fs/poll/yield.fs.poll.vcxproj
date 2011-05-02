@@ -95,22 +95,20 @@
   <ItemGroup Label="ClIncludeItems">
     <ClInclude Include="..\..\..\..\include\yield\fs\poll\fs_event.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\fs\poll\fs_event_queue.hpp" />
+    <ClInclude Include="..\..\..\..\include\yield\fs\poll\linux\fs_event_queue.hpp" />
+    <ClInclude Include="..\..\..\..\include\yield\fs\poll\win32\fs_event_queue.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\fs_event.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\fs\poll\fs_event_queue.cpp">
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\linux\fs_event_queue.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClInclude Include="..\..\..\..\src\yield\fs\poll\linux\fs_event_queue.hpp" />
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\win32\fs_event_queue.cpp">
       <ObjectFileName>$(IntDir)win32\fs_event_queue.obj</ObjectFileName>
     </ClCompile>
-    <ClInclude Include="..\..\..\..\src\yield\fs\poll\win32\fs_event_queue.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ProjectReferenceItems">

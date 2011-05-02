@@ -30,6 +30,7 @@
 #ifndef _YIELD_FS_POLL_LINUX_FS_EVENT_QUEUE_HPP_
 #define _YIELD_FS_POLL_LINUX_FS_EVENT_QUEUE_HPP_
 
+#include "yield/event_queue.hpp"
 #include "yield/fs/poll/fs_event.hpp"
 #include "yield/poll/fd_event_queue.hpp"
 
@@ -54,8 +55,16 @@ public:
 
 public:
   // yield::EventQueue
+  YO_NEW_REF Event& dequeue() {
+    return EventQueue::dequeue();
+  }
+
   YO_NEW_REF Event* dequeue(const Time& timeout);
   bool enqueue(YO_NEW_REF Event& event);
+
+  YO_NEW_REF Event* trydequeue() {
+    return EventQueue::trydequeue();
+  }
 
 private:
   class Watch;

@@ -1,4 +1,4 @@
-// yield/fs/poll/fs_event_queue.cpp
+// yield/fs/poll/win32/fs_event_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,47 +27,58 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#if defined(__linux__)
-#include "linux/fs_event_queue.hpp"
-#elif defined(_WIN32)
-#include "win32/fs_event_queue.hpp"
-#endif
-#include "yield/fs/poll/fs_event_queue.hpp"
+#ifndef _YIELD_FS_POLL_WIN32_FS_EVENT_QUEUE_HPP_
+#define _YIELD_FS_POLL_WIN32_FS_EVENT_QUEUE_HPP_
+
+#include "yield/event_queue.hpp"
+#include "yield/aio/win32/aio_queue.hpp"
+#include "yield/fs/poll/fs_event.hpp"
+
+#include <map>
 
 namespace yield {
+class Log;
+
 namespace fs {
 namespace poll {
-FSEventQueue::FSEventQueue(YO_NEW_REF Log* log) {
-#if defined(__linux__)
-  pimpl = new linux::FSEventQueue(log);
-#elif defined(_WIN32)
-  pimpl = new win32::FSEventQueue(log);
+namespace win32 {
+class FSEventQueue : public EventQueue {
+public:
+  FSEventQueue(YO_NEW_REF Log* log = NULL);
+  ~FSEventQueue();
+
+public:
+  bool associate(
+    const Path& path,
+    FSEvent::Type fs_event_types = FSEvent::TYPE_ALL
+  );
+
+  bool dissociate(const Path& path);
+
+public:
+  // yield::EventQueue
+  YO_NEW_REF Event& dequeue() {
+    return EventQueue::dequeue();
+  }
+
+  YO_NEW_REF Event* dequeue(const Time& timeout);
+  bool enqueue(YO_NEW_REF Event& event);
+
+  YO_NEW_REF Event* trydequeue() {
+    return EventQueue::trydequeue();
+  }
+
+private:
+  class Watch;
+
+private:
+  yield::aio::win32::AIOQueue aio_queue;
+  Log* log;
+  std::map<Path, Watch*> watches;
+};
+}
+}
+}
+}
+
 #endif
-}
-
-FSEventQueue::~FSEventQueue() {
-#if defined(__linux__)
-  linux::FSEventQueue::dec_ref(*pimpl);
-#elif defined(_WIN32)
-  win32::FSEventQueue::dec_ref(*pimpl);
-#endif
-}
-
-bool FSEventQueue::associate(const Path& path, FSEvent::Type fs_event_types) {
-  return pimpl->associate(path, fs_event_types);
-}
-
-bool FSEventQueue::dissociate(const Path& path) {
-  return pimpl->dissociate(path);
-}
-
-YO_NEW_REF Event* FSEventQueue::dequeue(const Time& timeout) {
-  return pimpl->dequeue(timeout);
-}
-
-bool FSEventQueue::enqueue(YO_NEW_REF Event& event) {
-  return pimpl->enqueue(event);
-}
-}
-}
-}

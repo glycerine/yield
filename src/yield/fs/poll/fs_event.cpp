@@ -27,11 +27,37 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "yield/assert.hpp"
 #include "yield/fs/poll/fs_event.hpp"
 
 namespace yield {
 namespace fs {
 namespace poll {
+FSEvent::FSEvent(const Path& path, Type type)
+  : old_path(path), type(type) {
+  debug_assert_false(path.empty());
+  debug_assert(
+    type == TYPE_DIRECTORY_ADD
+    ||
+    type == TYPE_DIRECTORY_MODIFY
+    ||
+    type == TYPE_DIRECTORY_REMOVE
+    ||
+    type == TYPE_FILE_ADD
+    ||
+    type == TYPE_FILE_MODIFY
+    ||
+    type == TYPE_FILE_REMOVE
+  );
+}
+
+FSEvent::FSEvent(const Path& old_path, const Path& new_path, Type type)
+  : new_path(new_path), old_path(old_path), type(type) {
+  debug_assert_false(new_path.empty());
+  debug_assert_false(old_path.empty());
+  debug_assert(type == TYPE_DIRECTORY_RENAME || type == TYPE_FILE_RENAME);
+}
+
 std::ostream& operator<<(std::ostream& os, const FSEvent& fs_event) {
   std::string type;
   switch (fs_event.get_type()) {

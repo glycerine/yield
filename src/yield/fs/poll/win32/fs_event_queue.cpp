@@ -27,10 +27,10 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "fs_event_queue.hpp"
 #include "yield/assert.hpp"
 #include "yield/log.hpp"
 #include "yield/aio/win32/aiocb.hpp"
+#include "yield/fs/poll/win32/fs_event_queue.hpp"
 #include "yield/fs/win32/directory.hpp"
 #include "yield/fs/win32/file_system.hpp"
 

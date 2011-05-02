@@ -15,6 +15,9 @@
     <ClCompile Include="..\..\..\..\test\yield\fs\poll\fs_event_queue_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\test\yield\fs\poll\fs_event_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\test\yield\fs\poll\yield_fs_poll_test_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

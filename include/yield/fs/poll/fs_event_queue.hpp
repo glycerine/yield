@@ -30,52 +30,24 @@
 #ifndef _YIELD_FS_POLL_FS_EVENT_QUEUE_HPP_
 #define _YIELD_FS_POLL_FS_EVENT_QUEUE_HPP_
 
-#include "yield/event_queue.hpp"
 #include "yield/fs/poll/fs_event.hpp"
+
+#if defined(__linux__)
+#include "yield/fs/poll/linux/fs_event_queue.hpp"
+#elif defined(_WIN32)
+#include "yield/fs/poll/win32/fs_event_queue.hpp"
+#else
+#error
+#endif
 
 namespace yield {
 namespace fs {
 namespace poll {
 #if defined(__linux__)
-namespace linux {
-class FSEventQueue;
-}
+typedef linux::FSEventQueue FSEventQueue;
 #elif defined(_WIN32)
-namespace win32 {
-class FSEventQueue;
-}
+typedef win32::FSEventQueue FSEventQueue;
 #endif
-
-class FSEventQueue : public EventQueue {
-public:
-  FSEventQueue(YO_NEW_REF Log* log = NULL);
-  ~FSEventQueue();
-
-public:
-  bool
-  associate(
-    const Path& path,
-    FSEvent::Type fs_event_types = FSEvent::TYPE_ALL
-  );
-
-  bool dissociate(const Path& path);
-
-public:
-  // yield::EventQueue
-  YO_NEW_REF Event& dequeue() {
-    return EventQueue::dequeue();
-  }
-
-  YO_NEW_REF Event* dequeue(const Time& timeout);
-  bool enqueue(YO_NEW_REF Event& event);
-
-private:
-#if defined(__linux__)
-  linux::FSEventQueue* pimpl;
-#elif defined(_WIN32)
-  win32::FSEventQueue* pimpl;
-#endif
-};
 }
 }
 }

@@ -1,4 +1,4 @@
-// yield/fs/poll/win32/fs_event_queue.hpp
+// fs_event_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,49 +27,72 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_FS_POLL_WIN32_FS_EVENT_QUEUE_HPP_
-#define _YIELD_FS_POLL_WIN32_FS_EVENT_QUEUE_HPP_
-
-#include "yield/aio/win32/aio_queue.hpp"
+#include "yield/assert.hpp"
 #include "yield/fs/poll/fs_event.hpp"
+#include "yunit.hpp"
 
-#include <map>
+#include <sstream>
+
+TEST_SUITE(FSEvent);
 
 namespace yield {
-class Log;
-
 namespace fs {
 namespace poll {
-namespace win32 {
-class FSEventQueue : public EventQueue {
-public:
-  FSEventQueue(YO_NEW_REF Log* log = NULL);
-  ~FSEventQueue();
+TEST(FSEvent, constructors) {
+  FSEvent("path", FSEvent::TYPE_DIRECTORY_ADD);
+  FSEvent("old_path", "new_path", FSEvent::TYPE_DIRECTORY_RENAME);
+}
 
-public:
-  bool associate(
-    const Path& path,
-    FSEvent::Type fs_event_types = FSEvent::TYPE_ALL
+TEST(FSEvent, get_new_path) {
+  throw_assert_eq(
+    FSEvent("old_path", "new_path", FSEvent::TYPE_FILE_RENAME).get_new_path(),
+    Path("new_path")
   );
+}
 
-  bool dissociate(const Path& path);
+TEST(FSEvent, get_old_path) {
+  throw_assert_eq(
+    FSEvent("old_path", "new_path", FSEvent::TYPE_FILE_RENAME).get_old_path(),
+    Path("old_path")
+  );
+}
 
-public:
-  // yield::EventQueue
-  YO_NEW_REF Event* dequeue(const Time& timeout);
-  bool enqueue(YO_NEW_REF Event& event);
+TEST(FSEvent, get_path) {
+  throw_assert_eq(
+    FSEvent("path", FSEvent::TYPE_FILE_ADD).get_path(),
+    Path("path")
+  );
+}
 
-private:
-  class Watch;
+TEST(FSEvent, get_type) {
+  throw_assert_eq(
+    FSEvent("path", FSEvent::TYPE_FILE_ADD).get_type(),
+    FSEvent::TYPE_FILE_ADD
+  );
+}
 
-private:
-  yield::aio::win32::AIOQueue aio_queue;
-  Log* log;
-  std::map<Path, Watch*> watches;
-};
+TEST(FSEvent, get_type_id) {
+  throw_assert_eq(
+    FSEvent("path", FSEvent::TYPE_FILE_ADD).get_type_id(),
+    FSEvent::TYPE_ID
+  );
+}
+
+TEST(FSEvent, get_type_name) {
+  throw_assert_eq(
+    strcmp(
+      FSEvent("path", FSEvent::TYPE_FILE_ADD).get_type_name(),
+      "yield::fs::poll::FSEvent"
+    ),
+    0
+  );
+}
+
+TEST(FSEvent, print) {
+  std::ostringstream oss;
+  oss << FSEvent("path", FSEvent::TYPE_FILE_ADD);
+  throw_assert_ne(oss.str().size(), 0);
 }
 }
 }
 }
-
-#endif

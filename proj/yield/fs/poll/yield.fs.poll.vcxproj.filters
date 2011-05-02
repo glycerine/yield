@@ -15,6 +15,12 @@
     <Filter Include="Header Files">
       <UniqueIdentifier>{8de378a6-1aab-4262-9bad-c9988ac4f590}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\linux">
+      <UniqueIdentifier>{2a4ee6c4-6cf0-478d-adf3-d6896189cf6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\win32">
+      <UniqueIdentifier>{787e5b2a-b47d-4cea-9b6c-1448194b2d1b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\yield\fs\poll\fs_event.hpp">
@@ -23,25 +29,22 @@
     <ClInclude Include="..\..\..\..\include\yield\fs\poll\fs_event_queue.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\include\yield\fs\poll\linux\fs_event_queue.hpp">
+      <Filter>Header Files\linux</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\yield\fs\poll\win32\fs_event_queue.hpp">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\fs_event.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\fs\poll\fs_event_queue.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\linux\fs_event_queue.cpp">
       <Filter>Source Files\linux</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\..\src\yield\fs\poll\linux\fs_event_queue.hpp">
-      <Filter>Source Files\linux</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\win32\fs_event_queue.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\..\src\yield\fs\poll\win32\fs_event_queue.hpp">
-      <Filter>Source Files\win32</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
