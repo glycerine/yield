@@ -133,8 +133,6 @@ public:
           } else {
             uint16_t revents = pollfd_.revents;
             pollfd_.revents = 0;
-            if (revents == POLLRDNORM)
-              revents = POLLIN;
             return new SocketEvent(pollfd_.fd, revents);
           }
         }
@@ -172,36 +170,33 @@ public:
 public:
   bool associate(socket_t socket_, uint16_t socket_event_types) {
     if (socket_event_types != 0) {
+      bool added_socket_to_except_fd_set = false;
+
+      if (socket_event_types & SocketEvent::TYPE_READ_READY) {
+        FD_SET(socket_, &read_fd_set);
+        FD_SET(socket_, &except_fd_set);
+        added_socket_to_except_fd_set = true;
+      }
+      else
+        FD_CLR(socket_, &read_fd_set);
+
+      if (socket_event_types & SocketEvent::TYPE_WRITE_READY) {
+        FD_SET(socket_, &write_fd_set);
+        if (!added_socket_to_except_fd_set)
+          FD_SET(socket_, &except_fd_set);
+      }
+      else
+        FD_CLR(socket_, &write_fd_set);
+
+      if (!added_socket_to_except_fd_set)
+        FD_CLR(socket_, &except_fd_set);
+
       for (iterator socket_i = begin(); socket_i != end(); ++socket_i) {
-        if (*socket_i == socket_) {
-          if (socket_event_types & POLLERR)
-            FD_SET(socket_, &except_fd_set);
-          else
-            FD_CLR(socket_, &except_fd_set);
-
-          if (socket_event_types & POLLIN)
-            FD_SET(socket_, &read_fd_set);
-          else
-            FD_CLR(socket_, &read_fd_set);
-
-          if (socket_event_types & POLLOUT)
-            FD_SET(socket_, &write_fd_set);
-          else
-            FD_CLR(socket_, &write_fd_set);
-
+        if (*socket_i == socket_)
           return true;
-        }
       }
 
       push_back(socket_);
-
-      if (socket_event_types & POLLERR)
-        FD_SET(socket_, &except_fd_set);
-      if (socket_event_types & POLLIN)
-        FD_SET(socket_, &read_fd_set);
-      if (socket_event_types & POLLOUT)
-        FD_SET(socket_, &write_fd_set);
-
       return true;
     } else
       return dissociate(socket_);
