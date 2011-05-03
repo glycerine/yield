@@ -55,8 +55,10 @@ AIOQueue::~AIOQueue() {
   Log::dec_ref(log);
 }
 
-YO_NEW_REF Event& AIOQueue::dequeue() {
-  return yield::aio::win32::AIOQueue::dequeue();
+bool AIOQueue::associate(socket_t socket_) {
+  return yield::aio::win32::AIOQueue::associate(
+           reinterpret_cast<fd_t>(socket_)
+         );
 }
 
 YO_NEW_REF Event* AIOQueue::dequeue(const Time& timeout) {

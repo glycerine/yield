@@ -4,6 +4,12 @@
     <Filter Include="Source Files">
       <UniqueIdentifier>{9975519b-f11f-403d-92d7-2dc7505890f4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\posix">
+      <UniqueIdentifier>{2e63a3f7-afc8-4638-9342-31eca330a651}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\win32">
+      <UniqueIdentifier>{9936e36e-5017-4ae3-b7c1-cb4061b9a637}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
 
@@ -12,6 +18,18 @@
 
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\test\yield\aio\aiocb_test.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\test\yield\aio\posix\aiocb_test.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\test\yield\aio\win32\aio_queue_test.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\test\yield\aio\win32\aiocb_test.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\test\yield\aio\yield_aio_test_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

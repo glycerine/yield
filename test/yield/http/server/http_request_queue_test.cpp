@@ -93,18 +93,8 @@ class HTTPRequestQueueTestSuite
 public:
   HTTPRequestQueueTestSuite() {
     add(
-      "HTTPRequestQueue::dequeue -> Event",
-      new EventQueueDequeueTest<TestHTTPRequestQueue>
-    );
-
-    add(
       "HTTPRequestQueue::dequeue -> HTTPRequest",
       new HTTPRequestQueueDequeueHTTPRequestTest
-    );
-
-    add(
-      "HTTPRequestQueue::timeddequeue -> Event",
-      new EventQueueTimedDequeueTest<TestHTTPRequestQueue>
     );
   }
 };

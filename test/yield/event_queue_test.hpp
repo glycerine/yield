@@ -101,23 +101,18 @@ public:
 template <class EventQueueType>
 class EventQueueTestSuite : public yunit::TestSuite {
 public:
-  // yunit::TestSuite
-  virtual int run() {
-    if (this->empty()) {
-      add("EventQueue::dequeue", new EventQueueDequeueTest<EventQueueType>);
+  EventQueueTestSuite() {
+    add("EventQueue::dequeue", new EventQueueDequeueTest<EventQueueType>);
 
-      add(
-        "EventQueue::timeddequeue",
-        new EventQueueTimedDequeueTest<EventQueueType>
-      );
+    add(
+      "EventQueue::timeddequeue",
+      new EventQueueTimedDequeueTest<EventQueueType>
+    );
 
-      add(
-        "EventQueue::trydequeue",
-        new EventQueueTryDequeueTest<EventQueueType>
-      );
-    }
-
-    return yunit::TestSuite::run();
+    add(
+      "EventQueue::trydequeue",
+      new EventQueueTryDequeueTest<EventQueueType>
+    );
   }
 };
 }

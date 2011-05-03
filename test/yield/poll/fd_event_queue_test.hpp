@@ -223,26 +223,6 @@ public:
 
 
 template <class FDEventQueueType>
-class FDEventTimedDequeueFDEventTest : public FDEventQueueTest {
-public:
-  void run() {
-    FDEventQueueType fd_event_queue;
-
-    if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY))
-      throw Exception();
-
-    signal_pipe();
-
-    Time start_time(Time::now());
-    auto_Object<FDEvent> fd_event
-    = object_cast<FDEvent>(fd_event_queue.dequeue(10.0));
-    Time elapsed_time(Time::now() - start_time);
-    throw_assert_le(elapsed_time, Time(10.0));
-  }
-};
-
-
-template <class FDEventQueueType>
 class FDEventQueueTestSuite : public EventQueueTestSuite<FDEventQueueType> {
 public:
   FDEventQueueTestSuite() {
@@ -267,11 +247,6 @@ public:
     );
 
     add(
-      "FDEventQueue::dequeue -> Event",
-      new EventQueueDequeueTest<FDEventQueueType>
-    );
-
-    add(
       "FDEventQueue::dequeue -> FDEvent",
       new FDEventQueueDequeueFDEventTest<FDEventQueueType>
     );
@@ -284,21 +259,6 @@ public:
     add(
       "FDEventQueue::dissociate",
       new FDEventQueueDissociateTest<FDEventQueueType>
-    );
-
-    add(
-      "FDEventQueue::timeddequeue -> Event",
-      new EventQueueTimedDequeueTest<FDEventQueueType>
-    );
-
-    add(
-      "FDEventQueue::timeddequeue -> FDEvent",
-      new FDEventTimedDequeueFDEventTest<FDEventQueueType>
-    );
-
-    add(
-      "FDEventQueue::trydequeue -> Event",
-      new EventQueueTryDequeueTest<FDEventQueueType>
     );
   }
 };

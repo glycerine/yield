@@ -1,4 +1,4 @@
-// yield/aio/aio_queue.hpp
+// aiocb_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,23 +27,29 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_AIO_AIO_QUEUE_HPP_
-#define _YIELD_AIO_AIO_QUEUE_HPP_
+#include "../aiocb_test.hpp"
 
-#ifdef _WIN32
-#include "yield/aio/win32/aio_queue.hpp"
-#else
-#include "yield/aio/posix/aio_queue.hpp"
-#endif
+TEST_SUITE_EX(POSIXAIOCB, yield::aio::AIOCBTestSuite);
 
 namespace yield {
 namespace aio {
-#ifdef _WIN32
-typedef win32::AIOQueue AIOQueue;
-#else
-typedef posix::AIOCB AIOQueue;
-#endif
-}
+namespace posix {
+class MockAIOCB : public AIOCB {
+public:
+  MockAIOCB(fd_t fd) : AIOCB(fd) { }
+  MockAIOCB(fd_t fd, off_t offset) : AIOCB(fd, offset) { }
+};
+
+TEST(POSIXAIOCB, cast_to_aiocb) {
+  MockAIOCB yield_aiocb(1, 1);
+  aiocb* posix_aiocb = static_cast<aiocb*>(yield_aiocb);
+  throw_assert_eq(posix_aiocb->aio_fildes, 1);
+  throw_assert_eq(posix_aiocb->aio_offset, 1);
 }
 
-#endif
+TEST(POSIXAIOCB, constructors) {
+  throw_assert_eq(MockAIOCB(1).get_fd(), 1);
+}
+}
+}
+}

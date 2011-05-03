@@ -31,12 +31,39 @@
 
 #include <iostream>
 
-
+#ifdef __unix__
+extern yunit::TestSuite& POSIXAIOCBTestSuite();
+#endif
+#ifdef _WIN32
+extern yunit::TestSuite& Win32AIOCBTestSuite();
+#endif
+#ifdef _WIN32
+extern yunit::TestSuite& Win32AIOQueueTestSuite();
+#endif
 
 int main(int, char**) {
   int failed_test_case_count = 0;
 
+#ifdef __unix__
+  // POSIXAIOCB
+  std::cout << "POSIXAIOCB:" << std::endl;
+  failed_test_case_count += POSIXAIOCBTestSuite().run();
+  std::cout << std::endl;
+#endif
 
+#ifdef _WIN32
+  // Win32AIOCB
+  std::cout << "Win32AIOCB:" << std::endl;
+  failed_test_case_count += Win32AIOCBTestSuite().run();
+  std::cout << std::endl;
+#endif
+
+#ifdef _WIN32
+  // Win32AIOQueue
+  std::cout << "Win32AIOQueue:" << std::endl;
+  failed_test_case_count += Win32AIOQueueTestSuite().run();
+  std::cout << std::endl;
+#endif
 
   return failed_test_case_count;
 }

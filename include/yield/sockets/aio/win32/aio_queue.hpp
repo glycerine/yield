@@ -44,9 +44,7 @@ public:
   ~AIOQueue();
 
 public:
-  bool associate(socket_t socket_) {
-    return yield::aio::win32::AIOQueue::associate(socket_);
-  }
+  bool associate(socket_t socket_);
 
 public:
   // yield::Object
@@ -60,7 +58,10 @@ public:
 
 public:
   // yield::EventQueue
-  YO_NEW_REF Event& dequeue();
+  YO_NEW_REF Event& dequeue() {
+    return yield::aio::win32::AIOQueue::dequeue();
+  }
+
   YO_NEW_REF Event* dequeue(const Time& timeout);
   bool enqueue(YO_NEW_REF Event& event);
 

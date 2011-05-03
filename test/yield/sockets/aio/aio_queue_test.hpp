@@ -277,8 +277,6 @@ public:
   AIOQueueTestSuite() {
     add("AIOQueue::associate", new AIOQueueAssociateTest<AIOQueueType>);
 
-    add("AIOQueue::dequeue -> Event", new EventQueueDequeueTest<AIOQueueType>);
-
     add(
       "AIOQueue::dequeue -> recvAIOCB",
       new AIOQueueRecvTest<AIOQueueType>
@@ -302,16 +300,6 @@ public:
     add(
       "AIOQueue::dequeue -> sendfileAIOCB",
       new AIOQueueSendFileTest<AIOQueueType>
-    );
-
-    add(
-      "AIOQueue::timeddequeue -> Event",
-      new EventQueueTimedDequeueTest<AIOQueueType>
-    );
-
-    add(
-      "AIOQueue::trydequeue -> Event",
-      new EventQueueTryDequeueTest<AIOQueueType>
     );
   }
 };

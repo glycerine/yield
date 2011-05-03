@@ -23,9 +23,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\include\yield\aio\aio_queue.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\yield\aio\aiocb.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

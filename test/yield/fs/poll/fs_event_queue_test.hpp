@@ -414,11 +414,6 @@ public:
     );
 
     add(
-      "FSEventQueue::dequeue -> Event",
-      new EventQueueDequeueTest<FSEventQueueType>
-    );
-
-    add(
       "FSEventQueue::dequeue -> FSEvent(TYPE_DIRECTORY_ADD)",
       new FSEventQueueDequeueDirectoryAddTest<FSEventQueueType>
     );
@@ -461,16 +456,6 @@ public:
     add(
       "FSEventQueue::dissociate",
       new FSEventQueueDissociateTest<FSEventQueueType>
-    );
-
-    add(
-      "FSEventQueue::timeddequeue -> Event",
-      new EventQueueTimedDequeueTest<FSEventQueueType>
-    );
-
-    add(
-      "FSEventQueue::trydequeue -> Event",
-      new EventQueueTryDequeueTest<FSEventQueueType>
     );
   }
 };

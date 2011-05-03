@@ -1,4 +1,4 @@
-// yield/aio/win32/aiocb.hpp
+// aiocb_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,105 +27,55 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_AIO_WIN32_AIOCB_HPP_
-#define _YIELD_AIO_WIN32_AIOCB_HPP_
+#include "../aiocb_test.hpp"
 
-#include "yield/event.hpp"
+#include <Windows.h>
 
-struct _OVERLAPPED;
-typedef struct _OVERLAPPED OVERLAPPED;
+TEST_SUITE_EX(Win32AIOCB, yield::aio::AIOCBTestSuite);
 
 namespace yield {
-class EventHandler;
-
 namespace aio {
 namespace win32 {
-class AIOQueue;
-
-class AIOCB : public Event {
+class MockAIOCB : public AIOCB {
 public:
-  const static uint32_t TYPE_ID = 3930686968UL;
-
+  MockAIOCB() { }
+  MockAIOCB(off_t offset) : AIOCB(offset) { }
+  
 public:
-  virtual ~AIOCB() { }
-
-public:
-  static AIOCB& cast(::OVERLAPPED&);
-
-public:
-  uint32_t get_error() const {
-    return error;
+  void set_offset(off_t offset) {
+    AIOCB::set_offset(offset);
   }
-
-  off_t get_offset() const;
-
-  ssize_t get_return() const {
-    return return_;
-  }
-
-public:
-  operator ::OVERLAPPED* ();
-
-public:
-  void set_error(uint32_t error) {
-    this->error = error;
-  }
-
-  void set_return(ssize_t return_) {
-    this->return_ = return_;
-  }
-
-public:
-  // yield::Object
-  uint32_t get_type_id() const {
-    return TYPE_ID;
-  }
-
-  const char* get_type_name() const {
-    return "yield::aio::win32::AIOCB";
-  }
-
-  AIOCB& inc_ref() {
-    return Object::inc_ref(*this);
-  }
-
-protected:
-  AIOCB();
-  AIOCB(off_t offset);
-  AIOCB(fd_t, off_t offset);
-
-protected:
-  void set_offset(off_t offset);
-
-private:
-  typedef struct {
-    unsigned long* Internal;
-    unsigned long* InternalHigh;
-#pragma warning( push )
-#pragma warning( disable: 4201 )
-    union {
-      struct {
-        unsigned long Offset;
-        unsigned long OffsetHigh;
-      };
-      void* Pointer;
-    };
-#pragma warning( pop )
-    void* hEvent;
-  } OVERLAPPED;
-
-private:
-  void init(off_t offset);
-
-private:
-  OVERLAPPED overlapped;
-  AIOCB* this_aiocb;
-
-  uint32_t error;
-  ssize_t return_;
 };
-}
-}
+
+
+TEST(Win32AIOCB, cast_from_LPOVERLAPPED) {
+  MockAIOCB aiocb;
+  LPOVERLAPPED overlapped1 = static_cast<LPOVERLAPPED>(aiocb);
+  LPOVERLAPPED overlapped2 = AIOCB::cast(*overlapped1);
+  throw_assert_eq(overlapped1, overlapped2);
 }
 
-#endif
+TEST(Win32AIOCB, cast_to_LPOVERLAPPED) {
+  LPOVERLAPPED overlapped = static_cast<LPOVERLAPPED>(MockAIOCB());
+  throw_assert_eq(overlapped->hEvent, 0);
+  throw_assert_eq(overlapped->Offset, 0);
+  throw_assert_eq(overlapped->OffsetHigh, 0);
+
+  overlapped = static_cast<LPOVERLAPPED>(MockAIOCB(UINT32_MAX));
+  throw_assert_eq(overlapped->Offset, UINT32_MAX);
+  throw_assert_eq(overlapped->OffsetHigh, 0);
+}
+
+TEST(Win32AIOCB, constructors) {
+  MockAIOCB();
+}
+
+TEST(Win32AIOCB, set_offset) {
+  MockAIOCB aiocb;
+  throw_assert_eq(aiocb.get_offset(), 0);
+  aiocb.set_offset(1);
+  throw_assert_eq(aiocb.get_offset(), 1);
+}
+}
+}
+}

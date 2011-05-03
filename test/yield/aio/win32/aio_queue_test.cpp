@@ -1,4 +1,4 @@
-// yield/aio/win32/aiocb.hpp
+// aio_queue_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,105 +27,36 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_AIO_WIN32_AIOCB_HPP_
-#define _YIELD_AIO_WIN32_AIOCB_HPP_
+#include "../../event_queue_test.hpp"
+#include "yield/exception.hpp"
+#include "yield/aio/win32/aio_queue.hpp"
+#include "yunit.hpp"
 
-#include "yield/event.hpp"
+#include <Windows.h>
 
-struct _OVERLAPPED;
-typedef struct _OVERLAPPED OVERLAPPED;
+TEST_SUITE_EX(
+  Win32AIOQueue,
+  yield::EventQueueTestSuite<yield::aio::win32::AIOQueue>
+);
 
 namespace yield {
-class EventHandler;
-
 namespace aio {
 namespace win32 {
-class AIOQueue;
-
-class AIOCB : public Event {
-public:
-  const static uint32_t TYPE_ID = 3930686968UL;
-
-public:
-  virtual ~AIOCB() { }
-
-public:
-  static AIOCB& cast(::OVERLAPPED&);
-
-public:
-  uint32_t get_error() const {
-    return error;
-  }
-
-  off_t get_offset() const;
-
-  ssize_t get_return() const {
-    return return_;
-  }
-
-public:
-  operator ::OVERLAPPED* ();
-
-public:
-  void set_error(uint32_t error) {
-    this->error = error;
-  }
-
-  void set_return(ssize_t return_) {
-    this->return_ = return_;
-  }
-
-public:
-  // yield::Object
-  uint32_t get_type_id() const {
-    return TYPE_ID;
-  }
-
-  const char* get_type_name() const {
-    return "yield::aio::win32::AIOCB";
-  }
-
-  AIOCB& inc_ref() {
-    return Object::inc_ref(*this);
-  }
-
-protected:
-  AIOCB();
-  AIOCB(off_t offset);
-  AIOCB(fd_t, off_t offset);
-
-protected:
-  void set_offset(off_t offset);
-
-private:
-  typedef struct {
-    unsigned long* Internal;
-    unsigned long* InternalHigh;
-#pragma warning( push )
-#pragma warning( disable: 4201 )
-    union {
-      struct {
-        unsigned long Offset;
-        unsigned long OffsetHigh;
-      };
-      void* Pointer;
-    };
-#pragma warning( pop )
-    void* hEvent;
-  } OVERLAPPED;
-
-private:
-  void init(off_t offset);
-
-private:
-  OVERLAPPED overlapped;
-  AIOCB* this_aiocb;
-
-  uint32_t error;
-  ssize_t return_;
-};
+TEST(Win32AIOQueue, associate) {
+  HANDLE hReadPipe, hWritePipe;
+  if (CreatePipe(&hReadPipe, &hWritePipe, NULL, 0)) {
+    if (AIOQueue().associate(hReadPipe)) {
+      CloseHandle(hReadPipe);
+      CloseHandle(hWritePipe);
+    } else {
+      Exception exception;
+      CloseHandle(hReadPipe);
+      CloseHandle(hWritePipe);
+      throw exception;
+    }
+  } else
+    throw Exception();
 }
 }
 }
-
-#endif
+}

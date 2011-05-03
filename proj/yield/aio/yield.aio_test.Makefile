@@ -48,6 +48,21 @@ D_FILE_PATHS := $(shell find ../../../build/yield/aio -name "*.d")
 
 
 O_FILE_PATHS += ../../../build/yield/aio/yield_aio_test_main.o
+ifeq ($(UNAME), Darwin)
+	O_FILE_PATHS += ../../../build/yield/aio/posix/aiocb_test.o
+endif
+ifeq ($(UNAME), FreeBSD)
+	O_FILE_PATHS += ../../../build/yield/aio/posix/aiocb_test.o
+endif
+ifeq ($(UNAME), Linux)
+	O_FILE_PATHS += ../../../build/yield/aio/posix/aiocb_test.o
+endif
+ifeq ($(UNAME), Solaris)
+	O_FILE_PATHS += ../../../build/yield/aio/posix/aiocb_test.o
+endif
+ifeq ($(UNAME), MINGW32)
+	O_FILE_PATHS += ../../../build/yield/aio_test/win32/aio_queue_test.o ../../../build/yield/aio_test/win32/aiocb_test.o
+endif
 
 
 all: ../../../bin/yield/yield_aio_test
@@ -79,6 +94,18 @@ lcov: ../../../bin/yield/yield_aio_test
 	-mkdir -p ../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 
+../../../build/yield/aio/posix/aiocb_test.o: ../../../test/yield/aio/posix/aiocb_test.cpp
+	-mkdir -p ../../../build/yield/aio/posix 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/aio/posix/aiocb_test.o -MD $(CXXFLAGS) ../../../test/yield/aio/posix/aiocb_test.cpp
+
 ../../../build/yield/aio/yield_aio_test_main.o: ../../../test/yield/aio/yield_aio_test_main.cpp
 	-mkdir -p ../../../build/yield/aio 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/aio/yield_aio_test_main.o -MD $(CXXFLAGS) ../../../test/yield/aio/yield_aio_test_main.cpp
+
+../../../build/yield/aio_test/win32/aio_queue_test.o: ../../../test/yield/aio/win32/aio_queue_test.cpp
+	-mkdir -p ../../../build/yield/aio_test/win32 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/aio_test/win32/aio_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/aio/win32/aio_queue_test.cpp
+
+../../../build/yield/aio_test/win32/aiocb_test.o: ../../../test/yield/aio/win32/aiocb_test.cpp
+	-mkdir -p ../../../build/yield/aio_test/win32 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/aio_test/win32/aiocb_test.o -MD $(CXXFLAGS) ../../../test/yield/aio/win32/aiocb_test.cpp

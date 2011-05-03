@@ -243,26 +243,6 @@ public:
 
 
 template <class SocketEventQueueType>
-class SocketEventQueueTimedDequeueSocketEventTest : public SocketEventQueueTest {
-public:
-  void run() {
-    SocketEventQueueType socket_event_queue;
-
-    if (!socket_event_queue.associate(get_read_socket(), SocketEvent::TYPE_READ_READY))
-      throw Exception();
-
-    get_write_socket().send("m", 1, 0);
-
-    Time start_time(Time::now());
-    auto_Object<SocketEvent> socket_event
-    = object_cast<SocketEvent>(socket_event_queue.dequeue(10.0));
-    Time elapsed_time(Time::now() - start_time);
-    throw_assert_le(elapsed_time, Time(10.0));
-  }
-};
-
-
-template <class SocketEventQueueType>
 class SocketEventQueueTestSuite
   : public EventQueueTestSuite<SocketEventQueueType> {
 public:
@@ -293,11 +273,6 @@ public:
     );
 
     add(
-      "SocketEventQueue::dequeue -> Event",
-      new EventQueueDequeueTest<SocketEventQueueType>
-    );
-
-    add(
       "SocketEventQueue::dequeue -> SocketEvent",
       new SocketEventQueueDequeueSocketEventTest<SocketEventQueueType>
     );
@@ -310,21 +285,6 @@ public:
     add(
       "SocketEventQueue::dequeue -> SocketEvent(socket, SocketEvent::TYPE_WRITE_READY)",
       new SocketEventDequeueQueueWantSendSocketEventTest<SocketEventQueueType>
-    );
-
-    add(
-      "SocketEventQueue::timeddequeue() -> Event",
-      new EventQueueTimedDequeueTest<SocketEventQueueType>
-    );
-
-    add(
-      "SocketEventQueue::timeddequeue -> SocketEvent",
-      new SocketEventQueueTimedDequeueSocketEventTest<SocketEventQueueType>
-    );
-
-    add(
-      "SocketEventQueue::trydequeue() -> Event",
-      new EventQueueTryDequeueTest<SocketEventQueueType>
     );
   }
 };

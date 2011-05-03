@@ -99,6 +99,17 @@
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
+    <ClInclude Include="..\..\..\test\yield\aio\aiocb_test.hpp" />
+    <ClCompile Include="..\..\..\test\yield\aio\posix\aiocb_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\test\yield\aio\win32\aio_queue_test.cpp">
+      <ObjectFileName>$(IntDir)win32\aio_queue_test.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\test\yield\aio\win32\aiocb_test.cpp">
+      <ObjectFileName>$(IntDir)win32\aiocb_test.obj</ObjectFileName>
+    </ClCompile>
     <ClCompile Include="..\..\..\test\yield\aio\yield_aio_test_main.cpp">
     </ClCompile>
   </ItemGroup>

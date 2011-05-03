@@ -200,23 +200,11 @@ SocketAddress::_getaddrinfo(
   int getaddrinfo_ret
   = ::getaddrinfo(nodename, servname, &addrinfo_hints, &addrinfo_);
 
-#ifdef _WIN32
-  if (getaddrinfo_ret == WSANOTINITIALISED) {
-    WORD wVersionRequested = MAKEWORD(2, 2);
-    WSADATA wsaData;
-    WSAStartup(wVersionRequested, &wsaData);
-
-    getaddrinfo_ret
-    = ::getaddrinfo(nodename, servname, &addrinfo_hints, &addrinfo_);
-  }
-#endif
-
   if (getaddrinfo_ret == 0)
     return addrinfo_;
   else
     return NULL;
 }
-
 
 bool
 SocketAddress::getnameinfo(
