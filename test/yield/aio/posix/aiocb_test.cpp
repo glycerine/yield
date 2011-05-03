@@ -48,7 +48,7 @@ TEST(POSIXAIOCB, cast_to_aiocb) {
 }
 
 TEST(POSIXAIOCB, constructors) {
-  throw_assert_eq(MockAIOCB(1).get_fd(), 1);
+  MockAIOCB(1);
 }
 }
 }
