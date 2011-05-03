@@ -30,6 +30,9 @@
     <ClCompile Include="..\..\..\test\yield\sockets\stream_socket_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClInclude Include="..\..\..\test\yield\sockets\stream_socket_test.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\..\test\yield\sockets\tcp_socket_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

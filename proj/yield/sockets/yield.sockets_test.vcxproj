@@ -109,6 +109,7 @@
     <ClInclude Include="..\..\..\test\yield\sockets\socket_test.hpp" />
     <ClCompile Include="..\..\..\test\yield\sockets\stream_socket_test.cpp">
     </ClCompile>
+    <ClInclude Include="..\..\..\test\yield\sockets\stream_socket_test.hpp" />
     <ClCompile Include="..\..\..\test\yield\sockets\tcp_socket_test.cpp">
     </ClCompile>
     <ClCompile Include="..\..\..\test\yield\sockets\udp_socket_test.cpp">

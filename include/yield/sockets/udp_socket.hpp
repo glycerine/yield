@@ -36,7 +36,6 @@ namespace yield {
 namespace sockets {
 class UDPSocket : public DatagramSocket {
 public:
-  static int DOMAIN_DEFAULT; // AF_INET
   static int PROTOCOL; // IPPROTO_UDP
 
 public:

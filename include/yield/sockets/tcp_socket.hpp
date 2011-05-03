@@ -36,7 +36,6 @@ namespace yield {
 namespace sockets {
 class TCPSocket : public StreamSocket {
 public:
-  static int DOMAIN_DEFAULT; // AF_INET
   static int PROTOCOL; // IPPROTO_TCP
 
 public:

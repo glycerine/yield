@@ -1,4 +1,4 @@
-// stream_socket_test.cpp
+// stream_socket_test.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,39 +27,48 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "stream_socket_test.hpp"
+#ifndef _YIELD_SOCKETS_STREAM_SOCKET_TEST_HPP_
+#define _YIELD_SOCKETS_STREAM_SOCKET_TEST_HPP_
 
-TEST_SUITE_EX(
-  StreamSocket,
-  yield::sockets::StreamSocketTestSuite<yield::sockets::StreamSocket>
-);
+#include "socket_test.hpp"
+#include "yield/sockets/tcp_socket.hpp"
 
 namespace yield {
 namespace sockets {
-TEST(StreamSocket, constructor) {
-  StreamSocket socket_;
+template <class StreamSocketType>
+class StreamSocketDupTest : public yunit::Test {
+public:
+  // yunit::Test
+  void run() {
+    auto_Object<StreamSocket> socket_
+      = StreamSocketType(TCPSocket::DOMAIN_DEFAULT).dup();
+  }
+};
+
+
+template <class StreamSocketType>
+class StreamSocketListenTest : public yunit::Test {
+public:
+  // yunit::Test
+  void run() {
+    StreamSocketType socket_(TCPSocket::DOMAIN_DEFAULT);
+    if (!socket_.bind(31000))
+      throw Exception();
+    if (!socket_.listen())
+      throw Exception();
+  }
+};
+
+
+template <class StreamSocketType>
+class StreamSocketTestSuite : public SocketTestSuite<StreamSocketType> {
+public:
+  StreamSocketTestSuite() {
+    add("StreamSocket::dup", new StreamSocketDupTest<StreamSocketType>);
+    add("StreamSocket::listen", new StreamSocketListenTest<StreamSocketType>);
+  }
+};
+}
 }
 
-TEST(StreamSocket, create) {
-  auto_Object<StreamSocket> socket_ = StreamSocket::create();
-}
-
-TEST(StreamSocket, dup) {
-  auto_Object<StreamSocket> socket_
-    = StreamSocket().dup();
-}
-
-TEST(StreamSocket, inc_ref) {
-  auto_Object<StreamSocket> socket_
-    = StreamSocket(TCPSocket::DOMAIN_DEFAULT).inc_ref();
-}
-
-TEST(StreamSocket, listen) {
-  StreamSocket socket_(TCPSocket::DOMAIN_DEFAULT);
-  if (!socket_.bind(31000))
-    throw Exception();
-  if (!socket_.listen())
-    throw Exception();
-}
-}
-}
+#endif
