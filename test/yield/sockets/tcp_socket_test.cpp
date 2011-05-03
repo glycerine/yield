@@ -31,3 +31,18 @@
 #include "yield/sockets/tcp_socket.hpp"
 
 TEST_SUITE_EX(TCPSocket, yield::sockets::SocketTestSuite<yield::sockets::TCPSocket>);
+
+namespace yield {
+namespace sockets {
+TEST(TCPSocket, dup) {
+  auto_Object<StreamSocket> socket_ = TCPSocket().dup();
+}
+
+TEST(TCPSocket, get_type_name) {
+  throw_assert_eq(
+    strcmp(TCPSocket().get_type_name(), "yield::sockets::TCPSocket"),
+    0
+  );
+}
+}
+}

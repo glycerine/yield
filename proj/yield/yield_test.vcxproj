@@ -105,6 +105,7 @@
     </ClCompile>
     <ClCompile Include="..\..\test\yield\buffers_test.cpp">
     </ClCompile>
+    <ClInclude Include="..\..\test\yield\channel_pair_factory.hpp" />
     <ClInclude Include="..\..\test\yield\channel_test.hpp" />
     <ClCompile Include="..\..\test\yield\date_time_test.cpp">
     </ClCompile>

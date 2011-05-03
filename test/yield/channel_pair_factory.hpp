@@ -1,4 +1,4 @@
-// socket_pair_test.hpp
+// channel_pair_factory.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,34 +27,24 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_SOCKETS_SOCKET_PAIR_TEST_HPP_
-#define _YIELD_SOCKETS_SOCKET_PAIR_TEST_HPP_
+#ifndef _YIELD_CHANNEL_PAIR_FACTORY_HPP_
+#define _YIELD_CHANNEL_PAIR_FACTORY_HPP_
 
-#include "../channel_test.hpp"
-#include "yield/sockets/socket_pair.hpp"
+#include "yield/channel_pair.hpp"
 
 namespace yield {
-namespace sockets {
-class SocketPairFactory : public ChannelPairFactory {
+class ChannelPairFactory : public Object {
 public:
-  SocketPairFactory
-  (
-    int domain = SocketPair::DOMAIN_DEFAULT,
-    int type = SocketPair::TYPE_DEFAULT,
-    int protocol = SocketPair::PROTOCOL_DEFAULT
-  )
-    : domain(domain), type(type), protocol(protocol)
-  { }
+  virtual ~ChannelPairFactory() { }
 
-  // yield::ChannelPairFactory
-  ChannelPair& create_channel_pair() {
-    return *new SocketPair(domain, type, protocol);
+  virtual ChannelPair& create_channel_pair() = 0;
+
+public:
+  // yield::Object
+  ChannelPairFactory& inc_ref() {
+    return Object::inc_ref(*this);
   }
-
-private:
-  int domain, type, protocol;
 };
-}
 }
 
 #endif

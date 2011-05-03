@@ -59,10 +59,6 @@ public:
 
 public:
   // yield::Object
-  const char* get_type_name() const {
-    return "yield::sockets::UDPSocket";
-  }
-
   UDPSocket& inc_ref() {
     return Object::inc_ref(*this);
   }

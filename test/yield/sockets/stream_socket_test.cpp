@@ -35,9 +35,31 @@ TEST_SUITE(StreamSocket);
 
 namespace yield {
 namespace sockets {
+TEST(StreamSocket, constructor) {
+  StreamSocket socket_(TCPSocket::DOMAIN_DEFAULT);
+}
+
 TEST(StreamSocket, create) {
   auto_Object<StreamSocket> socket_
     = StreamSocket::create(TCPSocket::DOMAIN_DEFAULT);
+}
+
+TEST(StreamSocket, dup) {
+  auto_Object<StreamSocket> socket_
+    = StreamSocket(TCPSocket::DOMAIN_DEFAULT).dup();
+}
+
+TEST(StreamSocket, inc_ref) {
+  auto_Object<StreamSocket> socket_
+    = StreamSocket(TCPSocket::DOMAIN_DEFAULT).inc_ref();
+}
+
+TEST(StreamSocket, listen) {
+  StreamSocket socket_(TCPSocket::DOMAIN_DEFAULT);
+  if (!socket_.bind(31000))
+    throw Exception();
+  if (!socket_.listen())
+    throw Exception();
 }
 }
 }

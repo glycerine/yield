@@ -43,10 +43,6 @@ public:
     : Socket(domain, TYPE, protocol)
   { }
 
-  DatagramSocket(int domain, int protocol, socket_t socket_)
-    : Socket(domain, TYPE, protocol, socket_)
-  { }
-
   virtual ~DatagramSocket() { }
 
 public:
@@ -64,13 +60,14 @@ public:
 
 public:
   // yield::Object
-  const char* get_type_name() const {
-    return "yield::sockets::DatagramSocket";
-  }
-
   DatagramSocket& inc_ref() {
     return Object::inc_ref(*this);
   }
+
+protected:
+  DatagramSocket(int domain, int protocol, socket_t socket_)
+    : Socket(domain, TYPE, protocol, socket_)
+  { }
 };
 }
 }

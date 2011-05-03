@@ -30,6 +30,7 @@
 #ifndef _YIELD_CHANNEL_TEST_HPP_
 #define _YIELD_CHANNEL_TEST_HPP_
 
+#include "channel_pair_factory.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/assert.hpp"
 #include "yield/buffer.hpp"
@@ -39,20 +40,6 @@
 #include "yunit.hpp"
 
 namespace yield {
-class ChannelPairFactory : public Object {
-public:
-  virtual ~ChannelPairFactory() { }
-
-  virtual ChannelPair& create_channel_pair() = 0;
-
-public:
-  // yield::Object
-  ChannelPairFactory& inc_ref() {
-    return Object::inc_ref(*this);
-  }
-};
-
-
 class ChannelTest : public yunit::Test {
 public:
   virtual ~ChannelTest() {

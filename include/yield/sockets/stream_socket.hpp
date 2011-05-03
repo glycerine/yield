@@ -44,10 +44,6 @@ public:
     : Socket(domain, TYPE, protocol)
   { }
 
-  StreamSocket(int domain, int protocol, socket_t socket_)
-    : Socket(domain, TYPE, protocol, socket_)
-  { }
-
 public:
   YO_NEW_REF StreamSocket* accept() {
     SocketAddress peername;
@@ -87,13 +83,14 @@ public:
 
 public:
   // yield::Object
-  const char* get_type_name() const {
-    return "yield::sockets::StreamSocket";
-  }
-
   StreamSocket& inc_ref() {
     return Object::inc_ref(*this);
   }
+
+protected:
+  StreamSocket(int domain, int protocol, socket_t socket_)
+    : Socket(domain, TYPE, protocol, socket_)
+  { }
 
 protected:
   virtual YO_NEW_REF StreamSocket* dup2(socket_t socket_) {

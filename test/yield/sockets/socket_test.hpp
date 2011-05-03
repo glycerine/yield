@@ -31,7 +31,7 @@
 #define _YIELD_SOCKETS_SOCKET_TEST_HPP_
 
 #include "../channel_test.hpp"
-#include "socket_pair_test.hpp"
+#include "socket_pair_factory.hpp"
 #include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/sockets/socket_address.hpp"
@@ -43,8 +43,7 @@ class SocketBindTest : public yunit::Test {
 public:
   // yunit::Test
   void run() {
-    auto_Object<SocketType> socket_ = SocketType::create();
-    if (!socket_->bind(SocketAddress(SocketAddress::IN_ANY, 31000)))
+    if (!SocketType().bind(31000))
       throw Exception();
   }
 };
@@ -75,18 +74,59 @@ public:
 
 
 template <class SocketType>
+class SocketGetPeernameTest : public yunit::Test {
+public:
+  // yunit::Test
+  void run() {
+    SocketPair sockets(SocketType::DOMAIN_DEFAULT, SocketType::TYPE);
+    sockets.first().getpeername();
+  }
+};
+
+
+template <class SocketType>
+class SocketGetSocknameTest : public yunit::Test {
+public:
+  // yunit::Test
+  void run() {
+    SocketPair sockets(SocketType::DOMAIN_DEFAULT, SocketType::TYPE);
+    sockets.first().getsockname();
+  }
+};
+
+
+template <class SocketType>
 class SocketSetBlockingModeTest : public yunit::Test {
 public:
   // yunit::Test
   void run() {
-    auto_Object<SocketType> socket_ = SocketType::create();
+    SocketType socket_;
 
-    if (!socket_->set_blocking_mode(true))
+    if (!socket_.set_blocking_mode(true))
       throw Exception();
 
-    if (!socket_->set_blocking_mode(false))
+    if (!socket_.set_blocking_mode(false))
       throw Exception();
   }
+};
+
+
+template <class SocketType>
+class SocketSetSocketOptionTest : public yunit::Test {
+public:
+  SocketSetSocketOptionTest(int option_name, int option_value = 1)
+    : option_name(option_name) {
+  }
+
+  // yunit::Test
+  void run() {
+    SocketPair sockets(SocketType::DOMAIN_DEFAULT, SocketType::TYPE);
+    if (!sockets.first().setsockopt(option_name, option_value))
+      throw Exception();
+  }
+
+private:
+  int option_name, option_value;
 };
 
 
@@ -95,22 +135,14 @@ class SocketShutdownTest : public yunit::Test {
 public:
   // yunit::Test
   void run() {
-    {
-      auto_Object<SocketType> socket_ = SocketType::create();
+    SocketType socket_;
+    if (!socket_->shutdown(true, false))
+      throw Exception();
+    if (!socket_->shutdown(false, true))
+      throw Exception();
 
-      if (!socket_->shutdown(true, false))
-        throw Exception();
-
-      if (!socket_->shutdown(false, true))
-        throw Exception();
-    }
-
-    {
-      auto_Object<SocketType> socket_ = SocketType::create();
-
-      if (!socket_->shutdown(true, true))
-        throw Exception();
-    }
+    if (!SocketType().shutdown(true, true))
+      throw Exception();
   }
 };
 
@@ -127,9 +159,38 @@ public:
       )
     ) {
     add("Socket::bind", new SocketBindTest<SocketType>);
-    add("Socket::getfqdn()", new SocketGetFQDNTest);
+    add("Socket::getfqdn", new SocketGetFQDNTest);
     add("Socket::gethostname", new SocketGetHostNameTest);
+    add("Socket::getpeername", new SocketGetPeernameTest<SocketType>);
+    add("Socket::getsockname", new SocketGetSocknameTest<SocketType>);
     add("Socket::set_blocking_mode",new SocketSetBlockingModeTest<SocketType>);
+
+    add(
+      "Socket::setsockopt(KEEPALIVE)",
+      new SocketSetSocketOptionTest<SocketType>(Socket::Option::KEEPALIVE, 1)
+    );
+    add(
+      "Socket::setsockopt(LINGER, 1)",
+      new SocketSetSocketOptionTest<SocketType>(Socket::Option::LINGER, 1)
+    );
+    add(
+      "Socket::setsockopt(LINGER, 30)",
+      new SocketSetSocketOptionTest<SocketType>(Socket::Option::LINGER, 30)
+    );
+    add(
+      "Socket::setsockopt(RCVBUF, 4096)",
+      new SocketSetSocketOptionTest<SocketType>(Socket::Option::RCVBUF, 4096)
+    );
+    add(
+      "Socket::setsockopt(REUSEADDR, 1)",
+      new SocketSetSocketOptionTest<SocketType>(Socket::Option::REUSEADDR, 1)
+    );
+    add(
+      "Socket::setsockopt(SNDBUF)",
+      new SocketSetSocketOptionTest<SocketType>(Socket::Option::SNDBUF, 4096)
+    );
+
+
     //add("Socket::shutdown", new SocketShutdownTest<SocketType>);
   }
 };

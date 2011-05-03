@@ -49,7 +49,6 @@ namespace server {
 using yield::fs::File;
 using yield::sockets::Socket;
 using yield::sockets::SocketAddress;
-using yield::sockets::StreamSocket;
 using yield::sockets::TCPSocket;
 using yield::sockets::aio::acceptAIOCB;
 using yield::sockets::aio::AIOQueue;
@@ -128,7 +127,7 @@ public:
   ~Connection() {
     AIOQueue::dec_ref(aio_queue);
     Log::dec_ref(log);
-    StreamSocket::dec_ref(socket_);
+    TCPSocket::dec_ref(socket_);
   }
 
 public:
@@ -442,7 +441,8 @@ bool HTTPRequestQueue::enqueue(YO_NEW_REF Event& event) {
 
 void HTTPRequestQueue::handle(YO_NEW_REF acceptAIOCB& accept_aiocb) {
   if (accept_aiocb.get_return() >= 0) {
-    StreamSocket& accepted_socket = *accept_aiocb.get_accepted_socket();
+    TCPSocket& accepted_socket
+      = static_cast<TCPSocket&>(*accept_aiocb.get_accepted_socket());
 
     if (aio_queue.associate(accepted_socket)) {
       Connection* connection

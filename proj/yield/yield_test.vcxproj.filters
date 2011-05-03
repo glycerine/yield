@@ -28,6 +28,9 @@
     <ClCompile Include="..\..\test\yield\buffers_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClInclude Include="..\..\test\yield\channel_pair_factory.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\test\yield\channel_test.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>

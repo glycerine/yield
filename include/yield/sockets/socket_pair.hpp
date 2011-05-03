@@ -42,22 +42,13 @@ public:
   static int TYPE_DEFAULT; // SOCK_STREAM
 
 public:
-  SocketPair
-  (
+  SocketPair(
     int domain = DOMAIN_DEFAULT,
     int type = TYPE_DEFAULT,
     int protocol = Socket::PROTOCOL_DEFAULT
   );
 
   ~SocketPair();
-
-public:
-  static YO_NEW_REF SocketPair*
-  create(
-    int domain = DOMAIN_DEFAULT,
-    int type = TYPE_DEFAULT,
-    int protocol = Socket::PROTOCOL_DEFAULT
-  );
 
 public:
   Socket& first() const {
@@ -77,9 +68,6 @@ public:
   Channel& get_write_channel() {
     return second();
   }
-
-private:
-  SocketPair(YO_NEW_REF Socket**);
 
 private:
   static bool socketpair(int domain, int type, int protocol, Socket**);

@@ -18,12 +18,12 @@
     <ClCompile Include="..\..\..\test\yield\sockets\socket_address_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClInclude Include="..\..\..\test\yield\sockets\socket_pair_factory.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\..\test\yield\sockets\socket_pair_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\test\yield\sockets\socket_pair_test.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\test\yield\sockets\socket_test.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>

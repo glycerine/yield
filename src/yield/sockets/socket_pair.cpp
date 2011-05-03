@@ -53,27 +53,13 @@ SocketPair::SocketPair(int domain, int type, int protocol) {
     throw Exception();
 }
 
-SocketPair::SocketPair(YO_NEW_REF Socket** sockets) {
-  this->sockets[0] = sockets[0];
-  this->sockets[1] = sockets[1];
-}
-
 SocketPair::~SocketPair() {
   Socket::dec_ref(*sockets[0]);
   Socket::dec_ref(*sockets[1]);
 }
 
-SocketPair* SocketPair::create(int domain, int type, int protocol) {
-  Socket* sockets[2];
-  if (socketpair(domain, type, protocol, sockets))
-    return new SocketPair(sockets);
-  else
-    return NULL;
-}
-
 bool
-SocketPair::socketpair
-(
+SocketPair::socketpair(
   int domain,
   int type,
   int protocol,
@@ -93,8 +79,7 @@ SocketPair::socketpair
     StreamSocket* listen_stream_socket
     = StreamSocket::create(domain, protocol);
 
-    if
-    (
+    if (
       listen_stream_socket != NULL
       &&
       listen_stream_socket->bind(SocketAddress::IN_LOOPBACK)
@@ -122,9 +107,8 @@ SocketPair::socketpair
     SocketAddress socknames[2];
 
     for (uint8_t i = 0; i < 2; i++) {
-      if
-      (
-        (sockets[i] = DatagramSocket::create(domain, 0)) != NULL
+      if (
+        (sockets[i] = DatagramSocket::create(domain)) != NULL
         &&
         sockets[i]->bind(SocketAddress::IN_LOOPBACK)
         &&
@@ -138,12 +122,7 @@ SocketPair::socketpair
       }
     }
 
-    if
-    (
-      sockets[0]->connect(socknames[1])
-      &&
-      sockets[1]->connect(socknames[0])
-    )
+    if (sockets[0]->connect(socknames[1]) && sockets[1]->connect(socknames[0]))
       return true;
     else {
       for (uint8_t i = 0; i < 2; i++) {
