@@ -28,6 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "stream_socket_test.hpp"
+#include "yield/sockets/stream_socket.hpp"
 
 TEST_SUITE_EX(
   StreamSocket,
@@ -50,16 +51,7 @@ TEST(StreamSocket, dup) {
 }
 
 TEST(StreamSocket, inc_ref) {
-  auto_Object<StreamSocket> socket_
-    = StreamSocket(TCPSocket::DOMAIN_DEFAULT).inc_ref();
-}
-
-TEST(StreamSocket, listen) {
-  StreamSocket socket_(TCPSocket::DOMAIN_DEFAULT);
-  if (!socket_.bind(31000))
-    throw Exception();
-  if (!socket_.listen())
-    throw Exception();
+  auto_Object<StreamSocket> socket_ = StreamSocket().inc_ref();
 }
 }
 }

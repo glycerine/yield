@@ -34,7 +34,10 @@ namespace yield {
 namespace sockets {
 static LPFN_TRANSMITFILE lpfnTransmitFile = NULL;
 
-int StreamSocket::TYPE = SOCK_STREAM;
+const int StreamSocket::TYPE = SOCK_STREAM;
+
+const int StreamSocket::Option::KEEPALIVE = SO_KEEPALIVE;
+const int StreamSocket::Option::LINGER = SO_LINGER;
 
 StreamSocket* StreamSocket::accept(SocketAddress& peername) {
   socklen_t peernamelen = peername.len();
@@ -114,6 +117,28 @@ ssize_t StreamSocket::sendfile(fd_t fd, off_t offset, size_t nbytes) {
   }
 
   return -1;
+}
+
+bool StreamSocket::setsockopt(int option_name, int option_value) {
+  if (option_name == Option::LINGER) {
+    linger optval;
+    if (option_value > 0) {
+      optval.l_onoff = 1;
+      optval.l_linger = static_cast<u_short>(option_value);
+    } else {
+      optval.l_onoff = 0;
+      optval.l_linger = 0;
+    }
+
+    return ::setsockopt(
+             *this,
+             SOL_SOCKET,
+             SO_LINGER,
+             reinterpret_cast<char*>(&optval),
+             static_cast<int>(sizeof(optval))
+           ) == 0;
+  } else
+    return Socket::setsockopt(option_name, option_value);
 }
 
 bool StreamSocket::want_accept() const {

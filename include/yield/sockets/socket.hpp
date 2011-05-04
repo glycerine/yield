@@ -41,6 +41,10 @@ namespace yield {
 namespace sockets {
 class Socket : public Channel {
 public:
+  const static int DOMAIN_DEFAULT; // AF_INET
+  const static int PROTOCOL_DEFAULT = 0;
+
+public:
   class MessageFlags {
   public:
     const static int DONTROUTE = 1;
@@ -60,14 +64,10 @@ public:
 public:
   class Option {
   public:
-    const static int KEEPALIVE;
-    const static int LINGER;
     const static int RCVBUF;
     const static int REUSEADDR;
     const static int SNDBUF;
   };
-
-  const static int PROTOCOL_DEFAULT = 0;
 
 public:
   Socket(int domain, int type, int protocol)

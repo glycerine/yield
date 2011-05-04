@@ -33,11 +33,11 @@
 
 namespace yield {
 namespace sockets {
-const int Socket::Option::KEEPALIVE = SO_KEEPALIVE;
-const int Socket::Option::LINGER = SO_LINGER;
+const int Socket::DOMAIN_DEFAULT = AF_INET;
+
 const int Socket::Option::RCVBUF = SO_RCVBUF;
 const int Socket::Option::REUSEADDR = SO_REUSEADDR;
-const int Socket::Option::SNDBUF = SNDBUF;
+const int Socket::Option::SNDBUF = SO_SNDBUF;
 
 bool Socket::bind(const SocketAddress& _name) {
   const SocketAddress* name = _name.filter(get_domain());
@@ -373,25 +373,6 @@ bool Socket::set_blocking_mode(bool blocking_mode) {
 }
 
 bool Socket::setsockopt(int option_name, int option_value) {
-  if (option_name == Option::LINGER) {
-    linger optval;
-    if (option_value > 0) {
-      optval.l_onoff = 1;
-      optval.l_linger = static_cast<u_short>(option_value);
-    } else {
-      optval.l_onoff = 0;
-      optval.l_linger = 0;
-    }
-
-    return ::setsockopt(
-             *this,
-             SOL_SOCKET,
-             SO_LINGER,
-             reinterpret_cast<char*>(&optval),
-             static_cast<int>(sizeof(optval))
-           ) == 0;
-  }
-
   return ::setsockopt(
             *this,
             SOL_SOCKET,

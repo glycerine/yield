@@ -33,6 +33,6 @@
 
 namespace yield {
 namespace sockets {
-int DatagramSocket::TYPE = SOCK_DGRAM;
+const int DatagramSocket::TYPE = SOCK_DGRAM;
 }
 }

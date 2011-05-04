@@ -31,7 +31,6 @@
 #define _YIELD_SOCKETS_STREAM_SOCKET_TEST_HPP_
 
 #include "socket_test.hpp"
-#include "yield/sockets/tcp_socket.hpp"
 
 namespace yield {
 namespace sockets {
@@ -40,8 +39,7 @@ class StreamSocketDupTest : public yunit::Test {
 public:
   // yunit::Test
   void run() {
-    auto_Object<StreamSocket> socket_
-      = StreamSocketType(TCPSocket::DOMAIN_DEFAULT).dup();
+    auto_Object<StreamSocket> socket_ = StreamSocketType().dup();
   }
 };
 
@@ -51,7 +49,7 @@ class StreamSocketListenTest : public yunit::Test {
 public:
   // yunit::Test
   void run() {
-    StreamSocketType socket_(TCPSocket::DOMAIN_DEFAULT);
+    StreamSocketType socket_;
     if (!socket_.bind(31000))
       throw Exception();
     if (!socket_.listen())
@@ -66,6 +64,30 @@ public:
   StreamSocketTestSuite() {
     add("StreamSocket::dup", new StreamSocketDupTest<StreamSocketType>);
     add("StreamSocket::listen", new StreamSocketListenTest<StreamSocketType>);
+
+    add(
+      "StreamSocket::setsockopt(KEEPALIVE)",
+      new SocketSetSocketOptionTest<StreamSocketType>(
+            StreamSocket::Option::KEEPALIVE,
+            1
+          )
+    );
+
+    add(
+      "StreamSocket::setsockopt(LINGER, 1)",
+      new SocketSetSocketOptionTest<StreamSocketType>(
+            StreamSocket::Option::LINGER,
+            1
+          )
+    );
+
+    add(
+      "StreamSocket::setsockopt(LINGER, 30)",
+      new SocketSetSocketOptionTest<StreamSocketType>(
+            StreamSocket::Option::LINGER,
+            30
+          )
+    );
   }
 };
 }

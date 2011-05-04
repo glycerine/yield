@@ -35,6 +35,7 @@
 #include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/sockets/socket_address.hpp"
+#include "yield/sockets/stream_socket.hpp"
 
 namespace yield {
 namespace sockets {
@@ -155,7 +156,7 @@ public:
       *new SocketPairFactory(
         SocketType::DOMAIN_DEFAULT,
         SocketType::TYPE,
-        SocketType::PROTOCOL
+        SocketType::PROTOCOL_DEFAULT
       )
     ) {
     add("Socket::bind", new SocketBindTest<SocketType>);
@@ -166,30 +167,19 @@ public:
     add("Socket::set_blocking_mode",new SocketSetBlockingModeTest<SocketType>);
 
     add(
-      "Socket::setsockopt(KEEPALIVE)",
-      new SocketSetSocketOptionTest<SocketType>(Socket::Option::KEEPALIVE, 1)
-    );
-    add(
-      "Socket::setsockopt(LINGER, 1)",
-      new SocketSetSocketOptionTest<SocketType>(Socket::Option::LINGER, 1)
-    );
-    add(
-      "Socket::setsockopt(LINGER, 30)",
-      new SocketSetSocketOptionTest<SocketType>(Socket::Option::LINGER, 30)
-    );
-    add(
       "Socket::setsockopt(RCVBUF, 4096)",
       new SocketSetSocketOptionTest<SocketType>(Socket::Option::RCVBUF, 4096)
     );
+
     add(
       "Socket::setsockopt(REUSEADDR, 1)",
       new SocketSetSocketOptionTest<SocketType>(Socket::Option::REUSEADDR, 1)
     );
+
     add(
-      "Socket::setsockopt(SNDBUF)",
+      "Socket::setsockopt(SNDBUF, 4096)",
       new SocketSetSocketOptionTest<SocketType>(Socket::Option::SNDBUF, 4096)
     );
-
 
     //add("Socket::shutdown", new SocketShutdownTest<SocketType>);
   }

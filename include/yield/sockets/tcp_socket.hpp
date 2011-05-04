@@ -36,10 +36,10 @@ namespace yield {
 namespace sockets {
 class TCPSocket : public StreamSocket {
 public:
-  static int PROTOCOL; // IPPROTO_TCP
+  const static int PROTOCOL; // IPPROTO_TCP
 
 public:
-  class Option {
+  class Option : public StreamSocket::Option {
   public:
     const static int NODELAY;
   };

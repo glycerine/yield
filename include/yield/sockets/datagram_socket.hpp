@@ -36,8 +36,7 @@ namespace yield {
 namespace sockets {
 class DatagramSocket : public Socket {
 public:
-  static int DOMAIN_DEFAULT; // AF_INET
-  static int TYPE; // SOCK_DGRAM
+  const static int TYPE; // SOCK_DGRAM
 
 public:
   DatagramSocket(int domain, int protocol = PROTOCOL_DEFAULT)

@@ -37,10 +37,17 @@ namespace yield {
 namespace sockets {
 class StreamSocket : public Socket {
 public:
-  static int TYPE; // SOCK_STREAM
+  const static int TYPE; // SOCK_STREAM
 
 public:
-  StreamSocket(int domain, int protocol = PROTOCOL_DEFAULT)
+  class Option : public Socket::Option {
+  public:
+    const static int KEEPALIVE;
+    const static int LINGER;
+  };
+
+public:
+  StreamSocket(int domain = DOMAIN_DEFAULT, int protocol = PROTOCOL_DEFAULT)
     : Socket(domain, TYPE, protocol)
   { }
 
@@ -56,7 +63,7 @@ public:
 public:
   static YO_NEW_REF StreamSocket*
   create(
-    int domain,
+    int domain = DOMAIN_DEFAULT,
     int protocol = PROTOCOL_DEFAULT
   ) {
     socket_t socket_ = Socket::create(domain, TYPE, protocol);
@@ -86,6 +93,10 @@ public:
   StreamSocket& inc_ref() {
     return Object::inc_ref(*this);
   }
+
+public:
+  // yield::Socket
+  virtual bool setsockopt(int option_name, int option_value);
 
 protected:
   StreamSocket(int domain, int protocol, socket_t socket_)

@@ -32,7 +32,6 @@
 
 namespace yield {
 namespace sockets {
-int DatagramSocket::DOMAIN_DEFAULT = AF_INET;
-int DatagramSocket::TYPE = SOCK_DGRAM;
+const int DatagramSocket::TYPE = SOCK_DGRAM;
 }
 }

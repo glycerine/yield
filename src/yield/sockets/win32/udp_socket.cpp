@@ -32,6 +32,6 @@
 
 namespace yield {
 namespace sockets {
-int UDPSocket::PROTOCOL = IPPROTO_UDP;
+const int UDPSocket::PROTOCOL = IPPROTO_UDP;
 }
 }
