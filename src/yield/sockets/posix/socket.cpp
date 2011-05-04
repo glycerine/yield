@@ -160,8 +160,7 @@ ssize_t
 Socket::recvmsg(
   const iovec* iov,
   int iovlen,
-  const MessageFlags& flags,
-  SocketAddress* peername
+  const MessageFlags& flags
 ) {
   msghdr msghdr_;
   memset(&msghdr_, 0, sizeof(msghdr_));
@@ -183,8 +182,7 @@ ssize_t
 Socket::sendmsg(
   const iovec* iov,
   int iovlen,
-  const MessageFlags& flags,
-  const SocketAddress* peername
+  const MessageFlags& flags
 ) {
   msghdr msghdr_;
   memset(&msghdr_, 0, sizeof(msghdr_));

@@ -64,7 +64,7 @@ DatagramSocket::recvmsg(
   memset(&msghdr_, 0, sizeof(msghdr_));
   msghdr_.msg_iov = const_cast<iovec*>(iov);
   msghdr_.msg_iovlen = iovlen;
-  msghdr_.msg_name = *peername;
+  msghdr_.msg_name = peername;
   msghdr_.msg_namelen = sizeof(*peername);
   return ::recvmsg(*this, &msghdr_, flags);
 }
@@ -91,7 +91,7 @@ DatagramSocket::sendmsg(
 }
 
 ssize_t
-Socket::sendto(
+DatagramSocket::sendto(
   const void* buf,
   size_t buflen,
   const MessageFlags& flags,
