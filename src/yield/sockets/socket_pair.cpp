@@ -75,6 +75,8 @@ SocketPair::socketpair(
     return false;
 #endif
 
+  sockets[0] = sockets[1] = NULL;
+
   if (type == StreamSocket::TYPE) {
     StreamSocket* listen_stream_socket
     = StreamSocket::create(domain, protocol);

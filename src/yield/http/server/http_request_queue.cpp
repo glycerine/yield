@@ -374,7 +374,7 @@ HTTPRequestQueue::~HTTPRequestQueue() {
     Connection* connection = *connection_i;
     TCPSocket& socket_ = connection->get_socket();
     socket_.set_blocking_mode(true);
-    socket_.setsockopt(Socket::Option::LINGER, 30);
+    socket_.setsockopt(TCPSocket::Option::LINGER, 30);
     socket_.shutdown();
     socket_.close();
     Connection::dec_ref(*connection);
@@ -462,7 +462,7 @@ void HTTPRequestQueue::handle(YO_NEW_REF acceptAIOCB& accept_aiocb) {
     } else {
       accepted_socket.shutdown();
       accepted_socket.close();
-      StreamSocket::dec_ref(accepted_socket);
+      TCPSocket::dec_ref(accepted_socket);
     }
   } else {
     acceptAIOCB::dec_ref(accept_aiocb);

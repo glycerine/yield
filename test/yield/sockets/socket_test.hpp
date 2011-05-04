@@ -79,7 +79,7 @@ class SocketGetPeernameTest : public yunit::Test {
 public:
   // yunit::Test
   void run() {
-    SocketPair sockets(SocketPair::DOMAIN_DEFAULT, SocketType::TYPE);
+    SocketPair sockets(SocketType::DOMAIN_DEFAULT, SocketType::TYPE);
     sockets.first().getpeername();
   }
 };
@@ -90,8 +90,19 @@ class SocketGetSocknameTest : public yunit::Test {
 public:
   // yunit::Test
   void run() {
-    SocketPair sockets(SocketPair::DOMAIN_DEFAULT, SocketType::TYPE);
+    SocketPair sockets(SocketType::DOMAIN_DEFAULT, SocketType::TYPE);
     sockets.first().getsockname();
+  }
+};
+
+
+class SocketMessageFlagsTest : public yunit::Test {
+public:
+  // yunit::Test
+  void run() {
+    Socket::MessageFlags dontroute(Socket::MessageFlags::DONTROUTE);
+    Socket::MessageFlags oob(Socket::MessageFlags::OOB);
+    Socket::MessageFlags peek(Socket::MessageFlags::PEEK);
   }
 };
 
@@ -108,6 +119,9 @@ public:
 
     if (!socket_.set_blocking_mode(false))
       throw Exception();
+
+    if (!socket_.set_blocking_mode(true))
+      throw Exception();
   }
 };
 
@@ -121,7 +135,7 @@ public:
 
   // yunit::Test
   void run() {
-    SocketPair sockets(SocketPair::DOMAIN_DEFAULT, SocketType::TYPE);
+    SocketPair sockets(SocketType::DOMAIN_DEFAULT, SocketType::TYPE);
     if (!sockets.first().setsockopt(option_name, option_value))
       throw Exception();
   }
@@ -154,7 +168,7 @@ public:
   SocketTestSuite()
     : ChannelTestSuite(
       *new SocketPairFactory(
-        SocketPair::DOMAIN_DEFAULT,
+        SocketType::DOMAIN_DEFAULT,
         SocketType::TYPE,
         SocketPair::PROTOCOL_DEFAULT
       )
@@ -164,7 +178,13 @@ public:
     add("Socket::gethostname", new SocketGetHostNameTest);
     add("Socket::getpeername", new SocketGetPeernameTest<SocketType>);
     add("Socket::getsockname", new SocketGetSocknameTest<SocketType>);
-    add("Socket::set_blocking_mode",new SocketSetBlockingModeTest<SocketType>);
+
+    add("Socket::MessageFlags", new SocketMessageFlagsTest);
+
+    add(
+      "Socket::set_blocking_mode",
+      new SocketSetBlockingModeTest<SocketType>
+    );
 
     add(
       "Socket::setsockopt(RCVBUF, 4096)",
