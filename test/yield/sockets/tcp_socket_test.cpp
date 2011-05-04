@@ -44,5 +44,10 @@ TEST(TCPSocket, get_type_name) {
     0
   );
 }
+
+TEST(TCPSocket, setsockopt_nodelay) {
+  if (!TCPSocket().setsockopt(TCPSocket::Option::NODELAY, true))
+    throw Exception();
+}
 }
 }

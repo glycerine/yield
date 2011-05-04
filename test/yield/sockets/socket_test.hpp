@@ -150,14 +150,33 @@ class SocketShutdownTest : public yunit::Test {
 public:
   // yunit::Test
   void run() {
-    SocketType socket_;
-    if (!socket_->shutdown(true, false))
+    SocketPair sockets(SocketType::DOMAIN_DEFAULT, SocketType::TYPE);
+
+    if (!sockets.first().shutdown(true, false))
       throw Exception();
-    if (!socket_->shutdown(false, true))
+    if (!sockets.first().shutdown(false, true))
       throw Exception();
 
-    if (!SocketType().shutdown(true, true))
+    if (!sockets.second().shutdown(true, true))
       throw Exception();
+  }
+};
+
+
+template <class SocketType>
+class SocketWantRecvTest : public yunit::Test {
+public:
+  // yunit::Test
+  void run() {
+    SocketPair sockets(SocketType::DOMAIN_DEFAULT, SocketType::TYPE);
+
+    if (!sockets.first().set_blocking_mode(false))
+      throw Exception();
+    auto_Object<Buffer> buffer = new Buffer(1);
+    ssize_t recv_ret
+      = sockets.first().recv(*buffer, 0, static_cast<SocketAddress*>(NULL));
+    throw_assert_eq(recv_ret, -1);
+    throw_assert(sockets.first().want_recv());
   }
 };
 
@@ -201,7 +220,9 @@ public:
       new SocketSetSocketOptionTest<SocketType>(Socket::Option::SNDBUF, 4096)
     );
 
-    //add("Socket::shutdown", new SocketShutdownTest<SocketType>);
+    add("Socket::shutdown", new SocketShutdownTest<SocketType>);
+
+    add("Socket::want_recv", new SocketWantRecvTest<SocketType>);
   }
 };
 }

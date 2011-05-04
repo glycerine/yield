@@ -218,8 +218,7 @@ SocketAddress::getnameinfo(
   const SocketAddress* next_socket_address = this;
 
   do {
-    if
-    (
+    if (
       ::getnameinfo(
         *this,
         len(),

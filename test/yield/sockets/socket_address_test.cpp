@@ -33,7 +33,7 @@
 #include "yunit.hpp"
 
 #define TEST_NODENAME "localhost"
-#define TEST_SERVNAME static_cast<uint16_t>( 80 )
+#define TEST_SERVNAME static_cast<uint16_t>(80)
 
 TEST_SUITE(SocketAddress);
 
@@ -43,6 +43,12 @@ TEST(SocketAddress, copy_constructor) {
   SocketAddress sockaddr1(TEST_NODENAME, TEST_SERVNAME);
   SocketAddress sockaddr2(sockaddr1);
   throw_assert_eq(sockaddr1, sockaddr2);
+}
+
+TEST(SocketAddress, copy_constructor_with_port) {
+  SocketAddress sockaddr1(TEST_NODENAME, TEST_SERVNAME);
+  SocketAddress sockaddr2(sockaddr1, 30000);
+  throw_assert_ne(sockaddr1, sockaddr2);
 }
 
 TEST(SocketAddress, getnameinfo) {
@@ -62,7 +68,13 @@ TEST(SocketAddress, getnameinfo) {
     hostname_numeric.find('.') != string::npos
     ||
     hostname_numeric.find(':') != string::npos
-  );
+ );
+}
+
+TEST(SocketAddress, operator_print) {
+  std::ostringstream oss;
+  oss << SocketAddress(TEST_NODENAME, TEST_SERVNAME);
+  throw_assert_false(oss.str().empty());
 }
 
 TEST(SocketAddress, operator_string) {
