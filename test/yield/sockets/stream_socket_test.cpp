@@ -31,26 +31,26 @@
 #include "yield/sockets/stream_socket.hpp"
 
 TEST_SUITE_EX(
-  StreamSocket,
+  StreamSocket_,
   yield::sockets::StreamSocketTestSuite<yield::sockets::StreamSocket>
 );
 
 namespace yield {
 namespace sockets {
-TEST(StreamSocket, constructor) {
+TEST(StreamSocket_, constructor) {
   StreamSocket socket_;
 }
 
-TEST(StreamSocket, create) {
+TEST(StreamSocket_, create) {
   auto_Object<StreamSocket> socket_ = StreamSocket::create();
 }
 
-TEST(StreamSocket, dup) {
+TEST(StreamSocket_, dup) {
   auto_Object<StreamSocket> socket_
     = StreamSocket().dup();
 }
 
-TEST(StreamSocket, inc_ref) {
+TEST(StreamSocket_, inc_ref) {
   auto_Object<StreamSocket> socket_ = StreamSocket().inc_ref();
 }
 }

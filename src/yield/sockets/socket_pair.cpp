@@ -41,11 +41,11 @@
 namespace yield {
 namespace sockets {
 #ifdef _WIN32
-int SocketPair::DOMAIN_DEFAULT = TCPSocket::DOMAIN_DEFAULT;
+const int SocketPair::DOMAIN_DEFAULT = Socket::DOMAIN_DEFAULT;
 #else
-int SocketPair::DOMAIN_DEFAULT = AF_UNIX;
+const int SocketPair::DOMAIN_DEFAULT = AF_UNIX;
 #endif
-int SocketPair::TYPE_DEFAULT = StreamSocket::TYPE;
+const int SocketPair::TYPE_DEFAULT = StreamSocket::TYPE;
 
 
 SocketPair::SocketPair(int domain, int type, int protocol) {

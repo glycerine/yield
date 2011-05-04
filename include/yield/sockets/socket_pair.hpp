@@ -37,9 +37,9 @@ namespace yield {
 namespace sockets {
 class SocketPair : public ChannelPair {
 public:
-  static int DOMAIN_DEFAULT; // AF_UNIX
+  const static int DOMAIN_DEFAULT; // AF_UNIX
   const static int PROTOCOL_DEFAULT = Socket::PROTOCOL_DEFAULT;
-  static int TYPE_DEFAULT; // SOCK_STREAM
+  const static int TYPE_DEFAULT; // SOCK_STREAM
 
 public:
   SocketPair(

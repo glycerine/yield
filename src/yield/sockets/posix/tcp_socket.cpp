@@ -35,8 +35,9 @@
 
 namespace yield {
 namespace sockets {
+const int TCPSocket::PROTOCOL = IPPROTO_TCP;
+
 const int TCPSocket::Option::NODELAY = TCP_NODELAY;
-int TCPSocket::PROTOCOL = IPPROTO_TCP;
 
 bool TCPSocket::setsockopt(int option_name, int option_value) {
   if (option_name == Option::NODELAY) {

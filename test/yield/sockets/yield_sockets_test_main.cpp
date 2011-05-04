@@ -34,7 +34,7 @@
 extern yunit::TestSuite& DatagramSocketTestSuite();
 extern yunit::TestSuite& SocketAddressTestSuite();
 extern yunit::TestSuite& SocketPairTestSuite();
-extern yunit::TestSuite& StreamSocketTestSuite();
+extern yunit::TestSuite& StreamSocket_TestSuite();
 extern yunit::TestSuite& TCPSocketTestSuite();
 extern yunit::TestSuite& UDPSocketTestSuite();
 
@@ -57,8 +57,8 @@ int main(int, char**) {
   std::cout << std::endl;
 
   // StreamSocket
-  std::cout << "StreamSocket:" << std::endl;
-  failed_test_case_count += StreamSocketTestSuite().run();
+  std::cout << "StreamSocket_:" << std::endl;
+  failed_test_case_count += StreamSocket_TestSuite().run();
   std::cout << std::endl;
 
   // TCPSocket

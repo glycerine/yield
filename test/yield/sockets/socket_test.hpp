@@ -79,7 +79,7 @@ class SocketGetPeernameTest : public yunit::Test {
 public:
   // yunit::Test
   void run() {
-    SocketPair sockets(SocketType::DOMAIN_DEFAULT, SocketType::TYPE);
+    SocketPair sockets(SocketPair::DOMAIN_DEFAULT, SocketType::TYPE);
     sockets.first().getpeername();
   }
 };
@@ -90,7 +90,7 @@ class SocketGetSocknameTest : public yunit::Test {
 public:
   // yunit::Test
   void run() {
-    SocketPair sockets(SocketType::DOMAIN_DEFAULT, SocketType::TYPE);
+    SocketPair sockets(SocketPair::DOMAIN_DEFAULT, SocketType::TYPE);
     sockets.first().getsockname();
   }
 };
@@ -121,7 +121,7 @@ public:
 
   // yunit::Test
   void run() {
-    SocketPair sockets(SocketType::DOMAIN_DEFAULT, SocketType::TYPE);
+    SocketPair sockets(SocketPair::DOMAIN_DEFAULT, SocketType::TYPE);
     if (!sockets.first().setsockopt(option_name, option_value))
       throw Exception();
   }
@@ -154,9 +154,9 @@ public:
   SocketTestSuite()
     : ChannelTestSuite(
       *new SocketPairFactory(
-        SocketType::DOMAIN_DEFAULT,
+        SocketPair::DOMAIN_DEFAULT,
         SocketType::TYPE,
-        SocketType::PROTOCOL_DEFAULT
+        SocketPair::PROTOCOL_DEFAULT
       )
     ) {
     add("Socket::bind", new SocketBindTest<SocketType>);
