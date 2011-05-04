@@ -1,4 +1,4 @@
-// datagram_socket_test.cpp
+// datagram_socket_test.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,19 +27,45 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "datagram_socket_test.hpp"
-#include "yield/auto_object.hpp"
-#include "yield/sockets/datagram_socket.hpp"
+#ifndef _YIELD_SOCKETS_DATAGRAM_SOCKET_TEST_HPP_
+#define _YIELD_SOCKETS_DATAGRAM_SOCKET_TEST_HPP_
 
-TEST_SUITE_EX(
-  DatagramSocket_,
-  yield::sockets::DatagramSocketTestSuite<yield::sockets::DatagramSocket>
-);
+#include "socket_test.hpp"
+#include "yield/sockets/datagram_socket.hpp"
 
 namespace yield {
 namespace sockets {
-TEST(DatagramSocket_, create) {
-  auto_Object<DatagramSocket> socket_ = DatagramSocket::create();
+template <class SocketType>
+class DatagramSocketRecvFromTest : public yunit::Test {
+public:
+  // yunit::Test
+  void run() {
+    SocketPair sockets(SocketType::DOMAIN_DEFAULT, SocketType::TYPE);
+    sockets.first().write("m", 1);
+    char m;
+    SocketAddress peername;
+    ssize_t recvfrom_ret
+      = static_cast<DatagramSocket&>(sockets.second())
+          .recvfrom(&m, 1, 0, peername);
+    throw_assert_eq(recvfrom_ret, 1);
+    throw_assert_eq(m, 'm');
+    throw_assert_eq(peername, *sockets.first().getsockname());
+    throw_assert_eq(peername, *sockets.second().getpeername());
+  }
+};
+
+
+template <class DatagramSocketType>
+class DatagramSocketTestSuite : public SocketTestSuite<DatagramSocketType> {
+public:
+  DatagramSocketTestSuite() {
+    add(
+      "DatagramSocket::recvfrom",
+      new DatagramSocketRecvFromTest<DatagramSocketType>
+    );
+  }
+};
 }
 }
-}
+
+#endif

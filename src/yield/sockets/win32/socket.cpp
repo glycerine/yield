@@ -136,13 +136,7 @@ string Socket::gethostname() {
 
 bool Socket::getpeername(OUT SocketAddress& peername) const {
   socklen_t peernamelen = peername.len();
-  if (
-    ::getpeername(
-      *this,
-      peername,
-      &peernamelen
-    ) != -1
-  ) {
+  if (::getpeername(*this, peername, &peernamelen) != -1) {
     debug_assert_eq(peername.get_family(), get_domain());
     return true;
   } else
@@ -151,14 +145,7 @@ bool Socket::getpeername(OUT SocketAddress& peername) const {
 
 bool Socket::getsockname(OUT SocketAddress& sockname) const {
   socklen_t socknamelen = sockname.len();
-
-  if (
-    ::getsockname(
-      *this,
-      sockname,
-      &socknamelen
-    ) != -1
-  ) {
+  if (::getsockname(*this, sockname, &socknamelen) != -1) {
     debug_assert_eq(sockname.get_family(), get_domain());
     return true;
   } else
@@ -180,29 +167,10 @@ Socket::recv(
 }
 
 ssize_t
-Socket::recvfrom(
-  void* buf,
-  size_t buflen,
-  const MessageFlags& flags,
-  SocketAddress& peername
-) {
-  socklen_t peernamelen = peername.len();
-  return ::recvfrom(
-            *this,
-            static_cast<char*>(buf),
-            buflen,
-            flags,
-            static_cast<sockaddr*>(peername),
-            &peernamelen
-          );
-}
-
-ssize_t
 Socket::recvmsg(
   const iovec* iov,
   int iovlen,
-  const MessageFlags& flags,
-  SocketAddress* peername
+  const MessageFlags& flags
 ) {
   DWORD dwFlags = static_cast<DWORD>(flags);
   DWORD dwNumberOfBytesRecvd;
@@ -214,42 +182,20 @@ Socket::recvmsg(
   }
 #endif
 
-  ssize_t recv_ret;
-  if (peername == NULL) {
-    recv_ret
-    = WSARecv(
-        *this,
+  ssize_t recv_ret
+  = WSARecv(
+      *this,
 #ifdef _WIN64
-        & wsabufs[0],
+      & wsabufs[0],
 #else
-        reinterpret_cast<WSABUF*>(const_cast<iovec*>(iov)),
+      reinterpret_cast<WSABUF*>(const_cast<iovec*>(iov)),
 #endif
-        iovlen,
-        &dwNumberOfBytesRecvd,
-        &dwFlags,
-        NULL,
-        NULL
-      );
-  } else {
-    socklen_t peernamelen = peername->len();
-
-    recv_ret
-    = WSARecvFrom(
-        *this,
-#ifdef _WIN64
-        & wsabufs[0],
-#else
-        reinterpret_cast<WSABUF*>(const_cast<iovec*>(iov)),
-#endif
-        iovlen,
-        &dwNumberOfBytesRecvd,
-        &dwFlags,
-        *peername,
-        &peernamelen,
-        NULL,
-        NULL
-      );
-  }
+      iovlen,
+      &dwNumberOfBytesRecvd,
+      &dwFlags,
+      NULL,
+      NULL
+    );
 
   if (recv_ret == 0)
     return static_cast<ssize_t>(dwNumberOfBytesRecvd);
@@ -289,8 +235,7 @@ ssize_t
 Socket::sendmsg(
   const iovec* iov,
   int iovlen,
-  const MessageFlags& flags,
-  const SocketAddress* peername
+  const MessageFlags& flags
 ) {
   DWORD dwNumberOfBytesSent;
 #ifdef _WIN64
@@ -300,71 +245,26 @@ Socket::sendmsg(
     wsabufs[iov_i].len = static_cast<ULONG>(iov[iov_i].iov_len);
   }
 #endif
-  ssize_t send_ret;
 
-  if (peername == NULL) {
-    send_ret
-    = WSASend(
-        *this,
+  ssize_t send_ret
+  = WSASend(
+      *this,
 #ifdef _WIN64
-        & wsabufs[0],
+      & wsabufs[0],
 #else
-        reinterpret_cast<WSABUF*>(const_cast<iovec*>(iov)),
+      reinterpret_cast<WSABUF*>(const_cast<iovec*>(iov)),
 #endif
-        iovlen,
-        &dwNumberOfBytesSent,
-        static_cast<DWORD>(flags),
-        NULL,
-        NULL
-      );
-  } else {
-    peername = peername->filter(get_domain());
-    if (peername != NULL) {
-      send_ret
-      = WSASendTo(
-          *this,
-#ifdef _WIN64
-          reinterpret_cast<LPWSABUF>(&wsabufs[0]),
-#else
-          reinterpret_cast<LPWSABUF>(const_cast<iovec*>(iov)),
-#endif
-          iovlen,
-          &dwNumberOfBytesSent,
-          static_cast<DWORD>(flags),
-          *peername,
-          peername->len(),
-          NULL,
-          NULL
-        );
-    } else
-      return -1;
-  }
+      iovlen,
+      &dwNumberOfBytesSent,
+      static_cast<DWORD>(flags),
+      NULL,
+      NULL
+    );
 
   if (send_ret >= 0)
     return static_cast<ssize_t>(dwNumberOfBytesSent);
   else
     return send_ret;
-}
-
-ssize_t
-Socket::sendto(
-  const void* buf,
-  size_t buflen,
-  const MessageFlags& flags,
-  const SocketAddress& _peername
-) {
-  const SocketAddress* peername = _peername.filter(get_domain());
-  if (peername != NULL) {
-    return ::sendto(
-              *this,
-              static_cast<const char*>(buf),
-              buflen,
-              flags,
-              *peername,
-              peername->len()
-            );
-  } else
-    return -1;
 }
 
 bool Socket::set_blocking_mode(bool blocking_mode) {
@@ -388,7 +288,6 @@ bool Socket::shutdown(bool shut_rd, bool shut_wr) {
   else if (shut_rd) how = SD_RECEIVE;
   else if (shut_wr) how = SD_SEND;
   else return false;
-
   return ::shutdown(*this, how) == 0;
 }
 

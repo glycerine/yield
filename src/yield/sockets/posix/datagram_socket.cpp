@@ -34,5 +34,81 @@
 namespace yield {
 namespace sockets {
 const int DatagramSocket::TYPE = SOCK_DGRAM;
+
+ssize_t
+DatagramSocket::recvfrom(
+  void* buf,
+  size_t buflen,
+  const MessageFlags& flags,
+  SocketAddress& peername
+) {
+  socklen_t namelen = peername.len();
+  return ::recvfrom(
+           *this,
+           static_cast<char*>(buf),
+           buflen,
+           flags,
+           reinterpret_cast<sockaddr*>(&peername),
+           &namelen
+         );
+}
+
+ssize_t
+DatagramSocket::recvmsg(
+  const iovec* iov,
+  int iovlen,
+  const MessageFlags& flags,
+  SocketAddress& peername
+) {
+  msghdr msghdr_;
+  memset(&msghdr_, 0, sizeof(msghdr_));
+  msghdr_.msg_iov = const_cast<iovec*>(iov);
+  msghdr_.msg_iovlen = iovlen;
+  msghdr_.msg_name = *peername;
+  msghdr_.msg_namelen = sizeof(*peername);
+  return ::recvmsg(*this, &msghdr_, flags);
+}
+
+ssize_t
+DatagramSocket::sendmsg(
+  const iovec* iov,
+  int iovlen,
+  const MessageFlags& flags,
+  const SocketAddress& peername
+) {
+  msghdr msghdr_;
+  memset(&msghdr_, 0, sizeof(msghdr_));
+  msghdr_.msg_iov = const_cast<iovec*>(iov);
+  msghdr_.msg_iovlen = iovlen;
+  const SocketAddress* peername_ = peername.filter(get_domain());
+  if (peername_ != NULL) {
+    const sockaddr* peername_sockaddr = *peername_;
+    msghdr_.msg_name = const_cast<sockaddr*>(peername_sockaddr);
+    msghdr_.msg_namelen = peername_->len();
+  } else
+    return -1;
+  return ::sendmsg(*this, &msghdr_, flags);
+}
+
+ssize_t
+Socket::sendto(
+  const void* buf,
+  size_t buflen,
+  const MessageFlags& flags,
+  const SocketAddress& peername
+) {
+  const SocketAddress* peername_ = peername.filter(get_domain());
+  if (peername_ != NULL) {
+    return ::sendto(
+             *this,
+             static_cast<const char*>(buf),
+             buflen,
+             flags,
+             *peername_,
+             peername_->len()
+           );
+  } else
+    return -1;
+}
 }
 }

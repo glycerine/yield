@@ -39,7 +39,7 @@ public:
   const static int TYPE; // SOCK_DGRAM
 
 public:
-  DatagramSocket(int domain, int protocol = PROTOCOL_DEFAULT)
+  DatagramSocket(int domain = DOMAIN_DEFAULT, int protocol = PROTOCOL_DEFAULT)
     : Socket(domain, TYPE, protocol)
   { }
 
@@ -48,7 +48,7 @@ public:
 public:
   static YO_NEW_REF DatagramSocket*
   create(
-    int domain,
+    int domain = DOMAIN_DEFAULT,
     int protocol = PROTOCOL_DEFAULT
   ) {
     socket_t socket_ = Socket::create(domain, TYPE, protocol);
@@ -57,6 +57,79 @@ public:
     else
       return NULL;
   }
+
+public:
+  ssize_t
+  recvfrom(
+    Buffer& buffer,
+    const MessageFlags& flags,
+    SocketAddress& peername
+  ) {
+    if (buffer.get_next_buffer() == NULL) {
+      iovec iov = buffer.as_read_iovec();
+      ssize_t recv_ret = recvfrom(iov.iov_base, iov.iov_len, flags, peername);
+      if (recv_ret > 0)
+        buffer.put(NULL, static_cast<size_t>(recv_ret));
+      return recv_ret;
+    } else {
+      vector<iovec> iov;
+      Buffers::as_read_iovecs(buffer, iov);
+      ssize_t recv_ret = recvmsg(&iov[0], iov.size(), flags, peername);
+      if (recv_ret > 0)
+        Buffers::put(buffer, NULL, static_cast<size_t>(recv_ret));
+      return recv_ret;
+    }
+  }
+
+  virtual ssize_t
+  recvfrom(
+    void* buf,
+    size_t len,
+    const MessageFlags& flags,
+    SocketAddress& peername
+  );
+
+  virtual ssize_t
+  recvmsg(
+    const iovec* iov,
+    int iovlen,
+    const MessageFlags& flags,
+    SocketAddress& peername
+  );
+
+public:
+  virtual ssize_t
+  sendmsg(
+    const iovec* iov,
+    int iovlen,
+    const MessageFlags& flags,
+    const SocketAddress& peername
+  );
+
+  ssize_t
+  sendto(
+    const Buffer& buffer,
+    const MessageFlags& flags,
+    const SocketAddress& peername
+  ) {
+    if (buffer.get_next_buffer() == NULL) {
+      iovec iov = buffer.as_write_iovec();
+      return sendto(iov.iov_base, iov.iov_len, flags, peername);
+    }
+    else {
+      vector<iovec> iov;
+      Buffers::as_write_iovecs(buffer, iov);
+      return sendmsg(&iov[0], iov.size(), flags, peername);
+    }
+  }
+
+  virtual ssize_t
+  sendto(
+    const void* buf,
+    size_t len,
+    const MessageFlags& flags,
+    const SocketAddress& peername
+  );
 
 public:
   // yield::Object

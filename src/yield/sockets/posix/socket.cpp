@@ -136,13 +136,7 @@ string Socket::gethostname() {
 
 bool Socket::getpeername(OUT SocketAddress& peername) const {
   socklen_t peernamelen = peername.len();
-  if (
-    ::getpeername(
-      *this,
-      peername,
-      &peernamelen
-    ) != -1
-  ) {
+  if (::getpeername(*this, peername, &peernamelen) != -1) {
     debug_assert_eq(peername.get_family(), get_domain());
     return true;
   } else
@@ -151,14 +145,7 @@ bool Socket::getpeername(OUT SocketAddress& peername) const {
 
 bool Socket::getsockname(OUT SocketAddress& sockname) const {
   socklen_t socknamelen = sockname.len();
-
-  if (
-    ::getsockname(
-      *this,
-      sockname,
-      &socknamelen
-    ) != -1
-  ) {
+  if (::getsockname(*this, sockname, &socknamelen) != -1) {
     debug_assert_eq(sockname.get_family(), get_domain());
     return true;
   } else
@@ -170,24 +157,6 @@ ssize_t Socket::recv(void* buf, size_t buflen, const MessageFlags& flags) {
 }
 
 ssize_t
-Socket::recvfrom(
-  void* buf,
-  size_t buflen,
-  const MessageFlags& flags,
-  SocketAddress& peername
-) {
-  socklen_t namelen = peername.len();
-  return ::recvfrom(
-           *this,
-           static_cast<char*>(buf),
-           buflen,
-           flags,
-           reinterpret_cast<sockaddr*>(&peername),
-           &namelen
-         );
-}
-
-ssize_t
 Socket::recvmsg(
   const iovec* iov,
   int iovlen,
@@ -196,15 +165,8 @@ Socket::recvmsg(
 ) {
   msghdr msghdr_;
   memset(&msghdr_, 0, sizeof(msghdr_));
-
   msghdr_.msg_iov = const_cast<iovec*>(iov);
   msghdr_.msg_iovlen = iovlen;
-
-  if (peername != NULL) {
-    msghdr_.msg_name = *peername;
-    msghdr_.msg_namelen = sizeof(*peername);
-  }
-
   return ::recvmsg(*this, &msghdr_, flags);
 }
 
@@ -226,42 +188,9 @@ Socket::sendmsg(
 ) {
   msghdr msghdr_;
   memset(&msghdr_, 0, sizeof(msghdr_));
-
   msghdr_.msg_iov = const_cast<iovec*>(iov);
   msghdr_.msg_iovlen = iovlen;
-
-  if (peername != NULL) {
-    peername = peername->filter(get_domain());
-    if (peername != NULL) {
-      const sockaddr* peername_sockaddr = *peername;
-      msghdr_.msg_name = const_cast<sockaddr*>(peername_sockaddr);
-      msghdr_.msg_namelen = peername->len();
-    } else
-      return -1;
-  }
-
   return ::sendmsg(*this, &msghdr_, flags);
-}
-
-ssize_t
-Socket::sendto(
-  const void* buf,
-  size_t buflen,
-  const MessageFlags& flags,
-  const SocketAddress& _peername
-) {
-  const SocketAddress* peername = _peername.filter(get_domain());
-  if (peername != NULL) {
-    return ::sendto(
-             *this,
-             static_cast<const char*>(buf),
-             buflen,
-             flags,
-             *peername,
-             peername->len()
-           );
-  } else
-    return -1;
 }
 
 bool Socket::set_blocking_mode(bool blocking_mode) {

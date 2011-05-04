@@ -108,24 +108,6 @@ public:
 
 
 template <class SocketType>
-class SocketRecvFromTest : public yunit::Test {
-public:
-  // yunit::Test
-  void run() {
-    SocketPair sockets(SocketType::DOMAIN_DEFAULT, SocketType::TYPE);
-    sockets.first().write("m", 1);
-    char m;
-    SocketAddress peername;
-    ssize_t recvfrom_ret = sockets.second().recvfrom(&m, 1, 0, peername);
-    throw_assert_eq(recvfrom_ret, 1);
-    throw_assert_eq(m, 'm');
-    throw_assert_eq(peername, *sockets.first().getsockname());
-    throw_assert_eq(peername, *sockets.second().getpeername());
-  }
-};
-
-
-template <class SocketType>
 class SocketSetBlockingModeTest : public yunit::Test {
 public:
   // yunit::Test
@@ -191,7 +173,7 @@ public:
       throw Exception();
     auto_Object<Buffer> buffer = new Buffer(1);
     ssize_t recv_ret
-      = sockets.first().recv(*buffer, 0, static_cast<SocketAddress*>(NULL));
+      = sockets.first().recv(*buffer, 0);
     throw_assert_eq(recv_ret, -1);
     throw_assert(sockets.first().want_recv());
   }
@@ -216,8 +198,6 @@ public:
     add("Socket::getsockname", new SocketGetSocknameTest<SocketType>);
 
     add("Socket::MessageFlags", new SocketMessageFlagsTest);
-
-    add("Socket::recvfrom", new SocketRecvFromTest<SocketType>);
 
     add(
       "Socket::set_blocking_mode",

@@ -33,5 +33,128 @@
 namespace yield {
 namespace sockets {
 const int DatagramSocket::TYPE = SOCK_DGRAM;
+
+ssize_t
+DatagramSocket::recvfrom(
+  void* buf,
+  size_t buflen,
+  const MessageFlags& flags,
+  SocketAddress& peername
+) {
+  socklen_t peernamelen = peername.len();
+  return ::recvfrom(
+            *this,
+            static_cast<char*>(buf),
+            buflen,
+            flags,
+            static_cast<sockaddr*>(peername),
+            &peernamelen
+          );
+}
+
+ssize_t
+DatagramSocket::recvmsg(
+  const iovec* iov,
+  int iovlen,
+  const MessageFlags& flags,
+  SocketAddress& peername
+) {
+  DWORD dwFlags = static_cast<DWORD>(flags);
+  DWORD dwNumberOfBytesRecvd;
+#ifdef _WIN64
+  vector<WSABUF> wsabufs(iovlen);
+  for (uint32_t iov_i = 0; iov_i < iovlen; iov_i++) {
+    wsabufs[iov_i].buf = static_cast<char*>(iov[iov_i].iov_base);
+    wsabufs[iov_i].len = static_cast<ULONG>(iov[iov_i].iov_len);
+  }
+#endif
+
+  socklen_t peernamelen = peername.len();
+  ssize_t recvfrom_ret
+    = WSARecvFrom(
+        *this,
+#ifdef _WIN64
+        & wsabufs[0],
+#else
+        reinterpret_cast<WSABUF*>(const_cast<iovec*>(iov)),
+#endif
+        iovlen,
+        &dwNumberOfBytesRecvd,
+        &dwFlags,
+        peername,
+        &peernamelen,
+        NULL,
+        NULL
+      );
+
+  if (recvfrom_ret == 0)
+    return static_cast<ssize_t>(dwNumberOfBytesRecvd);
+  else
+    return recvfrom_ret;
+}
+
+ssize_t
+DatagramSocket::sendmsg(
+  const iovec* iov,
+  int iovlen,
+  const MessageFlags& flags,
+  const SocketAddress& peername
+) {
+  DWORD dwNumberOfBytesSent;
+#ifdef _WIN64
+  vector<iovec64> wsabufs(iovlen);
+  for (uint32_t iov_i = 0; iov_i < iovlen; iov_i++) {
+    wsabufs[iov_i].buf = static_cast<char*>(iov[iov_i].iov_base);
+    wsabufs[iov_i].len = static_cast<ULONG>(iov[iov_i].iov_len);
+  }
+#endif
+
+  const SocketAddress* peername_ = peername.filter(get_domain());
+  if (peername_ != NULL) {
+    ssize_t sendto_ret
+    = WSASendTo(
+        *this,
+#ifdef _WIN64
+        reinterpret_cast<LPWSABUF>(&wsabufs[0]),
+#else
+        reinterpret_cast<LPWSABUF>(const_cast<iovec*>(iov)),
+#endif
+        iovlen,
+        &dwNumberOfBytesSent,
+        static_cast<DWORD>(flags),
+        *peername_,
+        peername_->len(),
+        NULL,
+        NULL
+      );
+
+    if (sendto_ret >= 0)
+      return static_cast<ssize_t>(dwNumberOfBytesSent);
+    else
+      return sendto_ret;
+  } else
+    return -1;
+}
+
+ssize_t
+DatagramSocket::sendto(
+  const void* buf,
+  size_t buflen,
+  const MessageFlags& flags,
+  const SocketAddress& peername
+) {
+  const SocketAddress* peername_ = peername.filter(get_domain());
+  if (peername_ != NULL) {
+    return ::sendto(
+              *this,
+              static_cast<const char*>(buf),
+              buflen,
+              flags,
+              *peername_,
+              peername_->len()
+            );
+  } else
+    return -1;
+}
 }
 }

@@ -27,10 +27,13 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "socket_test.hpp"
+#include "datagram_socket_test.hpp"
 #include "yield/sockets/udp_socket.hpp"
 
-TEST_SUITE_EX(UDPSocket, yield::sockets::SocketTestSuite<yield::sockets::UDPSocket>);
+TEST_SUITE_EX(
+  UDPSocket,
+  yield::sockets::DatagramSocketTestSuite<yield::sockets::UDPSocket>
+);
 
 namespace yield {
 namespace sockets {
