@@ -42,14 +42,14 @@ DatagramSocket::recvfrom(
   const MessageFlags& flags,
   SocketAddress& peername
 ) {
-  socklen_t namelen = peername.len();
+  socklen_t peernamelen = peername.len();
   return ::recvfrom(
            *this,
            static_cast<char*>(buf),
            buflen,
            flags,
-           reinterpret_cast<sockaddr*>(&peername),
-           &namelen
+           static_cast<sockaddr*>(peername),
+           &peernamelen
          );
 }
 

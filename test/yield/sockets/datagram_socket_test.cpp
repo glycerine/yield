@@ -31,6 +31,8 @@
 #include "yield/auto_object.hpp"
 #include "yield/sockets/datagram_socket_pair.hpp"
 
+#include <iostream>
+
 TEST_SUITE_EX(
   DatagramSocket,
   yield::sockets::SocketTestSuite<yield::sockets::DatagramSocketPair>
@@ -44,6 +46,8 @@ TEST(DatagramSocket, recvfrom) {
   char m;
   SocketAddress peername;
   ssize_t recvfrom_ret = sockets.second().recvfrom(&m, 1, 0, peername);
+  if (recvfrom_ret == -1)
+    throw Exception();
   throw_assert_eq(recvfrom_ret, 1);
   throw_assert_eq(m, 'm');
   throw_assert_eq(peername, *sockets.first().getsockname());
@@ -61,6 +65,8 @@ TEST(DatagramSocket, recvmsg) {
   iov[1].iov_len = 1;
   SocketAddress peername;
   ssize_t recvmsg_ret = sockets.second().recvmsg(iov, 2, 0, peername);
+  if (recvmsg_ret == -1)
+    throw Exception();
   throw_assert_eq(recvmsg_ret, 2);
   throw_assert_eq(m, 'm');
   throw_assert_eq(n, 'n');
@@ -71,12 +77,14 @@ TEST(DatagramSocket, recvmsg) {
 TEST(DatagramSocket, sendmsg) {
   DatagramSocketPair sockets;
   iovec iov[2];
-  iov[0].iov_base = "m";
+  iov[0].iov_base = const_cast<char*>("m");
   iov[0].iov_len = 1;
-  iov[1].iov_base = "n";
+  iov[1].iov_base = const_cast<char*>("n");
   iov[1].iov_len = 1;
   ssize_t sendmsg_ret =
     sockets.first().sendmsg(iov, 2, 0, *sockets.second().getsockname());
+  if (sendmsg_ret == -1)
+    throw Exception();
   throw_assert_eq(sendmsg_ret, 2);
   char mn[2];
   ssize_t read_ret = sockets.second().read(mn, 2);
@@ -89,6 +97,8 @@ TEST(DatagramSocket, sendto) {
   DatagramSocketPair sockets;
   ssize_t sendto_ret
     = sockets.first().sendto("m", 1, 0, *sockets.second().getsockname());
+  if (sendto_ret == -1)
+    throw Exception();
   throw_assert_eq(sendto_ret, 1);
   char m;
   ssize_t read_ret = sockets.second().read(&m, 1);
