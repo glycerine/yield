@@ -62,6 +62,24 @@ TEST(StreamSocket, dup) {
   auto_Object<StreamSocket> socket_ = StreamSocketPair().first().dup();
 }
 
+TEST(StreamSocket, getsockname_exception) {
+  try {
+    StreamSocket(TCPSocket::DOMAIN_DEFAULT).getsockname();
+  } catch (Exception&) {
+    return;
+  }
+  throw_assert(false);
+}
+
+TEST(StreamSocket, getpeername_exception) {
+  try {
+    StreamSocket(TCPSocket::DOMAIN_DEFAULT).getpeername();
+  } catch (Exception&) {
+    return;
+  }
+  throw_assert(false);
+}
+
 TEST(StreamSocket, inc_ref) {
   auto_Object<StreamSocket> socket_ = StreamSocketPair().first().inc_ref();
 }
