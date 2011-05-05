@@ -43,13 +43,57 @@ TEST(DatagramSocket, recvfrom) {
   sockets.first().write("m", 1);
   char m;
   SocketAddress peername;
-  ssize_t recvfrom_ret
-    = static_cast<DatagramSocket&>(sockets.second())
-        .recvfrom(&m, 1, 0, peername);
+  ssize_t recvfrom_ret = sockets.second().recvfrom(&m, 1, 0, peername);
   throw_assert_eq(recvfrom_ret, 1);
   throw_assert_eq(m, 'm');
   throw_assert_eq(peername, *sockets.first().getsockname());
   throw_assert_eq(peername, *sockets.second().getpeername());
+}
+
+TEST(DatagramSocket, recvmsg) {
+  DatagramSocketPair sockets;
+  sockets.first().write("mn", 2);
+  char m, n;
+  iovec iov[2];
+  iov[0].iov_base = &m;
+  iov[0].iov_len = 1;
+  iov[1].iov_base = &n;
+  iov[1].iov_len = 1;
+  SocketAddress peername;
+  ssize_t recvmsg_ret = sockets.second().recvmsg(iov, 2, 0, peername);
+  throw_assert_eq(recvmsg_ret, 2);
+  throw_assert_eq(m, 'm');
+  throw_assert_eq(n, 'n');
+  throw_assert_eq(peername, *sockets.first().getsockname());
+  throw_assert_eq(peername, *sockets.second().getpeername());
+}
+
+TEST(DatagramSocket, sendmsg) {
+  DatagramSocketPair sockets;
+  iovec iov[2];
+  iov[0].iov_base = "m";
+  iov[0].iov_len = 1;
+  iov[1].iov_base = "n";
+  iov[1].iov_len = 1;
+  ssize_t sendmsg_ret =
+    sockets.first().sendmsg(iov, 2, 0, *sockets.second().getsockname());
+  throw_assert_eq(sendmsg_ret, 2);
+  char mn[2];
+  ssize_t read_ret = sockets.second().read(mn, 2);
+  throw_assert_eq(read_ret, 2);
+  throw_assert_eq(mn[0], 'm');
+  throw_assert_eq(mn[1], 'n');
+}
+
+TEST(DatagramSocket, sendto) {
+  DatagramSocketPair sockets;
+  ssize_t sendto_ret
+    = sockets.first().sendto("m", 1, 0, *sockets.second().getsockname());
+  throw_assert_eq(sendto_ret, 1);
+  char m;
+  ssize_t read_ret = sockets.second().read(&m, 1);
+  throw_assert_eq(read_ret, 1);
+  throw_assert_eq(m, 'm');
 }
 }
 }
