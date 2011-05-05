@@ -36,7 +36,19 @@ Stat::Stat(const struct stat& stbuf)
   : atime(stbuf.st_atime),
     ctime(stbuf.st_ctime),
     mtime(stbuf.st_mtime) {
-  *this = stbuf;
+  atime = DateTime(stbuf.st_atime);
+  st_blksize = stbuf.st_blksize;
+  st_blocks = stbuf.st_blocks;
+  ctime = DateTime(stbuf.st_ctime);
+  st_dev = stbuf.st_dev;
+  st_gid = stbuf.st_gid;
+  st_ino = stbuf.st_ino;
+  st_mode = stbuf.st_mode;
+  mtime = DateTime(stbuf.st_mtime);
+  st_nlink = stbuf.st_nlink;
+  st_rdev = stbuf.st_rdev;
+  st_size = stbuf.st_size;
+  st_uid = stbuf.st_uid;
 }
 
 //Stat::operator struct stat() const {
