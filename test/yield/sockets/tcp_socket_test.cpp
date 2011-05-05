@@ -39,6 +39,20 @@ TEST(TCPSocket, dup) {
   auto_Object<StreamSocket> socket_ = TCPSocket().dup();
 }
 
+TEST(TCPSocket, dup2) {
+  TCPSocket client_tcp_socket, listen_tcp_socket;
+  if (listen_tcp_socket.bind(SocketAddress::IN_LOOPBACK))    
+    if (listen_tcp_socket.listen()) {
+      if (client_tcp_socket.connect(*listen_tcp_socket.getsockname())) {
+        auto_Object<StreamSocket> server_tcp_socket
+          = listen_tcp_socket.accept();
+        return;
+      }
+  }
+
+  throw Exception();
+}
+
 TEST(TCPSocket, get_type_name) {
   throw_assert_eq(
     strcmp(TCPSocket().get_type_name(), "yield::sockets::TCPSocket"),

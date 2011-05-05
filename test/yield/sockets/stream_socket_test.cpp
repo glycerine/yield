@@ -29,6 +29,7 @@
 
 #include "socket_test.hpp"
 #include "yield/sockets/stream_socket_pair.hpp"
+#include "yield/sockets/tcp_socket.hpp"
 
 TEST_SUITE_EX(
   StreamSocket,
@@ -37,6 +38,21 @@ TEST_SUITE_EX(
 
 namespace yield {
 namespace sockets {
+TEST(StreamSocket, accept) {
+  StreamSocket client_stream_socket(TCPSocket::DOMAIN_DEFAULT),
+               listen_stream_socket(TCPSocket::DOMAIN_DEFAULT);
+  if (listen_stream_socket.bind(SocketAddress::IN_LOOPBACK))    
+    if (listen_stream_socket.listen()) {
+      if (client_stream_socket.connect(*listen_stream_socket.getsockname())) {
+        auto_Object<StreamSocket> server_stream_socket
+          = listen_stream_socket.accept();
+        return;
+      }
+  }
+
+  throw Exception();
+}
+
 TEST(StreamSocket, dup) {
   auto_Object<StreamSocket> socket_ = StreamSocketPair().first().dup();
 }
@@ -45,16 +61,31 @@ TEST(StreamSocket, inc_ref) {
   auto_Object<StreamSocket> socket_ = StreamSocketPair().first().inc_ref();
 }
 
+TEST(StreamSocket, listen) {
+  StreamSocket stream_socket(TCPSocket::DOMAIN_DEFAULT);
+
+  if (!stream_socket.bind(SocketAddress::IN_LOOPBACK))
+    throw Exception();
+
+  if (!stream_socket.listen())
+    throw Exception();
+}
+
 TEST(StreamSocket, setsockopt_KEEPALIVE) {
   if (!StreamSocketPair().first().setsockopt(StreamSocket::Option::KEEPALIVE, true))
     throw Exception();
 }
 
 TEST(StreamSocket, setsockopt_LINGER) {
-  if (!StreamSocketPair().first().setsockopt(StreamSocket::Option::LINGER, 1))
+  StreamSocketPair stream_sockets;
+
+  if (!stream_sockets.first().setsockopt(StreamSocket::Option::LINGER, 1))
     throw Exception();
 
-  if (!StreamSocketPair().first().setsockopt(StreamSocket::Option::LINGER, 30))
+  if (!stream_sockets.first().setsockopt(StreamSocket::Option::LINGER, 30))
+    throw Exception();
+
+  if (!stream_sockets.first().setsockopt(StreamSocket::Option::LINGER, false))
     throw Exception();
 }
 }

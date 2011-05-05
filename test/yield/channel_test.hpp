@@ -276,6 +276,24 @@ public:
 };
 
 
+class ChannelWriteBuffersTest : public ChannelTest {
+public:
+  ChannelWriteBuffersTest(ChannelPairFactory& channel_pair_factory)
+    : ChannelTest(channel_pair_factory)
+  { }
+
+public:
+  // yunit::Test
+  void run() {
+    auto_Object<Buffer> test_buffer = Buffer::copy(get_test_string());
+    test_buffer->set_next_buffer(new Buffer(1));
+    check_write(get_write_channel().write(*test_buffer));
+
+    this->read();
+  }
+};
+
+
 class ChannelWriteVOneTest : public ChannelTest {
 public:
   ChannelWriteVOneTest(ChannelPairFactory& channel_pair_factory)
@@ -354,8 +372,13 @@ public:
     );
 
     add(
-      "Channel::write(Bufffer)",
+      "Channel::write(Buffer)",
       new ChannelWriteBufferTest(channel_pair_factory)
+    );
+
+    add(
+      "Channel::write(Buffers)",
+      new ChannelWriteBuffersTest(channel_pair_factory)
     );
 
     add(
