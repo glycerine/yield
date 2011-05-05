@@ -31,33 +31,14 @@
 #define _YIELD_SOCKETS_SOCKET_PAIR_HPP_
 
 #include "yield/channel_pair.hpp"
-#include "yield/sockets/socket.hpp"
 
 namespace yield {
 namespace sockets {
+template <class SocketType>
 class SocketPair : public ChannelPair {
 public:
-  const static int DOMAIN_DEFAULT; // AF_UNIX
-  const static int PROTOCOL_DEFAULT = Socket::PROTOCOL_DEFAULT;
-  const static int TYPE_DEFAULT; // SOCK_STREAM
-
-public:
-  SocketPair(
-    int domain = DOMAIN_DEFAULT,
-    int type = TYPE_DEFAULT,
-    int protocol = Socket::PROTOCOL_DEFAULT
-  );
-
-  ~SocketPair();
-
-public:
-  Socket& first() const {
-    return *sockets[0];
-  }
-
-  Socket& second() const {
-    return *sockets[1];
-  }
+  virtual SocketType& first() = 0;
+  virtual SocketType& second() = 0;
 
 public:
   // yield::ChannelPair
@@ -68,12 +49,6 @@ public:
   Channel& get_write_channel() {
     return second();
   }
-
-private:
-  static bool socketpair(int domain, int type, int protocol, Socket**);
-
-private:
-  Socket* sockets[2];
 };
 }
 }

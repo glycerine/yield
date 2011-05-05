@@ -1,4 +1,4 @@
-// yield/sockets/posix/tcp_socket.cpp
+// yield/sockets/win32/datagram_socket_pair.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,30 +27,41 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/sockets/tcp_socket.hpp"
-
-#include <netinet/in.h> // For the IPPROTO_* constants
-#include <netinet/tcp.h> // For the TCP_* constants
-#include <sys/socket.h>
+#include "winsock.hpp"
+#include "yield/sockets/datagram_socket_pair.hpp"
 
 namespace yield {
 namespace sockets {
-const int TCPSocket::DOMAIN_DEFAULT = AF_INET;
-const int TCPSocket::PROTOCOL = IPPROTO_TCP;
+DatagramSocketPair::DatagramSocketPair() {
+  sockets[0] = new DatagramSocket(AF_INET);
+  sockets[1] = new DatagramSocket(AF_INET);
 
-const int TCPSocket::Option::NODELAY = TCP_NODELAY;
+  SocketAddress socknames[2];
+  for (uint8_t i = 0; i < 2; i++) {
+    if (      
+      !sockets[i]->bind(SocketAddress::IN_LOOPBACK)
+      ||
+      !sockets[i]->getsockname(socknames[i])
+    ) {
+      Exception exception;
+      DatagramSocket::dec_ref(sockets[0]);
+      DatagramSocket::dec_ref(sockets[1]);
+      throw exception;
+    }
+  }
 
-bool TCPSocket::setsockopt(int option_name, int option_value) {
-  if (option_name == Option::NODELAY) {
-    return ::setsockopt(
-             *this,
-             IPPROTO_TCP,
-             TCP_NODELAY,
-             reinterpret_cast<char*>(&option_value),
-             static_cast<int>(sizeof(option_value))
-           ) == 0;
-  } else
-    return StreamSocket::setsockopt(option_name, option_value);
+  if (
+    !sockets[0]->connect(socknames[1])
+    ||
+    !sockets[1]->connect(socknames[0])
+  ) {
+    Exception exception;
+    for (uint8_t i = 0; i < 2; i++) {
+      Socket::dec_ref(sockets[i]);
+      SocketAddress::dec_ref(socknames[i]);
+    }
+    throw exception;
+  }
 }
 }
 }

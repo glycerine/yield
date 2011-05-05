@@ -47,21 +47,20 @@ LIBS += -lyield
 D_FILE_PATHS := $(shell find ../../../build/yield/sockets -name "*.d")
 
 
-O_FILE_PATHS += ../../../build/yield/sockets/socket_pair.o
 ifeq ($(UNAME), Darwin)
-	O_FILE_PATHS += ../../../build/yield/sockets/posix/datagram_socket.o ../../../build/yield/sockets/posix/socket.o ../../../build/yield/sockets/posix/socket_address.o ../../../build/yield/sockets/posix/stream_socket.o ../../../build/yield/sockets/posix/tcp_socket.o ../../../build/yield/sockets/posix/udp_socket.o
+	O_FILE_PATHS += ../../../build/yield/sockets/posix/datagram_socket.o ../../../build/yield/sockets/posix/datagram_socket_pair.o ../../../build/yield/sockets/posix/socket.o ../../../build/yield/sockets/posix/socket_address.o ../../../build/yield/sockets/posix/stream_socket.o ../../../build/yield/sockets/posix/stream_socket_pair.o ../../../build/yield/sockets/posix/tcp_socket.o ../../../build/yield/sockets/posix/udp_socket.o
 endif
 ifeq ($(UNAME), FreeBSD)
-	O_FILE_PATHS += ../../../build/yield/sockets/posix/datagram_socket.o ../../../build/yield/sockets/posix/socket.o ../../../build/yield/sockets/posix/socket_address.o ../../../build/yield/sockets/posix/stream_socket.o ../../../build/yield/sockets/posix/tcp_socket.o ../../../build/yield/sockets/posix/udp_socket.o
+	O_FILE_PATHS += ../../../build/yield/sockets/posix/datagram_socket.o ../../../build/yield/sockets/posix/datagram_socket_pair.o ../../../build/yield/sockets/posix/socket.o ../../../build/yield/sockets/posix/socket_address.o ../../../build/yield/sockets/posix/stream_socket.o ../../../build/yield/sockets/posix/stream_socket_pair.o ../../../build/yield/sockets/posix/tcp_socket.o ../../../build/yield/sockets/posix/udp_socket.o
 endif
 ifeq ($(UNAME), Linux)
-	O_FILE_PATHS += ../../../build/yield/sockets/posix/datagram_socket.o ../../../build/yield/sockets/posix/socket.o ../../../build/yield/sockets/posix/socket_address.o ../../../build/yield/sockets/posix/stream_socket.o ../../../build/yield/sockets/posix/tcp_socket.o ../../../build/yield/sockets/posix/udp_socket.o
+	O_FILE_PATHS += ../../../build/yield/sockets/posix/datagram_socket.o ../../../build/yield/sockets/posix/datagram_socket_pair.o ../../../build/yield/sockets/posix/socket.o ../../../build/yield/sockets/posix/socket_address.o ../../../build/yield/sockets/posix/stream_socket.o ../../../build/yield/sockets/posix/stream_socket_pair.o ../../../build/yield/sockets/posix/tcp_socket.o ../../../build/yield/sockets/posix/udp_socket.o
 endif
 ifeq ($(UNAME), Solaris)
-	O_FILE_PATHS += ../../../build/yield/sockets/posix/datagram_socket.o ../../../build/yield/sockets/posix/socket.o ../../../build/yield/sockets/posix/socket_address.o ../../../build/yield/sockets/posix/stream_socket.o ../../../build/yield/sockets/posix/tcp_socket.o ../../../build/yield/sockets/posix/udp_socket.o
+	O_FILE_PATHS += ../../../build/yield/sockets/posix/datagram_socket.o ../../../build/yield/sockets/posix/datagram_socket_pair.o ../../../build/yield/sockets/posix/socket.o ../../../build/yield/sockets/posix/socket_address.o ../../../build/yield/sockets/posix/stream_socket.o ../../../build/yield/sockets/posix/stream_socket_pair.o ../../../build/yield/sockets/posix/tcp_socket.o ../../../build/yield/sockets/posix/udp_socket.o
 endif
 ifeq ($(UNAME), MINGW32)
-	O_FILE_PATHS += ../../../build/yield/sockets/win32/datagram_socket.o ../../../build/yield/sockets/win32/socket.o ../../../build/yield/sockets/win32/socket_address.o ../../../build/yield/sockets/win32/stream_socket.o ../../../build/yield/sockets/win32/tcp_socket.o ../../../build/yield/sockets/win32/udp_socket.o
+	O_FILE_PATHS += ../../../build/yield/sockets/win32/datagram_socket.o ../../../build/yield/sockets/win32/datagram_socket_pair.o ../../../build/yield/sockets/win32/socket.o ../../../build/yield/sockets/win32/socket_address.o ../../../build/yield/sockets/win32/stream_socket.o ../../../build/yield/sockets/win32/stream_socket_pair.o ../../../build/yield/sockets/win32/tcp_socket.o ../../../build/yield/sockets/win32/udp_socket.o
 endif
 
 
@@ -88,6 +87,10 @@ depclean:
 	-mkdir -p ../../../build/yield/sockets/posix 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/sockets/posix/datagram_socket.o -MD $(CXXFLAGS) ../../../src/yield/sockets/posix/datagram_socket.cpp
 
+../../../build/yield/sockets/posix/datagram_socket_pair.o: ../../../src/yield/sockets/posix/datagram_socket_pair.cpp
+	-mkdir -p ../../../build/yield/sockets/posix 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/sockets/posix/datagram_socket_pair.o -MD $(CXXFLAGS) ../../../src/yield/sockets/posix/datagram_socket_pair.cpp
+
 ../../../build/yield/sockets/posix/socket.o: ../../../src/yield/sockets/posix/socket.cpp
 	-mkdir -p ../../../build/yield/sockets/posix 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/sockets/posix/socket.o -MD $(CXXFLAGS) ../../../src/yield/sockets/posix/socket.cpp
@@ -100,6 +103,10 @@ depclean:
 	-mkdir -p ../../../build/yield/sockets/posix 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/sockets/posix/stream_socket.o -MD $(CXXFLAGS) ../../../src/yield/sockets/posix/stream_socket.cpp
 
+../../../build/yield/sockets/posix/stream_socket_pair.o: ../../../src/yield/sockets/posix/stream_socket_pair.cpp
+	-mkdir -p ../../../build/yield/sockets/posix 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/sockets/posix/stream_socket_pair.o -MD $(CXXFLAGS) ../../../src/yield/sockets/posix/stream_socket_pair.cpp
+
 ../../../build/yield/sockets/posix/tcp_socket.o: ../../../src/yield/sockets/posix/tcp_socket.cpp
 	-mkdir -p ../../../build/yield/sockets/posix 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/sockets/posix/tcp_socket.o -MD $(CXXFLAGS) ../../../src/yield/sockets/posix/tcp_socket.cpp
@@ -108,13 +115,13 @@ depclean:
 	-mkdir -p ../../../build/yield/sockets/posix 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/sockets/posix/udp_socket.o -MD $(CXXFLAGS) ../../../src/yield/sockets/posix/udp_socket.cpp
 
-../../../build/yield/sockets/socket_pair.o: ../../../src/yield/sockets/socket_pair.cpp
-	-mkdir -p ../../../build/yield/sockets 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/sockets/socket_pair.o -MD $(CXXFLAGS) ../../../src/yield/sockets/socket_pair.cpp
-
 ../../../build/yield/sockets/win32/datagram_socket.o: ../../../src/yield/sockets/win32/datagram_socket.cpp
 	-mkdir -p ../../../build/yield/sockets/win32 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/sockets/win32/datagram_socket.o -MD $(CXXFLAGS) ../../../src/yield/sockets/win32/datagram_socket.cpp
+
+../../../build/yield/sockets/win32/datagram_socket_pair.o: ../../../src/yield/sockets/win32/datagram_socket_pair.cpp
+	-mkdir -p ../../../build/yield/sockets/win32 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/sockets/win32/datagram_socket_pair.o -MD $(CXXFLAGS) ../../../src/yield/sockets/win32/datagram_socket_pair.cpp
 
 ../../../build/yield/sockets/win32/socket.o: ../../../src/yield/sockets/win32/socket.cpp
 	-mkdir -p ../../../build/yield/sockets/win32 2>/dev/null
@@ -127,6 +134,10 @@ depclean:
 ../../../build/yield/sockets/win32/stream_socket.o: ../../../src/yield/sockets/win32/stream_socket.cpp
 	-mkdir -p ../../../build/yield/sockets/win32 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/sockets/win32/stream_socket.o -MD $(CXXFLAGS) ../../../src/yield/sockets/win32/stream_socket.cpp
+
+../../../build/yield/sockets/win32/stream_socket_pair.o: ../../../src/yield/sockets/win32/stream_socket_pair.cpp
+	-mkdir -p ../../../build/yield/sockets/win32 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/sockets/win32/stream_socket_pair.o -MD $(CXXFLAGS) ../../../src/yield/sockets/win32/stream_socket_pair.cpp
 
 ../../../build/yield/sockets/win32/tcp_socket.o: ../../../src/yield/sockets/win32/tcp_socket.cpp
 	-mkdir -p ../../../build/yield/sockets/win32 2>/dev/null

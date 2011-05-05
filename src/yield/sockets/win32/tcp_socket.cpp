@@ -32,8 +32,10 @@
 
 namespace yield {
 namespace sockets {
-const int TCPSocket::Option::NODELAY = TCP_NODELAY;
+const int TCPSocket::DOMAIN_DEFAULT = AF_INET;
 const int TCPSocket::PROTOCOL = IPPROTO_TCP;
+
+const int TCPSocket::Option::NODELAY = TCP_NODELAY;
 
 bool TCPSocket::setsockopt(int option_name, int option_value) {
   if (option_name == Option::NODELAY) {

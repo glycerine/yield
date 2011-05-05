@@ -4,11 +4,11 @@
     <Filter Include="Source Files\posix">
       <UniqueIdentifier>{04104846-4249-4dbe-b711-12994a6fb4b9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{174fe3d4-334d-4473-8049-445328aa9fbd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\win32">
       <UniqueIdentifier>{c1fcc902-0abf-4147-8658-70e4fdc1d15f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{174fe3d4-334d-4473-8049-445328aa9fbd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -18,6 +18,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\yield\sockets\datagram_socket.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\sockets\datagram_socket_pair.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\yield\sockets\socket.hpp">
@@ -32,6 +35,9 @@
     <ClInclude Include="..\..\..\include\yield\sockets\stream_socket.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\sockets\stream_socket_pair.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\include\yield\sockets\tcp_socket.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -43,6 +49,9 @@
     <ClCompile Include="..\..\..\src\yield\sockets\posix\datagram_socket.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\posix\datagram_socket_pair.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\sockets\posix\socket.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>
@@ -52,16 +61,19 @@
     <ClCompile Include="..\..\..\src\yield\sockets\posix\stream_socket.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\posix\stream_socket_pair.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\sockets\posix\tcp_socket.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\sockets\posix\udp_socket.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\sockets\socket_pair.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\sockets\win32\datagram_socket.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\win32\datagram_socket_pair.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\sockets\win32\socket.cpp">
@@ -71,6 +83,9 @@
       <Filter>Source Files\win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\sockets\win32\stream_socket.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\win32\stream_socket_pair.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\sockets\win32\tcp_socket.cpp">

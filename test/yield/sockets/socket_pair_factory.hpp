@@ -35,23 +35,13 @@
 
 namespace yield {
 namespace sockets {
+template <class SocketPairType>
 class SocketPairFactory : public ChannelPairFactory {
 public:
-  SocketPairFactory(
-    int domain = SocketPair::DOMAIN_DEFAULT,
-    int type = SocketPair::TYPE_DEFAULT,
-    int protocol = SocketPair::PROTOCOL_DEFAULT
-  )
-    : domain(domain), type(type), protocol(protocol)
-  { }
-
   // yield::ChannelPairFactory
-  ChannelPair& create_channel_pair() {
-    return *new SocketPair(domain, type, protocol);
+  YO_NEW_REF ChannelPair& create_channel_pair() {
+    return *new SocketPairType;
   }
-
-private:
-  int domain, type, protocol;
 };
 }
 }

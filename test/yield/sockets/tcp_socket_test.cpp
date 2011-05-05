@@ -27,10 +27,11 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "socket_test.hpp"
+#include "yield/assert.hpp"
 #include "yield/sockets/tcp_socket.hpp"
+#include "yunit.hpp"
 
-TEST_SUITE_EX(TCPSocket, yield::sockets::SocketTestSuite<yield::sockets::TCPSocket>);
+TEST_SUITE(TCPSocket);
 
 namespace yield {
 namespace sockets {
@@ -45,7 +46,7 @@ TEST(TCPSocket, get_type_name) {
   );
 }
 
-TEST(TCPSocket, setsockopt_nodelay) {
+TEST(TCPSocket, setsockopt_NODELAY) {
   if (!TCPSocket().setsockopt(TCPSocket::Option::NODELAY, true))
     throw Exception();
 }

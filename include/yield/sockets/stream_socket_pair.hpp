@@ -1,4 +1,4 @@
-// socket_pair_test.cpp
+// yield/sockets/stream_socket_pair.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,18 +27,37 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "../channel_test.hpp"
-#include "socket_pair_factory.hpp"
+#ifndef _YIELD_SOCKETS_STREAM_SOCKET_PAIR_HPP_
+#define _YIELD_SOCKETS_STREAM_SOCKET_PAIR_HPP_
+
+#include "yield/sockets/socket_pair.hpp"
+#include "yield/sockets/stream_socket.hpp"
 
 namespace yield {
 namespace sockets {
-class SocketPairTestSuite : public ChannelTestSuite {
+class StreamSocketPair : public SocketPair<StreamSocket> {
 public:
-  SocketPairTestSuite()
-    : ChannelTestSuite(*new SocketPairFactory)
-  { }
+  StreamSocketPair();
+
+  ~StreamSocketPair() {
+    StreamSocket::dec_ref(*sockets[0]);
+    StreamSocket::dec_ref(*sockets[1]);
+  }
+
+public:
+  // yield::sockets::SocketPair
+  StreamSocket& first() {
+    return *sockets[0];
+  }
+
+  StreamSocket& second() {
+    return *sockets[1];
+  }
+
+private:
+  StreamSocket* sockets[2];
 };
 }
 }
 
-TEST_SUITE_EX(SocketPair, yield::sockets::SocketPairTestSuite);
+#endif

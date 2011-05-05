@@ -47,8 +47,12 @@ public:
   };
 
 public:
-  StreamSocket(int domain = DOMAIN_DEFAULT, int protocol = PROTOCOL_DEFAULT)
+  StreamSocket(int domain, int protocol = PROTOCOL_DEFAULT)
     : Socket(domain, TYPE, protocol)
+  { }
+
+  StreamSocket(int domain, int protocol, socket_t socket_)
+    : Socket(domain, TYPE, protocol, socket_)
   { }
 
 public:
@@ -61,21 +65,12 @@ public:
   virtual YO_NEW_REF StreamSocket* accept(SocketAddress& peername);
 
 public:
-  static YO_NEW_REF StreamSocket*
-  create(
-    int domain = DOMAIN_DEFAULT,
-    int protocol = PROTOCOL_DEFAULT
-  ) {
-    socket_t socket_ = Socket::create(domain, TYPE, protocol);
+  virtual YO_NEW_REF StreamSocket* dup() {
+    socket_t socket_ = Socket::create(get_domain(), TYPE, get_protocol());
     if (socket_ != static_cast<socket_t>(-1))
-      return new StreamSocket(domain, protocol, socket_);
+      return new StreamSocket(get_domain(), get_protocol(), socket_);
     else
       return NULL;
-  }
-
-public:
-  virtual YO_NEW_REF StreamSocket* dup() {
-    return create(get_domain(), get_protocol());
   }
 
 public:
@@ -97,11 +92,6 @@ public:
 public:
   // yield::Socket
   virtual bool setsockopt(int option_name, int option_value);
-
-protected:
-  StreamSocket(int domain, int protocol, socket_t socket_)
-    : Socket(domain, TYPE, protocol, socket_)
-  { }
 
 protected:
   virtual YO_NEW_REF StreamSocket* dup2(socket_t socket_) {

@@ -31,19 +31,17 @@
 
 #include <iostream>
 
-extern yunit::TestSuite& DatagramSocket_TestSuite();
+extern yunit::TestSuite& DatagramSocketTestSuite();
 extern yunit::TestSuite& SocketAddressTestSuite();
-extern yunit::TestSuite& SocketPairTestSuite();
-extern yunit::TestSuite& StreamSocket_TestSuite();
+extern yunit::TestSuite& StreamSocketTestSuite();
 extern yunit::TestSuite& TCPSocketTestSuite();
-extern yunit::TestSuite& UDPSocketTestSuite();
 
 int main(int, char**) {
   int failed_test_case_count = 0;
 
-  // DatagramSocket_
-  std::cout << "DatagramSocket_:" << std::endl;
-  failed_test_case_count += DatagramSocket_TestSuite().run();
+  // DatagramSocket
+  std::cout << "DatagramSocket:" << std::endl;
+  failed_test_case_count += DatagramSocketTestSuite().run();
   std::cout << std::endl;
 
   // SocketAddress
@@ -51,24 +49,14 @@ int main(int, char**) {
   failed_test_case_count += SocketAddressTestSuite().run();
   std::cout << std::endl;
 
-  // SocketPair
-  std::cout << "SocketPair:" << std::endl;
-  failed_test_case_count += SocketPairTestSuite().run();
-  std::cout << std::endl;
-
-  // StreamSocket_
-  std::cout << "StreamSocket_:" << std::endl;
-  failed_test_case_count += StreamSocket_TestSuite().run();
+  // StreamSocket
+  std::cout << "StreamSocket:" << std::endl;
+  failed_test_case_count += StreamSocketTestSuite().run();
   std::cout << std::endl;
 
   // TCPSocket
   std::cout << "TCPSocket:" << std::endl;
   failed_test_case_count += TCPSocketTestSuite().run();
-  std::cout << std::endl;
-
-  // UDPSocket
-  std::cout << "UDPSocket:" << std::endl;
-  failed_test_case_count += UDPSocketTestSuite().run();
   std::cout << std::endl;
 
   return failed_test_case_count;

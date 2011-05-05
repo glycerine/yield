@@ -41,7 +41,6 @@ namespace yield {
 namespace sockets {
 class Socket : public Channel {
 public:
-  const static int DOMAIN_DEFAULT; // AF_INET
   const static int PROTOCOL_DEFAULT = 0;
 
 public:

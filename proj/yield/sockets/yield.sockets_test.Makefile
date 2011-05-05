@@ -47,7 +47,7 @@ LIBS += -lyield_sockets -lyield
 D_FILE_PATHS := $(shell find ../../../build/yield/sockets -name "*.d")
 
 
-O_FILE_PATHS += ../../../build/yield/sockets/datagram_socket_test.o ../../../build/yield/sockets/socket_address_test.o ../../../build/yield/sockets/socket_pair_test.o ../../../build/yield/sockets/stream_socket_test.o ../../../build/yield/sockets/tcp_socket_test.o ../../../build/yield/sockets/udp_socket_test.o ../../../build/yield/sockets/yield_sockets_test_main.o
+O_FILE_PATHS += ../../../build/yield/sockets/datagram_socket_test.o ../../../build/yield/sockets/socket_address_test.o ../../../build/yield/sockets/stream_socket_test.o ../../../build/yield/sockets/tcp_socket_test.o ../../../build/yield/sockets/yield_sockets_test_main.o
 
 
 all: ../../../bin/yield/yield_sockets_test
@@ -87,10 +87,6 @@ lcov: ../../../bin/yield/yield_sockets_test
 	-mkdir -p ../../../build/yield/sockets 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/sockets/socket_address_test.o -MD $(CXXFLAGS) ../../../test/yield/sockets/socket_address_test.cpp
 
-../../../build/yield/sockets/socket_pair_test.o: ../../../test/yield/sockets/socket_pair_test.cpp
-	-mkdir -p ../../../build/yield/sockets 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/sockets/socket_pair_test.o -MD $(CXXFLAGS) ../../../test/yield/sockets/socket_pair_test.cpp
-
 ../../../build/yield/sockets/stream_socket_test.o: ../../../test/yield/sockets/stream_socket_test.cpp
 	-mkdir -p ../../../build/yield/sockets 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/sockets/stream_socket_test.o -MD $(CXXFLAGS) ../../../test/yield/sockets/stream_socket_test.cpp
@@ -98,10 +94,6 @@ lcov: ../../../bin/yield/yield_sockets_test
 ../../../build/yield/sockets/tcp_socket_test.o: ../../../test/yield/sockets/tcp_socket_test.cpp
 	-mkdir -p ../../../build/yield/sockets 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/sockets/tcp_socket_test.o -MD $(CXXFLAGS) ../../../test/yield/sockets/tcp_socket_test.cpp
-
-../../../build/yield/sockets/udp_socket_test.o: ../../../test/yield/sockets/udp_socket_test.cpp
-	-mkdir -p ../../../build/yield/sockets 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/sockets/udp_socket_test.o -MD $(CXXFLAGS) ../../../test/yield/sockets/udp_socket_test.cpp
 
 ../../../build/yield/sockets/yield_sockets_test_main.o: ../../../test/yield/sockets/yield_sockets_test_main.cpp
 	-mkdir -p ../../../build/yield/sockets 2>/dev/null

@@ -39,24 +39,15 @@ public:
   const static int TYPE; // SOCK_DGRAM
 
 public:
-  DatagramSocket(int domain = DOMAIN_DEFAULT, int protocol = PROTOCOL_DEFAULT)
+  DatagramSocket(int domain, int protocol = PROTOCOL_DEFAULT)
     : Socket(domain, TYPE, protocol)
   { }
 
-  virtual ~DatagramSocket() { }
+  DatagramSocket(int domain, int protocol, socket_t socket_)
+    : Socket(domain, TYPE, protocol, socket_)
+  { }
 
-public:
-  static YO_NEW_REF DatagramSocket*
-  create(
-    int domain = DOMAIN_DEFAULT,
-    int protocol = PROTOCOL_DEFAULT
-  ) {
-    socket_t socket_ = Socket::create(domain, TYPE, protocol);
-    if (socket_ != static_cast<socket_t>(-1))
-      return new DatagramSocket(domain, protocol, socket_);
-    else
-      return NULL;
-  }
+  virtual ~DatagramSocket() { }
 
 public:
   ssize_t
@@ -136,11 +127,6 @@ public:
   DatagramSocket& inc_ref() {
     return Object::inc_ref(*this);
   }
-
-protected:
-  DatagramSocket(int domain, int protocol, socket_t socket_)
-    : Socket(domain, TYPE, protocol, socket_)
-  { }
 };
 }
 }

@@ -1,4 +1,4 @@
-// udp_socket_test.cpp
+// yield/sockets/posix/datagram_socket_pair.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,19 +27,18 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "datagram_socket_test.hpp"
-#include "yield/sockets/udp_socket.hpp"
+#include "yield/sockets/datagram_socket_pair.hpp"
 
-TEST_SUITE_EX(
-  UDPSocket,
-  yield::sockets::DatagramSocketTestSuite<yield::sockets::UDPSocket>
-);
+#include <sys/socket.h>
 
 namespace yield {
 namespace sockets {
-TEST(UDPSocket, connect) {
-  UDPSocket udp_socket;
-  if (!udp_socket.connect(SocketAddress("localhost", 31000)))
+DatagramSocketPair::DatagramSocketPair() {
+  socket_t sv[2];
+  if (::socketpair(AF_UNIX, SOCK_DGRAM, 0, sv) != -1) {
+    sockets[0] = new DatagramSocket(AF_UNIX, 0, sv[0]);
+    sockets[1] = new DatagramSocket(AF_UNIX, 0, sv[1]);
+  } else
     throw Exception();
 }
 }

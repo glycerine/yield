@@ -37,7 +37,7 @@ class ChannelPairFactory : public Object {
 public:
   virtual ~ChannelPairFactory() { }
 
-  virtual ChannelPair& create_channel_pair() = 0;
+  virtual YO_NEW_REF ChannelPair& create_channel_pair() = 0;
 
 public:
   // yield::Object

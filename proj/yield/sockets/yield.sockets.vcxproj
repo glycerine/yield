@@ -94,16 +94,22 @@
 
   <ItemGroup Label="ClIncludeItems">
     <ClInclude Include="..\..\..\include\yield\sockets\datagram_socket.hpp" />
+    <ClInclude Include="..\..\..\include\yield\sockets\datagram_socket_pair.hpp" />
     <ClInclude Include="..\..\..\include\yield\sockets\socket.hpp" />
     <ClInclude Include="..\..\..\include\yield\sockets\socket_address.hpp" />
     <ClInclude Include="..\..\..\include\yield\sockets\socket_pair.hpp" />
     <ClInclude Include="..\..\..\include\yield\sockets\stream_socket.hpp" />
+    <ClInclude Include="..\..\..\include\yield\sockets\stream_socket_pair.hpp" />
     <ClInclude Include="..\..\..\include\yield\sockets\tcp_socket.hpp" />
     <ClInclude Include="..\..\..\include\yield\sockets\udp_socket.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
     <ClCompile Include="..\..\..\src\yield\sockets\posix\datagram_socket.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\posix\datagram_socket_pair.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -119,6 +125,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\posix\stream_socket_pair.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\sockets\posix\tcp_socket.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -127,10 +137,11 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\sockets\socket_pair.cpp">
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\sockets\win32\datagram_socket.cpp">
       <ObjectFileName>$(IntDir)win32\datagram_socket.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\win32\datagram_socket_pair.cpp">
+      <ObjectFileName>$(IntDir)win32\datagram_socket_pair.obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\sockets\win32\socket.cpp">
       <ObjectFileName>$(IntDir)win32\socket.obj</ObjectFileName>
@@ -140,6 +151,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\sockets\win32\stream_socket.cpp">
       <ObjectFileName>$(IntDir)win32\stream_socket.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\sockets\win32\stream_socket_pair.cpp">
+      <ObjectFileName>$(IntDir)win32\stream_socket_pair.obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\sockets\win32\tcp_socket.cpp">
       <ObjectFileName>$(IntDir)win32\tcp_socket.obj</ObjectFileName>

@@ -27,19 +27,29 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "datagram_socket_test.hpp"
+#include "socket_test.hpp"
 #include "yield/auto_object.hpp"
-#include "yield/sockets/datagram_socket.hpp"
+#include "yield/sockets/datagram_socket_pair.hpp"
 
 TEST_SUITE_EX(
-  DatagramSocket_,
-  yield::sockets::DatagramSocketTestSuite<yield::sockets::DatagramSocket>
+  DatagramSocket,
+  yield::sockets::SocketTestSuite<yield::sockets::DatagramSocketPair>
 );
 
 namespace yield {
 namespace sockets {
-TEST(DatagramSocket_, create) {
-  auto_Object<DatagramSocket> socket_ = DatagramSocket::create();
+TEST(DatagramSocket, recvfrom) {
+  DatagramSocketPair sockets;
+  sockets.first().write("m", 1);
+  char m;
+  SocketAddress peername;
+  ssize_t recvfrom_ret
+    = static_cast<DatagramSocket&>(sockets.second())
+        .recvfrom(&m, 1, 0, peername);
+  throw_assert_eq(recvfrom_ret, 1);
+  throw_assert_eq(m, 'm');
+  throw_assert_eq(peername, *sockets.first().getsockname());
+  throw_assert_eq(peername, *sockets.second().getpeername());
 }
 }
 }

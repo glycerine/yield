@@ -1,4 +1,4 @@
-// stream_socket_test.hpp
+// yield/sockets/datagram_socket_pair.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,68 +27,35 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_SOCKETS_STREAM_SOCKET_TEST_HPP_
-#define _YIELD_SOCKETS_STREAM_SOCKET_TEST_HPP_
+#ifndef _YIELD_SOCKETS_DATAGRAM_SOCKET_PAIR_HPP_
+#define _YIELD_SOCKETS_DATAGRAM_SOCKET_PAIR_HPP_
 
-#include "socket_test.hpp"
+#include "yield/sockets/datagram_socket.hpp"
+#include "yield/sockets/socket_pair.hpp"
 
 namespace yield {
 namespace sockets {
-template <class StreamSocketType>
-class StreamSocketDupTest : public yunit::Test {
+class DatagramSocketPair : public SocketPair<DatagramSocket> {
 public:
-  // yunit::Test
-  void run() {
-    auto_Object<StreamSocket> socket_ = StreamSocketType().dup();
+  DatagramSocketPair();
+
+  ~DatagramSocketPair() {
+    DatagramSocket::dec_ref(*sockets[0]);
+    DatagramSocket::dec_ref(*sockets[1]);
   }
-};
 
-
-template <class StreamSocketType>
-class StreamSocketListenTest : public yunit::Test {
 public:
-  // yunit::Test
-  void run() {
-    StreamSocketType socket_;
-    if (!socket_.bind(31000))
-      throw Exception();
-    if (!socket_.listen())
-      throw Exception();
+  // yield::sockets::SocketPair
+  DatagramSocket& first() {
+    return *sockets[0];
   }
-};
 
-
-template <class StreamSocketType>
-class StreamSocketTestSuite : public SocketTestSuite<StreamSocketType> {
-public:
-  StreamSocketTestSuite() {
-    add("StreamSocket::dup", new StreamSocketDupTest<StreamSocketType>);
-    add("StreamSocket::listen", new StreamSocketListenTest<StreamSocketType>);
-
-    add(
-      "StreamSocket::setsockopt(KEEPALIVE)",
-      new SocketSetSocketOptionTest<StreamSocketType>(
-            StreamSocket::Option::KEEPALIVE,
-            1
-          )
-    );
-
-    add(
-      "StreamSocket::setsockopt(LINGER, 1)",
-      new SocketSetSocketOptionTest<StreamSocketType>(
-            StreamSocket::Option::LINGER,
-            1
-          )
-    );
-
-    add(
-      "StreamSocket::setsockopt(LINGER, 30)",
-      new SocketSetSocketOptionTest<StreamSocketType>(
-            StreamSocket::Option::LINGER,
-            30
-          )
-    );
+  DatagramSocket& second() {
+    return *sockets[1];
   }
+
+private:
+  DatagramSocket* sockets[2];
 };
 }
 }

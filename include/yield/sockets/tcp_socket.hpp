@@ -36,6 +36,7 @@ namespace yield {
 namespace sockets {
 class TCPSocket : public StreamSocket {
 public:
+  const static int DOMAIN_DEFAULT; // AF_INET
   const static int PROTOCOL; // IPPROTO_TCP
 
 public:
@@ -56,15 +57,6 @@ public:
   virtual ~TCPSocket() { }
 
 public:
-  static YO_NEW_REF TCPSocket* create(int domain = DOMAIN_DEFAULT) {
-    socket_t socket_ = Socket::create(domain, TYPE, PROTOCOL);
-    if (socket_ != static_cast<socket_t>(-1))
-      return new TCPSocket(domain, socket_);
-    else
-      return NULL;
-  }
-
-public:
   // yield::Object
   const char* get_type_name() const {
     return "yield::sockets::TCPSocket";
@@ -81,7 +73,11 @@ public:
 public:
   // yield::sockets::StreamSocket
   virtual YO_NEW_REF StreamSocket* dup() {
-    return create(get_domain());
+    socket_t socket_ = Socket::create(get_domain(), TYPE, PROTOCOL);
+    if (socket_ != static_cast<socket_t>(-1))
+      return new TCPSocket(get_domain(), socket_);
+    else
+      return NULL;
   }
 
 protected:

@@ -32,6 +32,7 @@
 
 namespace yield {
 namespace sockets {
+const int UDPSocket::DOMAIN_DEFAULT = AF_INET;
 const int UDPSocket::PROTOCOL = IPPROTO_UDP;
 }
 }

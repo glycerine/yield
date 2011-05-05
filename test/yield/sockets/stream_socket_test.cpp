@@ -27,31 +27,35 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "stream_socket_test.hpp"
-#include "yield/sockets/stream_socket.hpp"
+#include "socket_test.hpp"
+#include "yield/sockets/stream_socket_pair.hpp"
 
 TEST_SUITE_EX(
-  StreamSocket_,
-  yield::sockets::StreamSocketTestSuite<yield::sockets::StreamSocket>
+  StreamSocket,
+  yield::sockets::SocketTestSuite<yield::sockets::StreamSocketPair>
 );
 
 namespace yield {
 namespace sockets {
-TEST(StreamSocket_, constructor) {
-  StreamSocket socket_;
+TEST(StreamSocket, dup) {
+  auto_Object<StreamSocket> socket_ = StreamSocketPair().first().dup();
 }
 
-TEST(StreamSocket_, create) {
-  auto_Object<StreamSocket> socket_ = StreamSocket::create();
+TEST(StreamSocket, inc_ref) {
+  auto_Object<StreamSocket> socket_ = StreamSocketPair().first().inc_ref();
 }
 
-TEST(StreamSocket_, dup) {
-  auto_Object<StreamSocket> socket_
-    = StreamSocket().dup();
+TEST(StreamSocket, setsockopt_KEEPALIVE) {
+  if (!StreamSocketPair().first().setsockopt(StreamSocket::Option::KEEPALIVE, true))
+    throw Exception();
 }
 
-TEST(StreamSocket_, inc_ref) {
-  auto_Object<StreamSocket> socket_ = StreamSocket().inc_ref();
+TEST(StreamSocket, setsockopt_LINGER) {
+  if (!StreamSocketPair().first().setsockopt(StreamSocket::Option::LINGER, 1))
+    throw Exception();
+
+  if (!StreamSocketPair().first().setsockopt(StreamSocket::Option::LINGER, 30))
+    throw Exception();
 }
 }
 }

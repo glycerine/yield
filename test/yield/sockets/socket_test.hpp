@@ -39,15 +39,15 @@
 
 namespace yield {
 namespace sockets {
-template <class SocketType>
-class SocketBindTest : public yunit::Test {
-public:
-  // yunit::Test
-  void run() {
-    if (!SocketType().bind(31000))
-      throw Exception();
-  }
-};
+//template <class SocketPairType>
+//class SocketBindTest : public yunit::Test {
+//public:
+//  // yunit::Test
+//  void run() {
+//    if (!SocketPairType().bind(31000))
+//      throw Exception();
+//  }
+//};
 
 
 class SocketGetFQDNTest : public yunit::Test {
@@ -74,24 +74,22 @@ public:
 };
 
 
-template <class SocketType>
+template <class SocketPairType>
 class SocketGetPeernameTest : public yunit::Test {
 public:
   // yunit::Test
   void run() {
-    SocketPair sockets(SocketType::DOMAIN_DEFAULT, SocketType::TYPE);
-    sockets.first().getpeername();
+    SocketPairType().first().getpeername();
   }
 };
 
 
-template <class SocketType>
+template <class SocketPairType>
 class SocketGetSocknameTest : public yunit::Test {
 public:
   // yunit::Test
   void run() {
-    SocketPair sockets(SocketType::DOMAIN_DEFAULT, SocketType::TYPE);
-    sockets.first().getsockname();
+    SocketPairType().first().getsockname();
   }
 };
 
@@ -107,26 +105,26 @@ public:
 };
 
 
-template <class SocketType>
+template <class SocketPairType>
 class SocketSetBlockingModeTest : public yunit::Test {
 public:
   // yunit::Test
   void run() {
-    SocketType socket_;
+    SocketPairType sockets;
 
-    if (!socket_.set_blocking_mode(true))
+    if (!sockets.first().set_blocking_mode(true))
       throw Exception();
 
-    if (!socket_.set_blocking_mode(false))
+    if (!sockets.first().set_blocking_mode(false))
       throw Exception();
 
-    if (!socket_.set_blocking_mode(true))
+    if (!sockets.first().set_blocking_mode(true))
       throw Exception();
   }
 };
 
 
-template <class SocketType>
+template <class SocketPairType>
 class SocketSetSocketOptionTest : public yunit::Test {
 public:
   SocketSetSocketOptionTest(int option_name, int option_value = 1)
@@ -135,7 +133,7 @@ public:
 
   // yunit::Test
   void run() {
-    SocketPair sockets(SocketType::DOMAIN_DEFAULT, SocketType::TYPE);
+    SocketPairType sockets;
     if (!sockets.first().setsockopt(option_name, option_value))
       throw Exception();
   }
@@ -145,12 +143,12 @@ private:
 };
 
 
-template <class SocketType>
+template <class SocketPairType>
 class SocketShutdownTest : public yunit::Test {
 public:
   // yunit::Test
   void run() {
-    SocketPair sockets(SocketType::DOMAIN_DEFAULT, SocketType::TYPE);
+    SocketPairType sockets;
 
     if (!sockets.first().shutdown(true, false))
       throw Exception();
@@ -163,12 +161,12 @@ public:
 };
 
 
-template <class SocketType>
+template <class SocketPairType>
 class SocketWantRecvTest : public yunit::Test {
 public:
   // yunit::Test
   void run() {
-    SocketPair sockets(SocketType::DOMAIN_DEFAULT, SocketType::TYPE);
+    SocketPairType sockets;
     if (!sockets.first().set_blocking_mode(false))
       throw Exception();
     auto_Object<Buffer> buffer = new Buffer(1);
@@ -180,48 +178,42 @@ public:
 };
 
 
-template <class SocketType>
+template <class SocketPairType>
 class SocketTestSuite : public ChannelTestSuite {
 public:
   SocketTestSuite()
-    : ChannelTestSuite(
-      *new SocketPairFactory(
-        SocketType::DOMAIN_DEFAULT,
-        SocketType::TYPE,
-        SocketPair::PROTOCOL_DEFAULT
-      )
-    ) {
-    add("Socket::bind", new SocketBindTest<SocketType>);
+    : ChannelTestSuite(*new SocketPairFactory<SocketPairType>) {
+    //add("Socket::bind", new SocketBindTest<SocketPairType>);
     add("Socket::getfqdn", new SocketGetFQDNTest);
     add("Socket::gethostname", new SocketGetHostNameTest);
-    add("Socket::getpeername", new SocketGetPeernameTest<SocketType>);
-    add("Socket::getsockname", new SocketGetSocknameTest<SocketType>);
+    add("Socket::getpeername", new SocketGetPeernameTest<SocketPairType>);
+    add("Socket::getsockname", new SocketGetSocknameTest<SocketPairType>);
 
     add("Socket::MessageFlags", new SocketMessageFlagsTest);
 
     add(
       "Socket::set_blocking_mode",
-      new SocketSetBlockingModeTest<SocketType>
+      new SocketSetBlockingModeTest<SocketPairType>
     );
 
     add(
       "Socket::setsockopt(RCVBUF, 4096)",
-      new SocketSetSocketOptionTest<SocketType>(Socket::Option::RCVBUF, 4096)
+      new SocketSetSocketOptionTest<SocketPairType>(Socket::Option::RCVBUF, 4096)
     );
 
     add(
       "Socket::setsockopt(REUSEADDR, 1)",
-      new SocketSetSocketOptionTest<SocketType>(Socket::Option::REUSEADDR, 1)
+      new SocketSetSocketOptionTest<SocketPairType>(Socket::Option::REUSEADDR, 1)
     );
 
     add(
       "Socket::setsockopt(SNDBUF, 4096)",
-      new SocketSetSocketOptionTest<SocketType>(Socket::Option::SNDBUF, 4096)
+      new SocketSetSocketOptionTest<SocketPairType>(Socket::Option::SNDBUF, 4096)
     );
 
-    add("Socket::shutdown", new SocketShutdownTest<SocketType>);
+    add("Socket::shutdown", new SocketShutdownTest<SocketPairType>);
 
-    add("Socket::want_recv", new SocketWantRecvTest<SocketType>);
+    add("Socket::want_recv", new SocketWantRecvTest<SocketPairType>);
   }
 };
 }

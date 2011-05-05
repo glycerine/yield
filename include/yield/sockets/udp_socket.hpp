@@ -36,6 +36,7 @@ namespace yield {
 namespace sockets {
 class UDPSocket : public DatagramSocket {
 public:
+  const static int DOMAIN_DEFAULT; // AF_INET
   const static int PROTOCOL; // IPPROTO_UDP
 
 public:
@@ -46,15 +47,6 @@ public:
   UDPSocket(int domain, socket_t socket_)
     : DatagramSocket(domain, PROTOCOL, socket_)
   { }
-
-public:
-  static YO_NEW_REF UDPSocket* create(int domain = DOMAIN_DEFAULT) {
-    socket_t socket_ = Socket::create(domain, TYPE, PROTOCOL);
-    if (socket_ != static_cast<socket_t>(-1))
-      return new UDPSocket(domain, socket_);
-    else
-      return NULL;
-  }
 
 public:
   // yield::Object
