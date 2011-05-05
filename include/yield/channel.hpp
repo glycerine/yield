@@ -43,12 +43,12 @@ public:
   virtual bool close() = 0;
 
 public:
-  ssize_t read(Buffer& buffer);
+  virtual ssize_t read(Buffer& buffer);
   virtual ssize_t read(void* buf, size_t buflen) = 0;
   virtual ssize_t readv(const iovec* iov, int iovlen) = 0;
 
 public:
-  ssize_t write(const Buffer& buffer);
+  virtual ssize_t write(const Buffer& buffer);
   virtual ssize_t write(const void* buf, size_t buflen) = 0;
   virtual ssize_t writev(const iovec* iov, int iovlen);
 

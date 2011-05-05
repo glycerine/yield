@@ -153,7 +153,7 @@ public:
 #endif
 
 public:
-  ssize_t recv(Buffer& buffer,const MessageFlags& flags) {
+  ssize_t recv(Buffer& buffer, const MessageFlags& flags) {
     if (buffer.get_next_buffer() == NULL) {
       iovec iov = buffer.as_read_iovec();
       ssize_t recv_ret = recv(iov.iov_base, iov.iov_len, flags);
@@ -220,10 +220,6 @@ public:
 
 public:
   // yield::Object
-  const char* get_type_name() const {
-    return "yield::sockets::Socket";
-  }
-
   Socket& inc_ref() {
     return Object::inc_ref(*this);
   }
@@ -232,12 +228,20 @@ public:
   // yield::Channel
   virtual bool close();
 
+  ssize_t read(Buffer& buffer) {
+    return recv(buffer, 0);
+  }
+
   ssize_t read(void* buf, size_t buflen) {
     return recv(buf, buflen, 0);
   }
 
   ssize_t readv(const iovec* iov, int iovlen) {
     return recvmsg(iov, iovlen, 0);
+  }
+
+  ssize_t write(const Buffer& buffer) {
+    return send(buffer, 0);
   }
 
   ssize_t write(const void* buf, size_t buflen) {

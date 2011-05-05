@@ -174,6 +174,24 @@ public:
 };
 
 
+class ChannelReadBuffersTest : public ChannelTest {
+public:
+public:
+  ChannelReadBuffersTest(ChannelPairFactory& channel_pair_factory)
+    : ChannelTest(channel_pair_factory)
+  { }
+
+public:
+  // yunit::Test
+  void run() {
+    this->write();
+    auto_Object<Buffer> test_buffer = new Buffer(get_test_string().size());
+    test_buffer->set_next_buffer(new Buffer(get_test_string().size()));
+    check_read(*test_buffer, get_read_channel().read(*test_buffer));
+  }
+};
+
+
 class ChannelReadVOneTest : public ChannelTest {
 public:
   ChannelReadVOneTest(ChannelPairFactory& channel_pair_factory)
@@ -313,6 +331,11 @@ public:
     add(
       "Channel::read(Buffer)",
       new ChannelReadBufferTest(channel_pair_factory)
+    );
+
+    add(
+      "Channel::read(Buffers)",
+      new ChannelReadBuffersTest(channel_pair_factory)
     );
 
     add(
