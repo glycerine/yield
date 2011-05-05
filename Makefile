@@ -118,7 +118,7 @@ yield.sockets.poll_test: yield.sockets.poll
 yield.sockets: yield
 	$(MAKE) -C proj/yield/sockets -f yield.sockets.Makefile
 
-yield.sockets_test: yield.sockets
+yield.sockets_test: yield.fs yield.sockets
 	$(MAKE) -C proj/yield/sockets -f yield.sockets_test.Makefile
 
 yield.stage: yield.thread

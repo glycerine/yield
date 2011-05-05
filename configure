@@ -95,6 +95,7 @@ PROJECT_REFERENCES = {
 
 PROJECT_NAMES = PROJECT_REFERENCES.keys()
 
+PROJECT_REFERENCES["yield.sockets_test"] = ("yield.fs", "yield.sockets")
 PROJECT_REFERENCES["yield.sockets.aio_test"] = ("yield.fs", "yield.sockets.aio")
 
 AUTHOR = "Minor Gordon"
