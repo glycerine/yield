@@ -27,7 +27,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/sockets/datagram_socket_pair.hpp"
+#include "yield/sockets/stream_socket_pair.hpp"
 
 #include <sys/socket.h>
 
