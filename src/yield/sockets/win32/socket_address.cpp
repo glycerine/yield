@@ -34,6 +34,11 @@
 
 namespace yield {
 namespace sockets {
+const int SocketAddress::GETNAMEINFO_FLAG_NOFQDN = NI_NOFQDN;
+const int SocketAddress::GETNAMEINFO_FLAG_NAMEREQD = NI_NAMEREQD;
+const int SocketAddress::GETNAMEINFO_FLAG_NUMERICHOST = NI_NUMERICHOST;
+const int SocketAddress::GETNAMEINFO_FLAG_NUMERICSERV = NI_NUMERICSERV;
+
 const SocketAddress
   SocketAddress::IN_ANY(static_cast<uint32_t>(INADDR_ANY), in6addr_any, 0);
 
@@ -149,7 +154,6 @@ const SocketAddress* SocketAddress::filter(int family) const {
   return NULL;
 }
 
-
 SocketAddress*
 SocketAddress::getaddrinfo(
   const char* nodename,
@@ -198,25 +202,22 @@ SocketAddress::_getaddrinfo(
 bool
 SocketAddress::getnameinfo(
   OUT char* nodename,
-  size_t nodename_len,
-  bool numeric
+  size_t nodenamelen,
+  OUT char* servname,
+  size_t servnamelen,
+  int flags
 ) const {
-  debug_assert_ne(nodename, NULL);
-  debug_assert_gt(nodename_len, 0);
-
   const SocketAddress* next_socket_address = this;
-
   do {
     if (
-      ::getnameinfo
-      (
+      ::getnameinfo(
         *this,
         len(),
         nodename,
-        nodename_len,
-        NULL,
-        0,
-        numeric ? NI_NUMERICHOST : 0
+        nodenamelen,
+        servname,
+        servnamelen,
+        flags
       ) == 0
     )
       return true;
@@ -253,33 +254,9 @@ socklen_t SocketAddress::len(int family) {
 
 std::ostream& operator<<(std::ostream& os, const SocketAddress& sockaddr_) {
   if (sockaddr_.get_family() != 0) {
-    string nodename;
-    if (sockaddr_.getnameinfo(nodename, true)) {
-      os << nodename;
-      switch (sockaddr_.get_family()) {
-      case AF_INET: {
-        os << ":" <<
-          ntohs(
-            reinterpret_cast<const sockaddr_in*>(
-              static_cast<const sockaddr*>(sockaddr_)
-            )->sin_port
-          );
-      }
-      break;
-
-      case AF_INET6: {
-        os << ":" <<
-          ntohs(
-            reinterpret_cast<const sockaddr_in6*>(
-              static_cast<const sockaddr*>(sockaddr_)
-            )->sin6_port
-          );
-      }
-      break;
-      }
-    }
-    else
-      os << "(unknown)";
+    string nodename; uint16_t servname;
+    if (sockaddr_.getnameinfo(nodename, &servname))
+      os << nodename << ":" << servname;
   } else
     os << "(unknown)";
   return os;

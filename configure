@@ -348,6 +348,19 @@ INCLUDE_FILE_PATHS["yield.fs"] = [
 ] + \
 INCLUDE_FILE_PATHS["yield.fs"]
 
+INCLUDE_FILE_PATHS["yield.fs.poll"] = [
+    path_join(INCLUDE_DIR_PATH, "yield", "fs", "poll", "fs_event.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "fs", "poll", "linux", "fs_event_queue.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "fs", "poll", "win32", "fs_event_queue.hpp"),
+] + \
+INCLUDE_FILE_PATHS["yield.fs.poll"]
+
+INCLUDE_FILE_PATHS["yield.http"] = [
+    path_join(INCLUDE_DIR_PATH, "yield", "http", "http_message.hpp"), # before http_response
+    path_join(INCLUDE_DIR_PATH, "yield", "http", "http_response.hpp"), # before http_request_parser
+] + \
+INCLUDE_FILE_PATHS["yield.http"]
+
 INCLUDE_FILE_PATHS["yield.i18n"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "i18n", "posix", "code.hpp"),
     path_join(INCLUDE_DIR_PATH, "yield", "i18n", "posix", "iconv.hpp"),
@@ -358,9 +371,24 @@ INCLUDE_FILE_PATHS["yield.i18n"] = [
 ] + \
 INCLUDE_FILE_PATHS["yield.i18n"]
 
+INCLUDE_FILE_PATHS["yield.queue"] = [
+    path_join(INCLUDE_DIR_PATH, "yield", "queue", "synchronized_queue.hpp"), # before synchronized_event_queue
+] + \
+INCLUDE_FILE_PATHS["yield.queue"]
+
+INCLUDE_FILE_PATHS["yield.poll"] = [
+    path_join(INCLUDE_DIR_PATH, "yield", "poll", "bsd", "fd_event_queue.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "poll", "linux", "fd_event_queue.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "poll", "posix", "fd_event_queue.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "poll", "sunos", "fd_event_queue.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "poll", "win32", "fd_event_queue.hpp"),
+] + \
+INCLUDE_FILE_PATHS["yield.poll"]
+
 INCLUDE_FILE_PATHS["yield.sockets"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "sockets", "socket_address.hpp"), # before socket
     path_join(INCLUDE_DIR_PATH, "yield", "sockets", "socket.hpp"), # before datagram_socket
+    path_join(INCLUDE_DIR_PATH, "yield", "sockets", "socket_pair.hpp"), # before datagram_socket_pair
 ] + \
 INCLUDE_FILE_PATHS["yield.sockets"]
 
@@ -368,9 +396,13 @@ INCLUDE_FILE_PATHS["yield.sockets.aio"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "sockets", "aio", "aiocb.hpp"), # before accept_aiocb
     path_join(INCLUDE_DIR_PATH, "yield", "sockets", "aio", "nbio_queue.hpp"), # before aio_queue
     path_join(INCLUDE_DIR_PATH, "yield", "sockets", "aio", "win32", "aio_queue.hpp"), # before aio_queue
-
 ] + \
 INCLUDE_FILE_PATHS["yield.sockets.aio"]
+
+INCLUDE_FILE_PATHS["yield.sockets.poll"] = [
+    path_join(INCLUDE_DIR_PATH, "yield", "sockets", "poll", "win32", "socket_event_queue.hpp"),
+] + \
+INCLUDE_FILE_PATHS["yield.sockets.poll"]
 
 INCLUDE_FILE_PATHS["yield.stage"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "stage", "event.hpp"),
@@ -381,10 +413,16 @@ INCLUDE_FILE_PATHS["yield.stage"] = [
 INCLUDE_FILE_PATHS["yield.stage"]
 
 INCLUDE_FILE_PATHS["yield.thread"] = [
-    path_join(INCLUDE_DIR_PATH, "yield", "thread", "mutex.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "thread", "condition_variable.hpp"), # before synchronized_queue
-    path_join(INCLUDE_DIR_PATH, "yield", "thread", "synchronized_queue.hpp"), # Before synchronized_event_queue
-    path_join(INCLUDE_DIR_PATH, "yield", "thread", "thread.hpp")
+    path_join(INCLUDE_DIR_PATH, "yield", "thread", "darwin", "semaphore.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "thread", "posix", "condition_variable.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "thread", "posix", "mutex.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "thread", "posix", "reader_writer_lock.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "thread", "posix", "semaphore.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "thread", "win32", "lightweight_mutex.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "thread", "win32", "mutex.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "thread", "win32", "semaphore.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "thread", "win32", "condition_variable.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "thread", "win32", "reader_writer_lock.hpp"),
 ] + \
 INCLUDE_FILE_PATHS["yield.thread"]
 

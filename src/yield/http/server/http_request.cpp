@@ -34,6 +34,16 @@ namespace yield {
 namespace http {
 namespace server {
 HTTPRequest::HTTPRequest(
+  Method method,
+  yield::sockets::SocketAddress& peername,
+  const yield::uri::URI& uri,
+  YO_NEW_REF Object* body,
+  uint8_t http_version
+) : yield::http::HTTPRequest(method, uri, body, http_version),
+    peername(peername.inc_ref()) {
+}
+
+HTTPRequest::HTTPRequest(
   YO_NEW_REF Object* body,
   uint16_t fields_offset,
   Buffer& header,

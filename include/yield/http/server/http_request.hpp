@@ -43,8 +43,17 @@ class HTTPRequestParser;
 
 class HTTPRequest : public yield::http::HTTPRequest {
 public:
+  HTTPRequest(
+    Method method,
+    yield::sockets::SocketAddress& peername,
+    const yield::uri::URI& uri,
+    YO_NEW_REF Object* body = NULL,
+    uint8_t http_version = HTTP_VERSION_DEFAULT
+  );
+
   virtual ~HTTPRequest();
 
+public:
   const yield::sockets::SocketAddress& get_peername() const {
     return peername;
   }

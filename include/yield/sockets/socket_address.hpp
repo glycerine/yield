@@ -56,6 +56,12 @@ namespace yield {
 namespace sockets {
 class SocketAddress : public Object {
 public:
+  const static int GETNAMEINFO_FLAG_NOFQDN;
+  const static int GETNAMEINFO_FLAG_NAMEREQD;
+  const static int GETNAMEINFO_FLAG_NUMERICHOST;
+  const static int GETNAMEINFO_FLAG_NUMERICSERV;
+
+public:
   const static SocketAddress IN_ANY;
   const static SocketAddress IN_BROADCAST;
   const static SocketAddress IN_LOOPBACK;
@@ -159,11 +165,11 @@ public:
   static YO_NEW_REF SocketAddress*
   getaddrinfo(
     const char* nodename,
-    uint16_t port
+    uint16_t servname
   ) {
-    std::ostringstream servname;
-    servname << port;
-    return getaddrinfo(nodename, servname.str().c_str());
+    std::ostringstream servname_;
+    servname_ << servname;
+    return getaddrinfo(nodename, servname_.str().c_str());
   }
 
 public:
@@ -172,16 +178,37 @@ public:
   }
 
 public:
-  bool getnameinfo(OUT string& nodename, bool numeric) const {
-    char nameinfo[256];
-    if (this->getnameinfo(nameinfo, 256, numeric)) {
-      nodename.assign(nameinfo);
+  bool getnameinfo(
+    OUT string& nodename,
+    OUT uint16_t* servname = NULL,
+    int flags = GETNAMEINFO_FLAG_NUMERICHOST | GETNAMEINFO_FLAG_NUMERICSERV
+  ) const {
+    char nodename_[256], servname_[16];
+    if (
+      getnameinfo(
+        nodename_,
+        256,        
+        servname_,
+        16,
+        flags | GETNAMEINFO_FLAG_NUMERICSERV
+      )
+    ) {
+      nodename.assign(nodename_);
+      if (servname != NULL)
+        *servname = static_cast<uint16_t>(atoi(servname_));
       return true;
     } else
       return false;
   }
 
-  bool getnameinfo(OUT char* nodename, size_t, bool numeric) const;
+  bool
+  getnameinfo(
+    OUT char* nodename,
+    size_t nodenamelen,
+    OUT char* servname,
+    size_t servnamelen,
+    int flags = GETNAMEINFO_FLAG_NUMERICHOST | GETNAMEINFO_FLAG_NUMERICSERV
+  ) const;
 
 public:
   socklen_t len() const {

@@ -46,7 +46,7 @@ public:
 
 protected:
   // yield::http::HTTPMessageParser
-  virtual YO_NEW_REF HTTPMessageBodyChunk&
+  virtual YO_NEW_REF yield::http::HTTPMessageBodyChunk&
   create_http_message_body_chunk(
     YO_NEW_REF Buffer* data
   );

@@ -40,6 +40,11 @@
 
 namespace yield {
 namespace sockets {
+const int SocketAddress::GETNAMEINFO_FLAG_NOFQDN = NI_NOFQDN;
+const int SocketAddress::GETNAMEINFO_FLAG_NAMEREQD = NI_NAMEREQD;
+const int SocketAddress::GETNAMEINFO_FLAG_NUMERICHOST = NI_NUMERICHOST;
+const int SocketAddress::GETNAMEINFO_FLAG_NUMERICSERV = NI_NUMERICSERV;
+
 const SocketAddress
 SocketAddress::IN_ANY(
   static_cast<uint32_t>(INADDR_ANY),
@@ -209,24 +214,22 @@ SocketAddress::_getaddrinfo(
 bool
 SocketAddress::getnameinfo(
   OUT char* nodename,
-  size_t nodename_len,
-  bool numeric
+  size_t nodenamelen,
+  OUT char* servname,
+  size_t servnamelen,
+  int flags
 ) const {
-  debug_assert_ne(nodename, NULL);
-  debug_assert_gt(nodename_len, 0);
-
   const SocketAddress* next_socket_address = this;
-
   do {
     if (
       ::getnameinfo(
         *this,
         len(),
         nodename,
-        nodename_len,
-        NULL,
-        0,
-        numeric ? NI_NUMERICHOST : 0
+        nodenamelen,
+        servname,
+        servnamelen,
+        flags
       ) == 0
     )
       return true;

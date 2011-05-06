@@ -28,6 +28,7 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 COMMENT_PREFIXES = {
+    None: '#',
     'c': "/*",
     "cpp": "//",
     "java": "//",
@@ -36,6 +37,7 @@ COMMENT_PREFIXES = {
 }
 
 COMMENT_SUFFIXES = {
+    None: '',
     'c': "*/",
     "cpp": '',
     "java": '',
@@ -181,6 +183,7 @@ for __platform in PLATFORMS: SYS_PLATFORM_CHECKS[__platform]
 
 assert len(COMMENT_PREFIXES) == len(COMMENT_SUFFIXES)
 for source_file_extension in COMMENT_PREFIXES.keys():
-    assert COMMENT_SUFFIXES.has_key(source_file_extension)
-    COMMENT_PREFIXES[source_file_extension[1:]] = COMMENT_PREFIXES[source_file_extension]
-    COMMENT_SUFFIXES[source_file_extension[1:]] = COMMENT_SUFFIXES[source_file_extension]
+    if source_file_extension is not None:
+        assert COMMENT_SUFFIXES.has_key(source_file_extension)
+        COMMENT_PREFIXES[source_file_extension[1:]] = COMMENT_PREFIXES[source_file_extension]
+        COMMENT_SUFFIXES[source_file_extension[1:]] = COMMENT_SUFFIXES[source_file_extension]
