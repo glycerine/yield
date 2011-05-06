@@ -97,7 +97,6 @@
     <ClInclude Include="..\..\..\include\yield\thread\lightweight_mutex.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\mutex.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\mutex_holder.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\pipe.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\processor_set.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\reader_writer_lock.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\runnable.hpp" />
@@ -153,10 +152,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClInclude Include="..\..\..\src\yield\thread\posix\mutex.hpp" />
-    <ClCompile Include="..\..\..\src\yield\thread\posix\pipe.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\thread\posix\reader_writer_lock.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -206,9 +201,6 @@
       <ObjectFileName>$(IntDir)win32\mutex.obj</ObjectFileName>
     </ClCompile>
     <ClInclude Include="..\..\..\src\yield\thread\win32\mutex.hpp" />
-    <ClCompile Include="..\..\..\src\yield\thread\win32\pipe.cpp">
-      <ObjectFileName>$(IntDir)win32\pipe.obj</ObjectFileName>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\thread\win32\processor_set.cpp">
       <ObjectFileName>$(IntDir)win32\processor_set.obj</ObjectFileName>
     </ClCompile>

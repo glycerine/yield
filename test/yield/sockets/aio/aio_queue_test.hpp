@@ -39,7 +39,7 @@
 #include "yield/fs/file_system.hpp"
 #include "yield/fs/path.hpp"
 #include "yield/fs/stat.hpp"
-#include "yield/sockets/socket_pair.hpp"
+#include "yield/sockets/stream_socket_pair.hpp"
 #include "yield/sockets/tcp_socket.hpp"
 #include "yield/sockets/aio/recv_aiocb.hpp"
 #include "yield/sockets/aio/send_aiocb.hpp"
@@ -76,7 +76,7 @@ class AIOQueueAssociateTest : public AIOQueueTest<AIOQueueType> {
 public:
   // yunit::Test
   void run() {
-    SocketPair sockets;
+    StreamSocketPair sockets;
     if (!this->get_aio_queue().associate(sockets.first()))
       throw Exception();
   }
@@ -88,7 +88,7 @@ class AIOQueueRecvTest : public AIOQueueTest<AIOQueueType> {
 public:
   // yunit::Test
   void run() {
-    SocketPair sockets;
+    StreamSocketPair sockets;
     if (!this->get_aio_queue().associate(sockets.first()))
       throw Exception();
 
@@ -116,7 +116,7 @@ template <class AIOQueueType>
 class AIOQueueRecvQueuedTest : public AIOQueueTest<AIOQueueType> {
   // yunit::Test
   void run() {
-    SocketPair sockets;
+    StreamSocketPair sockets;
     if (!this->get_aio_queue().associate(sockets.first()))
       throw Exception();
 
@@ -169,7 +169,7 @@ class AIOQueueRecvSplitTest : public AIOQueueTest<AIOQueueType> {
 public:
   // yunit::Test
   void run() {
-    SocketPair sockets;
+    StreamSocketPair sockets;
     if (!this->get_aio_queue().associate(sockets.first()))
       throw Exception();
 
@@ -205,7 +205,7 @@ class AIOQueueSendTest : public AIOQueueTest<AIOQueueType> {
 public:
   // yunit::Test
   void run() {
-    SocketPair sockets;
+    StreamSocketPair sockets;
     if (!this->get_aio_queue().associate(sockets.first()))
       throw Exception();
 
@@ -233,7 +233,7 @@ class AIOQueueSendFileTest : public AIOQueueTest<AIOQueueType> {
 public:
   // yunit::Test
   void run() {
-    SocketPair sockets(TCPSocket::DOMAIN_DEFAULT, TCPSocket::TYPE);
+    StreamSocketPair sockets;
     if (!this->get_aio_queue().associate(sockets.first()))
       throw Exception();
 
@@ -242,7 +242,7 @@ public:
     auto_Object<yield::fs::Stat> stbuf = file->stat();
 
     auto_Object<sendfileAIOCB> aiocb
-      = new sendfileAIOCB(static_cast<StreamSocket&>(sockets.first()), *file);
+      = new sendfileAIOCB(sockets.first(), *file);
     throw_assert_eq(aiocb->get_nbytes(), stbuf->get_size());
     throw_assert_eq(aiocb->get_offset(), 0);
 

@@ -38,6 +38,10 @@ namespace yield {
 class MockChannel : public Channel {
 public:
   // yield::Channel
+  bool close() {
+    return true;
+  }
+
   ssize_t read(Buffer& buffer) {
     return Channel::read(buffer);
   }

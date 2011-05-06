@@ -31,13 +31,13 @@
 #include "yield/exception.hpp"
 #include "yield/time.hpp"
 #include "yield/stage/stage.hpp"
-#include "yield/thread/synchronized_event_queue.hpp"
+#include "yield/queue/synchronized_event_queue.hpp"
 
 namespace yield {
 namespace stage {
 Stage::Stage(YO_NEW_REF EventHandler& event_handler)
   : event_handler(&event_handler),
-    event_queue(*new yield::thread::SynchronizedEventQueue) {
+    event_queue(*new yield::queue::SynchronizedEventQueue) {
   init();
 }
 

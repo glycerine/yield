@@ -31,9 +31,9 @@
 #define _YIELD_STAGE_POLLING_STAGE_SCHEDULER_HPP_
 
 #include "yield/stage/stage_scheduler.hpp"
+#include "yield/queue/rendezvous_concurrent_queue.hpp"
 #include "yield/thread/runnable.hpp"
 #include "yield/thread/thread.hpp"
-#include "yield/thread/unit_concurrent_queue.hpp"
 
 namespace yield {
 namespace thread {
@@ -67,7 +67,7 @@ protected:
     }
 
   private:
-    yield::thread::RendezvousConcurrentQueue<Stage> new_stage;
+    yield::queue::RendezvousConcurrentQueue<Stage> new_stage;
     bool _should_run;
     vector<Stage*> stages;
   };

@@ -112,8 +112,6 @@
     <ClCompile Include="..\..\..\test\yield\thread\mutex_test.cpp">
     </ClCompile>
     <ClInclude Include="..\..\..\test\yield\thread\mutex_test.hpp" />
-    <ClCompile Include="..\..\..\test\yield\thread\pipe_test.cpp">
-    </ClCompile>
     <ClCompile Include="..\..\..\test\yield\thread\processor_set_test.cpp">
     </ClCompile>
     <ClCompile Include="..\..\..\test\yield\thread\reader_writer_lock_test.cpp">

@@ -53,21 +53,21 @@ D_FILE_PATHS := $(shell find ../../../build/yield/thread -name "*.d")
 O_FILE_PATHS += ../../../build/yield/thread/condition_variable.o ../../../build/yield/thread/lightweight_mutex.o ../../../build/yield/thread/mutex.o ../../../build/yield/thread/processor_set.o ../../../build/yield/thread/reader_writer_lock.o ../../../build/yield/thread/semaphore.o ../../../build/yield/thread/thread.o
 ifeq ($(UNAME), Darwin)
 	O_FILE_PATHS += ../../../build/yield/thread/darwin/semaphore.o ../../../build/yield/thread/darwin/system_configuration.o ../../../build/yield/thread/darwin/thread.o
-	O_FILE_PATHS += ../../../build/yield/thread/posix/condition_variable.o ../../../build/yield/thread/posix/mutex.o ../../../build/yield/thread/posix/pipe.o ../../../build/yield/thread/posix/reader_writer_lock.o ../../../build/yield/thread/posix/semaphore.o ../../../build/yield/thread/posix/thread.o
+	O_FILE_PATHS += ../../../build/yield/thread/posix/condition_variable.o ../../../build/yield/thread/posix/mutex.o ../../../build/yield/thread/posix/reader_writer_lock.o ../../../build/yield/thread/posix/semaphore.o ../../../build/yield/thread/posix/thread.o
 endif
 ifeq ($(UNAME), FreeBSD)
-	O_FILE_PATHS += ../../../build/yield/thread/posix/condition_variable.o ../../../build/yield/thread/posix/mutex.o ../../../build/yield/thread/posix/pipe.o ../../../build/yield/thread/posix/reader_writer_lock.o ../../../build/yield/thread/posix/semaphore.o ../../../build/yield/thread/posix/thread.o
+	O_FILE_PATHS += ../../../build/yield/thread/posix/condition_variable.o ../../../build/yield/thread/posix/mutex.o ../../../build/yield/thread/posix/reader_writer_lock.o ../../../build/yield/thread/posix/semaphore.o ../../../build/yield/thread/posix/thread.o
 endif
 ifeq ($(UNAME), Linux)
 	O_FILE_PATHS += ../../../build/yield/thread/linux/processor_set.o ../../../build/yield/thread/linux/system_configuration.o ../../../build/yield/thread/linux/thread.o
-	O_FILE_PATHS += ../../../build/yield/thread/posix/condition_variable.o ../../../build/yield/thread/posix/mutex.o ../../../build/yield/thread/posix/pipe.o ../../../build/yield/thread/posix/reader_writer_lock.o ../../../build/yield/thread/posix/semaphore.o ../../../build/yield/thread/posix/thread.o
+	O_FILE_PATHS += ../../../build/yield/thread/posix/condition_variable.o ../../../build/yield/thread/posix/mutex.o ../../../build/yield/thread/posix/reader_writer_lock.o ../../../build/yield/thread/posix/semaphore.o ../../../build/yield/thread/posix/thread.o
 endif
 ifeq ($(UNAME), Solaris)
-	O_FILE_PATHS += ../../../build/yield/thread/posix/condition_variable.o ../../../build/yield/thread/posix/mutex.o ../../../build/yield/thread/posix/pipe.o ../../../build/yield/thread/posix/reader_writer_lock.o ../../../build/yield/thread/posix/semaphore.o ../../../build/yield/thread/posix/thread.o
+	O_FILE_PATHS += ../../../build/yield/thread/posix/condition_variable.o ../../../build/yield/thread/posix/mutex.o ../../../build/yield/thread/posix/reader_writer_lock.o ../../../build/yield/thread/posix/semaphore.o ../../../build/yield/thread/posix/thread.o
 	O_FILE_PATHS += ../../../build/yield/thread/sunos/processor_set.o ../../../build/yield/thread/sunos/system_configuration.o ../../../build/yield/thread/sunos/thread.o
 endif
 ifeq ($(UNAME), MINGW32)
-	O_FILE_PATHS += ../../../build/yield/thread/win32/condition_variable.o ../../../build/yield/thread/win32/lightweight_mutex.o ../../../build/yield/thread/win32/mutex.o ../../../build/yield/thread/win32/pipe.o ../../../build/yield/thread/win32/processor_set.o ../../../build/yield/thread/win32/reader_writer_lock.o ../../../build/yield/thread/win32/semaphore.o ../../../build/yield/thread/win32/system_configuration.o ../../../build/yield/thread/win32/thread.o
+	O_FILE_PATHS += ../../../build/yield/thread/win32/condition_variable.o ../../../build/yield/thread/win32/lightweight_mutex.o ../../../build/yield/thread/win32/mutex.o ../../../build/yield/thread/win32/processor_set.o ../../../build/yield/thread/win32/reader_writer_lock.o ../../../build/yield/thread/win32/semaphore.o ../../../build/yield/thread/win32/system_configuration.o ../../../build/yield/thread/win32/thread.o
 endif
 
 
@@ -134,10 +134,6 @@ depclean:
 	-mkdir -p ../../../build/yield/thread/posix 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/thread/posix/mutex.o -MD $(CXXFLAGS) ../../../src/yield/thread/posix/mutex.cpp
 
-../../../build/yield/thread/posix/pipe.o: ../../../src/yield/thread/posix/pipe.cpp
-	-mkdir -p ../../../build/yield/thread/posix 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/thread/posix/pipe.o -MD $(CXXFLAGS) ../../../src/yield/thread/posix/pipe.cpp
-
 ../../../build/yield/thread/posix/reader_writer_lock.o: ../../../src/yield/thread/posix/reader_writer_lock.cpp
 	-mkdir -p ../../../build/yield/thread/posix 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/thread/posix/reader_writer_lock.o -MD $(CXXFLAGS) ../../../src/yield/thread/posix/reader_writer_lock.cpp
@@ -189,10 +185,6 @@ depclean:
 ../../../build/yield/thread/win32/mutex.o: ../../../src/yield/thread/win32/mutex.cpp
 	-mkdir -p ../../../build/yield/thread/win32 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/thread/win32/mutex.o -MD $(CXXFLAGS) ../../../src/yield/thread/win32/mutex.cpp
-
-../../../build/yield/thread/win32/pipe.o: ../../../src/yield/thread/win32/pipe.cpp
-	-mkdir -p ../../../build/yield/thread/win32 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/thread/win32/pipe.o -MD $(CXXFLAGS) ../../../src/yield/thread/win32/pipe.cpp
 
 ../../../build/yield/thread/win32/processor_set.o: ../../../src/yield/thread/win32/processor_set.cpp
 	-mkdir -p ../../../build/yield/thread/win32 2>/dev/null

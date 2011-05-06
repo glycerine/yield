@@ -24,9 +24,6 @@
     <ClInclude Include="..\..\..\test\yield\thread\mutex_test.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\test\yield\thread\pipe_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\test\yield\thread\processor_set_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

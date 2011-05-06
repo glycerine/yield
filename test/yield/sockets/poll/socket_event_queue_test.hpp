@@ -34,8 +34,8 @@
 #include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/exception.hpp"
+#include "yield/sockets/stream_socket_pair.hpp"
 #include "yield/sockets/poll/socket_event.hpp"
-#include "yield/sockets/socket_pair.hpp"
 #include "yunit.hpp"
 
 namespace yield {
@@ -49,7 +49,7 @@ public:
 
   // yunit::Test
   void setup() {
-    sockets = new yield::sockets::SocketPair;
+    sockets = new yield::sockets::StreamSocketPair;
   }
 
   void teardown() {
@@ -57,16 +57,16 @@ public:
   }
 
 protected:
-  Socket& get_read_socket() const {
+  StreamSocket& get_read_socket() const {
     return sockets->first();
   }
 
-  Socket& get_write_socket() const {
+  StreamSocket& get_write_socket() const {
     return sockets->second();
   }
 
 private:
-  SocketPair* sockets;
+  StreamSocketPair* sockets;
 };
 
 

@@ -34,7 +34,6 @@
 extern yunit::TestSuite& ConditionVariableTestSuite();
 extern yunit::TestSuite& LightweightMutexTestSuite();
 extern yunit::TestSuite& MutexTestSuite();
-extern yunit::TestSuite& PipeTestSuite();
 extern yunit::TestSuite& ProcessorSetTestSuite();
 extern yunit::TestSuite& ReaderWriterLockTestSuite();
 extern yunit::TestSuite& SamplerTestSuite();
@@ -57,11 +56,6 @@ int main(int, char**) {
   // Mutex
   std::cout << "Mutex:" << std::endl;
   failed_test_case_count += MutexTestSuite().run();
-  std::cout << std::endl;
-
-  // Pipe
-  std::cout << "Pipe:" << std::endl;
-  failed_test_case_count += PipeTestSuite().run();
   std::cout << std::endl;
 
   // ProcessorSet
