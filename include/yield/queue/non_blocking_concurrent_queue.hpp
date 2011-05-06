@@ -34,7 +34,7 @@
 #include "yield/atomic.hpp"
 
 namespace yield {
-namespace thread {
+namespace queue {
 // Adapted from Michael, M. M. and Scott, M. L. 1996. Simple, fast, and practical
 // non-blocking and blocking concurrent queue algorithms.
 

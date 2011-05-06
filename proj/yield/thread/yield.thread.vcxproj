@@ -93,12 +93,10 @@
   </ItemDefinitionGroup>
 
   <ItemGroup Label="ClIncludeItems">
-    <ClInclude Include="..\..\..\include\yield\thread\blocking_concurrent_queue.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\condition_variable.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\lightweight_mutex.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\mutex.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\mutex_holder.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\non_blocking_concurrent_queue.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\pipe.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\processor_set.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\reader_writer_lock.hpp" />
@@ -106,13 +104,8 @@
     <ClInclude Include="..\..\..\include\yield\thread\sampler.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\semaphore.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\static_runnable.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\synchronized_event_queue.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\synchronized_queue.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\synchronized_response_queue.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\system_configuration.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\thread.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\tls_concurrent_queue.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\unit_concurrent_queue.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">

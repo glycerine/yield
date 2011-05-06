@@ -36,7 +36,7 @@
 #include "yield/thread/synchronized_queue.hpp"
 
 namespace yield {
-namespace thread {
+namespace queue {
 template <class ResponseType>
 class SynchronizedResponseQueue
   : public EventHandler,

@@ -1,4 +1,4 @@
-// blocking_concurrent_queue_test.cpp
+// yield/thread/unit_concurrent_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,9 +27,42 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "queue_test.hpp"
-#include "yield/thread/blocking_concurrent_queue.hpp"
-#include "yield/types.hpp"
+#ifndef _YIELD_THREAD_UNIT_CONCURRENT_QUEUE_HPP_
+#define _YIELD_THREAD_UNIT_CONCURRENT_QUEUE_HPP_
+
+#include "yield/atomic.hpp"
 
 
-TEST_SUITE_EX(BlockingConcurrentQueue, yield::thread::QueueTestSuite< yield::thread::BlockingConcurrentQueue<uint32_t> >);
+namespace yield {
+namespace queue {
+template <class ElementType>
+class UnitConcurrentQueue {
+public:
+  UnitConcurrentQueue() {
+    element = 0;
+  }
+
+  bool enqueue(ElementType& element) {
+    atomic_t atomic_element = reinterpret_cast<atomic_t>(&element);
+    return atomic_cas(&this->element, atomic_element, 0) == 0;
+  }
+
+  ElementType* trydequeue() {
+    atomic_t element = static_cast<atomic_t>(this->element);
+    while (element != 0) {
+      if (atomic_cas(&this->element, 0, element) == element)
+        return reinterpret_cast<ElementType*>(element);
+      else
+        element = static_cast<atomic_t>(this->element);
+    }
+
+    return NULL;
+  }
+
+private:
+  volatile atomic_t element;
+};
+}
+}
+
+#endif

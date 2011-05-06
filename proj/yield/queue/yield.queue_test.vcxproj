@@ -12,9 +12,9 @@
   </ItemGroup>
 
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{dd71eeb9-dfe0-41e3-a688-fa678e9e3d38}</ProjectGuid>
+    <ProjectGuid>{406f22d8-5a4b-4d54-aec8-bfc0734d4f0b}</ProjectGuid>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <RootNamespace>yield.thread_test</RootNamespace>
+    <RootNamespace>yield.queue_test</RootNamespace>
   </PropertyGroup>
 
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -42,14 +42,14 @@
   </ImportGroup>
 
   <PropertyGroup>
-    <IntDir Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">$(ProjectDir)..\..\..\build\yield\thread_test\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">$(ProjectDir)..\..\..\build\yield\queue_test\</IntDir>
     <OutDir Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">$(ProjectDir)..\..\..\bin\yield\</OutDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">yield_thread_test</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">yield_queue_test</TargetName>
   </PropertyGroup>
   <PropertyGroup>
-    <IntDir Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">$(ProjectDir)..\..\..\build\yield\thread_test\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">$(ProjectDir)..\..\..\build\yield\queue_test\</IntDir>
     <OutDir Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">$(ProjectDir)..\..\..\bin\yield\</OutDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">yield_thread_test</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">yield_queue_test</TargetName>
   </PropertyGroup>
 
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">
@@ -66,7 +66,7 @@
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>yield_thread.lib;yield.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_queue.lib;yield_thread.lib;yield.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -86,7 +86,7 @@
       <WarningLevel>Level4</WarningLevel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>yield_thread.lib;yield.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_queue.lib;yield_thread.lib;yield.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -99,32 +99,26 @@
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
-    <ClCompile Include="..\..\..\test\yield\thread\condition_variable_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\queue\blocking_concurrent_queue_test.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\thread\lightweight_mutex_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\queue\non_blocking_concurrent_queue_test.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\thread\mutex_test.cpp">
+    <ClInclude Include="..\..\..\test\yield\queue\queue_test.hpp" />
+    <ClCompile Include="..\..\..\test\yield\queue\synchronized_concurrent_event_queue_test.cpp">
     </ClCompile>
-    <ClInclude Include="..\..\..\test\yield\thread\mutex_test.hpp" />
-    <ClCompile Include="..\..\..\test\yield\thread\pipe_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\queue\synchronized_concurrent_queue_test.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\thread\processor_set_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\queue\synchronized_concurrent_response_queue_test.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\thread\reader_writer_lock_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\queue\tls_concurrent_queue_test.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\thread\sampler_test.cpp">
-    </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\thread\semaphore_test.cpp">
-    </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\thread\thread_test.cpp">
-    </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\thread\yield_thread_test_main.cpp">
+    <ClCompile Include="..\..\..\test\yield\queue\unit_concurrent_queue_test.cpp">
     </ClCompile>
   </ItemGroup>
 
   <ItemGroup Label="ProjectReferenceItems">
-    <ProjectReference Include="yield.thread.vcxproj">
-      <Project>{2285eac5-e9b9-436c-bc3f-5ad7f7869316}</Project>
+    <ProjectReference Include="yield.queue.vcxproj">
+      <Project>{241f6bf4-1864-44f4-b7a2-fb285b1419f0}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>

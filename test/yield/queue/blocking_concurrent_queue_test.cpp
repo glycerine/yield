@@ -1,4 +1,4 @@
-// yield/thread/synchronized_event_queue.hpp
+// blocking_concurrent_queue_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,36 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_THREAD_SYNCHRONIZED_EVENT_QUEUE_HPP_
-#define _YIELD_THREAD_SYNCHRONIZED_EVENT_QUEUE_HPP_
+#include "queue_test.hpp"
+#include "yield/thread/blocking_concurrent_queue.hpp"
+#include "yield/types.hpp"
 
-#include "yield/event_queue.hpp"
-#include "yield/thread/synchronized_queue.hpp"
-
-namespace yield {
-namespace thread {
-class SynchronizedEventQueue
-  : public EventQueue,
-    private SynchronizedQueue<Event> {
-public:
-  // yield::EventQueue
-  YO_NEW_REF Event& dequeue() {
-    return SynchronizedQueue<Event>::dequeue();
-  }
-
-  YO_NEW_REF Event* dequeue(const Time& timeout) {
-    return SynchronizedQueue<Event>::dequeue(timeout);
-  }
-
-  bool enqueue(YO_NEW_REF Event& event) {
-    return SynchronizedQueue<Event>::enqueue(event);
-  }
-
-  YO_NEW_REF Event* trydequeue() {
-    return SynchronizedQueue<Event>::trydequeue();
-  }
-};
-};
-};
-
-#endif
+TEST_SUITE_EX(BlockingConcurrentQueue, yield::thread::QueueTestSuite< yield::thread::BlockingConcurrentQueue<uint32_t> >);

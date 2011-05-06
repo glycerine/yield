@@ -1,4 +1,4 @@
-// yield/thread/unit_concurrent_queue.hpp
+// yield/thread/synchronized_event_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,42 +27,36 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_THREAD_UNIT_CONCURRENT_QUEUE_HPP_
-#define _YIELD_THREAD_UNIT_CONCURRENT_QUEUE_HPP_
+#ifndef _YIELD_THREAD_SYNCHRONIZED_EVENT_QUEUE_HPP_
+#define _YIELD_THREAD_SYNCHRONIZED_EVENT_QUEUE_HPP_
 
-#include "yield/atomic.hpp"
-
+#include "yield/event_queue.hpp"
+#include "yield/thread/synchronized_queue.hpp"
 
 namespace yield {
-namespace thread {
-template <class ElementType>
-class UnitConcurrentQueue {
+namespace queue {
+class SynchronizedEventQueue
+  : public EventQueue,
+    private SynchronizedQueue<Event> {
 public:
-  UnitConcurrentQueue() {
-    element = 0;
+  // yield::EventQueue
+  YO_NEW_REF Event& dequeue() {
+    return SynchronizedQueue<Event>::dequeue();
   }
 
-  bool enqueue(ElementType& element) {
-    atomic_t atomic_element = reinterpret_cast<atomic_t>(&element);
-    return atomic_cas(&this->element, atomic_element, 0) == 0;
+  YO_NEW_REF Event* dequeue(const Time& timeout) {
+    return SynchronizedQueue<Event>::dequeue(timeout);
   }
 
-  ElementType* trydequeue() {
-    atomic_t element = static_cast<atomic_t>(this->element);
-    while (element != 0) {
-      if (atomic_cas(&this->element, 0, element) == element)
-        return reinterpret_cast<ElementType*>(element);
-      else
-        element = static_cast<atomic_t>(this->element);
-    }
-
-    return NULL;
+  bool enqueue(YO_NEW_REF Event& event) {
+    return SynchronizedQueue<Event>::enqueue(event);
   }
 
-private:
-  volatile atomic_t element;
+  YO_NEW_REF Event* trydequeue() {
+    return SynchronizedQueue<Event>::trydequeue();
+  }
 };
-}
-}
+};
+};
 
 #endif

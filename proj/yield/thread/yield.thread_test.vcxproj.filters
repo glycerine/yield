@@ -12,9 +12,6 @@
 
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\test\yield\thread\blocking_concurrent_queue_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\test\yield\thread\condition_variable_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -27,18 +24,12 @@
     <ClInclude Include="..\..\..\test\yield\thread\mutex_test.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\test\yield\thread\non_blocking_concurrent_queue_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\test\yield\thread\pipe_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\test\yield\thread\processor_set_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\test\yield\thread\queue_test.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\test\yield\thread\reader_writer_lock_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -48,22 +39,7 @@
     <ClCompile Include="..\..\..\test\yield\thread\semaphore_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\thread\synchronized_event_queue_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\thread\synchronized_queue_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\thread\synchronized_response_queue_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\test\yield\thread\thread_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\thread\tls_concurrent_queue_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\thread\unit_concurrent_queue_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\test\yield\thread\yield_thread_test_main.cpp">

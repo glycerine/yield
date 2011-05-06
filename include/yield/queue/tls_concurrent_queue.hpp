@@ -37,7 +37,7 @@
 #include <stack>
 
 namespace yield {
-namespace thread {
+namespace queue {
 using yield::thread::Thread;
 
 template <class ElementType>

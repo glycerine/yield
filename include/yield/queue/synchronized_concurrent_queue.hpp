@@ -36,7 +36,7 @@
 #include <queue>
 
 namespace yield {
-namespace thread {
+namespace queue {
 template <class ElementType>
 class SynchronizedQueue : private std::queue<ElementType*> {
 public:
