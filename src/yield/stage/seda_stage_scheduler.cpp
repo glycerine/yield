@@ -32,14 +32,11 @@
 #include "yield/stage/seda_stage_scheduler.hpp"
 #include "yield/stage/stage.hpp"
 #include "yield/thread/runnable.hpp"
-#include "yield/thread/system_configuration.hpp"
 #include "yield/thread/thread.hpp"
-
 
 namespace yield {
 namespace stage {
 using yield::thread::Thread;
-
 
 class SEDAStageScheduler::SEDAStage : public yield::thread::Runnable {
 public:

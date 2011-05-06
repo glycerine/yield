@@ -50,7 +50,7 @@ LIBS += -lyield
 D_FILE_PATHS := $(shell find ../../../build/yield/thread -name "*.d")
 
 
-O_FILE_PATHS += ../../../build/yield/thread/condition_variable.o ../../../build/yield/thread/lightweight_mutex.o ../../../build/yield/thread/mutex.o ../../../build/yield/thread/processor_set.o ../../../build/yield/thread/reader_writer_lock.o ../../../build/yield/thread/semaphore.o ../../../build/yield/thread/thread.o
+O_FILE_PATHS += ../../../build/yield/thread/processor_set.o ../../../build/yield/thread/thread.o
 ifeq ($(UNAME), Darwin)
 	O_FILE_PATHS += ../../../build/yield/thread/darwin/processor_set.o ../../../build/yield/thread/darwin/semaphore.o ../../../build/yield/thread/darwin/thread.o
 	O_FILE_PATHS += ../../../build/yield/thread/posix/condition_variable.o ../../../build/yield/thread/posix/mutex.o ../../../build/yield/thread/posix/reader_writer_lock.o ../../../build/yield/thread/posix/semaphore.o ../../../build/yield/thread/posix/thread.o
@@ -90,10 +90,6 @@ depclean:
 	-mkdir -p ../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(O_FILE_PATHS)
 
-../../../build/yield/thread/condition_variable.o: ../../../src/yield/thread/condition_variable.cpp
-	-mkdir -p ../../../build/yield/thread 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/thread/condition_variable.o -MD $(CXXFLAGS) ../../../src/yield/thread/condition_variable.cpp
-
 ../../../build/yield/thread/darwin/processor_set.o: ../../../src/yield/thread/darwin/processor_set.cpp
 	-mkdir -p ../../../build/yield/thread/darwin 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/thread/darwin/processor_set.o -MD $(CXXFLAGS) ../../../src/yield/thread/darwin/processor_set.cpp
@@ -106,10 +102,6 @@ depclean:
 	-mkdir -p ../../../build/yield/thread/darwin 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/thread/darwin/thread.o -MD $(CXXFLAGS) ../../../src/yield/thread/darwin/thread.cpp
 
-../../../build/yield/thread/lightweight_mutex.o: ../../../src/yield/thread/lightweight_mutex.cpp
-	-mkdir -p ../../../build/yield/thread 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/thread/lightweight_mutex.o -MD $(CXXFLAGS) ../../../src/yield/thread/lightweight_mutex.cpp
-
 ../../../build/yield/thread/linux/processor_set.o: ../../../src/yield/thread/linux/processor_set.cpp
 	-mkdir -p ../../../build/yield/thread/linux 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/thread/linux/processor_set.o -MD $(CXXFLAGS) ../../../src/yield/thread/linux/processor_set.cpp
@@ -117,10 +109,6 @@ depclean:
 ../../../build/yield/thread/linux/thread.o: ../../../src/yield/thread/linux/thread.cpp
 	-mkdir -p ../../../build/yield/thread/linux 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/thread/linux/thread.o -MD $(CXXFLAGS) ../../../src/yield/thread/linux/thread.cpp
-
-../../../build/yield/thread/mutex.o: ../../../src/yield/thread/mutex.cpp
-	-mkdir -p ../../../build/yield/thread 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/thread/mutex.o -MD $(CXXFLAGS) ../../../src/yield/thread/mutex.cpp
 
 ../../../build/yield/thread/posix/condition_variable.o: ../../../src/yield/thread/posix/condition_variable.cpp
 	-mkdir -p ../../../build/yield/thread/posix 2>/dev/null
@@ -145,14 +133,6 @@ depclean:
 ../../../build/yield/thread/processor_set.o: ../../../src/yield/thread/processor_set.cpp
 	-mkdir -p ../../../build/yield/thread 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/thread/processor_set.o -MD $(CXXFLAGS) ../../../src/yield/thread/processor_set.cpp
-
-../../../build/yield/thread/reader_writer_lock.o: ../../../src/yield/thread/reader_writer_lock.cpp
-	-mkdir -p ../../../build/yield/thread 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/thread/reader_writer_lock.o -MD $(CXXFLAGS) ../../../src/yield/thread/reader_writer_lock.cpp
-
-../../../build/yield/thread/semaphore.o: ../../../src/yield/thread/semaphore.cpp
-	-mkdir -p ../../../build/yield/thread 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/thread/semaphore.o -MD $(CXXFLAGS) ../../../src/yield/thread/semaphore.cpp
 
 ../../../build/yield/thread/sunos/processor_set.o: ../../../src/yield/thread/sunos/processor_set.cpp
 	-mkdir -p ../../../build/yield/thread/sunos 2>/dev/null

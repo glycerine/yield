@@ -27,10 +27,9 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "condition_variable.hpp"
 #include "yield/exception.hpp"
 #include "yield/time.hpp"
-
+#include "yield/thread/posix/condition_variable.hpp"
 
 namespace yield {
 namespace thread {

@@ -1,4 +1,4 @@
-// yield/thread/posix/reader_writer_lock.hpp
+// yield/thread/win32/semaphore.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,31 +27,37 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_THREAD_POSIX_READER_WRITER_LOCK_HPP_
-#define _YIELD_THREAD_POSIX_READER_WRITER_LOCK_HPP_
+#ifndef _YIELD_THREAD_WIN32_SEMAPHORE_HPP_
+#define _YIELD_THREAD_WIN32_SEMAPHORE_HPP_
 
 #include "yield/config.hpp"
 
-#include <pthread.h>
-
-
 namespace yield {
-namespace thread {
-namespace posix {
-class ReaderWriterLock {
-public:
-  ReaderWriterLock();
-  ~ReaderWriterLock();
+class Time;
 
-  bool rdlock();
-  void rdunlock();
-  bool tryrdlock();
-  bool trywrlock();
-  bool wrlock();
-  void wrunlock();
+namespace thread {
+namespace win32 {
+class Semaphore {
+public:
+  Semaphore();
+  ~Semaphore();
+
+public:
+  operator void* () const {
+    return hSemaphore;
+  }
+
+public:
+  void post();
+  bool timedwait(const Time& timeout);
+  bool trywait();
+  bool wait();
 
 private:
-  pthread_rwlock_t rwlock;
+  Semaphore(void* hSemaphore);
+
+private:
+  void* hSemaphore;
 };
 }
 }

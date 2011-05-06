@@ -68,7 +68,7 @@ public:
       for (;;) {
         Time start_time = Time::now();
 
-        cond.wait(timeout_left);
+        cond.timedwait(timeout_left);
 
         if (!std::queue<ElementType*>::empty()) {
           ElementType* element = std::queue<ElementType*>::front();

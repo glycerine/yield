@@ -30,35 +30,19 @@
 #ifndef _YIELD_THREAD_MUTEX_HPP_
 #define _YIELD_THREAD_MUTEX_HPP_
 
+#ifdef _WIN32
+#include "yield/thread/win32/mutex.hpp"
+#else
+#include "yield/thread/posix/mutex.hpp"
+#endif
+
 namespace yield {
 namespace thread {
 #ifdef _WIN32
-namespace win32 {
-class Mutex;
-}
+typedef win32::Mutex Mutex;
 #else
-namespace posix {
-class Mutex;
-}
+typedef posix::Mutex Mutex;
 #endif
-
-
-class Mutex {
-public:
-  Mutex();
-  ~Mutex();
-
-  bool lock();
-  bool trylock();
-  void unlock();
-
-private:
-#ifdef _WIN32
-  win32::Mutex* pimpl;
-#else
-  posix::Mutex* pimpl;
-#endif
-};
 }
 }
 

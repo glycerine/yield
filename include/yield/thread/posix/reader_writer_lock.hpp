@@ -1,4 +1,4 @@
-// yield/thread/condition_variable.cpp
+// yield/thread/posix/reader_writer_lock.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,54 +27,34 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifdef _WIN32
-#include "win32/condition_variable.hpp"
-#else
-#include "posix/condition_variable.hpp"
-#endif
-#include "yield/thread/condition_variable.hpp"
+#ifndef _YIELD_THREAD_POSIX_READER_WRITER_LOCK_HPP_
+#define _YIELD_THREAD_POSIX_READER_WRITER_LOCK_HPP_
 
+#include "yield/config.hpp"
+
+#include <pthread.h>
 
 namespace yield {
 namespace thread {
-ConditionVariable::ConditionVariable() {
-#ifdef _WIN32
-  pimpl = new win32::ConditionVariable;
-#else
-  pimpl = new posix::ConditionVariable;
+namespace posix {
+class ReaderWriterLock {
+public:
+  ReaderWriterLock();
+  ~ReaderWriterLock();
+
+public:
+  bool rdlock();
+  void rdunlock();
+  bool tryrdlock();
+  bool trywrlock();
+  bool wrlock();
+  void wrunlock();
+
+private:
+  pthread_rwlock_t rwlock;
+};
+}
+}
+}
+
 #endif
-}
-
-ConditionVariable::~ConditionVariable() {
-  delete pimpl;
-}
-
-void ConditionVariable::broadcast() {
-  return pimpl->broadcast();
-}
-
-bool ConditionVariable::lock_mutex() {
-  return pimpl->lock_mutex();
-}
-
-void ConditionVariable::signal() {
-  return pimpl->signal();
-}
-
-bool ConditionVariable::timedwait(const Time& timeout) {
-  return pimpl->timedwait(timeout);
-}
-
-bool ConditionVariable::trylock_mutex() {
-  return pimpl->trylock_mutex();
-}
-
-void ConditionVariable::unlock_mutex() {
-  return pimpl->unlock_mutex();
-}
-
-bool ConditionVariable::wait() {
-  return pimpl->wait();
-}
-}
-}

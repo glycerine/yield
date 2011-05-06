@@ -27,14 +27,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "condition_variable.hpp"
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
 #include "yield/time.hpp"
-#include "yield/thread/mutex.hpp"
+#include "yield/thread/win32/condition_variable.hpp"
 
 #include <Windows.h>
-
 
 namespace yield {
 namespace thread {

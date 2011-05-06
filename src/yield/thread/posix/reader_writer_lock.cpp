@@ -27,9 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "reader_writer_lock.hpp"
 #include "yield/exception.hpp"
-
+#include "yield/thread/posix/reader_writer_lock.hpp"
 
 namespace yield {
 namespace thread {

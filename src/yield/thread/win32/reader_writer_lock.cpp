@@ -27,12 +27,11 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "reader_writer_lock.hpp"
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
+#include "yield/thread/win32/reader_writer_lock.hpp"
 
 #include <Windows.h>
-
 
 namespace yield {
 namespace thread {

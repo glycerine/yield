@@ -30,6 +30,8 @@
 #ifndef _YIELD_THREAD_WIN32_MUTEX_HPP_
 #define _YIELD_THREAD_WIN32_MUTEX_HPP_
 
+#include "yield/config.hpp"
+
 namespace yield {
 namespace thread {
 namespace win32 {
@@ -38,10 +40,13 @@ public:
   Mutex();
   ~Mutex();
 
+public:
   bool lock();
+
   operator void* () const {
     return hMutex;
   }
+
   bool trylock();
   void unlock();
 

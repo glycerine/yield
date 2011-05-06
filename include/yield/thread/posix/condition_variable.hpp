@@ -1,4 +1,4 @@
-// yield/thread/semaphore.cpp
+// yield/thread/posix/condition_variable.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,46 +27,38 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#if defined(__MACH__)
-#include "darwin/semaphore.hpp"
-#elif defined(_WIN32)
-#include "win32/semaphore.hpp"
-#else
-#include "posix/semaphore.hpp"
-#endif
-#include "yield/thread/semaphore.hpp"
+#ifndef _YIELD_THREAD_POSIX_CONDITION_VARIABLE_HPP_
+#define _YIELD_THREAD_POSIX_CONDITION_VARIABLE_HPP_
 
+#include "yield/config.hpp"
+
+#include <pthread.h>
 
 namespace yield {
+class Time;
+
 namespace thread {
-Semaphore::Semaphore() {
-#if defined(__MACH__)
-  pimpl = new darwin::Semaphore;
-#elif defined(_WIN32)
-  pimpl = new win32::Semaphore;
-#else
-  pimpl = new posix::Semaphore;
+namespace posix {
+class ConditionVariable {
+public:
+  ConditionVariable();
+  ~ConditionVariable();
+
+public:
+  void broadcast();
+  bool lock_mutex();
+  void signal();
+  bool timedwait(const Time& timeout);
+  bool trylock_mutex();
+  void unlock_mutex();
+  bool wait();
+
+private:
+  pthread_cond_t cond;
+  pthread_mutex_t mutex;
+};
+}
+}
+}
+
 #endif
-}
-
-Semaphore::~Semaphore() {
-  delete pimpl;
-}
-
-void Semaphore::post() {
-  pimpl->post();
-}
-
-bool Semaphore::timedwait(const Time& timeout) {
-  return pimpl->timedwait(timeout);
-}
-
-bool Semaphore::trywait() {
-  return pimpl->trywait();
-}
-
-bool Semaphore::wait() {
-  return pimpl->wait();
-}
-}
-}

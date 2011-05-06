@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{7cc37354-7305-403e-929e-b30cf7524917}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\darwin">
       <UniqueIdentifier>{a303df44-c71d-40cf-a251-9973ed518448}</UniqueIdentifier>
     </Filter>
@@ -12,6 +9,9 @@
     </Filter>
     <Filter Include="Source Files\posix">
       <UniqueIdentifier>{14cde44b-a4c5-4a1f-b39b-044961695397}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{7cc37354-7305-403e-929e-b30cf7524917}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\sunos">
       <UniqueIdentifier>{cc5308cb-fca8-4f9c-b5e8-e428ffb546c6}</UniqueIdentifier>
@@ -24,10 +24,22 @@
     <Filter Include="Header Files">
       <UniqueIdentifier>{2b0d6c3d-bfb5-4806-b8a3-cac47ae9c926}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\darwin">
+      <UniqueIdentifier>{2f6a245c-8ead-4391-84b5-a054286c93bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\posix">
+      <UniqueIdentifier>{7c12b232-fb14-4be7-875c-f424a3a8410d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\win32">
+      <UniqueIdentifier>{c5a3bd7b-a175-4076-9976-34ba11d84421}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\yield\thread\condition_variable.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\darwin\semaphore.hpp">
+      <Filter>Header Files\darwin</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\yield\thread\lightweight_mutex.hpp">
       <Filter>Header Files</Filter>
@@ -35,8 +47,17 @@
     <ClInclude Include="..\..\..\include\yield\thread\mutex.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\thread\mutex_holder.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\..\include\yield\thread\posix\condition_variable.hpp">
+      <Filter>Header Files\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\posix\mutex.hpp">
+      <Filter>Header Files\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\posix\reader_writer_lock.hpp">
+      <Filter>Header Files\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\posix\semaphore.hpp">
+      <Filter>Header Files\posix</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\yield\thread\processor_set.hpp">
       <Filter>Header Files</Filter>
@@ -59,11 +80,23 @@
     <ClInclude Include="..\..\..\include\yield\thread\thread.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\win32\condition_variable.hpp">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\win32\lightweight_mutex.hpp">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\win32\mutex.hpp">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\win32\reader_writer_lock.hpp">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\yield\thread\win32\semaphore.hpp">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\yield\thread\condition_variable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\thread\darwin\processor_set.cpp">
       <Filter>Source Files\darwin</Filter>
     </ClCompile>
@@ -73,18 +106,12 @@
     <ClCompile Include="..\..\..\src\yield\thread\darwin\semaphore.cpp">
       <Filter>Source Files\darwin</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\darwin\semaphore.hpp">
-      <Filter>Source Files\darwin</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\src\yield\thread\darwin\thread.cpp">
       <Filter>Source Files\darwin</Filter>
     </ClCompile>
     <ClInclude Include="..\..\..\src\yield\thread\darwin\thread.hpp">
       <Filter>Source Files\darwin</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\thread\lightweight_mutex.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\thread\linux\processor_set.cpp">
       <Filter>Source Files\linux</Filter>
     </ClCompile>
@@ -97,33 +124,18 @@
     <ClInclude Include="..\..\..\src\yield\thread\linux\thread.hpp">
       <Filter>Source Files\linux</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\thread\mutex.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\thread\posix\condition_variable.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\posix\condition_variable.hpp">
-      <Filter>Source Files\posix</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\src\yield\thread\posix\mutex.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\posix\mutex.hpp">
-      <Filter>Source Files\posix</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\src\yield\thread\posix\reader_writer_lock.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\posix\reader_writer_lock.hpp">
-      <Filter>Source Files\posix</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\src\yield\thread\posix\semaphore.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\posix\semaphore.hpp">
-      <Filter>Source Files\posix</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\src\yield\thread\posix\thread.cpp">
       <Filter>Source Files\posix</Filter>
     </ClCompile>
@@ -131,12 +143,6 @@
       <Filter>Source Files\posix</Filter>
     </ClInclude>
     <ClCompile Include="..\..\..\src\yield\thread\processor_set.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\thread\reader_writer_lock.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\thread\semaphore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\thread\sunos\processor_set.cpp">
@@ -157,21 +163,12 @@
     <ClCompile Include="..\..\..\src\yield\thread\win32\condition_variable.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\win32\condition_variable.hpp">
-      <Filter>Source Files\win32</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\src\yield\thread\win32\lightweight_mutex.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\win32\lightweight_mutex.hpp">
-      <Filter>Source Files\win32</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\src\yield\thread\win32\mutex.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\win32\mutex.hpp">
-      <Filter>Source Files\win32</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\src\yield\thread\win32\processor_set.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
@@ -181,15 +178,9 @@
     <ClCompile Include="..\..\..\src\yield\thread\win32\reader_writer_lock.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\win32\reader_writer_lock.hpp">
-      <Filter>Source Files\win32</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\src\yield\thread\win32\semaphore.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\win32\semaphore.hpp">
-      <Filter>Source Files\win32</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\src\yield\thread\win32\thread.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>

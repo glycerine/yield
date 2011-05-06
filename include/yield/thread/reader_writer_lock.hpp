@@ -30,41 +30,19 @@
 #ifndef _YIELD_THREAD_READER_WRITER_LOCK_HPP_
 #define _YIELD_THREAD_READER_WRITER_LOCK_HPP_
 
-#include "yield/object.hpp"
-
+#ifdef _WIN32
+#include "yield/thread/win32/reader_writer_lock.hpp"
+#else
+#include "yield/thread/posix/reader_writer_lock.hpp"
+#endif
 
 namespace yield {
 namespace thread {
 #ifdef _WIN32
-namespace win32 {
-class ReaderWriterLock;
-}
+typedef win32::ReaderWriterLock ReaderWriterLock;
 #else
-namespace posix {
-class ReaderWriterLock;
-}
+typedef posix::ReaderWriterLock ReaderWriterLock;
 #endif
-
-
-class ReaderWriterLock {
-public:
-  ReaderWriterLock();
-  ~ReaderWriterLock();
-
-  bool rdlock();
-  void rdunlock();
-  bool tryrdlock();
-  bool trywrlock();
-  bool wrlock();
-  void wrunlock();
-
-private:
-#ifdef _WIN32
-  win32::ReaderWriterLock* pimpl;
-#else
-  posix::ReaderWriterLock* pimpl;
-#endif
-};
 }
 }
 

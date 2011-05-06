@@ -1,4 +1,4 @@
-// yield/thread/lightweight_mutex.cpp
+// yield/thread/win32/reader_writer_lock.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,38 +27,36 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifdef _WIN32
-#include "win32/lightweight_mutex.hpp"
-#else
-#include "posix/mutex.hpp"
-#endif
-#include "yield/thread/lightweight_mutex.hpp"
+#ifndef _YIELD_THREAD_WIN32_READER_WRITER_LOCK_HPP_
+#define _YIELD_THREAD_WIN32_READER_WRITER_LOCK_HPP_
 
+#include "yield/types.hpp"
+#include "yield/thread/win32/lightweight_mutex.hpp"
 
 namespace yield {
 namespace thread {
-LightweightMutex::LightweightMutex() {
-#ifdef _WIN32
-  pimpl = new win32::LightweightMutex;
-#else
-  pimpl = new posix::Mutex;
+namespace win32 {
+class ReaderWriterLock {
+public:
+  ReaderWriterLock();
+  ~ReaderWriterLock();
+
+public:
+  bool rdlock();
+  void rdunlock();
+  bool tryrdlock();
+  bool trywrlock();
+  bool wrlock();
+  void wrunlock();
+
+private:
+  uint32_t active_writer_readers;
+  LightweightMutex cs;
+  void* hReadyToRead, *hReadyToWrite;
+  int32_t waiting_readers_count, waiting_writers_count;
+};
+}
+}
+}
+
 #endif
-}
-
-LightweightMutex::~LightweightMutex() {
-  delete pimpl;
-}
-
-bool LightweightMutex::lock() {
-  return pimpl->lock();
-}
-
-bool LightweightMutex::trylock() {
-  return pimpl->trylock();
-}
-
-void LightweightMutex::unlock() {
-  pimpl->unlock();
-}
-}
-}

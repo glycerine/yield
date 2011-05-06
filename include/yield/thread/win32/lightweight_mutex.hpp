@@ -1,4 +1,4 @@
-// yield/thread/mutex.cpp
+// yield/thread/win32/lightweight_mutex.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,38 +27,33 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifdef _WIN32
-#include "win32/mutex.hpp"
-#else
-#include "posix/mutex.hpp"
-#endif
-#include "yield/thread/mutex.hpp"
+#ifndef _YIELD_THREAD_WIN32_LIGHTWEIGHT_MUTEX_HPP_
+#define _YIELD_THREAD_WIN32_LIGHTWEIGHT_MUTEX_HPP_
 
+#include "yield/config.hpp"
+
+struct _RTL_CRITICAL_SECTION;
+typedef struct _RTL_CRITICAL_SECTION RTL_CRITICAL_SECTION;
+typedef RTL_CRITICAL_SECTION CRITICAL_SECTION;
 
 namespace yield {
 namespace thread {
-Mutex::Mutex() {
-#ifdef _WIN32
-  pimpl = new win32::Mutex;
-#else
-  pimpl = new posix::Mutex;
+namespace win32 {
+class LightweightMutex {
+public:
+  LightweightMutex();
+  ~LightweightMutex();
+
+public:
+  bool lock();
+  bool trylock();
+  void unlock();
+
+private:
+  CRITICAL_SECTION* critical_section;
+};
+}
+}
+}
+
 #endif
-}
-
-Mutex::~Mutex() {
-  delete pimpl;
-}
-
-bool Mutex::lock() {
-  return pimpl->lock();
-}
-
-bool Mutex::trylock() {
-  return pimpl->trylock();
-}
-
-void Mutex::unlock() {
-  pimpl->unlock();
-}
-}
-}

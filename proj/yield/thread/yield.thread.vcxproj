@@ -94,9 +94,13 @@
 
   <ItemGroup Label="ClIncludeItems">
     <ClInclude Include="..\..\..\include\yield\thread\condition_variable.hpp" />
+    <ClInclude Include="..\..\..\include\yield\thread\darwin\semaphore.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\lightweight_mutex.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\mutex.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\mutex_holder.hpp" />
+    <ClInclude Include="..\..\..\include\yield\thread\posix\condition_variable.hpp" />
+    <ClInclude Include="..\..\..\include\yield\thread\posix\mutex.hpp" />
+    <ClInclude Include="..\..\..\include\yield\thread\posix\reader_writer_lock.hpp" />
+    <ClInclude Include="..\..\..\include\yield\thread\posix\semaphore.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\processor_set.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\reader_writer_lock.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\runnable.hpp" />
@@ -104,11 +108,14 @@
     <ClInclude Include="..\..\..\include\yield\thread\semaphore.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\static_runnable.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\thread.hpp" />
+    <ClInclude Include="..\..\..\include\yield\thread\win32\condition_variable.hpp" />
+    <ClInclude Include="..\..\..\include\yield\thread\win32\lightweight_mutex.hpp" />
+    <ClInclude Include="..\..\..\include\yield\thread\win32\mutex.hpp" />
+    <ClInclude Include="..\..\..\include\yield\thread\win32\reader_writer_lock.hpp" />
+    <ClInclude Include="..\..\..\include\yield\thread\win32\semaphore.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
-    <ClCompile Include="..\..\..\src\yield\thread\condition_variable.cpp">
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\thread\darwin\processor_set.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -118,14 +125,11 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\darwin\semaphore.hpp" />
     <ClCompile Include="..\..\..\src\yield\thread\darwin\thread.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClInclude Include="..\..\..\src\yield\thread\darwin\thread.hpp" />
-    <ClCompile Include="..\..\..\src\yield\thread\lightweight_mutex.cpp">
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\thread\linux\processor_set.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -136,38 +140,28 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClInclude Include="..\..\..\src\yield\thread\linux\thread.hpp" />
-    <ClCompile Include="..\..\..\src\yield\thread\mutex.cpp">
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\thread\posix\condition_variable.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\posix\condition_variable.hpp" />
     <ClCompile Include="..\..\..\src\yield\thread\posix\mutex.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\posix\mutex.hpp" />
     <ClCompile Include="..\..\..\src\yield\thread\posix\reader_writer_lock.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\posix\reader_writer_lock.hpp" />
     <ClCompile Include="..\..\..\src\yield\thread\posix\semaphore.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\posix\semaphore.hpp" />
     <ClCompile Include="..\..\..\src\yield\thread\posix\thread.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClInclude Include="..\..\..\src\yield\thread\posix\thread.hpp" />
     <ClCompile Include="..\..\..\src\yield\thread\processor_set.cpp">
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\thread\reader_writer_lock.cpp">
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\yield\thread\semaphore.cpp">
     </ClCompile>
     <ClCompile Include="..\..\..\src\yield\thread\sunos\processor_set.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -184,15 +178,12 @@
     <ClCompile Include="..\..\..\src\yield\thread\win32\condition_variable.cpp">
       <ObjectFileName>$(IntDir)win32\condition_variable.obj</ObjectFileName>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\win32\condition_variable.hpp" />
     <ClCompile Include="..\..\..\src\yield\thread\win32\lightweight_mutex.cpp">
       <ObjectFileName>$(IntDir)win32\lightweight_mutex.obj</ObjectFileName>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\win32\lightweight_mutex.hpp" />
     <ClCompile Include="..\..\..\src\yield\thread\win32\mutex.cpp">
       <ObjectFileName>$(IntDir)win32\mutex.obj</ObjectFileName>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\win32\mutex.hpp" />
     <ClCompile Include="..\..\..\src\yield\thread\win32\processor_set.cpp">
       <ObjectFileName>$(IntDir)win32\processor_set.obj</ObjectFileName>
     </ClCompile>
@@ -200,11 +191,9 @@
     <ClCompile Include="..\..\..\src\yield\thread\win32\reader_writer_lock.cpp">
       <ObjectFileName>$(IntDir)win32\reader_writer_lock.obj</ObjectFileName>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\win32\reader_writer_lock.hpp" />
     <ClCompile Include="..\..\..\src\yield\thread\win32\semaphore.cpp">
       <ObjectFileName>$(IntDir)win32\semaphore.obj</ObjectFileName>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\yield\thread\win32\semaphore.hpp" />
     <ClCompile Include="..\..\..\src\yield\thread\win32\thread.cpp">
       <ObjectFileName>$(IntDir)win32\thread.obj</ObjectFileName>
     </ClCompile>

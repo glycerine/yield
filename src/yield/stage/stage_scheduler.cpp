@@ -28,27 +28,16 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/stage/stage_scheduler.hpp"
-#include "yield/thread/system_configuration.hpp"
-
+#include "yield/thread/processor_set.hpp"
 
 namespace yield {
 namespace stage {
-using yield::thread::SystemConfiguration;
-
-
 const StageScheduler::ConcurrencyLevel
 StageScheduler::ConcurrencyLevel::DEFAULT(1);
 
 const StageScheduler::ConcurrencyLevel
-StageScheduler::ConcurrencyLevel::PER_PROCESSOR
-(
-  static_cast<uint16_t>
-  (
-    SystemConfiguration()
-    (
-      SystemConfiguration::ONLINE_LOGICAL_PROCESSOR_COUNT
-    )
-  )
+StageScheduler::ConcurrencyLevel::PER_PROCESSOR(
+  yield::thread::ProcessorSet::get_online_logical_processor_count()
 );
 }
 }
