@@ -56,9 +56,6 @@
     <ClInclude Include="..\..\..\include\yield\thread\static_runnable.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\thread\system_configuration.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\yield\thread\thread.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -67,15 +64,18 @@
     <ClCompile Include="..\..\..\src\yield\thread\condition_variable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\thread\darwin\processor_set.cpp">
+      <Filter>Source Files\darwin</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\thread\darwin\processor_set.hpp">
+      <Filter>Source Files\darwin</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\..\src\yield\thread\darwin\semaphore.cpp">
       <Filter>Source Files\darwin</Filter>
     </ClCompile>
     <ClInclude Include="..\..\..\src\yield\thread\darwin\semaphore.hpp">
       <Filter>Source Files\darwin</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\thread\darwin\system_configuration.cpp">
-      <Filter>Source Files\darwin</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\thread\darwin\thread.cpp">
       <Filter>Source Files\darwin</Filter>
     </ClCompile>
@@ -91,9 +91,6 @@
     <ClInclude Include="..\..\..\src\yield\thread\linux\processor_set.hpp">
       <Filter>Source Files\linux</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\thread\linux\system_configuration.cpp">
-      <Filter>Source Files\linux</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\thread\linux\thread.cpp">
       <Filter>Source Files\linux</Filter>
     </ClCompile>
@@ -148,9 +145,6 @@
     <ClInclude Include="..\..\..\src\yield\thread\sunos\processor_set.hpp">
       <Filter>Source Files\sunos</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\thread\sunos\system_configuration.cpp">
-      <Filter>Source Files\sunos</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\thread\sunos\thread.cpp">
       <Filter>Source Files\sunos</Filter>
     </ClCompile>
@@ -196,9 +190,6 @@
     <ClInclude Include="..\..\..\src\yield\thread\win32\semaphore.hpp">
       <Filter>Source Files\win32</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\src\yield\thread\win32\system_configuration.cpp">
-      <Filter>Source Files\win32</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\thread\win32\thread.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>

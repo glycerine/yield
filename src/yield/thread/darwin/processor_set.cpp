@@ -1,4 +1,4 @@
-// yield/thread/linux/system_configuration.cpp
+// yield/thread/darwin/processor_set.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,25 +27,25 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/assert.hpp"
-#include "yield/thread/system_configuration.hpp"
-
-#include <unistd.h>
-
+#include "processor_set.hpp"
 
 namespace yield {
 namespace thread {
-long SystemConfiguration::operator()(Variable variable) {
-  switch (variable) {
-  case ONLINE_LOGICAL_PROCESSOR_COUNT:
-  case ONLINE_PHYSICAL_PROCESSOR_COUNT: {
-    return sysconf(_SC_NPROCESSORS_ONLN);
-  }
+namespace darwin {
+uint16_t ProcessorSet::get_online_logical_processor_count() {
+  return get_online_physical_processor_count();
+}
 
-  default:
-    debug_break();
-    return -1;
-  }
+uint16_t ProcessorSet::get_online_physical_processor_count() {
+  host_basic_info_data_t basic_info;
+  host_info_t info = (host_info_t)&basic_info;
+  host_flavor_t flavor = HOST_BASIC_INFO;
+  mach_msg_type_number_t count = HOST_BASIC_INFO_COUNT;
+  if (host_info(mach_host_self(), flavor, info, &count) == KERN_SUCCESS)
+    return basic_info.avail_cpus;
+  else
+    return 1;
+}
 }
 }
 }

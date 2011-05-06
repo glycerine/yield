@@ -29,6 +29,7 @@
 
 #include "processor_set.hpp"
 
+#include <Windows.h>
 
 namespace yield {
 namespace thread {
@@ -43,6 +44,18 @@ void ProcessorSet::clear() {
 
 void ProcessorSet::clear(uint16_t processor_i) {
   mask &= ~(1L << processor_i);
+}
+
+uint16_t ProcessorSet::get_online_logical_processor_count() {
+  SYSTEM_INFO system_info;
+  GetSystemInfo(&system_info);
+  return static_cast<uint16_t>(system_info.dwNumberOfProcessors);
+}
+
+uint16_t ProcessorSet::get_online_physical_processor_count() {
+  SYSTEM_INFO system_info;
+  GetSystemInfo(&system_info);
+  return static_cast<uint16_t>(system_info.dwNumberOfProcessors);
 }
 
 bool ProcessorSet::isset(uint16_t processor_i) const {

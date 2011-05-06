@@ -40,12 +40,23 @@ class ProcessorSet {
 public:
   ProcessorSet();
 
+public:
   void clear();
   void clear(uint16_t processor_i);
+
+public:
+  static uint16_t get_online_logical_processor_count();
+  static uint16_t get_online_physical_processor_count();
+
+public:
   bool isset(uint16_t processor_i) const;
+
+public:
   operator uintptr_t() const {
     return mask;
   }
+
+public:
   bool set(uint16_t processor_i);
 
 private:

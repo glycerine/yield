@@ -66,8 +66,7 @@ void ProcessorSet::clear(uint16_t processor_i) {
 uint16_t ProcessorSet::count() const {
   uint16_t count = 0;
 
-  for
-  (
+  for (
     uint16_t processor_i = 0;
     processor_i < static_cast<uint16_t>(-1);
     processor_i++
@@ -77,6 +76,32 @@ uint16_t ProcessorSet::count() const {
   }
 
   return count;
+}
+
+uint16_t ProcessorSet::get_online_logical_processor_count() {
+#if defined(__linux__)
+ return linux::ProcessorSet::get_online_logical_processor_count();
+#elif defined(__sun)
+ return sunos::ProcessorSet::get_online_logical_processor_count();
+#elif defined(_WIN32)
+ return win32::ProcessorSet::get_online_logical_processor_count();
+#else
+  debug_break();
+  return 1;
+#endif
+}
+
+uint16_t ProcessorSet::get_online_physical_processor_count() {
+#if defined(__linux__)
+ return linux::ProcessorSet::get_online_physical_processor_count();
+#elif defined(__sun)
+ return sunos::ProcessorSet::get_online_physical_processor_count();
+#elif defined(_WIN32)
+ return win32::ProcessorSet::get_online_physical_processor_count();
+#else
+  debug_break();
+  return 1;
+#endif
 }
 
 bool ProcessorSet::isset(uint16_t processor_i) const {

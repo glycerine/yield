@@ -52,22 +52,22 @@ D_FILE_PATHS := $(shell find ../../../build/yield/thread -name "*.d")
 
 O_FILE_PATHS += ../../../build/yield/thread/condition_variable.o ../../../build/yield/thread/lightweight_mutex.o ../../../build/yield/thread/mutex.o ../../../build/yield/thread/processor_set.o ../../../build/yield/thread/reader_writer_lock.o ../../../build/yield/thread/semaphore.o ../../../build/yield/thread/thread.o
 ifeq ($(UNAME), Darwin)
-	O_FILE_PATHS += ../../../build/yield/thread/darwin/semaphore.o ../../../build/yield/thread/darwin/system_configuration.o ../../../build/yield/thread/darwin/thread.o
+	O_FILE_PATHS += ../../../build/yield/thread/darwin/processor_set.o ../../../build/yield/thread/darwin/semaphore.o ../../../build/yield/thread/darwin/thread.o
 	O_FILE_PATHS += ../../../build/yield/thread/posix/condition_variable.o ../../../build/yield/thread/posix/mutex.o ../../../build/yield/thread/posix/reader_writer_lock.o ../../../build/yield/thread/posix/semaphore.o ../../../build/yield/thread/posix/thread.o
 endif
 ifeq ($(UNAME), FreeBSD)
 	O_FILE_PATHS += ../../../build/yield/thread/posix/condition_variable.o ../../../build/yield/thread/posix/mutex.o ../../../build/yield/thread/posix/reader_writer_lock.o ../../../build/yield/thread/posix/semaphore.o ../../../build/yield/thread/posix/thread.o
 endif
 ifeq ($(UNAME), Linux)
-	O_FILE_PATHS += ../../../build/yield/thread/linux/processor_set.o ../../../build/yield/thread/linux/system_configuration.o ../../../build/yield/thread/linux/thread.o
+	O_FILE_PATHS += ../../../build/yield/thread/linux/processor_set.o ../../../build/yield/thread/linux/thread.o
 	O_FILE_PATHS += ../../../build/yield/thread/posix/condition_variable.o ../../../build/yield/thread/posix/mutex.o ../../../build/yield/thread/posix/reader_writer_lock.o ../../../build/yield/thread/posix/semaphore.o ../../../build/yield/thread/posix/thread.o
 endif
 ifeq ($(UNAME), Solaris)
 	O_FILE_PATHS += ../../../build/yield/thread/posix/condition_variable.o ../../../build/yield/thread/posix/mutex.o ../../../build/yield/thread/posix/reader_writer_lock.o ../../../build/yield/thread/posix/semaphore.o ../../../build/yield/thread/posix/thread.o
-	O_FILE_PATHS += ../../../build/yield/thread/sunos/processor_set.o ../../../build/yield/thread/sunos/system_configuration.o ../../../build/yield/thread/sunos/thread.o
+	O_FILE_PATHS += ../../../build/yield/thread/sunos/processor_set.o ../../../build/yield/thread/sunos/thread.o
 endif
 ifeq ($(UNAME), MINGW32)
-	O_FILE_PATHS += ../../../build/yield/thread/win32/condition_variable.o ../../../build/yield/thread/win32/lightweight_mutex.o ../../../build/yield/thread/win32/mutex.o ../../../build/yield/thread/win32/processor_set.o ../../../build/yield/thread/win32/reader_writer_lock.o ../../../build/yield/thread/win32/semaphore.o ../../../build/yield/thread/win32/system_configuration.o ../../../build/yield/thread/win32/thread.o
+	O_FILE_PATHS += ../../../build/yield/thread/win32/condition_variable.o ../../../build/yield/thread/win32/lightweight_mutex.o ../../../build/yield/thread/win32/mutex.o ../../../build/yield/thread/win32/processor_set.o ../../../build/yield/thread/win32/reader_writer_lock.o ../../../build/yield/thread/win32/semaphore.o ../../../build/yield/thread/win32/thread.o
 endif
 
 
@@ -94,13 +94,13 @@ depclean:
 	-mkdir -p ../../../build/yield/thread 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/thread/condition_variable.o -MD $(CXXFLAGS) ../../../src/yield/thread/condition_variable.cpp
 
+../../../build/yield/thread/darwin/processor_set.o: ../../../src/yield/thread/darwin/processor_set.cpp
+	-mkdir -p ../../../build/yield/thread/darwin 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/thread/darwin/processor_set.o -MD $(CXXFLAGS) ../../../src/yield/thread/darwin/processor_set.cpp
+
 ../../../build/yield/thread/darwin/semaphore.o: ../../../src/yield/thread/darwin/semaphore.cpp
 	-mkdir -p ../../../build/yield/thread/darwin 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/thread/darwin/semaphore.o -MD $(CXXFLAGS) ../../../src/yield/thread/darwin/semaphore.cpp
-
-../../../build/yield/thread/darwin/system_configuration.o: ../../../src/yield/thread/darwin/system_configuration.cpp
-	-mkdir -p ../../../build/yield/thread/darwin 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/thread/darwin/system_configuration.o -MD $(CXXFLAGS) ../../../src/yield/thread/darwin/system_configuration.cpp
 
 ../../../build/yield/thread/darwin/thread.o: ../../../src/yield/thread/darwin/thread.cpp
 	-mkdir -p ../../../build/yield/thread/darwin 2>/dev/null
@@ -113,10 +113,6 @@ depclean:
 ../../../build/yield/thread/linux/processor_set.o: ../../../src/yield/thread/linux/processor_set.cpp
 	-mkdir -p ../../../build/yield/thread/linux 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/thread/linux/processor_set.o -MD $(CXXFLAGS) ../../../src/yield/thread/linux/processor_set.cpp
-
-../../../build/yield/thread/linux/system_configuration.o: ../../../src/yield/thread/linux/system_configuration.cpp
-	-mkdir -p ../../../build/yield/thread/linux 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/thread/linux/system_configuration.o -MD $(CXXFLAGS) ../../../src/yield/thread/linux/system_configuration.cpp
 
 ../../../build/yield/thread/linux/thread.o: ../../../src/yield/thread/linux/thread.cpp
 	-mkdir -p ../../../build/yield/thread/linux 2>/dev/null
@@ -162,10 +158,6 @@ depclean:
 	-mkdir -p ../../../build/yield/thread/sunos 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/thread/sunos/processor_set.o -MD $(CXXFLAGS) ../../../src/yield/thread/sunos/processor_set.cpp
 
-../../../build/yield/thread/sunos/system_configuration.o: ../../../src/yield/thread/sunos/system_configuration.cpp
-	-mkdir -p ../../../build/yield/thread/sunos 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/thread/sunos/system_configuration.o -MD $(CXXFLAGS) ../../../src/yield/thread/sunos/system_configuration.cpp
-
 ../../../build/yield/thread/sunos/thread.o: ../../../src/yield/thread/sunos/thread.cpp
 	-mkdir -p ../../../build/yield/thread/sunos 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/thread/sunos/thread.o -MD $(CXXFLAGS) ../../../src/yield/thread/sunos/thread.cpp
@@ -197,10 +189,6 @@ depclean:
 ../../../build/yield/thread/win32/semaphore.o: ../../../src/yield/thread/win32/semaphore.cpp
 	-mkdir -p ../../../build/yield/thread/win32 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/thread/win32/semaphore.o -MD $(CXXFLAGS) ../../../src/yield/thread/win32/semaphore.cpp
-
-../../../build/yield/thread/win32/system_configuration.o: ../../../src/yield/thread/win32/system_configuration.cpp
-	-mkdir -p ../../../build/yield/thread/win32 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/thread/win32/system_configuration.o -MD $(CXXFLAGS) ../../../src/yield/thread/win32/system_configuration.cpp
 
 ../../../build/yield/thread/win32/thread.o: ../../../src/yield/thread/win32/thread.cpp
 	-mkdir -p ../../../build/yield/thread/win32 2>/dev/null

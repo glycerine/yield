@@ -103,22 +103,22 @@
     <ClInclude Include="..\..\..\include\yield\thread\sampler.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\semaphore.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\static_runnable.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\system_configuration.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\thread.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
     <ClCompile Include="..\..\..\src\yield\thread\condition_variable.cpp">
     </ClCompile>
+    <ClCompile Include="..\..\..\src\yield\thread\darwin\processor_set.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\yield\thread\darwin\processor_set.hpp" />
     <ClCompile Include="..\..\..\src\yield\thread\darwin\semaphore.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClInclude Include="..\..\..\src\yield\thread\darwin\semaphore.hpp" />
-    <ClCompile Include="..\..\..\src\yield\thread\darwin\system_configuration.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\thread\darwin\thread.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -131,10 +131,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClInclude Include="..\..\..\src\yield\thread\linux\processor_set.hpp" />
-    <ClCompile Include="..\..\..\src\yield\thread\linux\system_configuration.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\thread\linux\thread.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -178,10 +174,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClInclude Include="..\..\..\src\yield\thread\sunos\processor_set.hpp" />
-    <ClCompile Include="..\..\..\src\yield\thread\sunos\system_configuration.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\thread\sunos\thread.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -213,9 +205,6 @@
       <ObjectFileName>$(IntDir)win32\semaphore.obj</ObjectFileName>
     </ClCompile>
     <ClInclude Include="..\..\..\src\yield\thread\win32\semaphore.hpp" />
-    <ClCompile Include="..\..\..\src\yield\thread\win32\system_configuration.cpp">
-      <ObjectFileName>$(IntDir)win32\system_configuration.obj</ObjectFileName>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\yield\thread\win32\thread.cpp">
       <ObjectFileName>$(IntDir)win32\thread.obj</ObjectFileName>
     </ClCompile>

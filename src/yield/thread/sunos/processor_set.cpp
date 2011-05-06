@@ -29,8 +29,9 @@
 
 #include "processor_set.hpp"
 
+#include <kstat.h> // For kstat
+#include <sys/processor.h> // For p_online
 #include <sys/pset.h>
-
 
 namespace yield {
 namespace thread {
@@ -50,6 +51,46 @@ void ProcessorSet::clear() {
     pset_destroy(psetid);
     psetid = PS_NONE;
   }
+}
+
+uint16_t ProcessorSet::get_online_logical_processor_count() {
+  uint16_t online_logical_processor_count = 0;
+
+  processorid_t cpuid_max = sysconf(_SC_CPUID_MAX);
+  for (processorid_t cpuid_i = 0; cpuid_i <= cpuid_max; cpuid_i++) {
+    if (p_online(cpuid_i, P_STATUS) == P_ONLINE)
+      online_logical_processor_count++;
+  }
+
+  return online_logical_processor_count;
+}
+
+uint16_t ProcessorSet::get_online_physical_processor_count() {
+  kstat_ctl_t* kc = kstat_open();
+  if (kc) {
+    uint16_t online_physical_processor_count = 1;
+
+    kstat* ksp = kstat_lookup(kc, "cpu_info", -1, NULL);
+    int32_t last_core_id = 0;
+    while (ksp) {
+      kstat_read(kc, ksp, NULL);
+      kstat_named_t* knp;
+      knp = (kstat_named_t*)kstat_data_lookup(ksp, "core_id");
+      if (knp) {
+        int32_t this_core_id = knp->value.i32;
+        if (this_core_id != last_core_id) {
+          online_physical_processor_count++;
+          last_core_id = this_core_id;
+        }
+      }
+      ksp = ksp->ks_next;
+    }
+
+    kstat_close(kc);
+
+    return online_physical_processor_count;
+  } else
+    return 1;
 }
 
 void ProcessorSet::clear(uint16_t processor_i) {

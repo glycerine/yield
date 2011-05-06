@@ -29,6 +29,7 @@
 
 #include "processor_set.hpp"
 
+#include <unistd.h>
 
 namespace yield {
 namespace thread {
@@ -43,6 +44,14 @@ void ProcessorSet::clear() {
 
 void ProcessorSet::clear(uint16_t processor_i) {
   CPU_CLR(processor_i, &cpu_set);
+}
+
+uint16_t ProcessorSet::get_online_logical_processor_count() {
+  return static_cast<uint16_t>(sysconf(_SC_NPROCESSORS_ONLN));
+}
+
+uint16_t ProcessorSet::get_online_physical_processor_count() {
+  return static_cast<uint16_t>(sysconf(_SC_NPROCESSORS_ONLN));
 }
 
 bool ProcessorSet::isset(uint16_t processor_i) const {
