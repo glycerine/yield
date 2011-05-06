@@ -76,9 +76,9 @@ TEST_EX(Semaphore, threaded, SemaphoreTest) {
 
 TEST_EX(Semaphore, timedwait, SemaphoreTest) {
   semaphore->post();
-  throw_assert(semaphore->wait(0.1));
+  throw_assert(semaphore->timedwait(0.1));
   Time start_time(Time::now());
-  semaphore->wait(0.1);
+  semaphore->timedwait(0.1);
   Time elapsed_time(Time::now() - start_time);
   throw_assert_ge(elapsed_time, Time(0.1));
 }
