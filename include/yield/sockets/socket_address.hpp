@@ -35,6 +35,7 @@
 #include "yield/uri/uri.hpp"
 
 #include <ostream>
+#include <stdlib.h> // for atoi
 #include <sstream> // for std::ostringstream
 #ifndef _WIN32
 #include <arpa/inet.h> // for socklen_t
@@ -288,7 +289,20 @@ private:
   SocketAddress* next_socket_address;
 };
 
-std::ostream& operator<<(std::ostream&, const SocketAddress&);
+static inline
+std::ostream&
+operator<<(
+  std::ostream& os,
+  const SocketAddress& sockaddr_
+) {
+  if (sockaddr_.get_family() != 0) {
+    string nodename; uint16_t servname;
+    if (sockaddr_.getnameinfo(nodename, &servname))
+      os << nodename << ":" << servname;
+  } else
+    os << "(unknown)";
+  return os;
+}
 
 static inline
 std::ostream&

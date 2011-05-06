@@ -39,7 +39,7 @@ namespace http {
 TEST(HTTPResponse, constructor) {
   HTTPResponse(404);
   HTTPResponse(404, &Buffer::copy("test"));
-  HTTPResponse(404, &Buffer::copy("test"), 1.1f);
+  HTTPResponse(404, &Buffer::copy("test"), 1);
 }
 
 TEST(HTTPResponse, get_status_code) {

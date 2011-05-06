@@ -105,9 +105,9 @@ TEST(Channel, write_Buffers) {
 
 TEST(Channel, writev) {
   iovec iov[2];
-  iov[0].iov_base = "test ";
+  iov[0].iov_base = const_cast<char*>("test ");
   iov[0].iov_len = 5;
-  iov[1].iov_base = "string";
+  iov[1].iov_base = const_cast<char*>("string");
   iov[1].iov_len = 6;
   ssize_t write_ret = MockChannel().writev(iov, 2);
   throw_assert_eq(write_ret, 11);

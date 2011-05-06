@@ -42,8 +42,8 @@ namespace http {
 TEST(HTTPRequest, constructor) {
   HTTPRequest(HTTPRequest::Method::GET, "/");
   HTTPRequest(HTTPRequest::Method::GET, "/", &Buffer::copy("test"));
-  HTTPRequest(HTTPRequest::Method::GET, "/", &Buffer::copy("test"), 0);
-  HTTPRequest(HTTPRequest::Method::GET, "/", &Buffer::copy("test"), 0, 1.0f);
+  HTTPRequest(HTTPRequest::Method::GET, "/", &Buffer::copy("test"));
+  HTTPRequest(HTTPRequest::Method::GET, "/", &Buffer::copy("test"), 1);
 }
 
 TEST(HTTPRequest, get_creation_date_time) {

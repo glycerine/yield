@@ -251,15 +251,5 @@ socklen_t SocketAddress::len(int family) {
   default: debug_break(); return 0;
   }
 }
-
-std::ostream& operator<<(std::ostream& os, const SocketAddress& sockaddr_) {
-  if (sockaddr_.get_family() != 0) {
-    string nodename; uint16_t servname;
-    if (sockaddr_.getnameinfo(nodename, &servname))
-      os << nodename << ":" << servname;
-  } else
-    os << "(unknown)";
-  return os;
-}
 }
 }
