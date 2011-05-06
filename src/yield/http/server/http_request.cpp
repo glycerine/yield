@@ -1,4 +1,4 @@
-// yield/http/http_message_body_chunk.hpp
+// yield/http/server/http_request.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,54 +27,35 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_HTTP_HTTP_MESSAGE_BODY_CHUNK_HPP_
-#define _YIELD_HTTP_HTTP_MESSAGE_BODY_CHUNK_HPP_
-
-#include "yield/buffer.hpp"
-#include "yield/response.hpp"
+#include "yield/http/server/http_request.hpp"
+#include "yield/sockets/socket_address.hpp"
 
 namespace yield {
 namespace http {
-class HTTPMessageBodyChunk : public Response {
-public:
-  const static uint32_t TYPE_ID = 3435197009UL;
-
-public:
-  HTTPMessageBodyChunk(YO_NEW_REF Buffer* data)
-    : data_(data)
-  { }
-
-  virtual ~HTTPMessageBodyChunk() {
-    Buffer::dec_ref(data_);
-  }
-
-public:
-  Buffer* data() {
-    return data_;
-  }
-
-  bool is_last() const {
-    return data_ == NULL;
-  }
-
-  size_t size() const {
-    return data_ != NULL ? data_->size() : 0;
-  }
-
-public:
-  // yield::Object
-  uint32_t get_type_id() const {
-    return TYPE_ID;
-  }
-
-  const char* get_type_name() const {
-    return "yield::http::HTTPMessageBodyChunk";
-  }
-
-private:
-  Buffer* data_;
-};
-}
+namespace server {
+HTTPRequest::HTTPRequest(
+  YO_NEW_REF Object* body,
+  uint16_t fields_offset,
+  Buffer& header,
+  uint8_t http_version,
+  Method method,
+  yield::sockets::SocketAddress& peername,
+  const yield::uri::URI& uri
+)
+: yield::http::HTTPRequest(
+    body,
+    fields_offset,
+    header,
+    http_version,
+    method,
+    uri
+  ),
+  peername(peername.inc_ref()) {
 }
 
-#endif
+HTTPRequest::~HTTPRequest() {
+  yield::sockets::SocketAddress::dec_ref(peername);
+}
+}
+}
+}

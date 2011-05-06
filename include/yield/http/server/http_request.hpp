@@ -1,4 +1,4 @@
-// yield/http/http_message_body_chunk.hpp
+// yield/http/server/http_request.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,53 +27,45 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_HTTP_HTTP_MESSAGE_BODY_CHUNK_HPP_
-#define _YIELD_HTTP_HTTP_MESSAGE_BODY_CHUNK_HPP_
+#ifndef _YIELD_HTTP_SERVER_HTTP_REQUEST_HPP_
+#define _YIELD_HTTP_SERVER_HTTP_REQUEST_HPP_
 
-#include "yield/buffer.hpp"
-#include "yield/response.hpp"
+#include "yield/http/http_request.hpp"
 
 namespace yield {
+namespace sockets {
+class SocketAddress;
+}
+
 namespace http {
-class HTTPMessageBodyChunk : public Response {
+namespace server {
+class HTTPRequestParser;
+
+class HTTPRequest : public yield::http::HTTPRequest {
 public:
-  const static uint32_t TYPE_ID = 3435197009UL;
+  virtual ~HTTPRequest();
 
-public:
-  HTTPMessageBodyChunk(YO_NEW_REF Buffer* data)
-    : data_(data)
-  { }
-
-  virtual ~HTTPMessageBodyChunk() {
-    Buffer::dec_ref(data_);
+  const yield::sockets::SocketAddress& get_peername() const {
+    return peername;
   }
 
-public:
-  Buffer* data() {
-    return data_;
-  }
+protected:
+  friend class HTTPRequestParser;
 
-  bool is_last() const {
-    return data_ == NULL;
-  }
-
-  size_t size() const {
-    return data_ != NULL ? data_->size() : 0;
-  }
-
-public:
-  // yield::Object
-  uint32_t get_type_id() const {
-    return TYPE_ID;
-  }
-
-  const char* get_type_name() const {
-    return "yield::http::HTTPMessageBodyChunk";
-  }
+  HTTPRequest(
+    YO_NEW_REF Object* body,
+    uint16_t fields_offset,
+    Buffer& header,
+    uint8_t http_version,
+    Method method,
+    yield::sockets::SocketAddress& peername,
+    const yield::uri::URI& uri
+  );
 
 private:
-  Buffer* data_;
+  yield::sockets::SocketAddress& peername;
 };
+}
 }
 }
 

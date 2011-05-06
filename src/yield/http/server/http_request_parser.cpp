@@ -1,4 +1,4 @@
-// yield/http/http_message_body_chunk.hpp
+// yield/http/server/http_request_parser.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,54 +27,51 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_HTTP_HTTP_MESSAGE_BODY_CHUNK_HPP_
-#define _YIELD_HTTP_HTTP_MESSAGE_BODY_CHUNK_HPP_
-
-#include "yield/buffer.hpp"
-#include "yield/response.hpp"
+#include "http_request_parser.hpp"
+#include "yield/http/server/http_request.hpp"
+#include "yield/http/server/http_message_body_chunk.hpp"
+#include "yield/sockets/socket_address.hpp"
 
 namespace yield {
 namespace http {
-class HTTPMessageBodyChunk : public Response {
-public:
-  const static uint32_t TYPE_ID = 3435197009UL;
+namespace server {
+using yield::sockets::SocketAddress;
 
-public:
-  HTTPMessageBodyChunk(YO_NEW_REF Buffer* data)
-    : data_(data)
-  { }
-
-  virtual ~HTTPMessageBodyChunk() {
-    Buffer::dec_ref(data_);
-  }
-
-public:
-  Buffer* data() {
-    return data_;
-  }
-
-  bool is_last() const {
-    return data_ == NULL;
-  }
-
-  size_t size() const {
-    return data_ != NULL ? data_->size() : 0;
-  }
-
-public:
-  // yield::Object
-  uint32_t get_type_id() const {
-    return TYPE_ID;
-  }
-
-  const char* get_type_name() const {
-    return "yield::http::HTTPMessageBodyChunk";
-  }
-
-private:
-  Buffer* data_;
-};
-}
+HTTPRequestParser::HTTPRequestParser(Buffer& data, SocketAddress& peername)
+  : yield::http::HTTPRequestParser(data),
+    peername(peername.inc_ref()) {
 }
 
-#endif
+HTTPRequestParser::~HTTPRequestParser() {
+  SocketAddress::dec_ref(peername);
+}
+
+YO_NEW_REF yield::http::HTTPMessageBodyChunk&
+HTTPRequestParser::create_http_message_body_chunk(
+  YO_NEW_REF Buffer* data
+) {
+  return *new HTTPMessageBodyChunk(data, peername);
+}
+
+YO_NEW_REF yield::http::HTTPRequest&
+HTTPRequestParser::create_http_request(
+  YO_NEW_REF Object* body,
+  uint16_t fields_offset,
+  Buffer& header,
+  uint8_t http_version,
+  HTTPRequest::Method method,
+  const yield::uri::URI& uri
+) {
+  return *new HTTPRequest(
+            body,
+            fields_offset,
+            header,
+            http_version,
+            method,
+            peername,
+            uri
+          );
+}
+}
+}
+}

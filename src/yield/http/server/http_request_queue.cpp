@@ -27,13 +27,13 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "http_request_parser.hpp"
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
 #include "yield/log.hpp"
 #include "yield/fs/file.hpp"
 #include "yield/http/http_message_body_chunk.hpp"
 #include "yield/http/http_request.hpp"
-#include "yield/http/http_request_parser.hpp"
 #include "yield/http/http_response.hpp"
 #include "yield/http/server/http_request_queue.hpp"
 #include "yield/sockets/tcp_socket.hpp"
@@ -278,7 +278,7 @@ private:
   void parse(Buffer& recv_buffer) {
     debug_assert_false(recv_buffer.empty());
 
-    HTTPRequestParser http_request_parser(recv_buffer);
+    HTTPRequestParser http_request_parser(recv_buffer, peername);
 
     for (;;) {
       Object& object = http_request_parser.parse();

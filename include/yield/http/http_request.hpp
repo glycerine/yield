@@ -132,6 +132,8 @@ public:
     uint8_t http_version = HTTP_VERSION_DEFAULT
   );
 
+  virtual ~HTTPRequest() { }
+
 public:
   const DateTime& get_creation_date_time() const {
     return creation_date_time;
