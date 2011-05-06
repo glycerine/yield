@@ -47,13 +47,10 @@
 namespace yield {
 namespace http {
 template <class HTTPMessageType>
-HTTPMessage<HTTPMessageType>::
-HTTPMessage(
+HTTPMessage<HTTPMessageType>::HTTPMessage(
   YO_NEW_REF Object* body,
-  uint32_t connection_id,
   uint8_t http_version
 ) : body(body),
-    connection_id(connection_id),
     header(*new Buffer(Buffer::getpagesize(), Buffer::getpagesize())),
     http_version(http_version) {
   fields_offset = 0;
@@ -63,12 +60,10 @@ template <class HTTPMessageType>
 HTTPMessage<HTTPMessageType>::
 HTTPMessage(
   YO_NEW_REF Object* body,
-  uint32_t connection_id,
   uint16_t fields_offset,
   Buffer& header,
   uint8_t http_version
 ) : body(body),
-    connection_id(connection_id),
     fields_offset(fields_offset),
     header(header.inc_ref()),
     http_version(http_version) {

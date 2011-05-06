@@ -37,7 +37,6 @@ namespace yield {
 namespace http {
 HTTPResponse::HTTPResponse(
   YO_NEW_REF Object* body,
-  uint32_t connection_id,
   uint16_t fields_offset,
   Buffer& header,
   uint8_t http_version,
@@ -45,7 +44,6 @@ HTTPResponse::HTTPResponse(
 )
 : HTTPMessage<HTTPResponse>(
     body,
-    connection_id,
     fields_offset,
     header,
     http_version
@@ -56,10 +54,9 @@ HTTPResponse::HTTPResponse(
 HTTPResponse::HTTPResponse(
   uint16_t status_code,
   YO_NEW_REF Object* body,
-  uint32_t connection_id,
   uint8_t http_version
 )
-: HTTPMessage<HTTPResponse>(body, connection_id, http_version),
+: HTTPMessage<HTTPResponse>(body, http_version),
   status_code(status_code) {
   const char* status_line;
   size_t status_line_len;
@@ -263,8 +260,6 @@ std::ostream& operator<<(std::ostream& os, const HTTPResponse& http_response) {
   os << 
     http_response.get_type_name() <<
     "(" <<
-      "connection_id=" << http_response.get_connection_id() <<
-      ", " <<
       "content_length=" << http_response.get_content_length() <<
       ", " <<
       "http_version=" <<

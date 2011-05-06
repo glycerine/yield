@@ -43,7 +43,6 @@ public:
   HTTPResponse(
     uint16_t status_code,
     YO_NEW_REF Object* body = NULL,
-    uint32_t connection_id = 0,
     uint8_t http_version = 1
   );
 
@@ -75,7 +74,6 @@ private:
 
   HTTPResponse(
     YO_NEW_REF Object* body,
-    uint32_t connection_id,
     uint16_t fields_offset,
     Buffer& header,
     uint8_t http_version,

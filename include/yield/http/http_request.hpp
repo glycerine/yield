@@ -129,7 +129,6 @@ public:
     Method method,
     const yield::uri::URI& uri,
     YO_NEW_REF Object* body = NULL,
-    uint32_t connection_id = 0,
     uint8_t http_version = 1
   );
 
@@ -175,7 +174,6 @@ private:
 
   HTTPRequest(
     YO_NEW_REF Object* body,
-    uint32_t connection_id,
     uint16_t fields_offset,
     Buffer& header,
     uint8_t http_version,

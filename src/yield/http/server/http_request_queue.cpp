@@ -278,8 +278,7 @@ private:
   void parse(Buffer& recv_buffer) {
     debug_assert_false(recv_buffer.empty());
 
-    HTTPRequestParser
-    http_request_parser(recv_buffer, static_cast<uint32_t>(get_socket()));
+    HTTPRequestParser http_request_parser(recv_buffer);
 
     for (;;) {
       Object& object = http_request_parser.parse();

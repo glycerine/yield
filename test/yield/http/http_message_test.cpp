@@ -53,13 +53,6 @@ TEST(HTTPMessage, get_body) {
   );
 }
 
-TEST(HTTPMessage, get_connection_id) {
-  throw_assert_eq(
-    HTTPRequest(HTTPRequest::Method::GET, "/", NULL, 1).get_connection_id(),
-    1
-  );
-}
-
 TEST(HTTPMessage, get_date_field) {
   auto_Object<HTTPRequest> http_request
     = new HTTPRequest(HTTPRequest::Method::GET, "/");

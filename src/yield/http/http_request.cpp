@@ -101,7 +101,6 @@ HTTPRequest::Method::parse(
 
 HTTPRequest::HTTPRequest(
   YO_NEW_REF Object* body,
-  uint32_t connection_id,
   uint16_t fields_offset,
   Buffer& header,
   uint8_t http_version,
@@ -110,7 +109,6 @@ HTTPRequest::HTTPRequest(
 )
 : HTTPMessage<HTTPRequest>(
       body,
-      connection_id,
       fields_offset,
       header,
       http_version
@@ -124,10 +122,9 @@ HTTPRequest::HTTPRequest(
   Method method,
   const yield::uri::URI& uri,
   YO_NEW_REF Object* body,
-  uint32_t connection_id,
   uint8_t http_version
 )
-  : HTTPMessage<HTTPRequest>(body, connection_id, http_version),
+  : HTTPMessage<HTTPRequest>(body, http_version),
     creation_date_time(DateTime::now()),
     method(method),
     uri(uri) {
@@ -197,12 +194,7 @@ void HTTPRequest::respond(uint16_t status_code, const char* body) {
 
 void HTTPRequest::respond(uint16_t status_code, YO_NEW_REF Object* body) {
   HTTPResponse* http_response
-    = new HTTPResponse(
-           status_code,
-           body,
-           get_connection_id(),
-           get_http_version()
-         );
+    = new HTTPResponse(status_code, body, get_http_version());
 
   if (body != NULL && body->get_type_id() == Buffer::TYPE_ID) {
     http_response->set_field(
@@ -236,8 +228,6 @@ std::ostream& operator<<(std::ostream& os, const HTTPRequest& http_request) {
   os << 
     http_request.get_type_name() <<
     "(" <<
-      "connection_id=" << http_request.get_connection_id() <<
-      ", " <<
       "content_length=" << http_request.get_content_length() << 
       ", " <<
       "creation_date_time=" << http_request.get_creation_date_time() <<

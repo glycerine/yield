@@ -54,7 +54,6 @@ Object& HTTPResponseParser::parse() {
         if (parse_body(content_length, body)) {
           return *new HTTPResponse(
                    body,
-                   connection_id,
                    fields_offset,
                    buffer,
                    http_version,
@@ -90,7 +89,7 @@ Object& HTTPResponseParser::parse() {
       return next_buffer;
     } else { // Error parsing
       HTTPResponse* http_response
-        = new HTTPResponse(400, NULL, connection_id, http_version);
+        = new HTTPResponse(400, NULL, http_version);
       http_response->set_field("Content-Length", 14, "0", 1);
       return *http_response;
     }

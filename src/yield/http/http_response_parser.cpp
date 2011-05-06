@@ -84,7 +84,6 @@ Object& HTTPResponseParser::parse() {
         if (parse_body(content_length, body)) {
           return *new HTTPResponse(
                    body,
-                   connection_id,
                    fields_offset,
                    buffer,
                    http_version,
@@ -120,7 +119,7 @@ Object& HTTPResponseParser::parse() {
       return next_buffer;
     } else { // Error parsing
       HTTPResponse* http_response
-      = new HTTPResponse(400, NULL, connection_id, http_version);
+      = new HTTPResponse(400, NULL, http_version);
       http_response->set_field("Content-Length", 14, "0", 1);
       return *http_response;
     }
@@ -289,13 +288,13 @@ _match:
       }
       break;
       case 2:
-        /* #line 116 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
+        /* #line 115 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
       {
         status_code = static_cast<uint16_t>(atoi(p));
       }
       break;
       case 3:
-        /* #line 124 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
+        /* #line 123 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
       { {
           p++;
           goto _out;
@@ -303,7 +302,7 @@ _match:
       }
       break;
       case 4:
-        /* #line 125 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
+        /* #line 124 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
       {
         return false;
       }
@@ -323,7 +322,7 @@ _again:
       while (__nacts-- > 0) {
         switch (*__acts++) {
         case 4:
-          /* #line 125 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
+          /* #line 124 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
         {
           return false;
         }
@@ -337,7 +336,7 @@ _out:
     {}
   }
 
-  /* #line 130 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
+  /* #line 129 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
 
 
   return cs != status_line_parser_error;

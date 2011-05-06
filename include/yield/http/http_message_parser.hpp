@@ -66,7 +66,7 @@ public:
   );
 
 protected:
-  HTTPMessageParser(Buffer& buffer, uint32_t connection_id);
+  HTTPMessageParser(Buffer& buffer);
   HTTPMessageParser(const string& buffer); // For testing
   ~HTTPMessageParser();
 
@@ -77,7 +77,6 @@ protected:
 
 protected:
   Buffer& buffer;
-  uint32_t connection_id;
   const char* eof;
   char *p, *ps;
 

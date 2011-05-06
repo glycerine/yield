@@ -54,11 +54,6 @@ public:
   }
 
 public:
-  uint32_t get_connection_id() const {
-    return connection_id;
-  }
-
-public:
   size_t get_content_length() const;
 
   DateTime get_date_field(const char* name = "Date") const;
@@ -227,15 +222,10 @@ public:
   );
 
 protected:
-  HTTPMessage(
-    YO_NEW_REF Object* body,
-    uint32_t connection_id,
-    uint8_t http_version
-  );
+  HTTPMessage(YO_NEW_REF Object* body, uint8_t http_version);
 
   HTTPMessage(
     YO_NEW_REF Object* body,
-    uint32_t connection_id,
     uint16_t fields_offset,
     Buffer& header,
     uint8_t http_version
@@ -250,7 +240,6 @@ protected:
 
 private:
   Object* body;
-  uint32_t connection_id;
   uint16_t fields_offset;
   uint8_t http_version;
   Buffer& header;
