@@ -32,6 +32,7 @@
 
 #include "yield/http/http_message_parser.hpp"
 #include "yield/http/http_request.hpp"
+#include "yield/http/http_response.hpp"
 
 namespace yield {
 namespace http {
@@ -49,7 +50,36 @@ public:
 public:
   YO_NEW_REF Object& parse();
 
-private:
+protected:
+  virtual YO_NEW_REF HTTPRequest&
+  create_http_request(
+    YO_NEW_REF Object* body,
+    uint16_t fields_offset,
+    Buffer& header,
+    uint8_t http_version,
+    HTTPRequest::Method method,
+    const yield::uri::URI& uri
+  ) {
+    return *new HTTPRequest(
+                 body,
+                 fields_offset,
+                 header,
+                 http_version,
+                 method,
+                 uri
+               );
+  }
+
+  virtual HTTPResponse&
+  create_http_response(
+    uint16_t status_code,
+    YO_NEW_REF Object* body = NULL,
+    uint8_t http_version = HTTPResponse::HTTP_VERSION_DEFAULT
+  ) {
+    return *new HTTPResponse(status_code, body, http_version);
+  }
+
+protected:
   bool parse_request_line(
     OUT uint8_t& http_version,
     OUT HTTPRequest::Method& method,

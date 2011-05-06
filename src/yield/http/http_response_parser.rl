@@ -52,13 +52,13 @@ Object& HTTPResponseParser::parse() {
       if (parse_fields(fields_offset, content_length)) {
         Object* body;
         if (parse_body(content_length, body)) {
-          return *new HTTPResponse(
+          return create_http_response(
                    body,
                    fields_offset,
                    buffer,
                    http_version,
                    status_code
-                );
+                 );
         } else {
           Buffer& next_buffer
             = Buffer::copy(
@@ -88,10 +88,10 @@ Object& HTTPResponseParser::parse() {
       p = ps;
       return next_buffer;
     } else { // Error parsing
-      HTTPResponse* http_response
-        = new HTTPResponse(400, NULL, http_version);
-      http_response->set_field("Content-Length", 14, "0", 1);
-      return *http_response;
+      HTTPResponse& http_response
+        = create_http_response(400, NULL, http_version);
+      http_response.set_field("Content-Length", 14, "0", 1);
+      return http_response;
     }
   } else // p == eof
     return *new Buffer(Buffer::getpagesize(), Buffer::getpagesize());

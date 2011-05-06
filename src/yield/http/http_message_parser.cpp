@@ -581,10 +581,11 @@ _out:
     if (chunk_size > 0) {
       // Cut off the chunk size + extension + CRLF before
       // the chunk data and the CRLF after
-      Buffer& chunk_data = Buffer::copy(chunk_data_p, p - chunk_data_p - 2);
-      return new HTTPMessageBodyChunk(&chunk_data);
+      return &create_http_message_body_chunk(
+               &Buffer::copy(chunk_data_p, p - chunk_data_p - 2)
+             );
     } else // Last chunk
-      return new HTTPMessageBodyChunk(NULL);
+      return &create_http_message_body_chunk(NULL);
   } else if (p == eof && chunk_size != 0)
     return new Buffer(chunk_size + 2); // Assumes no trailers.
   else
@@ -761,7 +762,7 @@ _match:
       }
       break;
       case 4:
-        /* #line 144 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
+        /* #line 145 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
       {
         if (
           parse_content_length_field(
@@ -788,7 +789,7 @@ _out:
     {}
   }
 
-  /* #line 159 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
+  /* #line 160 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
 
 
   return false;
@@ -1245,7 +1246,7 @@ _match:
       }
       break;
       case 8:
-        /* #line 222 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
+        /* #line 223 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
       {
         return DateTime::INVALID_DATE_TIME;
       }
@@ -1267,7 +1268,7 @@ _test_eof:
       while (__nacts-- > 0) {
         switch (*__acts++) {
         case 8:
-          /* #line 222 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
+          /* #line 223 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
         {
           return DateTime::INVALID_DATE_TIME;
         }
@@ -1281,7 +1282,7 @@ _out:
     {}
   }
 
-  /* #line 227 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
+  /* #line 228 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
 
 
   if (cs != date_parser_error) {
@@ -1463,7 +1464,7 @@ _match:
       }
       break;
       case 4:
-        /* #line 258 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
+        /* #line 259 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
       {
         if (
           field_name.iov_len == in_field_name.iov_len
@@ -1494,7 +1495,7 @@ _out:
     {}
   }
 
-  /* #line 277 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
+  /* #line 278 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
 
 
   return false;
@@ -1670,7 +1671,7 @@ _match:
       }
       break;
       case 4:
-        /* #line 302 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
+        /* #line 303 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
       {
         fields.push_back(std::make_pair(field_name, field_value));
       }
@@ -1690,7 +1691,7 @@ _out:
     {}
   }
 
-  /* #line 308 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
+  /* #line 309 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
 
 }
 
@@ -1876,7 +1877,7 @@ _match:
       }
       break;
       case 4:
-        /* #line 330 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
+        /* #line 331 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
       {
         parse_content_length_field(
           field_name,
@@ -1886,7 +1887,7 @@ _match:
       }
       break;
       case 5:
-        /* #line 338 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
+        /* #line 339 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
       { {
           p++;
           goto _out;
@@ -1894,7 +1895,7 @@ _match:
       }
       break;
       case 6:
-        /* #line 339 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
+        /* #line 340 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
       {
         return false;
       }
@@ -1914,7 +1915,7 @@ _again:
       while (__nacts-- > 0) {
         switch (*__acts++) {
         case 6:
-          /* #line 339 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
+          /* #line 340 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
         {
           return false;
         }
@@ -1928,7 +1929,7 @@ _out:
     {}
   }
 
-  /* #line 344 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
+  /* #line 345 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.rl" */
 
 
   return cs != fields_parser_error;

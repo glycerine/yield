@@ -43,6 +43,7 @@ namespace http {
 template <class HTTPMessageType>
 class HTTPMessage {
 public:
+  const static uint8_t HTTP_VERSION_DEFAULT = 1;
   const static size_t CONTENT_LENGTH_CHUNKED = SIZE_MAX;
 
 public:

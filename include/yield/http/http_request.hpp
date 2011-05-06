@@ -129,7 +129,7 @@ public:
     Method method,
     const yield::uri::URI& uri,
     YO_NEW_REF Object* body = NULL,
-    uint8_t http_version = 1
+    uint8_t http_version = HTTP_VERSION_DEFAULT
   );
 
 public:
@@ -169,7 +169,7 @@ public:
     return "yield::http::HTTPRequest";
   }
 
-private:
+protected:
   friend class HTTPRequestParser;
 
   HTTPRequest(

@@ -117,7 +117,7 @@ Object& HTTPRequestParser::parse() {
       if (parse_fields(fields_offset, content_length)) {
         Object* body;
         if (parse_body(content_length, body)) {
-          return *new HTTPRequest(
+          return create_http_request(
                    body,
                    fields_offset,
                    buffer,
@@ -154,10 +154,10 @@ Object& HTTPRequestParser::parse() {
       p = ps;
       return next_buffer;
     } else { // Error parsing
-      HTTPResponse* http_response
-      = new HTTPResponse(400, NULL, http_version);
-      http_response->set_field("Content-Length", 14, "0", 1);
-      return *http_response;
+      HTTPResponse& http_response
+      = create_http_response(400, NULL, http_version);
+      http_response.set_field("Content-Length", 14, "0", 1);
+      return http_response;
     }
   } else // p == eof
     return *new Buffer(Buffer::getpagesize(), Buffer::getpagesize());

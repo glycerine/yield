@@ -43,7 +43,7 @@ public:
   HTTPResponse(
     uint16_t status_code,
     YO_NEW_REF Object* body = NULL,
-    uint8_t http_version = 1
+    uint8_t http_version = HTTP_VERSION_DEFAULT
   );
 
   virtual ~HTTPResponse() { }
@@ -69,7 +69,7 @@ public:
     return "yield::http::HTTPResponse";
   }
 
-private:
+protected:
   friend class HTTPResponseParser;
 
   HTTPResponse(

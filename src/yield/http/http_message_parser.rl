@@ -111,10 +111,11 @@ Object* HTTPMessageParser::parse_body_chunk() {
     if (chunk_size > 0) {
       // Cut off the chunk size + extension + CRLF before
       // the chunk data and the CRLF after
-      Buffer& chunk_data = Buffer::copy(chunk_data_p, p - chunk_data_p - 2);
-      return new HTTPMessageBodyChunk(&chunk_data);
+      return &create_http_message_body_chunk(
+               &Buffer::copy(chunk_data_p, p - chunk_data_p - 2)
+             );
     } else // Last chunk
-      return new HTTPMessageBodyChunk(NULL);
+      return &create_http_message_body_chunk(NULL);
   } else if (p == eof && chunk_size != 0)
     return new Buffer(chunk_size + 2); // Assumes no trailers.
   else

@@ -48,7 +48,34 @@ public:
 public:
   Object& parse();
 
-private:
+protected:
+  virtual HTTPResponse&
+  create_http_response(
+    uint16_t status_code,
+    YO_NEW_REF Object* body = NULL,
+    uint8_t http_version = HTTPResponse::HTTP_VERSION_DEFAULT
+  ) {
+    return *new HTTPResponse(status_code, body, http_version);
+  }
+
+  virtual HTTPResponse&
+  create_http_response(
+    YO_NEW_REF Object* body,
+    uint16_t fields_offset,
+    Buffer& header,
+    uint8_t http_version,
+    uint16_t status_code
+  ) {
+    return *new HTTPResponse(
+                  body,
+                  fields_offset,
+                  header,
+                  http_version,
+                  status_code
+                );
+  }
+
+protected:
   bool parse_status_line(uint8_t& http_version, uint16_t& status_code);
 };
 }

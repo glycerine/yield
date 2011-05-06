@@ -31,6 +31,7 @@
 #define _YIELD_HTTP_HTTP_MESSAGE_PARSER_HPP_
 
 #include "yield/http/http_message.hpp"
+#include "yield/http/http_message_body_chunk.hpp"
 
 namespace yield {
 class DateTime;
@@ -69,6 +70,14 @@ protected:
   HTTPMessageParser(Buffer& buffer);
   HTTPMessageParser(const string& buffer); // For testing
   ~HTTPMessageParser();
+
+protected:
+  virtual YO_NEW_REF HTTPMessageBodyChunk&
+  create_http_message_body_chunk(
+    YO_NEW_REF Buffer* data
+  ) {
+    return *new HTTPMessageBodyChunk(data);
+  }
 
 protected:
   bool parse_body(size_t content_length, OUT YO_NEW_REF Object*& body);
