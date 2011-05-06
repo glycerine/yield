@@ -61,14 +61,6 @@ public:
     return flags;
   }
 
-  const SocketAddress& get_peername() const {
-    return peername;
-  }
-
-  SocketAddress& get_peername() {
-    return peername;
-  }
-
 public:
   // yield::Object
   uint32_t get_type_id() const {
@@ -82,7 +74,6 @@ public:
 private:
   Buffer& buffer;
   Socket::MessageFlags flags;
-  SocketAddress peername;
 };
 
 std::ostream& operator<<(std::ostream&, recvAIOCB&);

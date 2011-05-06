@@ -44,12 +44,10 @@ public:
   sendAIOCB(
     Socket& socket_,
     YO_NEW_REF Buffer& buffer,
-    const Socket::MessageFlags& flags,
-    SocketAddress* peername = NULL
+    const Socket::MessageFlags& flags
   ) : AIOCB(socket_),
       buffer(buffer),
-      flags(flags),
-      peername(Object::inc_ref(peername)) {
+      flags(flags) {
   }
 
   ~sendAIOCB();
@@ -61,10 +59,6 @@ public:
 
   const Socket::MessageFlags& get_flags() const {
     return flags;
-  }
-
-  const SocketAddress* get_peername() const {
-    return peername;
   }
 
 public:

@@ -30,4 +30,40 @@
 #ifndef _YIELD_QUEUE_STL_EVENT_QUEUE_HPP_
 #define _YIELD_QUEUE_STL_EVENT_QUEUE_HPP_
 
+#include "yield/assert.hpp"
+#include "yield/event_queue.hpp"
+
+#include <queue>
+
+namespace yield {
+namespace queue {
+class STLEventQueue : public EventQueue, private std::queue<Event*> {
+public:
+  // yield::EventQueue
+  YO_NEW_REF Event& dequeue() {
+    debug_assert_false(std::queue<Event*>::empty());
+    return *trydequeue();
+  }
+
+  YO_NEW_REF Event* dequeue(const Time& timeout) {
+    return trydequeue();
+  }
+
+  bool enqueue(YO_NEW_REF Event& event) {
+    std::queue<Event*>::push(&event);
+    return true;
+  }
+
+  YO_NEW_REF Event* trydequeue() {
+    if (!std::queue<Event*>::empty()) {
+      Event* event = std::queue<Event*>::front();
+      std::queue<Event*>::pop();
+      return event;
+    } else
+      return NULL;
+  }
+};
+}
+}
+
 #endif

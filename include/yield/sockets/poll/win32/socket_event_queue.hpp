@@ -34,8 +34,6 @@
 
 namespace yield {
 namespace sockets {
-class SocketPair;
-
 namespace poll {
 namespace win32 {
 class SocketEventQueue : public EventQueue {

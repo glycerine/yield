@@ -372,8 +372,7 @@ NBIOQueue::RetryStatus NBIOQueue::retry(recvAIOCB& recv_aiocb) {
     ssize_t recv_ret
       = recv_aiocb.get_socket().recv(
           recv_aiocb.get_buffer(),
-          recv_aiocb.get_flags(),
-          &recv_aiocb.get_peername()
+          recv_aiocb.get_flags()
         );
 
     if (recv_ret >= 0) {
@@ -402,8 +401,7 @@ NBIOQueue::RetryStatus NBIOQueue::retry(sendAIOCB& send_aiocb) {
     ssize_t send_ret
       = send_aiocb.get_socket().send(
           send_aiocb.get_buffer(),
-          send_aiocb.get_flags(),
-          send_aiocb.get_peername()
+          send_aiocb.get_flags()
         );
 
     if (send_ret >= 0) {

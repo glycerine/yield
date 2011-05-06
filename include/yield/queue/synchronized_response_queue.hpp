@@ -1,4 +1,4 @@
-// yield/queue/synchronized_concurrent_response_queue.hpp
+// yield/queue/synchronized_response_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,28 +27,28 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_QUEUE_SYNCHRONIZED_CONCURRENT_RESPONSE_QUEUE_HPP_
-#define _YIELD_QUEUE_SYNCHRONIZED_CONCURRENT_RESPONSE_QUEUE_HPP_
+#ifndef _YIELD_QUEUE_SYNCHRONIZED_RESPONSE_QUEUE_HPP_
+#define _YIELD_QUEUE_SYNCHRONIZED_RESPONSE_QUEUE_HPP_
 
 #include "yield/event_handler.hpp"
 #include "yield/exception.hpp"
 #include "yield/response.hpp"
-#include "yield/queue/synchronized_concurrent_queue.hpp"
+#include "yield/queue/synchronized_queue.hpp"
 
 namespace yield {
 namespace queue {
 template <class ResponseType>
-class SynchronizedConcurrentResponseQueue
+class SynchronizedResponseQueue
   : public EventHandler,
-    private SynchronizedConcurrentQueue<Event> {
+    private SynchronizedQueue<Event> {
 public:
   YO_NEW_REF ResponseType& dequeue() {
-    Event& event = SynchronizedConcurrentQueue<Event>::dequeue();
+    Event& event = SynchronizedQueue<Event>::dequeue();
     return response_cast(event);
   }
 
   YO_NEW_REF ResponseType* dequeue(const Time& timeout) {
-    Event* event = SynchronizedConcurrentQueue<Event>::dequeue(timeout);
+    Event* event = SynchronizedQueue<Event>::dequeue(timeout);
     if (event != NULL)
       return &response_cast(*event);
     else
@@ -56,11 +56,11 @@ public:
   }
 
   bool enqueue(YO_NEW_REF Event& event) {
-    return SynchronizedConcurrentQueue<Event>::enqueue(event);
+    return SynchronizedQueue<Event>::enqueue(event);
   }
 
   YO_NEW_REF ResponseType* trydequeue() {
-    Event* event = SynchronizedConcurrentQueue<Event>::trydequeue();
+    Event* event = SynchronizedQueue<Event>::trydequeue();
     if (event != NULL)
       return &response_cast(*event);
     else
@@ -96,7 +96,7 @@ private:
       }
     }
 
-    throw Exception("SynchronizedConcurrentResponseQueue: dequeued unexpected response type");
+    throw Exception("SynchronizedResponseQueue: dequeued unexpected response type");
   }
 };
 };

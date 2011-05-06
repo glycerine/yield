@@ -29,17 +29,17 @@
 
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
-#include "yield/sockets/socket_pair.hpp"
+#include "yield/queue/blocking_concurrent_queue.hpp"
+#include "yield/sockets/stream_socket_pair.hpp"
 #include "yield/sockets/poll/socket_event.hpp"
 #include "yield/sockets/poll/win32/socket_event_queue.hpp"
-#include "yield/thread/blocking_concurrent_queue.hpp"
 #include "../../win32/winsock.hpp"
 
 namespace yield {
 namespace sockets {
 namespace poll {
 namespace win32 {
-using yield::thread::BlockingConcurrentQueue;
+using yield::queue::BlockingConcurrentQueue;
 
 class SocketEventQueue::SocketPollerSelector
   : public EventQueue,
@@ -61,7 +61,7 @@ public:
   }
 
 protected:
-  SocketPair wake_socket_pair;
+  StreamSocketPair wake_socket_pair;
 };
 
 #if _WIN32_WINNT >= 0x0600

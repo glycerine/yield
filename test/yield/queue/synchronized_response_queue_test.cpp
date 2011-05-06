@@ -1,4 +1,4 @@
-// synchronized_concurrent_queue_test.cpp
+// synchronized_response_queue_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,10 +27,37 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "queue_test.hpp"
-#include "yield/queue/synchronized_concurrent_queue.hpp"
+#include "yield/assert.hpp"
+#include "yield/auto_object.hpp"
+#include "yield/exception.hpp"
+#include "yield/response.hpp"
+#include "yield/queue/synchronized_response_queue.hpp"
+#include "yunit.hpp"
 
-TEST_SUITE_EX(
-  SynchronizedConcurrentQueue,
-  yield::queue::QueueTestSuite< yield::queue::SynchronizedConcurrentQueue<uint32_t> >
-);
+TEST_SUITE(SynchronizedResponseQueue);
+
+namespace yield {
+namespace queue {
+TEST(SynchronizedResponseQueue, dequeue) {
+  SynchronizedResponseQueue<Response> response_queue;
+
+  {
+    response_queue.enqueue(*new Response);
+    auto_Object<Response> response = response_queue.dequeue();
+  }
+
+  {
+    response_queue.enqueue(*new Response);
+    auto_Object<Response> response = response_queue.dequeue(1.0);
+  }
+}
+
+TEST(SynchronizedResponseQueue, enqueue) {
+  SynchronizedResponseQueue<Response> response_queue;
+
+  bool enqueue_ret = response_queue.enqueue(*new Response);
+  throw_assert(enqueue_ret);
+  enqueue_ret = response_queue.enqueue(*new Response);
+}
+}
+}

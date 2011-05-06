@@ -1,4 +1,4 @@
-// yield/queue/stl_queue.hpp
+// synchronized_queue_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,17 +27,10 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_QUEUE_STL_QUEUE_HPP_
-#define _YIELD_QUEUE_STL_QUEUE_HPP_
+#include "queue_test.hpp"
+#include "yield/queue/synchronized_queue.hpp"
 
-namespace yield {
-namespace queue {
-template <class ElementType>
-class STLQueue : private std::queue<ElementType>{
-public:
-  
-};
-}
-}
-
-#endif
+TEST_SUITE_EX(
+  SynchronizedQueue,
+  yield::queue::QueueTestSuite< yield::queue::SynchronizedQueue<uint32_t> >
+);

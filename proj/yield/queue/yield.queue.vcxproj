@@ -97,10 +97,9 @@
     <ClInclude Include="..\..\..\include\yield\queue\non_blocking_concurrent_queue.hpp" />
     <ClInclude Include="..\..\..\include\yield\queue\rendezvous_concurrent_queue.hpp" />
     <ClInclude Include="..\..\..\include\yield\queue\stl_event_queue.hpp" />
-    <ClInclude Include="..\..\..\include\yield\queue\stl_queue.hpp" />
-    <ClInclude Include="..\..\..\include\yield\queue\synchronized_concurrent_event_queue.hpp" />
-    <ClInclude Include="..\..\..\include\yield\queue\synchronized_concurrent_queue.hpp" />
-    <ClInclude Include="..\..\..\include\yield\queue\synchronized_concurrent_response_queue.hpp" />
+    <ClInclude Include="..\..\..\include\yield\queue\synchronized_event_queue.hpp" />
+    <ClInclude Include="..\..\..\include\yield\queue\synchronized_queue.hpp" />
+    <ClInclude Include="..\..\..\include\yield\queue\synchronized_response_queue.hpp" />
     <ClInclude Include="..\..\..\include\yield\queue\tls_concurrent_queue.hpp" />
   </ItemGroup>
 

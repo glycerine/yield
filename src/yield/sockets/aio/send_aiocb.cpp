@@ -35,7 +35,6 @@ namespace sockets {
 namespace aio {
 sendAIOCB::~sendAIOCB() {
   Buffer::dec_ref(buffer);
-  SocketAddress::dec_ref(peername);
 }
 
 std::ostream& operator<<(std::ostream& os, sendAIOCB& send_aiocb) {
@@ -47,8 +46,6 @@ std::ostream& operator<<(std::ostream& os, sendAIOCB& send_aiocb) {
       "error=" << send_aiocb.get_error() <<
       ", " <<
       "flags=" << send_aiocb.get_flags() <<
-      ", " <<
-      "peername=" << send_aiocb.get_peername() <<
       ", " <<
       "return=" << send_aiocb.get_return() <<
       "," <<

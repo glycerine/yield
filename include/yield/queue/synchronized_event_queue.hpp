@@ -1,4 +1,4 @@
-// yield/queue/synchronized_concurrent_event_queue.hpp
+// yield/queue/synchronized_event_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,36 +27,36 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_QUEUE_SYNCHRONIZED_CONCURRENT_EVENT_QUEUE_HPP_
-#define _YIELD_QUEUE_SYNCHRONIZED_CONCURRENT_EVENT_QUEUE_HPP_
+#ifndef _YIELD_QUEUE_SYNCHRONIZED_EVENT_QUEUE_HPP_
+#define _YIELD_QUEUE_SYNCHRONIZED_EVENT_QUEUE_HPP_
 
 #include "yield/event_queue.hpp"
-#include "yield/queue/synchronized_concurrent_queue.hpp"
+#include "yield/queue/synchronized_queue.hpp"
 
 namespace yield {
 namespace queue {
-class SynchronizedConcurrentEventQueue
+class SynchronizedEventQueue
   : public EventQueue,
-    private SynchronizedConcurrentQueue<Event> {
+    private SynchronizedQueue<Event> {
 public:
   // yield::EventQueue
   YO_NEW_REF Event& dequeue() {
-    return SynchronizedConcurrentQueue<Event>::dequeue();
+    return SynchronizedQueue<Event>::dequeue();
   }
 
   YO_NEW_REF Event* dequeue(const Time& timeout) {
-    return SynchronizedConcurrentQueue<Event>::dequeue(timeout);
+    return SynchronizedQueue<Event>::dequeue(timeout);
   }
 
   bool enqueue(YO_NEW_REF Event& event) {
-    return SynchronizedConcurrentQueue<Event>::enqueue(event);
+    return SynchronizedQueue<Event>::enqueue(event);
   }
 
   YO_NEW_REF Event* trydequeue() {
-    return SynchronizedConcurrentQueue<Event>::trydequeue();
+    return SynchronizedQueue<Event>::trydequeue();
   }
 };
-};
-};
+}
+}
 
 #endif

@@ -336,21 +336,17 @@ bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
     log_enqueue(recv_aiocb);
 
     DWORD dwFlags = static_cast<DWORD>(recv_aiocb.get_flags());
-    sockaddr* lpFrom = recv_aiocb.get_peername();
-    socklen_t lpFromlen = recv_aiocb.get_peername().len();
 
     if (recv_aiocb.get_buffer().get_next_buffer() == NULL) {
       iovec wsabuf = recv_aiocb.get_buffer().as_read_iovec();
 
       if (
-        WSARecvFrom(
+        WSARecv(
           recv_aiocb.get_socket(),
           reinterpret_cast<WSABUF*>(&wsabuf),
           1,
           NULL,
           &dwFlags,
-          lpFrom,
-          &lpFromlen,
           recv_aiocb,
           NULL
         ) == 0
@@ -363,14 +359,12 @@ bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
       Buffers::as_read_iovecs(recv_aiocb.get_buffer(), wsabufs);
 
       if (
-        WSARecvFrom(
+        WSARecv(
           recv_aiocb.get_socket(),
           reinterpret_cast<WSABUF*>(&wsabufs[0]),
           wsabufs.size(),
           NULL,
           &dwFlags,
-          lpFrom,
-          &lpFromlen,
           recv_aiocb,
           NULL
         ) == 0
@@ -392,35 +386,16 @@ bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
 
     log_enqueue(send_aiocb);
 
-    const sockaddr* lpTo = NULL;
-    socklen_t iToLen = 0;
-    if (send_aiocb.get_peername() != NULL) {
-      const SocketAddress* peername =
-        send_aiocb.get_peername()->filter(
-          send_aiocb.get_socket().get_domain()
-        );
-      if (peername != NULL) {
-        lpTo = *peername;
-        iToLen = peername->len();
-      } else {
-        send_aiocb.set_error(WSAGetLastError());
-        log_error(send_aiocb);
-        return false;
-      }
-    }
-
     if (send_aiocb.get_buffer().get_next_buffer() == NULL) {
       iovec wsabuf = send_aiocb.get_buffer().as_write_iovec();
 
       if (
-        WSASendTo(
+        WSASend(
           send_aiocb.get_socket(),
           reinterpret_cast<WSABUF*>(&wsabuf),
           1,
           NULL,
           send_aiocb.get_flags(),
-          lpTo,
-          iToLen,
           send_aiocb,
           NULL
         ) == 0
@@ -433,14 +408,12 @@ bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
       Buffers::as_write_iovecs(send_aiocb.get_buffer(), wsabufs);
 
       if (
-        WSASendTo(
+        WSASend(
           send_aiocb.get_socket(),
           reinterpret_cast<WSABUF*>(&wsabufs[0]),
           wsabufs.size(),
           NULL,
           send_aiocb.get_flags(),
-          lpTo,
-          iToLen,
           send_aiocb,
           NULL
         ) == 0
