@@ -27,8 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "thread.hpp"
-#include "processor_set.hpp"
+#include "yield/thread/linux/thread.hpp"
+#include "yield/thread/linux/processor_set.hpp"
 
 #include <sched.h>
 #include <sys/syscall.h>

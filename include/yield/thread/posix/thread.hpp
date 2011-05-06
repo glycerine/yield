@@ -30,6 +30,7 @@
 #ifndef _YIELD_THREAD_POSIX_THREAD_HPP_
 #define _YIELD_THREAD_POSIX_THREAD_HPP_
 
+#include "yield/auto_object.hpp"
 #include "yield/object.hpp"
 
 #include <pthread.h>
