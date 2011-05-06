@@ -255,63 +255,36 @@ for project_name, project_references in PROJECT_REFERENCES_EXPANDED.iteritems():
 LIBS = LIBS_EXPANDED
 
 
-#EXCLUDE_FILE_PATHS = {}
 INCLUDE_FILE_PATHS = {}
 SOURCE_DIR_PATHS = {}
 SOURCE_FILE_PATHS = {}
 
 for project_name in PROJECT_NAMES:
     project_include_dir_path = path_join(INCLUDE_DIR_PATH, path_sep.join(project_name.split('.')))
-    project_source_dir_path = path_join(SRC_DIR_PATH, path_sep.join(project_name.split('.')))
-    project_test_dir_path = path_join(TEST_DIR_PATH, path_sep.join(project_name.split('.')))
-
-    INCLUDE_FILE_PATHS[project_name] = [
-        path_join(project_include_dir_path, fnmatch_pattern)
-        for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS
-    ]
-
-    for platform in PLATFORMS:
+    INCLUDE_FILE_PATHS[project_name] = []
+    for platform in [""] + list(PLATFORMS):
         if exists(path_join(project_include_dir_path, platform)):
-            INCLUDE_FILE_PATHS[project_name].extend([
-                path_join(project_include_dir_path, platform, fnmatch_pattern)
-                for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS
-            ])
-
+            for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS:
+                INCLUDE_FILE_PATHS[project_name].extend(
+                    list(rglob(path_join(project_include_dir_path, platform, fnmatch_pattern)))
+                )
+    INCLUDE_FILE_PATHS[project_name].sort()
     INCLUDE_FILE_PATHS[project_name + "_test"] = []
 
-    SOURCE_DIR_PATHS[project_name] = project_source_dir_path
-    SOURCE_DIR_PATHS[project_name + "_test"] = project_test_dir_path
+    for project_name_, project_source_dir_path in (
+            (project_name, path_join(SRC_DIR_PATH, path_sep.join(project_name.split('.')))),
+            (project_name + "_test", path_join(TEST_DIR_PATH, path_sep.join(project_name.split('.'))))
+        ):
+        SOURCE_DIR_PATHS[project_name_] = project_source_dir_path
+        SOURCE_FILE_PATHS[project_name_] = []
+        for platform in [""] + list(PLATFORMS):
+            if exists(path_join(project_source_dir_path, platform)):
+                for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + SOURCE_FILE_FNMATCH_PATTERNS:
+                    SOURCE_FILE_PATHS[project_name_].extend(
+                        list(rglob(path_join(project_source_dir_path, platform, fnmatch_pattern)))
+                    )
+        SOURCE_FILE_PATHS[project_name_].sort()
 
-    SOURCE_FILE_PATHS[project_name] = [
-         path_join(project_source_dir_path, fnmatch_pattern)
-         for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
-                                SOURCE_FILE_FNMATCH_PATTERNS
-    ]
-
-    for platform in PLATFORMS:
-        if exists(path_join(project_source_dir_path, platform)):
-            SOURCE_FILE_PATHS[project_name].extend([
-                path_join(project_source_dir_path, platform, fnmatch_pattern)
-                for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
-                                       SOURCE_FILE_FNMATCH_PATTERNS
-            ])
-
-    SOURCE_FILE_PATHS[project_name + "_test"] = [
-        path_join(project_test_dir_path, fnmatch_pattern)
-        for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
-                               SOURCE_FILE_FNMATCH_PATTERNS
-    ]
-
-    for platform in PLATFORMS:
-        if exists(path_join(project_test_dir_path, platform)):
-            SOURCE_FILE_PATHS[project_name + "_test"].extend([
-                path_join(project_test_dir_path, platform, fnmatch_pattern)
-                for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
-                                       SOURCE_FILE_FNMATCH_PATTERNS
-            ])
-
-    #EXCLUDE_FILE_PATHS[project_name] = [] # SOURCE_FILE_PATHS[project_name + "_test"]
-    #EXCLUDE_FILE_PATHS[project_name + "_test"] = []
 
 INCLUDE_FILE_PATHS["yield"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "config.hpp"), # before types
@@ -331,7 +304,6 @@ INCLUDE_FILE_PATHS["yield.aio"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "aio", "posix", "aiocb.hpp"),
     path_join(INCLUDE_DIR_PATH, "yield", "aio", "win32", "aiocb.hpp"),
     path_join(INCLUDE_DIR_PATH, "yield", "aio", "aiocb.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "aio", "sockets", "aiocb.hpp"), # before accept_aiocb
 ] + INCLUDE_FILE_PATHS["yield.aio"]
 
 INCLUDE_FILE_PATHS["yield.fs"] = [
@@ -405,9 +377,6 @@ INCLUDE_FILE_PATHS["yield.sockets.poll"] = [
 INCLUDE_FILE_PATHS["yield.sockets.poll"]
 
 INCLUDE_FILE_PATHS["yield.stage"] = [
-    path_join(INCLUDE_DIR_PATH, "yield", "stage", "event.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "stage", "message.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "stage", "response.hpp"),
     path_join(INCLUDE_DIR_PATH, "yield", "stage", "stage_scheduler.hpp"),
 ] + \
 INCLUDE_FILE_PATHS["yield.stage"]
@@ -426,24 +395,12 @@ INCLUDE_FILE_PATHS["yield.thread"] = [
 ] + \
 INCLUDE_FILE_PATHS["yield.thread"]
 
-SOURCE_FILE_PATHS["yield.fs"] = [
-    path_join(SRC_DIR_PATH, "yield", "fs", "win32", "stat.hpp"), # before directory
-] + \
-SOURCE_FILE_PATHS["yield.fs"]
-
-SOURCE_FILE_PATHS["yield.thread"] = [
-    path_join(SRC_DIR_PATH, "yield", "thread", "posix", "thread.hpp"), # before linux::thread, et al.
-    path_join(SRC_DIR_PATH, "yield", "thread", "win32", "mutex.hpp"), # before condition_variable
-    path_join(SRC_DIR_PATH, "yield", "thread", "win32", "lightweight_mutex.hpp"), # before condition_variable
-    path_join(SRC_DIR_PATH, "yield", "thread", "win32", "semaphore.hpp"), # before condition_variable
-
-] + \
-SOURCE_FILE_PATHS["yield.thread"]
-
 for project_name in INCLUDE_FILE_PATHS.iterkeys():
     for file_paths in (INCLUDE_FILE_PATHS, SOURCE_FILE_PATHS):
-        file_paths[project_name] = \
-            deduplist(list(rglob(file_paths[project_name])))
+        file_paths[project_name] = deduplist(file_paths[project_name])
+        for file_path in file_paths[project_name]:
+            if not exists(file_path):
+                raise ValueError, file_path + " does not exist"
 
 THIRD_PARTY_SOURCE_FNMATCH_PATTERNS = (
     "charProps.c",
@@ -710,7 +667,6 @@ if options.generate_proj:
                },
                "cxxflags": CXXFLAGS,
                "cxxpath": CXXPATH,
-               # "exclude_file_paths": EXCLUDE_FILE_PATHS[project_name + project_name_suffix],
                "include_file_paths": INCLUDE_FILE_PATHS[project_name + project_name_suffix],
                "libpath": LIBPATH,
                "libs": LIBS.get(project_name + project_name_suffix, {}),
