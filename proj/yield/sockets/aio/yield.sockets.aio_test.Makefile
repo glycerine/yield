@@ -50,10 +50,10 @@ endif
 LIBS += -lyield_fs -lyield_i18n -lyield_sockets_aio -lyield_aio -lyield_sockets_poll -lyield_poll -lyield_thread -lyield_sockets -lyield
 
 
-D_FILE_PATHS := $(shell find ../../../../build/yield/sockets/aio -name "*.d")
+D_FILE_PATHS := $(shell find ../../../../build/yield/sockets/aio_test -name "*.d")
 
 
-O_FILE_PATHS += ../../../../build/yield/sockets/aio/nbio_queue_test.o ../../../../build/yield/sockets/aio/yield_sockets_aio_test_main.o
+O_FILE_PATHS += ../../../../build/yield/sockets/aio_test/nbio_queue_test.o ../../../../build/yield/sockets/aio_test/yield_sockets_aio_test_main.o
 ifeq ($(UNAME), MINGW32)
 	O_FILE_PATHS += ../../../../build/yield/sockets/aio_test/win32/aio_queue_test.o
 endif
@@ -70,9 +70,9 @@ depclean:
 -include $(D_FILE_PATHS)
 			
 lcov: ../../../../bin/yield/yield_sockets_aio_test
-	lcov --directory ../../../../build/yield/sockets/aio --zerocounters
+	lcov --directory ../../../../build/yield/sockets/aio_test --zerocounters
 	-../../../../bin/yield/yield_sockets_aio_test
-	lcov --base-directory . --directory ../../../../build/yield/sockets/aio --capture --output-file yield.sockets.aio_test_lcov-$(TIMESTAMP)
+	lcov --base-directory . --directory ../../../../build/yield/sockets/aio_test --capture --output-file yield.sockets.aio_test_lcov-$(TIMESTAMP)
 	mkdir yield.sockets.aio_test_lcov_html-$(TIMESTAMP)
 	genhtml -o yield.sockets.aio_test_lcov_html-$(TIMESTAMP) yield.sockets.aio_test_lcov-$(TIMESTAMP)
 	-cp -R yield.sockets.aio_test_lcov_html-$(TIMESTAMP) /mnt/hgfs/minorg/Desktop
@@ -92,14 +92,14 @@ lcov: ../../../../bin/yield/yield_sockets_aio_test
 	-mkdir -p ../../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 
-../../../../build/yield/sockets/aio/nbio_queue_test.o: ../../../../test/yield/sockets/aio/nbio_queue_test.cpp
-	-mkdir -p ../../../../build/yield/sockets/aio 2>/dev/null
-	$(CXX) -c -o ../../../../build/yield/sockets/aio/nbio_queue_test.o -MD $(CXXFLAGS) ../../../../test/yield/sockets/aio/nbio_queue_test.cpp
-
-../../../../build/yield/sockets/aio/yield_sockets_aio_test_main.o: ../../../../test/yield/sockets/aio/yield_sockets_aio_test_main.cpp
-	-mkdir -p ../../../../build/yield/sockets/aio 2>/dev/null
-	$(CXX) -c -o ../../../../build/yield/sockets/aio/yield_sockets_aio_test_main.o -MD $(CXXFLAGS) ../../../../test/yield/sockets/aio/yield_sockets_aio_test_main.cpp
+../../../../build/yield/sockets/aio_test/nbio_queue_test.o: ../../../../test/yield/sockets/aio/nbio_queue_test.cpp
+	-mkdir -p ../../../../build/yield/sockets/aio_test 2>/dev/null
+	$(CXX) -c -o ../../../../build/yield/sockets/aio_test/nbio_queue_test.o -MD $(CXXFLAGS) ../../../../test/yield/sockets/aio/nbio_queue_test.cpp
 
 ../../../../build/yield/sockets/aio_test/win32/aio_queue_test.o: ../../../../test/yield/sockets/aio/win32/aio_queue_test.cpp
 	-mkdir -p ../../../../build/yield/sockets/aio_test/win32 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/sockets/aio_test/win32/aio_queue_test.o -MD $(CXXFLAGS) ../../../../test/yield/sockets/aio/win32/aio_queue_test.cpp
+
+../../../../build/yield/sockets/aio_test/yield_sockets_aio_test_main.o: ../../../../test/yield/sockets/aio/yield_sockets_aio_test_main.cpp
+	-mkdir -p ../../../../build/yield/sockets/aio_test 2>/dev/null
+	$(CXX) -c -o ../../../../build/yield/sockets/aio_test/yield_sockets_aio_test_main.o -MD $(CXXFLAGS) ../../../../test/yield/sockets/aio/yield_sockets_aio_test_main.cpp

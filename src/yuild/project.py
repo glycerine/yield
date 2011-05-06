@@ -172,9 +172,7 @@ class Project(object):
             path = locals()[path_var]
             platform_path = dict(PlatformDict(path))
             for platform in platform_path.iterkeys():
-                path = platform_path[platform]
-                if exists(path):
-                    platform_path[platform] = relpath(path, self.__project_dir_path)
+                platform_path[platform] = relpath(platform_path[platform], self.__project_dir_path)
             setattr(self, '_' + path_var, PlatformDict(platform_path))
 
     def __cmp__(self, other): return cmp(self.get_name(), other.get_name())

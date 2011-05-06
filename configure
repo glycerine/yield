@@ -661,10 +661,7 @@ if options.generate_proj:
             ("_test", Project.TYPE_PROGRAM)
         ):
             project = {
-               "build_dir_path": {
-                   "*": path_join(ROOT_DIR_PATH, "build", path_sep.join(project_name.split('.'))),
-                   "win32": path_join(ROOT_DIR_PATH, "build", path_sep.join(project_name.split('.'))) + project_name_suffix,
-               },
+               "build_dir_path": path_join(ROOT_DIR_PATH, "build", path_sep.join(project_name.split('.'))) + project_name_suffix,
                "cxxflags": CXXFLAGS,
                "cxxpath": CXXPATH,
                "include_file_paths": INCLUDE_FILE_PATHS[project_name + project_name_suffix],

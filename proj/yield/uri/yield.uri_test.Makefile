@@ -44,10 +44,10 @@ endif
 LIBS += -lyield_uri -lyield
 
 
-D_FILE_PATHS := $(shell find ../../../build/yield/uri -name "*.d")
+D_FILE_PATHS := $(shell find ../../../build/yield/uri_test -name "*.d")
 
 
-O_FILE_PATHS += ../../../build/yield/uri/uri_parser_test.o ../../../build/yield/uri/uri_test.o ../../../build/yield/uri/yield_uri_test_main.o
+O_FILE_PATHS += ../../../build/yield/uri_test/uri_parser_test.o ../../../build/yield/uri_test/uri_test.o ../../../build/yield/uri_test/yield_uri_test_main.o
 
 
 all: ../../../bin/yield/yield_uri_test
@@ -61,9 +61,9 @@ depclean:
 -include $(D_FILE_PATHS)
 			
 lcov: ../../../bin/yield/yield_uri_test
-	lcov --directory ../../../build/yield/uri --zerocounters
+	lcov --directory ../../../build/yield/uri_test --zerocounters
 	-../../../bin/yield/yield_uri_test
-	lcov --base-directory . --directory ../../../build/yield/uri --capture --output-file yield.uri_test_lcov-$(TIMESTAMP)
+	lcov --base-directory . --directory ../../../build/yield/uri_test --capture --output-file yield.uri_test_lcov-$(TIMESTAMP)
 	mkdir yield.uri_test_lcov_html-$(TIMESTAMP)
 	genhtml -o yield.uri_test_lcov_html-$(TIMESTAMP) yield.uri_test_lcov-$(TIMESTAMP)
 	-cp -R yield.uri_test_lcov_html-$(TIMESTAMP) /mnt/hgfs/minorg/Desktop
@@ -79,14 +79,14 @@ lcov: ../../../bin/yield/yield_uri_test
 	-mkdir -p ../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 
-../../../build/yield/uri/uri_parser_test.o: ../../../test/yield/uri/uri_parser_test.cpp
-	-mkdir -p ../../../build/yield/uri 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/uri/uri_parser_test.o -MD $(CXXFLAGS) ../../../test/yield/uri/uri_parser_test.cpp
+../../../build/yield/uri_test/uri_parser_test.o: ../../../test/yield/uri/uri_parser_test.cpp
+	-mkdir -p ../../../build/yield/uri_test 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/uri_test/uri_parser_test.o -MD $(CXXFLAGS) ../../../test/yield/uri/uri_parser_test.cpp
 
-../../../build/yield/uri/uri_test.o: ../../../test/yield/uri/uri_test.cpp
-	-mkdir -p ../../../build/yield/uri 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/uri/uri_test.o -MD $(CXXFLAGS) ../../../test/yield/uri/uri_test.cpp
+../../../build/yield/uri_test/uri_test.o: ../../../test/yield/uri/uri_test.cpp
+	-mkdir -p ../../../build/yield/uri_test 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/uri_test/uri_test.o -MD $(CXXFLAGS) ../../../test/yield/uri/uri_test.cpp
 
-../../../build/yield/uri/yield_uri_test_main.o: ../../../test/yield/uri/yield_uri_test_main.cpp
-	-mkdir -p ../../../build/yield/uri 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/uri/yield_uri_test_main.o -MD $(CXXFLAGS) ../../../test/yield/uri/yield_uri_test_main.cpp
+../../../build/yield/uri_test/yield_uri_test_main.o: ../../../test/yield/uri/yield_uri_test_main.cpp
+	-mkdir -p ../../../build/yield/uri_test 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/uri_test/yield_uri_test_main.o -MD $(CXXFLAGS) ../../../test/yield/uri/yield_uri_test_main.cpp

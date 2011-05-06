@@ -47,25 +47,25 @@ endif
 LIBS += -lyield_poll -lyield_thread -lyield
 
 
-D_FILE_PATHS := $(shell find ../../../build/yield/poll -name "*.d")
+D_FILE_PATHS := $(shell find ../../../build/yield/poll_test -name "*.d")
 
 
-O_FILE_PATHS += ../../../build/yield/poll/fd_event_test.o ../../../build/yield/poll/yield_poll_test_main.o
+O_FILE_PATHS += ../../../build/yield/poll_test/fd_event_test.o ../../../build/yield/poll_test/yield_poll_test_main.o
 ifeq ($(UNAME), Darwin)
-	O_FILE_PATHS += ../../../build/yield/poll/bsd/fd_event_queue_test.o
-	O_FILE_PATHS += ../../../build/yield/poll/posix/fd_event_queue_test.o
+	O_FILE_PATHS += ../../../build/yield/poll_test/bsd/fd_event_queue_test.o
+	O_FILE_PATHS += ../../../build/yield/poll_test/posix/fd_event_queue_test.o
 endif
 ifeq ($(UNAME), FreeBSD)
-	O_FILE_PATHS += ../../../build/yield/poll/bsd/fd_event_queue_test.o
-	O_FILE_PATHS += ../../../build/yield/poll/posix/fd_event_queue_test.o
+	O_FILE_PATHS += ../../../build/yield/poll_test/bsd/fd_event_queue_test.o
+	O_FILE_PATHS += ../../../build/yield/poll_test/posix/fd_event_queue_test.o
 endif
 ifeq ($(UNAME), Linux)
-	O_FILE_PATHS += ../../../build/yield/poll/linux/fd_event_queue_test.o
-	O_FILE_PATHS += ../../../build/yield/poll/posix/fd_event_queue_test.o
+	O_FILE_PATHS += ../../../build/yield/poll_test/linux/fd_event_queue_test.o
+	O_FILE_PATHS += ../../../build/yield/poll_test/posix/fd_event_queue_test.o
 endif
 ifeq ($(UNAME), Solaris)
-	O_FILE_PATHS += ../../../build/yield/poll/posix/fd_event_queue_test.o
-	O_FILE_PATHS += ../../../build/yield/poll/sunos/fd_event_queue_test.o
+	O_FILE_PATHS += ../../../build/yield/poll_test/posix/fd_event_queue_test.o
+	O_FILE_PATHS += ../../../build/yield/poll_test/sunos/fd_event_queue_test.o
 endif
 ifeq ($(UNAME), MINGW32)
 	O_FILE_PATHS += ../../../build/yield/poll_test/win32/fd_event_queue_test.o
@@ -83,9 +83,9 @@ depclean:
 -include $(D_FILE_PATHS)
 			
 lcov: ../../../bin/yield/yield_poll_test
-	lcov --directory ../../../build/yield/poll --zerocounters
+	lcov --directory ../../../build/yield/poll_test --zerocounters
 	-../../../bin/yield/yield_poll_test
-	lcov --base-directory . --directory ../../../build/yield/poll --capture --output-file yield.poll_test_lcov-$(TIMESTAMP)
+	lcov --base-directory . --directory ../../../build/yield/poll_test --capture --output-file yield.poll_test_lcov-$(TIMESTAMP)
 	mkdir yield.poll_test_lcov_html-$(TIMESTAMP)
 	genhtml -o yield.poll_test_lcov_html-$(TIMESTAMP) yield.poll_test_lcov-$(TIMESTAMP)
 	-cp -R yield.poll_test_lcov_html-$(TIMESTAMP) /mnt/hgfs/minorg/Desktop
@@ -101,30 +101,30 @@ lcov: ../../../bin/yield/yield_poll_test
 	-mkdir -p ../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 
-../../../build/yield/poll/bsd/fd_event_queue_test.o: ../../../test/yield/poll/bsd/fd_event_queue_test.cpp
-	-mkdir -p ../../../build/yield/poll/bsd 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/poll/bsd/fd_event_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/poll/bsd/fd_event_queue_test.cpp
+../../../build/yield/poll_test/bsd/fd_event_queue_test.o: ../../../test/yield/poll/bsd/fd_event_queue_test.cpp
+	-mkdir -p ../../../build/yield/poll_test/bsd 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/poll_test/bsd/fd_event_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/poll/bsd/fd_event_queue_test.cpp
 
-../../../build/yield/poll/fd_event_test.o: ../../../test/yield/poll/fd_event_test.cpp
-	-mkdir -p ../../../build/yield/poll 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/poll/fd_event_test.o -MD $(CXXFLAGS) ../../../test/yield/poll/fd_event_test.cpp
+../../../build/yield/poll_test/fd_event_test.o: ../../../test/yield/poll/fd_event_test.cpp
+	-mkdir -p ../../../build/yield/poll_test 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/poll_test/fd_event_test.o -MD $(CXXFLAGS) ../../../test/yield/poll/fd_event_test.cpp
 
-../../../build/yield/poll/linux/fd_event_queue_test.o: ../../../test/yield/poll/linux/fd_event_queue_test.cpp
-	-mkdir -p ../../../build/yield/poll/linux 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/poll/linux/fd_event_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/poll/linux/fd_event_queue_test.cpp
+../../../build/yield/poll_test/linux/fd_event_queue_test.o: ../../../test/yield/poll/linux/fd_event_queue_test.cpp
+	-mkdir -p ../../../build/yield/poll_test/linux 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/poll_test/linux/fd_event_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/poll/linux/fd_event_queue_test.cpp
 
-../../../build/yield/poll/posix/fd_event_queue_test.o: ../../../test/yield/poll/posix/fd_event_queue_test.cpp
-	-mkdir -p ../../../build/yield/poll/posix 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/poll/posix/fd_event_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/poll/posix/fd_event_queue_test.cpp
+../../../build/yield/poll_test/posix/fd_event_queue_test.o: ../../../test/yield/poll/posix/fd_event_queue_test.cpp
+	-mkdir -p ../../../build/yield/poll_test/posix 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/poll_test/posix/fd_event_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/poll/posix/fd_event_queue_test.cpp
 
-../../../build/yield/poll/sunos/fd_event_queue_test.o: ../../../test/yield/poll/sunos/fd_event_queue_test.cpp
-	-mkdir -p ../../../build/yield/poll/sunos 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/poll/sunos/fd_event_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/poll/sunos/fd_event_queue_test.cpp
-
-../../../build/yield/poll/yield_poll_test_main.o: ../../../test/yield/poll/yield_poll_test_main.cpp
-	-mkdir -p ../../../build/yield/poll 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/poll/yield_poll_test_main.o -MD $(CXXFLAGS) ../../../test/yield/poll/yield_poll_test_main.cpp
+../../../build/yield/poll_test/sunos/fd_event_queue_test.o: ../../../test/yield/poll/sunos/fd_event_queue_test.cpp
+	-mkdir -p ../../../build/yield/poll_test/sunos 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/poll_test/sunos/fd_event_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/poll/sunos/fd_event_queue_test.cpp
 
 ../../../build/yield/poll_test/win32/fd_event_queue_test.o: ../../../test/yield/poll/win32/fd_event_queue_test.cpp
 	-mkdir -p ../../../build/yield/poll_test/win32 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/poll_test/win32/fd_event_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/poll/win32/fd_event_queue_test.cpp
+
+../../../build/yield/poll_test/yield_poll_test_main.o: ../../../test/yield/poll/yield_poll_test_main.cpp
+	-mkdir -p ../../../build/yield/poll_test 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/poll_test/yield_poll_test_main.o -MD $(CXXFLAGS) ../../../test/yield/poll/yield_poll_test_main.cpp

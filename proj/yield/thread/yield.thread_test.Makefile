@@ -47,10 +47,10 @@ endif
 LIBS += -lyield_thread -lyield
 
 
-D_FILE_PATHS := $(shell find ../../../build/yield/thread -name "*.d")
+D_FILE_PATHS := $(shell find ../../../build/yield/thread_test -name "*.d")
 
 
-O_FILE_PATHS += ../../../build/yield/thread/condition_variable_test.o ../../../build/yield/thread/lightweight_mutex_test.o ../../../build/yield/thread/mutex_test.o ../../../build/yield/thread/processor_set_test.o ../../../build/yield/thread/reader_writer_lock_test.o ../../../build/yield/thread/sampler_test.o ../../../build/yield/thread/semaphore_test.o ../../../build/yield/thread/thread_test.o ../../../build/yield/thread/yield_thread_test_main.o
+O_FILE_PATHS += ../../../build/yield/thread_test/condition_variable_test.o ../../../build/yield/thread_test/lightweight_mutex_test.o ../../../build/yield/thread_test/mutex_test.o ../../../build/yield/thread_test/processor_set_test.o ../../../build/yield/thread_test/reader_writer_lock_test.o ../../../build/yield/thread_test/sampler_test.o ../../../build/yield/thread_test/semaphore_test.o ../../../build/yield/thread_test/thread_test.o ../../../build/yield/thread_test/yield_thread_test_main.o
 
 
 all: ../../../bin/yield/yield_thread_test
@@ -64,9 +64,9 @@ depclean:
 -include $(D_FILE_PATHS)
 			
 lcov: ../../../bin/yield/yield_thread_test
-	lcov --directory ../../../build/yield/thread --zerocounters
+	lcov --directory ../../../build/yield/thread_test --zerocounters
 	-../../../bin/yield/yield_thread_test
-	lcov --base-directory . --directory ../../../build/yield/thread --capture --output-file yield.thread_test_lcov-$(TIMESTAMP)
+	lcov --base-directory . --directory ../../../build/yield/thread_test --capture --output-file yield.thread_test_lcov-$(TIMESTAMP)
 	mkdir yield.thread_test_lcov_html-$(TIMESTAMP)
 	genhtml -o yield.thread_test_lcov_html-$(TIMESTAMP) yield.thread_test_lcov-$(TIMESTAMP)
 	-cp -R yield.thread_test_lcov_html-$(TIMESTAMP) /mnt/hgfs/minorg/Desktop
@@ -82,38 +82,38 @@ lcov: ../../../bin/yield/yield_thread_test
 	-mkdir -p ../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 
-../../../build/yield/thread/condition_variable_test.o: ../../../test/yield/thread/condition_variable_test.cpp
-	-mkdir -p ../../../build/yield/thread 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/thread/condition_variable_test.o -MD $(CXXFLAGS) ../../../test/yield/thread/condition_variable_test.cpp
+../../../build/yield/thread_test/condition_variable_test.o: ../../../test/yield/thread/condition_variable_test.cpp
+	-mkdir -p ../../../build/yield/thread_test 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/thread_test/condition_variable_test.o -MD $(CXXFLAGS) ../../../test/yield/thread/condition_variable_test.cpp
 
-../../../build/yield/thread/lightweight_mutex_test.o: ../../../test/yield/thread/lightweight_mutex_test.cpp
-	-mkdir -p ../../../build/yield/thread 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/thread/lightweight_mutex_test.o -MD $(CXXFLAGS) ../../../test/yield/thread/lightweight_mutex_test.cpp
+../../../build/yield/thread_test/lightweight_mutex_test.o: ../../../test/yield/thread/lightweight_mutex_test.cpp
+	-mkdir -p ../../../build/yield/thread_test 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/thread_test/lightweight_mutex_test.o -MD $(CXXFLAGS) ../../../test/yield/thread/lightweight_mutex_test.cpp
 
-../../../build/yield/thread/mutex_test.o: ../../../test/yield/thread/mutex_test.cpp
-	-mkdir -p ../../../build/yield/thread 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/thread/mutex_test.o -MD $(CXXFLAGS) ../../../test/yield/thread/mutex_test.cpp
+../../../build/yield/thread_test/mutex_test.o: ../../../test/yield/thread/mutex_test.cpp
+	-mkdir -p ../../../build/yield/thread_test 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/thread_test/mutex_test.o -MD $(CXXFLAGS) ../../../test/yield/thread/mutex_test.cpp
 
-../../../build/yield/thread/processor_set_test.o: ../../../test/yield/thread/processor_set_test.cpp
-	-mkdir -p ../../../build/yield/thread 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/thread/processor_set_test.o -MD $(CXXFLAGS) ../../../test/yield/thread/processor_set_test.cpp
+../../../build/yield/thread_test/processor_set_test.o: ../../../test/yield/thread/processor_set_test.cpp
+	-mkdir -p ../../../build/yield/thread_test 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/thread_test/processor_set_test.o -MD $(CXXFLAGS) ../../../test/yield/thread/processor_set_test.cpp
 
-../../../build/yield/thread/reader_writer_lock_test.o: ../../../test/yield/thread/reader_writer_lock_test.cpp
-	-mkdir -p ../../../build/yield/thread 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/thread/reader_writer_lock_test.o -MD $(CXXFLAGS) ../../../test/yield/thread/reader_writer_lock_test.cpp
+../../../build/yield/thread_test/reader_writer_lock_test.o: ../../../test/yield/thread/reader_writer_lock_test.cpp
+	-mkdir -p ../../../build/yield/thread_test 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/thread_test/reader_writer_lock_test.o -MD $(CXXFLAGS) ../../../test/yield/thread/reader_writer_lock_test.cpp
 
-../../../build/yield/thread/sampler_test.o: ../../../test/yield/thread/sampler_test.cpp
-	-mkdir -p ../../../build/yield/thread 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/thread/sampler_test.o -MD $(CXXFLAGS) ../../../test/yield/thread/sampler_test.cpp
+../../../build/yield/thread_test/sampler_test.o: ../../../test/yield/thread/sampler_test.cpp
+	-mkdir -p ../../../build/yield/thread_test 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/thread_test/sampler_test.o -MD $(CXXFLAGS) ../../../test/yield/thread/sampler_test.cpp
 
-../../../build/yield/thread/semaphore_test.o: ../../../test/yield/thread/semaphore_test.cpp
-	-mkdir -p ../../../build/yield/thread 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/thread/semaphore_test.o -MD $(CXXFLAGS) ../../../test/yield/thread/semaphore_test.cpp
+../../../build/yield/thread_test/semaphore_test.o: ../../../test/yield/thread/semaphore_test.cpp
+	-mkdir -p ../../../build/yield/thread_test 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/thread_test/semaphore_test.o -MD $(CXXFLAGS) ../../../test/yield/thread/semaphore_test.cpp
 
-../../../build/yield/thread/thread_test.o: ../../../test/yield/thread/thread_test.cpp
-	-mkdir -p ../../../build/yield/thread 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/thread/thread_test.o -MD $(CXXFLAGS) ../../../test/yield/thread/thread_test.cpp
+../../../build/yield/thread_test/thread_test.o: ../../../test/yield/thread/thread_test.cpp
+	-mkdir -p ../../../build/yield/thread_test 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/thread_test/thread_test.o -MD $(CXXFLAGS) ../../../test/yield/thread/thread_test.cpp
 
-../../../build/yield/thread/yield_thread_test_main.o: ../../../test/yield/thread/yield_thread_test_main.cpp
-	-mkdir -p ../../../build/yield/thread 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/thread/yield_thread_test_main.o -MD $(CXXFLAGS) ../../../test/yield/thread/yield_thread_test_main.cpp
+../../../build/yield/thread_test/yield_thread_test_main.o: ../../../test/yield/thread/yield_thread_test_main.cpp
+	-mkdir -p ../../../build/yield/thread_test 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/thread_test/yield_thread_test_main.o -MD $(CXXFLAGS) ../../../test/yield/thread/yield_thread_test_main.cpp
