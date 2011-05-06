@@ -27,8 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "processor_set.hpp"
-#include "thread.hpp"
+#include "yield/thread/win32/processor_set.hpp"
+#include "yield/thread/win32/thread.hpp"
 #include "yield/exception.hpp"
 #include "yield/time.hpp"
 #include "yield/thread/runnable.hpp"
@@ -98,7 +98,7 @@ unsigned long __stdcall Thread::run(void* this_) {
   return 0;
 }
 
-Thread* Thread::self() {
+auto_Object<Thread> Thread::self() {
   return new Thread(GetCurrentThread(), GetCurrentThreadId());
 }
 

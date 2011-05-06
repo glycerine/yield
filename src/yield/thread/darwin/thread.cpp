@@ -41,7 +41,7 @@ Thread::Thread(pthread_t pthread)
   : yield::thread::posix::Thread(handle)
 { }
 
-Thread* Thread::self() {
+auto_Object<Thread> Thread::self() {
   return new Thread(pthread_self());
 }
 

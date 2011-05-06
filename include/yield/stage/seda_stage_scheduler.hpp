@@ -31,14 +31,9 @@
 #define _YIELD_STAGE_SEDA_STAGE_SCHEDULER_HPP_
 
 #include "yield/stage/stage_scheduler.hpp"
-
+#include "yield/thread/thread.hpp"
 
 namespace yield {
-namespace thread {
-class Thread;
-}
-
-
 namespace stage {
 class SEDAStageScheduler : public StageScheduler {
 public:

@@ -40,7 +40,7 @@ class Thread : public yield::thread::posix::Thread {
 public:
   Thread(Runnable&);
 
-  static Thread* self();
+  static auto_Object<Thread> self();
   void yield();
 
 private:

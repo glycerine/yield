@@ -262,7 +262,7 @@ SOURCE_FILE_PATHS = {}
 for project_name in PROJECT_NAMES:
     project_include_dir_path = path_join(INCLUDE_DIR_PATH, path_sep.join(project_name.split('.')))
     INCLUDE_FILE_PATHS[project_name] = []
-    for platform in [""] + list(PLATFORMS):
+    for platform in list(PLATFORMS) + [""]:
         if exists(path_join(project_include_dir_path, platform)):
             for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS:
                 INCLUDE_FILE_PATHS[project_name].extend(
@@ -277,7 +277,7 @@ for project_name in PROJECT_NAMES:
         ):
         SOURCE_DIR_PATHS[project_name_] = project_source_dir_path
         SOURCE_FILE_PATHS[project_name_] = []
-        for platform in [""] + list(PLATFORMS):
+        for platform in list(PLATFORMS) + [""]:
             if exists(path_join(project_source_dir_path, platform)):
                 for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + SOURCE_FILE_FNMATCH_PATTERNS:
                     SOURCE_FILE_PATHS[project_name_].extend(
@@ -382,16 +382,21 @@ INCLUDE_FILE_PATHS["yield.stage"] = [
 INCLUDE_FILE_PATHS["yield.stage"]
 
 INCLUDE_FILE_PATHS["yield.thread"] = [
+    path_join(INCLUDE_DIR_PATH, "yield", "thread", "posix", "thread.hpp"),
     path_join(INCLUDE_DIR_PATH, "yield", "thread", "darwin", "semaphore.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "thread", "darwin", "thread.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "thread", "linux", "thread.hpp"),
     path_join(INCLUDE_DIR_PATH, "yield", "thread", "posix", "condition_variable.hpp"),
     path_join(INCLUDE_DIR_PATH, "yield", "thread", "posix", "mutex.hpp"),
     path_join(INCLUDE_DIR_PATH, "yield", "thread", "posix", "reader_writer_lock.hpp"),
     path_join(INCLUDE_DIR_PATH, "yield", "thread", "posix", "semaphore.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "thread", "sunos", "thread.hpp"),
     path_join(INCLUDE_DIR_PATH, "yield", "thread", "win32", "lightweight_mutex.hpp"),
     path_join(INCLUDE_DIR_PATH, "yield", "thread", "win32", "mutex.hpp"),
     path_join(INCLUDE_DIR_PATH, "yield", "thread", "win32", "semaphore.hpp"),
     path_join(INCLUDE_DIR_PATH, "yield", "thread", "win32", "condition_variable.hpp"),
     path_join(INCLUDE_DIR_PATH, "yield", "thread", "win32", "reader_writer_lock.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "thread", "win32", "thread.hpp"),
 ] + \
 INCLUDE_FILE_PATHS["yield.thread"]
 

@@ -30,7 +30,8 @@
 #ifndef _YIELD_THREAD_WIN32_THREAD_HPP_
 #define _YIELD_THREAD_WIN32_THREAD_HPP_
 
-#include "yield/types.hpp"
+#include "yield/auto_object.hpp"
+#include "yield/object.hpp"
 
 namespace yield {
 class Time;
@@ -41,7 +42,7 @@ class Runnable;
 namespace win32 {
 class ProcessorSet;
 
-class Thread {
+class Thread : public Object {
 public:
   Thread(Runnable&);
   ~Thread();
@@ -73,7 +74,7 @@ public:
   void nanosleep(const Time&);
 
 public:
-  static Thread* self();
+  static auto_Object<Thread> self();
 
 public:
   void set_name(const char* name);

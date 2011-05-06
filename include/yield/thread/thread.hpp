@@ -30,115 +30,31 @@
 #ifndef _YIELD_THREAD_THREAD_HPP_
 #define _YIELD_THREAD_THREAD_HPP_
 
-#include "yield/auto_object.hpp"
-#include "yield/thread/runnable.hpp"
+#if defined(__linux__)
+#include "yield/thread/linux/thread.hpp"
+#elif defined(__MACH__)
+#include "yield/thread/darwin/thread.hpp"
+#elif defined(__sun)
+#include "yield/thread/sunos/thread.hpp"
+#elif defined(_WIN32)
+#include "yield/thread/win32/thread.hpp"
+#else
+#include "yield/thread/posix/thread.hpp"
+#endif
 
 namespace yield {
-class Time;
-
 namespace thread {
-class ProcessorSet;
-class Runnable;
-
 #if defined(__linux__)
-namespace linux {
-class Thread;
-}
+typedef linux::Thread Thread;
 #elif defined(__MACH__)
-namespace darwin {
-class Thread;
-}
+typedef darwin::Thread Thread;
 #elif defined(__sun)
-namespace sunos {
-class Thread;
-}
+typedef sunos::Thread Thread;
 #elif defined(_WIN32)
-namespace win32 {
-class Thread;
-}
+typedef win32::Thread Thread;
 #else
-namespace posix {
-class Thread;
-}
+typedef posix::Thread Thread;
 #endif
-
-
-class Thread : public Object {
-public:
-  Thread(void (*run)(void*), void* context = NULL);
-  Thread(Runnable&);
-  ~Thread();
-
-public:
-  bool cancel();
-
-public:
-  Runnable* get_runnable() const;
-
-public:
-  void* getspecific(uintptr_t key);
-
-public:
-  bool is_running() const;
-
-public:
-  bool join();
-
-public:
-  uintptr_t key_create();
-  bool key_delete(uintptr_t key);
-
-public:
-  void nanosleep(const Time&);
-
-public:
-  static auto_Object<Thread> self();
-
-public:
-  void set_name(const char* name);
-
-public:
-  bool setaffinity(uint16_t logical_processor_i);
-  bool setaffinity(const ProcessorSet& logical_processor_set);
-
-public:
-  bool setspecific(uintptr_t key, intptr_t value);
-  bool setspecific(uintptr_t key, uintptr_t value);
-  bool setspecific(uintptr_t key, void* value);
-
-public:
-  void yield();
-
-private:
-#if defined(__linux__)
-  Thread(linux::Thread* pimpl)
-#elif defined(__MACH__)
-  Thread(darwin::Thread* pimpl)
-#elif defined(__sun)
-  Thread(sunos::Thread* pimpl)
-#elif defined(_WIN32)
-  Thread(win32::Thread* pimpl)
-#else
-  Thread(posix::Thread* pimpl)
-#endif
-    : pimpl(pimpl)
-  { }
-
-  void init(Runnable&);
-
-private:
-#if defined(__linux__)
-  linux::Thread* pimpl;
-#elif defined(__MACH__)
-  darwin::Thread* pimpl;
-#elif defined(__sun)
-  sunos::Thread* pimpl;
-#elif defined(_WIN32)
-  win32::Thread* pimpl;
-#else
-  posix::Thread* pimpl;
-#endif
-};
 }
 }
 

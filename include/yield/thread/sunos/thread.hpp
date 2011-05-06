@@ -30,24 +30,27 @@
 #ifndef _YIELD_THREAD_SUNOS_THREAD_HPP_
 #define _YIELD_THREAD_SUNOS_THREAD_HPP_
 
-#include "../posix/thread.hpp"
+#include "yield/thread/posix/thread.hpp"
 
 #include <thread.h>
-
 
 namespace yield {
 namespace thread {
 namespace sunos {
 class ProcessorSet;
 
-
 class Thread : public yield::thread::posix::Thread {
 public:
   Thread(Runnable&);
 
-  static Thread* self();
+public:
+  static auto_Object<Thread> self();
+
+public:
   bool setaffinity(uint16_t logical_processor_i);
   bool setaffinity(const ProcessorSet& logical_processor_set);
+
+public:
   void yield();
 
 private:

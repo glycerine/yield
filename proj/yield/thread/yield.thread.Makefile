@@ -50,7 +50,6 @@ LIBS += -lyield
 D_FILE_PATHS := $(shell find ../../../build/yield/thread -name "*.d")
 
 
-O_FILE_PATHS += ../../../build/yield/thread/processor_set.o ../../../build/yield/thread/thread.o
 ifeq ($(UNAME), Darwin)
 	O_FILE_PATHS += ../../../build/yield/thread/darwin/processor_set.o ../../../build/yield/thread/darwin/semaphore.o ../../../build/yield/thread/darwin/thread.o
 	O_FILE_PATHS += ../../../build/yield/thread/posix/condition_variable.o ../../../build/yield/thread/posix/mutex.o ../../../build/yield/thread/posix/reader_writer_lock.o ../../../build/yield/thread/posix/semaphore.o ../../../build/yield/thread/posix/thread.o
@@ -130,10 +129,6 @@ depclean:
 	-mkdir -p ../../../build/yield/thread/posix 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/thread/posix/thread.o -MD $(CXXFLAGS) ../../../src/yield/thread/posix/thread.cpp
 
-../../../build/yield/thread/processor_set.o: ../../../src/yield/thread/processor_set.cpp
-	-mkdir -p ../../../build/yield/thread 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/thread/processor_set.o -MD $(CXXFLAGS) ../../../src/yield/thread/processor_set.cpp
-
 ../../../build/yield/thread/sunos/processor_set.o: ../../../src/yield/thread/sunos/processor_set.cpp
 	-mkdir -p ../../../build/yield/thread/sunos 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/thread/sunos/processor_set.o -MD $(CXXFLAGS) ../../../src/yield/thread/sunos/processor_set.cpp
@@ -141,10 +136,6 @@ depclean:
 ../../../build/yield/thread/sunos/thread.o: ../../../src/yield/thread/sunos/thread.cpp
 	-mkdir -p ../../../build/yield/thread/sunos 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/thread/sunos/thread.o -MD $(CXXFLAGS) ../../../src/yield/thread/sunos/thread.cpp
-
-../../../build/yield/thread/thread.o: ../../../src/yield/thread/thread.cpp
-	-mkdir -p ../../../build/yield/thread 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/thread/thread.o -MD $(CXXFLAGS) ../../../src/yield/thread/thread.cpp
 
 ../../../build/yield/thread/win32/condition_variable.o: ../../../src/yield/thread/win32/condition_variable.cpp
 	-mkdir -p ../../../build/yield/thread/win32 2>/dev/null

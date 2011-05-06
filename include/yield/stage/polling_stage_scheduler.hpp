@@ -30,16 +30,12 @@
 #ifndef _YIELD_STAGE_POLLING_STAGE_SCHEDULER_HPP_
 #define _YIELD_STAGE_POLLING_STAGE_SCHEDULER_HPP_
 
-#include "yield/stage/stage_scheduler.hpp"
 #include "yield/queue/rendezvous_concurrent_queue.hpp"
+#include "yield/stage/stage_scheduler.hpp"
 #include "yield/thread/runnable.hpp"
 #include "yield/thread/thread.hpp"
 
 namespace yield {
-namespace thread {
-class Thread;
-}
-
 namespace stage {
 class PollingStageScheduler : public StageScheduler {
 public:

@@ -1,4 +1,4 @@
-// yield/thread/linux/thread.hpp
+// yield/thread/posix/thread.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,39 +27,67 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_THREAD_LINUX_THREAD_HPP_
-#define _YIELD_THREAD_LINUX_THREAD_HPP_
+#ifndef _YIELD_THREAD_POSIX_THREAD_HPP_
+#define _YIELD_THREAD_POSIX_THREAD_HPP_
 
-#include "../posix/thread.hpp"
+#include "yield/object.hpp"
+
+#include <pthread.h>
 
 namespace yield {
-namespace thread {
-namespace linux {
-class ProcessorSet;
+class Time;
 
-class Thread : public yield::thread::posix::Thread {
+namespace thread {
+class Runnable;
+
+namespace posix {
+class Thread : public Object {
 public:
   Thread(Runnable&);
+  ~Thread();
 
 public:
-  static Thread* self();
+  bool cancel();
 
 public:
-  bool setaffinity(uint16_t logical_processor_i);
-  bool setaffinity(const ProcessorSet& logical_processor_set);
+  Runnable* get_runnable() {
+    return runnable;
+  }
 
 public:
-  void yield();
+  void* getspecific(uintptr_t key);
+
+public:
+  bool is_running() const {
+    return state == STATE_RUNNING;
+  }
+
+public:
+  bool join();
+
+public:
+  uintptr_t key_create();
+  bool key_delete(uintptr_t key);
+
+public:
+  void nanosleep(const Time&);
+
+public:
+  bool setspecific(uintptr_t key, void* value);
+
+protected:
+  Thread(pthread_t);
+
+protected:
+  virtual void* run();
 
 private:
-  Thread(pthread_t, pid_t);
+  static void* run(void*);
 
 private:
-  // yield::thread::posix::Thread
-  void* run();
-
-private:
-  pid_t tid;
+  pthread_t pthread;
+  Runnable* runnable;
+  enum { STATE_READY, STATE_RUNNING, STATE_SUSPENDED } state;
 };
 }
 }

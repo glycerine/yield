@@ -30,63 +30,27 @@
 #ifndef _YIELD_THREAD_PROCESSOR_SET_HPP_
 #define _YIELD_THREAD_PROCESSOR_SET_HPP_
 
-#include "yield/object.hpp"
-
+#if defined(__linux__)
+#include "yield/thread/linux/processor_set.hpp"
+#elif defined(__MACH__)
+#include "yield/processor_set/darwin/processor_set.hpp"
+#elif defined(__sun)
+#include "yield/processor_set/sunos/processor_set.hpp"
+#elif defined(_WIN32)
+#include "yield/processor_set/win32/processor_set.hpp"
+#endif
 
 namespace yield {
 namespace thread {
 #if defined(__linux__)
-namespace linux {
-class ProcessorSet;
-}
+typedef linux::ProcessorSet ProcessorSet;
+#elif defined(__MACH__)
+typedef darwin::ProcessorSet ProcessorSet;
 #elif defined(__sun)
-namespace sunos {
-class ProcessorSet;
-}
+typedef sunos::ProcessorSet ProcessorSet;
 #elif defined(_WIN32)
-namespace win32 {
-class ProcessorSet;
-}
+typedef win32::ProcessorSet ProcessorSet;
 #endif
-
-
-class ProcessorSet : public Object {
-public:
-  ProcessorSet();
-  ~ProcessorSet();
-
-public:
-  void clear();
-  void clear(uint16_t processor_i);
-
-public:
-  uint16_t count() const;
-
-  bool empty() const {
-    return count() == 0;
-  }
-
-public:
-  static uint16_t get_online_logical_processor_count();
-  static uint16_t get_online_physical_processor_count();
-
-public:
-  bool isset(uint16_t processor_i) const;
-
-public:
-  bool set(uint16_t processor_i);
-
-private:
-  friend class Thread;
-
-#if defined(__linux__)
-  linux::ProcessorSet* pimpl;
-#elif defined(__sun)
-  sunos::ProcessorSet* pimpl;
-#elif defined(_WIN32)
-  win32::ProcessorSet* pimpl;
-#endif
-};
 }
 }
 

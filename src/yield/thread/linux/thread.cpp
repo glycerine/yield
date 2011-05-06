@@ -52,7 +52,7 @@ void* Thread::run() {
   return yield::thread::posix::Thread::run();
 }
 
-Thread* Thread::self() {
+auto_Object<Thread> Thread::self() {
   return new Thread(pthread_self(), syscall(SYS_gettid));
 }
 
