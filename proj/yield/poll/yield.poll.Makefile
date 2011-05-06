@@ -83,11 +83,11 @@ depclean:
 -include $(D_FILE_PATHS)
 
 
-../../../lib/yield/libyield_thread.a:
-	$(MAKE) -C ../thread yield.thread.Makefile
+../../../lib/yield/libyield_queue.a:
+	$(MAKE) -C ../queue yield.queue.Makefile
 
 
-../../../lib/yield/libyield_poll.a: $(O_FILE_PATHS) ../../../lib/yield/libyield_thread.a
+../../../lib/yield/libyield_poll.a: $(O_FILE_PATHS) ../../../lib/yield/libyield_queue.a
 	-mkdir -p ../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(O_FILE_PATHS)
 

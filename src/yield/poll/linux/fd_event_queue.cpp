@@ -41,8 +41,6 @@
 namespace yield {
 namespace poll {
 namespace linux {
-using yield::thread::BlockingConcurrentQueue;
-
 FDEventQueue::FDEventQueue() {
   uint32_t error_code;
   epfd = epoll_create(32768);

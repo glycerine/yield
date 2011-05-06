@@ -1,4 +1,4 @@
-// unit_concurrent_queue_test.cpp
+// rendezvous_concurrent_queue_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -28,7 +28,9 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "queue_test.hpp"
-#include "yield/thread/unit_concurrent_queue.hpp"
+#include "yield/queue/rendezvous_concurrent_queue.hpp"
 
-
-TEST_SUITE_EX(UnitConcurrentQueue, yield::thread::QueueTestSuite< yield::thread::UnitConcurrentQueue<uint32_t> >);
+TEST_SUITE_EX(
+  RendezvousConcurrentQueue,
+  yield::queue::QueueTestSuite< yield::queue::RendezvousConcurrentQueue<uint32_t> >
+);

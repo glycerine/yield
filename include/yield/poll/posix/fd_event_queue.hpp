@@ -31,7 +31,7 @@
 #define _YIELD_POLL_POSIX_FD_EVENT_QUEUE_HPP_
 
 #include "yield/poll/fd_event_queue.hpp"
-#include "yield/thread/blocking_concurrent_queue.hpp"
+#include "yield/queue/blocking_concurrent_queue.hpp"
 
 #include <sys/poll.h>
 
@@ -40,7 +40,7 @@ namespace poll {
 namespace posix {
 class FDEventQueue
   : public EventQueue,
-    private yield::thread::BlockingConcurrentQueue<Event> {
+    private yield::queue::BlockingConcurrentQueue<Event> {
 public:
   FDEventQueue();
   ~FDEventQueue();

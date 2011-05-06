@@ -66,12 +66,15 @@
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>yield_queue.lib;yield_thread.lib;yield.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_thread.lib;yield.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>CONSOLE</SubSystem>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">
     <ClCompile>
@@ -86,12 +89,15 @@
       <WarningLevel>Level4</WarningLevel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>yield_queue.lib;yield_thread.lib;yield.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_thread.lib;yield.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>CONSOLE</SubSystem>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
 
   <ItemGroup Label="ClIncludeItems">
@@ -104,6 +110,8 @@
     <ClCompile Include="..\..\..\test\yield\queue\non_blocking_concurrent_queue_test.cpp">
     </ClCompile>
     <ClInclude Include="..\..\..\test\yield\queue\queue_test.hpp" />
+    <ClCompile Include="..\..\..\test\yield\queue\rendezvous_concurrent_queue_test.cpp">
+    </ClCompile>
     <ClCompile Include="..\..\..\test\yield\queue\synchronized_concurrent_event_queue_test.cpp">
     </ClCompile>
     <ClCompile Include="..\..\..\test\yield\queue\synchronized_concurrent_queue_test.cpp">
@@ -112,7 +120,7 @@
     </ClCompile>
     <ClCompile Include="..\..\..\test\yield\queue\tls_concurrent_queue_test.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\queue\unit_concurrent_queue_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\queue\yield_queue_test_main.cpp">
     </ClCompile>
   </ItemGroup>
 

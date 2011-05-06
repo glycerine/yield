@@ -1,4 +1,4 @@
-// synchronized_event_queue_test.cpp
+// synchronized_concurrent_event_queue_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -28,6 +28,9 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../event_queue_test.hpp"
-#include "yield/thread/synchronized_event_queue.hpp"
+#include "yield/queue/synchronized_concurrent_event_queue.hpp"
 
-TEST_SUITE_EX(SynchronizedEventQueue, yield::EventQueueTestSuite<yield::thread::SynchronizedEventQueue>);
+TEST_SUITE_EX(
+  SynchronizedConcurrentEventQueue,
+  yield::EventQueueTestSuite<yield::queue::SynchronizedConcurrentEventQueue>
+);

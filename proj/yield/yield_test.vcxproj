@@ -70,6 +70,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>CONSOLE</SubSystem>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">
     <ClCompile>
@@ -90,6 +93,9 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>CONSOLE</SubSystem>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
 
   <ItemGroup Label="ClIncludeItems">

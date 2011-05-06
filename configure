@@ -84,7 +84,7 @@ PROJECT_REFERENCES = {
     "yield.http": ("yield.uri",),
     "yield.http.server": ("yield.fs", "yield.http", "yield.sockets.aio"),
     "yield.i18n": ("yield",),
-    "yield.poll": ("yield.thread",),
+    "yield.poll": ("yield.queue",),
     "yield.queue": ("yield.thread",),
     "yield.sockets": ("yield",),
     "yield.sockets.aio": ("yield.aio", "yield.sockets.poll"),
@@ -243,10 +243,11 @@ for project_name, project_references in PROJECT_REFERENCES_EXPANDED.iteritems():
 
     # Add the project references' outputs to the project's libs
     for project_reference in project_references:
-        project_reference_lib = path_split(OUTPUT_FILE_PATHS[project_reference])[-1]
-        LIBS_EXPANDED[project_name].setdefault('*', [])
-        assert project_reference_lib not in LIBS_EXPANDED[project_name]['*'], LIBS_EXPANDED[project_name]['*']
-        LIBS_EXPANDED[project_name]['*'].append(project_reference_lib)
+        if project_reference != "yield.queue":
+            project_reference_lib = path_split(OUTPUT_FILE_PATHS[project_reference])[-1]
+            LIBS_EXPANDED[project_name].setdefault('*', [])
+            assert project_reference_lib not in LIBS_EXPANDED[project_name]['*'], LIBS_EXPANDED[project_name]['*']
+            LIBS_EXPANDED[project_name]['*'].append(project_reference_lib)
 
     # dedup
     for platform in LIBS_EXPANDED[project_name].iterkeys():

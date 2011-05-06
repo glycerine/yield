@@ -37,7 +37,7 @@
 namespace yield {
 namespace poll {
 namespace posix {
-using yield::thread::BlockingConcurrentQueue;
+using yield::queue::BlockingConcurrentQueue;
 
 FDEventQueue::FDEventQueue() {
   if (pipe(wake_pipe) != -1) {

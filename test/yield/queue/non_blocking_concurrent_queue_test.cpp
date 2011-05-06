@@ -28,11 +28,10 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "queue_test.hpp"
-#include "yield/thread/non_blocking_concurrent_queue.hpp"
-
+#include "yield/queue/non_blocking_concurrent_queue.hpp"
 
 namespace yield {
-namespace thread {
+namespace queue {
 class NonBlockingConcurrentQueueTestSuite
     : public QueueTestSuite< NonBlockingConcurrentQueue<uint32_t, 8> > {
 public:
@@ -47,4 +46,7 @@ public:
 }
 }
 
-TEST_SUITE_EX(NonBlockingConcurrentQueue, yield::thread::NonBlockingConcurrentQueueTestSuite);
+TEST_SUITE_EX(
+  NonBlockingConcurrentQueue,
+  yield::queue::NonBlockingConcurrentQueueTestSuite
+);

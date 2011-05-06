@@ -31,30 +31,18 @@
 
 #include <iostream>
 
-extern yunit::TestSuite& BlockingConcurrentQueueTestSuite();
 extern yunit::TestSuite& ConditionVariableTestSuite();
 extern yunit::TestSuite& LightweightMutexTestSuite();
 extern yunit::TestSuite& MutexTestSuite();
-extern yunit::TestSuite& NonBlockingConcurrentQueueTestSuite();
 extern yunit::TestSuite& PipeTestSuite();
 extern yunit::TestSuite& ProcessorSetTestSuite();
 extern yunit::TestSuite& ReaderWriterLockTestSuite();
 extern yunit::TestSuite& SamplerTestSuite();
 extern yunit::TestSuite& SemaphoreTestSuite();
-extern yunit::TestSuite& SynchronizedEventQueueTestSuite();
-extern yunit::TestSuite& SynchronizedQueueTestSuite();
-extern yunit::TestSuite& SynchronizedResponseQueueTestSuite();
 extern yunit::TestSuite& ThreadTestSuite();
-extern yunit::TestSuite& TLSConcurrentQueueTestSuite();
-extern yunit::TestSuite& UnitConcurrentQueueTestSuite();
 
 int main(int, char**) {
   int failed_test_case_count = 0;
-
-  // BlockingConcurrentQueue
-  std::cout << "BlockingConcurrentQueue:" << std::endl;
-  failed_test_case_count += BlockingConcurrentQueueTestSuite().run();
-  std::cout << std::endl;
 
   // ConditionVariable
   std::cout << "ConditionVariable:" << std::endl;
@@ -69,11 +57,6 @@ int main(int, char**) {
   // Mutex
   std::cout << "Mutex:" << std::endl;
   failed_test_case_count += MutexTestSuite().run();
-  std::cout << std::endl;
-
-  // NonBlockingConcurrentQueue
-  std::cout << "NonBlockingConcurrentQueue:" << std::endl;
-  failed_test_case_count += NonBlockingConcurrentQueueTestSuite().run();
   std::cout << std::endl;
 
   // Pipe
@@ -101,34 +84,9 @@ int main(int, char**) {
   failed_test_case_count += SemaphoreTestSuite().run();
   std::cout << std::endl;
 
-  // SynchronizedEventQueue
-  std::cout << "SynchronizedEventQueue:" << std::endl;
-  failed_test_case_count += SynchronizedEventQueueTestSuite().run();
-  std::cout << std::endl;
-
-  // SynchronizedQueue
-  std::cout << "SynchronizedQueue:" << std::endl;
-  failed_test_case_count += SynchronizedQueueTestSuite().run();
-  std::cout << std::endl;
-
-  // SynchronizedResponseQueue
-  std::cout << "SynchronizedResponseQueue:" << std::endl;
-  failed_test_case_count += SynchronizedResponseQueueTestSuite().run();
-  std::cout << std::endl;
-
   // Thread
   std::cout << "Thread:" << std::endl;
   failed_test_case_count += ThreadTestSuite().run();
-  std::cout << std::endl;
-
-  // TLSConcurrentQueue
-  std::cout << "TLSConcurrentQueue:" << std::endl;
-  failed_test_case_count += TLSConcurrentQueueTestSuite().run();
-  std::cout << std::endl;
-
-  // UnitConcurrentQueue
-  std::cout << "UnitConcurrentQueue:" << std::endl;
-  failed_test_case_count += UnitConcurrentQueueTestSuite().run();
   std::cout << std::endl;
 
   return failed_test_case_count;

@@ -1,4 +1,4 @@
-// yield/thread/unit_concurrent_queue.hpp
+// yield/queue/rendezvous_concurrent_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,18 +27,17 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_THREAD_UNIT_CONCURRENT_QUEUE_HPP_
-#define _YIELD_THREAD_UNIT_CONCURRENT_QUEUE_HPP_
+#ifndef _YIELD_QUEUE_RENDEZVOUS_CONCURRENT_QUEUE_HPP_
+#define _YIELD_QUEUE_RENDEZVOUS_CONCURRENT_QUEUE_HPP_
 
 #include "yield/atomic.hpp"
-
 
 namespace yield {
 namespace queue {
 template <class ElementType>
-class UnitConcurrentQueue {
+class RendezvousConcurrentQueue {
 public:
-  UnitConcurrentQueue() {
+  RendezvousConcurrentQueue() {
     element = 0;
   }
 

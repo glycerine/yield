@@ -1,4 +1,4 @@
-// yield/thread/tls_concurrent_queue.hpp
+// yield/queue/tls_concurrent_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,11 +27,11 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_THREAD_TLS_CONCURRENT_QUEUE_HPP_
-#define _YIELD_THREAD_TLS_CONCURRENT_QUEUE_HPP_
+#ifndef _YIELD_QUEUE_TLS_CONCURRENT_QUEUE_HPP_
+#define _YIELD_QUEUE_TLS_CONCURRENT_QUEUE_HPP_
 
 #include "yield/exception.hpp"
-#include "yield/thread/blocking_concurrent_queue.hpp"
+#include "yield/queue/blocking_concurrent_queue.hpp"
 #include "yield/thread/thread.hpp"
 
 #include <stack>

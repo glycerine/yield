@@ -121,6 +121,9 @@ LINK_ITEM_DEFINITION = """\
   <GenerateDebugInformation>%(GenerateDebugInformation)s</GenerateDebugInformation>
   <SubSystem>%(SubSystem)s</SubSystem>
 </Link>
+<ProjectReference>
+  <LinkLibraryDependencies>false</LinkLibraryDependencies>
+</ProjectReference>
 """
 
 OPTIONS_ITEM_DEFINITION_GROUP = """\

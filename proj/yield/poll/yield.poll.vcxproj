@@ -127,8 +127,8 @@
   </ItemGroup>
 
   <ItemGroup Label="ProjectReferenceItems">
-    <ProjectReference Include="..\thread\yield.thread.vcxproj">
-      <Project>{2285eac5-e9b9-436c-bc3f-5ad7f7869316}</Project>
+    <ProjectReference Include="..\queue\yield.queue.vcxproj">
+      <Project>{241f6bf4-1864-44f4-b7a2-fb285b1419f0}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>

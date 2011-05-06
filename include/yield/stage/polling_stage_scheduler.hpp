@@ -35,12 +35,10 @@
 #include "yield/thread/thread.hpp"
 #include "yield/thread/unit_concurrent_queue.hpp"
 
-
 namespace yield {
 namespace thread {
 class Thread;
 }
-
 
 namespace stage {
 class PollingStageScheduler : public StageScheduler {
@@ -69,7 +67,7 @@ protected:
     }
 
   private:
-    yield::thread::UnitConcurrentQueue<Stage> new_stage;
+    yield::thread::RendezvousConcurrentQueue<Stage> new_stage;
     bool _should_run;
     vector<Stage*> stages;
   };

@@ -21,6 +21,9 @@
     <ClInclude Include="..\..\..\test\yield\queue\queue_test.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\..\test\yield\queue\rendezvous_concurrent_queue_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\test\yield\queue\synchronized_concurrent_event_queue_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -33,7 +36,7 @@
     <ClCompile Include="..\..\..\test\yield\queue\tls_concurrent_queue_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\queue\unit_concurrent_queue_test.cpp">
+    <ClCompile Include="..\..\..\test\yield\queue\yield_queue_test_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

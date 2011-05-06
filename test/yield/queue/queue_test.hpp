@@ -27,8 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_THREAD_QUEUE_TEST_HPP_
-#define _YIELD_THREAD_QUEUE_TEST_HPP_
+#ifndef _YIELD_QUEUE_QUEUE_TEST_HPP_
+#define _YIELD_QUEUE_QUEUE_TEST_HPP_
 
 #include "yield/assert.hpp"
 #include "yield/types.hpp"
@@ -36,7 +36,7 @@
 
 
 namespace yield {
-namespace thread {
+namespace queue {
 template <class QueueType>
 class QueueTest : public yunit::Test { };
 

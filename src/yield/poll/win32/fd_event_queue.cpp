@@ -36,8 +36,6 @@
 namespace yield {
 namespace poll {
 namespace win32 {
-using yield::thread::BlockingConcurrentQueue;
-
 FDEventQueue::FDEventQueue() {
   HANDLE hWakeEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
   if (hWakeEvent != NULL)

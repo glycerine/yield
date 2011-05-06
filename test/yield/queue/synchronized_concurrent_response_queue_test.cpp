@@ -1,4 +1,4 @@
-// synchronized_response_queue_test.cpp
+// synchronized_concurrent_response_queue_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -31,41 +31,33 @@
 #include "yield/auto_object.hpp"
 #include "yield/exception.hpp"
 #include "yield/response.hpp"
-#include "yield/thread/synchronized_response_queue.hpp"
+#include "yield/queue/synchronized_concurrent_response_queue.hpp"
 #include "yunit.hpp"
 
-
-TEST_SUITE(SynchronizedResponseQueue);
+TEST_SUITE(SynchronizedConcurrentResponseQueue);
 
 namespace yield {
-namespace thread {
-TEST(SynchronizedResponseQueue, create) {
-  auto_Object< SynchronizedResponseQueue<Response> > response_queue
-  = new SynchronizedResponseQueue<Response>;
-}
-
-TEST(SynchronizedResponseQueue, dequeue) {
-  auto_Object< SynchronizedResponseQueue<Response> > response_queue
-  = new SynchronizedResponseQueue<Response>;
+namespace queue {
+TEST(SynchronizedConcurrentResponseQueue, dequeue) {
+  SynchronizedConcurrentResponseQueue<Response> response_queue;
 
   {
-    response_queue->enqueue(*new Response);
-    auto_Object<Response> response = response_queue->dequeue();
+    response_queue.enqueue(*new Response);
+    auto_Object<Response> response = response_queue.dequeue();
   }
 
   {
-    response_queue->enqueue(*new Response);
-    auto_Object<Response> response = response_queue->dequeue(1.0);
+    response_queue.enqueue(*new Response);
+    auto_Object<Response> response = response_queue.dequeue(1.0);
   }
 }
 
-TEST(SynchronizedResponseQueue, enqueue) {
-  auto_Object< SynchronizedResponseQueue<Response> > response_queue
-  = new SynchronizedResponseQueue<Response>;
+TEST(SynchronizedConcurrentResponseQueue, enqueue) {
+  SynchronizedConcurrentResponseQueue<Response> response_queue;
 
-  bool enqueue_ret = response_queue->enqueue(*new Response);
+  bool enqueue_ret = response_queue.enqueue(*new Response);
   throw_assert(enqueue_ret);
-  enqueue_ret = response_queue->enqueue(*new Response);
+  enqueue_ret = response_queue.enqueue(*new Response);
 }
 }
 }

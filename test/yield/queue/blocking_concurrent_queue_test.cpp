@@ -28,7 +28,9 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "queue_test.hpp"
-#include "yield/thread/blocking_concurrent_queue.hpp"
-#include "yield/types.hpp"
+#include "yield/queue/blocking_concurrent_queue.hpp"
 
-TEST_SUITE_EX(BlockingConcurrentQueue, yield::thread::QueueTestSuite< yield::thread::BlockingConcurrentQueue<uint32_t> >);
+TEST_SUITE_EX(
+  BlockingConcurrentQueue,
+  yield::queue::QueueTestSuite< yield::queue::BlockingConcurrentQueue<uint32_t> >
+);

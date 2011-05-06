@@ -37,7 +37,7 @@ namespace yield {
 namespace stage {
 Stage::Stage(YO_NEW_REF EventHandler& event_handler)
   : event_handler(&event_handler),
-    event_queue(*new yield::thread::SynchronizedEventQueue) {
+    event_queue(*new yield::thread::SynchronizedConcurrentEventQueue) {
   init();
 }
 

@@ -28,7 +28,9 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "queue_test.hpp"
-#include "yield/thread/tls_concurrent_queue.hpp"
+#include "yield/queue/tls_concurrent_queue.hpp"
 
-
-TEST_SUITE_EX(TLSConcurrentQueue, yield::thread::QueueTestSuite< yield::thread::TLSConcurrentQueue<uint32_t> >);
+TEST_SUITE_EX(
+  TLSConcurrentQueue,
+  yield::queue::QueueTestSuite< yield::queue::TLSConcurrentQueue<uint32_t> >
+);
