@@ -44,7 +44,7 @@ class Runnable;
 namespace posix {
 class Thread : public Object {
 public:
-  Thread(Runnable&);
+  Thread(YO_NEW_REF Runnable&);
   ~Thread();
 
 public:

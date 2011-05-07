@@ -30,10 +30,10 @@
 #include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/time.hpp"
+#include "yield/thread/runnable.hpp"
 #include "yield/thread/semaphore.hpp"
 #include "yield/thread/thread.hpp"
 #include "yunit.hpp"
-
 
 TEST_SUITE(Semaphore);
 
@@ -52,13 +52,27 @@ public:
   }
 
 protected:
+  class OtherThread : public Runnable {
+  public:
+    OtherThread(uint8_t& exit_count, Semaphore& semaphore)
+      : exit_count(exit_count), semaphore(semaphore) {
+    }
+
+  public:
+    // yield::thread::Runnable
+    void run() {
+      semaphore.wait();
+      exit_count++;
+    }
+
+  private:
+    uint8_t& exit_count;
+    Semaphore& semaphore;
+  };
+
+protected:
   SemaphoreTest() {
     exit_count = 0;
-  }
-
-  static void thread_run(void* this_) {
-    static_cast<SemaphoreTest*>(this_)->semaphore->wait();
-    static_cast<SemaphoreTest*>(this_)->exit_count++;
   }
 
 protected:
@@ -69,9 +83,10 @@ protected:
 
 TEST_EX(Semaphore, threaded, SemaphoreTest) {
   semaphore->post();
-  auto_Object<Thread> thread = new Thread(thread_run, this);
+  Thread thread(*new OtherThread(exit_count, *semaphore));
   while (exit_count < 1)
     Thread::self()->yield();
+  thread.join();
 }
 
 TEST_EX(Semaphore, timedwait, SemaphoreTest) {

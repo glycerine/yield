@@ -30,5 +30,7 @@
 #include "mutex_test.hpp"
 #include "yield/thread/lightweight_mutex.hpp"
 
-
-TEST_SUITE_EX(LightweightMutex, yield::thread::MutexTestSuite<yield::thread::LightweightMutex>);
+TEST_SUITE_EX(
+  LightweightMutex,
+  yield::thread::MutexTestSuite<yield::thread::LightweightMutex>
+);

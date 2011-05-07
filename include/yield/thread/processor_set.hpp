@@ -33,11 +33,11 @@
 #if defined(__linux__)
 #include "yield/thread/linux/processor_set.hpp"
 #elif defined(__MACH__)
-#include "yield/processor_set/darwin/processor_set.hpp"
+#include "yield/thread/darwin/processor_set.hpp"
 #elif defined(__sun)
-#include "yield/processor_set/sunos/processor_set.hpp"
+#include "yield/thread/sunos/processor_set.hpp"
 #elif defined(_WIN32)
-#include "yield/processor_set/win32/processor_set.hpp"
+#include "yield/thread/win32/processor_set.hpp"
 #endif
 
 namespace yield {

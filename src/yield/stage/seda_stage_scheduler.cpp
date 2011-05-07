@@ -81,10 +81,9 @@ SEDAStageScheduler::schedule
   Stage& stage,
   ConcurrencyLevel concurrency_level
 ) {
-  SEDAStage* seda_stage = new SEDAStage(stage);
-
+  auto_Object<SEDAStage> seda_stage = new SEDAStage(stage);
   for (int16_t thread_i = 0; thread_i < concurrency_level; thread_i++)
-    threads.push_back(new Thread(*seda_stage));
+    threads.push_back(new Thread(seda_stage->inc_ref()));
 }
 }
 }

@@ -686,12 +686,12 @@ if options.generate_proj:
             }
 
             if sys.platform == "win32":
-                try: makedirs(project["build_dir_path"]["win32"])
+                try: makedirs(project["build_dir_path"])
                 except: pass
                 if project_name != "yield":
                     mirror_subdirectories(
                         project["source_dir_path"],
-                        project["build_dir_path"]["win32"]
+                        project["build_dir_path"]
                     )
 
                 try: makedirs(project["project_dir_path"])
@@ -760,19 +760,12 @@ if options.generate_src or options.generate_src_rl:
 
 if options.generate_test or options.generate_test_main_cpp:
     for project_name in options.project_names:
-        project_test_dir_path = None
         test_suite_decls = []
         test_suite_runs = []
 
         for test_cpp_file in [source_file
             for source_file in SourceFiles(SOURCE_FILE_PATHS[project_name + "_test"])
             if source_file.get_language() == "cpp"]:
-
-            test_cpp_dir_path = dirname(test_cpp_file.get_path())
-            if project_test_dir_path is None:
-                project_test_dir_path = test_cpp_dir_path
-            else:
-                assert test_cpp_dir_path.startswith(project_test_dir_path), test_cpp_dir_path + " vs. " + project_test_dir_path
 
             test_suite_names = []
             test_cpp_file_lines = open(test_cpp_file.get_path()).readlines()
@@ -830,13 +823,15 @@ std::cout << std::endl;""" % locals()
         test_suite_runs = \
             indent(INDENT_SPACES["cpp"], '\n\n'.join(test_suite_runs))
 
-        if project_test_dir_path is not None:
-            test_main_cpp_file_path = \
-                path_join(project_test_dir_path, '_'.join(project_name.split('.')) + "_test_main.cpp")
+        test_main_cpp_file_path = \
+            path_join(
+                SOURCE_DIR_PATHS[project_name + "_test"],
+                '_'.join(project_name.split('.')) + "_test_main.cpp"
+            )
 
-            write_file(
-                test_main_cpp_file_path,
-        """\
+        write_file(
+            test_main_cpp_file_path,
+            """\
 #include "yunit.hpp"
 
 #include <iostream>
@@ -851,13 +846,15 @@ int main(int, char**) {
   return failed_test_case_count;
 }
 
-""" % locals(), force=options.force)
+""" % locals(),
+            force=options.force
+        )
 
-            SourceFiles(test_main_cpp_file_path).format(
-                author=AUTHOR,
-                force=options.force,
-                project="Yield"
-            )
+        SourceFiles(test_main_cpp_file_path).format(
+            author=AUTHOR,
+            force=options.force,
+            project="Yield"
+        )
 
 
 if options.generate_test or options.generate_test_py:

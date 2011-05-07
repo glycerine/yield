@@ -46,6 +46,8 @@ class TCPSocket;
 
 namespace http {
 namespace server {
+class HTTPConnection;
+
 class HTTPRequestQueue : public EventQueue {
 public:
   HTTPRequestQueue(
@@ -65,15 +67,12 @@ public:
   bool enqueue(YO_NEW_REF Event&);
 
 private:
-  class Connection;
-
-private:
   void handle(YO_NEW_REF yield::sockets::aio::acceptAIOCB& accept_aiocb);
   template <class AIOCBType> void handle(YO_NEW_REF AIOCBType& aiocb);
 
 private:
   yield::sockets::aio::AIOQueue& aio_queue;
-  vector<Connection*> connections;
+  vector<HTTPConnection*> connections;
   Log* log;
   yield::sockets::TCPSocket& socket_;
 };

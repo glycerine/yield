@@ -116,8 +116,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\test\yield\thread\reader_writer_lock_test.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\thread\sampler_test.cpp">
-    </ClCompile>
     <ClCompile Include="..\..\..\test\yield\thread\semaphore_test.cpp">
     </ClCompile>
     <ClCompile Include="..\..\..\test\yield\thread\thread_test.cpp">

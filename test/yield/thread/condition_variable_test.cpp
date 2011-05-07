@@ -30,9 +30,9 @@
 #include "yield/assert.hpp"
 #include "yield/time.hpp"
 #include "yield/thread/condition_variable.hpp"
+#include "yield/thread/runnable.hpp"
 #include "yield/thread/thread.hpp"
 #include "yunit.hpp"
-
 
 TEST_SUITE(ConditionVariable);
 
@@ -51,15 +51,27 @@ public:
   }
 
 protected:
-  static void thread_run(void* this_) {
-    static_cast<ConditionVariableTest*>(this_)->cond->lock_mutex();
-    static_cast<ConditionVariableTest*>(this_)->cond->signal();
-    static_cast<ConditionVariableTest*>(this_)->cond->unlock_mutex();
-  }
+  class OtherThread : public Runnable {
+  public:
+    OtherThread(ConditionVariable& cond)
+      : cond(cond) {
+    }
+
+    // yield::thread::Runnable
+    void run() {
+      cond.lock_mutex();
+      cond.signal();
+      cond.unlock_mutex();
+    }
+
+  private:
+    ConditionVariable& cond;
+  };
 
 protected:
   ConditionVariable* cond;
 };
+
 
 
 TEST_EX(ConditionVariable, timedwait, ConditionVariableTest) {
@@ -69,20 +81,20 @@ TEST_EX(ConditionVariable, timedwait, ConditionVariableTest) {
   bool wait_ret = cond->timedwait(0.1);
   throw_assert_false(wait_ret);
 
-  auto_Object<Thread> thread = new Thread(thread_run, this);
+  Thread thread(*new OtherThread(*cond));
 
   Thread::self()->nanosleep(0.01);
 
   cond->unlock_mutex();
 
-  thread->join();
+  thread.join();
 }
 
 TEST_EX(ConditionVariable, wait, ConditionVariableTest) {
   bool lock_ret = cond->lock_mutex();
   throw_assert(lock_ret);
 
-  auto_Object<Thread> thread = new Thread(thread_run, this);
+  Thread thread(*new OtherThread(*cond));
 
   bool wait_ret = cond->wait();
   throw_assert(wait_ret);
@@ -91,7 +103,7 @@ TEST_EX(ConditionVariable, wait, ConditionVariableTest) {
 
   cond->unlock_mutex();
 
-  thread->join();
+  thread.join();
 }
 }
 }

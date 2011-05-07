@@ -41,7 +41,7 @@ class ProcessorSet;
 
 class Thread : public yield::thread::posix::Thread {
 public:
-  Thread(Runnable&);
+  Thread(YO_NEW_REF Runnable&);
 
 public:
   static auto_Object<Thread> self();

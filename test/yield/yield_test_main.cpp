@@ -33,8 +33,8 @@
 
 extern yunit::TestSuite& atomicTestSuite();
 extern yunit::TestSuite& auto_ObjectTestSuite();
-extern yunit::TestSuite& BuffersTestSuite();
 extern yunit::TestSuite& BufferTestSuite();
+extern yunit::TestSuite& BuffersTestSuite();
 extern yunit::TestSuite& ChannelTestSuite();
 extern yunit::TestSuite& DateTimeTestSuite();
 extern yunit::TestSuite& EventTestSuite();
@@ -59,14 +59,14 @@ int main(int, char**) {
   failed_test_case_count += auto_ObjectTestSuite().run();
   std::cout << std::endl;
 
-  // Buffers
-  std::cout << "Buffers:" << std::endl;
-  failed_test_case_count += BuffersTestSuite().run();
-  std::cout << std::endl;
-
   // Buffer
   std::cout << "Buffer:" << std::endl;
   failed_test_case_count += BufferTestSuite().run();
+  std::cout << std::endl;
+
+  // Buffers
+  std::cout << "Buffers:" << std::endl;
+  failed_test_case_count += BuffersTestSuite().run();
   std::cout << std::endl;
 
   // Channel

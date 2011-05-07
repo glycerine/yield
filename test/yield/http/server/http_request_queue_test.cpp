@@ -69,7 +69,7 @@ protected:
     } else
       http_request.respond(404);
 
-    //HTTPRequest::dec_ref(http_request);
+    HTTPRequest::dec_ref(http_request);
   }
 };
 
@@ -80,9 +80,12 @@ public:
   void run() {
     TestHTTPRequestQueue http_request_queue(&Log::open(std::cout));
     for (;;) {
-      auto_Object<HTTPRequest> http_request
-      = object_cast<HTTPRequest>(http_request_queue.dequeue(30.0));
-      handle(*http_request);
+      HTTPRequest* http_request
+        = object_cast<HTTPRequest>(http_request_queue.dequeue(30.0));
+      if (http_request != NULL)
+        handle(*http_request);
+      else
+        break;
     }
   }
 };

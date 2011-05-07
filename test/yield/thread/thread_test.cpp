@@ -90,16 +90,11 @@ TEST_EX(Thread, nanosleep, ThreadTest) {
 }
 
 TEST_EX(Thread, set_name, ThreadTest) {
-  auto_Object<Thread> thread = new Thread(thread_run);
-  thread->set_name("test thread");
+ Thread::self()->set_name("test thread");
 }
 
 TEST_EX(Thread, setaffinity, ThreadTest) {
-  auto_Object<Thread> thread = new Thread(thread_run);
-  bool success = thread->setaffinity(0);
-  mutex->unlock();
-  thread->join();
-  throw_assert(success);
+  throw_assert_true(Thread::self()->setaffinity(0));
 }
 
 TEST_EX(Thread, setspecific, ThreadTest) {

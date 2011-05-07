@@ -50,7 +50,7 @@ LIBS += -lyield_thread -lyield
 D_FILE_PATHS := $(shell find ../../../build/yield/thread_test -name "*.d")
 
 
-O_FILE_PATHS += ../../../build/yield/thread_test/condition_variable_test.o ../../../build/yield/thread_test/lightweight_mutex_test.o ../../../build/yield/thread_test/mutex_test.o ../../../build/yield/thread_test/processor_set_test.o ../../../build/yield/thread_test/reader_writer_lock_test.o ../../../build/yield/thread_test/sampler_test.o ../../../build/yield/thread_test/semaphore_test.o ../../../build/yield/thread_test/thread_test.o ../../../build/yield/thread_test/yield_thread_test_main.o
+O_FILE_PATHS += ../../../build/yield/thread_test/condition_variable_test.o ../../../build/yield/thread_test/lightweight_mutex_test.o ../../../build/yield/thread_test/mutex_test.o ../../../build/yield/thread_test/processor_set_test.o ../../../build/yield/thread_test/reader_writer_lock_test.o ../../../build/yield/thread_test/semaphore_test.o ../../../build/yield/thread_test/thread_test.o ../../../build/yield/thread_test/yield_thread_test_main.o
 
 
 all: ../../../bin/yield/yield_thread_test
@@ -101,10 +101,6 @@ lcov: ../../../bin/yield/yield_thread_test
 ../../../build/yield/thread_test/reader_writer_lock_test.o: ../../../test/yield/thread/reader_writer_lock_test.cpp
 	-mkdir -p ../../../build/yield/thread_test 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/thread_test/reader_writer_lock_test.o -MD $(CXXFLAGS) ../../../test/yield/thread/reader_writer_lock_test.cpp
-
-../../../build/yield/thread_test/sampler_test.o: ../../../test/yield/thread/sampler_test.cpp
-	-mkdir -p ../../../build/yield/thread_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/thread_test/sampler_test.o -MD $(CXXFLAGS) ../../../test/yield/thread/sampler_test.cpp
 
 ../../../build/yield/thread_test/semaphore_test.o: ../../../test/yield/thread/semaphore_test.cpp
 	-mkdir -p ../../../build/yield/thread_test 2>/dev/null

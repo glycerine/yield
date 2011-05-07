@@ -30,9 +30,6 @@
     <ClCompile Include="..\..\..\test\yield\thread\reader_writer_lock_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\thread\sampler_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\test\yield\thread\semaphore_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

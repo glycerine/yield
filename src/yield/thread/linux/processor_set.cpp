@@ -46,6 +46,21 @@ void ProcessorSet::clear(uint16_t processor_i) {
   CPU_CLR(processor_i, &cpu_set);
 }
 
+uint16_t ProcessorSet::count() const {
+  uint16_t count = 0;
+
+  for (
+    uint16_t processor_i = 0;
+    processor_i < static_cast<uint16_t>(-1);
+    processor_i++
+  ) {
+    if (isset(processor_i))
+      count++;
+  }
+
+  return count;
+}
+
 uint16_t ProcessorSet::get_online_logical_processor_count() {
   return static_cast<uint16_t>(sysconf(_SC_NPROCESSORS_ONLN));
 }
