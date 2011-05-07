@@ -42,15 +42,15 @@ public:
 
 public:
   typedef uint8_t Type;
-  const static Type TYPE_ALL = static_cast<Type>(~0);
-  const static Type TYPE_DIRECTORY_ADD = 1;
-  const static Type TYPE_DIRECTORY_MODIFY = 2;
-  const static Type TYPE_DIRECTORY_REMOVE = 4;
-  const static Type TYPE_DIRECTORY_RENAME = 8;
-  const static Type TYPE_FILE_ADD = 16;
-  const static Type TYPE_FILE_MODIFY = 32;
-  const static Type TYPE_FILE_REMOVE = 64;
-  const static Type TYPE_FILE_RENAME = 128;
+  const static Type TYPE_ALL;
+  const static Type TYPE_DIRECTORY_ADD;
+  const static Type TYPE_DIRECTORY_MODIFY;
+  const static Type TYPE_DIRECTORY_REMOVE;;
+  const static Type TYPE_DIRECTORY_RENAME;
+  const static Type TYPE_FILE_ADD;
+  const static Type TYPE_FILE_MODIFY;
+  const static Type TYPE_FILE_REMOVE;
+  const static Type TYPE_FILE_RENAME;
 
 public:
   FSEvent(const Path& path, Type type);

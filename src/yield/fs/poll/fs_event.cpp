@@ -33,6 +33,16 @@
 namespace yield {
 namespace fs {
 namespace poll {
+const FSEvent::Type FSEvent::TYPE_ALL = static_cast<Type>(~0);
+const FSEvent::Type FSEvent::TYPE_DIRECTORY_ADD = 1;
+const FSEvent::Type FSEvent::TYPE_DIRECTORY_MODIFY = 2;
+const FSEvent::Type FSEvent::TYPE_DIRECTORY_REMOVE = 4;
+const FSEvent::Type FSEvent::TYPE_DIRECTORY_RENAME = 8;
+const FSEvent::Type FSEvent::TYPE_FILE_ADD = 16;
+const FSEvent::Type FSEvent::TYPE_FILE_MODIFY = 32;
+const FSEvent::Type FSEvent::TYPE_FILE_REMOVE = 64;
+const FSEvent::Type FSEvent::TYPE_FILE_RENAME = 128;
+
 FSEvent::FSEvent(const Path& path, Type type)
   : old_path(path), type(type) {
   debug_assert_false(path.empty());

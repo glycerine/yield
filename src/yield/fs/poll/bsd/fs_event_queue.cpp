@@ -28,12 +28,19 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/assert.hpp"
+#include "yield/exception.hpp"
 #include "yield/log.hpp"
-#include "yield/fs/poll/linux/fs_event_queue.hpp"
+#include "yield/fs/poll/bsd/fs_event_queue.hpp"
 #include "yield/fs/file_system.hpp"
 #include "yield/poll/fd_event.hpp"
 
+#include <errno.h>
+#include <fcntl.h>
 #include <sys/event.h>
+
+#ifndef __MACH__
+#define O_EVTONLY O_RDONLY
+#endif
 
 namespace yield {
 namespace fs {
@@ -47,9 +54,9 @@ public:
     const Path& path,
     Log* log = NULL
   ) : fd(fd),
-    fs_event_types(fs_event_types),
-    path(path),
-    log(Object::inc_ref(log)) {
+      fs_event_types(fs_event_types),
+      log(Object::inc_ref(log)),
+      path(path) {
     isdir = FileSystem().isdir(path);
   }
 
@@ -58,11 +65,8 @@ public:
     Log::dec_ref(log);
   }
 
-public:
-  int get_fd() const {
-    return wd;
-  }
 
+public:
   FSEvent::Type get_fs_event_types() const {
     return fs_event_types;
   }
@@ -72,7 +76,7 @@ public:
   }
 
 public:
-  void read(const kevent& kevent_, EventHandler& fs_event_handler) {
+  void read(const struct kevent& kevent_, EventHandler& fs_event_handler) {
     if (log != NULL) {
       log->get_stream(Log::Level::DEBUG) <<
         get_type_name() << "(fd=" << fd << ", path=" << path << "): " <<
@@ -97,18 +101,27 @@ public:
         fs_event_type = isdir ?
                         FSEvent::TYPE_DIRECTORY_MODIFY :
                         FSEvent::TYPE_FILE_MODIFY;
+      } else if ((fflags & NOTE_LINK) == NOTE_LINK) {
+        fflags ^= NOTE_LINK;
+        fs_event_type = isdir ?
+                        FSEvent::TYPE_DIRECTORY_MODIFY :
+                        FSEvent::TYPE_FILE_MODIFY;
       } else if ((fflags & NOTE_RENAME) == NOTE_RENAME) {
         fflags ^= NOTE_RENAME;
         fs_event_type = isdir ?
                         FSEvent::TYPE_DIRECTORY_RENAME :
                         FSEvent::TYPE_FILE_RENAME;
-      } else if ((flags & NOTE_WRITE) == NOTE_WRITE) {
+      } else if ((fflags & NOTE_REVOKE) == NOTE_REVOKE) {
+        fflags ^= NOTE_REVOKE;
+        fs_event_type = isdir ?
+                        FSEvent::TYPE_DIRECTORY_REMOVE :
+                        FSEvent::TYPE_FILE_REMOVE;
+      } else if ((fflags & NOTE_WRITE) == NOTE_WRITE) {
         fflags ^= NOTE_WRITE;
         fs_event_type = isdir ?
                         FSEvent::TYPE_DIRECTORY_MODIFY :
                         FSEvent::TYPE_FILE_MODIFY;
-      } else
-        debug_break();
+      }
 
       FSEvent* fs_event = new FSEvent(get_path(), fs_event_type);
       if (log != NULL) {
@@ -162,6 +175,12 @@ FSEventQueue::~FSEventQueue() {
   Log::dec_ref(log);
   close(wake_pipe[0]);
   close(wake_pipe[1]);
+  for (
+    vector<Watch*>::iterator watch_i = watches.begin();
+    watch_i != watches.end();
+    ++watch_i
+  )
+    delete *watch_i;
 }
 
 bool
@@ -180,6 +199,7 @@ FSEventQueue::associate(
       else {
         delete *watch_i;
         watches.erase(watch_i);
+        break;
       }
     }
   }
@@ -195,7 +215,7 @@ FSEventQueue::associate(
     if (fs_event_types & FSEvent::TYPE_DIRECTORY_MODIFY)
       fflags |= NOTE_ATTRIB | NOTE_EXTEND | NOTE_WRITE;
     if (fs_event_types & FSEvent::TYPE_DIRECTORY_REMOVE)
-      fflags |= NOTE_UNLINK;
+      fflags |= NOTE_DELETE;
     if (fs_event_types & FSEvent::TYPE_DIRECTORY_RENAME)
       fflags |= NOTE_RENAME;
     if (fs_event_types & FSEvent::TYPE_FILE_ADD)
@@ -203,7 +223,7 @@ FSEventQueue::associate(
     if (fs_event_types & FSEvent::TYPE_FILE_MODIFY)
       fflags |= NOTE_ATTRIB | NOTE_EXTEND | NOTE_WRITE;
     if (fs_event_types & FSEvent::TYPE_FILE_REMOVE)
-      fflags |= NOTE_UNLINK;
+      fflags |= NOTE_DELETE;
     if (fs_event_types & FSEvent::TYPE_FILE_RENAME)
       fflags |= NOTE_RENAME;
     EV_SET(&kevent_, fd, EVFILT_VNODE, EV_ADD, fflags, 0, watch);
@@ -260,7 +280,7 @@ YO_NEW_REF Event* FSEventQueue::timeddequeue(const Time& timeout) {
       } else {
         debug_assert_eq(kevent_.filter, EVFILT_VNODE);
         Watch* watch = static_cast<Watch*>(kevent_.udata);
-        watch->read(kevent_, event_queue);
+        watch->read(kevent_, *this);;
         return event_queue.trydequeue();
       }
     } else if (ret == 0 || errno == EINTR)
