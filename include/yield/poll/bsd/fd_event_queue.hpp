@@ -33,8 +33,6 @@
 #include "yield/event_queue.hpp"
 #include "yield/queue/blocking_concurrent_queue.hpp"
 
-#include <sys/event.h>
-
 namespace yield {
 namespace poll {
 namespace bsd {

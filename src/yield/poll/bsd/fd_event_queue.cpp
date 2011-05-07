@@ -27,16 +27,24 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "yield/assert.hpp"
+#include "yield/exception.hpp"
+#include "yield/poll/fd_event.hpp"
 #include "yield/poll/bsd/fd_event_queue.hpp"
+
+#include <errno.h>
+#include <sys/event.h>
 
 namespace yield {
 namespace poll {
 namespace bsd {
-FDEventQueue::FDEventQueue()
+using yield::queue::BlockingConcurrentQueue;
+
+FDEventQueue::FDEventQueue() {
   kq = kqueue();
   if (kq != -1) {
     if (pipe(wake_pipe) != -1) {
-      if (associate(wake_pipe[0], POLLIN))
+      if (associate(wake_pipe[0], FDEvent::TYPE_READ_READY))
         return;
       else {
         Exception exception;
@@ -61,23 +69,23 @@ FDEventQueue::~FDEventQueue() {
 
 bool FDEventQueue::associate(fd_t fd, uint16_t fd_event_types) {
   if (fd_event_types > 0) {
-    kevent kevent_;
+    struct kevent kevent_;
 
     if (fd_event_types & FDEvent::TYPE_READ_READY) {
-      EV_SET(&kevent_, fd, EVFILT_READ, EV_ADD, 0, 0, context);
+      EV_SET(&kevent_, fd, EVFILT_READ, EV_ADD, 0, 0, NULL);
       if (kevent(kq, &kevent_, 1, 0, 0, NULL) == -1)
         return false;
     } else {
-      EV_SET(&kevent_, fd, EVFILT_WRITE, EV_DELETE, 0, 0, context);
+      EV_SET(&kevent_, fd, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
       kevent(kq, &kevent_, 1, 0, 0, NULL); // Ignore the result
     }
 
-    if (fd_event_types & FDEvent::TYPEW_WRITE_READY) {
-      EV_SET(&kevent_, fd, EVFILT_WRITE, EV_ADD, 0, 0, context);
+    if (fd_event_types & FDEvent::TYPE_WRITE_READY) {
+      EV_SET(&kevent_, fd, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
       if (kevent(kq, &kevent_, 1, 0, 0, NULL) == -1)
         return false;
     } else {
-      EV_SET(&kevent_, fd, EVFILT_WRITE, EV_DELETE, 0, 0, context);
+      EV_SET(&kevent_, fd, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
       kevent(kq, &kevent_, 1, 0, 0, NULL); // Ignore the result
     }
 
@@ -87,15 +95,19 @@ bool FDEventQueue::associate(fd_t fd, uint16_t fd_event_types) {
 }
 
 bool FDEventQueue::dissociate(fd_t fd) {
-  kevent kevents[2];
-  EV_SET(&kevents[0], fd, EVFILT_READ, EV_DELETE, 0, 0, NULL);
-  EV_SET(&kevents[1], fd, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
-  return kevent(kq, kevents, 2, 0, 0, NULL) != -1;
+  bool ret = false;
+  struct kevent kevent_;
+  EV_SET(&kevent_, fd, EVFILT_READ, EV_DELETE, 0, 0, NULL);
+  ret |= kevent(kq, &kevent_, 1, 0, 0, NULL) != -1;
+  EV_SET(&kevent_, fd, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
+  ret |= kevent(kq, &kevent_, 1, 0, 0, NULL) != -1;
+  return ret;
 }
 
 bool FDEventQueue::enqueue(Event& event) {
   if (BlockingConcurrentQueue<Event>::enqueue(event)) {
-    write(wake_pipe[1], "m", 1);
+    ssize_t write_ret = write(wake_pipe[1], "m", 1);
+    debug_assert_eq(write_ret, 1);
     return true;
   } else
     return false;
@@ -106,22 +118,22 @@ YO_NEW_REF Event* FDEventQueue::timeddequeue(const Time& timeout) {
   if (event != NULL)
     return event;
   else {
-    kevent kevent_;
+    struct kevent kevent_;
     timespec timeout_ts = timeout;
     int ret = kevent(kq, 0, 0, &kevent_, 1, &timeout_ts);
     if (ret > 0) {
       debug_assert_eq(ret, 1);
-      if (kevent_.ident == wake_pipe[0]) {
+      if (static_cast<int>(kevent_.ident) == wake_pipe[0]) {
         char m;
         read(wake_pipe[0], &m, sizeof(m));
         return BlockingConcurrentQueue<Event>::trydequeue();
       } else {
         switch (kevent_.filter) {
           case EVFILT_READ:
-            return new FDEvent(kevent_.ident, FDEvent::TYPE_WRITE_READY);
+            return new FDEvent(kevent_.ident, FDEvent::TYPE_READ_READY);
 
           case EVFILT_WRITE:
-            return new FDEvent(kevent_.ident, FDEvent::TYPE_READ_READY);
+            return new FDEvent(kevent_.ident, FDEvent::TYPE_WRITE_READY);
 
           default: debug_break(); return NULL;
         }
