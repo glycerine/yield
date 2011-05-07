@@ -30,6 +30,7 @@
 #ifndef _YIELD_FS_POSIX_DIRECTORY_HPP_
 #define _YIELD_FS_POSIX_DIRECTORY_HPP_
 
+#include "yield/object.hpp"
 #include "yield/fs/path.hpp"
 
 #include <dirent.h>

@@ -295,7 +295,7 @@ FSEventQueue::associate(
     mask |= IN_ATTRIB | IN_MODIFY;
   if (fs_event_types & FSEvent::TYPE_DIRECTORY_REMOVE)
     mask |= IN_DELETE | IN_DELETE_SELF;
-  if (fs_event_types & FSEvent::TYPE_DIRECTORY_RENAME
+  if (fs_event_types & FSEvent::TYPE_DIRECTORY_RENAME)
     mask |= IN_MOVE_SELF | IN_MOVED_FROM | IN_MOVED_TO;
   if (fs_event_types & FSEvent::TYPE_FILE_ADD)
     mask |= IN_CREATE;
