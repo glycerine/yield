@@ -33,8 +33,24 @@ namespace yield {
 namespace poll {
 namespace bsd {
 FDEventQueue::FDEventQueue()
-  : kq(kq) {
-  memcpy(this->wake_pipe, wake_pipe, sizeof(this->wake_pipe));
+  kq = kqueue();
+  if (kq != -1) {
+    if (pipe(wake_pipe) != -1) {
+      if (associate(wake_pipe[0], POLLIN))
+        return;
+      else {
+        Exception exception;
+        close(wake_pipe[0]);
+        close(wake_pipe[1]);
+        throw exception;
+      }
+    } else {
+      Exception exception;
+      close(kq);
+      throw exception;
+    }
+  } else
+    throw Exception();
 }
 
 FDEventQueue::~FDEventQueue() {
@@ -47,94 +63,76 @@ bool FDEventQueue::associate(fd_t fd, uint16_t fd_event_types) {
   if (fd_event_types > 0) {
     kevent kevent_;
 
-    if (fd_event_types & POLLIN) {
+    if (fd_event_types & FDEvent::TYPE_READ_READY) {
       EV_SET(&kevent_, fd, EVFILT_READ, EV_ADD, 0, 0, context);
       if (kevent(kq, &kevent_, 1, 0, 0, NULL) == -1)
         return false;
     } else {
       EV_SET(&kevent_, fd, EVFILT_WRITE, EV_DELETE, 0, 0, context);
-      kevent(kq, &kevent_, 1, 0, 0, NULL);   // Ignore the result
+      kevent(kq, &kevent_, 1, 0, 0, NULL); // Ignore the result
     }
 
-    if (fd_event_types & POLLOUT) {
+    if (fd_event_types & FDEvent::TYPEW_WRITE_READY) {
       EV_SET(&kevent_, fd, EVFILT_WRITE, EV_ADD, 0, 0, context);
       if (kevent(kq, &kevent_, 1, 0, 0, NULL) == -1)
         return false;
     } else {
       EV_SET(&kevent_, fd, EVFILT_WRITE, EV_DELETE, 0, 0, context);
-      kevent(kq, &kevent_, 1, 0, 0, NULL);   // Ignore the result
+      kevent(kq, &kevent_, 1, 0, 0, NULL); // Ignore the result
     }
+
+    return true;
   } else
-    dissociate(fd);
-
-  return true;
-}
-
-FDEventQueue* FDEventQueue::create() {
-  int kq = kqueue();
-  if (kq != -1) {
-    int wake_pipe[2];
-    if (pipe(wake_pipe) != -1) {
-      kevent kevent_;
-      EV_SET(&kevent_, wake_pipe[0], EVFILT_READ, EV_ADD, 0, 0, 0);
-      if (kevent(kq, &kevent_, 1, 0, 0, NULL) != -1)
-        return new FDEventQueue(kq, wake_pipe);
-
-      close(wake_pipe[0]);
-      close(wake_pipe[1]);
-    }
-
-    close(kq);
-  }
-
-  return NULL;
+    return dissociate(fd);
 }
 
 bool FDEventQueue::dissociate(fd_t fd) {
-  kevent kfd_events[2];
-  EV_SET(&kfd_events[0], fd, EVFILT_READ, EV_DELETE, 0, 0, NULL);
-  EV_SET(&kfd_events[1], fd, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
+  kevent kevents[2];
+  EV_SET(&kevents[0], fd, EVFILT_READ, EV_DELETE, 0, 0, NULL);
+  EV_SET(&kevents[1], fd, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
   return kevent(kq, kevents, 2, 0, 0, NULL) != -1;
 }
 
-int16_t
-FDEventQueue::poll
-(
-  FDEvent* fd_events,
-  int16_t fd_events_len,
-  const Time& timeout
-) {
-  if (fd_events_len > kevents.size())
-    kevents.resize(fd_events_len);
-
-  timespec timeout_ts = timeout;
-
-  int ret = kevent(epfd, 0, 0, &kfd_events[0], fd_events_len, &timeout_ts);
-
-  if (ret > 0) {
-    int16_t event_i = 0;
-
-    for (int16_t kevent_i = 0; kevent_i < ret; kevent_i++) {
-      if (kfd_events[kevent_i].ident == wake_pipe[0]) {
-        uint8_t data;
-        read(wake_pipe[0], data, sizeof(data));
-      } else {
-        if (kfd_events[kevent_i].filter == EVFILT_WRITE)
-          fd_events[event_i].set_events(POLLOUT);
-        else
-          fd_events[event_i].set_events(POLLIN);
-        fd_events[event_i].set_fd(kfd_events[kevent_i].ident);
-        if (++event_i == fd_events_len) break;
-      }
-    }
-
-    return event_i;
+bool FDEventQueue::enqueue(Event& event) {
+  if (BlockingConcurrentQueue<Event>::enqueue(event)) {
+    write(wake_pipe[1], "m", 1);
+    return true;
   } else
-    return static_cast<int16_t>(ret);
+    return false;
 }
 
-void FDEventQueue::wake() {
-  write(wake_pipe[1], "m", 1);
+YO_NEW_REF Event* FDEventQueue::timeddequeue(const Time& timeout) {
+  Event* event = BlockingConcurrentQueue<Event>::trydequeue();
+  if (event != NULL)
+    return event;
+  else {
+    kevent kevent_;
+    timespec timeout_ts = timeout;
+    int ret = kevent(kq, 0, 0, &kevent_, 1, &timeout_ts);
+    if (ret > 0) {
+      debug_assert_eq(ret, 1);
+      if (kevent_.ident == wake_pipe[0]) {
+        char m;
+        read(wake_pipe[0], &m, sizeof(m));
+        return BlockingConcurrentQueue<Event>::trydequeue();
+      } else {
+        switch (kevent_.filter) {
+          case EVFILT_READ:
+            return new FDEvent(kevent_.ident, FDEvent::TYPE_WRITE_READY);
+
+          case EVFILT_WRITE:
+            return new FDEvent(kevent_.ident, FDEvent::TYPE_READ_READY);
+
+          default: debug_break(); return NULL;
+        }
+      }
+    } else if (ret == 0 || errno == EINTR)
+      return NULL;
+    else {
+      debug_break();
+      return NULL;
+    }
+  }
 }
 }
 }

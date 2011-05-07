@@ -31,29 +31,30 @@
 #define _YIELD_POLL_BSD_FD_EVENT_QUEUE_HPP_
 
 #include "yield/event_queue.hpp"
+#include "yield/queue/blocking_concurrent_queue.hpp"
 
 #include <sys/event.h>
 
 namespace yield {
 namespace poll {
 namespace bsd {
-class FDEventQueue : public EventQueue {
+class FDEventQueue
+  : public EventQueue,
+    private yield::queue::BlockingConcurrentQueue<Event> {
 public:
+  FDEventQueue();
   ~FDEventQueue();
-  static FDEventQueue* create();
 
+public:
   bool associate(fd_t fd, uint16_t fd_event_types);
   bool dissociate(fd_t fd);
 
-  // FDEventQueue
-  int16_t dequeue(FDEvent* fd_events, int16_t fd_events_len, const Time& timeout);
-  void wake();
+public:
+  // yield::EventQueue
+  bool enqueue(YO_NEW_REF Event& event);
+  YO_NEW_REF Event* timeddequeue(const Time& timeout);
 
 private:
-  FDEventQueue(int kq, int* wake_pipe);
-
-private:
-  vector<kevent> kevents;
   int kq;
   int wake_pipe[2];
 };
