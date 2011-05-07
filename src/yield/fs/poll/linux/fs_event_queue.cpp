@@ -398,7 +398,7 @@ YO_NEW_REF Event* FSEventQueue::timeddequeue(const Time& timeout) {
             inotify_events_p += sizeof(inotify_event) + inotify_event_->len;
           } while (inotify_events_p < inotify_events_pe);
 
-          return fd_event_queue.trydequeue();
+          return fd_event_queue.timeddequeue(0);
         }
       } else
         return fd_event;

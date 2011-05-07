@@ -258,7 +258,7 @@ class FSEventQueueDissociateTest : public FSEventQueueTest {
     if (!fs_event_queue.dissociate(get_test_root_path()))
       throw Exception();
 
-    Event* fs_event = fs_event_queue.trydequeue();
+    Event* fs_event = fs_event_queue.timeddequeue(0);
     throw_assert_eq(fs_event, NULL);
   }
 };

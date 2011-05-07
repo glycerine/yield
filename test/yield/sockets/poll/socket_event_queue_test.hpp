@@ -134,7 +134,7 @@ public:
 
     get_read_socket().send("m", 1, 0);
 
-    Event* event = socket_event_queue.trydequeue();
+    Event* event = socket_event_queue.timeddequeue(0);
     throw_assert_eq(event, NULL);
 
     if (!socket_event_queue.associate(get_read_socket(), SocketEvent::TYPE_READ_READY))
@@ -170,7 +170,7 @@ public:
     else
       get_write_socket().recv(&m, 1, 0);
 
-    Event* event = socket_event_queue.trydequeue();
+    Event* event = socket_event_queue.timeddequeue(0);
     throw_assert_eq(event, NULL);
   }
 };
