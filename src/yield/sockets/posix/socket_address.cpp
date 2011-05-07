@@ -93,14 +93,6 @@ SocketAddress::SocketAddress(const SocketAddress& other, uint16_t port) {
 }
 
 void SocketAddress::assign(const addrinfo& addrinfo_) {
-#ifdef _WIN32
-  static_assert(sizeof(addr) == sizeof(sockaddr_storage), "");
-  static_assert(
-    sizeof(addr.ss_family) == sizeof(sockaddr_storage.sa_family),
-    ""
-  );
-#endif
-
   memcpy_s(
     &addr,
     sizeof(addr),

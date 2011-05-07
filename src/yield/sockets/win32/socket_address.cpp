@@ -78,11 +78,7 @@ SocketAddress::SocketAddress(const SocketAddress& other, uint16_t port) {
 
 void SocketAddress::assign(const addrinfo& addrinfo_) {
   static_assert(sizeof(addr) == sizeof(sockaddr_storage), "");
-
-  debug_assert_eq(
-    len(addrinfo_.ai_family),
-    static_cast<socklen_t>(addrinfo_.ai_addrlen)
-  );
+  static_assert(sizeof(addr.ss_family) == sizeof(ADDRESS_FAMILY), "");
 
   memcpy_s(
     &addr,
