@@ -30,7 +30,6 @@
 #include "socket_test.hpp"
 #include "yield/fs/file.hpp"
 #include "yield/fs/file_system.hpp"
-#include "yield/fs/path.hpp"
 #include "yield/fs/stat.hpp"
 #include "yield/sockets/stream_socket_pair.hpp"
 #include "yield/sockets/tcp_socket.hpp"

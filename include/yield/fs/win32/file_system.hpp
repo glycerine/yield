@@ -30,7 +30,7 @@
 #ifndef _YIELD_FS_WIN32_FILE_SYSTEM_HPP_
 #define _YIELD_FS_WIN32_FILE_SYSTEM_HPP_
 
-#include "yield/object.hpp"
+#include "yield/fs/path.hpp"
 
 struct _FILETIME;
 typedef _FILETIME FILETIME;

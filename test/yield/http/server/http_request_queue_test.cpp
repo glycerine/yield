@@ -32,7 +32,6 @@
 #include "yield/log.hpp"
 #include "yield/fs/file.hpp"
 #include "yield/fs/file_system.hpp"
-#include "yield/fs/path.hpp"
 #include "yield/http/http_request.hpp"
 #include "yield/http/server/http_request_queue.hpp"
 #include "yunit.hpp"

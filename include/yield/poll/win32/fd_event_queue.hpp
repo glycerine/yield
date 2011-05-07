@@ -36,9 +36,7 @@
 namespace yield {
 namespace poll {
 namespace win32 {
-class FDEventQueue
-  : public EventQueue,
-    private yield::queue::BlockingConcurrentQueue<Event> {
+class FDEventQueue : public EventQueue {
 public:
   FDEventQueue();
   ~FDEventQueue();
@@ -56,6 +54,7 @@ private:
   FDEventQueue(void* hWakeEvent);
 
 private:
+  yield::queue::BlockingConcurrentQueue<Event> event_queue;
   vector<fd_t> fds;
 };
 }

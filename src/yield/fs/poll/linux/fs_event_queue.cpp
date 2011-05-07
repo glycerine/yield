@@ -30,13 +30,12 @@
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
 #include "yield/log.hpp"
+#include "yield/fs/directory.hpp"
+#include "yield/fs/file_system.hpp"
 #include "yield/fs/poll/linux/fs_event_queue.hpp"
-#include "yield/fs/posix/directory.hpp"
-#include "yield/fs/posix/file_system.hpp"
 #include "yield/poll/fd_event.hpp"
 
 #include <errno.h>
-#include <iostream>
 #include <map>
 #include <sys/inotify.h>
 
@@ -46,8 +45,8 @@ namespace poll {
 namespace linux {
 using std::make_pair;
 using std::map;
-using yield::fs::posix::Directory;
-using yield::fs::posix::FileSystem;
+using yield::fs::Directory;
+using yield::fs::FileSystem;
 using yield::poll::FDEvent;
 
 class FSEventQueue::Watch {
@@ -56,8 +55,13 @@ public:
     FSEvent::Type fs_event_types,
     int inotify_fd,
     const Path& path,
+    int wd,
     Log* log = NULL
-  );
+  ) : fs_event_types(fs_event_types),
+    log(Object::inc_ref(log)),
+    path(path),
+    wd(wd) {
+  }
 
   ~Watch() {
     inotify_rm_watch(inotify_fd, wd);
@@ -139,72 +143,6 @@ public:
   }
 };
 
-
-FSEventQueue::Watch::Watch(
-  FSEvent::Type fs_event_types,
-  int inotify_fd,
-  const Path& path,
-  Log* log
-) : fs_event_types(fs_event_types),
-    log(Object::inc_ref(log)),
-    path(path) {
-  uint32_t mask = 0;
-
-  if (
-    fs_event_types & FSEvent::TYPE_DIRECTORY_MODIFY
-    ||
-    fs_event_types & FSEvent::TYPE_FILE_MODIFY
-  )
-    mask |= IN_ATTRIB | IN_MODIFY;
-
-  if (
-    fs_event_types & FSEvent::TYPE_DIRECTORY_REMOVE
-    ||
-    fs_event_types & FSEvent::TYPE_FILE_REMOVE
-  )
-    mask |= IN_DELETE_SELF;
-
-  if (
-    fs_event_types & FSEvent::TYPE_DIRECTORY_RENAME
-    ||
-    fs_event_types & FSEvent::TYPE_FILE_RENAME
-  )
-    mask |= IN_MOVE_SELF;
-
-  if (
-    fs_event_types & FSEvent::TYPE_DIRECTORY_ADD
-    ||
-    fs_event_types & FSEvent::TYPE_FILE_ADD
-  )
-    mask |= IN_CREATE;
-
-  if (
-    fs_event_types & FSEvent::TYPE_DIRECTORY_REMOVE
-    ||
-    fs_event_types & FSEvent::TYPE_FILE_REMOVE
-  )
-    mask |= IN_DELETE;
-
-  if (
-    fs_event_types & FSEvent::TYPE_DIRECTORY_RENAME
-    ||
-    fs_event_types & FSEvent::TYPE_FILE_RENAME
-  )
-    mask |= IN_MOVED_FROM | IN_MOVED_TO;
-
-  wd = inotify_add_watch(inotify_fd, path.c_str(), mask);
-  if (wd == -1) {
-    Exception exception;
-
-    if (log != NULL) {
-      log->get_stream(Log::Level::ERR) <<
-        get_type_name() << "(path=" << path << ")" <<
-          ": error adding watch for " << path << ": " << exception;
-    }
-
-    throw exception;
-  }
-}
 
 void
 FSEventQueue::Watch::read(
@@ -350,13 +288,31 @@ FSEventQueue::associate(
     }
   }
 
-  try {
-    watch = new Watch(fs_event_types, inotify_fd, path, log);
+  uint32_t mask = 0;
+  if (fs_event_types & FSEvent::TYPE_DIRECTORY_ADD)
+    mask |= IN_CREATE;
+  if (fs_event_types & FSEvent::TYPE_DIRECTORY_MODIFY)
+    mask |= IN_ATTRIB | IN_MODIFY;
+  if (fs_event_types & FSEvent::TYPE_DIRECTORY_REMOVE)
+    mask |= IN_DELETE | IN_DELETE_SELF;
+  if (fs_event_types & FSEvent::TYPE_DIRECTORY_RENAME
+    mask |= IN_MOVE_SELF | IN_MOVED_FROM | IN_MOVED_TO;
+  if (fs_event_types & FSEvent::TYPE_FILE_ADD)
+    mask |= IN_CREATE;
+  if (fs_event_types & FSEvent::TYPE_FILE_MODIFY)
+    mask |= IN_ATTRIB | IN_MODIFY;
+  if (fs_event_types & FSEvent::TYPE_FILE_REMOVE)
+    mask |= IN_DELETE | IN_DELETE_SELF;
+  if (fs_event_types & FSEvent::TYPE_FILE_RENAME)
+    mask |= IN_MOVE_SELF | IN_MOVED_FROM | IN_MOVED_TO;
+
+  int wd = inotify_add_watch(inotify_fd, path.c_str(), mask);
+  if (wd != -1) {
+    watch = new Watch(fs_event_types, inotify_fd, path, wd, log);
     watches->insert(*watch);
     return true;
-  } catch (Exception&) {
+  } else
     return false;
-  }
 }
 
 bool FSEventQueue::dissociate(const Path& path) {

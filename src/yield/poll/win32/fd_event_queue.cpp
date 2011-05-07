@@ -86,7 +86,7 @@ bool FDEventQueue::dissociate(fd_t fd) {
 }
 
 bool FDEventQueue::enqueue(Event& event) {
-  if (BlockingConcurrentQueue<Event>::enqueue(event)) {
+  if (event_queue.enqueue(event)) {
     SetEvent(fds[0]);
     return true;
   } else
@@ -104,7 +104,7 @@ YO_NEW_REF Event* FDEventQueue::timeddequeue(const Time& timeout) {
     );
 
   if (dwRet == WAIT_OBJECT_0)
-    return BlockingConcurrentQueue<Event>::trydequeue();
+    return event_queue.trydequeue();
   else if (dwRet > WAIT_OBJECT_0 && dwRet < WAIT_OBJECT_0 + fds.size())
     return new FDEvent(fds[dwRet - WAIT_OBJECT_0], FDEvent::TYPE_READ_READY);
   else

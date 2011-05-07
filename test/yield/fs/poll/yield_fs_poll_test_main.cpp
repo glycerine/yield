@@ -31,6 +31,9 @@
 
 #include <iostream>
 
+#if defined(__MACH__) || defined(__FreeBSD__)
+extern yunit::TestSuite& BSDFSEventQueueTestSuite();
+#endif
 extern yunit::TestSuite& FSEventTestSuite();
 #ifdef __linux__
 extern yunit::TestSuite& LinuxFSEventQueueTestSuite();
@@ -41,6 +44,13 @@ extern yunit::TestSuite& Win32FSEventQueueTestSuite();
 
 int main(int, char**) {
   int failed_test_case_count = 0;
+
+#if defined(__MACH__) || defined(__FreeBSD__)
+  // BSDFSEventQueue
+  std::cout << "BSDFSEventQueue:" << std::endl;
+  failed_test_case_count += BSDFSEventQueueTestSuite().run();
+  std::cout << std::endl;
+#endif
 
   // FSEvent
   std::cout << "FSEvent:" << std::endl;

@@ -38,9 +38,7 @@
 namespace yield {
 namespace poll {
 namespace posix {
-class FDEventQueue
-  : public EventQueue,
-    private yield::queue::BlockingConcurrentQueue<Event> {
+class FDEventQueue : public EventQueue {
 public:
   FDEventQueue();
   ~FDEventQueue();
@@ -55,6 +53,7 @@ public:
   YO_NEW_REF Event* timeddequeue(const Time& timeout);
 
 private:
+  yield::queue::BlockingConcurrentQueue<Event> event_queue;
   vector<pollfd> pollfds;
   int wake_pipe[2];
 };

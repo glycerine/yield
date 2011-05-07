@@ -34,7 +34,6 @@
 #include "yield/auto_object.hpp"
 #include "yield/fs/file.hpp"
 #include "yield/fs/file_system.hpp"
-#include "yield/fs/path.hpp"
 #include "yield/fs/stat.hpp"
 
 #include <fcntl.h> // For O_*

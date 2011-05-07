@@ -38,8 +38,6 @@
 namespace yield {
 namespace poll {
 namespace bsd {
-using yield::queue::BlockingConcurrentQueue;
-
 FDEventQueue::FDEventQueue() {
   kq = kqueue();
   if (kq != -1) {
@@ -105,7 +103,7 @@ bool FDEventQueue::dissociate(fd_t fd) {
 }
 
 bool FDEventQueue::enqueue(Event& event) {
-  if (BlockingConcurrentQueue<Event>::enqueue(event)) {
+  if (event_queue.enqueue(event)) {
     ssize_t write_ret = write(wake_pipe[1], "m", 1);
     debug_assert_eq(write_ret, 1);
     return true;
@@ -114,7 +112,7 @@ bool FDEventQueue::enqueue(Event& event) {
 }
 
 YO_NEW_REF Event* FDEventQueue::timeddequeue(const Time& timeout) {
-  Event* event = BlockingConcurrentQueue<Event>::trydequeue();
+  Event* event = event_queue.trydequeue();
   if (event != NULL)
     return event;
   else {
@@ -126,7 +124,7 @@ YO_NEW_REF Event* FDEventQueue::timeddequeue(const Time& timeout) {
       if (static_cast<int>(kevent_.ident) == wake_pipe[0]) {
         char m;
         read(wake_pipe[0], &m, sizeof(m));
-        return BlockingConcurrentQueue<Event>::trydequeue();
+        return event_queue.trydequeue();
       } else {
         switch (kevent_.filter) {
           case EVFILT_READ:

@@ -1,4 +1,4 @@
-// yield/poll/linux/fd_event_queue.hpp
+// fs_event_queue_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,38 +27,10 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_POLL_LINUX_FD_EVENT_QUEUE_HPP_
-#define _YIELD_POLL_LINUX_FD_EVENT_QUEUE_HPP_
+#include "../fs_event_queue_test.hpp"
+#include "yield/fs/poll/bsd/fs_event_queue.hpp"
 
-#include "yield/event_queue.hpp"
-#include "yield/queue/blocking_concurrent_queue.hpp"
-
-#include <sys/epoll.h>
-
-namespace yield {
-namespace poll {
-namespace linux {
-class FDEventQueue : public EventQueue {
-public:
-  FDEventQueue();
-  ~FDEventQueue();
-
-public:
-  bool associate(fd_t fd, uint16_t fd_event_types);
-  bool dissociate(fd_t fd);
-
-public:
-  // yield::EventQueue
-  bool enqueue(YO_NEW_REF Event& event);
-  YO_NEW_REF Event* timeddequeue(const Time& timeout);
-
-private:
-  int epfd;
-  yield::queue::BlockingConcurrentQueue<Event> event_queue;
-  int wake_fd;
-};
-}
-}
-}
-
-#endif
+TEST_SUITE_EX(
+  BSDFSEventQueue,
+  yield::fs::poll::FSEventQueueTestSuite<yield::fs::poll::bsd::FSEventQueue>
+);

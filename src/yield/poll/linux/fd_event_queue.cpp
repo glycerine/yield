@@ -94,7 +94,7 @@ bool FDEventQueue::dissociate(fd_t fd) {
 }
 
 bool FDEventQueue::enqueue(Event& event) {
-  if (BlockingConcurrentQueue<Event>::enqueue(event)) {
+  if (event_queue.enqueue(event)) {
     uint64_t data = 1;
     write(wake_fd, &data, sizeof(data));
     return true;
@@ -103,7 +103,7 @@ bool FDEventQueue::enqueue(Event& event) {
 }
 
 YO_NEW_REF Event* FDEventQueue::timeddequeue(const Time& timeout) {
-  Event* event = BlockingConcurrentQueue<Event>::trydequeue();
+  Event* event = event_queue.trydequeue();
   if (event != NULL)
     return event;
   else {
@@ -116,7 +116,7 @@ YO_NEW_REF Event* FDEventQueue::timeddequeue(const Time& timeout) {
       if (epoll_event_.data.fd == wake_fd) {
         uint64_t data;
         read(wake_fd, &data, sizeof(data));
-        return BlockingConcurrentQueue<Event>::trydequeue();
+        return event_queue.trydequeue();
       } else
         return new FDEvent(epoll_event_.data.fd, epoll_event_.events);
     } else if (ret == 0 || errno == EINTR)

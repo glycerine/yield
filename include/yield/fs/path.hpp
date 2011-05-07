@@ -30,7 +30,6 @@
 #ifndef _YIELD_FS_PATH_HPP_
 #define _YIELD_FS_PATH_HPP_
 
-#include "yield/object.hpp"
 #include "yield/i18n/tstring.hpp"
 
 #include <ostream> // For std::ostream

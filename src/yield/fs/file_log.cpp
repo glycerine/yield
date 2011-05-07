@@ -30,7 +30,6 @@
 #include "yield/fs/file_log.hpp"
 #include "yield/fs/file_system.hpp"
 
-
 namespace yield {
 namespace fs {
 FileLog::FileLog(const Path& file_path, const Level& level)

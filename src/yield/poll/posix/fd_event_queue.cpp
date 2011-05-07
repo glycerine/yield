@@ -37,8 +37,6 @@
 namespace yield {
 namespace poll {
 namespace posix {
-using yield::queue::BlockingConcurrentQueue;
-
 FDEventQueue::FDEventQueue() {
   if (pipe(wake_pipe) != -1) {
     if (associate(wake_pipe[0], FDEvent::TYPE_READ_READY))
@@ -98,7 +96,7 @@ bool FDEventQueue::dissociate(fd_t fd) {
 }
 
 bool FDEventQueue::enqueue(YO_NEW_REF Event& event) {
-  if (BlockingConcurrentQueue<Event>::enqueue(event)) {
+  if (event_queue.enqueue(event)) {
     ssize_t write_ret = write(wake_pipe[1], "m", 1);
     debug_assert_eq(write_ret, 1);
     return true;
@@ -120,7 +118,7 @@ YO_NEW_REF Event* FDEventQueue::timeddequeue(const Time& timeout) {
         if (pollfd_.fd == wake_pipe[0]) {
           char data;
           read(wake_pipe[0], &data, sizeof(data));
-          return BlockingConcurrentQueue<Event>::trydequeue();
+          return event_queue.trydequeue();
         } else
           return new FDEvent(pollfd_.fd, pollfd_.revents);
 

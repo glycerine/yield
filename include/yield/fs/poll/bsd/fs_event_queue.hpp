@@ -1,4 +1,4 @@
-// yield/poll/linux/fd_event_queue.hpp
+// yield/fs/poll/bsd/fs_event_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,25 +27,31 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_POLL_LINUX_FD_EVENT_QUEUE_HPP_
-#define _YIELD_POLL_LINUX_FD_EVENT_QUEUE_HPP_
+#ifndef _YIELD_FS_POLL_BSD_FS_EVENT_QUEUE_HPP_
+#define _YIELD_FS_POLL_BSD_FS_EVENT_QUEUE_HPP_
 
 #include "yield/event_queue.hpp"
+#include "yield/fs/poll/fs_event.hpp"
 #include "yield/queue/blocking_concurrent_queue.hpp"
 
-#include <sys/epoll.h>
-
 namespace yield {
+class Log;
+
+namespace fs {
 namespace poll {
-namespace linux {
-class FDEventQueue : public EventQueue {
+namespace bsd {
+class FSEventQueue : public EventQueue {
 public:
-  FDEventQueue();
-  ~FDEventQueue();
+  FSEventQueue(YO_NEW_REF Log* log = NULL);
+  ~FSEventQueue();
 
 public:
-  bool associate(fd_t fd, uint16_t fd_event_types);
-  bool dissociate(fd_t fd);
+  bool associate(
+    const Path& path,
+    FSEvent::Type fs_event_types = FSEvent::TYPE_ALL
+  );
+
+  bool dissociate(const Path& path);
 
 public:
   // yield::EventQueue
@@ -53,10 +59,16 @@ public:
   YO_NEW_REF Event* timeddequeue(const Time& timeout);
 
 private:
-  int epfd;
+  class Watch;
+
+private:
   yield::queue::BlockingConcurrentQueue<Event> event_queue;
-  int wake_fd;
+  int kq;
+  Log* log;
+  int wake_pipe[2];
+  vector<Watch*> watches;
 };
+}
 }
 }
 }

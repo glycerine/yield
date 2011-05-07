@@ -34,9 +34,8 @@
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
 #include "yield/fs/file.hpp"
-#include "yield/fs/path.hpp"
-#include "yield/fs/stat.hpp"
 #include "yield/fs/file_system.hpp"
+#include "yield/fs/stat.hpp"
 #include "yunit.hpp"
 
 #include <fcntl.h>

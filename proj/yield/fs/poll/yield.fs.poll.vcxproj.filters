@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="Source Files\bsd">
+      <UniqueIdentifier>{9f1865c5-1d4e-402d-9167-54e22dd7e637}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source Files">
       <UniqueIdentifier>{77cdb3ec-93b2-4986-a71c-6a64e108ff62}</UniqueIdentifier>
     </Filter>
@@ -12,6 +15,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <Filter Include="Header Files\bsd">
+      <UniqueIdentifier>{ba3265f3-b814-420a-8a1c-3f38435ac93c}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{8de378a6-1aab-4262-9bad-c9988ac4f590}</UniqueIdentifier>
     </Filter>
@@ -23,6 +29,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\include\yield\fs\poll\bsd\fs_event_queue.hpp">
+      <Filter>Header Files\bsd</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\include\yield\fs\poll\fs_event.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -37,6 +46,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\bsd\fs_event_queue.cpp">
+      <Filter>Source Files\bsd</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\fs_event.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

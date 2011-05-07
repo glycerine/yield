@@ -39,11 +39,7 @@ namespace yield {
 namespace sockets {
 namespace poll {
 namespace win32 {
-using yield::queue::BlockingConcurrentQueue;
-
-class SocketEventQueue::SocketPollerSelector
-  : public EventQueue,
-    protected BlockingConcurrentQueue<Event> {
+class SocketEventQueue::SocketPollerSelector : public EventQueue {
 public:
   virtual bool associate(socket_t socket_, SocketEvent::Type socket_event_types) = 0;
   virtual bool dissociate(socket_t socket_) = 0;
@@ -51,7 +47,7 @@ public:
 public:
   // yield::EventQuueue
   bool enqueue(YO_NEW_REF Event& event) {
-    if (BlockingConcurrentQueue<Event>::enqueue(event)) {
+    if (event_queue.enqueue(event)) {
       wake_socket_pair.second().write("m", 1);
       return true;
     } else
@@ -59,6 +55,7 @@ public:
   }
 
 protected:
+  yield::queue::BlockingConcurrentQueue<Event> event_queue;
   StreamSocketPair wake_socket_pair;
 };
 
@@ -127,7 +124,7 @@ public:
             pollfd_.revents = 0;
             char m;
             wake_socket_pair.first().read(&m, 1);
-            return BlockingConcurrentQueue<Event>::trydequeue();
+            return event_queue.trydequeue();
           } else {
             uint16_t revents = pollfd_.revents;
             pollfd_.revents = 0;
@@ -293,7 +290,7 @@ public:
           if (socket_ == wake_socket_pair.first()) {
             char m;
             wake_socket_pair.second().read(&m, 1);
-            return BlockingConcurrentQueue<Event>::trydequeue();
+            return event_queue.trydequeue();
           }
           else
             return new SocketEvent(socket_, socket_event_types);
