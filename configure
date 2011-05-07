@@ -686,12 +686,12 @@ if options.generate_proj:
             }
 
             if sys.platform == "win32":
-                try: makedirs(project["build_dir_path"]["win32"])
+                try: makedirs(project["build_dir_path"])
                 except: pass
                 if project_name != "yield":
                     mirror_subdirectories(
                         project["source_dir_path"],
-                        project["build_dir_path"]["win32"]
+                        project["build_dir_path"]
                     )
 
                 try: makedirs(project["project_dir_path"])

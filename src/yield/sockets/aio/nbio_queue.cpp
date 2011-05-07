@@ -210,12 +210,13 @@ Event* NBIOQueue::dequeue(const Time& timeout) {
       default:
         return event;
       }
-    }
-
-    Time elapsed_time = Time::now() - start_time;
-    if (timeout_remaining > elapsed_time)
-      timeout_remaining -= elapsed_time;
-    else
+    } else if (timeout_remaining > static_cast<uint64_t>(0)) {
+      Time elapsed_time = Time::now() - start_time;
+      if (timeout_remaining > elapsed_time)
+        timeout_remaining -= elapsed_time;
+      else
+        timeout_remaining = 0;
+    } else
       return NULL;
   }
 }

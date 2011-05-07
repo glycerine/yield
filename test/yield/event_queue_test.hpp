@@ -44,15 +44,15 @@ public:
   // yunit::Test
   void run() {
     auto_Object<Event> event = new Event;
-    auto_Object<EventQueue> event_queue = new EventQueueType;
+    EventQueueType event_queue;
 
-    bool enqueue_ret = event_queue->enqueue(event->inc_ref());
+    bool enqueue_ret = event_queue.enqueue(event->inc_ref());
     throw_assert(enqueue_ret);
 
-    auto_Object<Event> dequeued_event = event_queue->dequeue();
+    auto_Object<Event> dequeued_event = event_queue.dequeue();
     throw_assert_eq(event, dequeued_event);
 
-    Event* null_event = event_queue->trydequeue();
+    Event* null_event = event_queue.trydequeue();
     throw_assert_eq(null_event, NULL);
   }
 };
@@ -64,15 +64,15 @@ public:
   // yunit::Test
   void run() {
     auto_Object<Event> event = new Event;
-    auto_Object<EventQueue> event_queue = new EventQueueType;
+    EventQueueType event_queue;
 
-    bool enqueue_ret = event_queue->enqueue(event->inc_ref());
+    bool enqueue_ret = event_queue.enqueue(event->inc_ref());
     throw_assert(enqueue_ret);
 
-    auto_Object<Event> dequeued_event = event_queue->dequeue(1.0);
+    auto_Object<Event> dequeued_event = event_queue.dequeue(1.0);
     throw_assert_eq(event, dequeued_event);
 
-    Event* null_event = event_queue->dequeue(1.0);
+    Event* null_event = event_queue.dequeue(1.0);
     throw_assert_eq(null_event, NULL);
   }
 };
@@ -84,15 +84,15 @@ public:
   // yunit::Test
   void run() {
     auto_Object<Event> event = new Event;
-    auto_Object<EventQueue> event_queue = new EventQueueType;
+    EventQueueType event_queue;
 
-    bool enqueue_ret = event_queue->enqueue(event->inc_ref());
+    bool enqueue_ret = event_queue.enqueue(event->inc_ref());
     throw_assert(enqueue_ret);
 
-    auto_Object<Event> dequeued_event = event_queue->trydequeue();
+    auto_Object<Event> dequeued_event = event_queue.trydequeue();
     throw_assert_eq(event, dequeued_event);
 
-    Event* null_event = event_queue->trydequeue();
+    Event* null_event = event_queue.trydequeue();
     throw_assert_eq(null_event, NULL);
   }
 };
