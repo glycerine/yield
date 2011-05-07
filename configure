@@ -141,9 +141,8 @@ for platform in CXXFLAGS.iterkeys():
     assert platform in PLATFORMS, platform
 
 CXXPATH = {
-    "*": [
-        INCLUDE_DIR_PATH,
-    ]
+    "*": [INCLUDE_DIR_PATH],
+    "freebsd": ["/usr/local/include"]
 }
 for platform in CXXPATH.iterkeys():
     assert platform in PLATFORMS, platform
@@ -160,7 +159,7 @@ for platform in LDFLAGS.iterkeys():
 
 LIBPATH = {
     "*": [path_join(ROOT_DIR_PATH, "lib", "yield")],
-    # "win32": [path_join( ROOT_DIR_PATH, "lib", "win32" )]
+    "freebsd": ["/usr/local/lib"]
 }
 for platform in LIBPATH.iterkeys():
     assert platform in PLATFORMS, platform

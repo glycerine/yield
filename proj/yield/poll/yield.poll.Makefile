@@ -3,6 +3,9 @@ UNAME := $(shell uname)
 
 
 CXXFLAGS += -I../../../include
+ifeq ($(UNAME), FreeBSD)
+	CXXFLAGS += -I/usr/local/include
+endif
 ifeq ($(UNAME), Linux)
 	CXXFLAGS += -fno-rtti -Wall -Wold-style-cast -Wunused-macros
 endif
@@ -30,6 +33,9 @@ endif
 
 
 LDFLAGS += -L../../../lib/yield
+ifeq ($(UNAME), FreeBSD)
+	LDFLAGS += -L/usr/local/lib
+endif
 ifeq ($(UNAME), MINGW32)
 	LDFLAGS += /ignore:4006 /ignore:4221
 endif
