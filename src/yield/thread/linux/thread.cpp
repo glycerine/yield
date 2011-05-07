@@ -37,7 +37,7 @@
 namespace yield {
 namespace thread {
 namespace linux {
-Thread::Thread(Runnable& runnable)
+Thread::Thread(YO_NEW_REF Runnable& runnable)
   : yield::thread::posix::Thread(runnable) {
   tid = 0;
 }
@@ -64,8 +64,7 @@ bool Thread::setaffinity(uint16_t logical_processor_i) {
 }
 
 bool Thread::setaffinity(const ProcessorSet& logical_processor_set) {
-  return sched_setaffinity
-         (
+  return sched_setaffinity(
            tid,
            sizeof(cpu_set_t),
            logical_processor_set

@@ -37,6 +37,7 @@
 namespace yield {
 namespace http {
 namespace server {
+using yield::sockets::Socket;
 using yield::sockets::SocketAddress;
 using yield::sockets::TCPSocket;
 using yield::sockets::aio::acceptAIOCB;

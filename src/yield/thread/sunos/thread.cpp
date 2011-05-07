@@ -33,11 +33,10 @@
 #include <sys/processor.h>
 #include <sys/pset.h>
 
-
 namespace yield {
 namespace thread {
 namespace sunos {
-Thread::Thread(Runnable& runnable)
+Thread::Thread(YO_NEW_REF Runnable& runnable)
   : yield::thread::posix::Thread(runnable) {
   thread = 0;
 }
@@ -57,8 +56,7 @@ auto_Object<Thread> Thread::self() {
 }
 
 bool Thread::setaffinity(uint16_t logical_processor_i) {
-  return processor_bind
-         (
+  return processor_bind(
            P_LWPID,
            thread,
            logical_processor_i,
@@ -67,8 +65,7 @@ bool Thread::setaffinity(uint16_t logical_processor_i) {
 }
 
 bool Thread::setaffinity(const ProcessorSet& logical_processor_set) {
-  return pset_bind
-         (
+  return pset_bind(
            logical_processor_set,
            P_LWPID,
            thread,

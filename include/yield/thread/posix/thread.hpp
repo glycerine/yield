@@ -74,6 +74,10 @@ public:
   void nanosleep(const Time&);
 
 public:
+  virtual void set_name(const char* name) {
+  }
+
+public:
   bool setspecific(uintptr_t key, void* value);
 
 protected:

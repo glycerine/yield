@@ -31,7 +31,6 @@
 #include "yield/auto_object.hpp"
 #include "yield/exception.hpp"
 #include "yield/time.hpp"
-#include "yield/thread/mutex.hpp"
 #include "yield/thread/thread.hpp"
 #include "yunit.hpp"
 
@@ -39,42 +38,19 @@ TEST_SUITE(Thread);
 
 namespace yield {
 namespace thread {
-class ThreadTest : public yunit::Test {
-public:
-  // yunit::Test
-  void setup() {
-    mutex = new Mutex;
-    mutex->lock();
-  }
-
-  void teardown() {
-    delete mutex;
-    mutex = NULL;
-  }
-
-protected:
-  static void thread_run(void* this_) {
-    static_cast<ThreadTest*>(this_)->mutex->lock();
-  }
-
-protected:
-  Mutex* mutex;
-};
-
-
-TEST_EX(Thread, key_create, ThreadTest) {
+TEST(Thread, key_create) {
   uintptr_t key = Thread::self()->key_create();
   throw_assert_ne(key, 0);
 }
 
-TEST_EX(Thread, key_delete, ThreadTest) {
+TEST(Thread, key_delete) {
   uintptr_t key = Thread::self()->key_create();
   throw_assert_ne(key, 0);
   if (!Thread::self()->key_delete(key))
     throw Exception();
 }
 
-TEST_EX(Thread, getspecific, ThreadTest) {
+TEST(Thread, getspecific) {
   uintptr_t key = Thread::self()->key_create();
   if (!Thread::self()->setspecific(key, reinterpret_cast<void*>(42)))
     throw Exception();
@@ -82,28 +58,28 @@ TEST_EX(Thread, getspecific, ThreadTest) {
   throw_assert_eq(reinterpret_cast<uintptr_t>(ret_value), 42);
 }
 
-TEST_EX(Thread, nanosleep, ThreadTest) {
+TEST(Thread, nanosleep) {
   Time start_time(Time::now());
   Thread::self()->nanosleep(0.05);
   Time slept_time(Time::now() - start_time);
   throw_assert_ge(slept_time.ms(), 50);
 }
 
-TEST_EX(Thread, set_name, ThreadTest) {
+TEST(Thread, set_name) {
  Thread::self()->set_name("test thread");
 }
 
-TEST_EX(Thread, setaffinity, ThreadTest) {
+TEST(Thread, setaffinity) {
   throw_assert_true(Thread::self()->setaffinity(0));
 }
 
-TEST_EX(Thread, setspecific, ThreadTest) {
+TEST(Thread, setspecific) {
   uintptr_t key = Thread::self()->key_create();
   if (!Thread::self()->setspecific(key, reinterpret_cast<void*>(42)))
     throw Exception();
 }
 
-TEST_EX(Thread, yield, ThreadTest) {
+TEST(Thread, yield) {
   Thread::self()->yield();
 }
 }

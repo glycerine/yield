@@ -27,16 +27,15 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "thread.hpp"
 #include "yield/exception.hpp"
 #include "yield/time.hpp"
 #include "yield/thread/runnable.hpp"
-
+#include "yield/thread/posix/thread.hpp"
 
 namespace yield {
 namespace thread {
 namespace posix {
-Thread::Thread(Runnable& runnable)
+Thread::Thread(YO_NEW_REF Runnable& runnable)
   : runnable(&runnable) {
   state = STATE_READY;
 

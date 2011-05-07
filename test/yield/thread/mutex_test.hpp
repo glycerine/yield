@@ -80,7 +80,7 @@ class MutexLockTest : public MutexTest<MutexType> {
 public:
   // yunit::Test
   void run() {
-    Thread thread(*new OtherThread(*this->mutex));
+    Thread thread(*new typename MutexTest<MutexType>::OtherThread(*this->mutex));
 
     throw_assert_true(this->mutex->lock());
     Thread::self()->nanosleep(0.1);
@@ -96,7 +96,7 @@ class MutexTryLockTest : public MutexTest<MutexType> {
 public:
   // yunit::Test
   void run() {
-    Thread thread(*new OtherThread(*this->mutex));
+    Thread thread(*new typename MutexTest<MutexType>::OtherThread(*this->mutex));
 
     throw_assert_true(this->mutex->trylock());
     Thread::self()->nanosleep(0.1);
