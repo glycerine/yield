@@ -109,9 +109,7 @@
     <ClInclude Include="..\..\..\include\yield\thread\processor_set.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\reader_writer_lock.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\runnable.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\sampler.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\semaphore.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\static_runnable.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\sunos\processor_set.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\sunos\thread.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\thread.hpp" />

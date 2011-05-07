@@ -65,6 +65,8 @@ Thread::~Thread() {
 
     CloseHandle(handle);
   }
+
+  Runnable::dec_ref(runnable);
 }
 
 bool Thread::cancel() {

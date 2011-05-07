@@ -32,10 +32,10 @@
 
 #include "yield/assert.hpp"
 #include "yield/time.hpp"
+#include "yield/thread/runnable.hpp"
 #include "yield/thread/mutex.hpp"
 #include "yield/thread/thread.hpp"
 #include "yunit.hpp"
-
 
 namespace yield {
 namespace thread {
@@ -52,6 +52,25 @@ public:
   }
 
 protected:
+  class OtherThread : public Runnable {
+  public:
+    OtherThread(MutexType& mutex)
+      : mutex(mutex) {
+    }
+
+  public:
+    // yield::thread::Runnable
+    void run() {
+      mutex.lock();
+      Thread::self()->nanosleep(0.1);
+      mutex.unlock();
+    }
+
+  private:
+    MutexType& mutex;
+  };
+
+protected:
   MutexType* mutex;
 };
 
@@ -61,21 +80,13 @@ class MutexLockTest : public MutexTest<MutexType> {
 public:
   // yunit::Test
   void run() {
-    auto_Object<Thread> thread = new Thread(thread_run, this);
+    Thread thread(*new OtherThread(*this->mutex));
 
-    bool lock_ret = this->mutex->lock();
-    throw_assert(lock_ret);
+    throw_assert_true(this->mutex->lock());
     Thread::self()->nanosleep(0.1);
     this->mutex->unlock();
 
-    thread->join();
-  }
-
-private:
-  static void thread_run(void* this_) {
-    static_cast<MutexLockTest<MutexType>*>(this_)->mutex->lock();
-    Thread::self()->nanosleep(0.1);
-    static_cast<MutexLockTest<MutexType>*>(this_)->mutex->unlock();
+    thread.join();
   }
 };
 
@@ -85,21 +96,13 @@ class MutexTryLockTest : public MutexTest<MutexType> {
 public:
   // yunit::Test
   void run() {
-    auto_Object<Thread> thread = new Thread(thread_run, this);
+    Thread thread(*new OtherThread(*this->mutex));
 
-    bool lock_ret = this->mutex->trylock();
-    throw_assert(lock_ret);
+    throw_assert_true(this->mutex->trylock());
     Thread::self()->nanosleep(0.1);
     this->mutex->unlock();
 
-    thread->join();
-  }
-
-private:
-  static void thread_run(void* this_) {
-    static_cast<MutexTryLockTest<MutexType>*>(this_)->mutex->lock();
-    Thread::self()->nanosleep(0.1);
-    static_cast<MutexTryLockTest<MutexType>*>(this_)->mutex->unlock();
+    thread.join();
   }
 };
 

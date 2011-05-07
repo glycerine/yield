@@ -66,6 +66,8 @@ Thread::~Thread() {
     cancel();
     join();
   }
+
+  Runnable::dec_ref(runnable);
 }
 
 bool Thread::cancel() {

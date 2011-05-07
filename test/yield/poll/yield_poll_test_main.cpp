@@ -31,10 +31,10 @@
 
 #include <iostream>
 
-extern yunit::TestSuite& FDEventTestSuite();
 #if defined(__MACH__) || defined(__FreeBSD__)
 extern yunit::TestSuite& BSDFDEventQueueTestSuite();
 #endif
+extern yunit::TestSuite& FDEventTestSuite();
 #ifdef __linux__
 extern yunit::TestSuite& LinuxFDEventQueueTestSuite();
 #endif
@@ -51,17 +51,17 @@ extern yunit::TestSuite& Win32FDEventQueueTestSuite();
 int main(int, char**) {
   int failed_test_case_count = 0;
 
-  // FDEvent
-  std::cout << "FDEvent:" << std::endl;
-  failed_test_case_count += FDEventTestSuite().run();
-  std::cout << std::endl;
-
 #if defined(__MACH__) || defined(__FreeBSD__)
   // BSDFDEventQueue
   std::cout << "BSDFDEventQueue:" << std::endl;
   failed_test_case_count += BSDFDEventQueueTestSuite().run();
   std::cout << std::endl;
 #endif
+
+  // FDEvent
+  std::cout << "FDEvent:" << std::endl;
+  failed_test_case_count += FDEventTestSuite().run();
+  std::cout << std::endl;
 
 #ifdef __linux__
   // LinuxFDEventQueue

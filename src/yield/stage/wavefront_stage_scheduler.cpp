@@ -68,9 +68,8 @@ public:
 };
 
 
-PollingStageScheduler::StagePoller&
-WavefrontStageScheduler::createStagePoller
-(
+YO_NEW_REF PollingStageScheduler::StagePoller&
+WavefrontStageScheduler::createStagePoller(
   Stage& first_stage
 ) {
   return *new StagePoller(first_stage);

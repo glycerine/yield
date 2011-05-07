@@ -31,7 +31,6 @@
 
 #include <iostream>
 
-extern yunit::TestSuite& StatTestSuite();
 extern yunit::TestSuite& DirectoryTestSuite();
 extern yunit::TestSuite& FileLogTestSuite();
 extern yunit::TestSuite& NamedPipeTestSuite();
@@ -45,6 +44,7 @@ extern yunit::TestSuite& POSIXFileTestSuite();
 #ifdef __unix__
 extern yunit::TestSuite& POSIXStatTestSuite();
 #endif
+extern yunit::TestSuite& StatTestSuite();
 #ifdef _WIN32
 extern yunit::TestSuite& Win32FileSystemTestSuite();
 #endif
@@ -57,11 +57,6 @@ extern yunit::TestSuite& Win32StatTestSuite();
 
 int main(int, char**) {
   int failed_test_case_count = 0;
-
-  // Stat
-  std::cout << "Stat:" << std::endl;
-  failed_test_case_count += StatTestSuite().run();
-  std::cout << std::endl;
 
   // Directory
   std::cout << "Directory:" << std::endl;
@@ -103,6 +98,11 @@ int main(int, char**) {
   failed_test_case_count += POSIXStatTestSuite().run();
   std::cout << std::endl;
 #endif
+
+  // Stat
+  std::cout << "Stat:" << std::endl;
+  failed_test_case_count += StatTestSuite().run();
+  std::cout << std::endl;
 
 #ifdef _WIN32
   // Win32FileSystem

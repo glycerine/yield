@@ -35,10 +35,10 @@
 extern yunit::TestSuite& POSIXAIOCBTestSuite();
 #endif
 #ifdef _WIN32
-extern yunit::TestSuite& Win32AIOCBTestSuite();
+extern yunit::TestSuite& Win32AIOQueueTestSuite();
 #endif
 #ifdef _WIN32
-extern yunit::TestSuite& Win32AIOQueueTestSuite();
+extern yunit::TestSuite& Win32AIOCBTestSuite();
 #endif
 
 int main(int, char**) {
@@ -52,16 +52,16 @@ int main(int, char**) {
 #endif
 
 #ifdef _WIN32
-  // Win32AIOCB
-  std::cout << "Win32AIOCB:" << std::endl;
-  failed_test_case_count += Win32AIOCBTestSuite().run();
+  // Win32AIOQueue
+  std::cout << "Win32AIOQueue:" << std::endl;
+  failed_test_case_count += Win32AIOQueueTestSuite().run();
   std::cout << std::endl;
 #endif
 
 #ifdef _WIN32
-  // Win32AIOQueue
-  std::cout << "Win32AIOQueue:" << std::endl;
-  failed_test_case_count += Win32AIOQueueTestSuite().run();
+  // Win32AIOCB
+  std::cout << "Win32AIOCB:" << std::endl;
+  failed_test_case_count += Win32AIOCBTestSuite().run();
   std::cout << std::endl;
 #endif
 

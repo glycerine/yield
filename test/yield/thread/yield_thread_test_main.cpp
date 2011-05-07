@@ -36,7 +36,6 @@ extern yunit::TestSuite& LightweightMutexTestSuite();
 extern yunit::TestSuite& MutexTestSuite();
 extern yunit::TestSuite& ProcessorSetTestSuite();
 extern yunit::TestSuite& ReaderWriterLockTestSuite();
-extern yunit::TestSuite& SamplerTestSuite();
 extern yunit::TestSuite& SemaphoreTestSuite();
 extern yunit::TestSuite& ThreadTestSuite();
 
@@ -66,11 +65,6 @@ int main(int, char**) {
   // ReaderWriterLock
   std::cout << "ReaderWriterLock:" << std::endl;
   failed_test_case_count += ReaderWriterLockTestSuite().run();
-  std::cout << std::endl;
-
-  // Sampler
-  std::cout << "Sampler:" << std::endl;
-  failed_test_case_count += SamplerTestSuite().run();
   std::cout << std::endl;
 
   // Semaphore

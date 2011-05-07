@@ -53,6 +53,21 @@ void ProcessorSet::clear() {
   }
 }
 
+uint16_t ProcessorSet::count() const {
+  uint16_t count = 0;
+
+  for (
+    uint16_t processor_i = 0;
+    processor_i < static_cast<uint16_t>(-1);
+    processor_i++
+  ) {
+    if (isset(processor_i))
+      count++;
+  }
+
+  return count;
+}
+
 uint16_t ProcessorSet::get_online_logical_processor_count() {
   uint16_t online_logical_processor_count = 0;
 
@@ -101,8 +116,7 @@ void ProcessorSet::clear(uint16_t processor_i) {
 bool ProcessorSet::isset(uint16_t processor_i) const {
   if (psetid != PS_NONE) {
     psetid_t check_psetid;
-    return pset_assign
-           (
+    return pset_assign(
              PS_QUERY,
              processor_i,
              &check_psetid

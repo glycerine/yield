@@ -46,6 +46,13 @@ public:
   void clear(uint16_t processor_i);
 
 public:
+  uint16_t count() const;
+
+  bool empty() const {
+    return count() == 0;
+  }
+
+public:
   static uint16_t get_online_logical_processor_count();
   static uint16_t get_online_physical_processor_count();
 
