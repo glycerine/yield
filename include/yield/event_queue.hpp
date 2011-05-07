@@ -42,20 +42,21 @@ public:
   virtual YO_NEW_REF Event& dequeue() {
     Event* event;
     do {
-      event = dequeue(Time::FOREVER);
+      event = timeddequeue(Time::FOREVER);
     } while (event == NULL);
     return *event;
   }
 
-  virtual YO_NEW_REF Event* dequeue(const Time& timeout) = 0;
-
   virtual bool enqueue(YO_NEW_REF Event& event) = 0;
 
+  virtual YO_NEW_REF Event* timeddequeue(const Time& timeout) = 0;
+
   virtual YO_NEW_REF Event* trydequeue() {
-    return dequeue(0);
+    return timeddequeue(0);
   }
 
-  // EventHandler
+public:
+  // yield::EventHandler
   void handle(YO_NEW_REF Event& event) {
     enqueue(event);
   }

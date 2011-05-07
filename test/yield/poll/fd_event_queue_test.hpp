@@ -155,7 +155,7 @@ public:
 
     signal_pipe();
 
-    Event* event = fd_event_queue.dequeue(0);
+    Event* event = fd_event_queue.timeddequeue(0);
     throw_assert_eq(event, NULL);
   }
 };
@@ -208,7 +208,7 @@ public:
 
     signal_pipe();
 
-    Event* event = fd_event_queue.trydequeue();
+    Event* event = fd_event_queue.timeddequeue(0);
     throw_assert_eq(event, NULL);
 
     if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY))

@@ -48,17 +48,9 @@ public:
   bool dissociate(fd_t fd);
 
 public:
-  // yield::EventQueue
-  YO_NEW_REF Event& dequeue() {
-    return EventQueue::dequeue();
-  }
-  
-  YO_NEW_REF Event* dequeue(const Time& timeout);
+  // yield::EventQueue  
   bool enqueue(YO_NEW_REF Event& event);
-
-  YO_NEW_REF Event* trydequeue() {
-    return EventQueue::trydequeue();
-  }
+  YO_NEW_REF Event* timeddequeue(const Time& timeout);
 
 private:
   FDEventQueue(void* hWakeEvent);

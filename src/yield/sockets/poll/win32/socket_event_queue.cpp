@@ -50,8 +50,6 @@ public:
 
 public:
   // yield::EventQuueue
-  virtual YO_NEW_REF Event* dequeue(const Time& timeout) = 0;
-
   bool enqueue(YO_NEW_REF Event& event) {
     if (BlockingConcurrentQueue<Event>::enqueue(event)) {
       wake_socket_pair.second().write("m", 1);
@@ -114,7 +112,7 @@ public:
 
 public:
   // yield::EventQueue
-  YO_NEW_REF Event* dequeue(const Time& timeout) {
+  YO_NEW_REF Event* timeddequeue(const Time& timeout) {
     // Scan pollfds once for outstanding revents from the last WSAPoll,
     // then call WSAPoll again if necessary.
     int ret = 0;
@@ -222,7 +220,7 @@ public:
 
 public:
   // yield::EventQueue
-  YO_NEW_REF Event* dequeue(const Time& timeout) {
+  YO_NEW_REF Event* timeddequeue(const Time& timeout) {
     fd_set except_fd_set_copy, read_fd_set_copy, write_fd_set_copy;
 
     memcpy_s(
@@ -329,16 +327,16 @@ bool SocketEventQueue::associate(socket_t socket_, uint16_t socket_event_types) 
   return pimpl->associate(socket_, socket_event_types);
 }
 
-YO_NEW_REF Event* SocketEventQueue::dequeue(const Time& timeout) {
-  return pimpl->dequeue(timeout);
-}
-
 bool SocketEventQueue::dissociate(socket_t socket_) {
   return pimpl->dissociate(socket_);
 }
 
 bool SocketEventQueue::enqueue(YO_NEW_REF Event& event) {
   return pimpl->enqueue(event);
+}
+
+YO_NEW_REF Event* SocketEventQueue::timeddequeue(const Time& timeout) {
+  return pimpl->timeddequeue(timeout);
 }
 }
 }

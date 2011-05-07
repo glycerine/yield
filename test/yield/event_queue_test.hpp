@@ -52,7 +52,7 @@ public:
     auto_Object<Event> dequeued_event = event_queue.dequeue();
     throw_assert_eq(event, dequeued_event);
 
-    Event* null_event = event_queue.trydequeue();
+    Event* null_event = static_cast<EventQueue&>(event_queue).trydequeue();
     throw_assert_eq(null_event, NULL);
   }
 };
@@ -69,10 +69,10 @@ public:
     bool enqueue_ret = event_queue.enqueue(event->inc_ref());
     throw_assert(enqueue_ret);
 
-    auto_Object<Event> dequeued_event = event_queue.dequeue(1.0);
+    auto_Object<Event> dequeued_event = event_queue.timeddequeue(1.0);
     throw_assert_eq(event, dequeued_event);
 
-    Event* null_event = event_queue.dequeue(1.0);
+    Event* null_event = event_queue.timeddequeue(1.0);
     throw_assert_eq(null_event, NULL);
   }
 };
@@ -89,10 +89,12 @@ public:
     bool enqueue_ret = event_queue.enqueue(event->inc_ref());
     throw_assert(enqueue_ret);
 
-    auto_Object<Event> dequeued_event = event_queue.trydequeue();
+    auto_Object<Event> dequeued_event
+      = static_cast<EventQueue&>(event_queue).trydequeue();
     throw_assert_eq(event, dequeued_event);
 
-    Event* null_event = event_queue.trydequeue();
+    Event* null_event
+      = static_cast<EventQueue&>(event_queue).trydequeue();
     throw_assert_eq(null_event, NULL);
   }
 };

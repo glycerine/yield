@@ -44,12 +44,12 @@ public:
     return SynchronizedQueue<Event>::dequeue();
   }
 
-  YO_NEW_REF Event* dequeue(const Time& timeout) {
-    return SynchronizedQueue<Event>::dequeue(timeout);
-  }
-
   bool enqueue(YO_NEW_REF Event& event) {
     return SynchronizedQueue<Event>::enqueue(event);
+  }
+
+  YO_NEW_REF Event* timeddequeue(const Time& timeout) {
+    return SynchronizedQueue<Event>::timeddequeue(timeout);
   }
 
   YO_NEW_REF Event* trydequeue() {

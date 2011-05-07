@@ -61,97 +61,6 @@ bool AIOQueue::associate(socket_t socket_) {
          );
 }
 
-YO_NEW_REF Event* AIOQueue::dequeue(const Time& timeout) {
-  Event* event = yield::aio::win32::AIOQueue::dequeue(timeout);
-
-  if (event != NULL) {
-    switch (event->get_type_id()) {
-    case acceptAIOCB::TYPE_ID: {
-      acceptAIOCB& accept_aiocb = static_cast<acceptAIOCB&>(*event);
-
-      if (accept_aiocb.get_return() > 0) {
-        // accept_aiocb.return does NOT include the size of the
-        // local and remote socket addresses.
-
-        StreamSocket& accepted_socket
-          = *accept_aiocb.get_accepted_socket();
-        Buffer& recv_buffer = *accept_aiocb.get_recv_buffer();
-
-        int optval = accept_aiocb.get_socket();
-        setsockopt(
-          accepted_socket,
-          SOL_SOCKET,
-          SO_UPDATE_ACCEPT_CONTEXT,
-          reinterpret_cast<char*>(&optval),
-          sizeof(optval)
-        );
-
-        DWORD dwLocalAddressLength
-          = SocketAddress::len(accepted_socket.get_domain()) + 16;
-        DWORD dwRemoteAddressLength = dwLocalAddressLength;
-        DWORD dwReceiveDataLength =
-            recv_buffer.capacity() - recv_buffer.size() -
-              (dwLocalAddressLength + dwRemoteAddressLength);
-
-        sockaddr* peername = NULL;
-        socklen_t peernamelen;
-        sockaddr* sockname;
-        socklen_t socknamelen;
-
-        lpfnGetAcceptExSockaddrs(
-          static_cast<char*>(recv_buffer) + recv_buffer.size(),
-          dwReceiveDataLength,
-          dwLocalAddressLength,
-          dwRemoteAddressLength,
-          &sockname,
-          &socknamelen,
-          &peername,
-          &peernamelen
-        );
-
-        if (peername != NULL) {
-          accept_aiocb.set_peername(
-            new SocketAddress(*peername, accepted_socket.get_domain())
-          );
-        }
-
-        recv_buffer.put(NULL, accept_aiocb.get_return());
-      }
-
-      log_completion(accept_aiocb);
-    }
-    break;
-
-    case connectAIOCB::TYPE_ID: {
-      log_completion(static_cast<connectAIOCB&>(*event));
-    }
-    break;
-
-    case recvAIOCB::TYPE_ID: {
-      recvAIOCB& recv_aiocb = static_cast<recvAIOCB&>(*event);
-
-      if (recv_aiocb.get_return() > 0) {
-        Buffers::put(
-          recv_aiocb.get_buffer(),
-          NULL,
-          static_cast<size_t>(recv_aiocb.get_return())
-        );
-      }
-
-      log_completion(recv_aiocb);
-    }
-    break;
-
-    case sendAIOCB::TYPE_ID: {
-      log_completion(static_cast<sendAIOCB&>(*event));
-    }
-    break;
-    }
-  }
-
-  return event;
-}
-
 bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
   switch (event.get_type_id()) {
   case acceptAIOCB::TYPE_ID: {
@@ -503,6 +412,97 @@ template <class AIOCBType> void AIOQueue::log_error(AIOCBType& aiocb) {
     log->get_stream(Log::Level::ERR) <<
         get_type_name() << ": error on " << aiocb;
   }
+}
+
+YO_NEW_REF Event* AIOQueue::timeddequeue(const Time& timeout) {
+  Event* event = yield::aio::win32::AIOQueue::timeddequeue(timeout);
+
+  if (event != NULL) {
+    switch (event->get_type_id()) {
+    case acceptAIOCB::TYPE_ID: {
+      acceptAIOCB& accept_aiocb = static_cast<acceptAIOCB&>(*event);
+
+      if (accept_aiocb.get_return() > 0) {
+        // accept_aiocb.return does NOT include the size of the
+        // local and remote socket addresses.
+
+        StreamSocket& accepted_socket
+          = *accept_aiocb.get_accepted_socket();
+        Buffer& recv_buffer = *accept_aiocb.get_recv_buffer();
+
+        int optval = accept_aiocb.get_socket();
+        setsockopt(
+          accepted_socket,
+          SOL_SOCKET,
+          SO_UPDATE_ACCEPT_CONTEXT,
+          reinterpret_cast<char*>(&optval),
+          sizeof(optval)
+        );
+
+        DWORD dwLocalAddressLength
+          = SocketAddress::len(accepted_socket.get_domain()) + 16;
+        DWORD dwRemoteAddressLength = dwLocalAddressLength;
+        DWORD dwReceiveDataLength =
+            recv_buffer.capacity() - recv_buffer.size() -
+              (dwLocalAddressLength + dwRemoteAddressLength);
+
+        sockaddr* peername = NULL;
+        socklen_t peernamelen;
+        sockaddr* sockname;
+        socklen_t socknamelen;
+
+        lpfnGetAcceptExSockaddrs(
+          static_cast<char*>(recv_buffer) + recv_buffer.size(),
+          dwReceiveDataLength,
+          dwLocalAddressLength,
+          dwRemoteAddressLength,
+          &sockname,
+          &socknamelen,
+          &peername,
+          &peernamelen
+        );
+
+        if (peername != NULL) {
+          accept_aiocb.set_peername(
+            new SocketAddress(*peername, accepted_socket.get_domain())
+          );
+        }
+
+        recv_buffer.put(NULL, accept_aiocb.get_return());
+      }
+
+      log_completion(accept_aiocb);
+    }
+    break;
+
+    case connectAIOCB::TYPE_ID: {
+      log_completion(static_cast<connectAIOCB&>(*event));
+    }
+    break;
+
+    case recvAIOCB::TYPE_ID: {
+      recvAIOCB& recv_aiocb = static_cast<recvAIOCB&>(*event);
+
+      if (recv_aiocb.get_return() > 0) {
+        Buffers::put(
+          recv_aiocb.get_buffer(),
+          NULL,
+          static_cast<size_t>(recv_aiocb.get_return())
+        );
+      }
+
+      log_completion(recv_aiocb);
+    }
+    break;
+
+    case sendAIOCB::TYPE_ID: {
+      log_completion(static_cast<sendAIOCB&>(*event));
+    }
+    break;
+    }
+  }
+
+  return event;
 }
 }
 }

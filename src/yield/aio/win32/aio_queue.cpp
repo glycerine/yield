@@ -55,7 +55,17 @@ bool AIOQueue::associate(fd_t fd) {
          ) != INVALID_HANDLE_VALUE;
 }
 
-YO_NEW_REF Event* AIOQueue::dequeue(const Time& timeout) {
+bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
+  return PostQueuedCompletionStatus(
+           hIoCompletionPort,
+           0,
+           reinterpret_cast<ULONG_PTR>(&event),
+           NULL
+         )
+         == TRUE;
+}
+
+YO_NEW_REF Event* AIOQueue::timeddequeue(const Time& timeout) {
   DWORD dwBytesTransferred = 0;
   ULONG_PTR ulCompletionKey = 0;
   LPOVERLAPPED lpOverlapped = NULL;
@@ -82,16 +92,6 @@ YO_NEW_REF Event* AIOQueue::dequeue(const Time& timeout) {
     return reinterpret_cast<Event*>(ulCompletionKey);
   else
     return NULL;
-}
-
-bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
-  return PostQueuedCompletionStatus(
-           hIoCompletionPort,
-           0,
-           reinterpret_cast<ULONG_PTR>(&event),
-           NULL
-         )
-         == TRUE;
 }
 }
 }

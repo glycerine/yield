@@ -51,16 +51,8 @@ public:
 
 public:
   // yield::EventQueue
-  YO_NEW_REF Event& dequeue() {
-    return EventQueue::dequeue();
-  }
-
-  YO_NEW_REF Event* dequeue(const Time& timeout);
   bool enqueue(YO_NEW_REF Event& event);
-
-  YO_NEW_REF Event* trydequeue() {
-    return EventQueue::trydequeue();
-  }
+  YO_NEW_REF Event* timeddequeue(const Time& timeout);
 
 private:
   int epfd;

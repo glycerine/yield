@@ -54,7 +54,15 @@ public:
     return *element;
   }
 
-  ElementType* dequeue(const Time& timeout) {
+  bool enqueue(ElementType& element) {
+    cond.lock_mutex();
+    std::queue<ElementType*>::push(&element);
+    cond.signal();
+    cond.unlock_mutex();
+    return true;
+  }
+
+  ElementType* timeddequeue(const Time& timeout) {
     Time timeout_left(timeout);
 
     cond.lock_mutex();
@@ -86,14 +94,6 @@ public:
         }
       }
     }
-  }
-
-  bool enqueue(ElementType& element) {
-    cond.lock_mutex();
-    std::queue<ElementType*>::push(&element);
-    cond.signal();
-    cond.unlock_mutex();
-    return true;
   }
 
   ElementType* trydequeue() {

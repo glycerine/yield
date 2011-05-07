@@ -63,8 +63,8 @@ public:
     return EventQueue::dequeue();
   }
 
-  YO_NEW_REF Event* dequeue(const Time& timeout);
   bool enqueue(YO_NEW_REF Event&);
+  YO_NEW_REF Event* timeddequeue(const Time& timeout);
 
 private:
   void handle(YO_NEW_REF yield::sockets::aio::acceptAIOCB& accept_aiocb);

@@ -45,13 +45,13 @@ public:
     return *trydequeue();
   }
 
-  YO_NEW_REF Event* dequeue(const Time& timeout) {
-    return trydequeue();
-  }
-
   bool enqueue(YO_NEW_REF Event& event) {
     std::queue<Event*>::push(&event);
     return true;
+  }
+
+  YO_NEW_REF Event* timeddequeue(const Time& timeout) {
+    return trydequeue();
   }
 
   YO_NEW_REF Event* trydequeue() {

@@ -370,8 +370,23 @@ bool FSEventQueue::associate(const Path& path, FSEvent::Type fs_event_types) {
     return false;
 }
 
-YO_NEW_REF Event* FSEventQueue::dequeue(const Time& timeout) {
-  Event* event = aio_queue.dequeue(timeout);
+bool FSEventQueue::dissociate(const Path& path) {
+  map<Path, Watch*>::iterator watch_i = watches.find(path);
+  if (watch_i != watches.end()) {
+    Watch* watch = watch_i->second;
+    watch->close(); // Don't delete until it comes back to the completion port
+    watches.erase(watch_i);
+    return true;
+  } else
+    return false;
+}
+
+bool FSEventQueue::enqueue(YO_NEW_REF Event& event) {
+  return aio_queue.enqueue(event);
+}
+
+YO_NEW_REF Event* FSEventQueue::timeddequeue(const Time& timeout) {
+  Event* event = aio_queue.timeddequeue(timeout);
   if (event != NULL) {
     if (event->get_type_id() == Watch::TYPE_ID) {
       Watch* watch = static_cast<Watch*>(event);
@@ -392,21 +407,6 @@ YO_NEW_REF Event* FSEventQueue::dequeue(const Time& timeout) {
   }
 
   return NULL;
-}
-
-bool FSEventQueue::dissociate(const Path& path) {
-  map<Path, Watch*>::iterator watch_i = watches.find(path);
-  if (watch_i != watches.end()) {
-    Watch* watch = watch_i->second;
-    watch->close(); // Don't delete until it comes back to the completion port
-    watches.erase(watch_i);
-    return true;
-  } else
-    return false;
-}
-
-bool FSEventQueue::enqueue(YO_NEW_REF Event& event) {
-  return aio_queue.enqueue(event);
 }
 }
 }

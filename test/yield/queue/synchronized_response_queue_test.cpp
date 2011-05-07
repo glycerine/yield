@@ -40,16 +40,8 @@ namespace yield {
 namespace queue {
 TEST(SynchronizedResponseQueue, dequeue) {
   SynchronizedResponseQueue<Response> response_queue;
-
-  {
-    response_queue.enqueue(*new Response);
-    auto_Object<Response> response = response_queue.dequeue();
-  }
-
-  {
-    response_queue.enqueue(*new Response);
-    auto_Object<Response> response = response_queue.dequeue(1.0);
-  }
+  response_queue.enqueue(*new Response);
+  auto_Object<Response> response = response_queue.dequeue();
 }
 
 TEST(SynchronizedResponseQueue, enqueue) {
@@ -58,6 +50,12 @@ TEST(SynchronizedResponseQueue, enqueue) {
   bool enqueue_ret = response_queue.enqueue(*new Response);
   throw_assert(enqueue_ret);
   enqueue_ret = response_queue.enqueue(*new Response);
+}
+
+TEST(SynchronizedResponseQueue, timeddequeue) {
+  SynchronizedResponseQueue<Response> response_queue;
+  response_queue.enqueue(*new Response);
+  auto_Object<Response> response = response_queue.timeddequeue(1.0);
 }
 }
 }

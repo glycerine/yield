@@ -83,7 +83,26 @@ bool FDEventQueue::associate(fd_t fd, uint16_t fd_event_types) {
     return dissociate(fd);
 }
 
-YO_NEW_REF Event* FDEventQueue::dequeue(const Time& timeout) {
+bool FDEventQueue::dissociate(fd_t fd) {
+  // From the man page: In kernel versions before 2.6.9,
+  // the EPOLL_CTL_DEL operation required a non-NULL pointer in event,
+  // even though this argument is ignored. Since kernel 2.6.9,
+  // event can be specified as NULL when using EPOLL_CTL_DEL.
+  epoll_event epoll_event_;
+  memset(&epoll_event_, 0, sizeof(epoll_event_));
+  return epoll_ctl(epfd, EPOLL_CTL_DEL, fd, &epoll_event_) == 0;
+}
+
+bool FDEventQueue::enqueue(Event& event) {
+  if (BlockingConcurrentQueue<Event>::enqueue(event)) {
+    uint64_t data = 1;
+    write(wake_fd, &data, sizeof(data));
+    return true;
+  } else
+    return false;
+}
+
+YO_NEW_REF Event* FDEventQueue::timeddequeue(const Time& timeout) {
   Event* event = BlockingConcurrentQueue<Event>::trydequeue();
   if (event != NULL)
     return event;
@@ -107,25 +126,6 @@ YO_NEW_REF Event* FDEventQueue::dequeue(const Time& timeout) {
       return NULL;
     }
   }
-}
-
-bool FDEventQueue::dissociate(fd_t fd) {
-  // From the man page: In kernel versions before 2.6.9,
-  // the EPOLL_CTL_DEL operation required a non-NULL pointer in event,
-  // even though this argument is ignored. Since kernel 2.6.9,
-  // event can be specified as NULL when using EPOLL_CTL_DEL.
-  epoll_event epoll_event_;
-  memset(&epoll_event_, 0, sizeof(epoll_event_));
-  return epoll_ctl(epfd, EPOLL_CTL_DEL, fd, &epoll_event_) == 0;
-}
-
-bool FDEventQueue::enqueue(Event& event) {
-  if (BlockingConcurrentQueue<Event>::enqueue(event)) {
-    uint64_t data = 1;
-    write(wake_fd, &data, sizeof(data));
-    return true;
-  } else
-    return false;
 }
 }
 }

@@ -359,8 +359,21 @@ FSEventQueue::associate(
   }
 }
 
-YO_NEW_REF Event* FSEventQueue::dequeue(const Time& timeout) {
-  Event* event = fd_event_queue.dequeue(timeout);
+bool FSEventQueue::dissociate(const Path& path) {
+  Watch* watch = watches->erase(path);
+  if (watch != NULL) {
+    delete watch;
+    return true;
+  } else
+    return false;
+}
+
+bool FSEventQueue::enqueue(YO_NEW_REF Event& event) {
+  return fd_event_queue.enqueue(event);
+}
+
+YO_NEW_REF Event* FSEventQueue::timeddequeue(const Time& timeout) {
+  Event* event = fd_event_queue.timeddequeue(timeout);
   if (event != NULL) {
     if (event->get_type_id() == FDEvent::TYPE_ID) {
       FDEvent* fd_event = static_cast<FDEvent*>(event);
@@ -394,19 +407,6 @@ YO_NEW_REF Event* FSEventQueue::dequeue(const Time& timeout) {
   }
 
   return NULL;
-}
-
-bool FSEventQueue::dissociate(const Path& path) {
-  Watch* watch = watches->erase(path);
-  if (watch != NULL) {
-    delete watch;
-    return true;
-  } else
-    return false;
-}
-
-bool FSEventQueue::enqueue(YO_NEW_REF Event& event) {
-  return fd_event_queue.enqueue(event);
 }
 }
 }

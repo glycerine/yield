@@ -47,16 +47,16 @@ public:
     return response_cast(event);
   }
 
-  YO_NEW_REF ResponseType* dequeue(const Time& timeout) {
-    Event* event = SynchronizedQueue<Event>::dequeue(timeout);
+  bool enqueue(YO_NEW_REF Event& event) {
+    return SynchronizedQueue<Event>::enqueue(event);
+  }
+
+  YO_NEW_REF ResponseType* timeddequeue(const Time& timeout) {
+    Event* event = SynchronizedQueue<Event>::timeddequeue(timeout);
     if (event != NULL)
       return &response_cast(*event);
     else
       return NULL;
-  }
-
-  bool enqueue(YO_NEW_REF Event& event) {
-    return SynchronizedQueue<Event>::enqueue(event);
   }
 
   YO_NEW_REF ResponseType* trydequeue() {

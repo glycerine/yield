@@ -58,12 +58,8 @@ public:
 
 public:
   // yield::EventQueue
-  YO_NEW_REF Event& dequeue() {
-    return yield::aio::win32::AIOQueue::dequeue();
-  }
-
-  YO_NEW_REF Event* dequeue(const Time& timeout);
   bool enqueue(YO_NEW_REF Event& event);
+  YO_NEW_REF Event* timeddequeue(const Time& timeout);
 
 private:
   template <class AIOCBType> void log_completion(AIOCBType& aiocb);

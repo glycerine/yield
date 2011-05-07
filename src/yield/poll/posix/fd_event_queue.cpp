@@ -82,7 +82,31 @@ bool FDEventQueue::associate(fd_t fd, uint16_t fd_event_types) {
     return dissociate(fd);
 }
 
-YO_NEW_REF Event* FDEventQueue::dequeue(const Time& timeout) {
+bool FDEventQueue::dissociate(fd_t fd) {
+  for (
+    vector<pollfd>::iterator pollfd_i = pollfds.begin();
+    pollfd_i != pollfds.end();
+    ++pollfd_i
+  ) {
+    if ((*pollfd_i).fd == fd) {
+      pollfds.erase(pollfd_i);
+      return true;
+    }
+  }
+
+  errno = ENOENT;
+  return false;
+}
+
+bool FDEventQueue::enqueue(YO_NEW_REF Event& event) {
+  if (BlockingConcurrentQueue<Event>::enqueue(event)) {
+    write(wake_pipe[1], "m", 1);
+    return true;
+  } else
+    return false;
+}
+
+YO_NEW_REF Event* FDEventQueue::timeddequeue(const Time& timeout) {
   int ret =
     ::poll(&pollfds[0], pollfds.size(), static_cast<int>(timeout.ms()));
 
@@ -106,30 +130,6 @@ YO_NEW_REF Event* FDEventQueue::dequeue(const Time& timeout) {
   }
 
   return NULL;
-}
-
-bool FDEventQueue::dissociate(fd_t fd) {
-  for (
-    vector<pollfd>::iterator pollfd_i = pollfds.begin();
-    pollfd_i != pollfds.end();
-    ++pollfd_i
-  ) {
-    if ((*pollfd_i).fd == fd) {
-      pollfds.erase(pollfd_i);
-      return true;
-    }
-  }
-
-  errno = ENOENT;
-  return false;
-}
-
-bool FDEventQueue::enqueue(YO_NEW_REF Event& event) {
-  if (BlockingConcurrentQueue<Event>::enqueue(event)) {
-    write(wake_pipe[1], "m", 1);
-    return true;
-  } else
-    return false;
 }
 }
 }

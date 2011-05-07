@@ -52,16 +52,8 @@ public:
 
 public:
   // yield::EventQueue
-  YO_NEW_REF Event& dequeue() {
-    return EventQueue::dequeue();
-  }
-
-  virtual YO_NEW_REF Event* dequeue(const Time& timeout);
   virtual bool enqueue(YO_NEW_REF Event& event);
-
-  YO_NEW_REF Event* trydequeue() {
-    return EventQueue::trydequeue();
-  }
+  virtual YO_NEW_REF Event* timeddequeue(const Time& timeout);
 
 private:
   fd_t hIoCompletionPort;

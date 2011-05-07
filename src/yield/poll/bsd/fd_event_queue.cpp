@@ -27,12 +27,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "kqueue.hpp"
+#include "yield/poll/bsd/fd_event_queue.hpp"
 
 namespace yield {
 namespace poll {
 namespace bsd {
-FDEventQueue::FDEventQueue(int kq, int* wake_pipe)
+FDEventQueue::FDEventQueue()
   : kq(kq) {
   memcpy(this->wake_pipe, wake_pipe, sizeof(this->wake_pipe));
 }

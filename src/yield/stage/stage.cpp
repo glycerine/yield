@@ -94,7 +94,7 @@ void Stage::visit() {
 }
 
 bool Stage::visit(const Time& timeout) {
-  Event* event = event_queue.dequeue(timeout);
+  Event* event = event_queue.timeddequeue(timeout);
 
   if (event != NULL) {
     event_queue_length--;

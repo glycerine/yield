@@ -85,7 +85,15 @@ bool FDEventQueue::dissociate(fd_t fd) {
   return false;
 }
 
-Event* FDEventQueue::dequeue(const Time& timeout) {
+bool FDEventQueue::enqueue(Event& event) {
+  if (BlockingConcurrentQueue<Event>::enqueue(event)) {
+    SetEvent(fds[0]);
+    return true;
+  } else
+    return false;
+}
+
+YO_NEW_REF Event* FDEventQueue::timeddequeue(const Time& timeout) {
   DWORD dwRet
   = WaitForMultipleObjectsEx(
       fds.size(),
@@ -101,14 +109,6 @@ Event* FDEventQueue::dequeue(const Time& timeout) {
     return new FDEvent(fds[dwRet - WAIT_OBJECT_0], FDEvent::TYPE_READ_READY);
   else
     return NULL;
-}
-
-bool FDEventQueue::enqueue(Event& event) {
-  if (BlockingConcurrentQueue<Event>::enqueue(event)) {
-    SetEvent(fds[0]);
-    return true;
-  } else
-    return false;
 }
 }
 }
