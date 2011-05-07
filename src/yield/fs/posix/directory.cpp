@@ -70,7 +70,7 @@ bool Directory::read(OUT Entry& entry) {
 }
 
 bool Directory::read(OUT Entry*& entry) {
-  dirent* dirent_;
+  struct dirent* dirent_;
   while ((dirent_ = readdir(dirp)) != NULL) {
     struct stat stbuf;
     if (stat((path / dirent_->d_name).c_str(), &stbuf) == 0) {

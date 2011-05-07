@@ -42,7 +42,7 @@ File::~File() {
   ExtendedAttributes::dec_ref(xattrs);
 }
 
-yield::fs::ExtendedAttributes* File::openxattrs() {
+yield::fs::posix::ExtendedAttributes* File::openxattrs() {
   if (xattrs == NULL) {
     fd_t dup_fd = ::dup(*this);
     if (dup_fd != -1)

@@ -54,7 +54,7 @@ ExtendedAttributes::get(
   = { EXTATTR_NAMESPACE_USER, EXTATTR_NAMESPACE_SYSTEM };
 
   for (int namespace_i = 0; namespace_i < 2; namespace_i++) {
-    ssize_ret = extattr_get_fd(fd, namespaces[namespace_i], name, value, size);
+    ssize_t ret = extattr_get_fd(fd, namespaces[namespace_i], name, value, size);
     if (ret >= 0)
       return ret;
   }
@@ -136,8 +136,7 @@ bool ExtendedAttributes::remove(const Path& path, const char* name) {
 }
 
 bool
-ExtendedAttributes::set
-(
+ExtendedAttributes::set(
   fd_t fd,
   const char* name,
   const void* value,
@@ -154,8 +153,7 @@ ExtendedAttributes::set
 }
 
 bool
-ExtendedAttributes::set
-(
+ExtendedAttributes::set(
   const Path& path,
   const char* name,
   const void* value,

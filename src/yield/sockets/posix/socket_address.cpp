@@ -58,6 +58,9 @@ SocketAddress::IN_BROADCAST(
   0
 );
 
+#ifdef IN_LOOPBACK
+#undef IN_LOOPBACK
+#endif
 const SocketAddress
 SocketAddress::IN_LOOPBACK(
   static_cast<uint32_t>(INADDR_LOOPBACK),
@@ -90,12 +93,13 @@ SocketAddress::SocketAddress(const SocketAddress& other, uint16_t port) {
 }
 
 void SocketAddress::assign(const addrinfo& addrinfo_) {
-  debug_assert_eq(sizeof(addr), sizeof(sockaddr_storage));
-
-  debug_assert_eq(
-    len(addrinfo_.ai_family),
-    static_cast<socklen_t>(addrinfo_.ai_addrlen)
+#ifdef _WIN32
+  static_assert(sizeof(addr) == sizeof(sockaddr_storage), "");
+  static_assert(
+    sizeof(addr.ss_family) == sizeof(sockaddr_storage.sa_family),
+    ""
   );
+#endif
 
   memcpy_s(
     &addr,
@@ -139,22 +143,14 @@ void SocketAddress::assign(const in6_addr& in6_addr_, uint16_t port) {
 }
 
 void SocketAddress::assign(const sockaddr_in& sockaddr_in_) {
-  debug_assert_ge(sizeof(addr), sizeof(sockaddr_in));
-  debug_assert_eq(sizeof(sockaddr_in_.sin_family), sizeof(addr.ss_family));
-
   assign(reinterpret_cast<const sockaddr&>(sockaddr_in_), AF_INET);
 }
 
 void SocketAddress::assign(const sockaddr_in6& sockaddr_in6_) {
-  debug_assert_ge(sizeof(addr), sizeof(sockaddr_in6));
-  debug_assert_eq(sizeof(sockaddr_in6_.sin6_family), sizeof(addr.ss_family));
-
   assign(reinterpret_cast<const sockaddr&>(sockaddr_in6_), AF_INET6);
 }
 
 const SocketAddress* SocketAddress::filter(int family) const {
-  debug_assert_gt(len(family), 0);
-
   const SocketAddress* next_socket_address = this;
 
   do {
@@ -257,17 +253,11 @@ throw(Exception) {
 
 socklen_t SocketAddress::len(int family) {
   switch (family) {
-  case 0:
-    return sizeof(addr);
-  case AF_UNIX:
-    return sizeof(sockaddr_un);
-  case AF_INET:
-    return sizeof(sockaddr_in);
-  case AF_INET6:
-    return sizeof(sockaddr_in6);
-  default:
-    debug_break();
-    return 0;
+  case 0: return sizeof(sockaddr_storage);
+  case AF_UNIX: return sizeof(sockaddr_un);
+  case AF_INET: return sizeof(sockaddr_in);
+  case AF_INET6: return sizeof(sockaddr_in6);
+  default: debug_break(); return 0;
   }
 }
 }

@@ -40,22 +40,22 @@ class ExtendedAttributes : public Object {
 public:
   virtual ~ExtendedAttributes();
 
+public:
   bool get(const char* name, string& value);
   ssize_t get(const char* name, void* value, size_t size);
+
+public:
   bool list(vector<string>& out_names);
+
+public:
   bool remove(const char* name);
 
+public:
   bool set(const char* name, const char* value, int flags = 0);
   bool set(const char* name, const string& value, int flags = 0);
+  bool set(const char* name, const void* value, size_t size, int flags = 0);
 
-  bool
-  set(
-    const char* name,
-    const void* value,
-    size_t size,
-    int flags = 0
-  );
-
+public:
   // yield::Object
   ExtendedAttributes& inc_ref() {
     return Object::inc_ref(*this);
@@ -65,13 +65,19 @@ protected:
   ExtendedAttributes(fd_t fd);
   ExtendedAttributes(const Path& path);
 
+protected:
   virtual ssize_t get(fd_t, const char* name, void* value, size_t size) = 0;
   virtual ssize_t get(const Path&, const char* name, void* value, size_t size) = 0;
+
+protected:
   virtual ssize_t list(fd_t, char* list, size_t size) = 0;
   virtual ssize_t list(const Path&, char* list, size_t size) = 0;
+
+protected:
   virtual bool remove(fd_t, const char* name) = 0;
   virtual bool remove(const Path&, const char* name) = 0;
 
+protected:
   virtual bool
   set(
     fd_t,

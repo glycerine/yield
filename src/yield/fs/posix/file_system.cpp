@@ -28,6 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(__FreeBSD__)
+#include "../bsd/directory.hpp"
 #include "../freebsd/extended_attributes.hpp"
 #include "../freebsd/file.hpp"
 #elif defined(__linux__)

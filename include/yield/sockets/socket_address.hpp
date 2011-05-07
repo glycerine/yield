@@ -34,11 +34,14 @@
 #include "yield/object.hpp"
 #include "yield/uri/uri.hpp"
 
+#ifndef _WIN32
+#include <arpa/inet.h> // for socklen_t
+#endif
 #include <ostream>
 #include <stdlib.h> // for atoi
 #include <sstream> // for std::ostringstream
 #ifndef _WIN32
-#include <arpa/inet.h> // for socklen_t
+#include <sys/socket.h> // for sockaddr_storage
 #endif
 
 struct addrinfo;
@@ -279,12 +282,16 @@ private:
   ) throw(Exception);
 
 private:
+#ifdef _WIN32
   struct {
     union {
       uint16_t ss_family;
       uint64_t u_pad[128 / sizeof(uint64_t)];
     };
   } addr;
+#else
+  sockaddr_storage addr;
+#endif
 
   SocketAddress* next_socket_address;
 };

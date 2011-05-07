@@ -42,8 +42,9 @@ public:
   File(fd_t fd);
   ~File();
 
-  // yield::fs::File
-  yield::fs::ExtendedAttributes* openxattrs();
+public:
+  // yield::fs::posix::File
+  yield::fs::posix::ExtendedAttributes* openxattrs();
 
 private:
   ExtendedAttributes* xattrs;

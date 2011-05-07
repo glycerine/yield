@@ -28,9 +28,18 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/config.hpp"
+
 #include <iconv.h>
-#ifdef __sun
+#if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__sun)
+#ifndef _LIBICONV_VERSION
+#error // Use #ifndef _LIBICONV_VERSION as the test instead of the OS macros?
+#endif
 #undef iconv
+#define __YIELD_I18N_POSIX_ICONV_ICONV_FUNCTION ::libiconv
+#define __YIELD_I18N_POSIX_ICONV_ICONV_INBUF_CAST(inbuf) inbuf
+#else
+#define __YIELD_I18N_POSIX_ICONV_ICONV_FUNCTION ::iconv
+#define __YIELD_I18N_POSIX_ICONV_ICONV_INBUF_CAST(inbuf) const_cast<char**>(inbuf)
 #endif
 
 #include "yield/assert.hpp"
@@ -38,7 +47,6 @@
 #include "yield/i18n/posix/iconv.hpp"
 
 #include <errno.h>
-
 
 namespace yield {
 namespace i18n {
@@ -54,25 +62,15 @@ iconv::~iconv() {
 }
 
 size_t
-iconv::iconv_to_char
-(
+iconv::iconv_to_char(
   const char** inbuf,
   size_t* inbytesleft,
   char** outbuf,
   size_t* outbytesleft
 ) {
-#ifdef __sun
-  return ::libiconv
-#else
-  return ::iconv
-#endif
-         (
+  return __YIELD_I18N_POSIX_ICONV_ICONV_FUNCTION(
            cd,
-#if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__sun)
-           inbuf,
-#else
-           const_cast<char**>(inbuf),
-#endif
+           __YIELD_I18N_POSIX_ICONV_ICONV_INBUF_CAST(inbuf),
            inbytesleft,
            outbuf,
            outbytesleft
@@ -81,8 +79,7 @@ iconv::iconv_to_char
 
 template <class outbufStringType>
 bool
-iconv::iconv_to_string
-(
+iconv::iconv_to_string(
   const char* inbuf,
   size_t inbytesleft,
   outbufStringType& outbuf
@@ -96,8 +93,7 @@ iconv::iconv_to_string
     size_t outbytesleft = outbuf_c_len;
 
     size_t iconv_ret
-    = iconv_to_char
-      (
+    = iconv_to_char(
         &inbuf,
         &inbytesleft,
         reinterpret_cast<char**>(&outbuf_c_dummy),
@@ -121,8 +117,7 @@ iconv::iconv_to_string
 }
 
 size_t
-iconv::operator()
-(
+iconv::operator()(
   const char** inbuf,
   size_t* inbytesleft,
   char** outbuf,

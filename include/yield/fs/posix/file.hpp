@@ -63,7 +63,7 @@ public:
       flock_.l_whence = whence;
     }
 
-    Lock(const flock& flock_) : flock_(flock_) {
+    Lock(const struct flock& flock_) : flock_(flock_) {
     }
 
   public:
@@ -88,7 +88,7 @@ public:
     }
 
   public:
-    operator flock() const {
+    operator struct flock() const {
       return flock_;
     }
 
@@ -99,7 +99,7 @@ public:
     }
 
   private:
-    flock flock_;
+    struct flock flock_;
   };
 
 public:

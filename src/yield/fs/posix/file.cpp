@@ -147,7 +147,7 @@ YO_NEW_REF File* File::dup(FILE* file) {
 }
 
 File::Lock* File::getlk(const Lock& lock) {
-  flock flock_ = lock;
+  struct flock flock_ = lock;
   if (fcntl(*this, F_GETLK, &flock_) == 0) {
     if (flock_.l_type == F_UNLCK)   // No lock blocking lock
       return NULL;
@@ -259,12 +259,12 @@ off_t File::seek(off_t offset, uint8_t whence) {
 }
 
 bool File::setlk(const Lock& lock) {
-  flock flock_ = lock;
+  struct flock flock_ = lock;
   return fcntl(*this, F_SETLK, &flock_) == 0;
 }
 
 bool File::setlkw(const Lock& lock) {
-  flock flock_ = lock;
+  struct flock flock_ = lock;
   return fcntl(*this, F_SETLKW, &flock_) == 0;
 }
 
@@ -289,7 +289,7 @@ bool File::truncate(off_t length) {
 }
 
 bool File::unlk(const Lock& lock) {
-  flock flock_ = lock;
+  struct flock flock_ = lock;
   flock_.l_type = F_UNLCK;
   return fcntl(*this, F_SETLK, &flock_) == 0;
 }

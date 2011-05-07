@@ -51,14 +51,7 @@ protected:
   bool remove(fd_t, const char* name);
   bool remove(const Path&, const char* name);
 
-  bool
-  set(
-    fd_t,
-    const char* name,
-    const void* value,
-    size_t size,
-    int flags
-  );
+  bool set(fd_t, const char* name, const void* value, size_t size, int flags);
 
   bool
   set(
