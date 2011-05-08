@@ -139,9 +139,7 @@ class FileSystemLinkTest : public FileSystemTest {
 public:
   // yunit::Test
   void run() {
-    if (FileSystem().link(get_test_file_name(), get_test_link_name()))
-      return;
-    else if (Exception::get_last_error_code() != ENOTSUP)
+    if (!FileSystem().link(get_test_file_name(), get_test_link_name()))
       throw Exception();
   }
 };

@@ -33,24 +33,26 @@
 namespace yield {
 namespace sockets {
 StreamSocketPair::StreamSocketPair() {
-  StreamSocket listen_stream_socket(AF_INET);
   sockets[0] = sockets[1] = NULL;
-  if (
-    listen_stream_socket.bind(SocketAddress::IN_LOOPBACK)
-    &&
-    listen_stream_socket.listen()
-  ) {
-    sockets[0] = new StreamSocket(AF_INET);
-    if (sockets[0]->connect(*listen_stream_socket.getsockname())) {
-      sockets[1] = listen_stream_socket.accept();
-      if (sockets[1] != NULL)
-        return;
-    }
-  }
-
-  Exception exception;
-  StreamSocket::dec_ref(sockets[0]);
-  throw exception;
+  StreamSocket listen_stream_socket(AF_INET);
+  if (listen_stream_socket.bind(SocketAddress::IN_LOOPBACK)) {
+    if (listen_stream_socket.listen()) {
+      try {
+        sockets[0] = new StreamSocket(AF_INET);
+        if (sockets[0]->connect(*listen_stream_socket.getsockname())) {
+          sockets[1] = listen_stream_socket.accept();
+          if (sockets[1] == NULL)
+            throw Exception();
+        } else
+          throw Exception();
+      } catch (Exception&) {
+        StreamSocket::dec_ref(sockets[0]);
+        throw;
+      }
+    } else
+      throw Exception();
+  } else
+    throw Exception();
 }
 }
 }

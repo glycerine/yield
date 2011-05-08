@@ -148,22 +148,23 @@ private:
 FSEventQueue::FSEventQueue(YO_NEW_REF Log* log) : log(log) {
   kq = kqueue();
   if (kq != -1) {
-    if (pipe(wake_pipe) != -1) {
-      struct kevent kevent_;
-      EV_SET(&kevent_, wake_pipe[0], EVFILT_READ, EV_ADD, 0, 0, NULL);
-      if (kevent(kq, &kevent_, 1, 0, 0, NULL) != -1)
-        return;
-      else {
-        Exception exception;
-        close(kq);
-        close(wake_pipe[0]);
-        close(wake_pipe[1]);
-        throw exception;
-      }
-    } else {
-      Exception exception;
+    try {
+      if (pipe(wake_pipe) != -1) {
+        try {
+          struct kevent kevent_;
+          EV_SET(&kevent_, wake_pipe[0], EVFILT_READ, EV_ADD, 0, 0, NULL);
+          if (kevent(kq, &kevent_, 1, 0, 0, NULL) == -1)
+            throw Exception();
+        } catch (Exception&) {
+          close(wake_pipe[0]);
+          close(wake_pipe[1]);
+          throw;
+        }
+      } else
+        throw Exception();
+    } catch (Exception&) {
       close(kq);
-      throw exception;
+      throw;
     }
   } else
     throw Exception();

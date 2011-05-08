@@ -41,19 +41,21 @@ namespace bsd {
 FDEventQueue::FDEventQueue() {
   kq = kqueue();
   if (kq != -1) {
-    if (pipe(wake_pipe) != -1) {
-      if (associate(wake_pipe[0], FDEvent::TYPE_READ_READY))
-        return;
-      else {
-        Exception exception;
-        close(wake_pipe[0]);
-        close(wake_pipe[1]);
-        throw exception;
-      }
-    } else {
-      Exception exception;
+    try {
+      if (pipe(wake_pipe) != -1) {
+        try {
+          if (!associate(wake_pipe[0], FDEvent::TYPE_READ_READY))
+            throw Exception();
+        } catch (Exception&) {
+          close(wake_pipe[0]);
+          close(wake_pipe[1]);
+          throw;
+        }
+      } else
+        throw Exception();
+    } catch (Exception&) {
       close(kq);
-      throw exception;
+      throw;
     }
   } else
     throw Exception();

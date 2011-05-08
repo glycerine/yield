@@ -45,14 +45,13 @@ namespace win32 {
 TEST(Win32AIOQueue, associate) {
   HANDLE hReadPipe, hWritePipe;
   if (CreatePipe(&hReadPipe, &hWritePipe, NULL, 0)) {
-    if (AIOQueue().associate(hReadPipe)) {
+    try {
+      if (!AIOQueue().associate(hReadPipe))
+        throw Exception();
+    } catch (Exception&) {
       CloseHandle(hReadPipe);
       CloseHandle(hWritePipe);
-    } else {
-      Exception exception;
-      CloseHandle(hReadPipe);
-      CloseHandle(hWritePipe);
-      throw exception;
+      throw;
     }
   } else
     throw Exception();

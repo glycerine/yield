@@ -55,8 +55,7 @@ protected:
 
 protected:
   YO_NEW_REF ExtendedAttributes*
-  set_test_xattr
-  (
+  set_test_xattr(
     YO_NEW_REF ExtendedAttributes* xattrs
   ) {
     if (xattrs != NULL) {
@@ -64,8 +63,7 @@ protected:
         return xattrs;
     }
 
-    if
-    (
+    if (
       Exception::get_last_error_code() == ENOTSUP
       ||
       Exception::get_last_error_code() == EOPNOTSUPP
@@ -73,9 +71,9 @@ protected:
       ExtendedAttributes::dec_ref(xattrs);
       return NULL;
     } else {
-      Exception exc(Exception::get_last_error_code());
+      Exception exception(Exception::get_last_error_code());
       ExtendedAttributes::dec_ref(xattrs);
-      throw exc;
+      throw exception;
     }
   }
 

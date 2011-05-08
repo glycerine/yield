@@ -36,31 +36,24 @@ DatagramSocketPair::DatagramSocketPair() {
   sockets[0] = new DatagramSocket(AF_INET);
   sockets[1] = new DatagramSocket(AF_INET);
 
-  SocketAddress socknames[2];
-  for (uint8_t i = 0; i < 2; i++) {
-    if (      
-      !sockets[i]->bind(SocketAddress::IN_LOOPBACK)
-      ||
-      !sockets[i]->getsockname(socknames[i])
-    ) {
-      Exception exception;
-      DatagramSocket::dec_ref(sockets[0]);
-      DatagramSocket::dec_ref(sockets[1]);
-      throw exception;
+  try {
+    SocketAddress socknames[2];
+    for (uint8_t i = 0; i < 2; ++i) {
+      if (sockets[i]->bind(SocketAddress::IN_LOOPBACK)) {
+        if (!sockets[i]->getsockname(socknames[i]))
+          throw Exception();
+      } else
+        throw Exception();
     }
-  }
 
-  if (
-    !sockets[0]->connect(socknames[1])
-    ||
-    !sockets[1]->connect(socknames[0])
-  ) {
-    Exception exception;
-    for (uint8_t i = 0; i < 2; i++) {
-      Socket::dec_ref(sockets[i]);
-      SocketAddress::dec_ref(socknames[i]);
+    for (uint8_t i = 0; i < 2; ++i) {
+      if (!sockets[i]->connect(socknames[(i+1)%2]))
+        throw Exception();
     }
-    throw exception;
+  } catch (Exception&) {
+    for (uint8_t i = 0; i < 2; ++i)
+      DatagramSocket::dec_ref(*sockets[i]);
+    throw;
   }
 }
 }

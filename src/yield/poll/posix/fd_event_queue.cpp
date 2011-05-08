@@ -39,13 +39,13 @@ namespace poll {
 namespace posix {
 FDEventQueue::FDEventQueue() {
   if (pipe(wake_pipe) != -1) {
-    if (associate(wake_pipe[0], FDEvent::TYPE_READ_READY))
-      return;
-    else {
-      Exception exception;
+    try {
+      if (!associate(wake_pipe[0], FDEvent::TYPE_READ_READY))
+        throw Exception();
+    } catch (Exception&) {
       close(wake_pipe[0]);
       close(wake_pipe[1]);
-      throw exception;
+      throw;
     }
   } else
     throw Exception();

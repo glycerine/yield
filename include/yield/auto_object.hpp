@@ -40,8 +40,7 @@ namespace yield {
 // reset(), or operator=().
 // The class is primarily intended for use in testing, where an object
 // should be deleted when it goes out of scope because of an exception.
-// The *object constructor throws an Exception if object is NULL.
-// That's why this is here and not in yidl.
+// The *object constructor throws a std::exception if object is NULL.
 template <class ObjectType = Object>
 class auto_Object {
 public:

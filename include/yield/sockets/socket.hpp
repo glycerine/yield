@@ -106,12 +106,14 @@ public:
 public:
   auto_Object<SocketAddress> getpeername() const throw(Exception) {
     SocketAddress* peername = new SocketAddress;
-    if (getpeername(*peername))
-      return peername;
-    else {
-      Exception exception;
+    try {
+      if (getpeername(*peername))
+        return peername;
+      else
+        throw Exception();
+    } catch (Exception&) {
       SocketAddress::dec_ref(*peername);
-      throw exception;
+      throw;
     }
   }
 
@@ -125,12 +127,14 @@ public:
 public:
   auto_Object<SocketAddress> getsockname() const throw(Exception) {
     SocketAddress* sockname = new SocketAddress;
-    if (getsockname(*sockname))
-      return sockname;
-    else {
-      Exception exception;
+    try {
+      if (getsockname(*sockname))
+        return sockname;
+      else
+        throw Exception();
+    } catch (Exception&) {
       SocketAddress::dec_ref(*sockname);
-      throw exception;
+      throw;
     }
   }
 

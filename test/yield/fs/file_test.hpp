@@ -491,9 +491,7 @@ public:
 public:
   // yunit::Test
   void run() {
-    if (get_write_file().setlk(File::Lock(0, 256)))
-      return;
-    else if (Exception::get_last_error_code() != ENOTSUP)
+    if (!get_write_file().setlk(File::Lock(0, 256)))
       throw Exception();
   }
 };
@@ -508,9 +506,7 @@ public:
 public:
   // yunit::Test
   void run() {
-    if (get_write_file().setlkw(File::Lock(0, 256)))
-      return;
-    else if (Exception::get_last_error_code() != ENOTSUP)
+    if (!get_write_file().setlkw(File::Lock(0, 256)))
       throw Exception();
   }
 };
@@ -617,7 +613,7 @@ public:
     if (get_write_file().setlkw(File::Lock(0, 256))) {
       if (!get_write_file().unlk(File::Lock(0, 256)))
         throw Exception();
-    } else if (Exception::get_last_error_code() != ENOTSUP)
+    } else
       throw Exception();
   }
 };

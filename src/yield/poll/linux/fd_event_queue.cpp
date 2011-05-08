@@ -42,23 +42,26 @@ namespace yield {
 namespace poll {
 namespace linux {
 FDEventQueue::FDEventQueue() {
-  uint32_t error_code;
   epfd = epoll_create(32768);
   if (epfd != -1) {
-    wake_fd = eventfd(0, 0);
-    if (wake_fd != -1) {
-      if (associate(wake_fd, POLLIN))
-        return;
-      else
-        error_code = static_cast<uint32_t>(errno);
-      close(wake_fd);
-    } else
-      error_code = static_cast<uint32_t>(errno);
-    close(epfd);
+    try {
+      wake_fd = eventfd(0, 0);
+      if (wake_fd != -1) {
+        try {
+          if (!associate(wake_fd, POLLIN))
+            throw Exception();
+        } catch (Exception&) {
+          close(wake_fd);
+          throw;
+        }
+      } else
+        throw Exception();
+    } catch (Exception&) {
+      close(epfd);
+      throw;
+    }
   } else
-    error_code = static_cast<uint32_t>(errno);
-
-  throw Exception(error_code);
+    throw Exception();
 }
 
 FDEventQueue::~FDEventQueue() {
