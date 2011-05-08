@@ -95,8 +95,6 @@ protected:
   AIOCB(Socket& socket_, off_t offset);
 
 private:
-  friend class NBIOQueue;
-
   uint32_t error;
   AIOCB* next_aiocb;
   ssize_t return_;
