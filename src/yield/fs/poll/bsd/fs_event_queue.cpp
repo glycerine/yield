@@ -65,7 +65,6 @@ public:
     Log::dec_ref(log);
   }
 
-
 public:
   FSEvent::Type get_fs_event_types() const {
     return fs_event_types;

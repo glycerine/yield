@@ -41,6 +41,9 @@ class Directory : public Object {
 public:
   class Entry : public Stat {
   public:
+    enum Type { TYPE_DEV, TYPE_DIR, TYPE_REG };
+
+  public:
     Entry(const WIN32_FIND_DATA&);
 
   public:
@@ -48,6 +51,9 @@ public:
       return name;
     }
 
+    Type get_type() const;
+
+  public:
     bool is_hidden() const;
     bool is_special() const;
 

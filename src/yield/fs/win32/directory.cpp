@@ -139,6 +139,15 @@ Directory::Entry::Entry(const WIN32_FIND_DATA& find_data)
     name(find_data.cFileName) {
 }
 
+Directory::Entry::Type Directory::Entry::get_type() const {
+  if (ISDEV())
+    return TYPE_DEV;
+  else if (ISDIR())
+    return TYPE_DIR;
+  else
+    return TYPE_REG;
+}
+
 bool Directory::Entry::is_hidden() const {
   return (get_attributes() & FILE_ATTRIBUTE_HIDDEN) != 0;
 }

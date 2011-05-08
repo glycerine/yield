@@ -49,12 +49,42 @@
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\bsd\fs_event_queue.cpp">
       <Filter>Source Files\bsd</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\directory_watch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\directory_watch.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\file_watch.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\fs_event.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\linux\fs_event_queue.cpp">
       <Filter>Source Files\linux</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\linux\watch.cpp">
+      <Filter>Source Files\linux</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\linux\watch.hpp">
+      <Filter>Source Files\linux</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\linux\watches.cpp">
+      <Filter>Source Files\linux</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\linux\watches.hpp">
+      <Filter>Source Files\linux</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\watch.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\win32\directory_watch.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\win32\directory_watch.hpp">
+      <Filter>Source Files\win32</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\win32\fs_event_queue.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>

@@ -1,4 +1,4 @@
-// yield/fs/poll/win32/fs_event_queue.hpp
+// yield/fs/poll/linux/watches.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,50 +27,55 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_FS_POLL_WIN32_FS_EVENT_QUEUE_HPP_
-#define _YIELD_FS_POLL_WIN32_FS_EVENT_QUEUE_HPP_
-
-#include "yield/event_queue.hpp"
-#include "yield/aio/win32/aio_queue.hpp"
-#include "yield/fs/poll/fs_event.hpp"
-
-#include <map>
+#include "watches.hpp"
 
 namespace yield {
-class Log;
-
 namespace fs {
 namespace poll {
-namespace win32 {
-class DirectoryWatch;
+namespace linux {
+using std::make_pair;
+using std::map;
 
-class FSEventQueue : public EventQueue {
-public:
-  FSEventQueue(YO_NEW_REF Log* log = NULL);
-  ~FSEventQueue();
+Watches::~Watches() {
+  for (iterator watch_i = begin(); watch_i != end(); ++watch_i)
+    delete watch_i->second;
+}
 
-public:
-  bool associate(
-    const Path& path,
-    FSEvent::Type fs_event_types = FSEvent::TYPE_ALL
-  );
+Watch* Watches::erase(const Path& path) {
+  for (iterator watch_i = begin(); watch_i != end(); ++watch_i) {
+    if (watch_i->second->get_path() == path) {
+      Watch* watch = watch_i->second;
+      map<int, Watch*>::erase(watch_i);
+      return watch;
+    }
+  }
 
-  bool dissociate(const Path& path);
+  return NULL;
+}
 
-public:
-  // yield::EventQueue
-  bool enqueue(YO_NEW_REF Event& event);
-  YO_NEW_REF Event* timeddequeue(const Time& timeout);
+Watch* Watches::find(const Path& path) {
+  for (iterator watch_i = begin(); watch_i != end(); ++watch_i) {
+    if (watch_i->second->get_path() == path)
+      return watch_i->second;
+  }
 
-private:
-  yield::aio::win32::AIOQueue aio_queue;
-  Log* log;
-  typedef std::map<Path, DirectoryWatch*> Watches;
-  Watches watches;
-};
+  return NULL;
+}
+
+Watch* Watches::find(int wd) {
+  iterator watch_i = map<int, Watch*>::find(wd);
+  if (watch_i != end())
+    return watch_i->second;
+  else
+    return NULL;
+}
+
+void Watches::insert(Watch& watch) {
+  iterator watch_i = map<int, Watch*>::find(watch.get_wd());
+  debug_assert_eq(watch_i, end());
+  map<int, Watch*>::insert(make_pair(watch.get_wd(), &watch));
 }
 }
 }
 }
-
-#endif
+}

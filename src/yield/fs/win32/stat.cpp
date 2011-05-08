@@ -76,12 +76,16 @@ Stat::Stat(const WIN32_FIND_DATA& stbuf)
   set_size(stbuf.nFileSizeLow, stbuf.nFileSizeHigh);
 }
 
+bool Stat::ISDEV() const {
+  return (attributes & FILE_ATTRIBUTE_DEVICE) == FILE_ATTRIBUTE_DEVICE;
+}
+
 bool Stat::ISDIR() const {
   return (attributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY;
 }
 
 bool Stat::ISREG() const {
-  return !ISDIR();
+  return !ISDEV() && !ISDIR();
 }
 
 bool Stat::operator==(const Stat& other) const {

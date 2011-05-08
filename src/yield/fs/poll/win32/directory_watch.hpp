@@ -1,4 +1,4 @@
-// yield/fs/win32/stat.hpp
+// yield/fs/poll/win32/directory_watch.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,90 +27,76 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_FS_WIN32_STAT_HPP_
-#define _YIELD_FS_WIN32_STAT_HPP_
+#ifndef _YIELD_FS_POLL_WIN32_DIRECTORY_WATCH_HPP_
+#define _YIELD_FS_POLL_WIN32_DIRECTORY_WATCH_HPP_
 
-#include "yield/date_time.hpp"
-#include "yield/object.hpp"
+#include "../directory_watch.hpp"
+#include "yield/aio/win32/aiocb.hpp"
+#include "yield/fs/directory.hpp"
 
-struct _BY_HANDLE_FILE_INFORMATION;
-typedef _BY_HANDLE_FILE_INFORMATION BY_HANDLE_FILE_INFORMATION;
-struct _WIN32_FILE_ATTRIBUTE_DATA;
-typedef struct _WIN32_FILE_ATTRIBUTE_DATA WIN32_FILE_ATTRIBUTE_DATA;
-struct _WIN32_FIND_DATAW;
-typedef _WIN32_FIND_DATAW WIN32_FIND_DATAW;
-typedef WIN32_FIND_DATAW WIN32_FIND_DATA;
+#include <stack>
+
+struct _FILE_NOTIFY_INFORMATION;
+typedef struct _FILE_NOTIFY_INFORMATION FILE_NOTIFY_INFORMATION;
 
 namespace yield {
 namespace fs {
+namespace poll {
 namespace win32 {
-class Stat : public Object {
+class DirectoryWatch
+  : public yield::aio::win32::AIOCB,
+    public yield::fs::poll::DirectoryWatch {
 public:
-  Stat(
-    const DateTime& atime,
-    uint32_t attributes,
-    const DateTime& ctime,
-    const DateTime& mtime,
-    int16_t nlink,
-    uint64_t size
+  const static uint32_t TYPE_ID = 497230685;
+
+public:
+  DirectoryWatch(
+    YO_NEW_REF Directory& directory,
+    FSEvent::Type fs_event_types,
+    const Path& path,
+    Log* log = NULL
   );
 
-  Stat(const BY_HANDLE_FILE_INFORMATION&);
-  Stat(const WIN32_FILE_ATTRIBUTE_DATA&);
-  Stat(const WIN32_FIND_DATA&);
+  ~DirectoryWatch();
 
 public:
-  const DateTime& get_atime() const {
-    return atime;
+  void close();
+  bool is_closed() const;
+
+public:
+  char* get_buffer() {
+    return &buffer[0];
   }
 
-  uint32_t get_attributes() const {
-    return attributes;
+  size_t get_buffer_length() const {
+    return sizeof(buffer);
   }
 
-  const DateTime& get_ctime() const {
-    return ctime;
-  }
-
-  const DateTime& get_mtime() const {
-    return mtime;
-  }
-
-  int16_t get_nlink() const {
-    return nlink;
-  }
-
-  uint64_t get_size() const {
-    return size;
+  unsigned long get_notify_filter() const {
+    return notify_filter;
   }
 
 public:
-  bool ISDEV() const;
-  bool ISDIR() const;
-  bool ISREG() const;
+  void read(const FILE_NOTIFY_INFORMATION&, EventHandler& fs_event_handler);
 
 public:
-  bool operator==(const Stat&) const;
+  // yield::Object
+  uint32_t get_type_id() const {
+    return TYPE_ID;
+  }
 
-  operator BY_HANDLE_FILE_INFORMATION() const;
-  operator WIN32_FILE_ATTRIBUTE_DATA() const;
-  operator WIN32_FIND_DATA() const;
-
-  Stat& operator=(const BY_HANDLE_FILE_INFORMATION&);
-  Stat& operator=(const WIN32_FILE_ATTRIBUTE_DATA&);
-  virtual Stat& operator=(const WIN32_FIND_DATA&);
+  const char* get_type_name() const {
+    return "yield::fs::poll::win32::DirectoryWatch";
+  }
 
 private:
-  void set_size(uint32_t nFileSizeLow, uint32_t nFileSizeHigh);
-
-private:
-  DateTime atime;
-  uint32_t attributes;
-  DateTime ctime;
-  DateTime mtime;
-  int16_t nlink;
-  uint64_t size;
+  Directory* directory;
+  unsigned long notify_filter;
+  std::stack<Path> old_paths;
+  vector<Path> subdirectory_names;
+  char buffer[(12 + 260 * sizeof(wchar_t)) * 16];
 };
+}
 }
 }
 }

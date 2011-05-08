@@ -32,6 +32,7 @@
 
 #include "yield/object.hpp"
 #include "yield/fs/path.hpp"
+#include "yield/fs/stat.hpp"
 
 #include <dirent.h>
 
@@ -42,14 +43,15 @@ class Directory : public Object {
 public:
   class Entry : public Object {
   public:
-    typedef uint8_t Type;
-    const static Type TYPE_BLK = 1;
-    const static Type TYPE_CHR = 2;
-    const static Type TYPE_DIR = 4;
-    const static Type TYPE_FIFO = 8;
-    const static Type TYPE_LNK = 16;
-    const static Type TYPE_REG = 32;
-    const static Type TYPE_SOCK = 64;
+    enum Type {
+      TYPE_BLK,
+      TYPE_CHR,
+      TYPE_DIR,
+      TYPE_FIFO,
+      TYPE_LNK,
+      TYPE_REG,
+      TYPE_SOCK
+    };
 
   public:
     Entry(const Path& name, Type type)
@@ -65,6 +67,7 @@ public:
       return type;
     }
 
+  public:
     bool ISCHR() const {
       return get_type() == TYPE_CHR;
     }
@@ -89,9 +92,11 @@ public:
       return get_type() == TYPE_SOCK;
     }
 
+  public:
     bool is_hidden() const;
     bool is_special() const;
 
+  public:
     void set_name(const Path& name) {
       this->name = name;
     }

@@ -105,12 +105,31 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\directory_watch.cpp">
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\directory_watch.hpp" />
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\file_watch.hpp" />
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\fs_event.cpp">
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\linux\fs_event_queue.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\linux\watch.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\linux\watch.hpp" />
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\linux\watches.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\linux\watches.hpp" />
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\watch.hpp" />
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\win32\directory_watch.cpp">
+      <ObjectFileName>$(IntDir)win32\directory_watch.obj</ObjectFileName>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\win32\directory_watch.hpp" />
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\win32\fs_event_queue.cpp">
       <ObjectFileName>$(IntDir)win32\fs_event_queue.obj</ObjectFileName>
     </ClCompile>
