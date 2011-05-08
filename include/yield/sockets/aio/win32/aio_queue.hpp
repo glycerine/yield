@@ -30,7 +30,7 @@
 #ifndef _YIELD_SOCKETS_AIO_WIN32_AIO_QUEUE_HPP_
 #define _YIELD_SOCKETS_AIO_WIN32_AIO_QUEUE_HPP_
 
-#include "yield/aio/win32/aio_queue.hpp"
+#include "yield/event_queue.hpp"
 
 namespace yield {
 class Log;
@@ -38,7 +38,7 @@ class Log;
 namespace sockets {
 namespace aio {
 namespace win32 {
-class AIOQueue : public yield::aio::win32::AIOQueue {
+class AIOQueue : public EventQueue {
 public:
   AIOQueue(YO_NEW_REF Log* log = NULL);
   ~AIOQueue();
@@ -67,6 +67,7 @@ private:
   template <class AIOCBType> void log_error(AIOCBType& aiocb);
 
 private:
+  fd_t hIoCompletionPort;
   Log* log;
 };
 }

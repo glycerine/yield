@@ -41,7 +41,6 @@ class Log;
 
 namespace sockets {
 namespace aio {
-class AIOCB;
 class acceptAIOCB;
 class connectAIOCB;
 class recvAIOCB;

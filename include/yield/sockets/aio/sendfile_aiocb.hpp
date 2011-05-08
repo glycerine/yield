@@ -57,6 +57,10 @@ public:
     return nbytes;
   }
 
+  off_t get_offset() const {
+    return offset;
+  }
+
   StreamSocket& get_socket();
 
 public:
@@ -75,6 +79,7 @@ private:
 private:
   fd_t fd;
   size_t nbytes;
+  off_t offset;
 };
 
 std::ostream& operator<<(std::ostream&, sendfileAIOCB&);

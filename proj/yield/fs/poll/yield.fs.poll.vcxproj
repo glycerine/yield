@@ -66,7 +66,7 @@
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>yield_aio.lib;yield_fs.lib;yield_i18n.lib;yield_thread.lib;yield.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_fs.lib;yield_i18n.lib;yield_thread.lib;yield.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -85,7 +85,7 @@
       <WarningLevel>Level4</WarningLevel>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>yield_aio.lib;yield_fs.lib;yield_i18n.lib;yield_thread.lib;yield.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_fs.lib;yield_i18n.lib;yield_thread.lib;yield.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -136,10 +136,6 @@
   </ItemGroup>
 
   <ItemGroup Label="ProjectReferenceItems">
-    <ProjectReference Include="..\..\aio\yield.aio.vcxproj">
-      <Project>{b6c03d16-2fa8-439c-ae71-3e908ad2cf02}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\yield.fs.vcxproj">
       <Project>{56fed322-dc66-4b39-a033-20d7e90acf26}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

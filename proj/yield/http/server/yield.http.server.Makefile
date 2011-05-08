@@ -53,7 +53,7 @@ endif
 ifeq ($(UNAME), Solaris)
 	LIBS += -liconv -lkstat -lnsl -lsocket -lm -lrt -lstdc++
 endif
-LIBS += -lyield_fs -lyield_i18n -lyield_http -lyield_uri -lyield_sockets_aio -lyield_aio -lyield_sockets_poll -lyield_poll -lyield_thread -lyield_sockets -lyield
+LIBS += -lyield_fs -lyield_i18n -lyield_http -lyield_uri -lyield_sockets_aio -lyield_sockets_poll -lyield_poll -lyield_thread -lyield_sockets -lyield
 
 
 D_FILE_PATHS := $(shell find ../../../../build/yield/http/server -name "*.d")

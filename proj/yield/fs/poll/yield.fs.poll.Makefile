@@ -53,7 +53,7 @@ endif
 ifeq ($(UNAME), Solaris)
 	LIBS += -liconv -lkstat -lm -lrt -lstdc++
 endif
-LIBS += -lyield_aio -lyield_fs -lyield_i18n -lyield_thread -lyield
+LIBS += -lyield_fs -lyield_i18n -lyield_thread -lyield
 
 
 D_FILE_PATHS := $(shell find ../../../../build/yield/fs/poll -name "*.d")
@@ -85,10 +85,6 @@ depclean:
 -include $(D_FILE_PATHS)
 
 
-../../../../lib/yield/libyield_aio.a:
-	$(MAKE) -C ../../aio yield.aio.Makefile
-
-
 ../../../../lib/yield/libyield_fs.a:
 	$(MAKE) -C .. yield.fs.Makefile
 
@@ -97,7 +93,7 @@ depclean:
 	$(MAKE) -C ../../queue yield.queue.Makefile
 
 
-../../../../lib/yield/libyield_fs_poll.a: $(O_FILE_PATHS) ../../../../lib/yield/libyield_aio.a ../../../../lib/yield/libyield_fs.a ../../../../lib/yield/libyield_queue.a
+../../../../lib/yield/libyield_fs_poll.a: $(O_FILE_PATHS) ../../../../lib/yield/libyield_fs.a ../../../../lib/yield/libyield_queue.a
 	-mkdir -p ../../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(O_FILE_PATHS)
 

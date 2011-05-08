@@ -66,7 +66,7 @@
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>yield_aio.lib;yield_sockets_poll.lib;yield_poll.lib;yield_thread.lib;yield_sockets.lib;yield.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_sockets_poll.lib;yield_poll.lib;yield_thread.lib;yield_sockets.lib;yield.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -85,7 +85,7 @@
       <WarningLevel>Level4</WarningLevel>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>yield_aio.lib;yield_sockets_poll.lib;yield_poll.lib;yield_thread.lib;yield_sockets.lib;yield.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_sockets_poll.lib;yield_poll.lib;yield_thread.lib;yield_sockets.lib;yield.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -102,6 +102,7 @@
     <ClInclude Include="..\..\..\..\include\yield\sockets\aio\send_aiocb.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\sockets\aio\sendfile_aiocb.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\sockets\aio\win32\aio_queue.hpp" />
+    <ClInclude Include="..\..\..\..\include\yield\sockets\aio\win32\aiocb.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
@@ -122,13 +123,12 @@
     <ClCompile Include="..\..\..\..\src\yield\sockets\aio\win32\aio_queue.cpp">
       <ObjectFileName>$(IntDir)win32\aio_queue.obj</ObjectFileName>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\aio\win32\aiocb.cpp">
+      <ObjectFileName>$(IntDir)win32\aiocb.obj</ObjectFileName>
+    </ClCompile>
   </ItemGroup>
 
   <ItemGroup Label="ProjectReferenceItems">
-    <ProjectReference Include="..\..\aio\yield.aio.vcxproj">
-      <Project>{b6c03d16-2fa8-439c-ae71-3e908ad2cf02}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\poll\yield.sockets.poll.vcxproj">
       <Project>{72c0c117-7a3e-41f2-a898-942cfec39d7f}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

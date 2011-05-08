@@ -29,6 +29,7 @@
 
 #include "directory_watch.hpp"
 #include "yield/assert.hpp"
+#include "yield/exception.hpp"
 #include "yield/fs/poll/win32/fs_event_queue.hpp"
 #include "yield/fs/file_system.hpp"
 
@@ -39,6 +40,9 @@ namespace fs {
 namespace poll {
 namespace win32 {
 FSEventQueue::FSEventQueue(YO_NEW_REF Log* log) : log(log) {
+  hIoCompletionPort = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 0);
+  if (hIoCompletionPort == INVALID_HANDLE_VALUE)
+    throw Exception();
 }
 
 FSEventQueue::~FSEventQueue() {
@@ -68,7 +72,14 @@ bool FSEventQueue::associate(const Path& path, FSEvent::Type fs_event_types) {
 
   Directory* directory = FileSystem().opendir(path);
   if (directory != NULL) {
-    if (aio_queue.associate(*directory)) {
+    if (
+      CreateIoCompletionPort(
+        *directory,
+        hIoCompletionPort,
+        0,
+        0
+      ) != INVALID_HANDLE_VALUE
+    ) {
       DirectoryWatch* watch
         = new DirectoryWatch(*directory, fs_event_types, path, log);
 
@@ -89,7 +100,7 @@ bool FSEventQueue::associate(const Path& path, FSEvent::Type fs_event_types) {
         watches[path] = watch;
         return true;
       } else {
-        DirectoryWatch::dec_ref(*watch);
+        delete watch;
         return false;
       }
     } else
@@ -110,41 +121,74 @@ bool FSEventQueue::dissociate(const Path& path) {
 }
 
 bool FSEventQueue::enqueue(YO_NEW_REF Event& event) {
-  return aio_queue.enqueue(event);
+  return PostQueuedCompletionStatus(
+           hIoCompletionPort,
+           0,
+           reinterpret_cast<ULONG_PTR>(&event),
+           NULL
+         )
+         == TRUE;
 }
 
 YO_NEW_REF Event* FSEventQueue::timeddequeue(const Time& timeout) {
-  Event* event = aio_queue.timeddequeue(timeout);
-  if (event != NULL) {
-    if (event->get_type_id() == DirectoryWatch::TYPE_ID) {
-      DirectoryWatch* watch = static_cast<DirectoryWatch*>(event);
-      if (!watch->is_closed()) {
-        debug_assert_eq(watch->get_error(), 0);
-        debug_assert_gt(watch->get_return(), 0);
-    
-        DWORD dwReadUntilBufferOffset = 0;
-        for (;;) {
-          const FILE_NOTIFY_INFORMATION* file_notify_info
-            = reinterpret_cast<const FILE_NOTIFY_INFORMATION*>(
-                &watch->get_buffer()[dwReadUntilBufferOffset]
-              );
+  DWORD dwBytesTransferred = 0;
+  ULONG_PTR ulCompletionKey = 0;
+  LPOVERLAPPED lpOverlapped = NULL;
 
-          watch->read(*file_notify_info, aio_queue);
+  BOOL bRet
+    = GetQueuedCompletionStatus(
+        hIoCompletionPort,
+        &dwBytesTransferred,
+        &ulCompletionKey,
+        &lpOverlapped,
+        static_cast<DWORD>(timeout.ms())
+      );
 
-          if (file_notify_info->NextEntryOffset > 0)
-            dwReadUntilBufferOffset += file_notify_info->NextEntryOffset;
-          else
-            break;
-        }
-          
-        return aio_queue.trydequeue();
-      } else
-        delete watch;
-    } else
-      return event;
-  }
+  if (lpOverlapped != NULL) {
+    DirectoryWatch& watch = DirectoryWatch::cast(*lpOverlapped);
+    if (!watch.is_closed()) {
+      debug_assert_eq(bRet, TRUE);
+      debug_assert_gt(dwBytesTransferred, 0);
 
-  return NULL;
+      DWORD dwReadUntilBufferOffset = 0;
+      for (;;) {
+        const FILE_NOTIFY_INFORMATION* file_notify_info
+          = reinterpret_cast<const FILE_NOTIFY_INFORMATION*>(
+              &watch.get_buffer()[dwReadUntilBufferOffset]
+            );
+
+        watch.read(*file_notify_info, *this);
+
+        if (file_notify_info->NextEntryOffset > 0)
+          dwReadUntilBufferOffset += file_notify_info->NextEntryOffset;
+        else
+          break;
+      }
+
+      DWORD dwBytesRead;
+      BOOL bRet = 
+        ReadDirectoryChangesW(
+          watch.get_directory(),
+          watch.get_buffer(),
+          watch.get_buffer_length(),
+          FALSE,
+          watch.get_notify_filter(),
+          &dwBytesRead,
+          watch,
+          NULL
+        );
+      debug_assert_eq(bRet, TRUE);
+      debug_assert_eq(dwBytesRead, 0);
+
+      return trydequeue();
+    } else {
+      delete &watch;
+      return NULL;
+    }
+  } else if (ulCompletionKey != 0)
+    return reinterpret_cast<Event*>(ulCompletionKey);
+  else
+    return NULL;
 }
 }
 }

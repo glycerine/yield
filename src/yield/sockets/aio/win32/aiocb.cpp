@@ -1,4 +1,4 @@
-// yield/aio/win32/aio_queue.hpp
+// yield/sockets/aio/aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,39 +27,58 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_AIO_WIN32_AIO_QUEUE_HPP_
-#define _YIELD_AIO_WIN32_AIO_QUEUE_HPP_
+#include "yield/sockets/socket.hpp"
+#include "yield/sockets/aio/win32/aiocb.hpp"
 
-#include "yield/aio/aiocb.hpp"
-#include "yield/event_queue.hpp"
+#include <Windows.h>
 
 namespace yield {
+namespace sockets {
 namespace aio {
 namespace win32 {
-class AIOQueue : public EventQueue {
-public:
-  AIOQueue();
-  ~AIOQueue();
+AIOCB::AIOCB(Socket& socket_) : socket_(socket_.inc_ref()) {
+  static_assert(sizeof(overlapped) == sizeof(::OVERLAPPED), "");
+  memset(&overlapped, 0, sizeof(overlapped));
+  this_ = this;
 
-public:
-  bool associate(fd_t fd);
+  error = 0;
+  next_aiocb = NULL; 
+  return_ = -1;
+}
 
-public:
-  // yield::Object
-  AIOQueue& inc_ref() {
-    return Object::inc_ref(*this);
-  }
+AIOCB::AIOCB(Socket& socket_, off_t offset) : socket_(socket_.inc_ref()) {
+  memset(&overlapped, 0, sizeof(overlapped));
+  overlapped.Offset = static_cast<uint32_t>(offset);
+  overlapped.OffsetHigh = static_cast<uint32_t>(offset >> 32);
+  this_ = this;
 
-public:
-  // yield::EventQueue
-  virtual bool enqueue(YO_NEW_REF Event& event);
-  virtual YO_NEW_REF Event* timeddequeue(const Time& timeout);
+  error = 0;
+  next_aiocb = NULL; 
+  return_ = -1;
+}
 
-private:
-  fd_t hIoCompletionPort;
-};
+AIOCB::~AIOCB() {
+  AIOCB::dec_ref(next_aiocb);
+  Socket::dec_ref(socket_);
+}
+
+AIOCB& AIOCB::cast(::OVERLAPPED& lpOverlapped) {
+  AIOCB* aiocb;
+
+  memcpy_s(
+    &aiocb,
+    sizeof(aiocb),
+    reinterpret_cast<char*>(&lpOverlapped) + sizeof(::OVERLAPPED),
+    sizeof(aiocb)
+  );
+
+  return *aiocb;
+}
+
+AIOCB::operator ::OVERLAPPED* () {
+  return reinterpret_cast<::OVERLAPPED*>(&overlapped);
 }
 }
 }
-
-#endif
+}
+}

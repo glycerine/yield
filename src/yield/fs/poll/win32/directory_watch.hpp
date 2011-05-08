@@ -31,21 +31,20 @@
 #define _YIELD_FS_POLL_WIN32_DIRECTORY_WATCH_HPP_
 
 #include "../directory_watch.hpp"
-#include "yield/aio/win32/aiocb.hpp"
 #include "yield/fs/directory.hpp"
 
 #include <stack>
 
 struct _FILE_NOTIFY_INFORMATION;
 typedef struct _FILE_NOTIFY_INFORMATION FILE_NOTIFY_INFORMATION;
+struct _OVERLAPPED;
+typedef struct _OVERLAPPED OVERLAPPED;
 
 namespace yield {
 namespace fs {
 namespace poll {
 namespace win32 {
-class DirectoryWatch
-  : public yield::aio::win32::AIOCB,
-    public yield::fs::poll::DirectoryWatch {
+class DirectoryWatch : public yield::fs::poll::DirectoryWatch {
 public:
   const static uint32_t TYPE_ID = 497230685;
 
@@ -60,6 +59,9 @@ public:
   ~DirectoryWatch();
 
 public:
+  static DirectoryWatch& cast(::OVERLAPPED& lpOverlapped);
+
+public:
   void close();
   bool is_closed() const;
 
@@ -72,9 +74,16 @@ public:
     return sizeof(buffer);
   }
 
+  Directory& get_directory() {
+    return *directory;
+  }
+
   unsigned long get_notify_filter() const {
     return notify_filter;
   }
+
+public:
+  operator ::OVERLAPPED*();
 
 public:
   void read(const FILE_NOTIFY_INFORMATION&, EventHandler& fs_event_handler);
@@ -90,10 +99,28 @@ public:
   }
 
 private:
+  struct {
+    unsigned long* Internal;
+    unsigned long* InternalHigh;
+#pragma warning( push )
+#pragma warning( disable: 4201 )
+    union {
+      struct {
+        unsigned long Offset;
+        unsigned long OffsetHigh;
+      };
+      void* Pointer;
+    };
+#pragma warning( pop )
+    void* hEvent;
+  } overlapped;
+  DirectoryWatch* this_;
+
   Directory* directory;
   unsigned long notify_filter;
   std::stack<Path> old_paths;
   vector<Path> subdirectory_names;
+
   char buffer[(12 + 260 * sizeof(wchar_t)) * 16];
 };
 }

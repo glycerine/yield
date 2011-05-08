@@ -78,16 +78,15 @@ TEST_DIR_PATH = path_join(ROOT_DIR_PATH, "test")
 
 PROJECT_REFERENCES = {
     "yield": tuple(),
-    "yield.aio": ("yield",),
     "yield.fs": ("yield.i18n",),
-    "yield.fs.poll": ("yield.aio", "yield.fs", "yield.queue"),
+    "yield.fs.poll": ("yield.fs", "yield.queue"),
     "yield.http": ("yield.uri",),
     "yield.http.server": ("yield.fs", "yield.http", "yield.sockets.aio"),
     "yield.i18n": ("yield",),
     "yield.poll": ("yield.queue",),
     "yield.queue": ("yield.thread",),
     "yield.sockets": ("yield",),
-    "yield.sockets.aio": ("yield.aio", "yield.sockets.poll"),
+    "yield.sockets.aio": ("yield.sockets.poll",),
     "yield.sockets.poll": ("yield.poll", "yield.sockets"),
     "yield.stage": ("yield.thread",),
     "yield.thread": ("yield",),
@@ -298,12 +297,6 @@ INCLUDE_FILE_PATHS["yield"] = [
 INCLUDE_FILE_PATHS["yield"]
 
 INCLUDE_FILE_PATHS["yield_test"] = [path_join(INCLUDE_DIR_PATH, "yunit.hpp")]
-
-INCLUDE_FILE_PATHS["yield.aio"] = [
-    path_join(INCLUDE_DIR_PATH, "yield", "aio", "posix", "aiocb.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "aio", "win32", "aiocb.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "aio", "aiocb.hpp"),
-] + INCLUDE_FILE_PATHS["yield.aio"]
 
 INCLUDE_FILE_PATHS["yield.fs"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "fs", "path.hpp"),

@@ -50,7 +50,7 @@ endif
 ifeq ($(UNAME), Solaris)
 	LIBS += -lkstat -lnsl -lsocket -lm -lrt -lstdc++
 endif
-LIBS += -lyield_aio -lyield_sockets_poll -lyield_poll -lyield_thread -lyield_sockets -lyield
+LIBS += -lyield_sockets_poll -lyield_poll -lyield_thread -lyield_sockets -lyield
 
 
 D_FILE_PATHS := $(shell find ../../../../build/yield/sockets/aio -name "*.d")
@@ -58,7 +58,7 @@ D_FILE_PATHS := $(shell find ../../../../build/yield/sockets/aio -name "*.d")
 
 O_FILE_PATHS += ../../../../build/yield/sockets/aio/accept_aiocb.o ../../../../build/yield/sockets/aio/aiocb.o ../../../../build/yield/sockets/aio/connect_aiocb.o ../../../../build/yield/sockets/aio/nbio_queue.o ../../../../build/yield/sockets/aio/recv_aiocb.o ../../../../build/yield/sockets/aio/send_aiocb.o ../../../../build/yield/sockets/aio/sendfile_aiocb.o
 ifeq ($(UNAME), MINGW32)
-	O_FILE_PATHS += ../../../../build/yield/sockets/aio/win32/aio_queue.o
+	O_FILE_PATHS += ../../../../build/yield/sockets/aio/win32/aio_queue.o ../../../../build/yield/sockets/aio/win32/aiocb.o
 endif
 
 
@@ -73,15 +73,11 @@ depclean:
 -include $(D_FILE_PATHS)
 
 
-../../../../lib/yield/libyield_aio.a:
-	$(MAKE) -C ../../aio yield.aio.Makefile
-
-
 ../../../../lib/yield/libyield_sockets_poll.a:
 	$(MAKE) -C ../poll yield.sockets.poll.Makefile
 
 
-../../../../lib/yield/libyield_sockets_aio.a: $(O_FILE_PATHS) ../../../../lib/yield/libyield_aio.a ../../../../lib/yield/libyield_sockets_poll.a
+../../../../lib/yield/libyield_sockets_aio.a: $(O_FILE_PATHS) ../../../../lib/yield/libyield_sockets_poll.a
 	-mkdir -p ../../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(O_FILE_PATHS)
 
@@ -116,3 +112,7 @@ depclean:
 ../../../../build/yield/sockets/aio/win32/aio_queue.o: ../../../../src/yield/sockets/aio/win32/aio_queue.cpp
 	-mkdir -p ../../../../build/yield/sockets/aio/win32 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/sockets/aio/win32/aio_queue.o -MD $(CXXFLAGS) ../../../../src/yield/sockets/aio/win32/aio_queue.cpp
+
+../../../../build/yield/sockets/aio/win32/aiocb.o: ../../../../src/yield/sockets/aio/win32/aiocb.cpp
+	-mkdir -p ../../../../build/yield/sockets/aio/win32 2>/dev/null
+	$(CXX) -c -o ../../../../build/yield/sockets/aio/win32/aiocb.o -MD $(CXXFLAGS) ../../../../src/yield/sockets/aio/win32/aiocb.cpp

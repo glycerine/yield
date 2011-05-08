@@ -31,7 +31,6 @@
 #define _YIELD_FS_POLL_WIN32_FS_EVENT_QUEUE_HPP_
 
 #include "yield/event_queue.hpp"
-#include "yield/aio/win32/aio_queue.hpp"
 #include "yield/fs/poll/fs_event.hpp"
 
 #include <map>
@@ -63,7 +62,7 @@ public:
   YO_NEW_REF Event* timeddequeue(const Time& timeout);
 
 private:
-  yield::aio::win32::AIOQueue aio_queue;
+  fd_t hIoCompletionPort;
   Log* log;
   typedef std::map<Path, DirectoryWatch*> Watches;
   Watches watches;

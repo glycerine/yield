@@ -21,10 +21,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.http", "proj\yield\ht
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.http_test", "proj\yield\http\yield.http_test.vcxproj", "{0A9E672B-9794-4E89-85FD-374471E265C6}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.aio", "proj\yield\aio\yield.aio.vcxproj", "{B6C03D16-2FA8-439C-AE71-3E908AD2CF02}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.aio_test", "proj\yield\aio\yield.aio_test.vcxproj", "{69D33BC0-26EB-4C8C-9A21-95B9D531E2A1}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.i18n", "proj\yield\i18n\yield.i18n.vcxproj", "{B1F5A78E-7515-4986-9861-A64214C05494}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.i18n_test", "proj\yield\i18n\yield.i18n_test.vcxproj", "{8334D9EB-32B7-46BA-B042-3E0E40205D67}"
@@ -107,14 +103,6 @@ Global
 		{0A9E672B-9794-4E89-85FD-374471E265C6}.Debug|Win32.Build.0 = Debug|Win32
 		{0A9E672B-9794-4E89-85FD-374471E265C6}.Release|Win32.ActiveCfg = Release|Win32
 		{0A9E672B-9794-4E89-85FD-374471E265C6}.Release|Win32.Build.0 = Release|Win32
-		{B6C03D16-2FA8-439C-AE71-3E908AD2CF02}.Debug|Win32.ActiveCfg = Debug|Win32
-		{B6C03D16-2FA8-439C-AE71-3E908AD2CF02}.Debug|Win32.Build.0 = Debug|Win32
-		{B6C03D16-2FA8-439C-AE71-3E908AD2CF02}.Release|Win32.ActiveCfg = Release|Win32
-		{B6C03D16-2FA8-439C-AE71-3E908AD2CF02}.Release|Win32.Build.0 = Release|Win32
-		{69D33BC0-26EB-4C8C-9A21-95B9D531E2A1}.Debug|Win32.ActiveCfg = Debug|Win32
-		{69D33BC0-26EB-4C8C-9A21-95B9D531E2A1}.Debug|Win32.Build.0 = Debug|Win32
-		{69D33BC0-26EB-4C8C-9A21-95B9D531E2A1}.Release|Win32.ActiveCfg = Release|Win32
-		{69D33BC0-26EB-4C8C-9A21-95B9D531E2A1}.Release|Win32.Build.0 = Release|Win32
 		{B1F5A78E-7515-4986-9861-A64214C05494}.Debug|Win32.ActiveCfg = Debug|Win32
 		{B1F5A78E-7515-4986-9861-A64214C05494}.Debug|Win32.Build.0 = Debug|Win32
 		{B1F5A78E-7515-4986-9861-A64214C05494}.Release|Win32.ActiveCfg = Release|Win32

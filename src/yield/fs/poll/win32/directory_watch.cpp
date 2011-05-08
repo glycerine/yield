@@ -46,6 +46,10 @@ DirectoryWatch::DirectoryWatch(
   Log* log
 ) : yield::fs::poll::DirectoryWatch(fs_event_types, path, log),
     directory(&directory) {
+  static_assert(sizeof(overlapped) == sizeof(::OVERLAPPED), "");
+  memset(&overlapped, 0, sizeof(overlapped));
+  this_ = this;
+
   notify_filter = 0;
 
   if (
@@ -94,6 +98,19 @@ DirectoryWatch::~DirectoryWatch() {
   close();
 }
 
+DirectoryWatch& DirectoryWatch::cast(::OVERLAPPED& lpOverlapped) {
+  DirectoryWatch* directory_watch;
+
+  memcpy_s(
+    &directory_watch,
+    sizeof(directory_watch),
+    reinterpret_cast<char*>(&lpOverlapped) + sizeof(::OVERLAPPED),
+    sizeof(directory_watch)
+  );
+
+  return *directory_watch;
+}
+
 void DirectoryWatch::close() {
   if (directory != NULL) {
     CancelIoEx(*directory, *this);
@@ -105,6 +122,10 @@ void DirectoryWatch::close() {
 
 bool DirectoryWatch::is_closed() const {
   return directory == NULL;
+}
+
+DirectoryWatch::operator ::OVERLAPPED* () {
+  return reinterpret_cast<::OVERLAPPED*>(&overlapped);
 }
 
 void

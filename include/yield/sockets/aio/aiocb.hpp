@@ -30,22 +30,37 @@
 #ifndef _YIELD_SOCKETS_AIO_AIOCB_HPP_
 #define _YIELD_SOCKETS_AIO_AIOCB_HPP_
 
-#include "yield/aio/aiocb.hpp"
+#ifdef _WIN32
+#include "yield/sockets/aio/win32/aiocb.hpp"
+#else
+#include "yield/event.hpp"
+#endif
 
 namespace yield {
-class Buffer;
-
 namespace sockets {
 class Socket;
 
 namespace aio {
-class AIOCB : public yield::aio::AIOCB {
+#ifdef _WIN32
+typedef win32::AIOCB AIOCB;
+#else
+class NBIOQueue;
+
+class AIOCB : public Event {
 public:
   virtual ~AIOCB();
 
 public:
+  uint32_t get_error() const {
+    return error;
+  }
+
   AIOCB* get_next_aiocb() {
     return next_aiocb;
+  }
+
+  ssize_t get_return() const {
+    return return_;
   }
 
   Socket& get_socket() {
@@ -53,9 +68,17 @@ public:
   }
 
 public:
+  void set_error(uint32_t error) {
+    this->error = error;
+  }
+
   void set_next_aiocb(AIOCB* next_aiocb) {
     AIOCB::dec_ref(this->next_aiocb);
     this->next_aiocb = next_aiocb;
+  }
+
+  void set_return(ssize_t return_) {
+    this->return_ = return_;
   }
 
 public:
@@ -72,9 +95,14 @@ protected:
   AIOCB(Socket& socket_, off_t offset);
 
 private:
+  friend class NBIOQueue;
+
+  uint32_t error;
   AIOCB* next_aiocb;
+  ssize_t return_;
   Socket& socket_;
 };
+#endif
 }
 }
 }

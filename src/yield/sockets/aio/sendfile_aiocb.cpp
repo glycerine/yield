@@ -53,7 +53,7 @@ sendfileAIOCB::sendfileAIOCB(StreamSocket& socket_, fd_t fd)
     = SetFilePointer(fd, 0, &lFilePointerHigh, FILE_CURRENT);
   if (uliFilePointer.LowPart != INVALID_SET_FILE_POINTER) {
     uliFilePointer.HighPart = lFilePointerHigh;
-    set_offset(static_cast<off_t>(uliFilePointer.QuadPart));
+    offset = static_cast<off_t>(uliFilePointer.QuadPart);
 
     ULARGE_INTEGER uliFileSize;
     uliFileSize.LowPart = GetFileSize(fd, &uliFileSize.HighPart);
@@ -65,10 +65,8 @@ sendfileAIOCB::sendfileAIOCB(StreamSocket& socket_, fd_t fd)
   } else
     throw Exception();
 #else
-  off_t offset = lseek(fd, 0, SEEK_CUR);
+  offset = lseek(fd, 0, SEEK_CUR);
   if (offset != static_cast<off_t>(-1)) {
-    set_offset(offset);
-
     struct stat stbuf;
     if (fstat(fd, &stbuf) == 0)
       nbytes = stbuf.st_size - offset;
@@ -126,16 +124,16 @@ std::ostream& operator<<(std::ostream& os, sendfileAIOCB& sendfile_aiocb) {
   os <<
     sendfile_aiocb.get_type_name() <<
     "(" <<
-      "error=" << sendfile_aiocb.get_error() <<
-      ", " <<
+      //"error=" << sendfile_aiocb.get_error() <<
+      //", " <<
       "fd=" << sendfile_aiocb.get_fd() <<
       ", " <<
       "nbytes=" << sendfile_aiocb.get_nbytes() <<
       ", " <<
       "offset=" << sendfile_aiocb.get_offset() <<
       ", " <<
-      "return=" << sendfile_aiocb.get_return() <<
-      "," <<
+      //"return=" << sendfile_aiocb.get_return() <<
+      //"," <<
       "socket=" << sendfile_aiocb.get_socket() <<
     ")";
   return os;
