@@ -32,7 +32,7 @@
 
 #include "yield/event_queue.hpp"
 #include "yield/fs/poll/fs_event.hpp"
-#include "yield/poll/fd_event_queue.hpp"
+#include "yield/queue/blocking_concurrent_queue.hpp"
 
 namespace yield {
 class Log;
@@ -61,7 +61,9 @@ public:
   YO_NEW_REF Event* timeddequeue(const Time& timeout);
 
 private:
-  yield::poll::FDEventQueue fd_event_queue;
+  int epoll_fd;
+  int event_fd;
+  yield::queue::BlockingConcurrentQueue<Event> event_queue;
   int inotify_fd;
   Log* log;
   Watches* watches;

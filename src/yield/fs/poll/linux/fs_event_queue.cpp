@@ -32,9 +32,10 @@
 #include "yield/exception.hpp"
 #include "yield/log.hpp"
 #include "yield/fs/poll/linux/fs_event_queue.hpp"
-#include "yield/poll/fd_event.hpp"
 
 #include <limits.h>
+#include <sys/epoll.h>
+#include <sys/eventfd.h>
 #include <sys/inotify.h>
 
 namespace yield {
@@ -44,13 +45,44 @@ namespace linux {
 using yield::poll::FDEvent;
 
 FSEventQueue::FSEventQueue(YO_NEW_REF Log* log) : log(log) {
-  inotify_fd = inotify_init();
-  if (inotify_fd != -1) {
-    if (fd_event_queue.associate(inotify_fd, FDEvent::TYPE_READ_READY)) {
-      watches = new Watches;
-    } else {
-      close(inotify_fd);
-      throw Exception();
+  epoll_fd = epoll_create(32768);
+  if (epoll_fd != -1) {
+    try {
+      event_fd = eventfd(0, 0);
+      if (event_fd != -1) {
+        try {
+          epoll_event epoll_event_;
+          memset(&epoll_event_, 0, sizeof(epoll_event_));
+          epoll_event_.data.fd = event_fd;
+          epoll_event_.events = POLLIN;
+          if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, fd, &epoll_event_) == 0) {
+            inotify_fd = inotify_init();
+            if (inotify_fd != -1) {
+              try {
+                memset(&epoll_event_, 0, sizeof(epoll_event_));
+                epoll_event_.data.fd = inotify_fd;
+                epoll_event_.events = POLLIN;
+                if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, fd, &epoll_event_) == 0)
+                  watches = new Watches;
+                else
+                  throw Exception();
+              } catch (Exception&) {
+                close(inotify_fd);
+                throw;
+              }
+            } else
+              throw Exception();
+          } else
+            throw Exception();
+        } catch (Exception&) {
+          close(event_fd);
+          throw;
+        }
+      } else
+        throw Exception();
+    } catch (Exception&) {
+      close(epoll_fd);
+      throw;
     }
   } else
     throw Exception();
@@ -115,44 +147,61 @@ bool FSEventQueue::dissociate(const Path& path) {
 }
 
 bool FSEventQueue::enqueue(YO_NEW_REF Event& event) {
-  return fd_event_queue.enqueue(event);
+  if (event_queue.enqueue(event)) {
+    uint64_t data = 1;
+    ssize_t write_ret = write(event_fd, &data, sizeof(data));
+    debug_assert_eq(write_ret, static_cast<ssize_t>(sizeof(data)));
+    return true;
+  } else
+    return false;
 }
 
 YO_NEW_REF Event* FSEventQueue::timeddequeue(const Time& timeout) {
-  Event* event = fd_event_queue.timeddequeue(timeout);
-  if (event != NULL) {
-    if (event->get_type_id() == FDEvent::TYPE_ID) {
-      FDEvent* fd_event = static_cast<FDEvent*>(event);
-      if (fd_event->get_fd() == inotify_fd) {
+  Event* event = event_queue.trydequeue();
+  if (event != NULL)
+    return event;
+  else {
+    epoll_event epoll_event_;
+    int timeout_ms
+      = (timeout == Time::FOREVER) ? -1 : static_cast<int>(timeout.ms());
+    int ret = epoll_wait(epoll_fd, &epoll_event_, 1, timeout_ms);
+
+    if (ret > 0) {
+      debug_assert_eq(ret, 1);
+
+      if (epoll_event_.data.fd == event_fd) {
+        uint64_t data;
+        read(event_fd, &data, sizeof(data));
+        return event_queue.trydequeue();
+      } else {
+        debug_assert_eq(epoll_event_.data.fd, inotify_fd);
+
         char inotify_events[(sizeof(inotify_event) + PATH_MAX) * 16];
         ssize_t read_ret
           = ::read(inotify_fd, inotify_events, sizeof(inotify_events));
+        debug_assert_gt(read_ret, 0);
 
-        if (read_ret > 0) {
-          const char* inotify_events_p = inotify_events;
-          const char* inotify_events_pe
-            = inotify_events + static_cast<size_t>(read_ret);
+        const char* inotify_events_p = inotify_events;
+        const char* inotify_events_pe
+          = inotify_events + static_cast<size_t>(read_ret);
 
-          do {
-            const inotify_event* inotify_event_
-              = reinterpret_cast<const inotify_event*>(inotify_events_p);
+        do {
+          const inotify_event* inotify_event_
+            = reinterpret_cast<const inotify_event*>(inotify_events_p);
 
-            Watch* watch = watches->find(inotify_event_->wd);
-            if (watch != NULL)
-              watch->read(*inotify_event_, *this);
+          Watch* watch = watches->find(inotify_event_->wd);
+          if (watch != NULL)
+            watch->read(*inotify_event_, *this);
 
-            inotify_events_p += sizeof(inotify_event) + inotify_event_->len;
-          } while (inotify_events_p < inotify_events_pe);
+          inotify_events_p += sizeof(inotify_event) + inotify_event_->len;
+        } while (inotify_events_p < inotify_events_pe);
 
-          return fd_event_queue.timeddequeue(0);
-        }
-      } else
-        return fd_event;
-    } else
-      return event;
+        return event_queue.trydequeue();
+    } else {
+      debug_assert_true(ret == 0 || errno == EINTR);
+      return NULL;
+    }
   }
-
-  return NULL;
 }
 }
 }

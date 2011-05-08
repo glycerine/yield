@@ -32,7 +32,6 @@
 #include "yield/log.hpp"
 #include "yield/fs/poll/bsd/fs_event_queue.hpp"
 #include "yield/fs/file_system.hpp"
-#include "yield/poll/fd_event.hpp"
 
 #include <errno.h>
 #include <fcntl.h>

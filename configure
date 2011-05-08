@@ -80,7 +80,7 @@ PROJECT_REFERENCES = {
     "yield": tuple(),
     "yield.aio": ("yield",),
     "yield.fs": ("yield.i18n",),
-    "yield.fs.poll": ("yield.aio", "yield.poll", "yield.fs"),
+    "yield.fs.poll": ("yield.aio", "yield.fs"),
     "yield.http": ("yield.uri",),
     "yield.http.server": ("yield.fs", "yield.http", "yield.sockets.aio"),
     "yield.i18n": ("yield",),

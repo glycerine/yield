@@ -99,7 +99,8 @@ bool FDEventQueue::dissociate(fd_t fd) {
 bool FDEventQueue::enqueue(Event& event) {
   if (event_queue.enqueue(event)) {
     uint64_t data = 1;
-    write(wake_fd, &data, sizeof(data));
+    ssize_t write_ret = write(wake_fd, &data, sizeof(data));
+    debug_assert_eq(write_ret, static_cast<ssize_t>(sizeof(data)));
     return true;
   } else
     return false;
@@ -111,8 +112,9 @@ YO_NEW_REF Event* FDEventQueue::timeddequeue(const Time& timeout) {
     return event;
   else {
     epoll_event epoll_event_;
-    int ret = epoll_wait(epfd, &epoll_event_, 1, static_cast<int>(timeout.ms()));
-
+    int timeout_ms
+      = (timeout == Time::FOREVER) ? -1 : static_cast<int>(timeout.ms());
+    int ret = epoll_wait(epfd, &epoll_event_, 1, timeout_ms);
     if (ret > 0) {
       debug_assert_eq(ret, 1);
 
@@ -122,10 +124,8 @@ YO_NEW_REF Event* FDEventQueue::timeddequeue(const Time& timeout) {
         return event_queue.trydequeue();
       } else
         return new FDEvent(epoll_event_.data.fd, epoll_event_.events);
-    } else if (ret == 0 || errno == EINTR)
-      return NULL;
-    else {
-      debug_break();
+    } else {
+      debug_assert_true(ret == 0 || errno == EINTR);
       return NULL;
     }
   }
