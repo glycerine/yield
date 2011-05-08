@@ -33,6 +33,7 @@
 #include "yield/log.hpp"
 #include "yield/fs/poll/linux/fs_event_queue.hpp"
 
+#include <errno.h>
 #include <limits.h>
 #include <sys/epoll.h>
 #include <sys/eventfd.h>
@@ -42,8 +43,6 @@ namespace yield {
 namespace fs {
 namespace poll {
 namespace linux {
-using yield::poll::FDEvent;
-
 FSEventQueue::FSEventQueue(YO_NEW_REF Log* log) : log(log) {
   epoll_fd = epoll_create(32768);
   if (epoll_fd != -1) {
@@ -54,15 +53,24 @@ FSEventQueue::FSEventQueue(YO_NEW_REF Log* log) : log(log) {
           epoll_event epoll_event_;
           memset(&epoll_event_, 0, sizeof(epoll_event_));
           epoll_event_.data.fd = event_fd;
-          epoll_event_.events = POLLIN;
-          if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, fd, &epoll_event_) == 0) {
+          epoll_event_.events = EPOLLIN;
+          if (
+            epoll_ctl(epoll_fd, EPOLL_CTL_ADD, event_fd, &epoll_event_) == 0
+          ) {
             inotify_fd = inotify_init();
             if (inotify_fd != -1) {
               try {
                 memset(&epoll_event_, 0, sizeof(epoll_event_));
                 epoll_event_.data.fd = inotify_fd;
-                epoll_event_.events = POLLIN;
-                if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, fd, &epoll_event_) == 0)
+                epoll_event_.events = EPOLLIN;
+                if (
+                  epoll_ctl(
+                    epoll_fd,
+                    EPOLL_CTL_ADD,
+                    inotify_fd,
+                    &epoll_event_
+                  ) == 0
+                )
                   watches = new Watches;
                 else
                   throw Exception();
@@ -197,6 +205,7 @@ YO_NEW_REF Event* FSEventQueue::timeddequeue(const Time& timeout) {
         } while (inotify_events_p < inotify_events_pe);
 
         return event_queue.trydequeue();
+      }
     } else {
       debug_assert_true(ret == 0 || errno == EINTR);
       return NULL;
