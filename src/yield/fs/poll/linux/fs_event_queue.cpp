@@ -34,6 +34,7 @@
 #include "yield/fs/poll/linux/fs_event_queue.hpp"
 #include "yield/poll/fd_event.hpp"
 
+#include <limits.h>
 #include <sys/inotify.h>
 
 namespace yield {

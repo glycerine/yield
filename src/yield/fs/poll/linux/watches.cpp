@@ -28,6 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "watches.hpp"
+#include "yield/assert.hpp"
 
 namespace yield {
 namespace fs {

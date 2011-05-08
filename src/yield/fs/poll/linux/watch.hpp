@@ -32,13 +32,17 @@
 
 #include "../watch.hpp"
 
+#include <map>
+
 struct inotify_event;
 
 namespace yield {
+class EventHandler;
+
 namespace fs {
 namespace poll {
 namespace linux {
-class FSEventQueue::Watch : yield::fs::poll::Watch {
+class Watch : public yield::fs::poll::Watch {
 public:
   Watch(
     FSEvent::Type fs_event_types,
@@ -59,13 +63,19 @@ public:
   void read(const inotify_event&, EventHandler& fs_event_handler);
 
 public:
+  // yield::Object
   const char* get_type_name() const {
     return "yield::fs::poll::linux::Watch";
   }
 
+  // yield::fs::poll::Watch
+  bool is_directory_watch() const {
+    return true;
+  }
+
 private:
   int inotify_fd;
-  map<uint32_t, Path> old_names;
+  std::map<uint32_t, Path> old_names;
   int wd;
 };
 

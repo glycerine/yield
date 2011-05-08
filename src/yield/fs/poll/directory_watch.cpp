@@ -151,9 +151,9 @@ void DirectoryWatch::read(EventHandler& fs_event_handler) {
         for (
           map<Path, Stat*>::iterator old_dentry_i = old_dentries->begin();
           old_dentry_i != old_dentries->end();
+          ++old_dentry_i
         ) {
           if (!new_new_dentries.empty()) {
-            bool delete_old_dentry = false;
             Stat* old_dentry_stat = old_dentry_i->second;
 
             for (
@@ -179,22 +179,16 @@ void DirectoryWatch::read(EventHandler& fs_event_handler) {
                             FSEvent::TYPE_FILE_RENAME
                         );
                 fs_event_handler.handle(*fs_event);
-                delete_old_dentry = true;
                 // Don't delete new_dentry_i->second, the Stat;
                 // it's owned by new_dentries
                 new_dentry_i = new_new_dentries.erase(new_dentry_i);
+                delete old_dentry_i->second;
+                old_dentry_i->second = NULL;
                 break;
               } else
                 ++new_dentry_i;
             }
-
-            if (delete_old_dentry) {
-              delete old_dentry_i->second;
-              old_dentry_i = old_dentries->erase(old_dentry_i);
-            } else
-              ++old_dentry_i;
-          } else
-            ++old_dentry_i;
+          }
         }
 
         // Any remaining old_dentries here are removes.
@@ -203,15 +197,17 @@ void DirectoryWatch::read(EventHandler& fs_event_handler) {
           old_dentry_i != old_dentries->end();
           ++old_dentry_i
         ) {
-          FSEvent* fs_event 
-            = new FSEvent(
-                    this->get_path() / old_dentry_i->first,
-                    old_dentry_i->second->ISDIR() ?
-                      FSEvent::TYPE_DIRECTORY_REMOVE :
-                      FSEvent::TYPE_FILE_RENAME
-                  );
-          fs_event_handler.handle(*fs_event);
-          delete old_dentry_i->second;
+          if (old_dentry_i->second != NULL) {
+            FSEvent* fs_event 
+              = new FSEvent(
+                      this->get_path() / old_dentry_i->first,
+                      old_dentry_i->second->ISDIR() ?
+                        FSEvent::TYPE_DIRECTORY_REMOVE :
+                        FSEvent::TYPE_FILE_RENAME
+                    );
+            fs_event_handler.handle(*fs_event);
+            delete old_dentry_i->second;
+          }
         }
 
         delete old_dentries;

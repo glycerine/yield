@@ -28,6 +28,8 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "watch.hpp"
+#include "yield/assert.hpp"
+#include "yield/event_handler.hpp"
 #include "yield/log.hpp"
 
 #include <sys/inotify.h>
@@ -36,12 +38,14 @@ namespace yield {
 namespace fs {
 namespace poll {
 namespace linux {
+using std::map;
+
 Watch::Watch(
   FSEvent::Type fs_event_types,
   int inotify_fd,
   const Path& path,
   int wd,
-  Log* log = NULL
+  Log* log
 ) : yield::fs::poll::Watch(fs_event_types, path, log),
     inotify_fd(inotify_fd),
     wd(wd) {
@@ -64,11 +68,11 @@ Watch::read(
     // len includes a NULL terminator, but may also include
     // one or more bytes of padding. Do a strlen to find the real length.
     name = Path(inotify_event_.name); //, inotify_event_.len - 1);
-    path = this->path / name;
+    path = this->get_path() / name;
   }
 
-  if (log != NULL) {
-    log->get_stream(Log::Level::DEBUG) <<
+  if (get_log() != NULL) {
+    get_log()->get_stream(Log::Level::DEBUG) <<
       get_type_name() << "(path=" << get_path() << ", wd=" << get_wd() << ")"
       << ": read inotify_event(" <<
         "cookie=" << inotify_event_.cookie <<
@@ -119,13 +123,17 @@ Watch::read(
       else
         fs_event_type = FSEvent::TYPE_FILE_RENAME;
 
-      if ((fs_event_types & fs_event_type) == fs_event_type) {
+      if ((get_fs_event_types() & fs_event_type) == fs_event_type) {
         FSEvent* fs_event
-          = new FSEvent(this->path / old_name_i->second, path, fs_event_type);
+          = new FSEvent(
+                  this->get_path() / old_name_i->second,
+                  path,
+                  fs_event_type
+                );
         old_names.erase(old_name_i);
 
-        if (log != NULL) {
-          log->get_stream(Log::Level::DEBUG) <<
+        if (get_log() != NULL) {
+          get_log()->get_stream(Log::Level::DEBUG) <<
             get_type_name() <<
               "(path=" << get_path() << ", wd=" << get_wd() << ")" <<
               ": read " << *fs_event;
@@ -144,12 +152,12 @@ Watch::read(
     if (
       fs_event_type != 0
       &&
-      (fs_event_types & fs_event_type) == fs_event_type
+      (get_fs_event_types() & fs_event_type) == fs_event_type
     ) {
       FSEvent* fs_event = new FSEvent(path, fs_event_type);
 
-      if (log != NULL) {
-        log->get_stream(Log::Level::DEBUG) <<
+      if (get_log() != NULL) {
+        get_log()->get_stream(Log::Level::DEBUG) <<
           get_type_name() <<
             "(path=" << get_path() << ", wd=" << get_wd() << ")" <<
             ": read " << *fs_event;

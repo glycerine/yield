@@ -40,6 +40,8 @@ class Log;
 namespace fs {
 namespace poll {
 namespace linux {
+class Watches;
+
 class FSEventQueue : public EventQueue {
 public:
   FSEventQueue(YO_NEW_REF Log* log = NULL);
@@ -57,10 +59,6 @@ public:
   // yield::EventQueue
   bool enqueue(YO_NEW_REF Event& event);
   YO_NEW_REF Event* timeddequeue(const Time& timeout);
-
-private:
-  class Watch;
-  class Watches;
 
 private:
   yield::poll::FDEventQueue fd_event_queue;
