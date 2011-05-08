@@ -45,15 +45,15 @@ ifeq ($(UNAME), Darwin)
 	LIBS += -liconv
 endif
 ifeq ($(UNAME), FreeBSD)
-	LIBS += -liconv -lintl
+	LIBS += -liconv -lintl -lpthread
 endif
 ifeq ($(UNAME), Linux)
-	LIBS += -lrt -lstdc++
+	LIBS += -lpthread -lrt -lstdc++
 endif
 ifeq ($(UNAME), Solaris)
-	LIBS += -liconv -lm -lrt -lstdc++
+	LIBS += -liconv -lkstat -lm -lrt -lstdc++
 endif
-LIBS += -lyield_aio -lyield_fs -lyield_i18n -lyield
+LIBS += -lyield_aio -lyield_fs -lyield_i18n -lyield_thread -lyield
 
 
 D_FILE_PATHS := $(shell find ../../../../build/yield/fs/poll -name "*.d")
@@ -93,7 +93,11 @@ depclean:
 	$(MAKE) -C .. yield.fs.Makefile
 
 
-../../../../lib/yield/libyield_fs_poll.a: $(O_FILE_PATHS) ../../../../lib/yield/libyield_aio.a ../../../../lib/yield/libyield_fs.a
+../../../../lib/yield/libyield_queue.a:
+	$(MAKE) -C ../../queue yield.queue.Makefile
+
+
+../../../../lib/yield/libyield_fs_poll.a: $(O_FILE_PATHS) ../../../../lib/yield/libyield_aio.a ../../../../lib/yield/libyield_fs.a ../../../../lib/yield/libyield_queue.a
 	-mkdir -p ../../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(O_FILE_PATHS)
 
