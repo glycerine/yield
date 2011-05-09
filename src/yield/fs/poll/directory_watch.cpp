@@ -29,8 +29,8 @@
 
 #include "directory_watch.hpp"
 #include "yield/assert.hpp"
+#include "yield/exception.hpp"
 #include "yield/event_handler.hpp"
-#include "yield/fs/directory.hpp"
 #include "yield/fs/file_system.hpp"
 
 namespace yield {
@@ -44,44 +44,38 @@ DirectoryWatch::DirectoryWatch(
   FSEvent::Type fs_event_types,
   const Path& path,
   Log* log
-) : Watch(fs_event_types, path, log) {
-  dentries = NULL;
+) : Watch(fs_event_types, log, path) {
+  dentries = new map<Path, Stat*>;
+  Directory* directory = FileSystem().opendir(this->get_path());
+  if (directory != NULL) {
+    Directory::Entry* dentry = directory->read();
+    if (dentry != NULL) {
+      for (;;) {
+        if (!dentry->is_special()) {
+          Stat* dentry_stat = stat(*dentry);
+          if (dentry_stat != NULL)
+            dentries->insert(make_pair(dentry->get_name(), dentry_stat));
+        }
+
+        if (!directory->read(*dentry))
+          break;
+      }
+      Directory::Entry::dec_ref(*dentry);
+    }
+  }
+  else
+    throw Exception();
 }
 
 DirectoryWatch::~DirectoryWatch() {
-  delete dentries;
-}
-
-Directory::Entry::Type
-DirectoryWatch::get_directory_entry_type(
-  const Stat& stbuf
-) const {
-#ifdef _WIN32
-  if (stbuf.ISDEV())
-    return Directory::Entry::TYPE_DEV;
-  else if (stbuf.ISDIR())
-    return Directory::Entry::TYPE_DIR;
-  else if (stbuf.ISREG())
-    return Directory::Entry::TYPE_REG;
-#else
-  if (stbuf.ISBLK())
-    return Directory::Entry::TYPE_BLK;
-  else if (stbuf.ISCHR())
-    return Directory::Entry::TYPE_CHR;
-  else if (stbuf.ISDIR())
-    return Directory::Entry::TYPE_DIR;
-  else if (stbuf.ISFIFO())
-    return Directory::Entry::TYPE_FIFO;
-  else if (stbuf.ISLNK())
-    return Directory::Entry::TYPE_LNK;
-  else if (stbuf.ISREG())
-    return Directory::Entry::TYPE_REG;
-  else if (stbuf.ISSOCK())
-    return Directory::Entry::TYPE_SOCK;
-#endif
-  else {
-    debug_break();
-    return Directory::Entry::TYPE_REG;
+  if (dentries != NULL) {
+    for (
+      map<Path, Stat*>::iterator dentry_i = dentries->begin();
+      dentry_i != dentries->end();
+      ++dentry_i
+    )
+      delete dentry_i->second;
+    delete dentries;
   }
 }
 
@@ -89,32 +83,26 @@ void DirectoryWatch::read(EventHandler& fs_event_handler) {
   Directory* directory = FileSystem().opendir(this->get_path());
   if (directory != NULL) {
     map<Path, Stat*>* new_dentries = new map<Path, Stat*>;
-    map<Path, Stat*>* old_dentries = dentries;
-    dentries = NULL;
-
     vector< pair<Path, Stat*> > new_new_dentries;
+
+    map<Path, Stat*>* old_dentries = dentries;
+    debug_assert_ne(old_dentries, NULL);
+    dentries = NULL;
 
     Directory::Entry* dentry = directory->read();
     if (dentry != NULL) {
       for (;;) {
         if (!dentry->is_special()) {
-          Path dentry_path = this->get_path() / dentry->get_name();
+          Stat* new_dentry_stat = stat(*dentry);
+          if (new_dentry_stat != NULL) {
+            new_dentries->insert(make_pair(dentry->get_name(), new_dentry_stat));
 
-          Stat* new_dentry_stat = FileSystem().stat(dentry_path);
-          debug_assert_ne(new_dentry_stat, NULL);
-          new_dentries->insert(make_pair(dentry->get_name(), new_dentry_stat));
-
-          if (old_dentries != NULL) {
             map<Path, Stat*>::iterator old_dentry_i
               = old_dentries->find(dentry->get_name());
             if (old_dentry_i != old_dentries->end()) {
               Stat* old_dentry_stat = old_dentry_i->second;
 
-              if (
-                dentry->get_type()
-                ==
-                get_directory_entry_type(*old_dentry_stat)
-              ) {
+              if (dentry->get_type() == type(*old_dentry_stat)) {
                 if (
                   new_dentry_stat->get_mtime() != old_dentry_stat->get_mtime()
                 ) {
@@ -125,6 +113,7 @@ void DirectoryWatch::read(EventHandler& fs_event_handler) {
                               FSEvent::TYPE_DIRECTORY_MODIFY :
                               FSEvent::TYPE_FILE_MODIFY
                           );
+                  log_read(*fs_event);
                   fs_event_handler.handle(*fs_event);
                 }
               } else // dentry type has changed
@@ -141,53 +130,47 @@ void DirectoryWatch::read(EventHandler& fs_event_handler) {
           }
         }
 
-        Directory::Entry::dec_ref(*dentry);
-        if (!directory->read(*dentry)) break;
+        if (!directory->read(*dentry))
+          break;
       }
+      Directory::Entry::dec_ref(*dentry);
 
-      if (old_dentries != NULL) {
-        // Check the remaining old_dentries against new_new_dentries
-        // to match up any renames.
-        for (
-          map<Path, Stat*>::iterator old_dentry_i = old_dentries->begin();
-          old_dentry_i != old_dentries->end();
-          ++old_dentry_i
-        ) {
-          if (!new_new_dentries.empty()) {
-            Stat* old_dentry_stat = old_dentry_i->second;
+      // Check the remaining old_dentries against new_new_dentries
+      // to match up any renames.
+      for (
+        map<Path, Stat*>::iterator old_dentry_i = old_dentries->begin();
+        old_dentry_i != old_dentries->end();
+        ++old_dentry_i
+      ) {
+        if (!new_new_dentries.empty()) {
+          Stat* old_dentry_stat = old_dentry_i->second;
 
-            for (
-              vector< pair<Path, Stat*> >::iterator new_dentry_i
-                = new_new_dentries.begin();
-              new_dentry_i != new_new_dentries.end();
-            ) {
-              Stat* new_dentry_stat = new_dentry_i->second;
+          for (
+            vector< pair<Path, Stat*> >::iterator new_dentry_i
+              = new_new_dentries.begin();
+            new_dentry_i != new_new_dentries.end();
+          ) {
+            Stat* new_dentry_stat = new_dentry_i->second;
 
-              if (
-                get_directory_entry_type(*old_dentry_stat)
-                  ==
-                  get_directory_entry_type(*new_dentry_stat)
-                &&
-                old_dentry_stat->get_size() == new_dentry_stat->get_size()
-              ) {
-                FSEvent* fs_event
-                  = new FSEvent(
-                          this->get_path() / old_dentry_i->first,
-                          this->get_path() / new_dentry_i->first,
-                          new_dentry_stat->ISDIR() ?
-                            FSEvent::TYPE_DIRECTORY_RENAME :
-                            FSEvent::TYPE_FILE_RENAME
-                        );
-                fs_event_handler.handle(*fs_event);
-                // Don't delete new_dentry_i->second, the Stat;
-                // it's owned by new_dentries
-                new_dentry_i = new_new_dentries.erase(new_dentry_i);
-                delete old_dentry_i->second;
-                old_dentry_i->second = NULL;
-                break;
-              } else
-                ++new_dentry_i;
-            }
+            if (equals(*old_dentry_stat, *new_dentry_stat)) {
+              FSEvent* fs_event
+                = new FSEvent(
+                        this->get_path() / old_dentry_i->first,
+                        this->get_path() / new_dentry_i->first,
+                        new_dentry_stat->ISDIR() ?
+                          FSEvent::TYPE_DIRECTORY_RENAME :
+                          FSEvent::TYPE_FILE_RENAME
+                      );
+              log_read(*fs_event);
+              fs_event_handler.handle(*fs_event);
+              // Don't delete new_dentry_i->second, the Stat;
+              // it's owned by new_dentries
+              new_dentry_i = new_new_dentries.erase(new_dentry_i);
+              delete old_dentry_i->second;
+              old_dentry_i->second = NULL;
+              break;
+            } else
+              ++new_dentry_i;
           }
         }
 
@@ -205,6 +188,7 @@ void DirectoryWatch::read(EventHandler& fs_event_handler) {
                         FSEvent::TYPE_DIRECTORY_REMOVE :
                         FSEvent::TYPE_FILE_RENAME
                     );
+            log_read(*fs_event);
             fs_event_handler.handle(*fs_event);
             delete old_dentry_i->second;
           }
@@ -228,12 +212,21 @@ void DirectoryWatch::read(EventHandler& fs_event_handler) {
                   FSEvent::TYPE_DIRECTORY_REMOVE :
                   FSEvent::TYPE_FILE_REMOVE
               );
+      log_read(*fs_event);
       fs_event_handler.handle(*fs_event);
       delete dentry_i->second;
     }
 
     delete dentries;
   }
+}
+
+Stat* DirectoryWatch::stat(Directory::Entry& dentry) {
+#ifdef _WIN32
+  return &dentry.inc_ref();
+#else
+  return FileSystem().stat(this->get_path() / dentry.get_name());
+#endif
 }
 }
 }

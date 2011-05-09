@@ -86,7 +86,7 @@ public:
     uint8_t level_uint8;
   };
 
-
+public:
   class Stream : public std::ostream {
   public:
     Stream(Log& log, Level);

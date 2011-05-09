@@ -79,6 +79,7 @@ std::ostream& operator<<(std::ostream& os, const FSEvent& fs_event) {
   case FSEvent::TYPE_FILE_MODIFY: type = "FILE_MODIFY"; break;
   case FSEvent::TYPE_FILE_REMOVE: type = "FILE_REMOVE"; break;
   case FSEvent::TYPE_FILE_RENAME: type = "FILE_RENAME"; break;
+  default: debug_break(); break;
   }
 
   switch (fs_event.get_type()) {

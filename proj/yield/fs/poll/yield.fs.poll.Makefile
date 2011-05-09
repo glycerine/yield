@@ -59,7 +59,7 @@ LIBS += -lyield_fs -lyield_i18n -lyield_thread -lyield
 D_FILE_PATHS := $(shell find ../../../../build/yield/fs/poll -name "*.d")
 
 
-O_FILE_PATHS += ../../../../build/yield/fs/poll/directory_watch.o ../../../../build/yield/fs/poll/fs_event.o
+O_FILE_PATHS += ../../../../build/yield/fs/poll/directory_watch.o ../../../../build/yield/fs/poll/file_watch.o ../../../../build/yield/fs/poll/fs_event.o ../../../../build/yield/fs/poll/slow_fs_event_queue.o ../../../../build/yield/fs/poll/watch.o
 ifeq ($(UNAME), Darwin)
 	O_FILE_PATHS += ../../../../build/yield/fs/poll/bsd/fs_event_queue.o
 endif
@@ -105,6 +105,10 @@ depclean:
 	-mkdir -p ../../../../build/yield/fs/poll 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/fs/poll/directory_watch.o -MD $(CXXFLAGS) ../../../../src/yield/fs/poll/directory_watch.cpp
 
+../../../../build/yield/fs/poll/file_watch.o: ../../../../src/yield/fs/poll/file_watch.cpp
+	-mkdir -p ../../../../build/yield/fs/poll 2>/dev/null
+	$(CXX) -c -o ../../../../build/yield/fs/poll/file_watch.o -MD $(CXXFLAGS) ../../../../src/yield/fs/poll/file_watch.cpp
+
 ../../../../build/yield/fs/poll/fs_event.o: ../../../../src/yield/fs/poll/fs_event.cpp
 	-mkdir -p ../../../../build/yield/fs/poll 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/fs/poll/fs_event.o -MD $(CXXFLAGS) ../../../../src/yield/fs/poll/fs_event.cpp
@@ -120,6 +124,14 @@ depclean:
 ../../../../build/yield/fs/poll/linux/watches.o: ../../../../src/yield/fs/poll/linux/watches.cpp
 	-mkdir -p ../../../../build/yield/fs/poll/linux 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/fs/poll/linux/watches.o -MD $(CXXFLAGS) ../../../../src/yield/fs/poll/linux/watches.cpp
+
+../../../../build/yield/fs/poll/slow_fs_event_queue.o: ../../../../src/yield/fs/poll/slow_fs_event_queue.cpp
+	-mkdir -p ../../../../build/yield/fs/poll 2>/dev/null
+	$(CXX) -c -o ../../../../build/yield/fs/poll/slow_fs_event_queue.o -MD $(CXXFLAGS) ../../../../src/yield/fs/poll/slow_fs_event_queue.cpp
+
+../../../../build/yield/fs/poll/watch.o: ../../../../src/yield/fs/poll/watch.cpp
+	-mkdir -p ../../../../build/yield/fs/poll 2>/dev/null
+	$(CXX) -c -o ../../../../build/yield/fs/poll/watch.o -MD $(CXXFLAGS) ../../../../src/yield/fs/poll/watch.cpp
 
 ../../../../build/yield/fs/poll/win32/directory_watch.o: ../../../../src/yield/fs/poll/win32/directory_watch.cpp
 	-mkdir -p ../../../../build/yield/fs/poll/win32 2>/dev/null

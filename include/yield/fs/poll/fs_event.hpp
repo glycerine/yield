@@ -45,7 +45,7 @@ public:
   const static Type TYPE_ALL;
   const static Type TYPE_DIRECTORY_ADD;
   const static Type TYPE_DIRECTORY_MODIFY;
-  const static Type TYPE_DIRECTORY_REMOVE;;
+  const static Type TYPE_DIRECTORY_REMOVE;
   const static Type TYPE_DIRECTORY_RENAME;
   const static Type TYPE_FILE_ADD;
   const static Type TYPE_FILE_MODIFY;

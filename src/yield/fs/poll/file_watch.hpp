@@ -37,15 +37,22 @@ namespace fs {
 namespace poll {
 class FileWatch : public Watch {
 public:
-  FileWatch(FSEvent::Type fs_event_types, const Path& path, Log* log = NULL)
-    : Watch(fs_event_types, path, log) {
-  }
+  FileWatch(FSEvent::Type fs_event_types, const Path& path, Log* log = NULL);
+  virtual ~FileWatch();
 
 public:
   // yield::fs::poll::Watch
   bool is_directory_watch() const {
     return false;
   }
+
+  void read(EventHandler& fs_event_handler);
+
+protected:
+  FileWatch(FSEvent::Type fs_event_types, Log* log, const Path& path);  
+
+private:
+  Stat* stbuf;
 };
 }
 }

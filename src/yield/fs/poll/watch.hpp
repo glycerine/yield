@@ -30,18 +30,20 @@
 #ifndef _YIELD_FS_POLL_WATCH_HPP_
 #define _YIELD_FS_POLL_WATCH_HPP_
 
-#include "yield/log.hpp"
+#include "yield/fs/directory.hpp"
 #include "yield/fs/path.hpp"
+#include "yield/fs/stat.hpp"
 #include "yield/fs/poll/fs_event.hpp"
 
 namespace yield {
+class Log;
+class EventHandler;
+
 namespace fs {
 namespace poll {
 class Watch {
 public:
-  virtual ~Watch() {
-    Log::dec_ref(log);
-  }
+  virtual ~Watch();
 
 public:
   FSEvent::Type get_fs_event_types() const {
@@ -54,18 +56,21 @@ public:
 
 public:
   virtual bool is_directory_watch() const = 0;
+  virtual void read(EventHandler& fs_event_handler) = 0;
 
 protected:
-  Watch(FSEvent::Type fs_event_types, const Path& path, Log* log = NULL)
-    : fs_event_types(fs_event_types),
-      log(Object::inc_ref(log)),
-      path(path) {
-  }
+  Watch(FSEvent::Type fs_event_types, Log* log, const Path& path);
+  Watch(const Watch&);
 
 protected:
   Log* get_log() const {
     return log;
   }
+
+protected:
+  static bool equals(const Stat&, const Stat&);
+  void log_read(const FSEvent& fs_event) const;
+  static Directory::Entry::Type type(const Stat&);
 
 private:
   FSEvent::Type fs_event_types;

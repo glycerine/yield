@@ -41,6 +41,9 @@
     <ClInclude Include="..\..\..\..\include\yield\fs\poll\linux\fs_event_queue.hpp">
       <Filter>Header Files\linux</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\include\yield\fs\poll\slow_fs_event_queue.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\include\yield\fs\poll\win32\fs_event_queue.hpp">
       <Filter>Header Files\win32</Filter>
     </ClInclude>
@@ -55,6 +58,9 @@
     <ClInclude Include="..\..\..\..\src\yield\fs\poll\directory_watch.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\file_watch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClInclude Include="..\..\..\..\src\yield\fs\poll\file_watch.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -76,6 +82,12 @@
     <ClInclude Include="..\..\..\..\src\yield\fs\poll\linux\watches.hpp">
       <Filter>Source Files\linux</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\slow_fs_event_queue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\watch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClInclude Include="..\..\..\..\src\yield\fs\poll\watch.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>

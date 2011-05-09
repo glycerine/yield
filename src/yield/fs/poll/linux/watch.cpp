@@ -46,7 +46,7 @@ Watch::Watch(
   const Path& path,
   int wd,
   Log* log
-) : yield::fs::poll::Watch(fs_event_types, path, log),
+) : yield::fs::poll::Watch(fs_event_types, log, path),
     inotify_fd(inotify_fd),
     wd(wd) {
 }
@@ -131,14 +131,7 @@ Watch::read(
                   fs_event_type
                 );
         old_names.erase(old_name_i);
-
-        if (get_log() != NULL) {
-          get_log()->get_stream(Log::Level::DEBUG) <<
-            get_type_name() <<
-              "(path=" << get_path() << ", wd=" << get_wd() << ")" <<
-              ": read " << *fs_event;
-        }
-
+        log_read(*fs_event);
         fs_event_handler.handle(*fs_event);
       } else
         old_names.erase(old_name_i);
@@ -155,14 +148,7 @@ Watch::read(
       (get_fs_event_types() & fs_event_type) == fs_event_type
     ) {
       FSEvent* fs_event = new FSEvent(path, fs_event_type);
-
-      if (get_log() != NULL) {
-        get_log()->get_stream(Log::Level::DEBUG) <<
-          get_type_name() <<
-            "(path=" << get_path() << ", wd=" << get_wd() << ")" <<
-            ": read " << *fs_event;
-      }
-
+      log_read(*fs_event);
       fs_event_handler.handle(*fs_event);
     }
   }

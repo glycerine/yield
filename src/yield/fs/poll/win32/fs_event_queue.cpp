@@ -30,6 +30,7 @@
 #include "directory_watch.hpp"
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
+#include "yield/log.hpp"
 #include "yield/fs/poll/win32/fs_event_queue.hpp"
 #include "yield/fs/file_system.hpp"
 
@@ -166,7 +167,7 @@ YO_NEW_REF Event* FSEventQueue::timeddequeue(const Time& timeout) {
       }
 
       DWORD dwBytesRead;
-      BOOL bRet = 
+      //BOOL bRet = 
         ReadDirectoryChangesW(
           watch.get_directory(),
           watch.get_buffer(),
@@ -177,8 +178,6 @@ YO_NEW_REF Event* FSEventQueue::timeddequeue(const Time& timeout) {
           watch,
           NULL
         );
-      debug_assert_eq(bRet, TRUE);
-      debug_assert_eq(dwBytesRead, 0);
 
       return trydequeue();
     } else {

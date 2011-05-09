@@ -59,7 +59,7 @@ LIBS += -lyield_fs_poll -lyield_fs -lyield_i18n -lyield_thread -lyield
 D_FILE_PATHS := $(shell find ../../../../build/yield/fs/poll_test -name "*.d")
 
 
-O_FILE_PATHS += ../../../../build/yield/fs/poll_test/fs_event_test.o ../../../../build/yield/fs/poll_test/yield_fs_poll_test_main.o
+O_FILE_PATHS += ../../../../build/yield/fs/poll_test/fs_event_test.o ../../../../build/yield/fs/poll_test/slow_fs_event_queue_test.o ../../../../build/yield/fs/poll_test/yield_fs_poll_test_main.o
 ifeq ($(UNAME), Darwin)
 	O_FILE_PATHS += ../../../../build/yield/fs/poll_test/bsd/fs_event_queue_test.o
 endif
@@ -114,6 +114,10 @@ lcov: ../../../../bin/yield/yield_fs_poll_test
 ../../../../build/yield/fs/poll_test/linux/fs_event_queue_test.o: ../../../../test/yield/fs/poll/linux/fs_event_queue_test.cpp
 	-mkdir -p ../../../../build/yield/fs/poll_test/linux 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/fs/poll_test/linux/fs_event_queue_test.o -MD $(CXXFLAGS) ../../../../test/yield/fs/poll/linux/fs_event_queue_test.cpp
+
+../../../../build/yield/fs/poll_test/slow_fs_event_queue_test.o: ../../../../test/yield/fs/poll/slow_fs_event_queue_test.cpp
+	-mkdir -p ../../../../build/yield/fs/poll_test 2>/dev/null
+	$(CXX) -c -o ../../../../build/yield/fs/poll_test/slow_fs_event_queue_test.o -MD $(CXXFLAGS) ../../../../test/yield/fs/poll/slow_fs_event_queue_test.cpp
 
 ../../../../build/yield/fs/poll_test/win32/fs_event_queue_test.o: ../../../../test/yield/fs/poll/win32/fs_event_queue_test.cpp
 	-mkdir -p ../../../../build/yield/fs/poll_test/win32 2>/dev/null

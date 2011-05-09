@@ -92,13 +92,21 @@ public:
 public:
   bool operator==(const Stat&) const;
 
+public:
   operator BY_HANDLE_FILE_INFORMATION() const;
   operator WIN32_FILE_ATTRIBUTE_DATA() const;
   operator WIN32_FIND_DATA() const;
 
+public:
   Stat& operator=(const BY_HANDLE_FILE_INFORMATION&);
   Stat& operator=(const WIN32_FILE_ATTRIBUTE_DATA&);
   virtual Stat& operator=(const WIN32_FIND_DATA&);
+
+public:
+  // yield::Object
+  Stat& inc_ref() {
+    return Object::inc_ref(*this);
+  }
 
 private:
   void set_size(uint32_t nFileSizeLow, uint32_t nFileSizeHigh);

@@ -97,6 +97,7 @@
     <ClInclude Include="..\..\..\..\include\yield\fs\poll\fs_event.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\fs\poll\fs_event_queue.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\fs\poll\linux\fs_event_queue.hpp" />
+    <ClInclude Include="..\..\..\..\include\yield\fs\poll\slow_fs_event_queue.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\fs\poll\win32\fs_event_queue.hpp" />
   </ItemGroup>
 
@@ -108,6 +109,8 @@
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\directory_watch.cpp">
     </ClCompile>
     <ClInclude Include="..\..\..\..\src\yield\fs\poll\directory_watch.hpp" />
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\file_watch.cpp">
+    </ClCompile>
     <ClInclude Include="..\..\..\..\src\yield\fs\poll\file_watch.hpp" />
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\fs_event.cpp">
     </ClCompile>
@@ -125,6 +128,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClInclude Include="..\..\..\..\src\yield\fs\poll\linux\watches.hpp" />
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\slow_fs_event_queue.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\watch.cpp">
+    </ClCompile>
     <ClInclude Include="..\..\..\..\src\yield\fs\poll\watch.hpp" />
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\win32\directory_watch.cpp">
       <ObjectFileName>$(IntDir)win32\directory_watch.obj</ObjectFileName>

@@ -1,4 +1,4 @@
-// yield/fs/poll/directory_watch.hpp
+// yield/fs/poll/slow_fs_event_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,42 +27,41 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_FS_POLL_DIRECTORY_WATCH_HPP_
-#define _YIELD_FS_POLL_DIRECTORY_WATCH_HPP_
+#ifndef _YIELD_FS_POLL_SLOW_FS_EVENT_QUEUE_HPP_
+#define _YIELD_FS_POLL_SLOW_FS_EVENT_QUEUE_HPP_
 
-#include "watch.hpp"
-
-#include <map>
+#include "yield/fs/poll/fs_event.hpp"
+#include "yield/queue/synchronized_event_queue.hpp"
 
 namespace yield {
+class Log;
+
 namespace fs {
 namespace poll {
-class DirectoryWatch : public Watch {
+class Watch;
+
+class SlowFSEventQueue : public EventQueue {
 public:
-  DirectoryWatch(
-    FSEvent::Type fs_event_types,
+  SlowFSEventQueue(YO_NEW_REF Log* log = NULL);
+  ~SlowFSEventQueue();
+
+public:
+  bool associate(
     const Path& path,
-    Log* log = NULL
+    FSEvent::Type fs_event_types = FSEvent::TYPE_ALL
   );
 
-  virtual ~DirectoryWatch();
+  bool dissociate(const Path& path);
 
 public:
-  // yield::fs::poll::Watch
-  bool is_directory_watch() const {
-    return true;
-  }
-
-  void read(EventHandler& fs_event_handler);
-
-protected:
-  DirectoryWatch(FSEvent::Type fs_event_types, Log* log, const Path& path);
+  // yield::EventQueue
+  bool enqueue(YO_NEW_REF Event& event);
+  YO_NEW_REF Event* timeddequeue(const Time& timeout);
 
 private:
-  Stat* stat(Directory::Entry&);
-
-private:
-  std::map<Path, Stat*>* dentries;
+  yield::queue::SynchronizedEventQueue event_queue;
+  Log* log;
+  vector<Watch*> watches;
 };
 }
 }

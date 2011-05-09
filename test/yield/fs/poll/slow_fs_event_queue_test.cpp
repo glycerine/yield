@@ -1,4 +1,4 @@
-// yield/fs/poll/directory_watch.hpp
+// slow_fs_event_queue_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,45 +27,10 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_FS_POLL_DIRECTORY_WATCH_HPP_
-#define _YIELD_FS_POLL_DIRECTORY_WATCH_HPP_
+#include "fs_event_queue_test.hpp"
+#include "yield/fs/poll/slow_fs_event_queue.hpp"
 
-#include "watch.hpp"
-
-#include <map>
-
-namespace yield {
-namespace fs {
-namespace poll {
-class DirectoryWatch : public Watch {
-public:
-  DirectoryWatch(
-    FSEvent::Type fs_event_types,
-    const Path& path,
-    Log* log = NULL
-  );
-
-  virtual ~DirectoryWatch();
-
-public:
-  // yield::fs::poll::Watch
-  bool is_directory_watch() const {
-    return true;
-  }
-
-  void read(EventHandler& fs_event_handler);
-
-protected:
-  DirectoryWatch(FSEvent::Type fs_event_types, Log* log, const Path& path);
-
-private:
-  Stat* stat(Directory::Entry&);
-
-private:
-  std::map<Path, Stat*>* dentries;
-};
-}
-}
-}
-
-#endif
+TEST_SUITE_EX(
+  SlowFSEventQueue,
+  yield::fs::poll::FSEventQueueTestSuite<yield::fs::poll::SlowFSEventQueue>
+);

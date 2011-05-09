@@ -38,6 +38,7 @@ extern yunit::TestSuite& FSEventTestSuite();
 #ifdef __linux__
 extern yunit::TestSuite& LinuxFSEventQueueTestSuite();
 #endif
+extern yunit::TestSuite& SlowFSEventQueueTestSuite();
 #ifdef _WIN32
 extern yunit::TestSuite& Win32FSEventQueueTestSuite();
 #endif
@@ -63,6 +64,11 @@ int main(int, char**) {
   failed_test_case_count += LinuxFSEventQueueTestSuite().run();
   std::cout << std::endl;
 #endif
+
+  // SlowFSEventQueue
+  std::cout << "SlowFSEventQueue:" << std::endl;
+  failed_test_case_count += SlowFSEventQueueTestSuite().run();
+  std::cout << std::endl;
 
 #ifdef _WIN32
   // Win32FSEventQueue

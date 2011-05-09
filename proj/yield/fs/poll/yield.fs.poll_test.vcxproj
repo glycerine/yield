@@ -116,6 +116,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\test\yield\fs\poll\slow_fs_event_queue_test.cpp">
+    </ClCompile>
     <ClCompile Include="..\..\..\..\test\yield\fs\poll\win32\fs_event_queue_test.cpp">
       <ObjectFileName>$(IntDir)win32\fs_event_queue_test.obj</ObjectFileName>
     </ClCompile>

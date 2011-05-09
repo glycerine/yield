@@ -1,4 +1,4 @@
-// yield/sockets/aio/aiocb.cpp
+// yield/sockets/aio/win32/aiocb.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -42,7 +42,7 @@ AIOCB::AIOCB(Socket& socket_) : socket_(socket_.inc_ref()) {
   this_ = this;
 
   error = 0;
-  next_aiocb = NULL; 
+  next_aiocb = NULL;
   return_ = -1;
 }
 
@@ -53,7 +53,7 @@ AIOCB::AIOCB(Socket& socket_, off_t offset) : socket_(socket_.inc_ref()) {
   this_ = this;
 
   error = 0;
-  next_aiocb = NULL; 
+  next_aiocb = NULL;
   return_ = -1;
 }
 

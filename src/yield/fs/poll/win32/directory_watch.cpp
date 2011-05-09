@@ -28,8 +28,8 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "directory_watch.hpp"
-
 #include "yield/assert.hpp"
+#include "yield/log.hpp"
 #include "yield/event_handler.hpp"
 #include "yield/fs/file_system.hpp"
 
@@ -44,7 +44,7 @@ DirectoryWatch::DirectoryWatch(
   FSEvent::Type fs_event_types,
   const Path& path,
   Log* log
-) : yield::fs::poll::DirectoryWatch(fs_event_types, path, log),
+) : yield::fs::poll::DirectoryWatch(fs_event_types, log, path),
     directory(&directory) {
   static_assert(sizeof(overlapped) == sizeof(::OVERLAPPED), "");
   memset(&overlapped, 0, sizeof(overlapped));
@@ -141,9 +141,10 @@ DirectoryWatch::read(
 
   if (get_log() != NULL) {
     get_log()->get_stream(Log::Level::DEBUG) <<
-      get_type_name() <<
-      "(path=" << this->get_path() << "): " <<
-      "read FILE_NOTIFY_INFORMATION(" <<
+      "yield::fs::poll::win32::DirectoryWatch(" <<
+        "path=" << get_path() <<
+      ")" <<
+      ": read FILE_NOTIFY_INFORMATION(" <<
         "Action=" << file_notify_info.Action <<
         ", "
         "FileName=" << name <<
@@ -177,11 +178,7 @@ DirectoryWatch::read(
 
       if ((get_fs_event_types() & fs_event_type) == fs_event_type) {
         FSEvent* fs_event = new FSEvent(old_paths.top(), path, fs_event_type);
-        if (get_log() != NULL) {
-          get_log()->get_stream(Log::Level::DEBUG) <<
-            get_type_name() <<
-              "(path=" << get_path() << "): returning " << *fs_event;
-        }
+        log_read(*fs_event);
         fs_event_handler.handle(*fs_event);
       }
 
@@ -234,11 +231,7 @@ DirectoryWatch::read(
 
       if ((get_fs_event_types() & fs_event_type) == fs_event_type) {
         FSEvent* fs_event = new FSEvent(path, fs_event_type);
-        if (get_log() != NULL) {
-          get_log()->get_stream(Log::Level::DEBUG) <<
-            get_type_name() <<
-              "(path=" << get_path() << "): returning " << *fs_event;
-        }
+        log_read(*fs_event);
         fs_event_handler.handle(*fs_event);
       }
     }

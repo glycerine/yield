@@ -33,6 +33,9 @@
     <ClCompile Include="..\..\..\..\test\yield\fs\poll\linux\fs_event_queue_test.cpp">
       <Filter>Source Files\linux</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\test\yield\fs\poll\slow_fs_event_queue_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\test\yield\fs\poll\win32\fs_event_queue_test.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
