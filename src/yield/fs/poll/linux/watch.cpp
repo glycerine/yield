@@ -131,7 +131,7 @@ Watch::read(
                   fs_event_type
                 );
         old_names.erase(old_name_i);
-        log_read(*fs_event);
+        log_fs_event(*fs_event);
         fs_event_handler.handle(*fs_event);
       } else
         old_names.erase(old_name_i);
@@ -148,7 +148,7 @@ Watch::read(
       (get_fs_event_types() & fs_event_type) == fs_event_type
     ) {
       FSEvent* fs_event = new FSEvent(path, fs_event_type);
-      log_read(*fs_event);
+      log_fs_event(*fs_event);
       fs_event_handler.handle(*fs_event);
     }
   }

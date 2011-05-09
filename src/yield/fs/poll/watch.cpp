@@ -48,13 +48,7 @@ Watch::~Watch() {
   Log::dec_ref(log);
 }
 
-bool Watch::equals(const Stat& left, const Stat& right) {
-  return type(left) == type(right)
-         &&
-         left.get_size() == right.get_size();
-}
-
-void Watch::log_read(const FSEvent& fs_event) const {
+void Watch::log_fs_event(const FSEvent& fs_event) const {
   if (log != NULL) {
     FSEvent::Type fs_event_types = get_fs_event_types();
     std::string fs_event_types_str;
@@ -112,44 +106,12 @@ void Watch::log_read(const FSEvent& fs_event) const {
     }
 
     log->get_stream(Log::Level::DEBUG) <<
-    "yield::fs::poll::" <<
-      (is_directory_watch() ? "DirectoryWatch" : "FileWatch") <<
-      "(" <<
+    "yield::fs::poll::Watch("
         "fs_event_types=" << fs_event_types_str <<
         ", " <<
         "path=" << get_path() <<
       ")" <<
       ": read " << fs_event;
-  }
-}
-
-Directory::Entry::Type Watch::type(const Stat& stbuf) {
-#ifdef _WIN32
-  if (stbuf.ISDEV())
-    return Directory::Entry::TYPE_DEV;
-  else if (stbuf.ISDIR())
-    return Directory::Entry::TYPE_DIR;
-  else if (stbuf.ISREG())
-    return Directory::Entry::TYPE_REG;
-#else
-  if (stbuf.ISBLK())
-    return Directory::Entry::TYPE_BLK;
-  else if (stbuf.ISCHR())
-    return Directory::Entry::TYPE_CHR;
-  else if (stbuf.ISDIR())
-    return Directory::Entry::TYPE_DIR;
-  else if (stbuf.ISFIFO())
-    return Directory::Entry::TYPE_FIFO;
-  else if (stbuf.ISLNK())
-    return Directory::Entry::TYPE_LNK;
-  else if (stbuf.ISREG())
-    return Directory::Entry::TYPE_REG;
-  else if (stbuf.ISSOCK())
-    return Directory::Entry::TYPE_SOCK;
-#endif
-  else {
-    debug_break();
-    return Directory::Entry::TYPE_REG;
   }
 }
 }

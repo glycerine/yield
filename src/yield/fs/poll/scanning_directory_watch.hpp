@@ -1,4 +1,4 @@
-// yield/fs/poll/file_watch.cpp
+// yield/fs/poll/scanning_directory_watch.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,58 +27,38 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "file_watch.hpp"
-#include "yield/assert.hpp"
-#include "yield/exception.hpp"
-#include "yield/event_handler.hpp"
-#include "yield/fs/file_system.hpp"
+#ifndef _YIELD_FS_POLL_SCANNING_DIRECTORY_WATCH_HPP_
+#define _YIELD_FS_POLL_SCANNING_DIRECTORY_WATCH_HPP_
+
+#include "scanning_watch.hpp"
+
+#include <map>
 
 namespace yield {
 namespace fs {
 namespace poll {
-FileWatch::FileWatch(FSEvent::Type fs_event_types, const Path& path, Log* log)
-  : Watch(fs_event_types, log, path) {
-  stbuf = FileSystem().stat(get_path());
-  if (stbuf == NULL)
-    throw Exception();
+class ScanningDirectoryWatch : public ScanningWatch {
+public:
+  ScanningDirectoryWatch(
+    FSEvent::Type fs_event_types,
+    const Path& path,
+    Log* log = NULL
+  );
+
+  virtual ~ScanningDirectoryWatch();
+
+public:
+  // yield::fs::poll::ScanningWatch
+  void scan(EventHandler& fs_event_handler);
+
+private:
+  YO_NEW_REF Stat* stat(Directory::Entry&);
+
+private:
+  std::map<Path, Stat*>* dentries;
+};
+}
+}
 }
 
-FileWatch::FileWatch(FSEvent::Type fs_event_types, Log* log, const Path& path)
-  : Watch(fs_event_types, log, path) {
-  stbuf = NULL;
-}
-
-FileWatch::~FileWatch() {
-  delete stbuf;
-}
-
-void FileWatch::read(EventHandler& fs_event_handler) {
-  Stat* new_stbuf = FileSystem().stat(get_path());
-  Stat* old_stbuf = stbuf;
-  stbuf = NULL;
-
-  FSEvent::Type fs_event_type = 0;
-  if (new_stbuf != NULL) { // File exists
-    if (old_stbuf != NULL) { // File used to exist
-      if (type(*new_stbuf) == type(*old_stbuf)) { // File has not changed type
-        if (!equals(*new_stbuf, *old_stbuf))
-          fs_event_type = FSEvent::TYPE_FILE_MODIFY;
-      } else // File has changed type
-        fs_event_type = FSEvent::TYPE_FILE_REMOVE;
-    } else // File didn't used to exist, or this is the first call
-      debug_assert_true(new_stbuf->ISREG());
-  } else if (old_stbuf != NULL) // File does not exist, but used to
-    fs_event_type = FSEvent::TYPE_FILE_REMOVE;
-
-  if (fs_event_type != 0) {
-    FSEvent* fs_event = new FSEvent(get_path(), fs_event_type);
-    log_read(*fs_event);
-    fs_event_handler.handle(*fs_event);
-  }
-
-  delete old_stbuf;
-  stbuf = new_stbuf;
-}
-}
-}
-}
+#endif

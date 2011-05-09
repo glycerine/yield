@@ -30,7 +30,7 @@
 #ifndef _YIELD_FS_POLL_WIN32_DIRECTORY_WATCH_HPP_
 #define _YIELD_FS_POLL_WIN32_DIRECTORY_WATCH_HPP_
 
-#include "../directory_watch.hpp"
+#include "../watch.hpp"
 #include "yield/fs/directory.hpp"
 
 #include <stack>
@@ -41,10 +41,12 @@ struct _OVERLAPPED;
 typedef struct _OVERLAPPED OVERLAPPED;
 
 namespace yield {
+class EventHandler;
+
 namespace fs {
 namespace poll {
 namespace win32 {
-class DirectoryWatch : public yield::fs::poll::DirectoryWatch {
+class DirectoryWatch : public yield::fs::poll::Watch {
 public:
   const static uint32_t TYPE_ID = 497230685;
 

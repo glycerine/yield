@@ -1,4 +1,4 @@
-// yield/fs/poll/slow_fs_event_queue.cpp
+// yield/fs/poll/scanning_fs_event_queue.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,24 +27,24 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "directory_watch.hpp"
-#include "file_watch.hpp"
+#include "scanning_directory_watch.hpp"
+#include "scanning_file_watch.hpp"
 #include "yield/log.hpp"
 #include "yield/fs/file_system.hpp"
-#include "yield/fs/poll/slow_fs_event_queue.hpp"
+#include "yield/fs/poll/scanning_fs_event_queue.hpp"
 
 namespace yield {
 namespace fs {
 namespace poll {
-SlowFSEventQueue::SlowFSEventQueue(YO_NEW_REF Log* log)
+ScanningFSEventQueue::ScanningFSEventQueue(YO_NEW_REF Log* log)
   : log(Object::inc_ref(log)) {
 }
 
-SlowFSEventQueue::~SlowFSEventQueue() {
+ScanningFSEventQueue::~ScanningFSEventQueue() {
   Log::dec_ref(log);
 
   for (
-    vector<Watch*>::iterator watch_i = watches.begin();
+    vector<ScanningWatch*>::iterator watch_i = watches.begin();
     watch_i != watches.end();
     ++watch_i
   )
@@ -52,7 +52,7 @@ SlowFSEventQueue::~SlowFSEventQueue() {
 }
 
 bool
-SlowFSEventQueue::associate(
+ScanningFSEventQueue::associate(
   const Path& path,
   FSEvent::Type fs_event_types
 ) {
@@ -60,21 +60,20 @@ SlowFSEventQueue::associate(
 
   Stat* stbuf = FileSystem().stat(path);
   if (stbuf != NULL) {
-    Watch* watch;
+    ScanningWatch* watch;
     if (stbuf->ISDIR())
-      watch = new DirectoryWatch(fs_event_types, path, log);
+      watch = new ScanningDirectoryWatch(fs_event_types, path, log);
     else
-      watch = new FileWatch(fs_event_types, path, log);
-    watch->read(event_queue);
+      watch = new ScanningFileWatch(fs_event_types, path, log);
     watches.push_back(watch);
     return true;
   } else
     return false;
 }
 
-bool SlowFSEventQueue::dissociate(const Path& path) {
+bool ScanningFSEventQueue::dissociate(const Path& path) {
   for (
-    vector<Watch*>::iterator watch_i = watches.begin();
+    vector<ScanningWatch*>::iterator watch_i = watches.begin();
     watch_i != watches.end();
     ++watch_i
   ) {
@@ -88,11 +87,11 @@ bool SlowFSEventQueue::dissociate(const Path& path) {
   return false;
 }
 
-bool SlowFSEventQueue::enqueue(YO_NEW_REF Event& event) {
+bool ScanningFSEventQueue::enqueue(YO_NEW_REF Event& event) {
   return event_queue.enqueue(event);
 }
 
-YO_NEW_REF Event* SlowFSEventQueue::timeddequeue(const Time& timeout) {
+YO_NEW_REF Event* ScanningFSEventQueue::timeddequeue(const Time& timeout) {
   Event* event = event_queue.trydequeue();
   if (event != NULL)
     return event;
@@ -100,13 +99,13 @@ YO_NEW_REF Event* SlowFSEventQueue::timeddequeue(const Time& timeout) {
     Time timeout_remaining(timeout);
     for (;;) {
       for (
-        vector<Watch*>::iterator watch_i = watches.begin();
+        vector<ScanningWatch*>::iterator watch_i = watches.begin();
         watch_i != watches.end();
         ++watch_i
       ) {
         Time start_time = Time::now();
 
-        (*watch_i)->read(event_queue);
+        (*watch_i)->scan(event_queue);
         event = event_queue.trydequeue();
         if (event != NULL)
           return event;

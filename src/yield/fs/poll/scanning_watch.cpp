@@ -1,4 +1,4 @@
-// yield/fs/poll/directory_watch.hpp
+// yield/fs/poll/scanning_watch.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,45 +27,49 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_FS_POLL_DIRECTORY_WATCH_HPP_
-#define _YIELD_FS_POLL_DIRECTORY_WATCH_HPP_
-
-#include "watch.hpp"
-
-#include <map>
+#include "scanning_watch.hpp"
+#include "yield/assert.hpp"
 
 namespace yield {
 namespace fs {
 namespace poll {
-class DirectoryWatch : public Watch {
-public:
-  DirectoryWatch(
-    FSEvent::Type fs_event_types,
-    const Path& path,
-    Log* log = NULL
-  );
-
-  virtual ~DirectoryWatch();
-
-public:
-  // yield::fs::poll::Watch
-  bool is_directory_watch() const {
-    return true;
-  }
-
-  void read(EventHandler& fs_event_handler);
-
-protected:
-  DirectoryWatch(FSEvent::Type fs_event_types, Log* log, const Path& path);
-
-private:
-  Stat* stat(Directory::Entry&);
-
-private:
-  std::map<Path, Stat*>* dentries;
-};
-}
-}
+bool ScanningWatch::equals(const Stat& left, const Stat& right) {
+  return type(left) == type(right)
+         &&
+         left.get_mtime() == right.get_mtime()
+         &&
+         left.get_size() == right.get_size();
 }
 
+Directory::Entry::Type ScanningWatch::type(const Stat& stbuf) {
+#ifdef _WIN32
+  if (stbuf.ISDEV())
+    return Directory::Entry::TYPE_DEV;
+  else if (stbuf.ISDIR())
+    return Directory::Entry::TYPE_DIR;
+  else if (stbuf.ISREG())
+    return Directory::Entry::TYPE_REG;
+#else
+  if (stbuf.ISBLK())
+    return Directory::Entry::TYPE_BLK;
+  else if (stbuf.ISCHR())
+    return Directory::Entry::TYPE_CHR;
+  else if (stbuf.ISDIR())
+    return Directory::Entry::TYPE_DIR;
+  else if (stbuf.ISFIFO())
+    return Directory::Entry::TYPE_FIFO;
+  else if (stbuf.ISLNK())
+    return Directory::Entry::TYPE_LNK;
+  else if (stbuf.ISREG())
+    return Directory::Entry::TYPE_REG;
+  else if (stbuf.ISSOCK())
+    return Directory::Entry::TYPE_SOCK;
 #endif
+  else {
+    debug_break();
+    return Directory::Entry::TYPE_REG;
+  }
+}
+}
+}
+}

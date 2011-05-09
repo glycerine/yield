@@ -1,4 +1,4 @@
-// yield/fs/poll/slow_fs_event_queue.hpp
+// yield/fs/poll/scanning_file_watch.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,44 +27,56 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_FS_POLL_SLOW_FS_EVENT_QUEUE_HPP_
-#define _YIELD_FS_POLL_SLOW_FS_EVENT_QUEUE_HPP_
-
-#include "yield/fs/poll/fs_event.hpp"
-#include "yield/queue/synchronized_event_queue.hpp"
+#include "scanning_file_watch.hpp"
+#include "yield/assert.hpp"
+#include "yield/exception.hpp"
+#include "yield/event_handler.hpp"
+#include "yield/fs/file_system.hpp"
 
 namespace yield {
-class Log;
-
 namespace fs {
 namespace poll {
-class Watch;
+ScanningFileWatch::ScanningFileWatch(
+  FSEvent::Type fs_event_types,
+  const Path& path,
+  Log* log
+) : ScanningWatch(fs_event_types, log, path) {
+  stbuf = FileSystem().stat(get_path());
+  if (stbuf == NULL)
+    throw Exception();
+}
 
-class SlowFSEventQueue : public EventQueue {
-public:
-  SlowFSEventQueue(YO_NEW_REF Log* log = NULL);
-  ~SlowFSEventQueue();
+ScanningFileWatch::~ScanningFileWatch() {
+  delete stbuf;
+}
 
-public:
-  bool associate(
-    const Path& path,
-    FSEvent::Type fs_event_types = FSEvent::TYPE_ALL
-  );
+void ScanningFileWatch::scan(EventHandler& fs_event_handler) {
+  Stat* new_stbuf = FileSystem().stat(get_path());
+  Stat* old_stbuf = stbuf;
+  stbuf = NULL;
 
-  bool dissociate(const Path& path);
+  FSEvent::Type fs_event_type = 0;
+  if (new_stbuf != NULL) { // File exists
+    if (old_stbuf != NULL) { // File used to exist
+      if (type(*new_stbuf) == type(*old_stbuf)) { // File has not changed type
+        if (!equals(*new_stbuf, *old_stbuf))
+          fs_event_type = FSEvent::TYPE_FILE_MODIFY;
+      } else // File has changed type
+        fs_event_type = FSEvent::TYPE_FILE_REMOVE;
+    } else // File didn't used to exist, or this is the first call
+      debug_assert_true(new_stbuf->ISREG());
+  } else if (old_stbuf != NULL) // File does not exist, but used to
+    fs_event_type = FSEvent::TYPE_FILE_REMOVE;
 
-public:
-  // yield::EventQueue
-  bool enqueue(YO_NEW_REF Event& event);
-  YO_NEW_REF Event* timeddequeue(const Time& timeout);
+  if (fs_event_type != 0) {
+    FSEvent* fs_event = new FSEvent(get_path(), fs_event_type);
+    log_fs_event(*fs_event);
+    fs_event_handler.handle(*fs_event);
+  }
 
-private:
-  yield::queue::SynchronizedEventQueue event_queue;
-  Log* log;
-  vector<Watch*> watches;
-};
+  delete old_stbuf;
+  stbuf = new_stbuf;
 }
 }
 }
-
-#endif
+}

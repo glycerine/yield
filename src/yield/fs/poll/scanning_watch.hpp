@@ -1,4 +1,4 @@
-// yield/fs/poll/file_watch.hpp
+// yield/fs/poll/scanning_watch.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,32 +27,30 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_FS_POLL_FILE_WATCH_HPP_
-#define _YIELD_FS_POLL_FILE_WATCH_HPP_
+#ifndef _YIELD_FS_POLL_SCANNING_WATCH_HPP_
+#define _YIELD_FS_POLL_SCANNING_WATCH_HPP_
 
 #include "watch.hpp"
+#include "yield/fs/directory.hpp"
+#include "yield/fs/stat.hpp"
 
 namespace yield {
+class EventHandler;
+
 namespace fs {
 namespace poll {
-class FileWatch : public Watch {
+class ScanningWatch : public Watch {
 public:
-  FileWatch(FSEvent::Type fs_event_types, const Path& path, Log* log = NULL);
-  virtual ~FileWatch();
-
-public:
-  // yield::fs::poll::Watch
-  bool is_directory_watch() const {
-    return false;
-  }
-
-  void read(EventHandler& fs_event_handler);
+  virtual void scan(EventHandler& fs_event_handler) = 0;
 
 protected:
-  FileWatch(FSEvent::Type fs_event_types, Log* log, const Path& path);  
+  ScanningWatch(FSEvent::Type fs_event_types, Log* log, const Path& path)
+    : Watch(fs_event_types, log, path) {
+  }
 
-private:
-  Stat* stbuf;
+protected:
+  static bool equals(const Stat&, const Stat&);
+  static Directory::Entry::Type type(const Stat&);
 };
 }
 }

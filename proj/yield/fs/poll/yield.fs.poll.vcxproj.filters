@@ -41,7 +41,7 @@
     <ClInclude Include="..\..\..\..\include\yield\fs\poll\linux\fs_event_queue.hpp">
       <Filter>Header Files\linux</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\yield\fs\poll\slow_fs_event_queue.hpp">
+    <ClInclude Include="..\..\..\..\include\yield\fs\poll\scanning_fs_event_queue.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\yield\fs\poll\win32\fs_event_queue.hpp">
@@ -52,18 +52,6 @@
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\bsd\fs_event_queue.cpp">
       <Filter>Source Files\bsd</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\fs\poll\directory_watch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\..\..\src\yield\fs\poll\directory_watch.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\..\..\src\yield\fs\poll\file_watch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\..\..\src\yield\fs\poll\file_watch.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\fs_event.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -82,9 +70,27 @@
     <ClInclude Include="..\..\..\..\src\yield\fs\poll\linux\watches.hpp">
       <Filter>Source Files\linux</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\..\src\yield\fs\poll\slow_fs_event_queue.cpp">
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\scanning_directory_watch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\scanning_directory_watch.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\scanning_file_watch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\scanning_file_watch.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\scanning_fs_event_queue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\scanning_watch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\scanning_watch.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\watch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

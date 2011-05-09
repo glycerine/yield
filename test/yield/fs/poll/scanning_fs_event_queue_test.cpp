@@ -1,4 +1,4 @@
-// slow_fs_event_queue_test.cpp
+// scanning_fs_event_queue_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -28,9 +28,9 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "fs_event_queue_test.hpp"
-#include "yield/fs/poll/slow_fs_event_queue.hpp"
+#include "yield/fs/poll/scanning_fs_event_queue.hpp"
 
 TEST_SUITE_EX(
-  SlowFSEventQueue,
-  yield::fs::poll::FSEventQueueTestSuite<yield::fs::poll::SlowFSEventQueue>
+  ScanningFSEventQueue,
+  yield::fs::poll::FSEventQueueTestSuite<yield::fs::poll::ScanningFSEventQueue>
 );

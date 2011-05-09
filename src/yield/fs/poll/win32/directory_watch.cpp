@@ -44,7 +44,7 @@ DirectoryWatch::DirectoryWatch(
   FSEvent::Type fs_event_types,
   const Path& path,
   Log* log
-) : yield::fs::poll::DirectoryWatch(fs_event_types, log, path),
+) : yield::fs::poll::Watch(fs_event_types, log, path),
     directory(&directory) {
   static_assert(sizeof(overlapped) == sizeof(::OVERLAPPED), "");
   memset(&overlapped, 0, sizeof(overlapped));
@@ -178,7 +178,7 @@ DirectoryWatch::read(
 
       if ((get_fs_event_types() & fs_event_type) == fs_event_type) {
         FSEvent* fs_event = new FSEvent(old_paths.top(), path, fs_event_type);
-        log_read(*fs_event);
+        log_fs_event(*fs_event);
         fs_event_handler.handle(*fs_event);
       }
 
@@ -231,7 +231,7 @@ DirectoryWatch::read(
 
       if ((get_fs_event_types() & fs_event_type) == fs_event_type) {
         FSEvent* fs_event = new FSEvent(path, fs_event_type);
-        log_read(*fs_event);
+        log_fs_event(*fs_event);
         fs_event_handler.handle(*fs_event);
       }
     }

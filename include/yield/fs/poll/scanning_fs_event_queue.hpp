@@ -1,4 +1,4 @@
-// yield/fs/poll/watch.hpp
+// yield/fs/poll/scanning_fs_event_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,46 +27,41 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_FS_POLL_WATCH_HPP_
-#define _YIELD_FS_POLL_WATCH_HPP_
+#ifndef _YIELD_FS_POLL_SCANNING_FS_EVENT_QUEUE_HPP_
+#define _YIELD_FS_POLL_SCANNING_FS_EVENT_QUEUE_HPP_
 
-#include "yield/fs/path.hpp"
 #include "yield/fs/poll/fs_event.hpp"
+#include "yield/queue/synchronized_event_queue.hpp"
 
 namespace yield {
 class Log;
 
 namespace fs {
 namespace poll {
-class Watch {
+class ScanningWatch;
+
+class ScanningFSEventQueue : public EventQueue {
 public:
-  virtual ~Watch();
+  ScanningFSEventQueue(YO_NEW_REF Log* log = NULL);
+  ~ScanningFSEventQueue();
 
 public:
-  FSEvent::Type get_fs_event_types() const {
-    return fs_event_types;
-  }
+  bool associate(
+    const Path& path,
+    FSEvent::Type fs_event_types = FSEvent::TYPE_ALL
+  );
 
-  const Path& get_path() const {
-    return path;
-  }
+  bool dissociate(const Path& path);
 
-protected:
-  Watch(FSEvent::Type fs_event_types, Log* log, const Path& path);
-  Watch(const Watch&);
-
-protected:
-  Log* get_log() const {
-    return log;
-  }
-
-protected:
-  void log_fs_event(const FSEvent& fs_event) const;
+public:
+  // yield::EventQueue
+  bool enqueue(YO_NEW_REF Event& event);
+  YO_NEW_REF Event* timeddequeue(const Time& timeout);
 
 private:
-  FSEvent::Type fs_event_types;
+  yield::queue::SynchronizedEventQueue event_queue;
   Log* log;
-  Path path;
+  vector<ScanningWatch*> watches;
 };
 }
 }
