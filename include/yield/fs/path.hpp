@@ -37,7 +37,7 @@
 
 namespace yield {
 namespace fs {
-class Path : public yield::i18n::tstring {
+class Path : public ::yield::i18n::tstring {
 public:
   const static Path CURRENT_DIRECTORY;
   const static Path PARENT_DIRECTORY;

@@ -35,7 +35,7 @@
 namespace yield {
 namespace fs {
 namespace linux {
-class Directory : public yield::fs::posix::Directory {
+class Directory : public ::yield::fs::posix::Directory {
 public:
   Directory(DIR* dirp);
 

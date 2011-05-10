@@ -54,7 +54,7 @@ private:
   FDEventQueue(void* hWakeEvent);
 
 private:
-  yield::queue::BlockingConcurrentQueue<Event> event_queue;
+  ::yield::queue::BlockingConcurrentQueue<Event> event_queue;
   vector<fd_t> fds;
 };
 }

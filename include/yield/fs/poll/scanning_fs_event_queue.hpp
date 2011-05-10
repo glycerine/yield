@@ -60,7 +60,7 @@ public:
   YO_NEW_REF Event* timeddequeue(const Time& timeout);
 
 private:
-  yield::queue::SynchronizedEventQueue event_queue;
+  ::yield::queue::SynchronizedEventQueue event_queue;
   Log* log;
   Watches<ScanningWatch>* watches;
 };

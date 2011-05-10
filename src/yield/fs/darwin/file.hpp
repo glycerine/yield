@@ -37,7 +37,7 @@ namespace fs {
 namespace darwin {
 class ExtendedAttributes;
 
-class File : public yield::fs::posix::File {
+class File : public ::yield::fs::posix::File {
 public:
   File(fd_t fd);
   ~File();

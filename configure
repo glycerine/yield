@@ -314,6 +314,7 @@ INCLUDE_FILE_PATHS["yield.fs"]
 
 INCLUDE_FILE_PATHS["yield.fs.poll"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "fs", "poll", "fs_event.hpp"),
+    path_join(INCLUDE_DIR_PATH, "yield", "fs", "poll", "bsd", "fs_event_queue.hpp"),
     path_join(INCLUDE_DIR_PATH, "yield", "fs", "poll", "linux", "fs_event_queue.hpp"),
     path_join(INCLUDE_DIR_PATH, "yield", "fs", "poll", "win32", "fs_event_queue.hpp"),
 ] + \
@@ -357,6 +358,7 @@ INCLUDE_FILE_PATHS["yield.sockets"] = [
 INCLUDE_FILE_PATHS["yield.sockets"]
 
 INCLUDE_FILE_PATHS["yield.sockets.aio"] = [
+    path_join(INCLUDE_DIR_PATH, "yield", "sockets", "aio", "win32", "aiocb.hpp"), # before aiocb
     path_join(INCLUDE_DIR_PATH, "yield", "sockets", "aio", "aiocb.hpp"), # before accept_aiocb
     path_join(INCLUDE_DIR_PATH, "yield", "sockets", "aio", "nbio_queue.hpp"), # before aio_queue
     path_join(INCLUDE_DIR_PATH, "yield", "sockets", "aio", "win32", "aio_queue.hpp"), # before aio_queue
@@ -391,6 +393,14 @@ INCLUDE_FILE_PATHS["yield.thread"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "thread", "win32", "thread.hpp"),
 ] + \
 INCLUDE_FILE_PATHS["yield.thread"]
+
+SOURCE_FILE_PATHS["yield.fs.poll"] = [
+    path_join(SRC_DIR_PATH, "yield", "fs", "poll", "watch.hpp"), # before scanning_watch
+    path_join(SRC_DIR_PATH, "yield", "fs", "poll", "scanning_watch.hpp"), # before scanning_directory_watch
+    path_join(SRC_DIR_PATH, "yield", "fs", "poll", "bsd", "watch.hpp"), # before directory_watch
+    path_join(SRC_DIR_PATH, "yield", "fs", "poll", "win32", "watch.hpp"), # before directory_watch
+] + \
+SOURCE_FILE_PATHS["yield.fs.poll"]
 
 for project_name in INCLUDE_FILE_PATHS.iterkeys():
     for file_paths in (INCLUDE_FILE_PATHS, SOURCE_FILE_PATHS):

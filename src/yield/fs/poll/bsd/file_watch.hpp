@@ -38,7 +38,7 @@ namespace fs {
 namespace poll {
 namespace bsd {
 class FileWatch
-  : public yield::fs::poll::bsd::Watch,
+  : public ::yield::fs::poll::bsd::Watch,
     private yield::fs::poll::Watch {
 public:
   FileWatch(

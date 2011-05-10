@@ -36,7 +36,7 @@
 namespace yield {
 namespace fs {
 namespace freebsd {
-class ExtendedAttributes : public yield::fs::posix::ExtendedAttributes {
+class ExtendedAttributes : public ::yield::fs::posix::ExtendedAttributes {
 public:
   ExtendedAttributes(fd_t fd);
   ExtendedAttributes(const Path& path);

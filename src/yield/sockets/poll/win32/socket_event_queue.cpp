@@ -55,7 +55,7 @@ public:
   }
 
 protected:
-  yield::queue::BlockingConcurrentQueue<Event> event_queue;
+  ::yield::queue::BlockingConcurrentQueue<Event> event_queue;
   StreamSocketPair wake_socket_pair;
 };
 

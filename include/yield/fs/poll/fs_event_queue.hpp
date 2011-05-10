@@ -47,7 +47,7 @@ namespace fs {
 namespace poll {
 #if defined(__FreeBSD__) || defined(__MACH__)
 typedef bsd::FSEventQueue FSEventQueue;
-#if defined(__linux__)
+#elif defined(__linux__)
 typedef linux::FSEventQueue FSEventQueue;
 #elif defined(_WIN32)
 typedef win32::FSEventQueue FSEventQueue;

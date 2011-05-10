@@ -45,10 +45,11 @@ class acceptAIOCB;
 }
 
 namespace http {
-class HTTPMessageBodyChunk;
 class HTTPResponse;
 
 namespace server {
+class HTTPMessageBodyChunk;
+
 class HTTPConnection : public EventHandler {
 public:
   class AIOCB {
@@ -72,7 +73,7 @@ public:
 
 public:
   class recvAIOCB
-    : public yield::sockets::aio::recvAIOCB,
+    : public ::yield::sockets::aio::recvAIOCB,
       public HTTPConnection::AIOCB {
   public:
     recvAIOCB(HTTPConnection& connection, YO_NEW_REF Buffer& buffer)
@@ -83,7 +84,7 @@ public:
 
 public:
   class sendAIOCB
-    : public yield::sockets::aio::sendAIOCB,
+    : public ::yield::sockets::aio::sendAIOCB,
       public HTTPConnection::AIOCB {
   public:
     sendAIOCB(HTTPConnection& connection, YO_NEW_REF Buffer& buffer)
@@ -94,7 +95,7 @@ public:
 
 public:
   class sendfileAIOCB
-    : public yield::sockets::aio::sendfileAIOCB,
+    : public ::yield::sockets::aio::sendfileAIOCB,
       public HTTPConnection::AIOCB {
   public:
     sendfileAIOCB(HTTPConnection& connection, fd_t fd)

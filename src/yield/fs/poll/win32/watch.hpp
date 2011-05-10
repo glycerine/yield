@@ -44,7 +44,7 @@ namespace yield {
 namespace fs {
 namespace poll {
 namespace win32 {
-class Watch : public yield::fs::poll::Watch {
+class Watch : public ::yield::fs::poll::Watch {
 public:
   virtual ~Watch();
 

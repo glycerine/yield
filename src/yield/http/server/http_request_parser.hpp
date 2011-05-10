@@ -39,7 +39,7 @@ class SocketAddress;
 
 namespace http {
 namespace server {
-class HTTPRequestParser : public yield::http::HTTPRequestParser {
+class HTTPRequestParser : public ::yield::http::HTTPRequestParser {
 public:
   HTTPRequestParser(Buffer& data, yield::sockets::SocketAddress& peername);
   ~HTTPRequestParser();

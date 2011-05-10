@@ -39,7 +39,7 @@ namespace thread {
 namespace sunos {
 class ProcessorSet;
 
-class Thread : public yield::thread::posix::Thread {
+class Thread : public ::yield::thread::posix::Thread {
 public:
   Thread(YO_NEW_REF Runnable&);
 

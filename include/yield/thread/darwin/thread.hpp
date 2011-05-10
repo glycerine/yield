@@ -36,7 +36,7 @@
 namespace yield {
 namespace thread {
 namespace darwin {
-class Thread : public yield::thread::posix::Thread {
+class Thread : public ::yield::thread::posix::Thread {
 public:
   Thread(Runnable&);
 

@@ -39,7 +39,7 @@ class SocketAddress;
 
 namespace http {
 namespace server {
-class HTTPMessageBodyChunk : public yield::http::HTTPMessageBodyChunk {
+class HTTPMessageBodyChunk : public ::yield::http::HTTPMessageBodyChunk {
 public:
   HTTPMessageBodyChunk(
     YO_NEW_REF Buffer* data,

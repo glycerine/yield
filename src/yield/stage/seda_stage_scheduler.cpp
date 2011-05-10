@@ -38,7 +38,7 @@ namespace yield {
 namespace stage {
 using yield::thread::Thread;
 
-class SEDAStageScheduler::SEDAStage : public yield::thread::Runnable {
+class SEDAStageScheduler::SEDAStage : public ::yield::thread::Runnable {
 public:
   SEDAStage(Stage& stage)
     : stage(stage.inc_ref()) {

@@ -51,7 +51,7 @@ public:
   YO_NEW_REF Event* timeddequeue(const Time& timeout);
 
 private:
-  yield::queue::BlockingConcurrentQueue<Event> event_queue;
+  ::yield::queue::BlockingConcurrentQueue<Event> event_queue;
   int kq;
   int wake_pipe[2];
 };

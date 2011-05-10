@@ -63,7 +63,7 @@ public:
 private:
   int epoll_fd;
   int event_fd;
-  yield::queue::BlockingConcurrentQueue<Event> event_queue;
+  ::yield::queue::BlockingConcurrentQueue<Event> event_queue;
   int inotify_fd;
   Log* log;
   Watches* watches;

@@ -42,7 +42,7 @@ class EventHandler;
 namespace fs {
 namespace poll {
 namespace linux {
-class Watch : public yield::fs::poll::Watch {
+class Watch : public ::yield::fs::poll::Watch {
 public:
   Watch(
     FSEvent::Type fs_event_types,

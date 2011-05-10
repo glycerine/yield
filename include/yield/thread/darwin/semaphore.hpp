@@ -37,7 +37,7 @@
 namespace yield {
 namespace thread {
 namespace darwin {
-class Semaphore : public yield::thread::Semaphore {
+class Semaphore : public ::yield::thread::Semaphore {
 public:
   ~Semaphore();
   static Semaphore* create();

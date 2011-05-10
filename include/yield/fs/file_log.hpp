@@ -36,10 +36,9 @@
 
 #include <fcntl.h> // For O_*
 
-
 namespace yield {
 namespace fs {
-class FileLog : public yield::Log {
+class FileLog : public Log {
 public:
   FileLog(const Path& file_path, const Level& level = Level::DEBUG);
   ~FileLog();

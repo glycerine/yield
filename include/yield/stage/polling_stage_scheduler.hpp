@@ -45,7 +45,7 @@ public:
   void schedule(Stage&, ConcurrencyLevel);
 
 protected:
-  class StagePoller : public yield::thread::Runnable {
+  class StagePoller : public ::yield::thread::Runnable {
   public:
     virtual ~StagePoller();
 
@@ -63,7 +63,7 @@ protected:
     }
 
   private:
-    yield::queue::RendezvousConcurrentQueue<Stage> new_stage;
+    ::yield::queue::RendezvousConcurrentQueue<Stage> new_stage;
     bool _should_run;
     vector<Stage*> stages;
   };
@@ -74,7 +74,7 @@ protected:
   virtual YO_NEW_REF StagePoller& createStagePoller(Stage&) = 0;
 
 private:
-  vector<yield::thread::Thread*> threads;
+  vector<::yield::thread::Thread*> threads;
 };
 }
 }

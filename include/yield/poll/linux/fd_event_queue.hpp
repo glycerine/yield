@@ -54,7 +54,7 @@ public:
 
 private:
   int epfd;
-  yield::queue::BlockingConcurrentQueue<Event> event_queue;
+  ::yield::queue::BlockingConcurrentQueue<Event> event_queue;
   int wake_fd;
 };
 }

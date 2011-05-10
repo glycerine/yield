@@ -41,7 +41,7 @@ namespace http {
 namespace server {
 class HTTPRequestParser;
 
-class HTTPRequest : public yield::http::HTTPRequest {
+class HTTPRequest : public ::yield::http::HTTPRequest {
 public:
   HTTPRequest(
     Method method,
