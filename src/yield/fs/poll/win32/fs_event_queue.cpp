@@ -176,7 +176,9 @@ YO_NEW_REF Event* FSEventQueue::timeddequeue(const Time& timeout) {
               &watch.get_buffer()[dwReadUntilBufferOffset]
             );
 
-        watch.read(*file_notify_info, *this);
+        FSEvent* fs_event = watch.parse(*file_notify_info);
+        if (fs_event != NULL)
+          enqueue(*fs_event);
 
         if (file_notify_info->NextEntryOffset > 0)
           dwReadUntilBufferOffset += file_notify_info->NextEntryOffset;

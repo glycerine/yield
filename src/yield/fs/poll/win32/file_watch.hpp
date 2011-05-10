@@ -50,7 +50,7 @@ public:
 
 public:
   // yield::fs::poll::win32::Watch
-  void read(const FILE_NOTIFY_INFORMATION&, EventHandler& fs_event_handler);
+  YO_NEW_REF FSEvent* parse(const FILE_NOTIFY_INFORMATION&);
 
 private:
   Path directory_path;

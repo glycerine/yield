@@ -57,20 +57,77 @@ DirectoryWatch::DirectoryWatch(
   }
 }
 
-void
-DirectoryWatch::read(
-  const FILE_NOTIFY_INFORMATION& file_notify_info,
-  EventHandler& fs_event_handler
+YO_NEW_REF FSEvent*
+DirectoryWatch::parse(
+  const FILE_NOTIFY_INFORMATION& file_notify_info
 ) {
   log_read(file_notify_info);
 
+  FSEvent::Type fs_event_type;
   Path name(
          file_notify_info.FileName,
          file_notify_info.FileNameLength / sizeof(wchar_t)
        );
   Path path = this->get_path() / name;
 
-  if (file_notify_info.Action == FILE_ACTION_RENAMED_OLD_NAME) {
+  switch (file_notify_info.Action) {
+  case FILE_ACTION_ADDED: {
+    if (FileSystem().isdir(path)) {          
+      subdirectory_names.push_back(name);
+      fs_event_type = FSEvent::TYPE_DIRECTORY_ADD;
+    } else
+      fs_event_type = FSEvent::TYPE_FILE_ADD;
+  }
+  break;
+
+  case FILE_ACTION_MODIFIED: {
+    if (FileSystem().isdir(path))
+      fs_event_type = FSEvent::TYPE_DIRECTORY_MODIFY;
+    else
+      fs_event_type = FSEvent::TYPE_FILE_MODIFY;
+  }
+  break;
+
+  case FILE_ACTION_REMOVED: {
+    fs_event_type = FSEvent::TYPE_FILE_REMOVE;
+
+    for (
+      vector<Path>::iterator subdirectory_name_i
+        = subdirectory_names.begin();
+      subdirectory_name_i != subdirectory_names.end();
+      ++subdirectory_name_i
+    ) {
+      if (*subdirectory_name_i == name) {
+        subdirectory_names.erase(subdirectory_name_i);
+        fs_event_type = FSEvent::TYPE_DIRECTORY_REMOVE;
+        break;
+      }
+    }
+  }
+  break;
+
+  case FILE_ACTION_RENAMED_NEW_NAME: {
+    debug_assert_false(old_paths.empty());
+
+    if (FileSystem().isdir(path)) {
+      fs_event_type = FSEvent::TYPE_DIRECTORY_RENAME;
+      subdirectory_names.push_back(path);
+    } else
+      fs_event_type = FSEvent::TYPE_FILE_RENAME;
+
+    if (want_fs_event_type(fs_event_type)) {
+      FSEvent* fs_event = new FSEvent(old_paths.top(), path, fs_event_type);
+      log_fs_event(*fs_event);
+      old_paths.pop();
+      return fs_event;
+    } else {
+      old_paths.pop();
+      return NULL;
+    }
+  }
+  break;
+
+  case FILE_ACTION_RENAMED_OLD_NAME: {
     for (
       vector<Path>::iterator subdirectory_name_i
       = subdirectory_names.begin();
@@ -84,77 +141,20 @@ DirectoryWatch::read(
     }
 
     old_paths.push(path);
-  } else {
-    if (file_notify_info.Action == FILE_ACTION_RENAMED_NEW_NAME) {
-      debug_assert_false(old_paths.empty());
 
-      FSEvent::Type fs_event_type;
-      if (FileSystem().isdir(path)) {
-        fs_event_type = FSEvent::TYPE_DIRECTORY_RENAME;
-        subdirectory_names.push_back(path);
-      } else
-        fs_event_type = FSEvent::TYPE_FILE_RENAME;
-
-      if ((get_fs_event_types() & fs_event_type) == fs_event_type) {
-        FSEvent* fs_event = new FSEvent(old_paths.top(), path, fs_event_type);
-        log_fs_event(*fs_event);
-        fs_event_handler.handle(*fs_event);
-      }
-
-      old_paths.pop();
-    } else {
-      FSEvent::Type fs_event_type;
-
-      switch (file_notify_info.Action) {
-      case FILE_ACTION_ADDED: {
-        if (FileSystem().isdir(path)) {
-          fs_event_type = FSEvent::TYPE_DIRECTORY_ADD;
-          subdirectory_names.push_back(name);
-        } else
-          fs_event_type = FSEvent::TYPE_FILE_ADD;
-      }
-      break;
-
-      case FILE_ACTION_MODIFIED: {
-        if (FileSystem().isdir(path))
-          fs_event_type = FSEvent::TYPE_DIRECTORY_MODIFY;
-        else
-          fs_event_type = FSEvent::TYPE_FILE_MODIFY;
-      }
-      break;
-
-      case FILE_ACTION_REMOVED: {
-        fs_event_type = FSEvent::TYPE_FILE_REMOVE;
-
-        for (
-          vector<Path>::iterator subdirectory_name_i
-            = subdirectory_names.begin();
-          subdirectory_name_i != subdirectory_names.end();
-          ++subdirectory_name_i
-        ) {
-          if (*subdirectory_name_i == name) {
-            subdirectory_names.erase(subdirectory_name_i);
-            fs_event_type = FSEvent::TYPE_DIRECTORY_REMOVE;
-            break;
-          }
-        }
-      }
-      break;
-
-      default: {
-        fs_event_type = FSEvent::TYPE_DIRECTORY_ADD;
-        debug_break();
-      }
-      break;
-      }
-
-      if ((get_fs_event_types() & fs_event_type) == fs_event_type) {
-        FSEvent* fs_event = new FSEvent(path, fs_event_type);
-        log_fs_event(*fs_event);
-        fs_event_handler.handle(*fs_event);
-      }
-    }
+    return NULL;
   }
+  break;
+
+  default: debug_break(); return NULL;
+  }
+
+  if (want_fs_event_type(fs_event_type)) {
+    FSEvent* fs_event = new FSEvent(path, fs_event_type);
+    log_fs_event(*fs_event);
+    return fs_event;
+  } else
+    return NULL;
 }
 }
 }

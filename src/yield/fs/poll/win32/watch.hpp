@@ -78,11 +78,7 @@ public:
   operator ::OVERLAPPED* ();
 
 public:
-  virtual void
-  read(
-    const FILE_NOTIFY_INFORMATION&,
-    EventHandler& fs_event_handler
-  ) = 0;
+  virtual YO_NEW_REF FSEvent* parse(const FILE_NOTIFY_INFORMATION&) = 0;
 
 protected:
   Watch(

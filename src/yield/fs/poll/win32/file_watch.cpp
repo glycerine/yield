@@ -39,13 +39,13 @@ namespace yield {
 namespace fs {
 namespace poll {
 namespace win32 {
-void
-FileWatch::read(
-  const FILE_NOTIFY_INFORMATION& file_notify_info,
-  EventHandler& fs_event_handler
+YO_NEW_REF FSEvent*
+FileWatch::parse(
+const FILE_NOTIFY_INFORMATION& file_notify_info
 ) {
   log_read(file_notify_info);
 
+  FSEvent::Type fs_event_type;
   Path name(
     file_notify_info.FileName,
     file_notify_info.FileNameLength / sizeof(wchar_t)
@@ -54,41 +54,47 @@ FileWatch::read(
 
   if (path == this->get_path()) {
     switch (file_notify_info.Action) {
-    case FILE_ACTION_ADDED: {
-      debug_break();
-    }
-    break;
-
     case FILE_ACTION_MODIFIED: {
-      FSEvent* fs_event = new FSEvent(get_path(), FSEvent::TYPE_FILE_MODIFY);
-      log_fs_event(*fs_event);
-      fs_event_handler.handle(*fs_event);
+      fs_event_type = FSEvent::TYPE_FILE_MODIFY;
     }
     break;
 
     case FILE_ACTION_REMOVED: {
-      FSEvent* fs_event = new FSEvent(get_path(), FSEvent::TYPE_FILE_REMOVE);
-      log_fs_event(*fs_event);
-      fs_event_handler.handle(*fs_event);
+      fs_event_type = FSEvent::TYPE_FILE_REMOVE;
     }
     break;
 
     case FILE_ACTION_RENAMED_OLD_NAME: {
       debug_assert_true(old_name.empty());
       old_name = name;
+      return NULL;
     }
     break;
+
+    default: debug_break(); return NULL;
     }
+
+    if (want_fs_event_type(fs_event_type)) {
+      FSEvent* fs_event = new FSEvent(get_path(), fs_event_type);
+      log_fs_event(*fs_event);
+      return fs_event;
+    } else
+      return NULL;
   } else if (
       !old_name.empty()
       &&
       file_notify_info.Action == FILE_ACTION_RENAMED_NEW_NAME
     ) {
     debug_assert_eq(directory_path / old_name, get_path());
-    FSEvent* fs_event = new FSEvent(get_path(), path, FSEvent::TYPE_FILE_RENAME);
-    log_fs_event(*fs_event);
-    fs_event_handler.handle(*fs_event);
-  }
+    fs_event_type = FSEvent::TYPE_FILE_RENAME;
+    if (want_fs_event_type(fs_event_type)) {
+      FSEvent* fs_event = new FSEvent(get_path(), path, fs_event_type);
+      log_fs_event(*fs_event);
+      return fs_event;
+    } else
+      return NULL;
+  } else
+    return NULL;
 }
 }
 }

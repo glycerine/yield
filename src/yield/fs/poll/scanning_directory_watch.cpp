@@ -109,18 +109,22 @@ void ScanningDirectoryWatch::scan(EventHandler& fs_event_handler) {
             = old_dentries->find(new_dentry->get_name());
             if (old_dentry_i != old_dentries->end()) {
               Stat* old_dentry_stat = old_dentry_i->second;
-
               if (new_dentry->get_type() == type(*old_dentry_stat)) {
                 if (!equals(*new_dentry_stat, *old_dentry_stat)) {
-                  FSEvent* fs_event
-                  = new FSEvent(
-                    this->get_path() / new_dentry->get_name(),
+                  FSEvent::Type fs_event_type =
                     new_dentry_stat->ISDIR() ?
                     FSEvent::TYPE_DIRECTORY_MODIFY :
-                    FSEvent::TYPE_FILE_MODIFY
-                  );
-                  log_fs_event(*fs_event);
-                  fs_event_handler.handle(*fs_event);
+                    FSEvent::TYPE_FILE_MODIFY;
+
+                  if (want_fs_event_type(fs_event_type)) {
+                    FSEvent* fs_event
+                    = new FSEvent(
+                            this->get_path() / new_dentry->get_name(),
+                            fs_event_type
+                          );
+                    log_fs_event(*fs_event);
+                    fs_event_handler.handle(*fs_event);
+                  }
                 }
               } else // dentry type has changed
                 debug_break();
@@ -158,16 +162,22 @@ void ScanningDirectoryWatch::scan(EventHandler& fs_event_handler) {
               Stat* new_dentry_stat = new_dentry_i->second;
 
               if (equals(*old_dentry_stat, *new_dentry_stat)) {
-                FSEvent* fs_event
-                = new FSEvent(
-                  this->get_path() / old_dentry_i->first,
-                  this->get_path() / new_dentry_i->first,
+                FSEvent::Type fs_event_type =
                   new_dentry_stat->ISDIR() ?
                   FSEvent::TYPE_DIRECTORY_RENAME :
-                  FSEvent::TYPE_FILE_RENAME
-                );
-                log_fs_event(*fs_event);
-                fs_event_handler.handle(*fs_event);
+                  FSEvent::TYPE_FILE_RENAME;
+
+                if (want_fs_event_type(fs_event_type)) {
+                  FSEvent* fs_event
+                  = new FSEvent(
+                    this->get_path() / old_dentry_i->first,
+                    this->get_path() / new_dentry_i->first,
+                    fs_event_type
+                  );
+                  log_fs_event(*fs_event);
+                  fs_event_handler.handle(*fs_event);
+                }
+
                 // Don't dec_ref new_dentry_i->second, the Stat;
                 // it's owned by new_dentries
                 new_dentry_i = new_new_dentries.erase(new_dentry_i);
@@ -180,21 +190,32 @@ void ScanningDirectoryWatch::scan(EventHandler& fs_event_handler) {
         }
 
         // Any remaining new_new_dentries here are adds.
-        for (
-          vector< pair<Path, Stat*> >::iterator new_dentry_i
-          = new_new_dentries.begin();
-          new_dentry_i != new_new_dentries.end();
-          ++new_dentry_i
+        if (
+          want_fs_event_type(FSEvent::TYPE_DIRECTORY_ADD)
+          ||
+          want_fs_event_type(FSEvent::TYPE_FILE_ADD)
         ) {
-          FSEvent* fs_event
-          = new FSEvent(
-              this->get_path() / new_dentry_i->first,
-              new_dentry_i->second->ISDIR() ?
-                FSEvent::TYPE_DIRECTORY_ADD :
-                FSEvent::TYPE_FILE_ADD
-          );
-          log_fs_event(*fs_event);
-          fs_event_handler.handle(*fs_event);
+          for (
+            vector< pair<Path, Stat*> >::iterator new_dentry_i
+            = new_new_dentries.begin();
+            new_dentry_i != new_new_dentries.end();
+            ++new_dentry_i
+          ) {
+            FSEvent::Type fs_event_type
+            = new_dentry_i->second->ISDIR() ?
+              FSEvent::TYPE_DIRECTORY_ADD :
+              FSEvent::TYPE_FILE_ADD;
+
+            if (want_fs_event_type(fs_event_type)) {
+              FSEvent* fs_event
+                = new FSEvent(
+                        this->get_path() / new_dentry_i->first,
+                        fs_event_type
+                      );
+              log_fs_event(*fs_event);
+              fs_event_handler.handle(*fs_event);
+            }
+          }
         }
       }
 
@@ -205,15 +226,21 @@ void ScanningDirectoryWatch::scan(EventHandler& fs_event_handler) {
         ++old_dentry_i
       ) {
         if (old_dentry_i->second != NULL) {
-          FSEvent* fs_event
-          = new FSEvent(
-            this->get_path() / old_dentry_i->first,
-            old_dentry_i->second->ISDIR() ?
+          FSEvent::Type fs_event_type
+          = old_dentry_i->second->ISDIR() ?
             FSEvent::TYPE_DIRECTORY_REMOVE :
-            FSEvent::TYPE_FILE_REMOVE
-          );
-          log_fs_event(*fs_event);
-          fs_event_handler.handle(*fs_event);
+            FSEvent::TYPE_FILE_REMOVE;
+
+          if (want_fs_event_type(fs_event_type)) {
+            FSEvent* fs_event
+            = new FSEvent(
+              this->get_path() / old_dentry_i->first,
+              fs_event_type
+            );
+            log_fs_event(*fs_event);
+            fs_event_handler.handle(*fs_event);
+          }
+
           Stat::dec_ref(*old_dentry_i->second);
         }
       }
@@ -225,19 +252,25 @@ void ScanningDirectoryWatch::scan(EventHandler& fs_event_handler) {
     dentries = new_dentries;
   } else { // directory == NULL
     for (
-      map<Path, Stat*>::const_iterator dentry_i = dentries->begin();
+      map<Path, Stat*>::iterator dentry_i = dentries->begin();
       dentry_i != dentries->end();
       ++dentry_i
     ) {
-      FSEvent* fs_event
-      = new FSEvent(
-        this->get_path() / dentry_i->first,
+      FSEvent::Type fs_event_type =
         dentry_i->second->ISDIR() ?
         FSEvent::TYPE_DIRECTORY_REMOVE :
-        FSEvent::TYPE_FILE_REMOVE
-      );
-      log_fs_event(*fs_event);
-      fs_event_handler.handle(*fs_event);
+        FSEvent::TYPE_FILE_REMOVE;
+
+      if (want_fs_event_type(fs_event_type)) {
+        FSEvent* fs_event
+        = new FSEvent(
+          this->get_path() / dentry_i->first,
+          fs_event_type
+        );
+        log_fs_event(*fs_event);
+        fs_event_handler.handle(*fs_event);
+      }
+
       Stat::dec_ref(*dentry_i->second);
     }
 

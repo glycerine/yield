@@ -61,6 +61,10 @@ protected:
   }
 
 protected:
+  bool want_fs_event_type(FSEvent::Type fs_event_type) {
+    return (fs_event_types & fs_event_type) == fs_event_type;
+  }
+
   void log_fs_event(const FSEvent& fs_event) const;
 
 private:

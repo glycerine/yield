@@ -70,9 +70,11 @@ void ScanningFileWatch::scan(EventHandler& fs_event_handler) {
   } else // File does not exist any longer
     fs_event_type = FSEvent::TYPE_FILE_REMOVE;
 
-  FSEvent* fs_event = new FSEvent(get_path(), fs_event_type);
-  log_fs_event(*fs_event);
-  fs_event_handler.handle(*fs_event);
+  if (want_fs_event_type(fs_event_type)) {
+    FSEvent* fs_event = new FSEvent(get_path(), fs_event_type);
+    log_fs_event(*fs_event);
+    fs_event_handler.handle(*fs_event);
+  }
 
   delete old_stbuf;
   stbuf = new_stbuf;
