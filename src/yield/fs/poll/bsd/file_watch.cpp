@@ -1,4 +1,4 @@
-// yield/fs/poll/win32/fs_event_queue.hpp
+// yield/fs/poll/bsd/file_watch.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,50 +27,64 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_FS_POLL_WIN32_FS_EVENT_QUEUE_HPP_
-#define _YIELD_FS_POLL_WIN32_FS_EVENT_QUEUE_HPP_
+#include "file_watch.hpp"
+#include "yield/assert.hpp"
 
-#include "yield/event_queue.hpp"
-#include "yield/fs/poll/fs_event.hpp"
-
-#include <map>
+#include <sys/event.h>
 
 namespace yield {
-class Log;
-
 namespace fs {
 namespace poll {
-template <class> class Watches;
+namespace bsd {
+FileWatch::FileWatch(
+  int fd,
+  FSEvent::Type fs_event_types,
+  const Path& path,
+  Log* log
+) :
+  yield::fs::poll::bsd::Watch(fd),
+  yield::fs::poll::Watch(fs_event_types, path, log) {
+}
 
-namespace win32 {
-class Watch;
-
-class FSEventQueue : public EventQueue {
-public:
-  FSEventQueue(YO_NEW_REF Log* log = NULL);
-  ~FSEventQueue();
-
-public:
-  bool associate(
-    const Path& path,
-    FSEvent::Type fs_event_types = FSEvent::TYPE_ALL
-  );
-
-  bool dissociate(const Path& path);
-
-public:
-  // yield::EventQueue
-  bool enqueue(YO_NEW_REF Event& event);
-  YO_NEW_REF Event* timeddequeue(const Time& timeout);
-
-private:
-  fd_t hIoCompletionPort;
-  Log* log;
-  Watches<Watch>* watches;
-};
+void
+DirectoryWatch::read(
+  const kevent& kevent_,
+  EventHandler& fs_event_handler
+) {
+  uint32_t fflags = kevent_.fflags;
+  while (fflags != 0) {
+    FSEvent::Type fs_event_type;
+    if ((fflags & NOTE_ATTRIB) == NOTE_ATTRIB) {
+      fflags ^= NOTE_ATTRIB;
+      fs_event_type = FSEvent::TYPE_FILE_MODIFY;
+    } else if ((fflags & NOTE_DELETE) == NOTE_DELETE) {
+      fflags ^= NOTE_DELETE;
+      fs_event_type = FSEvent::TYPE_FILE_REMOVE;
+    } else if ((fflags & NOTE_EXTEND) == NOTE_EXTEND) {
+      fflags ^= NOTE_EXTEND;
+      fs_event_type = FSEvent::TYPE_FILE_MODIFY;
+    } else if ((fflags & NOTE_LINK) == NOTE_LINK) {
+      fflags ^= NOTE_LINK;
+      fs_event_type = FSEvent::TYPE_FILE_MODIFY;
+    } else if ((fflags & NOTE_RENAME) == NOTE_RENAME) {
+      fflags ^= NOTE_RENAME;
+      fs_event_type = FSEvent::TYPE_FILE_RENAME;
+    } else if ((fflags & NOTE_REVOKE) == NOTE_REVOKE) {
+      fflags ^= NOTE_REVOKE;
+      fs_event_type = FSEvent::TYPE_FILE_REMOVE;
+    } else if ((fflags & NOTE_WRITE) == NOTE_WRITE) {
+      fflags ^= NOTE_WRITE;
+      fs_event_type = FSEvent::TYPE_FILE_MODIFY;
+    } else {
+      debug_break();
+      return;
+    }
+      
+    FSEvent* fs_event = new FSEvent(get_path(), fs_event_type);
+    log_fs_event(*fs_event);
+    fs_event_handler.handle(*fs_event);
+  }
 }
 }
 }
 }
-
-#endif

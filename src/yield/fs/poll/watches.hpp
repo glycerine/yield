@@ -1,4 +1,4 @@
-// yield/fs/poll/win32/fs_event_queue.hpp
+// yield/fs/poll/watches.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,48 +27,70 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_FS_POLL_WIN32_FS_EVENT_QUEUE_HPP_
-#define _YIELD_FS_POLL_WIN32_FS_EVENT_QUEUE_HPP_
+#ifndef _YIELD_FS_POLL_WATCHES_HPP_
+#define _YIELD_FS_POLL_WATCHES_HPP_
 
-#include "yield/event_queue.hpp"
-#include "yield/fs/poll/fs_event.hpp"
+#include "yield/assert.hpp"
+#include "yield/fs/path.hpp"
 
 #include <map>
+#include <utility>
 
 namespace yield {
-class Log;
-
 namespace fs {
 namespace poll {
-template <class> class Watches;
-
-namespace win32 {
-class Watch;
-
-class FSEventQueue : public EventQueue {
+template <class WatchType>
+class Watches : private std::map<Path, WatchType*> {
 public:
-  FSEventQueue(YO_NEW_REF Log* log = NULL);
-  ~FSEventQueue();
+  typedef std::map<Path, WatchType*>::const_iterator const_iterator;
 
 public:
-  bool associate(
-    const Path& path,
-    FSEvent::Type fs_event_types = FSEvent::TYPE_ALL
-  );
+  ~Watches() {
+    for (
+      iterator watch_i = std::map<Path, WatchType*>::begin();
+      watch_i != std::map<Path, WatchType*>::end();
+      ++watch_i
+    )
+      delete watch_i->second;
+  }
 
-  bool dissociate(const Path& path);
+  const_iterator begin() const {
+    return std::map<Path, WatchType*>::begin();
+  }
 
-public:
-  // yield::EventQueue
-  bool enqueue(YO_NEW_REF Event& event);
-  YO_NEW_REF Event* timeddequeue(const Time& timeout);
+  bool empty() const {
+    return std::map<Path, WatchType*>::empty();
+  }
 
-private:
-  fd_t hIoCompletionPort;
-  Log* log;
-  Watches<Watch>* watches;
+  const_iterator end() const {
+    return std::map<Path, WatchType*>::end();
+  }
+
+  WatchType* erase(const Path& path) {
+    iterator watch_i = std::map<Path, WatchType*>::find(path);
+    if (watch_i != end()) {
+      WatchType* watch = watch_i->second;
+      std::map<Path, WatchType*>::erase(watch_i);
+      return watch;
+    } else
+      return NULL;
+  }
+
+  WatchType* find(const Path& path) const {
+    const_iterator watch_i = std::map<Path, WatchType*>::find(path);
+    if (watch_i != end())
+      return watch_i->second;
+    else
+      return NULL;
+  }
+
+  void insert(const Path& path, YO_NEW_REF WatchType& watch) {
+    if (std::map<Path,WatchType*>::find(path) == end())
+      std::map<Path, WatchType*>::insert(std::make_pair(path, &watch));
+    else
+      debug_break();
+  }
 };
-}
 }
 }
 }

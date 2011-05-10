@@ -29,6 +29,7 @@
 
 #include "scanning_directory_watch.hpp"
 #include "scanning_file_watch.hpp"
+#include "watches.hpp"
 #include "yield/log.hpp"
 #include "yield/fs/file_system.hpp"
 #include "yield/fs/poll/scanning_fs_event_queue.hpp"
@@ -38,17 +39,12 @@ namespace fs {
 namespace poll {
 ScanningFSEventQueue::ScanningFSEventQueue(YO_NEW_REF Log* log)
   : log(Object::inc_ref(log)) {
+  watches = new Watches<ScanningWatch>;
 }
 
 ScanningFSEventQueue::~ScanningFSEventQueue() {
   Log::dec_ref(log);
-
-  for (
-    vector<ScanningWatch*>::iterator watch_i = watches.begin();
-    watch_i != watches.end();
-    ++watch_i
-  )
-    delete *watch_i;
+  delete watches;
 }
 
 bool
@@ -65,26 +61,19 @@ ScanningFSEventQueue::associate(
       watch = new ScanningDirectoryWatch(fs_event_types, path, log);
     else
       watch = new ScanningFileWatch(fs_event_types, path, log);
-    watches.push_back(watch);
+    watches->insert(path, *watch);
     return true;
   } else
     return false;
 }
 
 bool ScanningFSEventQueue::dissociate(const Path& path) {
-  for (
-    vector<ScanningWatch*>::iterator watch_i = watches.begin();
-    watch_i != watches.end();
-    ++watch_i
-  ) {
-    if ((*watch_i)->get_path() == path) {
-      delete *watch_i;
-      watches.erase(watch_i);
-      return true;
-    }
-  }
-
-  return false;
+  ScanningWatch* watch = watches->erase(path);
+  if (watch != NULL) {
+    delete watch;
+    return true;
+  } else
+    return false;
 }
 
 bool ScanningFSEventQueue::enqueue(YO_NEW_REF Event& event) {
@@ -95,17 +84,17 @@ YO_NEW_REF Event* ScanningFSEventQueue::timeddequeue(const Time& timeout) {
   Event* event = event_queue.trydequeue();
   if (event != NULL)
     return event;
-  else if (!watches.empty()) {
+  else if (!watches->empty()) {
     Time timeout_remaining(timeout);
     for (;;) {
       for (
-        vector<ScanningWatch*>::iterator watch_i = watches.begin();
-        watch_i != watches.end();
+        Watches<ScanningWatch>::const_iterator watch_i = watches->begin();
+        watch_i != watches->end();
         ++watch_i
       ) {
         Time start_time = Time::now();
 
-        (*watch_i)->scan(event_queue);
+        watch_i->second->scan(event_queue);
         event = event_queue.trydequeue();
         if (event != NULL)
           return event;

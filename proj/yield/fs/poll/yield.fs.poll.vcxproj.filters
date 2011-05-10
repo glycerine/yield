@@ -49,9 +49,24 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\bsd\directory_watch.cpp">
+      <Filter>Source Files\bsd</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\bsd\directory_watch.hpp">
+      <Filter>Source Files\bsd</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\bsd\file_watch.cpp">
+      <Filter>Source Files\bsd</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\bsd\file_watch.hpp">
+      <Filter>Source Files\bsd</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\bsd\fs_event_queue.cpp">
       <Filter>Source Files\bsd</Filter>
     </ClCompile>
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\bsd\watch.hpp">
+      <Filter>Source Files\bsd</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\fs_event.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -95,6 +110,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClInclude Include="..\..\..\..\src\yield\fs\poll\watch.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\watches.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\win32\directory_watch.cpp">

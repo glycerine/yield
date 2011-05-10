@@ -29,6 +29,7 @@
 
 #include "directory_watch.hpp"
 #include "file_watch.hpp"
+#include "../watches.hpp"
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
 #include "yield/log.hpp"
@@ -43,33 +44,26 @@ namespace poll {
 namespace win32 {
 FSEventQueue::FSEventQueue(YO_NEW_REF Log* log) : log(log) {
   hIoCompletionPort = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 0);
-  if (hIoCompletionPort == INVALID_HANDLE_VALUE)
+  if (hIoCompletionPort != INVALID_HANDLE_VALUE)
+    watches = new Watches<Watch>;
+  else {
+    watches = NULL;
     throw Exception();
+  }
 }
 
 FSEventQueue::~FSEventQueue() {
-  for (
-    Watches::iterator watch_i = watches.begin();
-    watch_i != watches.end();
-    ++watch_i
-  ) {
-    watch_i->second->close();
-    delete watch_i->second;
-  }
-
   Log::dec_ref(log);
+  delete watches;
 }
 
 bool FSEventQueue::associate(const Path& path, FSEvent::Type fs_event_types) {
-  Watches::iterator watch_i = watches.find(path);
-  if (watch_i != watches.end()) {
-    Watch* watch = watch_i->second;
+  Watch* watch = watches->find(path);
+  if (watch != NULL) {
     if (watch->get_fs_event_types() == fs_event_types)
       return true;
-    else {
-      watches.erase(watch_i);
-      watch->close();
-    }
+    else
+      delete watches->erase(path);
   }
 
   Path directory_path;
@@ -116,7 +110,7 @@ bool FSEventQueue::associate(const Path& path, FSEvent::Type fs_event_types) {
         )
       ) {
         debug_assert_eq(dwBytesRead, 0);
-        watches[path] = watch;
+        watches->insert(path, *watch);
         return true;
       } else {
         delete watch;
@@ -129,11 +123,9 @@ bool FSEventQueue::associate(const Path& path, FSEvent::Type fs_event_types) {
 }
 
 bool FSEventQueue::dissociate(const Path& path) {
-  Watches::iterator watch_i = watches.find(path);
-  if (watch_i != watches.end()) {
-    Watch* watch = watch_i->second;
-    watch->close(); // Don't delete until it comes back to the completion port
-    watches.erase(watch_i);
+  Watch* watch = watches->erase(path);
+  if (watch != NULL) {
+    watch->close();
     return true;
   } else
     return false;

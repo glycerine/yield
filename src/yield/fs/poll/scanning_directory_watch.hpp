@@ -49,7 +49,12 @@ public:
 
 public:
   // yield::fs::poll::ScanningWatch
-  void scan(EventHandler& fs_event_handler);
+  void scan(EventHandler& fs_event_handler) {
+    scan(fs_event_handler, get_fs_event_types());
+  }
+
+protected:
+  void scan(EventHandler& fs_event_handler, FSEvent::Type fs_event_types);
 
 private:
   YO_NEW_REF Stat* stat(Directory::Entry&);

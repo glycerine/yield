@@ -32,21 +32,27 @@
 
 #include "yield/fs/poll/fs_event.hpp"
 
-#if defined(__linux__)
+#if defined(__FreeBSD__) || defined(__MACH__)
+#include "yield/fs/poll/bsd/fs_event_queue.hpp"
+#elif defined(__linux__)
 #include "yield/fs/poll/linux/fs_event_queue.hpp"
 #elif defined(_WIN32)
 #include "yield/fs/poll/win32/fs_event_queue.hpp"
 #else
-#error
+#include "yield/fs/poll/scanning_fs_event_queue.hpp"
 #endif
 
 namespace yield {
 namespace fs {
 namespace poll {
+#if defined(__FreeBSD__) || defined(__MACH__)
+typedef bsd::FSEventQueue FSEventQueue;
 #if defined(__linux__)
 typedef linux::FSEventQueue FSEventQueue;
 #elif defined(_WIN32)
 typedef win32::FSEventQueue FSEventQueue;
+#else
+typedef ScanningFSEventQueue FSEventQueue;
 #endif
 }
 }

@@ -61,10 +61,10 @@ D_FILE_PATHS := $(shell find ../../../../build/yield/fs/poll -name "*.d")
 
 O_FILE_PATHS += ../../../../build/yield/fs/poll/fs_event.o ../../../../build/yield/fs/poll/scanning_directory_watch.o ../../../../build/yield/fs/poll/scanning_file_watch.o ../../../../build/yield/fs/poll/scanning_fs_event_queue.o ../../../../build/yield/fs/poll/scanning_watch.o ../../../../build/yield/fs/poll/watch.o
 ifeq ($(UNAME), Darwin)
-	O_FILE_PATHS += ../../../../build/yield/fs/poll/bsd/fs_event_queue.o
+	O_FILE_PATHS += ../../../../build/yield/fs/poll/bsd/directory_watch.o ../../../../build/yield/fs/poll/bsd/file_watch.o ../../../../build/yield/fs/poll/bsd/fs_event_queue.o
 endif
 ifeq ($(UNAME), FreeBSD)
-	O_FILE_PATHS += ../../../../build/yield/fs/poll/bsd/fs_event_queue.o
+	O_FILE_PATHS += ../../../../build/yield/fs/poll/bsd/directory_watch.o ../../../../build/yield/fs/poll/bsd/file_watch.o ../../../../build/yield/fs/poll/bsd/fs_event_queue.o
 endif
 ifeq ($(UNAME), Linux)
 	O_FILE_PATHS += ../../../../build/yield/fs/poll/linux/fs_event_queue.o ../../../../build/yield/fs/poll/linux/watch.o ../../../../build/yield/fs/poll/linux/watches.o
@@ -96,6 +96,14 @@ depclean:
 ../../../../lib/yield/libyield_fs_poll.a: $(O_FILE_PATHS) ../../../../lib/yield/libyield_fs.a ../../../../lib/yield/libyield_queue.a
 	-mkdir -p ../../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(O_FILE_PATHS)
+
+../../../../build/yield/fs/poll/bsd/directory_watch.o: ../../../../src/yield/fs/poll/bsd/directory_watch.cpp
+	-mkdir -p ../../../../build/yield/fs/poll/bsd 2>/dev/null
+	$(CXX) -c -o ../../../../build/yield/fs/poll/bsd/directory_watch.o -MD $(CXXFLAGS) ../../../../src/yield/fs/poll/bsd/directory_watch.cpp
+
+../../../../build/yield/fs/poll/bsd/file_watch.o: ../../../../src/yield/fs/poll/bsd/file_watch.cpp
+	-mkdir -p ../../../../build/yield/fs/poll/bsd 2>/dev/null
+	$(CXX) -c -o ../../../../build/yield/fs/poll/bsd/file_watch.o -MD $(CXXFLAGS) ../../../../src/yield/fs/poll/bsd/file_watch.cpp
 
 ../../../../build/yield/fs/poll/bsd/fs_event_queue.o: ../../../../src/yield/fs/poll/bsd/fs_event_queue.cpp
 	-mkdir -p ../../../../build/yield/fs/poll/bsd 2>/dev/null

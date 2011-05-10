@@ -39,6 +39,7 @@ class Log;
 namespace fs {
 namespace poll {
 class ScanningWatch;
+template <class> class Watches;
 
 class ScanningFSEventQueue : public EventQueue {
 public:
@@ -61,7 +62,7 @@ public:
 private:
   yield::queue::SynchronizedEventQueue event_queue;
   Log* log;
-  vector<ScanningWatch*> watches;
+  Watches<ScanningWatch>* watches;
 };
 }
 }

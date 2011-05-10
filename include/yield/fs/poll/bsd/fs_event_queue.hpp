@@ -39,7 +39,11 @@ class Log;
 
 namespace fs {
 namespace poll {
+template <class> class Watches;
+
 namespace bsd {
+class Watch;
+
 class FSEventQueue : public EventQueue {
 public:
   FSEventQueue(YO_NEW_REF Log* log = NULL);
@@ -59,14 +63,11 @@ public:
   YO_NEW_REF Event* timeddequeue(const Time& timeout);
 
 private:
-  class Watch;
-
-private:
   yield::queue::BlockingConcurrentQueue<Event> event_queue;
   int kq;
   Log* log;
   int wake_pipe[2];
-  vector<Watch*> watches;
+  Watches<Watch>* watches;
 };
 }
 }
