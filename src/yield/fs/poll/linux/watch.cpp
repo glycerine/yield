@@ -55,7 +55,7 @@ Watch::~Watch() {
   inotify_rm_watch(inotify_fd, wd);
 }
 
-void Watch::parse(const inotify_event& inotify_event_) {
+YO_NEW_REF FSEvent* Watch::parse(const inotify_event& inotify_event_) {
   uint32_t mask = inotify_event_.mask;
 
   bool isdir;
@@ -103,6 +103,14 @@ void Watch::parse(const inotify_event& inotify_event_) {
     mask ^= IN_DELETE;
     fs_event_type =
       isdir ? FSEvent::TYPE_DIRECTORY_REMOVE : FSEvent::TYPE_FILE_REMOVE;
+  } else if ((mask & IN_DELETE_SELF) == IN_DELETE_SELF) {
+    mask ^= IN_DELETE_SELF;
+    fs_event_type =
+      isdir ? FSEvent::TYPE_DIRECTORY_REMOVE : FSEvent::TYPE_FILE_REMOVE;
+  } else if ((mask & IN_IGNORED) == IN_IGNORED) {
+    mask ^= IN_IGNORED;
+    debug_assert_false(isdir);
+    fs_event_type = FSEvent::TYPE_FILE_REMOVE;
   } else if ((mask & IN_MOVED_FROM) == IN_MOVED_FROM) {
     mask ^= IN_MOVED_FROM;
     debug_assert_false(name.empty());
