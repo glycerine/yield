@@ -198,8 +198,11 @@ YO_NEW_REF Event* FSEventQueue::timeddequeue(const Time& timeout) {
             = reinterpret_cast<const inotify_event*>(inotify_events_p);
 
           Watch* watch = watches->find(inotify_event_->wd);
-          if (watch != NULL)
-            watch->read(*inotify_event_, *this);
+          if (watch != NULL) {
+            FSEvent* fs_event = watch->parse(*inotify_event_);
+            if (fs_event != NULL)
+              event_queue.enqueue(*fs_event);
+          }
 
           inotify_events_p += sizeof(inotify_event) + inotify_event_->len;
         } while (inotify_events_p < inotify_events_pe);

@@ -29,7 +29,6 @@
 
 #include "watch.hpp"
 #include "yield/assert.hpp"
-#include "yield/event_handler.hpp"
 #include "yield/log.hpp"
 
 #include <iostream>
@@ -56,15 +55,15 @@ Watch::~Watch() {
   inotify_rm_watch(inotify_fd, wd);
 }
 
-void
-Watch::read(
-  const inotify_event& inotify_event_,
-  EventHandler& fs_event_handler
-) {
-  uint16_t fs_event_count = 0;
-  uint32_t cookie = inotify_event_.cookie;
+void Watch::parse(const inotify_event& inotify_event_) {
   uint32_t mask = inotify_event_.mask;
-  bool isdir = (mask & IN_ISDIR) == IN_ISDIR;
+
+  bool isdir;
+  if ((mask & IN_ISDIR) == IN_ISDIR) {
+    mask ^= IN_ISDIR;
+    isdir = true;
+  } else
+    isdir = false;
   Path name, path;
   if (inotify_event_.len > 1) {
     // len includes a NULL terminator, but may also include
@@ -80,6 +79,8 @@ Watch::read(
       << ": read inotify_event(" <<
         "cookie=" << inotify_event_.cookie <<
         ", " <<
+        "isdir=" << (isdir ? "true" : "false") <<
+        ", " <<
         "len=" << inotify_event_.len <<
         ", " <<
         "mask=" << inotify_event_.mask <<
@@ -88,80 +89,60 @@ Watch::read(
       ")";
   }
 
-  for (;;) {
-    // Mask can have multiple bits set.
-    // Keep looping until we find one that matches fs_event_types.
-    FSEvent::Type fs_event_type;
+  FSEvent::Type fs_event_type;
 
-    if ((mask & IN_ATTRIB) == IN_ATTRIB) {
-      mask ^= IN_ATTRIB;
+  if ((mask & IN_ATTRIB) == IN_ATTRIB) {
+    mask ^= IN_ATTRIB;
+    fs_event_type =
+      isdir ? FSEvent::TYPE_DIRECTORY_MODIFY : FSEvent::TYPE_FILE_MODIFY;
+  } else if ((mask & IN_CREATE) == IN_CREATE) {
+    mask ^= IN_CREATE;
+    fs_event_type =
+      isdir ? FSEvent::TYPE_DIRECTORY_ADD : FSEvent::TYPE_FILE_ADD;
+  } else if ((mask & IN_DELETE) == IN_DELETE) {
+    mask ^= IN_DELETE;
+    fs_event_type =
+      isdir ? FSEvent::TYPE_DIRECTORY_REMOVE : FSEvent::TYPE_FILE_REMOVE;
+  } else if ((mask & IN_MOVED_FROM) == IN_MOVED_FROM) {
+    mask ^= IN_MOVED_FROM;
+    debug_assert_false(name.empty());
+    old_names[inotify_event_.cookie] = name;
+    return NULL;
+  } else if ((mask & IN_MOVED_TO) == IN_MOVED_TO) {
+    mask ^= IN_MOVED_TO;
+    debug_assert_eq(mask, 0);
 
-      if (isdir)
-        fs_event_type = FSEvent::TYPE_DIRECTORY_MODIFY;
-      else
-        fs_event_type = FSEvent::TYPE_FILE_MODIFY;
-    } else if ((mask & IN_CREATE) == IN_CREATE) {
-      mask ^= IN_CREATE;
+    fs_event_type =
+      isdir ? FSEvent::TYPE_DIRECTORY_RENAME : FSEvent::TYPE_FILE_RENAME;
 
-      if (isdir)
-        fs_event_type = FSEvent::TYPE_DIRECTORY_ADD;
-      else
-        fs_event_type = FSEvent::TYPE_FILE_ADD;
-    } else if ((mask & IN_DELETE) == IN_DELETE) {
-      mask ^= IN_DELETE;
-      if (isdir)
-        fs_event_type = FSEvent::TYPE_DIRECTORY_REMOVE;
-      else
-        fs_event_type = FSEvent::TYPE_FILE_REMOVE;
-    } else if ((mask & IN_MOVED_FROM) == IN_MOVED_FROM) {
-      mask ^= IN_MOVED_FROM;
-      debug_assert_false(name.empty());
-      old_names[cookie] = name;
-      fs_event_type = 0;
-    } else if ((mask & IN_MOVED_TO) == IN_MOVED_TO) {
-      mask ^= IN_MOVED_TO;
+    map<uint32_t, Path>::iterator old_name_i
+      = old_names.find(inotify_event_.cookie);
+    debug_assert_ne(old_name_i, old_names.end());
 
-      map<uint32_t, Path>::iterator old_name_i = old_names.find(cookie);
-      debug_assert_ne(old_name_i, old_names.end());
-
-      if (isdir)
-        fs_event_type = FSEvent::TYPE_DIRECTORY_RENAME;
-      else
-        fs_event_type = FSEvent::TYPE_FILE_RENAME;
-
-      fs_event_count++;
-      if ((get_fs_event_types() & fs_event_type) == fs_event_type) {
-        FSEvent* fs_event
-          = new FSEvent(
-                  this->get_path() / old_name_i->second,
-                  path,
-                  fs_event_type
-                );
-        old_names.erase(old_name_i);
-        log_fs_event(*fs_event);
-        fs_event_handler.handle(*fs_event);
-      } else
-        old_names.erase(old_name_i);
-
-      continue;
-    } else if ((mask & IN_MOVE_SELF) == IN_MOVE_SELF)
-      debug_break();
-    else {
-      // std::cout << "Watch: fs events: " << fs_event_count << std::endl;
-      return;
-    }
-
-    fs_event_count++;
-    if (
-      fs_event_type != 0
-      &&
-      (get_fs_event_types() & fs_event_type) == fs_event_type
-    ) {
-      FSEvent* fs_event = new FSEvent(path, fs_event_type);
+    if (want_fs_event_type(fs_event_type)) {
+      FSEvent* fs_event
+        = new FSEvent(
+                this->get_path() / old_name_i->second,
+                path,
+                fs_event_type
+              );
+      old_names.erase(old_name_i);
       log_fs_event(*fs_event);
-      fs_event_handler.handle(*fs_event);
+      return fs_event;
+    } else {
+      old_names.erase(old_name_i);
+      return NULL;
     }
   }
+
+  debug_assert_eq(mask, 0);
+
+  if (want_fs_event_type(fs_event_type)) {
+    FSEvent* fs_event = new FSEvent(path, fs_event_type);
+    log_fs_event(*fs_event);
+    return fs_event;
+  } else
+    return NULL;
 }
 }
 }

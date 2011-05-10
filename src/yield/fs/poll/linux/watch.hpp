@@ -60,7 +60,7 @@ public:
   }
 
 public:
-  void read(const inotify_event&, EventHandler& fs_event_handler);
+  YO_NEW_REF FSEvent* parse(const inotify_event&);
 
 public:
   // yield::Object

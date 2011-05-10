@@ -41,8 +41,6 @@ struct _OVERLAPPED;
 typedef struct _OVERLAPPED OVERLAPPED;
 
 namespace yield {
-class EventHandler;
-
 namespace fs {
 namespace poll {
 namespace win32 {
