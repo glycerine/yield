@@ -30,26 +30,15 @@
 #ifndef _YIELD_FS_POLL_WIN32_DIRECTORY_WATCH_HPP_
 #define _YIELD_FS_POLL_WIN32_DIRECTORY_WATCH_HPP_
 
-#include "../watch.hpp"
-#include "yield/fs/directory.hpp"
+#include "watch.hpp"
 
 #include <stack>
 
-struct _FILE_NOTIFY_INFORMATION;
-typedef struct _FILE_NOTIFY_INFORMATION FILE_NOTIFY_INFORMATION;
-struct _OVERLAPPED;
-typedef struct _OVERLAPPED OVERLAPPED;
-
 namespace yield {
-class EventHandler;
-
 namespace fs {
 namespace poll {
 namespace win32 {
-class DirectoryWatch : public yield::fs::poll::Watch {
-public:
-  const static uint32_t TYPE_ID = 497230685;
-
+class DirectoryWatch : public Watch {
 public:
   DirectoryWatch(
     YO_NEW_REF Directory& directory,
@@ -58,72 +47,13 @@ public:
     Log* log = NULL
   );
 
-  ~DirectoryWatch();
-
 public:
-  static DirectoryWatch& cast(::OVERLAPPED& lpOverlapped);
-
-public:
-  void close();
-  bool is_closed() const;
-
-public:
-  char* get_buffer() {
-    return &buffer[0];
-  }
-
-  size_t get_buffer_length() const {
-    return sizeof(buffer);
-  }
-
-  Directory& get_directory() {
-    return *directory;
-  }
-
-  unsigned long get_notify_filter() const {
-    return notify_filter;
-  }
-
-public:
-  operator ::OVERLAPPED*();
-
-public:
+  // yield::fs::poll::win32::Watch
   void read(const FILE_NOTIFY_INFORMATION&, EventHandler& fs_event_handler);
 
-public:
-  // yield::Object
-  uint32_t get_type_id() const {
-    return TYPE_ID;
-  }
-
-  const char* get_type_name() const {
-    return "yield::fs::poll::win32::DirectoryWatch";
-  }
-
 private:
-  struct {
-    unsigned long* Internal;
-    unsigned long* InternalHigh;
-#pragma warning( push )
-#pragma warning( disable: 4201 )
-    union {
-      struct {
-        unsigned long Offset;
-        unsigned long OffsetHigh;
-      };
-      void* Pointer;
-    };
-#pragma warning( pop )
-    void* hEvent;
-  } overlapped;
-  DirectoryWatch* this_;
-
-  Directory* directory;
-  unsigned long notify_filter;
   std::stack<Path> old_paths;
   vector<Path> subdirectory_names;
-
-  char buffer[(12 + 260 * sizeof(wchar_t)) * 16];
 };
 }
 }

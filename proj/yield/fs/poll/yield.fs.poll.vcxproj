@@ -140,9 +140,17 @@
       <ObjectFileName>$(IntDir)win32\directory_watch.obj</ObjectFileName>
     </ClCompile>
     <ClInclude Include="..\..\..\..\src\yield\fs\poll\win32\directory_watch.hpp" />
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\win32\file_watch.cpp">
+      <ObjectFileName>$(IntDir)win32\file_watch.obj</ObjectFileName>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\win32\file_watch.hpp" />
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\win32\fs_event_queue.cpp">
       <ObjectFileName>$(IntDir)win32\fs_event_queue.obj</ObjectFileName>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\win32\watch.cpp">
+      <ObjectFileName>$(IntDir)win32\watch.obj</ObjectFileName>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\win32\watch.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ProjectReferenceItems">

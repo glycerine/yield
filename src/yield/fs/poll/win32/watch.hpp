@@ -1,4 +1,4 @@
-// yield/fs/poll/win32/fs_event_queue.hpp
+// yield/fs/poll/win32/watch.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,45 +27,95 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_FS_POLL_WIN32_FS_EVENT_QUEUE_HPP_
-#define _YIELD_FS_POLL_WIN32_FS_EVENT_QUEUE_HPP_
+#ifndef _YIELD_FS_POLL_WIN32_WATCH_HPP_
+#define _YIELD_FS_POLL_WIN32_WATCH_HPP_
 
-#include "yield/event_queue.hpp"
-#include "yield/fs/poll/fs_event.hpp"
+#include "../watch.hpp"
+#include "yield/fs/directory.hpp"
 
-#include <map>
+#include <stack>
+
+struct _FILE_NOTIFY_INFORMATION;
+typedef struct _FILE_NOTIFY_INFORMATION FILE_NOTIFY_INFORMATION;
+struct _OVERLAPPED;
+typedef struct _OVERLAPPED OVERLAPPED;
 
 namespace yield {
-class Log;
+class EventHandler;
 
 namespace fs {
 namespace poll {
 namespace win32 {
-class Watch;
-
-class FSEventQueue : public EventQueue {
+class Watch : public yield::fs::poll::Watch {
 public:
-  FSEventQueue(YO_NEW_REF Log* log = NULL);
-  ~FSEventQueue();
+  virtual ~Watch();
 
 public:
-  bool associate(
-    const Path& path,
-    FSEvent::Type fs_event_types = FSEvent::TYPE_ALL
+  static Watch& cast(::OVERLAPPED& lpOverlapped);
+
+public:
+  void close();
+  bool is_closed() const;
+
+public:
+  char* get_buffer() {
+    return &buffer[0];
+  }
+
+  size_t get_buffer_length() const {
+    return sizeof(buffer);
+  }
+
+  Directory& get_directory() {
+    return *directory;
+  }
+
+  unsigned long get_notify_filter() const {
+    return notify_filter;
+  }
+
+public:
+  operator ::OVERLAPPED* ();
+
+public:
+  virtual void
+  read(
+    const FILE_NOTIFY_INFORMATION&,
+    EventHandler& fs_event_handler
+  ) = 0;
+
+protected:
+  Watch(
+    YO_NEW_REF Directory& directory,
+    FSEvent::Type fs_event_types,
+    Log* log,
+    const Path& path
   );
 
-  bool dissociate(const Path& path);
-
-public:
-  // yield::EventQueue
-  bool enqueue(YO_NEW_REF Event& event);
-  YO_NEW_REF Event* timeddequeue(const Time& timeout);
+protected:
+  void log_read(const FILE_NOTIFY_INFORMATION&);
 
 private:
-  fd_t hIoCompletionPort;
-  Log* log;
-  typedef std::map<Path, Watch*> Watches;
-  Watches watches;
+  char buffer[(12 + 260 * sizeof(wchar_t)) * 16];
+  Directory* directory;
+  unsigned long notify_filter;
+
+  struct {
+    unsigned long* Internal;
+    unsigned long* InternalHigh;
+#pragma warning( push )
+#pragma warning( disable: 4201 )
+    union {
+      struct {
+        unsigned long Offset;
+        unsigned long OffsetHigh;
+      };
+      void* Pointer;
+    };
+#pragma warning( pop )
+    void* hEvent;
+  } overlapped;
+  Watch* this_;
 };
 }
 }

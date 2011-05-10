@@ -70,7 +70,7 @@ ifeq ($(UNAME), Linux)
 	O_FILE_PATHS += ../../../../build/yield/fs/poll/linux/fs_event_queue.o ../../../../build/yield/fs/poll/linux/watch.o ../../../../build/yield/fs/poll/linux/watches.o
 endif
 ifeq ($(UNAME), MINGW32)
-	O_FILE_PATHS += ../../../../build/yield/fs/poll/win32/directory_watch.o ../../../../build/yield/fs/poll/win32/fs_event_queue.o
+	O_FILE_PATHS += ../../../../build/yield/fs/poll/win32/directory_watch.o ../../../../build/yield/fs/poll/win32/file_watch.o ../../../../build/yield/fs/poll/win32/fs_event_queue.o ../../../../build/yield/fs/poll/win32/watch.o
 endif
 
 
@@ -141,6 +141,14 @@ depclean:
 	-mkdir -p ../../../../build/yield/fs/poll/win32 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/fs/poll/win32/directory_watch.o -MD $(CXXFLAGS) ../../../../src/yield/fs/poll/win32/directory_watch.cpp
 
+../../../../build/yield/fs/poll/win32/file_watch.o: ../../../../src/yield/fs/poll/win32/file_watch.cpp
+	-mkdir -p ../../../../build/yield/fs/poll/win32 2>/dev/null
+	$(CXX) -c -o ../../../../build/yield/fs/poll/win32/file_watch.o -MD $(CXXFLAGS) ../../../../src/yield/fs/poll/win32/file_watch.cpp
+
 ../../../../build/yield/fs/poll/win32/fs_event_queue.o: ../../../../src/yield/fs/poll/win32/fs_event_queue.cpp
 	-mkdir -p ../../../../build/yield/fs/poll/win32 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/fs/poll/win32/fs_event_queue.o -MD $(CXXFLAGS) ../../../../src/yield/fs/poll/win32/fs_event_queue.cpp
+
+../../../../build/yield/fs/poll/win32/watch.o: ../../../../src/yield/fs/poll/win32/watch.cpp
+	-mkdir -p ../../../../build/yield/fs/poll/win32 2>/dev/null
+	$(CXX) -c -o ../../../../build/yield/fs/poll/win32/watch.o -MD $(CXXFLAGS) ../../../../src/yield/fs/poll/win32/watch.cpp

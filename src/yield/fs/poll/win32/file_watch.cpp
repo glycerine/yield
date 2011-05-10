@@ -1,4 +1,4 @@
-// yield/fs/poll/win32/fs_event_queue.hpp
+// yield/fs/poll/win32/file_watch.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,49 +27,70 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_FS_POLL_WIN32_FS_EVENT_QUEUE_HPP_
-#define _YIELD_FS_POLL_WIN32_FS_EVENT_QUEUE_HPP_
+#include "file_watch.hpp"
+#include "yield/assert.hpp"
+#include "yield/log.hpp"
+#include "yield/event_handler.hpp"
+#include "yield/fs/file_system.hpp"
 
-#include "yield/event_queue.hpp"
-#include "yield/fs/poll/fs_event.hpp"
-
-#include <map>
+#include <Windows.h>
 
 namespace yield {
-class Log;
-
 namespace fs {
 namespace poll {
 namespace win32 {
-class Watch;
+void
+FileWatch::read(
+  const FILE_NOTIFY_INFORMATION& file_notify_info,
+  EventHandler& fs_event_handler
+) {
+  log_read(file_notify_info);
 
-class FSEventQueue : public EventQueue {
-public:
-  FSEventQueue(YO_NEW_REF Log* log = NULL);
-  ~FSEventQueue();
-
-public:
-  bool associate(
-    const Path& path,
-    FSEvent::Type fs_event_types = FSEvent::TYPE_ALL
+  Path name(
+    file_notify_info.FileName,
+    file_notify_info.FileNameLength / sizeof(wchar_t)
   );
+  Path path = directory_path / name;
 
-  bool dissociate(const Path& path);
+  if (path == this->get_path()) {
+    switch (file_notify_info.Action) {
+    case FILE_ACTION_ADDED: {
+      debug_break();
+    }
+    break;
 
-public:
-  // yield::EventQueue
-  bool enqueue(YO_NEW_REF Event& event);
-  YO_NEW_REF Event* timeddequeue(const Time& timeout);
+    case FILE_ACTION_MODIFIED: {
+      FSEvent* fs_event = new FSEvent(get_path(), FSEvent::TYPE_FILE_MODIFY);
+      log_fs_event(*fs_event);
+      fs_event_handler.handle(*fs_event);
+    }
+    break;
 
-private:
-  fd_t hIoCompletionPort;
-  Log* log;
-  typedef std::map<Path, Watch*> Watches;
-  Watches watches;
-};
+    case FILE_ACTION_REMOVED: {
+      FSEvent* fs_event = new FSEvent(get_path(), FSEvent::TYPE_FILE_REMOVE);
+      log_fs_event(*fs_event);
+      fs_event_handler.handle(*fs_event);
+    }
+    break;
+
+    case FILE_ACTION_RENAMED_OLD_NAME: {
+      debug_assert_true(old_name.empty());
+      old_name = name;
+    }
+    break;
+    }
+  } else if (
+      !old_name.empty()
+      &&
+      file_notify_info.Action == FILE_ACTION_RENAMED_NEW_NAME
+    ) {
+    debug_assert_eq(directory_path / old_name, get_path());
+    FSEvent* fs_event = new FSEvent(get_path(), path, FSEvent::TYPE_FILE_RENAME);
+    log_fs_event(*fs_event);
+    fs_event_handler.handle(*fs_event);
+  }
 }
 }
 }
 }
-
-#endif
+}

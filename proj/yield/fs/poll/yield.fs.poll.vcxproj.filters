@@ -103,8 +103,20 @@
     <ClInclude Include="..\..\..\..\src\yield\fs\poll\win32\directory_watch.hpp">
       <Filter>Source Files\win32</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\win32\file_watch.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\win32\file_watch.hpp">
+      <Filter>Source Files\win32</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\..\..\src\yield\fs\poll\win32\fs_event_queue.cpp">
       <Filter>Source Files\win32</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\yield\fs\poll\win32\watch.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\src\yield\fs\poll\win32\watch.hpp">
+      <Filter>Source Files\win32</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

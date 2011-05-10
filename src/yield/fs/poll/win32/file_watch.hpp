@@ -1,4 +1,4 @@
-// yield/fs/poll/win32/fs_event_queue.hpp
+// yield/fs/poll/win32/file_watch.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,45 +27,34 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_FS_POLL_WIN32_FS_EVENT_QUEUE_HPP_
-#define _YIELD_FS_POLL_WIN32_FS_EVENT_QUEUE_HPP_
+#ifndef _YIELD_FS_POLL_WIN32_FILE_WATCH_HPP_
+#define _YIELD_FS_POLL_WIN32_FILE_WATCH_HPP_
 
-#include "yield/event_queue.hpp"
-#include "yield/fs/poll/fs_event.hpp"
-
-#include <map>
+#include "watch.hpp"
 
 namespace yield {
-class Log;
-
 namespace fs {
 namespace poll {
 namespace win32 {
-class Watch;
-
-class FSEventQueue : public EventQueue {
+class FileWatch : public Watch {
 public:
-  FSEventQueue(YO_NEW_REF Log* log = NULL);
-  ~FSEventQueue();
-
-public:
-  bool associate(
-    const Path& path,
-    FSEvent::Type fs_event_types = FSEvent::TYPE_ALL
-  );
-
-  bool dissociate(const Path& path);
+  FileWatch(
+    YO_NEW_REF Directory& directory,
+    const Path& directory_path,
+    const Path& file_path,
+    FSEvent::Type fs_event_types,
+    Log* log = NULL
+  ) : Watch(directory, fs_event_types, log, file_path),
+      directory_path(directory_path) {
+  }
 
 public:
-  // yield::EventQueue
-  bool enqueue(YO_NEW_REF Event& event);
-  YO_NEW_REF Event* timeddequeue(const Time& timeout);
+  // yield::fs::poll::win32::Watch
+  void read(const FILE_NOTIFY_INFORMATION&, EventHandler& fs_event_handler);
 
 private:
-  fd_t hIoCompletionPort;
-  Log* log;
-  typedef std::map<Path, Watch*> Watches;
-  Watches watches;
+  Path directory_path;
+  Path old_name;
 };
 }
 }

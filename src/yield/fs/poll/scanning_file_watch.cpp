@@ -53,26 +53,26 @@ ScanningFileWatch::~ScanningFileWatch() {
 void ScanningFileWatch::scan(EventHandler& fs_event_handler) {
   Stat* new_stbuf = FileSystem().stat(get_path());
   Stat* old_stbuf = stbuf;
+  debug_assert_ne(old_stbuf, NULL);
   stbuf = NULL;
 
-  FSEvent::Type fs_event_type = 0;
+  FSEvent::Type fs_event_type;
   if (new_stbuf != NULL) { // File exists
-    if (old_stbuf != NULL) { // File used to exist
-      if (type(*new_stbuf) == type(*old_stbuf)) { // File has not changed type
-        if (!equals(*new_stbuf, *old_stbuf))
-          fs_event_type = FSEvent::TYPE_FILE_MODIFY;
-      } else // File has changed type
-        fs_event_type = FSEvent::TYPE_FILE_REMOVE;
-    } else // File didn't used to exist, or this is the first call
-      debug_assert_true(new_stbuf->ISREG());
-  } else if (old_stbuf != NULL) // File does not exist, but used to
+    if (type(*new_stbuf) == type(*old_stbuf)) { // File has not changed type
+      if (equals(*new_stbuf, *old_stbuf)) {
+        delete old_stbuf;
+        stbuf = new_stbuf;
+        return;
+      } else
+        fs_event_type = FSEvent::TYPE_FILE_MODIFY;
+    } else // File has changed type
+      fs_event_type = FSEvent::TYPE_FILE_REMOVE;
+  } else // File does not exist any longer
     fs_event_type = FSEvent::TYPE_FILE_REMOVE;
 
-  if (fs_event_type != 0) {
-    FSEvent* fs_event = new FSEvent(get_path(), fs_event_type);
-    log_fs_event(*fs_event);
-    fs_event_handler.handle(*fs_event);
-  }
+  FSEvent* fs_event = new FSEvent(get_path(), fs_event_type);
+  log_fs_event(*fs_event);
+  fs_event_handler.handle(*fs_event);
 
   delete old_stbuf;
   stbuf = new_stbuf;

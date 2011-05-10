@@ -28,6 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "directory_watch.hpp"
+#include "file_watch.hpp"
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
 #include "yield/log.hpp"
@@ -62,7 +63,7 @@ FSEventQueue::~FSEventQueue() {
 bool FSEventQueue::associate(const Path& path, FSEvent::Type fs_event_types) {
   Watches::iterator watch_i = watches.find(path);
   if (watch_i != watches.end()) {
-    DirectoryWatch* watch = watch_i->second;
+    Watch* watch = watch_i->second;
     if (watch->get_fs_event_types() == fs_event_types)
       return true;
     else {
@@ -71,7 +72,13 @@ bool FSEventQueue::associate(const Path& path, FSEvent::Type fs_event_types) {
     }
   }
 
-  Directory* directory = FileSystem().opendir(path);
+  Path directory_path;
+  if (FileSystem().isdir(path))
+    directory_path = path;
+  else
+    directory_path = path.split().first;
+
+  Directory* directory = FileSystem().opendir(directory_path);
   if (directory != NULL) {
     if (
       CreateIoCompletionPort(
@@ -81,8 +88,19 @@ bool FSEventQueue::associate(const Path& path, FSEvent::Type fs_event_types) {
         0
       ) != INVALID_HANDLE_VALUE
     ) {
-      DirectoryWatch* watch
-        = new DirectoryWatch(*directory, fs_event_types, path, log);
+      Watch* watch;
+      if (path == directory_path)
+        watch = new DirectoryWatch(*directory, fs_event_types, path, log);
+      else {
+        watch
+          = new FileWatch(
+                  *directory,
+                  directory_path,
+                  path,
+                  fs_event_types,
+                  log
+                );
+      }
 
       DWORD dwBytesRead = 0;
       if (
@@ -113,7 +131,7 @@ bool FSEventQueue::associate(const Path& path, FSEvent::Type fs_event_types) {
 bool FSEventQueue::dissociate(const Path& path) {
   Watches::iterator watch_i = watches.find(path);
   if (watch_i != watches.end()) {
-    DirectoryWatch* watch = watch_i->second;
+    Watch* watch = watch_i->second;
     watch->close(); // Don't delete until it comes back to the completion port
     watches.erase(watch_i);
     return true;
@@ -146,7 +164,7 @@ YO_NEW_REF Event* FSEventQueue::timeddequeue(const Time& timeout) {
       );
 
   if (lpOverlapped != NULL) {
-    DirectoryWatch& watch = DirectoryWatch::cast(*lpOverlapped);
+    Watch& watch = Watch::cast(*lpOverlapped);
     if (!watch.is_closed()) {
       debug_assert_eq(bRet, TRUE);
       debug_assert_gt(dwBytesTransferred, 0);

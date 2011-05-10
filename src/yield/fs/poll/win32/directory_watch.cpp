@@ -44,44 +44,7 @@ DirectoryWatch::DirectoryWatch(
   FSEvent::Type fs_event_types,
   const Path& path,
   Log* log
-) : yield::fs::poll::Watch(fs_event_types, log, path),
-    directory(&directory) {
-  static_assert(sizeof(overlapped) == sizeof(::OVERLAPPED), "");
-  memset(&overlapped, 0, sizeof(overlapped));
-  this_ = this;
-
-  notify_filter = 0;
-
-  if (
-    fs_event_types & FSEvent::TYPE_DIRECTORY_ADD
-    ||
-    fs_event_types & FSEvent::TYPE_DIRECTORY_REMOVE
-    ||
-    fs_event_types & FSEvent::TYPE_DIRECTORY_RENAME
-  )
-    notify_filter |= FILE_NOTIFY_CHANGE_DIR_NAME;
-
-  if (
-    fs_event_types & FSEvent::TYPE_DIRECTORY_MODIFY
-    ||
-    fs_event_types & FSEvent::TYPE_FILE_MODIFY
-  ) {
-    notify_filter |= FILE_NOTIFY_CHANGE_ATTRIBUTES |
-                      FILE_NOTIFY_CHANGE_CREATION |
-                      FILE_NOTIFY_CHANGE_LAST_ACCESS |
-                      FILE_NOTIFY_CHANGE_LAST_WRITE |
-                      FILE_NOTIFY_CHANGE_SIZE;
-  }
-
-  if (
-    fs_event_types & FSEvent::TYPE_FILE_ADD
-    ||
-    fs_event_types & FSEvent::TYPE_FILE_REMOVE
-    ||
-    fs_event_types & FSEvent::TYPE_FILE_RENAME
-  )
-    notify_filter |= FILE_NOTIFY_CHANGE_FILE_NAME;
-
+) : Watch(directory, fs_event_types, log, path) {  
   Directory::Entry* dirent = directory.read();
   if (dirent != NULL) {
     do {
@@ -94,62 +57,18 @@ DirectoryWatch::DirectoryWatch(
   }
 }
 
-DirectoryWatch::~DirectoryWatch() {
-  close();
-}
-
-DirectoryWatch& DirectoryWatch::cast(::OVERLAPPED& lpOverlapped) {
-  DirectoryWatch* directory_watch;
-
-  memcpy_s(
-    &directory_watch,
-    sizeof(directory_watch),
-    reinterpret_cast<char*>(&lpOverlapped) + sizeof(::OVERLAPPED),
-    sizeof(directory_watch)
-  );
-
-  return *directory_watch;
-}
-
-void DirectoryWatch::close() {
-  if (directory != NULL) {
-    CancelIoEx(*directory, *this);
-    directory->close();
-    Directory::dec_ref(*directory);
-    directory = NULL;
-  }
-}
-
-bool DirectoryWatch::is_closed() const {
-  return directory == NULL;
-}
-
-DirectoryWatch::operator ::OVERLAPPED* () {
-  return reinterpret_cast<::OVERLAPPED*>(&overlapped);
-}
-
 void
 DirectoryWatch::read(
   const FILE_NOTIFY_INFORMATION& file_notify_info,
   EventHandler& fs_event_handler
 ) {
+  log_read(file_notify_info);
+
   Path name(
          file_notify_info.FileName,
          file_notify_info.FileNameLength / sizeof(wchar_t)
        );
   Path path = this->get_path() / name;
-
-  if (get_log() != NULL) {
-    get_log()->get_stream(Log::Level::DEBUG) <<
-      "yield::fs::poll::win32::DirectoryWatch(" <<
-        "path=" << get_path() <<
-      ")" <<
-      ": read FILE_NOTIFY_INFORMATION(" <<
-        "Action=" << file_notify_info.Action <<
-        ", "
-        "FileName=" << name <<
-      ")";
-  }
 
   if (file_notify_info.Action == FILE_ACTION_RENAMED_OLD_NAME) {
     for (
