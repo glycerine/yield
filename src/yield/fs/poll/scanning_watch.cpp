@@ -73,3 +73,4 @@ Directory::Entry::Type ScanningWatch::type(const Stat& stbuf) {
 }
 }
 }
+

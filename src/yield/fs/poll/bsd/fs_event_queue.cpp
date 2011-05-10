@@ -29,6 +29,7 @@
 
 #include "directory_watch.hpp"
 #include "file_watch.hpp"
+#include "../watches.hpp"
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
 #include "yield/log.hpp"
@@ -88,13 +89,7 @@ FSEventQueue::associate(
   const Path& path,
   FSEvent::Type fs_event_types
 ) {
-  Watch* watch = watches->find(path);
-  if (watch != NULL) {
-    if (watch->get_fs_event_types() == fs_event_types)
-      return true;
-    else
-      delete watches->erase(path);
-  }
+  delete watches->erase(path);
 
   int fd = open(path.c_str(), O_EVTONLY);
   if (fd != -1) {
@@ -106,25 +101,19 @@ FSEventQueue::associate(
       else
         watch = new FileWatch(fd, fs_event_types, path, log);
 
+      // Don't try to be clever with fflags, since there
+      // appears to be minimal logic in how they work.
       struct kevent kevent_;
-      int fflags = 0;
-      if (fs_event_types & FSEvent::TYPE_DIRECTORY_ADD)
-        fflags |= NOTE_EXTEND | NOTE_WRITE;
-      if (fs_event_types & FSEvent::TYPE_DIRECTORY_MODIFY)
-        fflags |= NOTE_ATTRIB | NOTE_EXTEND | NOTE_WRITE;
-      if (fs_event_types & FSEvent::TYPE_DIRECTORY_REMOVE)
-        fflags |= NOTE_DELETE;
-      if (fs_event_types & FSEvent::TYPE_DIRECTORY_RENAME)
-        fflags |= NOTE_RENAME;
-      if (fs_event_types & FSEvent::TYPE_FILE_ADD)
-        fflags |= NOTE_EXTEND | NOTE_WRITE;
-      if (fs_event_types & FSEvent::TYPE_FILE_MODIFY)
-        fflags |= NOTE_ATTRIB | NOTE_EXTEND | NOTE_WRITE;
-      if (fs_event_types & FSEvent::TYPE_FILE_REMOVE)
-        fflags |= NOTE_DELETE;
-      if (fs_event_types & FSEvent::TYPE_FILE_RENAME)
-        fflags |= NOTE_RENAME;
-      EV_SET(&kevent_, fd, EVFILT_VNODE, EV_ADD, fflags, 0, watch);
+      EV_SET(
+        &kevent_,
+        fd,
+        EVFILT_VNODE,
+        EV_ADD,
+        NOTE_ATTRIB | NOTE_DELETE | NOTE_EXTEND |
+          NOTE_LINK | NOTE_RENAME | NOTE_REVOKE | NOTE_WRITE,
+        0,
+        watch
+      );
 
       if (kevent(kq, &kevent_, 1, 0, 0, NULL) != -1) {
         watches->insert(path, *watch);

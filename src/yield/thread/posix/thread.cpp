@@ -98,6 +98,10 @@ void Thread::nanosleep(const Time& timeout) {
   ::nanosleep(&timeout_ts, NULL);
 }
 
+auto_Object<Thread> Thread::self() {
+  return new Thread(pthread_self());
+}
+
 void* Thread::run(void* this_) {
   return static_cast<Thread*>(this_)->run();
 }

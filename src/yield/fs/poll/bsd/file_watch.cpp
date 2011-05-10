@@ -29,6 +29,7 @@
 
 #include "file_watch.hpp"
 #include "yield/assert.hpp"
+#include "yield/event_handler.hpp"
 
 #include <sys/event.h>
 
@@ -43,12 +44,12 @@ FileWatch::FileWatch(
   Log* log
 ) :
   yield::fs::poll::bsd::Watch(fd),
-  yield::fs::poll::Watch(fs_event_types, path, log) {
+  yield::fs::poll::Watch(fs_event_types, log, path) {
 }
 
 void
-DirectoryWatch::read(
-  const kevent& kevent_,
+FileWatch::read(
+  const struct kevent& kevent_,
   EventHandler& fs_event_handler
 ) {
   uint32_t fflags = kevent_.fflags;
@@ -84,6 +85,7 @@ DirectoryWatch::read(
     log_fs_event(*fs_event);
     fs_event_handler.handle(*fs_event);
   }
+}
 }
 }
 }

@@ -527,10 +527,12 @@ public:
       new FSEventQueueAssociateDirDequeueDirAddTest<FSEventQueueType>
     );
 
+#ifndef __FreeBSD__
     add(
       "FSEventQueue::associate(dir), dequeue->FSEvent(DIRECTORY_MODIFY)",
       new FSEventQueueAssociateDirDequeueDirModifyTest<FSEventQueueType>
     );
+#endif
 
     add(
       "FSEventQueue::associate(dir), dequeue->FSEvent(DIRECTORY_REMOVE)",
@@ -547,10 +549,12 @@ public:
       new FSEventQueueAssociateDirDequeueFileAddTest<FSEventQueueType>
     );
 
+#ifndef __FreeBSD__
     add(
       "FSEventQueue::associate(dir), dequeue->FSEvent(FILE_MODIFY)",
       new FSEventQueueAssociateDirDequeueFileModifyTest<FSEventQueueType>
     );
+#endif
 
     add(
       "FSEventQueue::associate(dir), dequeue->FSEvent(FILE_REMOVE)",

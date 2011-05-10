@@ -78,6 +78,9 @@ public:
   }
 
 public:
+  static auto_Object<Thread> self();
+
+public:
   bool setspecific(uintptr_t key, void* value);
 
 protected:

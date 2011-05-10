@@ -48,30 +48,30 @@ DirectoryWatch::DirectoryWatch(
 
 void
 DirectoryWatch::read(
-  const kevent& kevent_,
+  const struct kevent& kevent_,
   EventHandler& fs_event_handler
 ) {
   FSEvent::Type fs_event_types = 0;
   if ((kevent_.fflags & NOTE_ATTRIB) == NOTE_ATTRIB) {
     fs_event_types |= FSEvent::TYPE_DIRECTORY_MODIFY;
     fs_event_types |= FSEvent::TYPE_FILE_MODIFY;
-  } else if ((fflags & NOTE_DELETE) == NOTE_DELETE) {
+  } else if ((kevent_.fflags & NOTE_DELETE) == NOTE_DELETE) {
     fs_event_types |= FSEvent::TYPE_DIRECTORY_REMOVE;
     fs_event_types |= FSEvent::TYPE_FILE_REMOVE;
-  } else if ((fflags & NOTE_EXTEND) == NOTE_EXTEND) {
+  } else if ((kevent_.fflags & NOTE_EXTEND) == NOTE_EXTEND) {
     fs_event_types |= FSEvent::TYPE_DIRECTORY_MODIFY;
     fs_event_types |= FSEvent::TYPE_FILE_MODIFY;
-  } else if ((fflags & NOTE_LINK) == NOTE_LINK) {
+  } else if ((kevent_.fflags & NOTE_LINK) == NOTE_LINK) {
     fs_event_types |= FSEvent::TYPE_DIRECTORY_MODIFY;
     fs_event_types |= FSEvent::TYPE_FILE_MODIFY;
-  } else if ((fflags & NOTE_RENAME) == NOTE_RENAME) {
+  } else if ((kevent_.fflags & NOTE_RENAME) == NOTE_RENAME) {
     fs_event_types |= FSEvent::TYPE_DIRECTORY_RENAME;
     fs_event_types |= FSEvent::TYPE_FILE_RENAME;
-  } else if ((fflags & NOTE_REVOKE) == NOTE_REVOKE) {
+  } else if ((kevent_.fflags & NOTE_REVOKE) == NOTE_REVOKE) {
     fs_event_types |= FSEvent::TYPE_DIRECTORY_REMOVE;
     fs_event_types |= FSEvent::TYPE_FILE_REMOVE;
-  } else if ((fflags & NOTE_WRITE) == NOTE_WRITE) {
-    fs_event_types |= FSEvent::TYPE_DIRECTORY_MODIFY :
+  } else if ((kevent_.fflags & NOTE_WRITE) == NOTE_WRITE) {
+    fs_event_types |= FSEvent::TYPE_DIRECTORY_MODIFY;
     fs_event_types |= FSEvent::TYPE_FILE_MODIFY;
   }
 
@@ -83,3 +83,4 @@ DirectoryWatch::read(
 }
 }
 }
+

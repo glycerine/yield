@@ -42,12 +42,13 @@ namespace poll {
 template <class WatchType>
 class Watches : private std::map<Path, WatchType*> {
 public:
-  typedef std::map<Path, WatchType*>::const_iterator const_iterator;
+  typedef typename std::map<Path, WatchType*>::const_iterator const_iterator;
 
 public:
   ~Watches() {
     for (
-      iterator watch_i = std::map<Path, WatchType*>::begin();
+      typename std::map<Path, WatchType*>::iterator watch_i
+        = std::map<Path, WatchType*>::begin();
       watch_i != std::map<Path, WatchType*>::end();
       ++watch_i
     )
@@ -67,8 +68,9 @@ public:
   }
 
   WatchType* erase(const Path& path) {
-    iterator watch_i = std::map<Path, WatchType*>::find(path);
-    if (watch_i != end()) {
+    typename std::map<Path, WatchType*>::iterator watch_i
+      = std::map<Path, WatchType*>::find(path);
+    if (watch_i != std::map<Path, WatchType*>::end()) {
       WatchType* watch = watch_i->second;
       std::map<Path, WatchType*>::erase(watch_i);
       return watch;
@@ -77,8 +79,9 @@ public:
   }
 
   WatchType* find(const Path& path) const {
-    const_iterator watch_i = std::map<Path, WatchType*>::find(path);
-    if (watch_i != end())
+    typename std::map<Path, WatchType*>::const_iterator watch_i
+      = std::map<Path, WatchType*>::find(path);
+    if (watch_i != std::map<Path, WatchType*>::end())
       return watch_i->second;
     else
       return NULL;
