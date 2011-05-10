@@ -32,6 +32,7 @@
 #include "yield/event_handler.hpp"
 #include "yield/log.hpp"
 
+#include <iostream>
 #include <sys/inotify.h>
 
 namespace yield {
@@ -60,6 +61,7 @@ Watch::read(
   const inotify_event& inotify_event_,
   EventHandler& fs_event_handler
 ) {
+  uint16_t fs_event_count = 0;
   uint32_t cookie = inotify_event_.cookie;
   uint32_t mask = inotify_event_.mask;
   bool isdir = (mask & IN_ISDIR) == IN_ISDIR;
@@ -69,14 +71,17 @@ Watch::read(
     // one or more bytes of padding. Do a strlen to find the real length.
     name = Path(inotify_event_.name); //, inotify_event_.len - 1);
     path = this->get_path() / name;
-  }
+  } else
+    path = this->get_path();
 
   if (get_log() != NULL) {
     get_log()->get_stream(Log::Level::DEBUG) <<
       get_type_name() << "(path=" << get_path() << ", wd=" << get_wd() << ")"
       << ": read inotify_event(" <<
         "cookie=" << inotify_event_.cookie <<
-        ", "
+        ", " <<
+        "len=" << inotify_event_.len <<
+        ", " <<
         "mask=" << inotify_event_.mask <<
         ", "
         "name=" << name <<
@@ -110,6 +115,7 @@ Watch::read(
         fs_event_type = FSEvent::TYPE_FILE_REMOVE;
     } else if ((mask & IN_MOVED_FROM) == IN_MOVED_FROM) {
       mask ^= IN_MOVED_FROM;
+      debug_assert_false(name.empty());
       old_names[cookie] = name;
       fs_event_type = 0;
     } else if ((mask & IN_MOVED_TO) == IN_MOVED_TO) {
@@ -123,6 +129,7 @@ Watch::read(
       else
         fs_event_type = FSEvent::TYPE_FILE_RENAME;
 
+      fs_event_count++;
       if ((get_fs_event_types() & fs_event_type) == fs_event_type) {
         FSEvent* fs_event
           = new FSEvent(
@@ -139,9 +146,12 @@ Watch::read(
       continue;
     } else if ((mask & IN_MOVE_SELF) == IN_MOVE_SELF)
       debug_break();
-    else
+    else {
+      // std::cout << "Watch: fs events: " << fs_event_count << std::endl;
       return;
+    }
 
+    fs_event_count++;
     if (
       fs_event_type != 0
       &&
