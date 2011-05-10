@@ -111,6 +111,10 @@ YO_NEW_REF FSEvent* Watch::parse(const inotify_event& inotify_event_) {
     mask ^= IN_IGNORED;
     debug_assert_false(isdir);
     fs_event_type = FSEvent::TYPE_FILE_REMOVE;
+  } else if ((mask & IN_MODIFY) == IN_MODIFY) {
+    mask ^= IN_MODIFY;
+    fs_event_type =
+      isdir ? FSEvent::TYPE_DIRECTORY_MODIFY : FSEvent::TYPE_FILE_MODIFY;
   } else if ((mask & IN_MOVED_FROM) == IN_MOVED_FROM) {
     mask ^= IN_MOVED_FROM;
     debug_assert_false(name.empty());
