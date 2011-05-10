@@ -74,7 +74,7 @@ protected:
   virtual YO_NEW_REF StagePoller& createStagePoller(Stage&) = 0;
 
 private:
-  vector<::yield::thread::Thread*> threads;
+  vector< ::yield::thread::Thread*> threads;
 };
 }
 }

@@ -31,9 +31,9 @@
 #include "yield/assert.hpp"
 #include "yield/log.hpp"
 #include "yield/fs/file.hpp"
-#include "yield/http/http_message_body_chunk.hpp"
 #include "yield/http/http_response.hpp"
 #include "yield/http/server/http_connection.hpp"
+#include "yield/http/server/http_message_body_chunk.hpp"
 #include "yield/sockets/aio/accept_aiocb.hpp"
 
 namespace yield {

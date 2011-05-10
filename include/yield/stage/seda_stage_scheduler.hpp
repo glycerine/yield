@@ -46,7 +46,7 @@ private:
   class SEDAStage;
 
 private:
-  vector<::yield::thread::Thread*> threads;
+  vector< ::yield::thread::Thread*> threads;
 };
 }
 }
