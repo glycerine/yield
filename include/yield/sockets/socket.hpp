@@ -146,13 +146,13 @@ public:
   }
 
 public:
-  operator socket_t() const {
+  virtual operator socket_t() const {
     return socket_;
   }
 
 #ifdef _WIN32
   operator fd_t() const {
-    return reinterpret_cast<fd_t>(socket_);
+    return reinterpret_cast<fd_t>(static_cast<socket_t>(*this));
   }
 #endif
 

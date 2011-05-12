@@ -44,16 +44,59 @@ Buffers::as_read_iovecs(
   } while (next_buffer != NULL);
 }
 
-void
+size_t
 Buffers::as_write_iovecs(
   const Buffer& buffers,
   OUT vector<iovec>& write_iovecs
 ) {
+  size_t ret = 0;
+
   const Buffer* next_buffer = &buffers;
   do {
-    write_iovecs.push_back(next_buffer->as_write_iovec());
+    iovec write_iovec = next_buffer->as_write_iovec();
+    ret += write_iovec.iov_len;
+    write_iovecs.push_back(write_iovec);
     next_buffer = next_buffer->get_next_buffer();
   } while (next_buffer != NULL);
+
+  return ret;
+}
+
+size_t
+Buffers::as_write_iovecs(
+  const Buffer& buffers,
+  size_t offset,
+  OUT vector<iovec>& write_iovecs
+) {
+  size_t ret = 0;
+
+  const Buffer* next_buffer = &buffers;
+  do {
+    iovec write_iovec = next_buffer->as_write_iovec();
+    if (write_iovec.iov_len < offset) {
+      offset -= write_iovec.iov_len;
+      next_buffer = next_buffer->get_next_buffer();
+    } else if (write_iovec.iov_len == offset) {
+      next_buffer = next_buffer->get_next_buffer();
+      break;
+    } else {
+      write_iovec.iov_base = static_cast<char*>(write_iovec.iov_base) + offset;
+      write_iovec.iov_len -= offset;
+      ret += write_iovec.iov_len;
+      write_iovecs.push_back(write_iovec);
+      next_buffer = next_buffer->get_next_buffer();
+      break;
+    }
+  } while (next_buffer != NULL);
+
+  while (next_buffer != NULL) {
+    iovec write_iovec = next_buffer->as_write_iovec();
+    ret += write_iovec.iov_len;
+    write_iovecs.push_back(write_iovec);
+    next_buffer = next_buffer->get_next_buffer();
+  }
+
+  return ret;
 }
 
 void Buffers::put(Buffer& buffers, const void* data, size_t size) {

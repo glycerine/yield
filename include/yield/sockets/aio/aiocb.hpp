@@ -72,11 +72,6 @@ public:
     this->error = error;
   }
 
-  void set_next_aiocb(AIOCB* next_aiocb) {
-    AIOCB::dec_ref(this->next_aiocb);
-    this->next_aiocb = next_aiocb;
-  }
-
   void set_return(ssize_t return_) {
     this->return_ = return_;
   }
@@ -96,7 +91,6 @@ protected:
 
 private:
   uint32_t error;
-  AIOCB* next_aiocb;
   ssize_t return_;
   Socket& socket_;
 };

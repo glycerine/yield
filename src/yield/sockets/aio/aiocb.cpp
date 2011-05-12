@@ -36,18 +36,15 @@ namespace aio {
 #ifndef _WIN32
 AIOCB::AIOCB(Socket& socket_) : socket_(socket_.inc_ref()) {
   error = 0;
-  next_aiocb = NULL;
   return_ = -1;
 }
 
 AIOCB::AIOCB(Socket& socket_, off_t offset) : socket_(socket_.inc_ref()) {
   error = 0;
-  next_aiocb = NULL;
   return_ = -1;
 }
 
 AIOCB::~AIOCB() {
-  AIOCB::dec_ref(next_aiocb);
   Socket::dec_ref(socket_);
 }
 #endif

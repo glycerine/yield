@@ -1,4 +1,4 @@
-// yield/sockets/aio/win32/aiocb.hpp
+// partial_send_stream_socket.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,90 +27,64 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_SOCKETS_AIO_WIN32_AIOCB_HPP_
-#define _YIELD_SOCKETS_AIO_WIN32_AIOCB_HPP_
+#ifndef _YIELD_SOCKETS_AIO_PARTIAL_SEND_STREAM_SOCKET_HPP_
+#define _YIELD_SOCKETS_AIO_PARTIAL_SEND_STREAM_SOCKET_HPP_
 
-#include "yield/event.hpp"
-
-struct _OVERLAPPED;
-typedef struct _OVERLAPPED OVERLAPPED;
+#include "yield/sockets/stream_socket.hpp"
 
 namespace yield {
 namespace sockets {
-class Socket;
-
 namespace aio {
-class NBIOQueue;
-
-namespace win32 {
-class AIOCB : public Event {
+class PartialSendStreamSocket : public StreamSocket {
 public:
-  virtual ~AIOCB();
-
-public:
-  static AIOCB& cast(::OVERLAPPED& lpOverlapped);
-
-public:
-  uint32_t get_error() const {
-    return error;
+  PartialSendStreamSocket(StreamSocket& stream_socket)
+  : stream_socket(stream_socket.inc_ref()),
+    StreamSocket(
+      stream_socket.get_domain(),
+      stream_socket.get_protocol(),
+      static_cast<socket_t>(-1)
+      ) {
   }
 
-  ssize_t get_return() const {
-    return return_;
-  }
-
-  Socket& get_socket() {
-    return socket_;
+  ~PartialSendStreamSocket() {
+    StreamSocket::dec_ref(stream_socket);
   }
 
 public:
-  operator ::OVERLAPPED*();
+  // yield::sockets::Socket
+  operator socket_t() const {
+    return stream_socket.operator socket_t();
+  }
+
+  ssize_t send(const void* buf, size_t buflen, const MessageFlags& flags) {
+    return stream_socket.send(buf, 1, flags);
+  }
+
+  ssize_t
+  sendmsg(
+    const iovec* iov,
+    int iovlen,
+    const MessageFlags& flags
+  ) {
+    debug_assert_gt(iovlen, 0);
+    iovec iov0 = iov[0];
+    iov0.iov_len = 1;
+    return stream_socket.sendmsg(&iov0, 1, flags);
+  }
+
+  bool set_blocking_mode(bool blocking_mode) {
+    return stream_socket.set_blocking_mode(blocking_mode);
+  }
 
 public:
-  void set_error(uint32_t error) {
-    this->error = error;
+  // yield::sockets::StreamSocket
+  ssize_t sendfile(fd_t fd, off_t offset, size_t nbytes) {
+    return stream_socket.sendfile(fd, offset, 1);
   }
-
-  void set_return(ssize_t return_) {
-    this->return_ = return_;
-  }
-
-public:
-  // yield::Object
-  virtual uint32_t get_type_id() const = 0;
-  virtual const char* get_type_name() const = 0;
-
-  AIOCB& inc_ref() {
-    return Object::inc_ref(*this);
-  }
-
-protected:
-  AIOCB(Socket& socket_);
-  AIOCB(Socket& socket_, off_t offset);
 
 private:
-  struct {
-    unsigned long* Internal;
-    unsigned long* InternalHigh;
-#pragma warning( push )
-#pragma warning( disable: 4201 )
-    union {
-      struct {
-        unsigned long Offset;
-        unsigned long OffsetHigh;
-      };
-      void* Pointer;
-    };
-#pragma warning( pop )
-    void* hEvent;
-  } overlapped;
-  AIOCB* this_;
-
-  uint32_t error;
-  ssize_t return_;
-  Socket& socket_;
+  StreamSocket& stream_socket;
 };
-}
 }
 }
 }

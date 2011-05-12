@@ -73,6 +73,8 @@ public:
   YO_NEW_REF Event* timeddequeue(const Time& timeout);
 
 private:
+  class AIOCBState;
+
   enum RetryStatus {
     RETRY_STATUS_COMPLETE,
     RETRY_STATUS_ERROR,
@@ -80,46 +82,35 @@ private:
     RETRY_STATUS_WANT_WRITE
   };
 
-  class SocketState {
-  public:
-    SocketState() {
-      memset(aiocb_queues, 0, sizeof(aiocb_queues));
-    }
+  class SocketState;
 
-  public:
-    bool empty() const {
-      for (uint8_t aiocb_queue_i = 0; aiocb_queue_i < 4; ++aiocb_queue_i) {
-        if (aiocb_queues[aiocb_queue_i] != NULL)
-          return false;
-      }
-      return true;
-    }
-
-  public:
-    AIOCB* aiocb_queues[4]; // accept, connect, send, recv
-  };
+private:
+  void associate(AIOCB& aiocb, RetryStatus retry_status);
 
 private:
   template <class AIOCBType> void log_completion(AIOCBType&);
   template <class AIOCBType> void log_error(AIOCBType&);
   template <class AIOCBType> void log_retry(AIOCBType&);
+  template <class AIOCBType> void log_partial_send(AIOCBType&, size_t);
   template <class AIOCBType> void log_wouldblock(AIOCBType&, RetryStatus);
 
 private:
   static uint8_t get_aiocb_priority(const AIOCB& aiocb);
 
 private:
-  RetryStatus retry(AIOCB& aiocb);
-  RetryStatus retry(acceptAIOCB& accept_aiocb);
-  RetryStatus retry(connectAIOCB& connect_aiocb);
-  RetryStatus retry(recvAIOCB& recv_aiocb);
-  RetryStatus retry(sendAIOCB& send_aiocb);
-  RetryStatus retry(sendfileAIOCB& sendfile_aiocb);
+  RetryStatus retry(AIOCB&, size_t& partial_send_len);
+  RetryStatus retry_accept(acceptAIOCB&);
+  RetryStatus retry_connect(connectAIOCB&, size_t& partial_send_len);
+  RetryStatus retry_recv(recvAIOCB&);
+  RetryStatus retry_send(sendAIOCB&, size_t& partial_send_len);
+  template <class AIOCBType>
+  RetryStatus retry_send(AIOCBType&, const Buffer&, size_t& partial_send_len);
+  RetryStatus retry_sendfile(sendfileAIOCB&, size_t& partial_send_len);
 
 private:
   Log* log;
   yield::sockets::poll::SocketEventQueue socket_event_queue;
-  std::map<socket_t, SocketState*> state;
+  std::map<socket_t, SocketState*> socket_state;
 };
 }
 }

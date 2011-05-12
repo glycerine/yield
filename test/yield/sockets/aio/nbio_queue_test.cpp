@@ -28,9 +28,40 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "aio_queue_test.hpp"
+#include "partial_send_stream_socket.hpp"
 #include "yield/sockets/aio/nbio_queue.hpp"
 
 TEST_SUITE_EX(
   NBIOQueue,
   yield::sockets::aio::AIOQueueTestSuite<yield::sockets::aio::NBIOQueue>
 );
+
+namespace yield {
+namespace sockets {
+namespace aio {
+TEST_EX(NBIOQueue, partial_send, AIOQueueTest<NBIOQueue>) {
+  StreamSocketPair sockets;
+  if (!this->get_aio_queue().associate(sockets.first()))
+    throw Exception();
+  auto_Object<PartialSendStreamSocket>
+    partial_send_stream_socket = new PartialSendStreamSocket(sockets.first());
+
+  auto_Object<Buffer> buffer = new Buffer(4096);
+  for (uint16_t i = 0; i < 512; ++i)
+    buffer->put('m');
+
+  auto_Object<sendAIOCB> aiocb
+  = new sendAIOCB(*partial_send_stream_socket, buffer->inc_ref(), 0);
+
+  if (!this->get_aio_queue().enqueue(aiocb->inc_ref()))
+    throw Exception();
+
+  auto_Object<sendAIOCB> out_aiocb
+  = object_cast<sendAIOCB>(this->get_aio_queue().dequeue());
+  throw_assert_eq(&out_aiocb.get(), &aiocb.get());
+  throw_assert_eq(out_aiocb->get_error(), 0);
+  throw_assert_eq(out_aiocb->get_return(), 512);
+}
+}
+}
+}
