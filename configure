@@ -88,7 +88,6 @@ PROJECT_REFERENCES = {
     "yield.sockets": ("yield",),
     "yield.sockets.aio": ("yield.sockets.poll",),
     "yield.sockets.poll": ("yield.poll", "yield.sockets"),
-    "yield.stage": ("yield.thread",),
     "yield.thread": ("yield",),
     "yield.uri": ("yield",),
 }
@@ -369,11 +368,6 @@ INCLUDE_FILE_PATHS["yield.sockets.poll"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "sockets", "poll", "win32", "socket_event_queue.hpp"),
 ] + \
 INCLUDE_FILE_PATHS["yield.sockets.poll"]
-
-INCLUDE_FILE_PATHS["yield.stage"] = [
-    path_join(INCLUDE_DIR_PATH, "yield", "stage", "stage_scheduler.hpp"),
-] + \
-INCLUDE_FILE_PATHS["yield.stage"]
 
 INCLUDE_FILE_PATHS["yield.thread"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "thread", "posix", "thread.hpp"),

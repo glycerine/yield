@@ -45,10 +45,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.queue", "proj\yield\q
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.queue_test", "proj\yield\queue\yield.queue_test.vcxproj", "{406F22D8-5A4B-4D54-AEC8-BFC0734D4F0B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.stage", "proj\yield\stage\yield.stage.vcxproj", "{13AE0A2C-51B6-4EA8-8B2F-E56EC570A4F3}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.stage_test", "proj\yield\stage\yield.stage_test.vcxproj", "{96353BCF-349E-4BE4-8861-48718F55B9D0}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.poll", "proj\yield\poll\yield.poll.vcxproj", "{941AB6A9-57CA-4350-9DF0-5D1EAEC9E355}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.poll_test", "proj\yield\poll\yield.poll_test.vcxproj", "{61BBD546-FCB0-4CB9-B509-8EBBF67D70F3}"
@@ -151,14 +147,6 @@ Global
 		{406F22D8-5A4B-4D54-AEC8-BFC0734D4F0B}.Debug|Win32.Build.0 = Debug|Win32
 		{406F22D8-5A4B-4D54-AEC8-BFC0734D4F0B}.Release|Win32.ActiveCfg = Release|Win32
 		{406F22D8-5A4B-4D54-AEC8-BFC0734D4F0B}.Release|Win32.Build.0 = Release|Win32
-		{13AE0A2C-51B6-4EA8-8B2F-E56EC570A4F3}.Debug|Win32.ActiveCfg = Debug|Win32
-		{13AE0A2C-51B6-4EA8-8B2F-E56EC570A4F3}.Debug|Win32.Build.0 = Debug|Win32
-		{13AE0A2C-51B6-4EA8-8B2F-E56EC570A4F3}.Release|Win32.ActiveCfg = Release|Win32
-		{13AE0A2C-51B6-4EA8-8B2F-E56EC570A4F3}.Release|Win32.Build.0 = Release|Win32
-		{96353BCF-349E-4BE4-8861-48718F55B9D0}.Debug|Win32.ActiveCfg = Debug|Win32
-		{96353BCF-349E-4BE4-8861-48718F55B9D0}.Debug|Win32.Build.0 = Debug|Win32
-		{96353BCF-349E-4BE4-8861-48718F55B9D0}.Release|Win32.ActiveCfg = Release|Win32
-		{96353BCF-349E-4BE4-8861-48718F55B9D0}.Release|Win32.Build.0 = Release|Win32
 		{941AB6A9-57CA-4350-9DF0-5D1EAEC9E355}.Debug|Win32.ActiveCfg = Debug|Win32
 		{941AB6A9-57CA-4350-9DF0-5D1EAEC9E355}.Debug|Win32.Build.0 = Debug|Win32
 		{941AB6A9-57CA-4350-9DF0-5D1EAEC9E355}.Release|Win32.ActiveCfg = Release|Win32
