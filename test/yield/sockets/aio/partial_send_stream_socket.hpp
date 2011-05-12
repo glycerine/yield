@@ -38,12 +38,12 @@ namespace aio {
 class PartialSendStreamSocket : public StreamSocket {
 public:
   PartialSendStreamSocket(StreamSocket& stream_socket)
-  : stream_socket(stream_socket.inc_ref()),
-    StreamSocket(
+  : StreamSocket(
       stream_socket.get_domain(),
       stream_socket.get_protocol(),
       static_cast<socket_t>(-1)
-      ) {
+    ),
+    stream_socket(stream_socket.inc_ref()) {
   }
 
   ~PartialSendStreamSocket() {
