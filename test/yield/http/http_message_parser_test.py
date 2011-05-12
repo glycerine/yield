@@ -90,7 +90,7 @@ class HTTPMessageParserTest(list):
         HOST = globals()["HOST"]
         self.append("""throw_assert_eq((*%(http_message_instance)s)["Host"], "%(HOST)s");""" % locals())
 
-    def ASSERT_HTTP_VERSION(self, http_message_instance=None, http_version="1.1F"):
+    def ASSERT_HTTP_VERSION(self, http_message_instance=None, http_version="1"):
         if http_message_instance is None:
             http_message_instance = decamel(self.http_message_type)
 
