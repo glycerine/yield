@@ -37,29 +37,21 @@ namespace yield {
 namespace uri {
 TEST(URIParser, path1) {
   URI uri("/mydir/");
-  throw_assert_eq(uri.get_scheme(), "http");
-  throw_assert_eq(uri.get_host(), "localhost");
   throw_assert_eq(uri.get_path(), "/mydir/");
 }
 
 TEST(URIParser, path2) {
   URI uri("/mypath");
-  throw_assert_eq(uri.get_scheme(), "http");
-  throw_assert_eq(uri.get_host(), "localhost");
   throw_assert_eq(uri.get_path(), "/mypath");
 }
 
 TEST(URIParser, path3) {
   URI uri("/mydir/mypath");
-  throw_assert_eq(uri.get_scheme(), "http");
-  throw_assert_eq(uri.get_host(), "localhost");
   throw_assert_eq(uri.get_path(), "/mydir/mypath");
 }
 
 TEST(URIParser, path_query1) {
   URI uri("/mypath?key=value");
-  throw_assert_eq(uri.get_scheme(), "http");
-  throw_assert_eq(uri.get_host(), "localhost");
   throw_assert_eq(uri.get_path(), "/mypath");
   //throw_assert_eq( uri.get_query_value( "key" ), "value" );
   //throw_assert_eq( uri.get_query_value( "otherkey" ), "" );
@@ -68,8 +60,6 @@ TEST(URIParser, path_query1) {
 
 TEST(URIParser, path_query2) {
   URI uri("/mypath?key1=value1&key2=value2");
-  throw_assert_eq(uri.get_scheme(), "http");
-  throw_assert_eq(uri.get_host(), "localhost");
   throw_assert_eq(uri.get_path(), "/mypath");
   //throw_assert_eq( uri.get_query_value( "key1" ), "value1" );
   //throw_assert_eq( uri.get_query_value( "key2" ), "value2" );
