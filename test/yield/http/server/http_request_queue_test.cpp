@@ -32,7 +32,9 @@
 #include "yield/log.hpp"
 #include "yield/fs/file.hpp"
 #include "yield/fs/file_system.hpp"
+#include "yield/fs/stat.hpp"
 #include "yield/http/http_request.hpp"
+#include "yield/http/http_response.hpp"
 #include "yield/http/server/http_request_queue.hpp"
 #include "yunit.hpp"
 
@@ -61,8 +63,21 @@ protected:
 #else
       = yield::fs::FileSystem().open("Makefile");
 #endif
-      if (file != NULL)
-        http_request.respond(200, *file);
+      if (file != NULL) {
+        yield::fs::Stat* stbuf = file->stat();
+        if (stbuf != NULL) {
+          HTTPResponse* http_response = new HTTPResponse(200, file);
+          http_response->set_field(
+            "Content-Length",
+            static_cast<size_t>(stbuf->get_size())
+          );
+          yield::fs::Stat::dec_ref(*stbuf);
+          http_request.respond(*http_response);
+        } else {
+          yield::fs::File::dec_ref(*file);
+          http_request.respond(404);
+        }
+      }
       else
         http_request.respond(404);
     } else
