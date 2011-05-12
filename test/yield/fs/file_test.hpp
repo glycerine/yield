@@ -634,24 +634,24 @@ public:
     add("File::pread", new FilePReadTest(file_pair_factory));
 
     add(
-      "File::preadv( iov, 1 )",
+      "File::preadv(iov, 1)",
       new FilePReadVOneTest(file_pair_factory)
     );
 
     add(
-      "File::preadv( iov, 2 )",
+      "File::preadv(iov, 2)",
       new FilePReadVTwoTest(file_pair_factory)
     );
 
     add("File::pwrite", new FilePWriteTest(file_pair_factory));
 
     add(
-      "File::pwritev( iov, 1 )",
+      "File::pwritev(iov, 1)",
       new FilePWriteVOneTest(file_pair_factory)
     );
 
     add(
-      "File::pwritev( iov, 2 )",
+      "File::pwritev(iov, 2)",
       new FilePWriteVTwoTest(file_pair_factory)
     );
 

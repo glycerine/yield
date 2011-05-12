@@ -92,8 +92,8 @@ private:
   struct {
     unsigned long* Internal;
     unsigned long* InternalHigh;
-#pragma warning( push )
-#pragma warning( disable: 4201 )
+#pragma warning(push)
+#pragma warning(disable: 4201)
     union {
       struct {
         unsigned long Offset;
@@ -101,7 +101,7 @@ private:
       };
       void* Pointer;
     };
-#pragma warning( pop )
+#pragma warning(pop)
     void* hEvent;
   } overlapped;
   AIOCB* this_;

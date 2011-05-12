@@ -88,7 +88,7 @@ TEST(Channel, read_Buffers) {
 
 TEST(Channel, write_Buffer) {
   Buffer buffer(Buffer::getpagesize());
-  buffer.put(NULL, Buffer::getpagesize() / 2 );
+  buffer.put(NULL, Buffer::getpagesize() / 2);
   ssize_t write_ret = MockChannel().write(buffer);
   throw_assert_eq(write_ret, static_cast<ssize_t>(Buffer::getpagesize() / 2));
 }

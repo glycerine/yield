@@ -51,7 +51,7 @@
 #endif
 
 
-#define TEST_EX( TestSuiteName, TestName, TestType )\
+#define TEST_EX(TestSuiteName, TestName, TestType)\
   extern yunit::TestSuite& TestSuiteName##TestSuite();\
   class TestSuiteName##TestName##Test : public TestType\
   {\
@@ -70,11 +70,11 @@
   = new TestSuiteName##TestName##Test;\
   void TestSuiteName##TestName##Test::run()
 
-#define TEST( TestSuiteName, TestName )\
-  TEST_EX( TestSuiteName, TestName, yunit::Test )
+#define TEST(TestSuiteName, TestName)\
+  TEST_EX(TestSuiteName, TestName, yunit::Test )
 
 
-#define TEST_SUITE_EX( TestSuiteName, TestSuiteType )\
+#define TEST_SUITE_EX(TestSuiteName, TestSuiteType)\
   yunit::TestSuite& TestSuiteName##TestSuite()\
   {\
     static TestSuiteType* test_suite = new TestSuiteType();\
@@ -90,8 +90,8 @@
   };\
   TestSuiteName##TestSuiteDest TestSuiteName##TestSuiteDest_;
 
-#define TEST_SUITE( TestSuiteName )\
-  TEST_SUITE_EX( TestSuiteName, yunit::TestSuite )
+#define TEST_SUITE(TestSuiteName)\
+  TEST_SUITE_EX(TestSuiteName, yunit::TestSuite)
 
 
 

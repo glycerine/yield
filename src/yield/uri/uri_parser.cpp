@@ -63,7 +63,7 @@
 
 #ifdef _WIN32
 #pragma warning(push)
-#pragma warning( disable: 4702)
+#pragma warning(disable: 4702)
 #endif
 
 namespace yield {
@@ -1890,6 +1890,6 @@ _out:
 }
 
 #ifdef _WIN32
-#pragma warning( pop )
+#pragma warning(pop)
 #endif
 //

@@ -67,6 +67,7 @@ File::Map::Map(
 
 File::Map::~Map() {
   unmap();
+  data_ = NULL;
   File::dec_ref(file);
 }
 

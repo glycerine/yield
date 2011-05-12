@@ -34,12 +34,10 @@
 
 namespace yield {
 Request::Request() {
-  // credentials = NULL;
   response_handler = NULL;
 }
 
 Request::~Request() {
-  // MarshallableObject::dec_ref( credentials );
   EventHandler::dec_ref(response_handler);
 }
 
@@ -49,12 +47,6 @@ void Request::respond(Response& response) {
   else
     Response::dec_ref(response);
 }
-
-//void Request::set_credentials( MarshallableObject* credentials )
-//{
-//  MarshallableObject::dec_ref( this->credentials );
-//  this->credentials = credentials;
-//}
 
 void Request::set_response_handler(EventHandler* response_handler) {
   EventHandler::dec_ref(this->response_handler);

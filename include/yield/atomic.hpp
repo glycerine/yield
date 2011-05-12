@@ -73,7 +73,7 @@ extern "C"
 #elif defined(__arm__)
 // gcc atomic builtins are not defined on ARM
 #elif defined(__GNUC__) && \
-      ( ( __GNUC__ == 4 && __GNUC_MINOR__ >= 1 ) || __GNUC__ > 4 )
+      ((__GNUC__ == 4 && __GNUC_MINOR__ >= 1) || __GNUC__ > 4)
 #define HAVE_GNUC_ATOMIC_BUILTINS 1
 #endif
 
@@ -91,7 +91,7 @@ atomic_cas
 #elif defined(_WIN32)
   return InterlockedCompareExchange(cur_value, new_value, old_value);
 #elif defined(__sun)
-#if sizeof( atomic_t ) == sizeof( uint64_t )
+#if sizeof(atomic_t) == sizeof(uint64_t)
   return atomic_cas_64
          (
            reinterpret_cast<volatile uint64_t*>(cur_value),
@@ -173,7 +173,7 @@ static inline atomic_t atomic_dec(volatile atomic_t* cur_value) {
 #elif defined(_WIN32)
   return InterlockedDecrement(cur_value);
 #elif defined(__sun)
-#if sizeof( atomic_t ) == sizeof( uint64_t )
+#if sizeof(atomic_t) == sizeof(uint64_t)
   return atomic_dec_64_nv
          (
            reinterpret_cast<volatile uint64_t*>(cur_value)
@@ -204,7 +204,7 @@ static inline atomic_t atomic_inc(volatile atomic_t* cur_value) {
 #elif defined(_WIN32)
   return InterlockedIncrement(cur_value);
 #elif defined(__sun)
-#if sizeof( atomic_t ) == sizeof( uint64_t )
+#if sizeof(atomic_t) == sizeof(uint64_t)
   return atomic_inc_64_nv
          (
            reinterpret_cast<volatile uint64_t*>(cur_value)

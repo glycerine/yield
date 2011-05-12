@@ -53,17 +53,17 @@ TEST(URIParser, path3) {
 TEST(URIParser, path_query1) {
   URI uri("/mypath?key=value");
   throw_assert_eq(uri.get_path(), "/mypath");
-  //throw_assert_eq( uri.get_query_value( "key" ), "value" );
-  //throw_assert_eq( uri.get_query_value( "otherkey" ), "" );
-  //throw_assert_ne( uri.get_query_values( "key" ), uri.get_query().end() );
+  //throw_assert_eq(uri.get_query_value("key" ), "value");
+  //throw_assert_eq(uri.get_query_value("otherkey" ), "");
+  //throw_assert_ne(uri.get_query_values("key" ), uri.get_query().end());
 }
 
 TEST(URIParser, path_query2) {
   URI uri("/mypath?key1=value1&key2=value2");
   throw_assert_eq(uri.get_path(), "/mypath");
-  //throw_assert_eq( uri.get_query_value( "key1" ), "value1" );
-  //throw_assert_eq( uri.get_query_value( "key2" ), "value2" );
-  //throw_assert_eq( uri.get_query_value( "otherkey" ), "" );
+  //throw_assert_eq(uri.get_query_value("key1" ), "value1");
+  //throw_assert_eq(uri.get_query_value("key2" ), "value2");
+  //throw_assert_eq(uri.get_query_value("otherkey" ), "");
 }
 
 TEST(URIParser, path_query3) { // A Django URI 20110427
@@ -76,8 +76,8 @@ TEST(URIParser, scheme_host1) {
   URI uri("http://localhost");
   throw_assert_eq(uri.get_scheme(), "http");
   throw_assert_eq(uri.get_host(), "localhost");
-  //throw_assert( uri.get_user().empty() );
-  //throw_assert( uri.get_password().empty() );
+  //throw_assert(uri.get_user().empty());
+  //throw_assert(uri.get_password().empty());
   throw_assert_eq(uri.get_port(), 0);
   throw_assert(uri.get_path().empty());
 }
@@ -116,16 +116,16 @@ TEST(URIParser, scheme_user_host) {
   URI uri("http://minorg@localhost");
   throw_assert_eq(uri.get_scheme(), "http");
   throw_assert_eq(uri.get_host(), "localhost");
-  //throw_assert_eq( uri.get_user(), "minorg" );
-  //throw_assert( uri.get_password().empty() );
+  //throw_assert_eq(uri.get_user(), "minorg");
+  //throw_assert(uri.get_password().empty());
 }
 
 TEST(URIParser, scheme_user_password_host) {
   URI uri("http://minorg:minorg@localhost");
   throw_assert_eq(uri.get_scheme(), "http");
   throw_assert_eq(uri.get_host(), "localhost");
-  //throw_assert_eq( uri.get_user(), "minorg" );
-  //throw_assert_eq( uri.get_password(), "minorg" );
+  //throw_assert_eq(uri.get_user(), "minorg");
+  //throw_assert_eq(uri.get_password(), "minorg");
 }
 }
 }

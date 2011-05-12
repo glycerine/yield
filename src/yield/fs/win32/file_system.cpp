@@ -156,7 +156,7 @@ FileSystem::open(
   } else
     dwCreationDisposition = OPEN_EXISTING;
 
-  //  if ( ( flags & O_SPARSE ) == O_SPARSE )
+  //  if ((flags & O_SPARSE ) == O_SPARSE)
   //    dwFlagsAndAttributes |= FILE_ATTRIBUTE_SPARSE_FILE;
 
   if ((flags & O_SYNC) == O_SYNC)

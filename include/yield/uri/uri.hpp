@@ -34,8 +34,8 @@
 #include "yield/object.hpp"
 
 #ifdef _WIN32
-#pragma warning( push )
-#pragma warning( disable: 4521 ) // Multiple copy constructors
+#pragma warning(push)
+#pragma warning(disable: 4521) // Multiple copy constructors
 #endif
 
 namespace yield {
@@ -197,7 +197,7 @@ std::ostream& operator<<(std::ostream&, const URI&);
 
 
 #ifdef _WIN32
-#pragma warning( pop )
+#pragma warning(pop)
 #endif
 //
 

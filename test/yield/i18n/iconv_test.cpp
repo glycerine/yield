@@ -65,7 +65,7 @@ TEST(iconv, c_strings) {
   if (iconv_ret == static_cast<size_t>(-1))
     throw Exception();
 
-  // throw_assert_ne( inbuf, TEST_STRING_ISO88591 );
+  // throw_assert_ne(inbuf, TEST_STRING_ISO88591);
   throw_assert_eq(inbytesleft, 0);
   throw_assert_ne(outbuf_p, outbuf);
   throw_assert_gt(strlen(outbuf), 0);
