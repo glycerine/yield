@@ -60,6 +60,23 @@ depclean:
 	$(MAKE) -C proj/yield/uri -f yield.uri.Makefile depclean
 	$(MAKE) -C proj/yield/uri -f yield.uri_test.Makefile depclean
 
+test: yield.fs.poll_test yield.fs_test yield.http.server_test yield.http_test yield.i18n_test yield.poll_test yield.queue_test yield.sockets.aio_test yield.sockets.poll_test yield.sockets_test yield.stage_test yield.thread_test yield.uri_test yield_test
+	-bin/yield/yield_fs_poll_test
+	-bin/yield/yield_fs_test
+	-bin/yield/yield_http_server_test
+	-bin/yield/yield_http_test
+	-bin/yield/yield_i18n_test
+	-bin/yield/yield_poll_test
+	-bin/yield/yield_queue_test
+	-bin/yield/yield_sockets_aio_test
+	-bin/yield/yield_sockets_poll_test
+	-bin/yield/yield_sockets_test
+	-bin/yield/yield_stage_test
+	-bin/yield/yield_test
+	-bin/yield/yield_thread_test
+	-bin/yield/yield_uri_test
+
+
 
 yield.fs.poll: yield.fs yield.queue
 	$(MAKE) -C proj/yield/fs/poll -f yield.fs.poll.Makefile

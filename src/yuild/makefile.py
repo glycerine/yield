@@ -350,12 +350,23 @@ class TopLevelMakefile(object):
         depclean_recipes = []
         project_rules = []
         project_targets = []
+        test_prerequisites = []
+        test_recipes = []
 
         for makefile in sorted(self.__makefiles):
             if isinstance(makefile, Makefile):
                 project_dir_path = posixpath(relpath(makefile.get_project_dir_path()))
                 project_name = makefile.get_name()
                 project_references = makefile.get_project_references().get('*', [])
+                if project_name.endswith("_test"):
+                    test_prerequisites.append(project_name)
+                    test_recipes.append(
+                        '-' + \
+                        posixpath(relpath(normpath(path_join(
+                            makefile.get_project_dir_path(),
+                            makefile.get_output_file_path()['*']
+                        ))))
+                    )
             else:
                 project_dir_path, project_name = path_split(makefile)
                 project_references = []
@@ -381,6 +392,17 @@ class TopLevelMakefile(object):
         depclean_recipes = '\n\t'.join(sorted(depclean_recipes))
         project_rules = '\n'.join(sorted(project_rules))
         project_targets = ' '.join(sorted(project_targets))
+        if len(test_prerequisites) > 0:
+            test_prerequisites = ' '.join(sorted(test_prerequisites))
+            test_recipes = '\n'.join(['\t' + test_recipe for test_recipe in sorted(test_recipes)])
+            test_rule = """
+
+test: %(test_prerequisites)s
+%(test_recipes)s
+
+""" % locals()
+        else:
+            test_rule = ""
 
         return ("""\
 all: %(project_targets)s
@@ -389,8 +411,7 @@ clean:
     %(clean_recipes)s
 
 depclean:
-    %(depclean_recipes)s
-
+    %(depclean_recipes)s%(test_rule)s
 
 %(project_rules)s
 """ % locals()).replace(' ' * 4, '\t')
