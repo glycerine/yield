@@ -55,10 +55,6 @@ public:
     return error;
   }
 
-  AIOCB* get_next_aiocb() {
-    return next_aiocb;
-  }
-
   ssize_t get_return() const {
     return return_;
   }

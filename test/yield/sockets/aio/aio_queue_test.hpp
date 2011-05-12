@@ -49,59 +49,37 @@ namespace yield {
 namespace sockets {
 namespace aio {
 template <class AIOQueueType>
-class AIOQueueTest : public yunit::Test {
-public:
-  // yunit::Test
-  virtual void setup() {
-    aio_queue = new AIOQueueType;
-  }
-
-  virtual void teardown() {
-    delete aio_queue;
-  }
-
-protected:
-  AIOQueueType& get_aio_queue() const {
-    return *aio_queue;
-  }
-
-private:
-  AIOQueueType* aio_queue;
-};
-
-
-template <class AIOQueueType>
-class AIOQueueAssociateTest : public AIOQueueTest<AIOQueueType> {
+class AIOQueueAssociateTest : public yunit::Test {
 public:
   // yunit::Test
   void run() {
-    StreamSocketPair sockets;
-    if (!this->get_aio_queue().associate(sockets.first()))
+    if (!AIOQueueType().associate(StreamSocketPair().first()))
       throw Exception();
   }
 };
 
 
 template <class AIOQueueType>
-class AIOQueueRecvTest : public AIOQueueTest<AIOQueueType> {
+class AIOQueueRecvTest : public yunit::Test {
 public:
   // yunit::Test
   void run() {
+    AIOQueueType aio_queue;
+
     StreamSocketPair sockets;
-    if (!this->get_aio_queue().associate(sockets.first()))
+    if (!aio_queue.associate(sockets.first()))
       throw Exception();
 
     sockets.second().send("m", 1, 0);
-    auto_Object<Buffer> buffer = new Buffer(4096);
 
+    auto_Object<Buffer> buffer = new Buffer(4096);
     auto_Object<recvAIOCB> aiocb
     = new recvAIOCB(sockets.first(), buffer->inc_ref(), 0);
-
-    if (!this->get_aio_queue().enqueue(aiocb->inc_ref()))
+    if (!aio_queue.enqueue(aiocb->inc_ref()))
       throw Exception();
 
     auto_Object<recvAIOCB> out_aiocb
-    = object_cast<recvAIOCB>(this->get_aio_queue().dequeue());
+    = object_cast<recvAIOCB>(aio_queue.dequeue());
     throw_assert_eq(&out_aiocb.get(), &aiocb.get());
     throw_assert_eq(out_aiocb->get_error(), 0);
     throw_assert_eq(out_aiocb->get_return(), 1);
@@ -112,23 +90,58 @@ public:
 
 
 template <class AIOQueueType>
-class AIOQueueRecvQueuedTest : public AIOQueueTest<AIOQueueType> {
+class AIOQueueRecvMsgTest : public yunit::Test {
+public:
   // yunit::Test
   void run() {
+    AIOQueueType aio_queue;
+
     StreamSocketPair sockets;
-    if (!this->get_aio_queue().associate(sockets.first()))
+    if (!aio_queue.associate(sockets.first()))
+      throw Exception();
+
+    sockets.second().send("mm", 2, 0);
+
+    auto_Object<Buffer> buffer = new Buffer(1);
+    buffer->set_next_buffer(new Buffer(1));
+    auto_Object<recvAIOCB> aiocb
+    = new recvAIOCB(sockets.first(), buffer->inc_ref(), 0);
+    if (!aio_queue.enqueue(aiocb->inc_ref()))
+      throw Exception();
+
+    auto_Object<recvAIOCB> out_aiocb
+    = object_cast<recvAIOCB>(aio_queue.dequeue());
+    throw_assert_eq(&out_aiocb.get(), &aiocb.get());
+    throw_assert_eq(out_aiocb->get_error(), 0);
+    throw_assert_eq(out_aiocb->get_return(), 2);
+    throw_assert_eq(buffer->size(), 1);
+    throw_assert_eq((*buffer)[0], 'm');
+    throw_assert_eq(buffer->get_next_buffer()->size(), 1);
+    throw_assert_eq((*buffer->get_next_buffer())[0], 'm');
+  }
+};
+
+
+template <class AIOQueueType>
+class AIOQueueRecvQueuedTest : public yunit::Test {
+  // yunit::Test
+  void run() {
+    AIOQueueType aio_queue;
+
+    StreamSocketPair sockets;
+    if (!aio_queue.associate(sockets.first()))
       throw Exception();
 
     for (uint8_t i = 0; i < 2; i++) {
       recvAIOCB* aiocb = new recvAIOCB(sockets.first(), *new Buffer(2), 0);
-      if (!this->get_aio_queue().enqueue(*aiocb))
+      if (!aio_queue.enqueue(*aiocb))
         throw Exception();
     }
 
     // For the NBIOQueue: force the first retry
     {
       recvAIOCB* out_aiocb
-        = object_cast<recvAIOCB>(this->get_aio_queue().trydequeue());
+        = object_cast<recvAIOCB>(aio_queue.trydequeue());
       throw_assert_eq(out_aiocb, NULL);
     }
 
@@ -136,7 +149,7 @@ class AIOQueueRecvQueuedTest : public AIOQueueTest<AIOQueueType> {
 
     {
       auto_Object<recvAIOCB> out_aiocb
-        = object_cast<recvAIOCB>(this->get_aio_queue().dequeue());
+        = object_cast<recvAIOCB>(aio_queue.dequeue());
       throw_assert_eq(out_aiocb->get_error(), 0);
       throw_assert_eq(out_aiocb->get_return(), 2);
       throw_assert_eq(out_aiocb->get_buffer(), "te");
@@ -145,7 +158,7 @@ class AIOQueueRecvQueuedTest : public AIOQueueTest<AIOQueueType> {
       
     {
       recvAIOCB* out_aiocb
-        = object_cast<recvAIOCB>(this->get_aio_queue().trydequeue());
+        = object_cast<recvAIOCB>(aio_queue.trydequeue());
       throw_assert_eq(out_aiocb, NULL);
     }
 
@@ -153,7 +166,7 @@ class AIOQueueRecvQueuedTest : public AIOQueueTest<AIOQueueType> {
 
     {
       auto_Object<recvAIOCB> out_aiocb
-        = object_cast<recvAIOCB>(this->get_aio_queue().dequeue());
+        = object_cast<recvAIOCB>(aio_queue.dequeue());
       throw_assert_eq(out_aiocb->get_error(), 0);
       throw_assert_eq(out_aiocb->get_return(), 2);
       throw_assert_eq(out_aiocb->get_buffer(), "st");
@@ -164,24 +177,26 @@ class AIOQueueRecvQueuedTest : public AIOQueueTest<AIOQueueType> {
 
 
 template <class AIOQueueType>
-class AIOQueueRecvSplitTest : public AIOQueueTest<AIOQueueType> {
+class AIOQueueRecvSplitTest : public yunit::Test {
 public:
   // yunit::Test
   void run() {
+    AIOQueueType aio_queue;
+
     StreamSocketPair sockets;
-    if (!this->get_aio_queue().associate(sockets.first()))
+    if (!aio_queue.associate(sockets.first()))
       throw Exception();
 
     for (uint8_t i = 0; i < 2; i++) {
       recvAIOCB* aiocb = new recvAIOCB(sockets.first(), *new Buffer(2), 0);
-      if (!this->get_aio_queue().enqueue(*aiocb))
+      if (!aio_queue.enqueue(*aiocb))
         throw Exception();
     }
 
     // For the NBIOQueue: force the first retry
     {
       recvAIOCB* out_aiocb
-        = object_cast<recvAIOCB>(this->get_aio_queue().trydequeue());
+        = object_cast<recvAIOCB>(aio_queue.trydequeue());
       throw_assert_eq(out_aiocb, NULL);
     }
 
@@ -189,7 +204,7 @@ public:
 
     for (uint8_t i = 0; i < 2; i++) {
       auto_Object<recvAIOCB> out_aiocb
-        = object_cast<recvAIOCB>(this->get_aio_queue().dequeue());
+        = object_cast<recvAIOCB>(aio_queue.dequeue());
       throw_assert_eq(out_aiocb->get_error(), 0);
       throw_assert_eq(out_aiocb->get_return(), 2);
       throw_assert_eq(out_aiocb->get_buffer(), i == 0 ? "te" : "st");
@@ -200,40 +215,44 @@ public:
 
 
 template <class AIOQueueType>
-class AIOQueueSendTest : public AIOQueueTest<AIOQueueType> {
+class AIOQueueSendTest : public yunit::Test {
 public:
   // yunit::Test
   void run() {
+    AIOQueueType aio_queue;
+
     StreamSocketPair sockets;
-    if (!this->get_aio_queue().associate(sockets.first()))
+    if (!aio_queue.associate(sockets.first()))
       throw Exception();
 
-    auto_Object<Buffer> buffer = new Buffer(4096);
-    for (uint16_t i = 0; i < 512; ++i)
-      buffer->put('m');
-
     auto_Object<sendAIOCB> aiocb
-    = new sendAIOCB(sockets.first(), buffer->inc_ref(), 0);
-
-    if (!this->get_aio_queue().enqueue(aiocb->inc_ref()))
+    = new sendAIOCB(sockets.first(), Buffer::copy("test"), 0);
+    if (!aio_queue.enqueue(aiocb->inc_ref()))
       throw Exception();
 
     auto_Object<sendAIOCB> out_aiocb
-    = object_cast<sendAIOCB>(this->get_aio_queue().dequeue());
+    = object_cast<sendAIOCB>(aio_queue.dequeue());
     throw_assert_eq(&out_aiocb.get(), &aiocb.get());
     throw_assert_eq(out_aiocb->get_error(), 0);
-    throw_assert_eq(out_aiocb->get_return(), 512);
+    throw_assert_eq(out_aiocb->get_return(), 4);
+
+    char test[4];
+    ssize_t recv_ret = sockets.second().recv(test, 4, 0);
+    throw_assert_eq(recv_ret, 4);
+    throw_assert_eq(memcmp(test, "test", 4), 0);
   }
 };
 
 
 template <class AIOQueueType>
-class AIOQueueSendFileTest : public AIOQueueTest<AIOQueueType> {
+class AIOQueueSendFileTest : public yunit::Test {
 public:
   // yunit::Test
   void run() {
+    AIOQueueType aio_queue;
+
     StreamSocketPair sockets;
-    if (!this->get_aio_queue().associate(sockets.first()))
+    if (!aio_queue.associate(sockets.first()))
       throw Exception();
 
     auto_Object<yield::fs::File> file
@@ -245,27 +264,66 @@ public:
     throw_assert_eq(aiocb->get_nbytes(), stbuf->get_size());
     throw_assert_eq(aiocb->get_offset(), 0);
 
-    if (!this->get_aio_queue().enqueue(aiocb->inc_ref()))
+    if (!aio_queue.enqueue(aiocb->inc_ref()))
       throw Exception();
 
     auto_Object<sendfileAIOCB> out_aiocb
-      = object_cast<sendfileAIOCB>(this->get_aio_queue().dequeue());
+      = object_cast<sendfileAIOCB>(aio_queue.dequeue());
     throw_assert_eq(&out_aiocb.get(), &aiocb.get());
     throw_assert_eq(out_aiocb->get_error(), 0);
     throw_assert_eq(
       out_aiocb->get_return(),
       static_cast<ssize_t>(stbuf->get_size())
     );
+
+    char test[4];
+    ssize_t recv_ret = sockets.second().recv(test, 4, 0);
+    throw_assert_eq(recv_ret, 4);
+    throw_assert_eq(memcmp(test, "test", 4), 0);
   }
 
   void setup() {
-    AIOQueueTest<AIOQueueType>::setup();
-    yield::fs::FileSystem().touch("AIOQueueSendFileTest.txt");
+    teardown();
+    auto_Object<yield::fs::File> file
+      = yield::fs::FileSystem().creat("AIOQueueSendFileTest.txt");
+    file->write("test", 4);
+    file->close();
   }
 
   void teardown() {
     yield::fs::FileSystem().unlink("AIOQueueSendFileTest.txt");
-    AIOQueueTest<AIOQueueType>::teardown();
+  }
+};
+
+
+template <class AIOQueueType>
+class AIOQueueSendMsgTest : public yunit::Test {
+public:
+  // yunit::Test
+  void run() {
+    AIOQueueType aio_queue;
+
+    StreamSocketPair sockets;
+    if (!aio_queue.associate(sockets.first()))
+      throw Exception();
+
+    auto_Object<Buffer> buffer = Buffer::copy("test");
+    buffer->set_next_buffer(Buffer::copy(" string"));
+    auto_Object<sendAIOCB> aiocb
+      = new sendAIOCB(sockets.first(), buffer->inc_ref(), 0);
+    if (!aio_queue.enqueue(aiocb->inc_ref()))
+      throw Exception();
+
+    auto_Object<sendAIOCB> out_aiocb
+    = object_cast<sendAIOCB>(aio_queue.dequeue());
+    throw_assert_eq(&out_aiocb.get(), &aiocb.get());
+    throw_assert_eq(out_aiocb->get_error(), 0);
+    throw_assert_eq(out_aiocb->get_return(), 11);
+
+    char test_string[11];
+    ssize_t recv_ret = sockets.second().recv(test_string, 11, 0);
+    throw_assert_eq(recv_ret, 11);
+    throw_assert_eq(memcmp(test_string, "test string", 11), 0);
   }
 };
 
@@ -277,27 +335,37 @@ public:
     add("AIOQueue::associate", new AIOQueueAssociateTest<AIOQueueType>);
 
     add(
-      "AIOQueue::dequeue -> recvAIOCB",
+      "AIOQueue + recvAIOCB(Buffer)",
       new AIOQueueRecvTest<AIOQueueType>
     );
 
     add(
-      "AIOQueue::dequeue -> recvAIOCB queued",
+      "AIOQueue + recvAIOCB(Buffers)",
+      new AIOQueueRecvMsgTest<AIOQueueType>
+    );
+
+    add(
+      "AIOQueue + recvAIOCB queued",
       new AIOQueueRecvQueuedTest<AIOQueueType>
     );
 
     add(
-      "AIOQueue::dequeue -> recvAIOCB split",
+      "AIOQueue + recvAIOCB split",
       new AIOQueueRecvSplitTest<AIOQueueType>
     );
 
     add(
-      "AIOQueue::dequeue -> sendAIOCB",
+      "AIOQueue + sendAIOCB(Buffer)",
       new AIOQueueSendTest<AIOQueueType>
     );
 
     add(
-      "AIOQueue::dequeue -> sendfileAIOCB",
+      "AIOQueue + sendAIOCB(Buffers)",
+      new AIOQueueSendMsgTest<AIOQueueType>
+    );
+
+    add(
+      "AIOQueue + sendfileAIOCB",
       new AIOQueueSendFileTest<AIOQueueType>
     );
   }

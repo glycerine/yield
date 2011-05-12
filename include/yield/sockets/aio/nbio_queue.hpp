@@ -78,8 +78,8 @@ private:
   enum RetryStatus {
     RETRY_STATUS_COMPLETE,
     RETRY_STATUS_ERROR,
-    RETRY_STATUS_WANT_READ,
-    RETRY_STATUS_WANT_WRITE
+    RETRY_STATUS_WANT_RECV,
+    RETRY_STATUS_WANT_SEND
   };
 
   class SocketState;

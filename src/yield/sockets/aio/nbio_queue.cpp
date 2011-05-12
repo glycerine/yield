@@ -99,7 +99,7 @@ NBIOQueue::~NBIOQueue() {
 
 void NBIOQueue::associate(AIOCB& aiocb, RetryStatus retry_status) {
   switch (retry_status) {
-  case RETRY_STATUS_WANT_READ: {
+  case RETRY_STATUS_WANT_RECV: {
     bool associate_ret =
       socket_event_queue.associate(
         aiocb.get_socket(),
@@ -109,7 +109,7 @@ void NBIOQueue::associate(AIOCB& aiocb, RetryStatus retry_status) {
   }
   break;
 
-  case RETRY_STATUS_WANT_WRITE: {
+  case RETRY_STATUS_WANT_SEND: {
     bool associate_ret =
       socket_event_queue.associate(
         aiocb.get_socket(),
@@ -172,8 +172,8 @@ void NBIOQueue::log_wouldblock(AIOCBType& aiocb, RetryStatus retry_status) {
   if (log != NULL) {
     const char* retry_status_str;
     switch (retry_status) {
-      case RETRY_STATUS_WANT_READ: retry_status_str = "read"; break;
-      case RETRY_STATUS_WANT_WRITE: retry_status_str = "write"; break;
+      case RETRY_STATUS_WANT_RECV: retry_status_str = "read"; break;
+      case RETRY_STATUS_WANT_SEND: retry_status_str = "write"; break;
       default: debug_break(); retry_status_str = ""; break;
     }
 
@@ -229,8 +229,8 @@ NBIOQueue::RetryStatus NBIOQueue::retry_accept(acceptAIOCB& accept_aiocb) {
       log_completion(accept_aiocb);
       return RETRY_STATUS_COMPLETE;
     } else if (accept_aiocb.get_socket().want_accept()) {
-      log_wouldblock(accept_aiocb, RETRY_STATUS_WANT_READ);
-      return RETRY_STATUS_WANT_READ;
+      log_wouldblock(accept_aiocb, RETRY_STATUS_WANT_RECV);
+      return RETRY_STATUS_WANT_RECV;
     }
   }
 
@@ -260,8 +260,8 @@ NBIOQueue::retry_connect(
         return RETRY_STATUS_COMPLETE;
       }
     } else if (connect_aiocb.get_socket().want_connect()) {
-      log_wouldblock(connect_aiocb, RETRY_STATUS_WANT_WRITE);
-      return RETRY_STATUS_WANT_WRITE;
+      log_wouldblock(connect_aiocb, RETRY_STATUS_WANT_SEND);
+      return RETRY_STATUS_WANT_SEND;
     }
   }
 
@@ -285,12 +285,12 @@ NBIOQueue::RetryStatus NBIOQueue::retry_recv(recvAIOCB& recv_aiocb) {
       log_completion(recv_aiocb);
       return RETRY_STATUS_COMPLETE;
     } else if (recv_aiocb.get_socket().want_recv()) {
-      log_wouldblock(recv_aiocb, RETRY_STATUS_WANT_READ);
-      return RETRY_STATUS_WANT_READ;
+      log_wouldblock(recv_aiocb, RETRY_STATUS_WANT_RECV);
+      return RETRY_STATUS_WANT_RECV;
     }
     else if (recv_aiocb.get_socket().want_send()) {
-      log_wouldblock(recv_aiocb, RETRY_STATUS_WANT_WRITE);
-      return RETRY_STATUS_WANT_WRITE;
+      log_wouldblock(recv_aiocb, RETRY_STATUS_WANT_SEND);
+      return RETRY_STATUS_WANT_SEND;
     }
   }
 
@@ -338,7 +338,7 @@ NBIOQueue::retry_send(
     send_ret = aiocb.get_socket().sendmsg(&iov[0], iov.size(), 0);
   }
 
-  if (send_ret > 0) {
+  if (send_ret >= 0) {
     partial_send_len += static_cast<size_t>(send_ret);
 
     if (send_ret == complete_send_ret) {
@@ -347,15 +347,15 @@ NBIOQueue::retry_send(
       return RETRY_STATUS_COMPLETE;
     } else {
       log_partial_send(aiocb, partial_send_len);
-      return RETRY_STATUS_WANT_WRITE;
+      return RETRY_STATUS_WANT_SEND;
     }
   } else if (aiocb.get_socket().want_send()) {
-    log_wouldblock(aiocb, RETRY_STATUS_WANT_WRITE);
-    return RETRY_STATUS_WANT_WRITE;
+    log_wouldblock(aiocb, RETRY_STATUS_WANT_SEND);
+    return RETRY_STATUS_WANT_SEND;
   }
   else if (aiocb.get_socket().want_recv()) {
-    log_wouldblock(aiocb, RETRY_STATUS_WANT_READ);
-    return RETRY_STATUS_WANT_READ;
+    log_wouldblock(aiocb, RETRY_STATUS_WANT_RECV);
+    return RETRY_STATUS_WANT_RECV;
   }
   else {
     aiocb.set_error(Exception::get_last_error_code());
@@ -371,29 +371,32 @@ NBIOQueue::retry_sendfile(
 ) {
   log_retry(sendfile_aiocb);
 
-  if (sendfile_aiocb.get_socket().set_blocking_mode(true)) {
+  if (sendfile_aiocb.get_socket().set_blocking_mode(false)) {
     ssize_t sendfile_ret
       = sendfile_aiocb.get_socket().sendfile(
           sendfile_aiocb.get_fd(),
-          sendfile_aiocb.get_offset(),
-          sendfile_aiocb.get_nbytes()
+          sendfile_aiocb.get_offset() + partial_send_len,
+          sendfile_aiocb.get_nbytes() - partial_send_len
         );
 
     if (sendfile_ret >= 0) {
-      debug_assert_eq(
-        static_cast<size_t>(sendfile_ret),
-        sendfile_aiocb.get_nbytes()
-      );
-      sendfile_aiocb.set_return(sendfile_ret);
-      log_completion(sendfile_aiocb);
-      return RETRY_STATUS_COMPLETE;
+      partial_send_len += static_cast<size_t>(sendfile_ret);
+
+      if (partial_send_len == sendfile_aiocb.get_nbytes()) {
+        sendfile_aiocb.set_return(partial_send_len);
+        log_completion(sendfile_aiocb);
+        return RETRY_STATUS_COMPLETE;
+      } else {
+        log_partial_send(sendfile_aiocb, partial_send_len);
+        return RETRY_STATUS_WANT_SEND;
+      }
     } else if (sendfile_aiocb.get_socket().want_send()) {
-      log_wouldblock(sendfile_aiocb, RETRY_STATUS_WANT_WRITE);
-      return RETRY_STATUS_WANT_WRITE;
+      log_wouldblock(sendfile_aiocb, RETRY_STATUS_WANT_SEND);
+      return RETRY_STATUS_WANT_SEND;
     }
     else if (sendfile_aiocb.get_socket().want_recv()) {
-      log_wouldblock(sendfile_aiocb, RETRY_STATUS_WANT_READ);
-      return RETRY_STATUS_WANT_READ;
+      log_wouldblock(sendfile_aiocb, RETRY_STATUS_WANT_RECV);
+      return RETRY_STATUS_WANT_RECV;
     }
   }
 
@@ -454,10 +457,10 @@ Event* NBIOQueue::timeddequeue(const Time& timeout) {
               }
 
               return aiocb;
-            } else if (retry_status == RETRY_STATUS_WANT_READ) {
+            } else if (retry_status == RETRY_STATUS_WANT_RECV) {
               want_socket_event_types |= SocketEvent::TYPE_READ_READY;
               break;
-            } else if (retry_status == RETRY_STATUS_WANT_WRITE) {
+            } else if (retry_status == RETRY_STATUS_WANT_SEND) {
               want_socket_event_types |= SocketEvent::TYPE_WRITE_READY;
               break;
             }
