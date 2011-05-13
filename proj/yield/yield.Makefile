@@ -24,12 +24,12 @@ endif
 ifneq ($(COVERAGE),)
 	CXXFLAGS += -fprofile-arcs -ftest-coverage
 	LDFLAGS += -fprofile-arcs -ftest-coverage -lgcov
-endif
-ifneq ($(RELEASE),)
+else ifneq ($(RELEASE),)
 	CXXFLAGS += -O2
 else
 	CXXFLAGS += -g -D_DEBUG
 endif
+
 
 
 LDFLAGS += -L../../lib/yield

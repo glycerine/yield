@@ -69,6 +69,7 @@ private:
 };
 
 
+#ifdef _DEBUG
 #if defined(_WIN32)
 #define debug_break() DebugBreak()
 #elif defined(__GNUC__)
@@ -77,15 +78,27 @@ private:
 #define debug_break() *reinterpret_cast<int*>(0) = 0xabadcafe
 #endif
 
-#define debug_assert(a) { if (!((a) == true)) debug_break(); }
-#define debug_assert_eq(a, b) debug_assert((a) == (b));
-#define debug_assert_false(a) debug_assert((a) == false);
-#define debug_assert_ge(a, b) debug_assert((a) >= (b));
-#define debug_assert_gt(a, b) debug_assert((a) > (b));
-#define debug_assert_le(a, b) debug_assert((a) <= (b));
-#define debug_assert_lt(a, b) debug_assert((a) < (b));
-#define debug_assert_ne(a, b) debug_assert((a) != (b));
 #define debug_assert_true(a) { if (!((a) == true)) debug_break(); }
+#define debug_assert(a) debug_assert_true(a)
+#define debug_assert_eq(a, b) debug_assert_true((a) == (b));
+#define debug_assert_false(a) debug_assert_true((a) == false);
+#define debug_assert_ge(a, b) debug_assert_true((a) >= (b));
+#define debug_assert_gt(a, b) debug_assert_true((a) > (b));
+#define debug_assert_le(a, b) debug_assert_true((a) <= (b));
+#define debug_assert_lt(a, b) debug_assert_true((a) < (b));
+#define debug_assert_ne(a, b) debug_assert_true((a) != (b));
+#else
+#define debug_break()
+#define debug_assert_true(a)
+#define debug_assert(a)
+#define debug_assert_eq(a, b)
+#define debug_assert_false(a)
+#define debug_assert_ge(a, b)
+#define debug_assert_gt(a, b)
+#define debug_assert_le(a, b)
+#define debug_assert_lt(a, b)
+#define debug_assert_ne(a, b)
+#endif
 
 
 #define throw_assert(a)\
