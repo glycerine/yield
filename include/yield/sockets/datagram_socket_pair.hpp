@@ -38,24 +38,6 @@ namespace sockets {
 class DatagramSocketPair : public SocketPair<DatagramSocket> {
 public:
   DatagramSocketPair();
-
-  ~DatagramSocketPair() {
-    DatagramSocket::dec_ref(*sockets[0]);
-    DatagramSocket::dec_ref(*sockets[1]);
-  }
-
-public:
-  // yield::sockets::SocketPair
-  DatagramSocket& first() {
-    return *sockets[0];
-  }
-
-  DatagramSocket& second() {
-    return *sockets[1];
-  }
-
-private:
-  DatagramSocket* sockets[2];
 };
 }
 }

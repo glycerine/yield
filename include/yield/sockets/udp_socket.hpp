@@ -44,10 +44,6 @@ public:
     : DatagramSocket(domain)
   { }
 
-  UDPSocket(int domain, socket_t socket_)
-    : DatagramSocket(domain, PROTOCOL, socket_)
-  { }
-
 public:
   // yield::Object
   UDPSocket& inc_ref() {

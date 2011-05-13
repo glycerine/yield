@@ -1,4 +1,4 @@
-// yield/sockets/socket_pair.hpp
+// yield/sockets/ssl/ssl_exception.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,49 +27,26 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_SOCKETS_SOCKET_PAIR_HPP_
-#define _YIELD_SOCKETS_SOCKET_PAIR_HPP_
+#include "yield/sockets/ssl/ssl_exception.hpp"
 
-#include "yield/channel_pair.hpp"
+#ifdef YIELD_HAVE_OPENSSL
+#include <openssl/err.h>
+#include <openssl/ssl.h>
+#endif
 
 namespace yield {
 namespace sockets {
-template <class SocketType>
-class SocketPair : public ChannelPair {
-public:
-  ~SocketPair() {
-    SocketType::dec_ref(sockets[0]);
-    SocketType::dec_ref(sockets[1]);
-  }
+#ifdef YIELD_HAVE_OPENSSL
+namespace ssl {
+SSLException::SSLException()
+  : Exception(ERR_peek_error()) {
+  SSL_load_error_strings();
 
-public:
-  SocketType& first() {
-    return *sockets[0];
-  }
-
-  SocketType& second() {
-    return *sockets[1];
-  }
-
-public:
-  // yield::ChannelPair
-  Channel& get_read_channel() {
-    return first();
-  }
-
-  Channel& get_write_channel() {
-    return second();
-  }
-
-protected:
-  SocketPair() {
-    sockets[0] = sockets[1] = NULL;
-  }
-
-protected:
-  SocketType* sockets[2];
-};
+  char error_message[256];
+  ERR_error_string_n(ERR_peek_error(), error_message, 256);
+  set_error_message(error_message);
 }
 }
-
 #endif
+}
+}

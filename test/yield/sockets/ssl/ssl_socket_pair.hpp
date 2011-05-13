@@ -1,4 +1,4 @@
-// yield/sockets/socket_pair.hpp
+// ssl_socket_pair.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,48 +27,25 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_SOCKETS_SOCKET_PAIR_HPP_
-#define _YIELD_SOCKETS_SOCKET_PAIR_HPP_
+#ifndef _YIELD_SOCKETS_SSL_SSL_SOCKET_PAIR_HPP_
+#define _YIELD_SOCKETS_SSL_SSL_SOCKET_PAIR_HPP_
 
-#include "yield/channel_pair.hpp"
+#include "yield/sockets/socket_pair.hpp"
+
+#ifdef YIELD_HAVE_OPENSSL
+#include "yield/sockets/ssl/ssl_socket.hpp"
+#endif
 
 namespace yield {
 namespace sockets {
-template <class SocketType>
-class SocketPair : public ChannelPair {
+#ifdef YIELD_HAVE_OPENSSL
+namespace ssl {
+class SSLSocketPair : public SocketPair<SSLSocket> {
 public:
-  ~SocketPair() {
-    SocketType::dec_ref(sockets[0]);
-    SocketType::dec_ref(sockets[1]);
-  }
-
-public:
-  SocketType& first() {
-    return *sockets[0];
-  }
-
-  SocketType& second() {
-    return *sockets[1];
-  }
-
-public:
-  // yield::ChannelPair
-  Channel& get_read_channel() {
-    return first();
-  }
-
-  Channel& get_write_channel() {
-    return second();
-  }
-
-protected:
-  SocketPair() {
-    sockets[0] = sockets[1] = NULL;
-  }
-
-protected:
-  SocketType* sockets[2];
+  SSLSocketPair();
 };
+}
+#endif
 }
 }
 

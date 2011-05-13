@@ -1,4 +1,4 @@
-// yield/sockets/socket_pair.hpp
+// yield_sockets_ssl_test_main.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,49 +27,31 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_SOCKETS_SOCKET_PAIR_HPP_
-#define _YIELD_SOCKETS_SOCKET_PAIR_HPP_
+#include "yunit.hpp"
 
-#include "yield/channel_pair.hpp"
+#include <iostream>
 
-namespace yield {
-namespace sockets {
-template <class SocketType>
-class SocketPair : public ChannelPair {
-public:
-  ~SocketPair() {
-    SocketType::dec_ref(sockets[0]);
-    SocketType::dec_ref(sockets[1]);
-  }
+extern yunit::TestSuite& SSLContextTestSuite();
+extern yunit::TestSuite& SSLExceptionTestSuite();
+extern yunit::TestSuite& SSLSocketTestSuite();
 
-public:
-  SocketType& first() {
-    return *sockets[0];
-  }
+int main(int, char**) {
+  int failed_test_case_count = 0;
 
-  SocketType& second() {
-    return *sockets[1];
-  }
+  // SSLContext
+  std::cout << "SSLContext:" << std::endl;
+  failed_test_case_count += SSLContextTestSuite().run();
+  std::cout << std::endl;
 
-public:
-  // yield::ChannelPair
-  Channel& get_read_channel() {
-    return first();
-  }
+  // SSLException
+  std::cout << "SSLException:" << std::endl;
+  failed_test_case_count += SSLExceptionTestSuite().run();
+  std::cout << std::endl;
 
-  Channel& get_write_channel() {
-    return second();
-  }
+  // SSLSocket
+  std::cout << "SSLSocket:" << std::endl;
+  failed_test_case_count += SSLSocketTestSuite().run();
+  std::cout << std::endl;
 
-protected:
-  SocketPair() {
-    sockets[0] = sockets[1] = NULL;
-  }
-
-protected:
-  SocketType* sockets[2];
-};
+  return failed_test_case_count;
 }
-}
-
-#endif

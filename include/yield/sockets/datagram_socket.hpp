@@ -43,10 +43,6 @@ public:
     : Socket(domain, TYPE, protocol)
   { }
 
-  DatagramSocket(int domain, int protocol, socket_t socket_)
-    : Socket(domain, TYPE, protocol, socket_)
-  { }
-
   virtual ~DatagramSocket() { }
 
 public:

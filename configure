@@ -79,15 +79,16 @@ TEST_DIR_PATH = path_join(ROOT_DIR_PATH, "test")
 PROJECT_REFERENCES = {
     "yield": tuple(),
     "yield.fs": ("yield.i18n",),
-    "yield.fs.poll": ("yield.fs", "yield.queue"),
+    "yield.fs.poll": ("yield.fs", "yield.queue",),
     "yield.http": ("yield.uri",),
-    "yield.http.server": ("yield.fs", "yield.http", "yield.sockets.aio"),
+    "yield.http.server": ("yield.fs", "yield.http", "yield.sockets.aio",),
     "yield.i18n": ("yield",),
     "yield.poll": ("yield.queue",),
     "yield.queue": ("yield.thread",),
     "yield.sockets": ("yield",),
     "yield.sockets.aio": ("yield.sockets.poll",),
-    "yield.sockets.poll": ("yield.poll", "yield.sockets"),
+    "yield.sockets.poll": ("yield.poll", "yield.sockets",),
+    "yield.sockets.ssl": ("yield.fs", "yield.sockets",),
     "yield.thread": ("yield",),
     "yield.uri": ("yield",),
 }
@@ -681,6 +682,9 @@ if options.generate_proj:
                "type": project_type
             }
 
+            if project_name.startswith("yield.sockets.ssl"):
+                project["cxxdefines"] = {'*': ("YIELD_HAVE_OPENSSL",)}
+
             if sys.platform == "win32":
                 try: makedirs(project["build_dir_path"])
                 except: pass
@@ -782,7 +786,8 @@ if options.generate_test or options.generate_test_main_cpp:
                         test_suite_name = test_suite_name.groups()[0]
                         if not test_suite_name.endswith("TestSuite"):
                             test_suite_name += "TestSuite"
-                        test_suite_names.append(test_suite_name)
+                        if not test_suite_name in test_suite_names:
+                            test_suite_names.append(test_suite_name)
                 else:
                     test_cpp_file_line_i += 1
                     continue

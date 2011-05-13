@@ -78,13 +78,6 @@ public:
       throw Exception();
   }
 
-  Socket(int domain, int type, int protocol, socket_t socket_)
-    : domain(domain),
-      type(type),
-      protocol(protocol),
-      socket_(socket_)
-  { }
-
   virtual ~Socket() {
     close();
   }
@@ -176,8 +169,7 @@ public:
 
   virtual ssize_t recv(void* buf, size_t buflen, const MessageFlags& flags);
 
-  virtual ssize_t
-  recvmsg(
+  virtual ssize_t recvmsg(
     const iovec* iov,
     int iovlen,
     const MessageFlags& flags
@@ -257,6 +249,13 @@ public:
   }
 
 protected:
+  Socket(int domain, int type, int protocol, socket_t socket_)
+    : domain(domain),
+      type(type),
+      protocol(protocol),
+      socket_(socket_)
+  { }
+
   static socket_t create(int domain, int type, int protocol);
 
 private:

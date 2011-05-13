@@ -1,4 +1,4 @@
-// yield/sockets/socket_pair.hpp
+// yield/sockets/ssl/ssl_socket.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,48 +27,65 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_SOCKETS_SOCKET_PAIR_HPP_
-#define _YIELD_SOCKETS_SOCKET_PAIR_HPP_
+#ifndef _YIELD_SOCKETS_SSL_SSL_SOCKET_HPP_
+#define _YIELD_SOCKETS_SSL_SSL_SOCKET_HPP_
 
-#include "yield/channel_pair.hpp"
+#include "yield/sockets/tcp_socket.hpp"
+#ifdef YIELD_HAVE_OPENSSL
+#include "yield/sockets/ssl/ssl_context.hpp"
+#endif
 
 namespace yield {
 namespace sockets {
-template <class SocketType>
-class SocketPair : public ChannelPair {
+#ifdef YIELD_HAVE_OPENSSL
+namespace ssl {
+class SSLSocket : public TCPSocket {
 public:
-  ~SocketPair() {
-    SocketType::dec_ref(sockets[0]);
-    SocketType::dec_ref(sockets[1]);
-  }
+  SSLSocket(int domain = DOMAIN_DEFAULT);
+  SSLSocket(SSLContext& ssl_context, int domain = DOMAIN_DEFAULT);
+  ~SSLSocket();
 
 public:
-  SocketType& first() {
-    return *sockets[0];
-  }
-
-  SocketType& second() {
-    return *sockets[1];
+  operator SSL* () const {
+    return ssl;
   }
 
 public:
-  // yield::ChannelPair
-  Channel& get_read_channel() {
-    return first();
-  }
+  // yield::sockets::Socket
+  bool connect(const SocketAddress& peername);
+  ssize_t recv(Buffer& buffer, const MessageFlags& flags);
+  ssize_t recvmsg(const iovec* iov, int iovlen, const MessageFlags& flags);
+  ssize_t recv(void* buf, size_t buflen, const MessageFlags&);
+  ssize_t send(const void* buf, size_t buflen, const MessageFlags&);
+  ssize_t sendmsg(const iovec* iov, int iovlen, const MessageFlags&);
+  bool shutdown(bool shut_rd = true, bool shut_wr = true);
+  bool want_recv() const;
+  bool want_send() const;
 
-  Channel& get_write_channel() {
-    return second();
-  }
+public:
+  // yield::sockets::StreamSocket
+  YO_NEW_REF SSLSocket* accept();
+  YO_NEW_REF SSLSocket* accept(SocketAddress& peername);
+  YO_NEW_REF SSLSocket* dup();
+  bool listen();
 
-protected:
-  SocketPair() {
-    sockets[0] = sockets[1] = NULL;
-  }
+private:
+  SSLSocket(int domain, socket_t socket_, SSL* ssl, SSLContext& ssl_context);
 
-protected:
-  SocketType* sockets[2];
+private:
+  void init(SSLContext& ssl_context);
+  void init(SSL* ssl);
+
+private:
+  // yield::sockets::StreamSocket
+  YO_NEW_REF SSLSocket* dup2(socket_t);
+
+private:
+  SSL* ssl;
+  SSLContext& ssl_context;
 };
+}
+#endif
 }
 }
 

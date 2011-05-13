@@ -51,10 +51,6 @@ public:
     : Socket(domain, TYPE, protocol)
   { }
 
-  StreamSocket(int domain, int protocol, socket_t socket_)
-    : Socket(domain, TYPE, protocol, socket_)
-  { }
-
 public:
   YO_NEW_REF StreamSocket* accept() {
     SocketAddress peername;
@@ -92,6 +88,11 @@ public:
 public:
   // yield::Socket
   virtual bool setsockopt(int option_name, int option_value);
+
+protected:
+  StreamSocket(int domain, int protocol, socket_t socket_)
+    : Socket(domain, TYPE, protocol, socket_)
+  { }
 
 protected:
   virtual YO_NEW_REF StreamSocket* dup2(socket_t socket_) {

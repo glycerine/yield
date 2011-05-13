@@ -50,10 +50,6 @@ public:
     : StreamSocket(domain, PROTOCOL)
   { }
 
-  TCPSocket(int domain, socket_t socket_)
-    : StreamSocket(domain, PROTOCOL, socket_)
-  { }
-
   virtual ~TCPSocket() { }
 
 public:
@@ -72,7 +68,15 @@ public:
 
 public:
   // yield::sockets::StreamSocket
-  virtual YO_NEW_REF StreamSocket* dup() {
+  virtual YO_NEW_REF TCPSocket* accept() {
+    return static_cast<TCPSocket*>(StreamSocket::accept());
+  }
+
+  virtual YO_NEW_REF TCPSocket* accept(SocketAddress& peername) {
+    return static_cast<TCPSocket*>(StreamSocket::accept(peername));
+  }
+
+  virtual YO_NEW_REF TCPSocket* dup() {
     socket_t socket_ = Socket::create(get_domain(), TYPE, PROTOCOL);
     if (socket_ != static_cast<socket_t>(-1))
       return new TCPSocket(get_domain(), socket_);
@@ -81,8 +85,13 @@ public:
   }
 
 protected:
+  TCPSocket(int domain, socket_t socket_)
+    : StreamSocket(domain, PROTOCOL, socket_)
+  { }
+
+protected:
   // yield::sockets::StreamSocket
-  virtual StreamSocket* dup2(socket_t socket_) {
+  virtual TCPSocket* dup2(socket_t socket_) {
     return new TCPSocket(get_domain(), socket_);
   }
 };

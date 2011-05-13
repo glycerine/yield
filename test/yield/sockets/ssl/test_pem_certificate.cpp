@@ -1,4 +1,4 @@
-// yield/sockets/socket_pair.hpp
+// test_pem_certificate.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,49 +27,28 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_SOCKETS_SOCKET_PAIR_HPP_
-#define _YIELD_SOCKETS_SOCKET_PAIR_HPP_
-
-#include "yield/channel_pair.hpp"
-
 namespace yield {
 namespace sockets {
-template <class SocketType>
-class SocketPair : public ChannelPair {
-public:
-  ~SocketPair() {
-    SocketType::dec_ref(sockets[0]);
-    SocketType::dec_ref(sockets[1]);
-  }
-
-public:
-  SocketType& first() {
-    return *sockets[0];
-  }
-
-  SocketType& second() {
-    return *sockets[1];
-  }
-
-public:
-  // yield::ChannelPair
-  Channel& get_read_channel() {
-    return first();
-  }
-
-  Channel& get_write_channel() {
-    return second();
-  }
-
-protected:
-  SocketPair() {
-    sockets[0] = sockets[1] = NULL;
-  }
-
-protected:
-  SocketType* sockets[2];
-};
+#ifdef YIELD_HAVE_OPENSSL
+namespace ssl {
+const char* TEST_PEM_CERTIFICATE = \
+"-----BEGIN CERTIFICATE-----\n"
+"MIICmTCCAgICAQYwDQYJKoZIhvcNAQEFBQAwgZAxCzAJBgNVBAYTAkVVMREwDwYD\n"
+"VQQIEwhYdHJlZW1GUzERMA8GA1UEBxMIWHRyZWVtRlMxETAPBgNVBAoTCFh0cmVl\n"
+"bUZTMQ0wCwYDVQQLEwR0ZXN0MRkwFwYDVQQDExBYdHJlZW1GUy10ZXN0LUNBMR4w\n"
+"HAYJKoZIhvcNAQkBFg9DQUB4dHJlZW1mcy5vcmcwHhcNMDkwNDA1MTEzOTMyWhcN\n"
+"MTAwNDA1MTEzOTMyWjCBmDELMAkGA1UEBhMCRVUxETAPBgNVBAgTCFh0cmVlbUZT\n"
+"MREwDwYDVQQHEwhYdHJlZW1GUzERMA8GA1UEChMIWHRyZWVtRlMxDTALBgNVBAsT\n"
+"BHRlc3QxHTAbBgNVBAMTFFh0cmVlbUZTLXRlc3QtQ2xpZW50MSIwIAYJKoZIhvcN\n"
+"AQkBFhNDbGllbnRAeHRyZWVtZnMub3JnMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCB\n"
+"iQKBgQDCjEmDQzzp4+FtNw31mJM6D85EDW8mhrX1xWBRKd4Tr3fibYjYVgkoXX03\n"
+"QmIqmtA4Rbbu7cqkq8grOdX7a2LcZ3tNaByS9C1wFc5QVqXd2ZyKj7O7bvTEawwD\n"
+"bU2gdgFgFsrt7AGT3fPeT3bqK7W0bS/Rgw0hn8OAm6QL9NqiiQIDAQABMA0GCSqG\n"
+"SIb3DQEBBQUAA4GBAJzafyIsGcyK/ZRFozgCwteu4DchMuvHmhkEa8vO5hVJwiK/\n"
+"mDFmtgCUEf3gtyqQVmYyp99OohFNVTmBndX4j/GCUVqRxfCaojzN89kpsJnHuR/B\n"
+"FVHbqso+oavB+jOgu8fWMQ6jNsT4Ql0BgIzf5Lc08m/kIodnES92qNHOdixg\n"
+"-----END CERTIFICATE-----\n";
 }
-}
-
 #endif
+}
+}

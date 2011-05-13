@@ -12,20 +12,20 @@
   </ItemGroup>
 
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{6deccf61-2140-45e4-8aef-308a155345a7}</ProjectGuid>
+    <ProjectGuid>{f38269b9-d039-4655-b6ba-0496ab3c4e6e}</ProjectGuid>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <RootNamespace>yield.sockets.server</RootNamespace>
+    <RootNamespace>yield.sockets.ssl_test</RootNamespace>
   </PropertyGroup>
 
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <UseDebugLibraries>true</UseDebugLibraries>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <UseDebugLibraries>false</UseDebugLibraries>
   </PropertyGroup>
@@ -42,14 +42,14 @@
   </ImportGroup>
 
   <PropertyGroup>
-    <IntDir Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">$(ProjectDir)..\..\..\..\build\yield\sockets\server\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">$(ProjectDir)..\..\..\..\lib\yield\</OutDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">yield_sockets_server</TargetName>
+    <IntDir Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">$(ProjectDir)..\..\..\..\build\yield\sockets\ssl_test\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">$(ProjectDir)..\..\..\..\bin\yield\</OutDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">yield_sockets_ssl_test</TargetName>
   </PropertyGroup>
   <PropertyGroup>
-    <IntDir Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">$(ProjectDir)..\..\..\..\build\yield\sockets\server\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">$(ProjectDir)..\..\..\..\lib\yield\</OutDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">yield_sockets_server</TargetName>
+    <IntDir Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">$(ProjectDir)..\..\..\..\build\yield\sockets\ssl_test\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">$(ProjectDir)..\..\..\..\bin\yield\</OutDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">yield_sockets_ssl_test</TargetName>
   </PropertyGroup>
 
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">
@@ -59,18 +59,22 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <MinimalRebuild>false</MinimalRebuild>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions></PreprocessorDefinitions>
+      <PreprocessorDefinitions>YIELD_HAVE_OPENSSL</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
-    <Lib>
-      <AdditionalDependencies>yield_sockets_aio.lib;yield_aio.lib;yield_sockets_poll.lib;yield_poll.lib;yield_sockets.lib;yield_stage.lib;yield_thread.lib;yield.lib</AdditionalDependencies>
+    <Link>
+      <AdditionalDependencies>yield_sockets_ssl.lib;yield_fs.lib;yield_i18n.lib;yield_sockets.lib;yield.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Lib>
+      <SubSystem>CONSOLE</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">
     <ClCompile>
@@ -79,38 +83,50 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <MinimalRebuild>false</MinimalRebuild>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions></PreprocessorDefinitions>
+      <PreprocessorDefinitions>YIELD_HAVE_OPENSSL</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <WarningLevel>Level4</WarningLevel>
     </ClCompile>
-    <Lib>
-      <AdditionalDependencies>yield_sockets_aio.lib;yield_aio.lib;yield_sockets_poll.lib;yield_poll.lib;yield_sockets.lib;yield_stage.lib;yield_thread.lib;yield.lib</AdditionalDependencies>
+    <Link>
+      <AdditionalDependencies>yield_sockets_ssl.lib;yield_fs.lib;yield_i18n.lib;yield_sockets.lib;yield.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-    </Lib>
+      <SubSystem>CONSOLE</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
 
   <ItemGroup Label="ClIncludeItems">
-    <ClInclude Include="..\..\..\..\include\yield\sockets\peer\socket_peer.hpp" />
-    <ClInclude Include="..\..\..\..\include\yield\sockets\peer\stream_socket_peer.hpp" />
-    <ClInclude Include="..\..\..\..\include\yield\sockets\server\socket_server.hpp" />
-    <ClInclude Include="..\..\..\..\include\yield\sockets\server\stream_socket_server.hpp" />
+
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
-    <ClCompile Include="..\..\..\..\src\yield\sockets\server\stream_socket_server.cpp">
+    <ClCompile Include="..\..\..\..\test\yield\sockets\ssl\ssl_context_test.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\test\yield\sockets\ssl\ssl_exception_test.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\test\yield\sockets\ssl\ssl_socket_pair.cpp">
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\test\yield\sockets\ssl\ssl_socket_pair.hpp" />
+    <ClCompile Include="..\..\..\..\test\yield\sockets\ssl\ssl_socket_test.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\test\yield\sockets\ssl\test_pem_certificate.cpp">
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\test\yield\sockets\ssl\test_pem_certificate.hpp" />
+    <ClCompile Include="..\..\..\..\test\yield\sockets\ssl\test_pem_private_key.cpp">
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\test\yield\sockets\ssl\test_pem_private_key.hpp" />
+    <ClCompile Include="..\..\..\..\test\yield\sockets\ssl\yield_sockets_ssl_test_main.cpp">
     </ClCompile>
   </ItemGroup>
 
   <ItemGroup Label="ProjectReferenceItems">
-    <ProjectReference Include="..\aio\yield.sockets.aio.vcxproj">
-      <Project>{45e844f8-0362-4466-8701-6ed06dc1f0e7}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\..\stage\yield.stage.vcxproj">
-      <Project>{13ae0a2c-51b6-4ea8-8b2f-e56ec570a4f3}</Project>
+    <ProjectReference Include="yield.sockets.ssl.vcxproj">
+      <Project>{045ad726-a9ac-4394-a186-24c9f06b9d2a}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>

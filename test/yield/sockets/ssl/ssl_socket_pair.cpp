@@ -1,4 +1,4 @@
-// yield/sockets/win32/stream_socket_pair.cpp
+// ssl_socket_pair.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,25 +27,56 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "winsock.hpp"
-#include "yield/sockets/stream_socket_pair.hpp"
+#include "test_pem_certificate.hpp"
+#include "test_pem_private_key.hpp"
+#include "ssl_socket_pair.hpp"
 
 namespace yield {
 namespace sockets {
-StreamSocketPair::StreamSocketPair() {
-  StreamSocket listen_stream_socket(AF_INET);
-  if (listen_stream_socket.bind(SocketAddress::IN_LOOPBACK)) {
-    if (listen_stream_socket.listen()) {
+#ifdef YIELD_HAVE_OPENSSL
+namespace ssl {
+SSLSocketPair::SSLSocketPair() {
+  auto_Object<SSLContext> listen_ssl_context
+    = new SSLContext(
+            SSLv23_server_method(),
+            TEST_PEM_CERTIFICATE,
+            TEST_PEM_PRIVATE_KEY,
+            TEST_PEM_PRIVATE_KEY_PASSPHRASE
+          );
+  SSLSocket listen_ssl_socket(*listen_ssl_context);
+  if (listen_ssl_socket.bind(SocketAddress::IN_LOOPBACK)) {
+    if (listen_ssl_socket.listen()) {
       try {
-        sockets[0] = new StreamSocket(AF_INET);
-        if (sockets[0]->connect(*listen_stream_socket.getsockname())) {
-          sockets[1] = listen_stream_socket.accept();
-          if (sockets[1] == NULL)
-            throw Exception();
+        sockets[0] = new SSLSocket;
+        if (sockets[0]->connect(*listen_ssl_socket.getsockname())) {
+          sockets[1] = listen_ssl_socket.accept();
+          if (sockets[1] != NULL) {
+            if (
+              sockets[0]->set_blocking_mode(false) &&
+              sockets[1]->set_blocking_mode(false)
+            ) {
+              bool did_handshake[2];
+              did_handshake[0] = did_handshake[1] = false;
+              while (!did_handshake[0] || !did_handshake[1]) {
+                for (uint8_t i = 0; i < 2; i++) {
+                  if (!did_handshake[i])
+                    did_handshake[i] = SSL_do_handshake(*sockets[i]) == 1;
+                }
+              }
+
+              if (
+                !sockets[0]->set_blocking_mode(true) ||
+                !sockets[1]->set_blocking_mode(true)
+              )
+                throw Exception();
+            } else
+              throw Exception();
+          } else
+            throw SSLException();
         } else
           throw Exception();
       } catch (Exception&) {
-        StreamSocket::dec_ref(sockets[0]);
+        SSLSocket::dec_ref(sockets[0]);
         throw;
       }
     } else
@@ -53,5 +84,7 @@ StreamSocketPair::StreamSocketPair() {
   } else
     throw Exception();
 }
+}
+#endif
 }
 }

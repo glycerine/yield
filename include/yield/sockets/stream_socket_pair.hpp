@@ -38,24 +38,6 @@ namespace sockets {
 class StreamSocketPair : public SocketPair<StreamSocket> {
 public:
   StreamSocketPair();
-
-  ~StreamSocketPair() {
-    StreamSocket::dec_ref(*sockets[0]);
-    StreamSocket::dec_ref(*sockets[1]);
-  }
-
-public:
-  // yield::sockets::SocketPair
-  StreamSocket& first() {
-    return *sockets[0];
-  }
-
-  StreamSocket& second() {
-    return *sockets[1];
-  }
-
-private:
-  StreamSocket* sockets[2];
 };
 }
 }

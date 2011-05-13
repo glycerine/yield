@@ -1,4 +1,4 @@
-// yield/sockets/socket_pair.hpp
+// ssl_context_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,49 +27,30 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_SOCKETS_SOCKET_PAIR_HPP_
-#define _YIELD_SOCKETS_SOCKET_PAIR_HPP_
+#include "test_pem_certificate.hpp"
+#include "test_pem_private_key.hpp"
+#include "yield/auto_object.hpp"
+#ifdef YIELD_HAVE_OPENSSL
+#include "yield/sockets/ssl/ssl_context.hpp"
+#endif
+#include "yunit.hpp"
 
-#include "yield/channel_pair.hpp"
+TEST_SUITE(SSLContext);
 
 namespace yield {
 namespace sockets {
-template <class SocketType>
-class SocketPair : public ChannelPair {
-public:
-  ~SocketPair() {
-    SocketType::dec_ref(sockets[0]);
-    SocketType::dec_ref(sockets[1]);
-  }
-
-public:
-  SocketType& first() {
-    return *sockets[0];
-  }
-
-  SocketType& second() {
-    return *sockets[1];
-  }
-
-public:
-  // yield::ChannelPair
-  Channel& get_read_channel() {
-    return first();
-  }
-
-  Channel& get_write_channel() {
-    return second();
-  }
-
-protected:
-  SocketPair() {
-    sockets[0] = sockets[1] = NULL;
-  }
-
-protected:
-  SocketType* sockets[2];
-};
+#ifdef YIELD_HAVE_OPENSSL
+namespace ssl {
+TEST(SSLContext, construct_from_pem_certificate_string) {
+  auto_Object<SSLContext> ssl_context
+    = new SSLContext(
+      SSLv23_client_method(),
+      TEST_PEM_CERTIFICATE,
+      TEST_PEM_PRIVATE_KEY,
+      TEST_PEM_PRIVATE_KEY_PASSPHRASE
+    );
 }
 }
-
 #endif
+}
+}
