@@ -31,6 +31,10 @@
 #include "test_pem_private_key.hpp"
 #include "ssl_socket_pair.hpp"
 
+#ifdef YIELD_HAVE_OPENSSL
+#include <openssl/ssl.h>
+#endif
+
 namespace yield {
 namespace sockets {
 #ifdef YIELD_HAVE_OPENSSL
@@ -72,7 +76,7 @@ SSLSocketPair::SSLSocketPair() {
             } else
               throw Exception();
           } else
-            throw SSLException();
+            throw Exception();
         } else
           throw Exception();
       } catch (Exception&) {

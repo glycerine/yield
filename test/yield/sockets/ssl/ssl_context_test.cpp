@@ -35,6 +35,10 @@
 #endif
 #include "yunit.hpp"
 
+#ifdef YIELD_HAVE_OPENSSL
+#include <openssl/ssl.h>
+#endif
+
 TEST_SUITE(SSLContext);
 
 namespace yield {

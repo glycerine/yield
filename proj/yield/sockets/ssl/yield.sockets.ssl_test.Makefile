@@ -71,7 +71,7 @@ LIBS += -lyield_sockets_ssl -lyield_fs -lyield_i18n -lyield_sockets -lyield
 D_FILE_PATHS := $(shell find ../../../../build/yield/sockets/ssl_test -name "*.d")
 
 
-O_FILE_PATHS += ../../../../build/yield/sockets/ssl_test/ssl_context_test.o ../../../../build/yield/sockets/ssl_test/ssl_exception_test.o ../../../../build/yield/sockets/ssl_test/ssl_socket_pair.o ../../../../build/yield/sockets/ssl_test/ssl_socket_test.o ../../../../build/yield/sockets/ssl_test/test_pem_certificate.o ../../../../build/yield/sockets/ssl_test/test_pem_private_key.o ../../../../build/yield/sockets/ssl_test/yield_sockets_ssl_test_main.o
+O_FILE_PATHS += ../../../../build/yield/sockets/ssl_test/ssl_context_test.o ../../../../build/yield/sockets/ssl_test/ssl_socket_pair.o ../../../../build/yield/sockets/ssl_test/ssl_socket_test.o ../../../../build/yield/sockets/ssl_test/test_pem_certificate.o ../../../../build/yield/sockets/ssl_test/test_pem_private_key.o ../../../../build/yield/sockets/ssl_test/yield_sockets_ssl_test_main.o
 
 
 all: ../../../../bin/yield/yield_sockets_ssl_test
@@ -106,10 +106,6 @@ lcov: ../../../../bin/yield/yield_sockets_ssl_test
 ../../../../build/yield/sockets/ssl_test/ssl_context_test.o: ../../../../test/yield/sockets/ssl/ssl_context_test.cpp
 	-mkdir -p ../../../../build/yield/sockets/ssl_test 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/sockets/ssl_test/ssl_context_test.o -MD $(CXXFLAGS) ../../../../test/yield/sockets/ssl/ssl_context_test.cpp
-
-../../../../build/yield/sockets/ssl_test/ssl_exception_test.o: ../../../../test/yield/sockets/ssl/ssl_exception_test.cpp
-	-mkdir -p ../../../../build/yield/sockets/ssl_test 2>/dev/null
-	$(CXX) -c -o ../../../../build/yield/sockets/ssl_test/ssl_exception_test.o -MD $(CXXFLAGS) ../../../../test/yield/sockets/ssl/ssl_exception_test.cpp
 
 ../../../../build/yield/sockets/ssl_test/ssl_socket_pair.o: ../../../../test/yield/sockets/ssl/ssl_socket_pair.cpp
 	-mkdir -p ../../../../build/yield/sockets/ssl_test 2>/dev/null

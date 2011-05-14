@@ -27,7 +27,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/sockets/ssl/ssl_exception.hpp"
+#include "ssl_exception.hpp"
 
 #ifdef YIELD_HAVE_OPENSSL
 #include <openssl/err.h>

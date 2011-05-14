@@ -107,8 +107,6 @@
   <ItemGroup Label="ClCompileItems">
     <ClCompile Include="..\..\..\..\test\yield\sockets\ssl\ssl_context_test.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\..\test\yield\sockets\ssl\ssl_exception_test.cpp">
-    </ClCompile>
     <ClCompile Include="..\..\..\..\test\yield\sockets\ssl\ssl_socket_pair.cpp">
     </ClCompile>
     <ClInclude Include="..\..\..\..\test\yield\sockets\ssl\ssl_socket_pair.hpp" />

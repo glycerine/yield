@@ -126,7 +126,11 @@ public:
             wake_socket_pair.first().read(&m, 1);
             return event_queue.trydequeue();
           } else {
-            uint16_t revents = pollfd_.revents;
+            uint16_t revents;
+            if (pollfd_.revents == (POLLERR | POLLHUP))
+              revents = POLLHUP;
+            else
+              revents = pollfd_.revents;
             pollfd_.revents = 0;
             return new SocketEvent(pollfd_.fd, revents);
           }

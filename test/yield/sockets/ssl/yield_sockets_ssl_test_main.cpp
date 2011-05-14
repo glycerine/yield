@@ -32,7 +32,6 @@
 #include <iostream>
 
 extern yunit::TestSuite& SSLContextTestSuite();
-extern yunit::TestSuite& SSLExceptionTestSuite();
 extern yunit::TestSuite& SSLSocketTestSuite();
 
 int main(int, char**) {
@@ -41,11 +40,6 @@ int main(int, char**) {
   // SSLContext
   std::cout << "SSLContext:" << std::endl;
   failed_test_case_count += SSLContextTestSuite().run();
-  std::cout << std::endl;
-
-  // SSLException
-  std::cout << "SSLException:" << std::endl;
-  failed_test_case_count += SSLExceptionTestSuite().run();
   std::cout << std::endl;
 
   // SSLSocket

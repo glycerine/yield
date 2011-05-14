@@ -27,12 +27,14 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "ssl_exception.hpp"
 #include "yield/fs/path.hpp"
 #include "yield/sockets/ssl/ssl_context.hpp"
 
 #ifdef YIELD_HAVE_OPENSSL
 #include <openssl/pem.h>
 #include <openssl/pkcs12.h>
+#include <openssl/ssl.h>
 #include <openssl/x509.h>
 #ifdef _WIN32
 //#pragma comment(lib, "advapi32.lib")
@@ -55,7 +57,7 @@ SSLContext::SSLContext(SSL_CTX& ctx)
   : ctx(&ctx)
 { }
 
-SSLContext::SSLContext(const SSL_METHOD* method) throw (SSLException) {
+SSLContext::SSLContext(const SSL_METHOD* method) throw (Exception) {
   init(method);
 }
 
@@ -64,7 +66,7 @@ SSLContext::SSLContext(
   const Path& pem_certificate_file_path,
   const Path& pem_private_key_file_path,
   const string& pem_private_key_passphrase
-) throw (SSLException) {
+) throw (Exception) {
   init(method);
   use_pem_certificate(pem_certificate_file_path);
   use_pem_private_key(pem_private_key_file_path, pem_private_key_passphrase);
@@ -75,7 +77,7 @@ SSLContext::SSLContext(
   const char* pem_certificate,
   const char* pem_private_key,
   const char* pem_private_key_passphrase
-) throw (SSLException) {
+) throw (Exception) {
   init(method);
   use_pem_certificate(string(pem_certificate));
   use_pem_private_key(string(pem_private_key), string(pem_private_key_passphrase));
@@ -86,7 +88,7 @@ SSLContext::SSLContext(
   const string& pem_certificate,
   const string& pem_private_key,
   const string& pem_private_key_passphrase
-) throw (SSLException) {
+) throw (Exception) {
   init(method);
   use_pem_certificate(pem_certificate);
   use_pem_private_key(pem_private_key, pem_private_key_passphrase);
@@ -96,7 +98,7 @@ SSLContext::SSLContext(
   const SSL_METHOD* method,
   const Path& pkcs12_file_path,
   const string& pkcs12_passphrase
-) throw (SSLException) {
+) throw (Exception) {
   init(method);
   use_pkcs12(pkcs12_file_path, pkcs12_passphrase);
 }

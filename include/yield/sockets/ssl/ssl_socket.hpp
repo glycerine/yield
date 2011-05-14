@@ -35,6 +35,11 @@
 #include "yield/sockets/ssl/ssl_context.hpp"
 #endif
 
+#ifdef YIELD_HAVE_OPENSSL
+struct ssl_st;
+typedef ssl_st SSL;
+#endif
+
 namespace yield {
 namespace sockets {
 #ifdef YIELD_HAVE_OPENSSL

@@ -47,28 +47,21 @@ template <class AIOQueueType>
 HTTPRequestQueue<AIOQueueType>::HTTPRequestQueue(
   const SocketAddress& sockname,
   YO_NEW_REF Log* log
-) : aio_queue(*new AIOQueueType(log)),
+) throw (Exception) : aio_queue(*new AIOQueueType(log)),
     log(Object::inc_ref(log)),
     socket_(*new TCPSocket(sockname.get_family())) {
-  if (aio_queue.associate(socket_)) {
-#ifdef __linux__
-    if (socket_.setsockopt(Socket::Option::REUSEADDR, true)) {
-#endif
-      if (socket_.bind(sockname)) {
-        if (socket_.listen()) {
-          Buffer* recv_buffer
-            = new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
-          acceptAIOCB* accept_aiocb = new acceptAIOCB(socket_, recv_buffer);
-          if (aio_queue.enqueue(*accept_aiocb))
-            return;
-        }
-      }
-#ifdef __linux__
-    }
-#endif
-  }
+  init(sockname);
+}
 
-  throw Exception();
+template <class AIOQueueType>
+HTTPRequestQueue<AIOQueueType>::HTTPRequestQueue(
+  YO_NEW_REF TCPSocket& socket_,
+  const SocketAddress& sockname,
+  YO_NEW_REF Log* log
+) throw (Exception) : aio_queue(*new AIOQueueType(log)),
+    log(Object::inc_ref(log)),
+    socket_(socket_) {
+  init(sockname);
 }
 
 template <class AIOQueueType>
@@ -160,6 +153,32 @@ void HTTPRequestQueue<AIOQueueType>::handle(YO_NEW_REF AIOCBType& aiocb) {
   }
   else
     AIOCBType::dec_ref(aiocb);
+}
+
+template <class AIOQueueType>
+void
+HTTPRequestQueue<AIOQueueType>::init(
+  const SocketAddress& sockname
+) throw (Exception) {
+  if (aio_queue.associate(socket_)) {
+#ifdef __linux__
+    if (socket_.setsockopt(Socket::Option::REUSEADDR, true)) {
+#endif
+      if (socket_.bind(sockname)) {
+        if (socket_.listen()) {
+          Buffer* recv_buffer
+            = new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
+          acceptAIOCB* accept_aiocb = new acceptAIOCB(socket_, recv_buffer);
+          if (aio_queue.enqueue(*accept_aiocb))
+            return;
+        }
+      }
+#ifdef __linux__
+    }
+#endif
+  }
+
+  throw Exception();
 }
 
 template <class AIOQueueType>

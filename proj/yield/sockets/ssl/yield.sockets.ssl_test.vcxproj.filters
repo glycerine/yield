@@ -15,9 +15,6 @@
     <ClCompile Include="..\..\..\..\test\yield\sockets\ssl\ssl_context_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\test\yield\sockets\ssl\ssl_exception_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\test\yield\sockets\ssl\ssl_socket_pair.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

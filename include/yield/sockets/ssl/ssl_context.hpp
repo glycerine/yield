@@ -30,14 +30,14 @@
 #ifndef _YIELD_SOCKETS_SSL_SSL_CONTEXT_HPP_
 #define _YIELD_SOCKETS_SSL_SSL_CONTEXT_HPP_
 
-#include "yield/object.hpp"
+#include "yield/exception.hpp"
 #include "yield/fs/path.hpp"
-#ifdef YIELD_HAVE_OPENSSL
-#include "yield/sockets/ssl/ssl_exception.hpp"
-#endif
 
 #ifdef YIELD_HAVE_OPENSSL
-#include <openssl/ssl.h>
+struct ssl_ctx_st;
+typedef ssl_ctx_st SSL_CTX;
+struct ssl_method_st;
+typedef ssl_method_st SSL_METHOD;
 #endif
 
 namespace yield {
@@ -48,34 +48,34 @@ class SSLContext : public Object {
 public:
   SSLContext(SSL_CTX& ctx);
 
-  SSLContext(const SSL_METHOD*) throw(SSLException);
+  SSLContext(const SSL_METHOD*) throw(Exception);
 
   SSLContext(
     const SSL_METHOD* method,
     const yield::fs::Path& pem_certificate_file_path,
     const yield::fs::Path& pem_private_key_file_path,
     const string& pem_private_key_passphrase
-  ) throw (SSLException);
+  ) throw (Exception);
 
   SSLContext(
     const SSL_METHOD* method,
     const char* pem_certificate,
     const char* pem_private_key,
     const char* pem_private_key_passphrase
-  ) throw (SSLException);
+  ) throw (Exception);
   
   SSLContext(
     const SSL_METHOD* method,
     const string& pem_certificate,
     const string& pem_private_key,
     const string& pem_private_key_passphrase
-  ) throw (SSLException);
+  ) throw (Exception);
 
   SSLContext(
     const SSL_METHOD* method,
     const yield::fs::Path& pkcs12_file_path,
     const string& pkcs12_passphrase
-  ) throw (SSLException);
+  ) throw (Exception);
 
   ~SSLContext();
 
