@@ -90,6 +90,8 @@ public:
   virtual bool setsockopt(int option_name, int option_value);
 
 protected:
+  friend class StreamSocketPair;
+
   StreamSocket(int domain, int protocol, socket_t socket_)
     : Socket(domain, TYPE, protocol, socket_)
   { }

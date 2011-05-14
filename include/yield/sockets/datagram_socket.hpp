@@ -96,7 +96,7 @@ public:
   ssize_t
   sendto(
     const Buffer& buffer,
-    const MessageFlags& flags,
+   const MessageFlags& flags,
     const SocketAddress& peername
   ) {
     if (buffer.get_next_buffer() == NULL) {
@@ -122,6 +122,13 @@ public:
   // yield::Object
   DatagramSocket& inc_ref() {
     return Object::inc_ref(*this);
+  }
+
+private:
+  friend class DatagramSocketPair;
+
+  DatagramSocket(int domain, int protocol, socket_t socket_)
+    : Socket(domain, TYPE, protocol, socket_) {
   }
 };
 }

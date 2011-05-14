@@ -97,7 +97,6 @@ class Project(object):
 
         if project_dir_path is not None: # Must be set first
             project_dir_path = static_cast(project_dir_path, str)
-            # assert exists( project_dir_path )
             self.__project_dir_path = project_dir_path
         else:
             self.__project_dir_path = getcwd()
@@ -133,7 +132,10 @@ class Project(object):
                     rel_paths = []
                     for path in paths:
                         if exists(path):
-                            rel_paths.append(relpath(path, self.__project_dir_path))
+                            if abspath(path) == path:
+                                rel_paths.append(path)
+                            else:
+                                rel_paths.append(relpath(path, self.__project_dir_path))
                         else:
                             rel_paths.append(path)
                     platform_paths[platform] = rel_paths

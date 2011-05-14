@@ -55,7 +55,7 @@ SSLContext::SSLContext(SSL_CTX& ctx)
   : ctx(&ctx)
 { }
 
-SSLContext::SSLContext(const SSL_METHOD* method) {
+SSLContext::SSLContext(const SSL_METHOD* method) throw (SSLException) {
   init(method);
 }
 
@@ -64,7 +64,7 @@ SSLContext::SSLContext(
   const Path& pem_certificate_file_path,
   const Path& pem_private_key_file_path,
   const string& pem_private_key_passphrase
-) {
+) throw (SSLException) {
   init(method);
   use_pem_certificate(pem_certificate_file_path);
   use_pem_private_key(pem_private_key_file_path, pem_private_key_passphrase);
@@ -75,7 +75,7 @@ SSLContext::SSLContext(
   const char* pem_certificate,
   const char* pem_private_key,
   const char* pem_private_key_passphrase
-) {
+) throw (SSLException) {
   init(method);
   use_pem_certificate(string(pem_certificate));
   use_pem_private_key(string(pem_private_key), string(pem_private_key_passphrase));
@@ -86,7 +86,7 @@ SSLContext::SSLContext(
   const string& pem_certificate,
   const string& pem_private_key,
   const string& pem_private_key_passphrase
-) {
+) throw (SSLException) {
   init(method);
   use_pem_certificate(pem_certificate);
   use_pem_private_key(pem_private_key, pem_private_key_passphrase);
@@ -96,7 +96,7 @@ SSLContext::SSLContext(
   const SSL_METHOD* method,
   const Path& pkcs12_file_path,
   const string& pkcs12_passphrase
-) {
+) throw (SSLException) {
   init(method);
   use_pkcs12(pkcs12_file_path, pkcs12_passphrase);
 }
