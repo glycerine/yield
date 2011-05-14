@@ -51,6 +51,7 @@ from yuild import Makefile, TopLevelMakefile, \
                   Project, \
                   SourceFiles, \
                   VCXProj, VCXProjFilters, VCXProjUser, VCXSln
+from yuild.autoconf import HeaderCheck, LibraryCheck
 from yuild.constant import C_CXX_INCLUDE_FILE_FNMATCH_PATTERNS, \
                            C_CXX_FILE_FNMATCH_PATTERNS, \
                            CXX_SOURCE_FILE_FNMATCH_PATTERNS, \
@@ -88,10 +89,17 @@ PROJECT_REFERENCES = {
     "yield.sockets": ("yield",),
     "yield.sockets.aio": ("yield.sockets.poll",),
     "yield.sockets.poll": ("yield.poll", "yield.sockets",),
-    "yield.sockets.ssl": ("yield.fs", "yield.sockets",),
     "yield.thread": ("yield",),
     "yield.uri": ("yield",),
 }
+
+if HeaderCheck("openssl/ssl.h")():
+    if sys.platform == "win32":
+#        if LibraryCheck("libeay32")() and LibraryCheck("ssleay32")():
+        PROJECT_REFERENCES["yield.sockets.ssl"] = ("yield.fs", "yield.sockets",)
+    else:
+        if LibraryCheck("crypto")() and LibraryCheck("ssl"):
+            PROJECT_REFERENCES["yield.sockets.ssl"] = ("yield.fs", "yield.sockets",)
 
 PROJECT_NAMES = PROJECT_REFERENCES.keys()
 
@@ -100,26 +108,11 @@ PROJECT_REFERENCES["yield.sockets.aio_test"] = ("yield.fs", "yield.sockets.aio")
 
 AUTHOR = "Minor Gordon"
 
-#AUTOCONF = {
-#    "sockets.ssl": {
-#    #    "unix": { "YIELD_HAVE_OPENSSL": ( "crypto", "ssl", "ssl.h" ), },
-#    #    "win32": { "YIELD_HAVE_OPENSSL": ( "libeay32", "ssleay32", "ssl.h" ), },
-#    },
-#
-#    "thread": {
-#    #    "unix": { "YIELD_HAVE_PAPI": ( "papi", "papi.h" ), },
-#    },
-#
-##    "unix": { "YIELD_HAVE_ZLIB": ( "z", "zlib.h" ), },
-##    "win32":  { "YIELD_HAVE_ZLIB": ( "zdll", "zlib.h" ), },    
-#
-#    "uuid": {
-#        #    "linux": { "YIELD_HAVE_LINUX_LIBUUID": ( "uuid", "uuid/uuid.h" ), },
-#    },
-#}
-#for project_name in AUTOCONF.iterkeys():
-#    assert project_name in PROJECT_NAMES, project_name
-
+CXXDEFINES = {
+   "yield.sockets.ssl": {
+        '*': ["YIELD_HAVE_OPENSSL"]
+    }
+}
 
 CXXFLAGS = {
     "unix": ["-fno-rtti", "-Wall", "-Wold-style-cast", "-Wunused-macros"],
@@ -163,7 +156,6 @@ LIBPATH = {
 for platform in LIBPATH.iterkeys():
     assert platform in PLATFORMS, platform
 
-
 LIBS = {
     "yield": {
         "linux": ["rt", "stdc++"],
@@ -180,6 +172,10 @@ LIBS = {
         "sunos": ["nsl", "socket"],
     },
 
+    "yield.sockets.ssl": {
+        "unix": ["crypto", "ssl"]
+    },
+
     "yield.thread": {
         "freebsd": ["pthread"],
         "linux": ["pthread"],
@@ -190,8 +186,6 @@ LIBS = {
 #        "sunos": ["uuid"],
 #    },
 }
-for project_name in LIBS.iterkeys():
-    assert project_name in PROJECT_NAMES, project_names
 
 OUTPUT_FILE_PATHS = {}
 for project_name in PROJECT_NAMES:
@@ -419,10 +413,6 @@ THIRD_PARTY_SOURCE_FNMATCH_PATTERNS = (
 # Parse options
 option_parser = OptionParser()
 option_parser.add_option("--calculate-type-id")
-option_parser.add_option("--check-src-namespace", action="store_true")
-option_parser.add_option("--check-src-type-id", action="store_true")
-option_parser.add_option("--check-src-width", action="store_true")
-option_parser.add_option("--check-src-yunit", action="store_true")
 option_parser.add_option("-f", "--force", action="store_true")
 option_parser.add_option("--format-src", action="store_true")
 option_parser.add_option("-p", "--project", action="append", dest="project_names")
@@ -438,10 +428,6 @@ options, _ = option_parser.parse_args()
 
 # If no options set, do generate_proj
 if not options.calculate_type_id and\
-   not options.check_src_namespace and\
-   not options.check_src_type_id and\
-   not options.check_src_width and\
-   not options.check_src_yunit and\
    not options.format_src and\
    not options.generate_dist and\
    not options.generate_proj and\
@@ -462,94 +448,6 @@ else:
 if options.calculate_type_id:
     type_name = options.calculate_type_id
     print str(crc32(type_name) & 0xffffffff)
-
-
-if options.check_src_namespace or \
-   options.check_src_type_id or \
-   options.check_src_width or \
-   options.check_src_yunit:
-
-    include_file_paths = []
-    source_file_paths = []
-    for project_name in options.project_names:
-        for include_file_paths_ in INCLUDE_FILE_PATHS[project_name]:
-            include_file_paths.extend(list(rglob(include_file_paths_)))
-        for source_file_paths_ in SOURCE_FILE_PATHS[project_name]:
-            source_file_paths.extend(list(rglob(source_file_paths_)))
-
-    if options.check_src_namespace or options.check_src_type_id:
-        for include_file_path in include_file_paths:
-            namespaces = include_file_path[len(INCLUDE_DIR_PATH) + 1:].split(path_sep)[:-1]
-            assert len(namespaces) > 0
-
-            include_file_lines = [include_file_line.strip()
-                                  for include_file_line in
-                                  open(include_file_path).readlines()]
-
-            for include_file_line in include_file_lines:
-                if options.check_src_namespace:
-                    if include_file_line.startswith("namespace ") and \
-                       not '{' in include_file_line:
-                        namespace = include_file_line[10:]
-                        if namespace == namespaces[0]:
-                            del namespaces[0]
-                        else:
-                            print include_file_path[len(path_join(INCLUDE_DIR_PATH, "yield")) + 1:] + ":",
-                            print "expected namespace", namespaces[0],
-                            print "but found", namespace
-                            break
-
-                if options.check_src_type_id:
-                    from zlib import crc32
-
-                    if include_file_line.startswith("class") and \
-                       not include_file_line.endswith(';'):
-                        globals()["class_"] = include_file_line.split(' ')[1]
-                    elif "TYPE_ID = " in include_file_line:
-                        type_id = include_file_line.split(' ')[-1][:-1]
-                        if type_id.endswith("UL"): type_id = type_id[:-2]
-                        type_name = "::".join(namespaces + [class_])
-                        expected_type_id = str(crc32(type_name) & 0xffffffff)
-
-                        if type_id != expected_type_id:
-                            print type_name + ": expected TYPE_ID =",
-                            print expected_type_id, "but found", type_id
-
-                        quoted_type_name = '"' + type_name + '"'
-                        found_quoted_type_name = False
-                        for other_include_file_line in include_file_lines:
-                            if quoted_type_name in other_include_file_line:
-                                found_quoted_type_name = True
-                                break
-                        if not found_quoted_type_name:
-                            print type_name + ": could not find type name literal"
-
-    if options.check_src_width:
-        for file_path in include_file_paths + source_file_paths:
-            if not fnmatch(file_path, THIRD_PARTY_SOURCE_FNMATCH_PATTERNS):
-                file_lines = open(file_path).readlines()
-                for file_line_i in xrange(len(file_lines)):
-                    file_line = file_lines[file_line_i]
-                    if len(file_line) > 80:
-                        print file_path + ':' + str(file_line_i + 1) + " is " + \
-                              str(len(file_line)) + " columns wide"
-
-    if options.check_src_yunit:
-        source_files = SourceFiles(source_file_paths)
-        source_files = source_files.filter(CXX_SOURCE_FILE_FNMATCH_PATTERNS)
-        source_files = source_files.exclude(THIRD_PARTY_SOURCE_FNMATCH_PATTERNS)
-        for source_file_path in source_files['*']:
-            source_dir_path, source_file_name = path_split(source_file_path)
-            source_file_stem, source_file_ext = splitext(source_file_name)
-            if not source_file_stem.endswith("_test") and\
-               not source_file_stem.endswith("_test_main"):
-                test_file_path = \
-                    path_join(
-                        source_dir_path,
-                        source_file_stem + "_test" + source_file_ext
-                    )
-                if not exists(test_file_path):
-                    print "missing", test_file_path[len(YIELD_SRC_ROOT_DIR_PATH) + 1:]
 
 
 if options.generate_dist:
@@ -664,6 +562,7 @@ if options.generate_proj:
         ):
             project = {
                "build_dir_path": path_join(ROOT_DIR_PATH, "build", path_sep.join(project_name.split('.'))) + project_name_suffix,
+               "cxxdefines": CXXDEFINES.get(project_name, {}),
                "cxxflags": CXXFLAGS,
                "cxxpath": CXXPATH,
                "include_file_paths": INCLUDE_FILE_PATHS[project_name + project_name_suffix],
@@ -681,9 +580,6 @@ if options.generate_proj:
                "source_file_paths": SOURCE_FILE_PATHS[project_name + project_name_suffix],
                "type": project_type
             }
-
-            if project_name.startswith("yield.sockets.ssl"):
-                project["cxxdefines"] = {'*': ("YIELD_HAVE_OPENSSL",)}
 
             if sys.platform == "win32":
                 try: makedirs(project["build_dir_path"])

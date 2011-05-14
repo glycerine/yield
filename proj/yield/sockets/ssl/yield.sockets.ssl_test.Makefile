@@ -53,6 +53,18 @@ endif
 ifeq ($(UNAME), Solaris)
 	LIBS += -liconv -lnsl -lsocket -lm -lrt -lstdc++
 endif
+ifeq ($(UNAME), FreeBSD)
+	LIBS += -lcrypto -lssl
+endif
+ifeq ($(UNAME), Linux)
+	LIBS += -lcrypto -lssl
+endif
+ifeq ($(UNAME), Solaris)
+	LIBS += -lcrypto -lssl
+endif
+ifeq ($(UNAME), Darwin)
+	LIBS += -lcrypto -lssl
+endif
 LIBS += -lyield_sockets_ssl -lyield_fs -lyield_i18n -lyield_sockets -lyield
 
 
