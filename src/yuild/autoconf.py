@@ -29,10 +29,12 @@
 
 from hashlib import md5
 
-from yutil import quote, quotestrlist, strlist
+from yutil import quote, quotestrlist, rpad, strlist, typelist
 
 
 _all_ = [
+    "Check",
+    "Checks",
     "DeclarationCheck",
     "FunctionCheck",
     "HeaderCheck",
@@ -47,10 +49,49 @@ _all_ = [
 
 
 class Check(object):
+    def __init__(self, name):
+        self.__name = name
+
     def __call__(self):
         # print repr(self)
         exec repr(self)
-        return check
+        return eval(self.name + "()")
+
+    @property
+    def name(self):
+        return self.__name
+
+
+class Checks(list):
+    def __init__(self, checks=None, name=None):
+        if checks is None:
+            list.__init__(self)
+        else:
+            list.__init__(self, checks)
+        self.__name = name
+
+    def __call__(self):
+        for check in self:
+            if not check():
+                return False
+        return True
+
+    @property
+    def name(self):
+        name = self.__name
+        if name is None:
+            name = "checks_" + "_and_".join([check.name for check in self])
+        return name
+
+    def __repr__(self):
+        check_calls = " and ".join([check.name + "()" for check in self])
+        check_reprs = "\n\n".join([repr(check) for check in self])
+        name = self.name
+        return """\
+%(check_reprs)s
+def %(name)s():
+    return %(check_calls)s
+""" % locals()
 
 
 class _CompileCheck(Check):
@@ -67,117 +108,133 @@ class _CompileCheck(Check):
 
     class Includes(list):
         def __init__(self, paths):
-            if paths is None:
-                list.__init__(self)
-            elif isinstance(paths, str):
-                list.__init__(
-                    self,
-                    (_CompileCheck.Include(paths),)
-                )
-            else:
-                list.__init__(
-                    self,
-                    [_CompileCheck.Include(path)
-                     for path in paths if path is not None]
-                )
+            list.__init__(self, typelist(paths, _CompileCheck.Include))
 
         def __str__(self):
-            if len(self) > 0:
-                return '\n'.join([str(include) for include in self]) + '\n\n'
-            else:
-                return ""
+            return '\n'.join([str(include) for include in self])
 
 
-    def __init__(self, source, includes=None, language="C"):
-        self._language = language = language.lower()
-        self._includes = self.Includes(includes)
-        self._source = source
-        if language == "c++": self._source_file_ext = ".cpp"
-        elif language == "c": self._source_file_ext = ".c"
+    def __init__(self, source, includes=None, language="C", name=None):
+        if name is None:
+            name = "check_" + md5(source).hexdigest()
+        Check.__init__(self, name)
+        language = language.lower()
+        self.__includes = self.Includes(includes)
+        self.__source = source
+        if language == "c++": source_file_ext = ".cpp"
+        elif language == "c": source_file_ext = ".c"
         else: raise NotImplementedError, language
+        self.__source_file_path = name + source_file_ext
+
+    @property
+    def includes(self):
+        return self.__includes
 
     def __repr__(self):
-        includes = self._includes
-        source = self._source
-        source_file_path = md5(source).hexdigest() + self._source_file_ext
+        includes = rpad(str(self.includes), "\n\n")
+        name = self.name
+        source = self.source
+        source_file_path = self.source_file_path
         return """\
-import distutils.ccompiler, os, sys, traceback
-
-source_file = open("%(source_file_path)s", "w+b")
-source_file.write(\"\"\"\\
+def %(name)s():
+    import distutils.ccompiler, os, sys, traceback
+    
+    source_file = open("%(source_file_path)s", "w+b")
+    source_file.write(\"\"\"\\
 %(includes)s%(source)s
 \"\"\")
-source_file.close()
-
-try:
-    os.unlink(
-        distutils.ccompiler.new_compiler().compile(
-            ["%(source_file_path)s"],
-            extra_preargs=(sys.platform == "win32" and ["/EHsc"] or None)
-        )[0]
-    )    
-    check = True
-except:
-    traceback.print_exc()
-    check = False
-finally:
-    os.unlink("%(source_file_path)s")
+    source_file.close()
+    
+    try:
+        os.unlink(
+            distutils.ccompiler.new_compiler().compile(
+                ["%(source_file_path)s"],
+                extra_preargs=(sys.platform == "win32" and ["/EHsc"] or None)
+            )[0]
+        )
+        return True
+    except:
+        traceback.print_exc()
+        return False
+    finally:
+        os.unlink("%(source_file_path)s")
 """ % locals()
+
+    @property
+    def source(self):
+        return self.__source
+
+    @property
+    def source_file_path(self):
+        return self.__source_file_path
 
 
 class _CompileLinkCheck(_CompileCheck):
-    def __init__(self, source, includes=None, language="C", libraries=None):
-        _CompileCheck.__init__(self, source, includes, language)
-        self._libraries = strlist(libraries)
+    def __init__(
+        self,
+        source,
+        includes=None,
+        language="C",
+        libraries=None,
+        name=None
+    ):
+        _CompileCheck.__init__(self, source, includes, language, name)
+        self.__libraries = strlist(libraries)
+
+    @property
+    def libraries(self):
+        return self.__libraries
 
     def __repr__(self):
-        includes = str(self._includes)
-        libraries = '[' + ', '.join(quotestrlist(self._libraries)) + ']'
-        source = self._source
-        source_file_path = md5(source).hexdigest() + self._source_file_ext
+        includes = rpad(str(self.includes), "\n\n")
+        libraries = '[' + ', '.join(quotestrlist(self.libraries)) + ']'
+        name = self.name
+        source = self.source
+        source_file_path = self.source_file_path
         return """\
-import distutils.ccompiler, os.path, sys, tempfile, traceback
-
-try:
-    source_file = open("%(source_file_path)s", "w+b")
-    source_file.write(\"\"\"\\
-    %(includes)s%(source)s
-    \"\"\")
-    source_file.close()
-
-    cc = distutils.ccompiler.new_compiler()
+def %(name)s():
+    import distutils.ccompiler, os.path, sys, tempfile, traceback
     
-    object = \
-        cc.compile(
-            ["%(source_file_path)s"],
-            extra_preargs=(sys.platform == "win32" and ["/EHsc"] or None)
-        )[0]
-
     try:
-        bin_file = \
-            tempfile.NamedTemporaryFile(
-                suffix=(sys.platform == "win32" and ".exe" or "")
-            )
+        source_file = open("%(source_file_path)s", "w+b")
+        source_file.write(\"\"\"\\
+%(includes)s%(source)s
+\"\"\")
+        source_file.close()
+
+        cc = distutils.ccompiler.new_compiler()
         
+        object = \
+            cc.compile(
+                ["%(source_file_path)s"],
+                extra_preargs=(sys.platform == "win32" and ["/EHsc"] or None)
+            )[0]
+    
         try:
-            cc.link_executable(
-                [object],
-                bin_file.name,
-                extra_preargs=(sys.platform == "win32" and ["/MANIFEST"] or None),
-                libraries=%(libraries)s
-            )
-            if sys.platform == "win32":
-                os.unlink(bin_file.name + ".manifest")
-            check = True
+            bin_file = \
+                tempfile.NamedTemporaryFile(
+                    suffix=(sys.platform == "win32" and ".exe" or "")
+                )
+            
+            try:
+                cc.link_executable(
+                    [object],
+                    bin_file.name,
+                    extra_preargs=(sys.platform == "win32" and ["/MANIFEST"] or None),
+                    libraries=%(libraries)s
+                )
+                if sys.platform == "win32":
+                    os.unlink(bin_file.name + ".manifest")
+                return True
+            finally:
+                bin_file.close()
         finally:
-            bin_file.close()
+            os.unlink(object)
+    except:
+        traceback.print_exc()
+        return False
     finally:
-        os.unlink(object)
-except:
-    traceback.print_exc()
-    check = False
-finally:
-    os.unlink("%(source_file_path)s")
+        os.unlink("%(source_file_path)s")
 """ % locals()
 
 

@@ -57,6 +57,7 @@ class SetupPy(Project):
         self,
         author=None,
         author_email=None,
+        autoconf=None,
         description=None,
         license=None,
         platforms=None,
@@ -71,6 +72,7 @@ class SetupPy(Project):
 
         self.__author = author
         self.__author_email = author_email
+        self.__autoconf = autoconf
         if description is None:
             description = self.get_name()
         self.__description = description
@@ -83,6 +85,8 @@ class SetupPy(Project):
     def __str__(self):
         INDENT_SPACES = globals()["INDENT_SPACES"]
         source_dir_path = self.get_source_dir_path()['*']
+
+        autoconf = lpad("\n\n", self.__autoconf)
 
         constants = []
         for constant, platform_dict in (
@@ -210,7 +214,7 @@ import sys
 
 
 # Platform-specific constants
-%(constants)s
+%(constants)s%(autoconf)s
 
 
 # **kwds for Extensions

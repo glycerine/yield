@@ -31,7 +31,7 @@
 #define _YIELD_HTTP_SERVER_HTTP_CONNECTION_HPP_
 
 #include "yield/event_handler.hpp"
-#include "yield/sockets/aio/aio_queue.hpp"
+#include "yield/event_queue.hpp"
 #include "yield/sockets/aio/recv_aiocb.hpp"
 #include "yield/sockets/aio/send_aiocb.hpp"
 #include "yield/sockets/aio/sendfile_aiocb.hpp"
@@ -109,7 +109,7 @@ public:
 
 public:
   HTTPConnection(
-    yield::sockets::aio::AIOQueue& aio_queue,
+    EventQueue& aio_queue,
     EventHandler& http_request_handler,
     yield::sockets::SocketAddress& peername,
     yield::sockets::TCPSocket& socket_,
@@ -163,7 +163,7 @@ private:
   void parse(Buffer& recv_buffer);
 
 private:
-  yield::sockets::aio::AIOQueue& aio_queue;
+  EventQueue& aio_queue;
   EventHandler& http_request_handler;
   Log* log;
   yield::sockets::SocketAddress& peername;

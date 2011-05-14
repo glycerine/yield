@@ -56,6 +56,12 @@ public:
   }
 
 public:
+  // yield::Object
+  EventQueue& inc_ref() {
+    return Object::inc_ref(*this);
+  }
+
+public:
   // yield::EventHandler
   void handle(YO_NEW_REF Event& event) {
     enqueue(event);

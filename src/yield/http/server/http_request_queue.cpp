@@ -43,10 +43,11 @@ using yield::sockets::TCPSocket;
 using yield::sockets::aio::acceptAIOCB;
 using yield::sockets::aio::AIOQueue;
 
-HTTPRequestQueue::HTTPRequestQueue(
+template <class AIOQueueType>
+HTTPRequestQueue<AIOQueueType>::HTTPRequestQueue(
   const SocketAddress& sockname,
   YO_NEW_REF Log* log
-) : aio_queue(*new AIOQueue(log)),
+) : aio_queue(*new AIOQueueType(log)),
     log(Object::inc_ref(log)),
     socket_(*new TCPSocket(sockname.get_family())) {
   if (aio_queue.associate(socket_)) {
@@ -70,7 +71,8 @@ HTTPRequestQueue::HTTPRequestQueue(
   throw Exception();
 }
 
-HTTPRequestQueue::~HTTPRequestQueue() {
+template <class AIOQueueType>
+HTTPRequestQueue<AIOQueueType>::~HTTPRequestQueue() {
   for (
     vector<HTTPConnection*>::iterator connection_i = connections.begin();
     connection_i != connections.end();
@@ -92,11 +94,13 @@ HTTPRequestQueue::~HTTPRequestQueue() {
   TCPSocket::dec_ref(socket_);
 }
 
-bool HTTPRequestQueue::enqueue(YO_NEW_REF Event& event) {
+template <class AIOQueueType>
+bool HTTPRequestQueue<AIOQueueType>::enqueue(YO_NEW_REF Event& event) {
   return aio_queue.enqueue(event);
 }
 
-void HTTPRequestQueue::handle(YO_NEW_REF acceptAIOCB& accept_aiocb) {
+template <class AIOQueueType>
+void HTTPRequestQueue<AIOQueueType>::handle(YO_NEW_REF acceptAIOCB& accept_aiocb) {
   if (accept_aiocb.get_return() >= 0) {
     TCPSocket& accepted_socket
       = static_cast<TCPSocket&>(*accept_aiocb.get_accepted_socket());
@@ -133,8 +137,9 @@ void HTTPRequestQueue::handle(YO_NEW_REF acceptAIOCB& accept_aiocb) {
     acceptAIOCB::dec_ref(next_accept_aiocb);
 }
 
+template <class AIOQueueType>
 template <class AIOCBType>
-void HTTPRequestQueue::handle(YO_NEW_REF AIOCBType& aiocb) {
+void HTTPRequestQueue<AIOQueueType>::handle(YO_NEW_REF AIOCBType& aiocb) {
   HTTPConnection& connection = aiocb.get_connection();
   if (connection.get_state() == HTTPConnection::STATE_CONNECTED) {
     connection.handle(aiocb);
@@ -157,7 +162,8 @@ void HTTPRequestQueue::handle(YO_NEW_REF AIOCBType& aiocb) {
     AIOCBType::dec_ref(aiocb);
 }
 
-YO_NEW_REF Event* HTTPRequestQueue::timeddequeue(const Time& timeout) {
+template <class AIOQueueType>
+YO_NEW_REF Event* HTTPRequestQueue<AIOQueueType>::timeddequeue(const Time& timeout) {
   Time timeout_remaining(timeout);
 
   for (;;) {
@@ -205,6 +211,11 @@ YO_NEW_REF Event* HTTPRequestQueue::timeddequeue(const Time& timeout) {
       return NULL;
   }
 }
+
+#ifdef _WIN32
+template class HTTPRequestQueue<yield::sockets::aio::win32::AIOQueue>;
+#endif
+template class HTTPRequestQueue<yield::sockets::aio::NBIOQueue>;
 }
 }
 }

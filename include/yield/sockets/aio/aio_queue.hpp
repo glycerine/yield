@@ -38,11 +38,11 @@
 namespace yield {
 namespace sockets {
 namespace aio {
-//#ifdef _WIN32
-//typedef win32::AIOQueue AIOQueue;
-//#else
+#ifdef _WIN32
+typedef win32::AIOQueue AIOQueue;
+#else
 typedef NBIOQueue AIOQueue;
-//#endif
+#endif
 }
 }
 }

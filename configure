@@ -51,7 +51,7 @@ from yuild import Makefile, TopLevelMakefile, \
                   Project, \
                   SourceFiles, \
                   VCXProj, VCXProjFilters, VCXProjUser, VCXSln
-from yuild.autoconf import HeaderCheck, LibraryCheck
+from yuild.autoconf import Checks, HeaderCheck, LibraryCheck
 from yuild.constant import C_CXX_INCLUDE_FILE_FNMATCH_PATTERNS, \
                            C_CXX_FILE_FNMATCH_PATTERNS, \
                            CXX_SOURCE_FILE_FNMATCH_PATTERNS, \
@@ -93,13 +93,11 @@ PROJECT_REFERENCES = {
     "yield.uri": ("yield",),
 }
 
-if HeaderCheck("openssl/ssl.h")():
-    if sys.platform == "win32":
-#        if LibraryCheck("libeay32")() and LibraryCheck("ssleay32")():
-        PROJECT_REFERENCES["yield.sockets.ssl"] = ("yield.fs", "yield.sockets",)
-    else:
-        if LibraryCheck("crypto")() and LibraryCheck("ssl"):
-            PROJECT_REFERENCES["yield.sockets.ssl"] = ("yield.fs", "yield.sockets",)
+openssl_checks = Checks((HeaderCheck("openssl/ssl.h"),))
+if sys.platform != "win32":
+    openssl_checks.extend((LibraryCheck("crypto"), LibraryCheck("ssl")))
+if openssl_checks():
+    PROJECT_REFERENCES["yield.sockets.ssl"] = ("yield.fs", "yield.sockets",)
 
 PROJECT_NAMES = PROJECT_REFERENCES.keys()
 

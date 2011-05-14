@@ -28,7 +28,8 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from os import getcwd
-from os.path import dirname, exists, join
+from os.path import dirname, exists, sep as path_sep
+import sys
 
 from yutil import abspath, \
                   abspaths, \
@@ -132,7 +133,7 @@ class Project(object):
                     rel_paths = []
                     for path in paths:
                         if exists(path):
-                            if abspath(path) == path:
+                            if sys.platform != "win32" and path.startswith(path_sep):
                                 rel_paths.append(path)
                             else:
                                 rel_paths.append(relpath(path, self.__project_dir_path))

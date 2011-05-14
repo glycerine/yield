@@ -43,10 +43,9 @@ using yield::fs::File;
 using yield::sockets::SocketAddress;
 using yield::sockets::TCPSocket;
 using yield::sockets::aio::acceptAIOCB;
-using yield::sockets::aio::AIOQueue;
 
 HTTPConnection::HTTPConnection(
-  AIOQueue& aio_queue,
+  EventQueue& aio_queue,
   EventHandler& http_request_handler,
   SocketAddress& peername,
   TCPSocket& socket_,
@@ -61,7 +60,7 @@ HTTPConnection::HTTPConnection(
 }
 
 HTTPConnection::~HTTPConnection() {
-  AIOQueue::dec_ref(aio_queue);
+  EventQueue::dec_ref(aio_queue);
   EventHandler::dec_ref(http_request_handler);
   Log::dec_ref(log);
   TCPSocket::dec_ref(socket_);

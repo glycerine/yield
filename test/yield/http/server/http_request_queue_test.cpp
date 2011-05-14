@@ -41,7 +41,7 @@
 namespace yield {
 namespace http {
 namespace server {
-class TestHTTPRequestQueue : public HTTPRequestQueue {
+class TestHTTPRequestQueue : public HTTPRequestQueue<> {
 public:
   TestHTTPRequestQueue(YO_NEW_REF Log* log = NULL)
     : HTTPRequestQueue(8000, log) {
