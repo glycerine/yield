@@ -224,7 +224,7 @@ Extension_kwds = {
     "extra_link_args": EXTRA_LINK_ARGS,
     "include_dirs": INCLUDE_DIRS,
     "library_dirs": LIBRARY_DIRS,
-    "libraries": LIBRARIES    
+    "libraries": LIBRARIES
 }
 
 
