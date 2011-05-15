@@ -41,17 +41,11 @@ ifeq ($(UNAME), MINGW32)
 endif
 
 
-ifeq ($(UNAME), Darwin)
-	LIBS += -liconv
-endif
-ifeq ($(UNAME), FreeBSD)
-	LIBS += -liconv -lintl
-endif
 ifeq ($(UNAME), Linux)
 	LIBS += -lrt -lstdc++
 endif
 ifeq ($(UNAME), Solaris)
-	LIBS += -liconv -lnsl -lsocket -lm -lrt -lstdc++
+	LIBS += -lnsl -lsocket -lm -lrt -lstdc++
 endif
 ifeq ($(UNAME), FreeBSD)
 	LIBS += -lcrypto -lssl
@@ -65,7 +59,7 @@ endif
 ifeq ($(UNAME), Darwin)
 	LIBS += -lcrypto -lssl
 endif
-LIBS += -lyield_sockets_ssl -lyield_fs -lyield_i18n -lyield_sockets -lyield
+LIBS += -lyield_sockets_ssl -lyield_sockets -lyield
 
 
 D_FILE_PATHS := $(shell find ../../../../build/yield/sockets/ssl_test -name "*.d")

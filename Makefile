@@ -132,7 +132,7 @@ yield.sockets.poll: yield.poll yield.sockets
 yield.sockets.poll_test: yield.sockets.poll
 	$(MAKE) -C proj/yield/sockets/poll -f yield.sockets.poll_test.Makefile
 
-yield.sockets.ssl: yield.fs yield.sockets
+yield.sockets.ssl: yield.sockets
 	$(MAKE) -C proj/yield/sockets/ssl -f yield.sockets.ssl.Makefile
 
 yield.sockets.ssl_test: yield.sockets.ssl

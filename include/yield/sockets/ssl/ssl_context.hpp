@@ -31,7 +31,7 @@
 #define _YIELD_SOCKETS_SSL_SSL_CONTEXT_HPP_
 
 #include "yield/exception.hpp"
-#include "yield/fs/path.hpp"
+#include "yield/sockets/ssl/ssl_version.hpp"
 
 #ifdef YIELD_HAVE_OPENSSL
 struct ssl_ctx_st;
@@ -46,35 +46,13 @@ namespace sockets {
 namespace ssl {
 class SSLContext : public Object {
 public:
-  SSLContext(SSL_CTX& ctx);
-
-  SSLContext(const SSL_METHOD*) throw(Exception);
+  SSLContext(SSLVersion ssl_version = SSL_VERSION_23) throw(Exception);
 
   SSLContext(
-    const SSL_METHOD* method,
-    const yield::fs::Path& pem_certificate_file_path,
-    const yield::fs::Path& pem_private_key_file_path,
-    const string& pem_private_key_passphrase
-  ) throw (Exception);
-
-  SSLContext(
-    const SSL_METHOD* method,
-    const char* pem_certificate,
-    const char* pem_private_key,
-    const char* pem_private_key_passphrase
-  ) throw (Exception);
-  
-  SSLContext(
-    const SSL_METHOD* method,
     const string& pem_certificate,
     const string& pem_private_key,
-    const string& pem_private_key_passphrase
-  ) throw (Exception);
-
-  SSLContext(
-    const SSL_METHOD* method,
-    const yield::fs::Path& pkcs12_file_path,
-    const string& pkcs12_passphrase
+    const string& pem_private_key_passphrase,
+    SSLVersion ssl_version = SSL_VERSION_23
   ) throw (Exception);
 
   ~SSLContext();
@@ -91,15 +69,31 @@ public:
   }
 
 private:
-  void init(const SSL_METHOD* method);
+  void init(SSLVersion ssl_version);
 
 public:
   static int pem_password_callback(char*, int, int, void*);
-  void use_pem_certificate(const string& certificate);
-  void use_pem_certificate(const yield::fs::Path& file_path);
-  void use_pem_private_key(const string&, const string&);
-  void use_pem_private_key(const yield::fs::Path&, const string&);
-  void use_pkcs12(const yield::fs::Path& file_path, const string&);
+  void
+  use_pem_certificate(
+    const string& pem_certificate
+  ) throw (Exception);
+
+  void
+  use_pem_certificate_file(
+    const string& pem_certificate_file_path
+  ) throw (Exception);
+
+  void
+  use_pem_private_key(
+    const string& pem_private_key,
+    const string& pem_private_key_passphrase
+  ) throw (Exception);
+
+  void
+  use_pem_private_key_file(
+    const string& pem_private_key_file_path,
+    const string& pem_private_key_passphrase
+  ) throw (Exception);
 
 private:
   SSL_CTX* ctx;

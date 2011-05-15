@@ -1,4 +1,4 @@
-// ssl_context_test.cpp
+// yield/sockets/ssl/ssl_version.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,29 +27,25 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "test_pem_certificate.hpp"
-#include "test_pem_private_key.hpp"
-#include "yield/auto_object.hpp"
-#ifdef YIELD_HAVE_OPENSSL
-#include "yield/sockets/ssl/ssl_context.hpp"
-#endif
-#include "yunit.hpp"
+#ifndef _YIELD_SOCKETS_SSL_SSL_VERSION_HPP_
+#define _YIELD_SOCKETS_SSL_SSL_VERSION_HPP_
 
-TEST_SUITE(SSLContext);
+#include "yield/config.hpp"
 
 namespace yield {
 namespace sockets {
 #ifdef YIELD_HAVE_OPENSSL
 namespace ssl {
-TEST(SSLContext, construct_from_pem_certificate_string) {
-  auto_Object<SSLContext> ssl_context
-    = new SSLContext(      
-        TEST_PEM_CERTIFICATE,
-        TEST_PEM_PRIVATE_KEY,
-        TEST_PEM_PRIVATE_KEY_PASSPHRASE
-    );
-}
+enum SSLVersion {
+  SSL_VERSION_2,
+  SSL_VERSION_23,
+  SSL_VERSION_3,
+  TLS_VERSION_1,
+  DTLS_VERSION_1
+};
 }
 #endif
 }
 }
+
+#endif

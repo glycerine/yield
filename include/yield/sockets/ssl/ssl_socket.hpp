@@ -51,6 +51,9 @@ public:
   ~SSLSocket();
 
 public:
+  bool do_handshake();
+
+public:
   operator SSL* () const {
     return ssl;
   }

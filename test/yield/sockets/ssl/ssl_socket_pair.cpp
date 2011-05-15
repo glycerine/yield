@@ -31,10 +31,6 @@
 #include "test_pem_private_key.hpp"
 #include "ssl_socket_pair.hpp"
 
-#ifdef YIELD_HAVE_OPENSSL
-#include <openssl/ssl.h>
-#endif
-
 namespace yield {
 namespace sockets {
 #ifdef YIELD_HAVE_OPENSSL
@@ -42,7 +38,6 @@ namespace ssl {
 SSLSocketPair::SSLSocketPair() {
   auto_Object<SSLContext> listen_ssl_context
     = new SSLContext(
-            SSLv23_server_method(),
             TEST_PEM_CERTIFICATE,
             TEST_PEM_PRIVATE_KEY,
             TEST_PEM_PRIVATE_KEY_PASSPHRASE
@@ -64,7 +59,7 @@ SSLSocketPair::SSLSocketPair() {
               while (!did_handshake[0] || !did_handshake[1]) {
                 for (uint8_t i = 0; i < 2; i++) {
                   if (!did_handshake[i])
-                    did_handshake[i] = SSL_do_handshake(*sockets[i]) == 1;
+                    did_handshake[i] = sockets[i]->do_handshake();
                 }
               }
 

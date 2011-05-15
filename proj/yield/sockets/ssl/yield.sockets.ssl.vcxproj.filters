@@ -17,6 +17,9 @@
     <ClInclude Include="..\..\..\..\include\yield\sockets\ssl\ssl_socket.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\include\yield\sockets\ssl\ssl_version.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\yield\sockets\ssl\ssl_context.cpp">

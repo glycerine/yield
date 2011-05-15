@@ -40,7 +40,7 @@ namespace sockets {
 namespace ssl {
 SSLSocket::SSLSocket(int domain)
   : TCPSocket(domain),
-    ssl_context(*new SSLContext(SSLv23_method())) {
+    ssl_context(*new SSLContext()) {
   init(ssl_context);
 }
 
@@ -84,6 +84,10 @@ bool SSLSocket::connect(const SocketAddress& peername) {
     return true;
   } else
     return false;
+}
+
+bool SSLSocket::do_handshake() {
+  return SSL_do_handshake(ssl) == 1;
 }
 
 YO_NEW_REF SSLSocket* SSLSocket::dup() {

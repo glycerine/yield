@@ -66,7 +66,7 @@
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>yield_fs.lib;yield_i18n.lib;yield_sockets.lib;yield.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_sockets.lib;yield.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -85,7 +85,7 @@
       <WarningLevel>Level4</WarningLevel>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>yield_fs.lib;yield_i18n.lib;yield_sockets.lib;yield.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_sockets.lib;yield.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -95,6 +95,7 @@
   <ItemGroup Label="ClIncludeItems">
     <ClInclude Include="..\..\..\..\include\yield\sockets\ssl\ssl_context.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\sockets\ssl\ssl_socket.hpp" />
+    <ClInclude Include="..\..\..\..\include\yield\sockets\ssl\ssl_version.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
@@ -108,10 +109,6 @@
   </ItemGroup>
 
   <ItemGroup Label="ProjectReferenceItems">
-    <ProjectReference Include="..\..\fs\yield.fs.vcxproj">
-      <Project>{56fed322-dc66-4b39-a033-20d7e90acf26}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\yield.sockets.vcxproj">
       <Project>{73120660-a441-4b54-b425-4ae515d22cd8}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

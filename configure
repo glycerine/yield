@@ -97,7 +97,7 @@ openssl_checks = Checks((HeaderCheck("openssl/ssl.h"),))
 if sys.platform != "win32":
     openssl_checks.extend((LibraryCheck("crypto"), LibraryCheck("ssl")))
 if openssl_checks():
-    PROJECT_REFERENCES["yield.sockets.ssl"] = ("yield.fs", "yield.sockets",)
+    PROJECT_REFERENCES["yield.sockets.ssl"] = ("yield.sockets",)
 
 PROJECT_NAMES = PROJECT_REFERENCES.keys()
 
@@ -361,6 +361,11 @@ INCLUDE_FILE_PATHS["yield.sockets.poll"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "sockets", "poll", "win32", "socket_event_queue.hpp"),
 ] + \
 INCLUDE_FILE_PATHS["yield.sockets.poll"]
+
+INCLUDE_FILE_PATHS["yield.sockets.ssl"] = [
+    path_join(INCLUDE_DIR_PATH, "yield", "sockets", "ssl", "ssl_version.hpp"), # before ssl_context
+] + \
+INCLUDE_FILE_PATHS["yield.sockets.ssl"]
 
 INCLUDE_FILE_PATHS["yield.thread"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "thread", "posix", "thread.hpp"),

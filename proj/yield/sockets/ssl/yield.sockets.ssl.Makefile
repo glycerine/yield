@@ -41,17 +41,11 @@ ifeq ($(UNAME), MINGW32)
 endif
 
 
-ifeq ($(UNAME), Darwin)
-	LIBS += -liconv
-endif
-ifeq ($(UNAME), FreeBSD)
-	LIBS += -liconv -lintl
-endif
 ifeq ($(UNAME), Linux)
 	LIBS += -lrt -lstdc++
 endif
 ifeq ($(UNAME), Solaris)
-	LIBS += -liconv -lnsl -lsocket -lm -lrt -lstdc++
+	LIBS += -lnsl -lsocket -lm -lrt -lstdc++
 endif
 ifeq ($(UNAME), FreeBSD)
 	LIBS += -lcrypto -lssl
@@ -65,7 +59,7 @@ endif
 ifeq ($(UNAME), Darwin)
 	LIBS += -lcrypto -lssl
 endif
-LIBS += -lyield_fs -lyield_i18n -lyield_sockets -lyield
+LIBS += -lyield_sockets -lyield
 
 
 D_FILE_PATHS := $(shell find ../../../../build/yield/sockets/ssl -name "*.d")
@@ -85,15 +79,11 @@ depclean:
 -include $(D_FILE_PATHS)
 
 
-../../../../lib/yield/libyield_fs.a:
-	$(MAKE) -C ../../fs yield.fs.Makefile
-
-
 ../../../../lib/yield/libyield_sockets.a:
 	$(MAKE) -C .. yield.sockets.Makefile
 
 
-../../../../lib/yield/libyield_sockets_ssl.a: $(O_FILE_PATHS) ../../../../lib/yield/libyield_fs.a ../../../../lib/yield/libyield_sockets.a
+../../../../lib/yield/libyield_sockets_ssl.a: $(O_FILE_PATHS) ../../../../lib/yield/libyield_sockets.a
 	-mkdir -p ../../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(O_FILE_PATHS)
 
