@@ -35,20 +35,44 @@
 namespace yield {
 class Buffer;
 
+/**
+  Static methods for manipulating linked lists of <code>Buffer</code>s
+    (Buffer::get_next_buffer, Buffer::set_next_buffer).
+*/
 class Buffers {
 public:
+  /**
+    Construct an array of iovecs for reading into a linked list of Buffers
+      (scatter I/O).
+    @param buffers a linked list of <code>Buffer</code>s
+    @param[out] read_iovecs the resulting array of iovecs for reading
+  */
   static void
   as_read_iovecs(
     Buffer& buffers,
     OUT vector<iovec>& read_iovecs
   );
 
+  /**
+    Construct an array of iovecs for writing from a linked list of Buffers
+      (gather I/O).
+    @param buffers a linked list of <code>Buffer</code>s
+    @param[out] write_iovecs the resulting array of iovecs for writing
+  */
   static size_t
   as_write_iovecs(
     const Buffer& buffers,
     OUT vector<iovec>& write_iovecs
   );
 
+  /**
+    Construct an array of iovecs for writing from a linked list of Buffers
+      (gather I/O), starting from a byte offset into the [logically contiguous]
+      buffer space.
+    @param buffers a linked list of <code>Buffer</code>s
+    @param offset byte offset into the buffer space
+    @param[out] write_iovecs the resulting array of iovecs for writing
+ */
   static size_t
   as_write_iovecs(
     const Buffer& buffers,
@@ -57,9 +81,21 @@ public:
   );
 
 public:
+  /**
+    Copy data into a linked list of <code>Buffer</code>s, increasing their sizes.
+    @param buffers a linked list of <code>Buffer</code>s
+    @param data data to write
+    @param size size of data
+ */
   static void put(Buffer& buffers, const void* data, size_t size);
 
 public:
+  /**
+    Return the size of a linked list of <code>Buffer</code>s, defined
+      as the sum of the sizes of the constituent <code>Buffer</code>s.
+    @param buffers a linked list of <code>Buffer</code>s
+    @return the summed size of the buffers
+ */
   static size_t size(const Buffer& buffers);
 };
 }

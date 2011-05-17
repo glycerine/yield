@@ -83,6 +83,7 @@ public:
 public:
   /**
     Return the contained Object reference.
+    @return the contained Object reference
   */
   inline ObjectType& get() const {
     return object;
@@ -90,6 +91,7 @@ public:
 
   /**
     Return the contained Object reference.
+    @return the contained Object reference
   */
   inline ObjectType& operator*() const {
     return get();
@@ -97,6 +99,7 @@ public:
 
   /**
     Return the contained Object reference as a pointer.
+    @return the contained Object reference as a pointer
   */
   inline ObjectType* operator->() const {
     return &get();
@@ -106,6 +109,8 @@ public:
   /**
     Compare this auto_Object's Object reference (a pointer comparison) to another
       auto_Object's Object reference.
+    @param other the other auto_Object to compare to.
+    @return true if the Object references are the same
   */
   inline bool operator==(const auto_Object<ObjectType>& other) const {
     return &get() == &other.get();
@@ -114,6 +119,8 @@ public:
   /**
     Compare this auto_Object's Object reference (a pointer comparison) to another
       auto_Object's Object reference.
+    @param other the other auto_Object to compare to.
+    @ return false if the Object references are not the same
   */
   inline bool operator!=(const auto_Object<ObjectType>& other) const {
     return &get() != &other.get();

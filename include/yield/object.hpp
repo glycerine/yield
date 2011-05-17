@@ -42,6 +42,7 @@ public:
   /**
     Atomically decrement the reference count of an Object, deleting the
     Object when the count reaches zero.
+    @param object the object whose reference count should be decremented.
   */
   static inline void dec_ref(Object& object) {
     if (atomic_dec(&object.refcnt) == 0)
@@ -52,6 +53,7 @@ public:
     Atomically decrement the reference count of an Object, deleting the
       Object when the count reaches zero.
     Checks that object != NULL.
+    @param object the Object whose reference count should be decremented.
   */
   static inline void dec_ref(Object* object) {
     if (object != 0)
@@ -61,6 +63,7 @@ public:
 public:
   /**
     Return a numeric run-time type ID.
+    @return a numeric run-time type ID
   */
   virtual uint32_t get_type_id() const {
     return 0;
@@ -68,6 +71,7 @@ public:
 
   /**
     Return a human-readable, fully-qualified run-time type name.
+    @return a human-readable, fully-qualified run-time type name
   */
   virtual const char* get_type_name() const {
     return "yield::Object";
@@ -76,6 +80,8 @@ public:
 public:
   /**
     Atomically increment the reference count of an Object and return it.
+    @param object the Object whose reference count should be incremented
+    @return object
   */
   template <class ObjectType>
   static inline ObjectType& inc_ref(ObjectType& object) {
@@ -86,6 +92,8 @@ public:
   /**
     Atomically increment the reference count of an Object and return it.
     Checks that object != NULL.
+    @param object the Object whose reference count should be incremented
+    @return object
   */
   template <class ObjectType>
   static inline ObjectType* inc_ref(ObjectType* object) {
@@ -97,6 +105,7 @@ public:
 
   /**
     Atomically increment the reference count of this Object and return it.
+    @return *this
   */
   inline Object& inc_ref() {
     inc_ref(*this);
@@ -117,6 +126,8 @@ private:
     and ObjectType::TYPE_ID to determine whether the Object is of
     the derived type.
   Checks that object != NULL.
+  @param object the Object to downcast
+  @return an instance of the Object-derived class ObjectType
 */
 template <class ObjectType>
 ObjectType* object_cast(Object* object) {
@@ -131,6 +142,8 @@ ObjectType* object_cast(Object* object) {
   Cast an Object to a class derived from Object, using Object::get_type_id
     and ObjectType::TYPE_ID to determine whether the Object is of
     the derived type.
+  @param object the Object to downcast
+  @return an instance of the Object-derived class ObjectType
 */
 template <class ObjectType>
 ObjectType* object_cast(Object& object) {
@@ -143,7 +156,7 @@ ObjectType* object_cast(Object& object) {
 
 /**
   Macro indicating a new Object reference should be passed to a
-    function/method or is returned by a function/method
+    function/method or is returned by a function/method.
 */
 #define YO_NEW_REF
 }
