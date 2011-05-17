@@ -31,41 +31,62 @@
 #define _YIELD_OBJECT_HPP_
 
 #include "yield/atomic.hpp"
-#include "yield/types.hpp"
 
 namespace yield {
+/**
+  Base class for atomic reference-counted objects, similar to the TR1 intrusive_ptr.
+  Also returns rudimentary run-time type information.
+*/
 class Object {
 public:
-  Object() : refcnt(1)
-  { }
-
-public:
+  /**
+    Atomically decrement the reference count of an Object, deleting the
+    Object when the count reaches zero.
+  */
   static inline void dec_ref(Object& object) {
     if (atomic_dec(&object.refcnt) == 0)
       delete &object;
   }
 
+  /**
+    Atomically decrement the reference count of an Object, deleting the
+      Object when the count reaches zero.
+    Checks that object != NULL.
+  */
   static inline void dec_ref(Object* object) {
     if (object != 0)
       Object::dec_ref(*object);
   }
 
 public:
+  /**
+    Return a numeric run-time type ID.
+  */
   virtual uint32_t get_type_id() const {
     return 0;
   }
 
+  /**
+    Return a human-readable, fully-qualified run-time type name.
+  */
   virtual const char* get_type_name() const {
     return "yield::Object";
   }
 
 public:
+  /**
+    Atomically increment the reference count of an Object and return it.
+  */
   template <class ObjectType>
   static inline ObjectType& inc_ref(ObjectType& object) {
     atomic_inc(&object.refcnt);
     return object;
   }
 
+  /**
+    Atomically increment the reference count of an Object and return it.
+    Checks that object != NULL.
+  */
   template <class ObjectType>
   static inline ObjectType* inc_ref(ObjectType* object) {
     if (object != 0)
@@ -74,20 +95,29 @@ public:
     return object;
   }
 
+  /**
+    Atomically increment the reference count of this Object and return it.
+  */
   inline Object& inc_ref() {
     inc_ref(*this);
     return *this;
   }
 
 protected:
-  virtual ~Object()
-  { }
+  Object() : refcnt(1) { }
+  virtual ~Object() { }
 
 private:
   volatile atomic_t refcnt;
 };
 
 
+/**
+  Cast an Object to a class derived from Object, using Object::get_type_id
+    and ObjectType::TYPE_ID to determine whether the Object is of
+    the derived type.
+  Checks that object != NULL.
+*/
 template <class ObjectType>
 ObjectType* object_cast(Object* object) {
   if (object != NULL && object->get_type_id() == ObjectType::TYPE_ID)
@@ -96,6 +126,12 @@ ObjectType* object_cast(Object* object) {
     return NULL;
 }
 
+
+/**
+  Cast an Object to a class derived from Object, using Object::get_type_id
+    and ObjectType::TYPE_ID to determine whether the Object is of
+    the derived type.
+*/
 template <class ObjectType>
 ObjectType* object_cast(Object& object) {
   if (object.get_type_id() == ObjectType::TYPE_ID)
@@ -105,8 +141,10 @@ ObjectType* object_cast(Object& object) {
 }
 
 
-// Macro indicating a new Object reference should be passed to a
-// function/method or is returned by a function/method
+/**
+  Macro indicating a new Object reference should be passed to a
+    function/method or is returned by a function/method
+*/
 #define YO_NEW_REF
 }
 

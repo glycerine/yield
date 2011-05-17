@@ -35,51 +35,86 @@
 #include <exception>
 
 namespace yield {
-// Similar to auto_ptr, but using object references instead of delete
-// Unlike auto_ptr auto_Object is immutable, so there is no release(),
-// reset(), or operator=().
-// The class is primarily intended for use in testing, where an object
-// should be deleted when it goes out of scope because of an exception.
-// The *object constructor throws a std::exception if object is NULL.
+/**
+  A scoped pointer for Objects.
+  auto_Object is similar to the TR1 intrusive_ptr. It takes an Object reference
+    (no NULLs allowed). Instead of delete auto_Object decrements the Object
+    on destruction.
+ 
+ auto_Object is primarily intended for use in testing, where an object
+   should be deleted when it goes out of scope because of an exception.
+*/
 template <class ObjectType = Object>
 class auto_Object {
 public:
-  auto_Object(YO_NEW_REF ObjectType* object)
+  /**
+    Construct an auto_Object from an Object pointer.
+    Throws a std::exception if object is NULL.
+  */
+  auto_Object(YO_NEW_REF ObjectType* object) throw(std::exception)
     : object(*object) {
     if (object == NULL)
       throw std::exception();
   }
 
+  /**
+    Construct an auto_Object from an Object reference.
+  */
   auto_Object(YO_NEW_REF ObjectType& object)
     : object(object)
   { }
 
-  ~auto_Object() {
-    Object::dec_ref(object);
-  }
-
+  /**
+    Construct an auto_Object from another auto_Object by creating a new
+      reference to the other auto_Object's contained Object.
+  */
   auto_Object(const auto_Object<ObjectType>& other)
     : object(Object::inc_ref(other.object))
   { }
 
+  /**
+    Destruct the auto_Object, decrementing the reference count of the
+      contained Object.
+  */
+  ~auto_Object() {
+    Object::dec_ref(object);
+  }
+
 public:
+  /**
+    Return the contained Object reference.
+  */
   inline ObjectType& get() const {
     return object;
   }
 
-  inline ObjectType* operator->() const {
-    return &get();
-  }
-
+  /**
+    Return the contained Object reference.
+  */
   inline ObjectType& operator*() const {
     return get();
   }
 
+  /**
+    Return the contained Object reference as a pointer.
+  */
+  inline ObjectType* operator->() const {
+    return &get();
+  }
+
 public:
+  /**
+    Compare this auto_Object's Object reference (a pointer comparison) to another
+      auto_Object's Object reference.
+  */
   inline bool operator==(const auto_Object<ObjectType>& other) const {
     return &get() == &other.get();
   }
 
+  /**
+    Compare this auto_Object's Object reference (a pointer comparison) to another
+      auto_Object's Object reference.
+  */
   inline bool operator!=(const auto_Object<ObjectType>& other) const {
     return &get() != &other.get();
   }

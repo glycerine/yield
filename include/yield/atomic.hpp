@@ -33,10 +33,8 @@
 #include "yield/types.hpp"
 
 #if defined(_WIN64)
-extern "C"
-{
-  __int64 _InterlockedCompareExchange64
-  (
+extern "C" {
+  __int64 _InterlockedCompareExchange64(
     volatile __int64* cur_value,
     __int64 new_value,
     __int64 old_value
@@ -46,25 +44,21 @@ extern "C"
   __int64 _InterlockedDecrement64(volatile __int64* cur_value);
 }
 #elif defined(_WIN32)
-extern "C"
-{
+extern "C" {
   __declspec(dllimport) long __stdcall
-  InterlockedCompareExchange
-  (
+  InterlockedCompareExchange(
     volatile long* cur_value,
     long new_value,
     long old_value
   );
 
   __declspec(dllimport) long __stdcall
-  InterlockedIncrement
-  (
+  InterlockedIncrement(
     volatile long* cur_value
   );
 
   __declspec(dllimport) long __stdcall
-  InterlockedDecrement
-  (
+  InterlockedDecrement(
     volatile long* cur_value
   );
 }
@@ -80,8 +74,7 @@ extern "C"
 
 namespace yield {
 static inline atomic_t
-atomic_cas
-(
+atomic_cas(
   volatile atomic_t* cur_value,
   atomic_t new_value,
   atomic_t old_value
@@ -92,15 +85,13 @@ atomic_cas
   return InterlockedCompareExchange(cur_value, new_value, old_value);
 #elif defined(__sun)
 #if sizeof(atomic_t) == sizeof(uint64_t)
-  return atomic_cas_64
-         (
+  return atomic_cas_64(
            reinterpret_cast<volatile uint64_t*>(cur_value),
            static_cast<uint64_t>(old_value),
            static_cast<uint64_t>(new_value)
          );
 #else
-  return atomic_cas_32
-         (
+  return atomic_cas_32(
            reinterpret_cast<volatile uint32_t*>(cur_value),
            static_cast<uint32_t>(old_value),
            static_cast<uint32_t>(new_value)
@@ -111,8 +102,7 @@ atomic_cas
 #elif defined(__arm__)
 #if __ARM_ARCH__ >= 6
   atomic_t prev;
-  asm volatile
-  (
+  asm volatile(
     "@ atomic_cmpxchg\n"
     "ldrex  %1, [%2]\n"
     "mov    %0, #0\n"
@@ -174,13 +164,11 @@ static inline atomic_t atomic_dec(volatile atomic_t* cur_value) {
   return InterlockedDecrement(cur_value);
 #elif defined(__sun)
 #if sizeof(atomic_t) == sizeof(uint64_t)
-  return atomic_dec_64_nv
-         (
+  return atomic_dec_64_nv(
            reinterpret_cast<volatile uint64_t*>(cur_value)
          );
 #else
-  return atomic_dec_32_nv
-         (
+  return atomic_dec_32_nv(
            reinterpret_cast<volatile uint32_t*>(cur_value)
          );
 #endif
@@ -205,13 +193,11 @@ static inline atomic_t atomic_inc(volatile atomic_t* cur_value) {
   return InterlockedIncrement(cur_value);
 #elif defined(__sun)
 #if sizeof(atomic_t) == sizeof(uint64_t)
-  return atomic_inc_64_nv
-         (
+  return atomic_inc_64_nv(
            reinterpret_cast<volatile uint64_t*>(cur_value)
          );
 #else
-  return atomic_inc_32_nv
-         (
+  return atomic_inc_32_nv(
            reinterpret_cast<volatile uint32_t*>(cur_value)
          );
 #endif

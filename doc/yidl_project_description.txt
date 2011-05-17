@@ -1,1 +1,0 @@
-yidl is a minimalist code generation framework written in Python. yidl takes interface definitions in a CORBA IDL-like language and outputs source code for different targets, including client and server RPC stubs in C++, Python, and Java.

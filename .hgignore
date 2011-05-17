@@ -2,6 +2,8 @@ syntax: glob
 bin/**
 build/**
 dist/**
+doc/doxygen*.tmp
+doc/html/**
 lib/**
 ipch/**
 *lcov*
