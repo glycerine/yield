@@ -32,14 +32,25 @@
 
 #include "yield/object.hpp"
 
-
 namespace yield {
 class Channel;
 
-
+/**
+  Interface for a pair of connected channels (pipes, socketpairs, et al.).
+*/
 class ChannelPair : public Object {
 public:
+
+  /**
+    Get the read end of this Channel pair.
+    @return the read end of this Channel pair
+  */
   virtual Channel& get_read_channel() = 0;
+
+  /**
+    Get the write end of this Channel pair.
+    @return the write end of this Channel pair
+  */
   virtual Channel& get_write_channel() = 0;
 };
 }

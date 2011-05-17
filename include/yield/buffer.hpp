@@ -195,8 +195,8 @@ public:
 
 public:
   /**
-    Get the next <code>Buffer<code> in a linked list of <code>Buffer</code>s.
-    @return the next <code>Buffer<code> in a linked list of <code>Buffer</code>s
+    Get the next Buffer in a linked list of <code>Buffer</code>s.
+    @return the next Buffer in a linked list of <code>Buffer</code>s
   */
   Buffer* get_next_buffer() const {
     return next_buffer;
@@ -410,14 +410,14 @@ public:
 
 public:
   /**
-    Set the next <code>Buffer<code> in a linked list of <code>Buffer</code>s.
-    @param next_buffer the next <code>Buffer<code> in a linked list of <code>Buffer</code>s
+    Set the next Buffer in a linked list of <code>Buffer</code>s.
+    @param next_buffer the next Buffer in a linked list of <code>Buffer</code>s
   */
   void set_next_buffer(YO_NEW_REF Buffer* next_buffer);
 
   /**
-    Set the next <code>Buffer<code> in a linked list of <code>Buffer</code>s.
-    @param next_buffer the next <code>Buffer<code> in a linked list of <code>Buffer</code>s
+    Set the next Buffer in a linked list of <code>Buffer</code>s.
+    @param next_buffer the next Buffer in a linked list of <code>Buffer</code>s
   */
   void set_next_buffer(YO_NEW_REF Buffer& next_buffer);
 

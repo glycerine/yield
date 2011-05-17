@@ -34,60 +34,73 @@
 #include "yield/response.hpp"
 #include "yunit.hpp"
 
-
 TEST_SUITE(Request);
 
 namespace yield {
-class TestEventHandler : public EventHandler {
+class MockEventHandler : public EventHandler {
 public:
   // EventHandler
   void handle(Event&) { }
 };
 
+class MockRequest : public Request {
+public:
+  // yield::Object
+  uint32_t get_type_id() const {
+    return 0;
+  }
 
-TEST(Request, createDefaultResponse) {
-  throw_assert_eq(Request().createDefaultResponse(), NULL);
-}
+  const char* get_type_name() const {
+    return "";
+  }
+};
+
+class MockResponse_ : public Response {
+public:
+  // yield::Object
+  uint32_t get_type_id() const {
+    return 0;
+  }
+
+  const char* get_type_name() const {
+    return "";
+  }
+};
 
 TEST(Request, get_response_handler) {
-  throw_assert_eq(Request().get_response_handler(), NULL);
+  throw_assert_eq(MockRequest().get_response_handler(), NULL);
 }
 
 TEST(Request, is_request) {
-  throw_assert(Request().is_request());
+  throw_assert(MockRequest().is_request());
 }
 
 TEST(Request, respond) {
-  Response response;
+  MockResponse_ response;
 
   {
-    Request().respond(response.inc_ref());
+    MockRequest().respond(response.inc_ref());
   }
 
   {
-    auto_Object<EventHandler> event_handler = new TestEventHandler;
-    Request request;
+    auto_Object<EventHandler> event_handler = new MockEventHandler;
+    MockRequest request;
     request.set_response_handler(*event_handler);
     request.respond(response);
   }
 }
 
-TEST(Request, rtti) {
-  throw_assert_eq(Request().get_type_id(), Request::TYPE_ID);
-  throw_assert_eq(strcmp(Request().get_type_name(), "yield::Request"), 0);
-}
-
 TEST(Request, set_response_handler) {
   {
-    Request request;
-    auto_Object<EventHandler> event_handler = new TestEventHandler;
+    MockRequest request;
+    auto_Object<EventHandler> event_handler = new MockEventHandler;
     request.set_response_handler(*event_handler);
     throw_assert_eq(request.get_response_handler(), &event_handler.get());
   }
 
   {
-    Request request;
-    auto_Object<EventHandler> event_handler = new TestEventHandler;
+    MockRequest request;
+    auto_Object<EventHandler> event_handler = new MockEventHandler;
     request.set_response_handler(&event_handler->inc_ref());
     throw_assert_eq(request.get_response_handler(), &event_handler.get());
   }

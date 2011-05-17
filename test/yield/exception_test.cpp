@@ -32,7 +32,6 @@
 #include "yield/exception.hpp"
 #include "yunit.hpp"
 
-
 TEST_SUITE(Exception);
 
 namespace yield {

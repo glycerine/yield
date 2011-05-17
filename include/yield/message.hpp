@@ -33,11 +33,24 @@
 #include "yield/event.hpp"
 
 namespace yield {
+/**
+  Abstract base class for messages (requests and responses) in the
+    event-driven concurrency subsystem.
+*/
 class Message : public Event {
 public:
+  /**
+    Empty virtual destructor.
+  */
   virtual ~Message() { }
 
 public:
+  /**
+    Check if this Message can be downcast to a Request.
+    Returns true if the Message is a Request,
+      false if the Message is a Response.
+    @return true if this Message is a Request, false if a Response.
+  */
   virtual bool is_request() const = 0;
 
 public:
@@ -53,6 +66,9 @@ public:
   }
 
 protected:
+  /**
+    Protected constructor for the Request and Response derived classes.
+  */
   Message() { }
 };
 }

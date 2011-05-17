@@ -31,11 +31,22 @@
 #include "yield/request.hpp"
 #include "yunit.hpp"
 
-
 TEST_SUITE(Message);
 
 namespace yield {
+class MockRequest_ : public Request {
+public:
+  // yield::Object
+  uint32_t get_type_id() const {
+    return 0;
+  }
+
+  const char* get_type_name() const {
+    return "";
+  }
+};
+
 TEST(Message, is_message) {
-  throw_assert(Request().is_message());
+  throw_assert(MockRequest_().is_message());
 }
 }

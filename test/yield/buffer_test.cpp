@@ -44,7 +44,10 @@ TEST(Buffer, as_read_iovec) {
   throw_assert_eq(read_iovec.iov_len, 2);
   buffer->put(1);
   read_iovec = buffer->as_read_iovec();
-  throw_assert_eq(read_iovec.iov_base, buffer->data());
+  throw_assert_eq(
+    read_iovec.iov_base,
+    static_cast<char*>(buffer->data()) + buffer->size()
+  );
   throw_assert_eq(read_iovec.iov_len, 1);
 }
 

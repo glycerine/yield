@@ -31,20 +31,26 @@
 #include "yield/response.hpp"
 #include "yunit.hpp"
 
-
 TEST_SUITE(Response);
 
 namespace yield {
+class MockResponse : public Response {
+public:
+  // yield::Object
+  uint32_t get_type_id() const {
+    return 0;
+  }
+
+  const char* get_type_name() const {
+    return "";
+  }
+};
+
 TEST(Response, is_exception) {
-  throw_assert_false(Response().is_exception());
+  throw_assert_false(MockResponse().is_exception());
 }
 
 TEST(Response, is_request) {
-  throw_assert_false(Response().is_request());
-}
-
-TEST(Response, rtti) {
-  throw_assert_eq(Response().get_type_id(), Response::TYPE_ID);
-  throw_assert_eq(strcmp(Response().get_type_name(), "yield::Response"), 0);
+  throw_assert_false(MockResponse().is_request());
 }
 }

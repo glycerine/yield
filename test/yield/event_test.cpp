@@ -31,16 +31,22 @@
 #include "yield/event.hpp"
 #include "yunit.hpp"
 
-
 TEST_SUITE(Event);
 
 namespace yield {
-TEST(Event, is_message) {
-  throw_assert_false(Event().is_message());
-}
+class MockEvent : public Event {
+public:
+  // yield::Object
+  uint32_t get_type_id() const {
+    return 0;
+  }
 
-TEST(Event, rtti) {
-  throw_assert_eq(Event().get_type_id(), Event::TYPE_ID);
-  throw_assert_eq(strcmp(Event().get_type_name(), "yield::Event"), 0);
+  const char* get_type_name() const {
+    return "";
+  }
+};
+
+TEST(Event, is_message) {
+  throw_assert_false(MockEvent().is_message());
 }
 }

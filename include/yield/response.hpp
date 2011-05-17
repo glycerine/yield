@@ -33,29 +33,27 @@
 #include "yield/message.hpp"
 
 namespace yield {
+/**
+  Abstract base class for responses in the event-driven concurrency subsystem.
+*/
 class Response : public Message {
 public:
-  const static uint32_t TYPE_ID = 1025441098UL;
-
-public:
-  Response() { }
+  /**
+    Empty virtual destructor.
+  */
   virtual ~Response() { }
 
 public:
+  /**
+    Check if this Response can be downcast to an Exception.
+    @return true if this Response is an Exception
+  */
   virtual bool is_exception() const {
     return false;
   }
 
 public:
   // yield::Object
-  virtual uint32_t get_type_id() const {
-    return TYPE_ID;
-  }
-
-  virtual const char* get_type_name() const {
-    return "yield::Response";
-  }
-
   Response& inc_ref() {
     return Object::inc_ref(*this);
   }
@@ -65,6 +63,12 @@ public:
   bool is_request() const {
     return false;
   }
+
+protected:
+  /**
+    Protected constructor for subclasses.
+  */
+  Response() { }
 };
 }
 

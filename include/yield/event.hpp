@@ -33,27 +33,29 @@
 #include "yield/object.hpp"
 
 namespace yield {
+/**
+  Abstract base class for events in the event-driven concurrency subsystem.
+*/
 class Event : public Object {
 public:
-  const static uint32_t TYPE_ID = 2770913819UL;
-
-public:
+  /**
+    Empty virtual destructor.
+  */
   virtual ~Event() { }
 
 public:
+  /**
+    Check if this Event can be downcast to a Message.
+    @return true if this Event is a Message.
+  */
   virtual bool is_message() const {
     return false;
   }
 
 public:
   // yield::Object
-  virtual uint32_t get_type_id() const {
-    return TYPE_ID;
-  }
-
-  virtual const char* get_type_name() const {
-    return "yield::Event";
-  }
+  virtual uint32_t get_type_id() const = 0;
+  virtual const char* get_type_name() const = 0;
 
   Event& inc_ref() {
     return Object::inc_ref(*this);

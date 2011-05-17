@@ -36,20 +36,18 @@ namespace yield {
 class EventHandler;
 class Response;
 
+/**
+  Abstract base class for requests in the event-driven concurrency subsystem.
+*/
 class Request : public Message {
 public:
-  const static uint32_t TYPE_ID = 3900912157UL;
-
-public:
-  Request();
   virtual ~Request();
 
 public:
-  virtual YO_NEW_REF Response* createDefaultResponse() {
-    return NULL;
-  }
-
-public:
+  /**
+    Get the response handler for this request.
+    @return the response handler
+  */
   EventHandler* get_response_handler() const {
     return response_handler;
   }
@@ -58,19 +56,26 @@ public:
   virtual void respond(Response& response);
 
 public:
+  /**
+    Set the response handler for this request.
+    Calls to Request::respond(Response& response) delegate to
+      response_handler->handle(response).
+    Steals the reference to response_handler.
+    @param response_handler a new reference to a response handler
+  */
   void set_response_handler(YO_NEW_REF EventHandler* response_handler);
+
+  /**
+    Set the response handler for this request.
+    Calls to Request::respond(Response& response) delegate to
+      response_handler->handle(response).
+    Creates a new reference from response_handler.
+    @param response_handler a reference to a response handler
+  */
   void set_response_handler(EventHandler& response_handler);
 
 public:
   // yield::Object
-  virtual uint32_t get_type_id() const {
-    return TYPE_ID;
-  }
-
-  virtual const char* get_type_name() const {
-    return "yield::Request";
-  }
-
   Request& inc_ref() {
     return Object::inc_ref(*this);
   }
@@ -80,6 +85,12 @@ public:
   bool is_request() const {
     return true;
   }
+
+protected:
+  /**
+    Protected constructor for subclasses.
+  */
+  Request();
 
 private:
   EventHandler* response_handler;

@@ -41,6 +41,9 @@ public:
   const static uint32_t LAST_ERROR_CODE = static_cast<uint32_t>(-1);
 
 public:
+  const static uint32_t TYPE_ID = 3282856065UL;
+
+public:
   // error_message is always copied
   Exception(uint32_t error_code = LAST_ERROR_CODE);
   Exception(const char* error_message);
@@ -77,6 +80,16 @@ public:
   void set_error_message(const char* error_message);
   void set_error_message(const string& error_message);
   static void set_last_error_code(uint32_t error_code);
+
+public:
+  // yield::Object
+  uint32_t get_type_id() const {
+    return TYPE_ID;
+  }
+
+  const char* get_type_name() const {
+    return "yield::Exception";
+  }
 
 public:
   // yield::Response
