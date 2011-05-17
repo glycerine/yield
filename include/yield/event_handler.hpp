@@ -32,17 +32,29 @@
 
 #include "yield/object.hpp"
 
-
 namespace yield {
 class Event;
 
-
+/**
+  Abstract base class for event handlers in the event-driven concurrency subsystem.
+*/
 class EventHandler : public Object {
 public:
+  /**
+    Empty virtual destructor
+  */
   virtual ~EventHandler() { }
 
-  virtual void handle(Event& event) = 0;
+public:
+  /**
+    "Handle" a new reference to an Event, usually asynchronously with respective to
+      the caller. The handling may be an enqueue (as in EventQueue) or some event
+      processing code.
+    @param event a new reference to an Event to handle
+  */
+  virtual void handle(YO_NEW_REF Event& event) = 0;
 
+public:
   // yield::Object
   EventHandler& inc_ref() {
     return Object::inc_ref(*this);

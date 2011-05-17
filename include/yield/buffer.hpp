@@ -134,6 +134,7 @@ public:
   /**
     Copy the contents of the buffer (data, size) into a new Buffer.
     @param data the data to copy
+    @param size size of the data
     @return the new <code>Buffer</code> copy
   */
   static Buffer& copy(const void* data, size_t size) {
@@ -145,6 +146,7 @@ public:
       possibly with a larger capacity than size.
     @param capacity capacity of the new <code>Buffer</code> copy
     @param data the data to copy
+    @param size size of the data
     @return the new <code>Buffer</code> copy
   */
   static Buffer& copy(size_t capacity, const void* data, size_t size) {
@@ -157,6 +159,7 @@ public:
     @param alignment alignment of the new <code>Buffer</code> copy
     @param capacity capacity of the new <code>Buffer</code> copy
     @param data the data to copy
+    @param size size of the data
     @return the new <code>Buffer</code> copy
   */
   static Buffer&

@@ -35,10 +35,20 @@
 
 
 namespace yield {
+/**
+  Abstract base class for event queues in the event-driven concurrency subsystem.
+*/
 class EventQueue : public EventHandler {
 public:
+  /**
+    Empty virtual destructor.
+  */
   virtual ~EventQueue() { }
 
+  /**
+    Blocking dequeue. Always returns a new reference to an Event.
+    @return a new reference to an Event.
+  */
   virtual YO_NEW_REF Event& dequeue() {
     Event* event;
     do {
@@ -47,10 +57,30 @@ public:
     return *event;
   }
 
+  /**
+    Enqueue a new reference to an Event.
+    Will almost always return true. The exceptions are when a memory queue is full
+      and when special enqueues (e.g., AIO) fail at the system call level.
+    @param event the new Event reference to enqueue
+    @return true if the enqueue succeeded.
+  */
   virtual bool enqueue(YO_NEW_REF Event& event) = 0;
 
+  /**
+    Timed dequeue.
+    Blocks for the specified timeout or until an Event is available.
+    If the timeout expires and the queue is still empty, returns NULL.
+    @param timeout the time to wait for new Events
+    @return a new reference to an Event or NULL
+  */
   virtual YO_NEW_REF Event* timeddequeue(const Time& timeout) = 0;
 
+  /**
+    Non-blocking dequeue.
+    Returns a new reference to an Event or NULL if the queue is empty.
+    This method is guaranteed not to block.
+    @return a new reference to an Event or NULL.
+  */
   virtual YO_NEW_REF Event* trydequeue() {
     return timeddequeue(0);
   }

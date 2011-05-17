@@ -39,19 +39,24 @@
 
 
 namespace yield {
+Exception::Exception()
+  : error_message(NULL) {
+  set_error_code(get_last_error_code());
+}
+
 Exception::Exception(uint32_t error_code)
   : error_message(NULL) {
   set_error_code(error_code);
 }
 
 Exception::Exception(const char* error_message)
-  : error_code(INVALID_ERROR_CODE), error_message(NULL) {
+  : error_code(0), error_message(NULL) {
   if (error_message != NULL)
     set_error_message(error_message);
 }
 
 Exception::Exception(const string& error_message)
-  : error_code(INVALID_ERROR_CODE), error_message(NULL) {
+  : error_code(0), error_message(NULL) {
   set_error_message(error_message);
 }
 
@@ -172,10 +177,7 @@ uint32_t Exception::get_last_error_code() {
 }
 
 void Exception::set_error_code(uint32_t error_code) {
-  if (error_code == LAST_ERROR_CODE)
-    this->error_code = get_last_error_code();
-  else
-    this->error_code = error_code;
+  this->error_code = error_code;
 }
 
 void Exception::set_error_message(const char* error_message) {

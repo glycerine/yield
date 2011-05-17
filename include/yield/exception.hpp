@@ -35,50 +35,136 @@
 #include <exception>
 
 namespace yield {
-class Exception : public Response, public std::exception {
+/**
+  Generic exceptions, also used in the event-driven concurrency subsystem.
+*/
+class Exception : public Response, public std::exception {    
 public:
-  const static uint32_t INVALID_ERROR_CODE = 0;
-  const static uint32_t LAST_ERROR_CODE = static_cast<uint32_t>(-1);
-
-public:
+  /**
+    Run-time type ID.
+  */
   const static uint32_t TYPE_ID = 3282856065UL;
 
 public:
-  // error_message is always copied
-  Exception(uint32_t error_code = LAST_ERROR_CODE);
+  /**
+    Construct an Exception using get_last_error_code and
+      the associated system error message.
+  */
+  Exception();
+
+  /**
+    Construct an Exception using error_code and
+      the associated system error message.
+    @param error_code the system error code
+  */
+  Exception(uint32_t error_code);
+
+  /**
+    Construct an Exception using a custom error message.
+    Copies error_message.
+  */
   Exception(const char* error_message);
+
+  /**
+    Construct an Exception using a custom error message.
+    Copies error_message.
+  */
   Exception(const string& error_message);
+
+  /**
+    Construct an Exception using a custom error code and message.
+    Copies error_message.
+  */
   Exception(uint32_t error_code, const char* error_message);
+
+  /**
+    Construct an Exception using a custom error code and message.
+    Copies error_message.
+  */
   Exception(uint32_t error_code, const string& error_message);
+
+  /**
+    Copy constructor.
+  */
   Exception(const Exception& other);
+
+  /**
+    Virtual destructor that deallocates the error_message copy.
+  */
   virtual ~Exception() throw();
 
 public:
-  virtual Exception& clone() const {
+  /**
+    Clone this Exception on the heap.
+    @return a new'd copy of this Exception
+  */
+  virtual YO_NEW_REF Exception& clone() const {
     return *new Exception(*this);
   }
 
 public:
+  /**
+    Get the error code associated with this Exception.
+    @return the error code
+  */
   virtual uint32_t get_error_code() const {
     return error_code;
   }
 
+  /**
+    Get the error message associated with this Exception.
+    @return the error message
+  */
   virtual const char* get_error_message() const throw();
+
+  /**
+    Get the last system error code (errno or GetLastError).
+    @return the last system error code
+  */
   static uint32_t get_last_error_code();
 
+  /**
+    Cast this Exception to a C string.
+    @return the error message
+  */
   operator const char* () const throw() {
     return get_error_message();
   }
 
 public:
+  /**
+    Rethrow this Exception on the stack.
+  */
   virtual void rethrow() const {
     throw Exception(*this);
   }
 
 public:
+  /**
+    Set the error code associated with this Exception.
+    May change error_message accordingly.
+    @param error_code the new error code
+  */
   void set_error_code(uint32_t error_code);
+
+  /**
+    Set the error message associated with this Exception.
+    Copies error_message.
+    @param error_message the new error message
+  */
   void set_error_message(const char* error_message);
+
+  /**
+    Set the error message associated with this Exception.
+    Copies error_message.
+    @param error_message the new error message
+  */
   void set_error_message(const string& error_message);
+
+  /**
+    Set the last system error code (errno or SetLastError)
+    @param error_code the new system error code
+  */
   static void set_last_error_code(uint32_t error_code);
 
 public:

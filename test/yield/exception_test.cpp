@@ -77,7 +77,7 @@ TEST(Exception, from_error_code_error_message_string) {
 }
 
 TEST(Exception, from_last_error_code) {
-  Exception exc(Exception::LAST_ERROR_CODE);
+  Exception exc;
   throw_assert_gt(strlen(exc.what()), 0)
 }
 
