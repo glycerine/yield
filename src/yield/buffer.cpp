@@ -79,7 +79,7 @@ void Buffer::alloc(size_t alignment, size_t capacity) {
 
 iovec Buffer::as_read_iovec() {
   iovec read_iovec;
-  read_iovec.iov_base = data_;
+  read_iovec.iov_base = static_cast<char*>(data_) + size();
   read_iovec.iov_len = capacity_ - size_;
   return read_iovec;
 }

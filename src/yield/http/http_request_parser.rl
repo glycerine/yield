@@ -57,8 +57,7 @@ Object& HTTPRequestParser::parse() {
     iovec uri_scheme = { 0 };
     iovec uri_userinfo = { 0 };
 
-    if 
-    (
+    if (
       parse_request_line(
         http_version,
         method,

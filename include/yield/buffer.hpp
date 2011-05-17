@@ -71,7 +71,8 @@ public:
 public:
   /**
     Return an iovec suitable for reading data into the buffer.
-    <code>iovec.iov_base = data(), iovec.iov_len = capacity() - size()</code>.
+    <code>iovec.iov_base = data() + size(),
+      iovec.iov_len = capacity() - size()</code>.
     @return an iovec for reading data into the buffer
   */
   iovec as_read_iovec();
