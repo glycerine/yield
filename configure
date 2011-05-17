@@ -93,10 +93,10 @@ PROJECT_REFERENCES = {
     "yield.uri": ("yield",),
 }
 
-openssl_checks = Checks((HeaderCheck("openssl/ssl.h"),))
-if sys.platform != "win32":
-    openssl_checks.extend((LibraryCheck("crypto"), LibraryCheck("ssl")))
-if openssl_checks():
+if Checks({
+       '*': (HeaderCheck("openssl/ssl.h"),),
+       "unix": (LibraryCheck("crypto"), LibraryCheck("ssl"))
+   })():
     PROJECT_REFERENCES["yield.sockets.ssl"] = ("yield.sockets",)
 
 PROJECT_NAMES = PROJECT_REFERENCES.keys()

@@ -28,8 +28,12 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from hashlib import md5
+import re
+import sys
 
-from yutil import quote, quotestrlist, rpad, strlist, typelist
+from yuild.constant import INDENT_SPACES, SYS_PLATFORM_CHECKS
+from yuild.platform_dict import PlatformDict
+from yutil import indent, quote, quotestrlist, rpad, strlist, typelist
 
 
 _all_ = [
@@ -62,36 +66,65 @@ class Check(object):
         return self.__name
 
 
-class Checks(list):
-    def __init__(self, checks=None, name=None):
-        if checks is None:
-            list.__init__(self)
-        else:
-            list.__init__(self, checks)
-        self.__name = name
+class Checks(PlatformDict):
+    def __init__(self, *args, **kwds):
+        PlatformDict.__init__(self, *args)
+        self.action = kwds.get("action", "return")
 
     def __call__(self):
-        for check in self:
+        if sys.platform == "win32":
+            platform = sys.platform
+        else:
+            platform = re.match("([a-z]+).*", sys.platform).groups(1)[0]
+
+        for check in self.get(platform, combine_platforms=True, default=[]):
             if not check():
                 return False
         return True
 
-    @property
-    def name(self):
-        name = self.__name
-        if name is None:
-            name = "checks_" + "_and_".join([check.name for check in self])
-        return name
-
     def __repr__(self):
-        check_calls = " and ".join([check.name + "()" for check in self])
-        check_reprs = "\n\n".join([repr(check) for check in self])
-        name = self.name
-        return """\
+        action = self.action
+        if_checks = []
+        else_check = None
+        for platform in self.iterkeys():
+            checks = self.get(platform, combine_platforms=True)
+            check_calls = " and ".join([check.name + "()" for check in checks])
+            check_reprs = "\n\n".join([repr(check) for check in checks])
+            if action == "return":
+                checks = """\
 %(check_reprs)s
-def %(name)s():
-    return %(check_calls)s
+
+return %(check_calls)s
 """ % locals()
+            else:
+                checks = """\
+%(check_reprs)s
+
+if %(check_calls)s:
+    %(action)s
+""" % locals()
+            if platform == '*':
+                else_check = checks
+            else:
+                sys_platform_check = SYS_PLATFORM_CHECKS[platform]
+                checks = indent(INDENT_SPACES["py"], checks)
+                if_checks.append("""\
+if %(sys_platform_check)s:
+%(checks)s
+""" % locals())
+        if len(if_checks) > 0:
+            if_checks = "el".join(if_checks)
+            if else_check is not None:
+                else_check = indent(INDENT_SPACES["py"], else_check)
+                if_checks += """\
+else:
+%(else_check)s
+""" % locals()
+            return if_checks
+        elif else_check is not None:
+            return else_check
+        else:
+            return ""
 
 
 class _CompileCheck(Check):
@@ -138,7 +171,7 @@ class _CompileCheck(Check):
         return """\
 def %(name)s():
     import distutils.ccompiler, os, sys, traceback
-    
+
     source_file = open("%(source_file_path)s", "w+b")
     source_file.write(\"\"\"\\
 %(includes)s%(source)s
