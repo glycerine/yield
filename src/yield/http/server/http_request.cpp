@@ -69,8 +69,18 @@ HTTPRequest::~HTTPRequest() {
   HTTPConnection::dec_ref(connection);
 }
 
-void HTTPRequest::respond(HTTPResponse& http_response) {
+void
+HTTPRequest::respond(
+  YO_NEW_REF ::yield::http::HTTPResponse& http_response
+) {
   connection.handle(http_response);
+}
+
+void
+HTTPRequest::respond(
+  ::yield::http::HTTPMessageBodyChunk& http_message_body_chunk
+) {
+  connection.handle(http_message_body_chunk);
 }
 
 void HTTPRequest::respond(uint16_t status_code) {

@@ -43,12 +43,29 @@ class HTTPConnection;
 
 class HTTPMessageBodyChunk : public ::yield::http::HTTPMessageBodyChunk {
 public:
+  const static uint32_t TYPE_ID = 3690639367UL;
+
+public:
   HTTPMessageBodyChunk(HTTPConnection& connection, YO_NEW_REF Buffer* data);
   virtual ~HTTPMessageBodyChunk();
 
 public:
   const HTTPConnection& get_connection() const {
     return connection;
+  }
+
+public:
+  // yield::Object
+  uint32_t get_type_id() const {
+    return TYPE_ID;
+  }
+
+  const char* get_type_name() const {
+    return "yield::http::server::HTTPMessageBodyChunk";
+  }
+
+  HTTPMessageBodyChunk& inc_ref() {
+    return Object::inc_ref(*this);
   }
 
 private:

@@ -63,12 +63,16 @@ public:
 
 public:
   // yield::Object
-  uint32_t get_type_id() const {
+  virtual uint32_t get_type_id() const {
     return TYPE_ID;
   }
 
-  const char* get_type_name() const {
+  virtual const char* get_type_name() const {
     return "yield::http::HTTPMessageBodyChunk";
+  }
+
+  HTTPMessageBodyChunk& inc_ref() {
+    return Object::inc_ref(*this);
   }
 
 private:

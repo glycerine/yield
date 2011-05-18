@@ -1,4 +1,4 @@
-// yield/http/server/http_request.hpp
+// yield/http/server/http_response.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,78 +27,15 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_HTTP_SERVER_HTTP_REQUEST_HPP_
-#define _YIELD_HTTP_SERVER_HTTP_REQUEST_HPP_
+#ifndef _YIELD_HTTP_SERVER_HTTP_RESPONSE_HPP_
+#define _YIELD_HTTP_SERVER_HTTP_RESPONSE_HPP_
 
-#include "yield/http/http_request.hpp"
+#include "yield/http/http_response.hpp"
 
 namespace yield {
 namespace http {
-class HTTPMessageBodyChunk;
-class HTTPResponse;
-
 namespace server {
-class HTTPConnection;
-class HTTPRequestParser;
-
-class HTTPRequest : public ::yield::http::HTTPRequest {
-public:
-  const static uint32_t TYPE_ID = 2792000307UL;
-
-public:
-  HTTPRequest(
-    HTTPConnection& connection,
-    Method method,
-    const yield::uri::URI& uri,
-    YO_NEW_REF Object* body = NULL,
-    uint8_t http_version = HTTP_VERSION_DEFAULT
-  );
-
-  virtual ~HTTPRequest();
-
-public:
-  const HTTPConnection& get_connection() const {
-    return connection;
-  }
-
-public:
-  void respond(YO_NEW_REF ::yield::http::HTTPMessageBodyChunk& chunk);
-  void respond(YO_NEW_REF ::yield::http::HTTPResponse& http_response);
-  void respond(uint16_t status_code);
-  void respond(uint16_t status_code, const char* body);
-  void respond(uint16_t status_code, YO_NEW_REF Object* body);
-  void respond(uint16_t status_code, YO_NEW_REF Object& body);
-
-public:
-  // yield::Object
-  uint32_t get_type_id() const {
-    return TYPE_ID;
-  }
-
-  const char* get_type_name() const {
-    return "yield::http::server::HTTPRequest";
-  }
-
-  HTTPRequest& inc_ref() {
-    return Object::inc_ref(*this);
-  }
-
-protected:
-  friend class HTTPRequestParser;
-
-  HTTPRequest(
-    YO_NEW_REF Object* body,
-    HTTPConnection& connection,
-    uint16_t fields_offset,
-    Buffer& header,
-    uint8_t http_version,
-    Method method,
-    const yield::uri::URI& uri
-  );
-
-private:
-  HTTPConnection& connection;
-};
+typedef ::yield::http::HTTPResponse HTTPResponse;
 }
 }
 }

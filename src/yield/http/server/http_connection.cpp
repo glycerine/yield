@@ -31,11 +31,7 @@
 #include "yield/assert.hpp"
 #include "yield/log.hpp"
 #include "yield/fs/file.hpp"
-#include "yield/http/http_response.hpp"
 #include "yield/http/server/http_connection.hpp"
-#include "yield/http/server/http_request.hpp"
-#include "yield/http/server/http_message_body_chunk.hpp"
-#include "yield/sockets/aio/accept_aiocb.hpp"
 
 namespace yield {
 namespace http {
@@ -87,25 +83,10 @@ void HTTPConnection::handle(YO_NEW_REF acceptAIOCB& accept_aiocb) {
   acceptAIOCB::dec_ref(accept_aiocb);
 }
 
-void HTTPConnection::handle(YO_NEW_REF Event& event) {
-  switch (event.get_type_id()) {
-  case HTTPMessageBodyChunk::TYPE_ID: {
-    handle(static_cast<HTTPMessageBodyChunk&>(event));
-  }
-  break;
-
-  case HTTPResponse::TYPE_ID: {
-    handle(static_cast<HTTPResponse&>(event));
-  }
-  break;
-
-  default:
-    debug_break();
-    break;
-  }
-}
-
-void HTTPConnection::handle(YO_NEW_REF HTTPMessageBodyChunk& http_message_body_chunk) {
+void
+HTTPConnection::handle(
+  YO_NEW_REF ::yield::http::HTTPMessageBodyChunk& http_message_body_chunk
+) {
   Buffer* send_buffer;
   if (http_message_body_chunk.data() != NULL)
     send_buffer = &http_message_body_chunk.data()->inc_ref();
@@ -120,7 +101,10 @@ void HTTPConnection::handle(YO_NEW_REF HTTPMessageBodyChunk& http_message_body_c
   }
 }
 
-void HTTPConnection::handle(YO_NEW_REF HTTPResponse& http_response) {
+void
+HTTPConnection::handle(
+  YO_NEW_REF ::yield::http::HTTPResponse& http_response
+) {
   if (log != NULL) {
     log->get_stream(Log::Level::DEBUG) << get_type_name() 
       << ": sending " << http_response;
@@ -169,19 +153,28 @@ void HTTPConnection::handle(YO_NEW_REF HTTPResponse& http_response) {
   }
 }
 
-void HTTPConnection::handle(YO_NEW_REF recvAIOCB& recv_aiocb) {
+void
+HTTPConnection::handle(
+  YO_NEW_REF ::yield::sockets::aio::recvAIOCB& recv_aiocb
+) {
   if (recv_aiocb.get_return() > 0)
     parse(recv_aiocb.get_buffer());
 
-  recvAIOCB::dec_ref(recv_aiocb);
+  ::yield::sockets::aio::recvAIOCB::dec_ref(recv_aiocb);
 }
 
-void HTTPConnection::handle(YO_NEW_REF sendAIOCB& send_aiocb) {
+void
+HTTPConnection::handle(
+  YO_NEW_REF ::yield::sockets::aio::sendAIOCB& send_aiocb
+){
   sendAIOCB::dec_ref(send_aiocb);
 }
 
-void HTTPConnection::handle(YO_NEW_REF sendfileAIOCB& sendfile_aiocb) {
-  sendfileAIOCB::dec_ref(sendfile_aiocb);
+void
+HTTPConnection::handle(
+  YO_NEW_REF ::yield::sockets::aio::sendfileAIOCB& sendfile_aiocb
+) {
+  ::yield::sockets::aio::sendfileAIOCB::dec_ref(sendfile_aiocb);
 }
 
 void HTTPConnection::parse(Buffer& recv_buffer) {

@@ -30,29 +30,22 @@
 #ifndef _YIELD_HTTP_SERVER_HTTP_CONNECTION_HPP_
 #define _YIELD_HTTP_SERVER_HTTP_CONNECTION_HPP_
 
-#include "yield/event_handler.hpp"
 #include "yield/event_queue.hpp"
+#include "yield/sockets/aio/accept_aiocb.hpp"
 #include "yield/sockets/aio/recv_aiocb.hpp"
 #include "yield/sockets/aio/send_aiocb.hpp"
 #include "yield/sockets/aio/sendfile_aiocb.hpp"
 #include "yield/sockets/tcp_socket.hpp"
+#include "yield/http/server/http_message_body_chunk.hpp"
+#include "yield/http/server/http_request.hpp"
+#include "yield/http/server/http_response.hpp"
 
 namespace yield {
 class Log;
 
-namespace sockets {
-namespace aio {
-class acceptAIOCB;
-}
-}
-
 namespace http {
-class HTTPResponse;
-
 namespace server {
-class HTTPMessageBodyChunk;
-
-class HTTPConnection : public EventHandler {
+class HTTPConnection : public Object {
 public:
   class AIOCB {
   public:
@@ -138,12 +131,12 @@ public:
   }
 
 public:
-  void handle(YO_NEW_REF yield::sockets::aio::acceptAIOCB& accept_aiocb);
-  void handle(YO_NEW_REF HTTPMessageBodyChunk& http_message_body_chunk);
-  void handle(YO_NEW_REF HTTPResponse& http_response);
-  void handle(YO_NEW_REF recvAIOCB& recv_aiocb);
-  void handle(YO_NEW_REF sendAIOCB& send_aiocb);
-  void handle(YO_NEW_REF sendfileAIOCB& sendfile_aiocb);
+  void handle(YO_NEW_REF ::yield::sockets::aio::acceptAIOCB& accept_aiocb);
+  void handle(YO_NEW_REF ::yield::http::HTTPMessageBodyChunk& http_message_body_chunk);
+  void handle(YO_NEW_REF ::yield::http::HTTPResponse& http_response);
+  void handle(YO_NEW_REF ::yield::sockets::aio::recvAIOCB& recv_aiocb);
+  void handle(YO_NEW_REF ::yield::sockets::aio::sendAIOCB& send_aiocb);
+  void handle(YO_NEW_REF ::yield::sockets::aio::sendfileAIOCB& sendfile_aiocb);
 
 public:
   // yield::Object
@@ -154,10 +147,6 @@ public:
   HTTPConnection& inc_ref() {
     return Object::inc_ref(*this);
   }
-
-public:
-  // yield::EventHandler
-  void handle(YO_NEW_REF Event& event);
 
 private:
   void parse(Buffer& recv_buffer);
