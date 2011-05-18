@@ -47,6 +47,9 @@ import subprocess
 import sys
 import traceback
 
+try: import yuild
+except ImportError: sys.path.append(abspath("src"))
+
 from yuild import Makefile, TopLevelMakefile, \
                   Project, \
                   SourceFiles, \
