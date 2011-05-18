@@ -39,22 +39,20 @@ class SocketAddress;
 
 namespace http {
 namespace server {
+class HTTPConnection;
+
 class HTTPMessageBodyChunk : public ::yield::http::HTTPMessageBodyChunk {
 public:
-  HTTPMessageBodyChunk(
-    YO_NEW_REF Buffer* data,
-    yield::sockets::SocketAddress& peername
-  );
-
+  HTTPMessageBodyChunk(HTTPConnection& connection, YO_NEW_REF Buffer* data);
   virtual ~HTTPMessageBodyChunk();
 
 public:
-  const yield::sockets::SocketAddress& get_peername() const {
-    return peername;
+  const HTTPConnection& get_connection() const {
+    return connection;
   }
 
 private:
-  yield::sockets::SocketAddress& peername;
+  HTTPConnection& connection;
 };
 }
 }

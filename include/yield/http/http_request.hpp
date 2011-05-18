@@ -32,15 +32,12 @@
 
 #include "yield/date_time.hpp"
 #include "yield/exception.hpp"
-#include "yield/request.hpp"
 #include "yield/http/http_message.hpp"
 #include "yield/uri/uri.hpp"
 
 namespace yield {
 namespace http {
-class HTTPResponse;
-
-class HTTPRequest : public Request, public HTTPMessage<HTTPRequest> {
+class HTTPRequest : public HTTPMessage<HTTPRequest> {
 public:
   const static uint32_t TYPE_ID = 707981577;
 
@@ -146,14 +143,6 @@ public:
   const yield::uri::URI& get_uri() const {
     return uri;
   }
-
-public:
-  void respond(YO_NEW_REF HTTPResponse& http_response);
-  void respond(uint16_t status_code);
-  void respond(uint16_t status_code, const char* body);
-  void respond(uint16_t status_code, YO_NEW_REF Object* body);
-  void respond(uint16_t status_code, YO_NEW_REF Object& body);
-  void respond(YO_NEW_REF Exception& exception);
 
 public:
   // yield::Object

@@ -27,23 +27,21 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "yield/http/server/http_connection.hpp"
 #include "yield/http/server/http_message_body_chunk.hpp"
-#include "yield/sockets/socket_address.hpp"
 
 namespace yield {
 namespace http {
 namespace server {
-using yield::sockets::SocketAddress;
-
 HTTPMessageBodyChunk::HTTPMessageBodyChunk(
-  YO_NEW_REF Buffer* data,
-  SocketAddress& peername
+  HTTPConnection& connection,
+  YO_NEW_REF Buffer* data
 ) : yield::http::HTTPMessageBodyChunk(data),
-    peername(peername.inc_ref()) {
+    connection(connection.inc_ref()) {
 }
 
 HTTPMessageBodyChunk::~HTTPMessageBodyChunk() {
-  SocketAddress::dec_ref(peername);
+  HTTPConnection::dec_ref(connection);
 }
 }
 }

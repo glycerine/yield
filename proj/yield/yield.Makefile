@@ -52,7 +52,7 @@ endif
 D_FILE_PATHS := $(shell find ../../build/yield -name "*.d")
 
 
-O_FILE_PATHS += ../../build/yield/buffer.o ../../build/yield/buffers.o ../../build/yield/channel.o ../../build/yield/date_time.o ../../build/yield/exception.o ../../build/yield/log.o ../../build/yield/request.o ../../build/yield/time.o
+O_FILE_PATHS += ../../build/yield/buffer.o ../../build/yield/buffers.o ../../build/yield/channel.o ../../build/yield/date_time.o ../../build/yield/exception.o ../../build/yield/log.o ../../build/yield/time.o
 
 
 all: ../../lib/yield/libyield.a
@@ -92,10 +92,6 @@ depclean:
 ../../build/yield/log.o: ../../src/yield/log.cpp
 	-mkdir -p ../../build/yield 2>/dev/null
 	$(CXX) -c -o ../../build/yield/log.o -MD $(CXXFLAGS) ../../src/yield/log.cpp
-
-../../build/yield/request.o: ../../src/yield/request.cpp
-	-mkdir -p ../../build/yield 2>/dev/null
-	$(CXX) -c -o ../../build/yield/request.o -MD $(CXXFLAGS) ../../src/yield/request.cpp
 
 ../../build/yield/time.o: ../../src/yield/time.cpp
 	-mkdir -p ../../build/yield 2>/dev/null

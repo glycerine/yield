@@ -37,13 +37,9 @@ extern yunit::TestSuite& BufferTestSuite();
 extern yunit::TestSuite& BuffersTestSuite();
 extern yunit::TestSuite& ChannelTestSuite();
 extern yunit::TestSuite& DateTimeTestSuite();
-extern yunit::TestSuite& EventTestSuite();
 extern yunit::TestSuite& ExceptionTestSuite();
 extern yunit::TestSuite& LogTestSuite();
-extern yunit::TestSuite& MessageTestSuite();
 extern yunit::TestSuite& ObjectTestSuite();
-extern yunit::TestSuite& RequestTestSuite();
-extern yunit::TestSuite& ResponseTestSuite();
 extern yunit::TestSuite& TimeTestSuite();
 
 int main(int, char**) {
@@ -79,11 +75,6 @@ int main(int, char**) {
   failed_test_case_count += DateTimeTestSuite().run();
   std::cout << std::endl;
 
-  // Event
-  std::cout << "Event:" << std::endl;
-  failed_test_case_count += EventTestSuite().run();
-  std::cout << std::endl;
-
   // Exception
   std::cout << "Exception:" << std::endl;
   failed_test_case_count += ExceptionTestSuite().run();
@@ -94,24 +85,9 @@ int main(int, char**) {
   failed_test_case_count += LogTestSuite().run();
   std::cout << std::endl;
 
-  // Message
-  std::cout << "Message:" << std::endl;
-  failed_test_case_count += MessageTestSuite().run();
-  std::cout << std::endl;
-
   // Object
   std::cout << "Object:" << std::endl;
   failed_test_case_count += ObjectTestSuite().run();
-  std::cout << std::endl;
-
-  // Request
-  std::cout << "Request:" << std::endl;
-  failed_test_case_count += RequestTestSuite().run();
-  std::cout << std::endl;
-
-  // Response
-  std::cout << "Response:" << std::endl;
-  failed_test_case_count += ResponseTestSuite().run();
   std::cout << std::endl;
 
   // Time

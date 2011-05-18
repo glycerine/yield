@@ -31,11 +31,11 @@
 #define _YIELD_HTTP_HTTP_MESSAGE_BODY_CHUNK_HPP_
 
 #include "yield/buffer.hpp"
-#include "yield/response.hpp"
+#include "yield/event.hpp"
 
 namespace yield {
 namespace http {
-class HTTPMessageBodyChunk : public Response {
+class HTTPMessageBodyChunk : public Event {
 public:
   const static uint32_t TYPE_ID = 3435197009UL;
 

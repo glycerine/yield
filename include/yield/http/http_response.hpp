@@ -30,12 +30,11 @@
 #ifndef _YIELD_HTTP_HTTP_RESPONSE_HPP_
 #define _YIELD_HTTP_HTTP_RESPONSE_HPP_
 
-#include "yield/response.hpp"
 #include "yield/http/http_message.hpp"
 
 namespace yield {
 namespace http {
-class HTTPResponse : public Response, public HTTPMessage<HTTPResponse> {
+class HTTPResponse : public HTTPMessage<HTTPResponse> {
 public:
   const static uint32_t TYPE_ID = 654743796;
 

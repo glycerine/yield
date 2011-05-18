@@ -37,7 +37,6 @@ extern yunit::TestSuite& RendezvousConcurrentQueueTestSuite();
 extern yunit::TestSuite& STLEventQueueTestSuite();
 extern yunit::TestSuite& SynchronizedEventQueueTestSuite();
 extern yunit::TestSuite& SynchronizedQueueTestSuite();
-extern yunit::TestSuite& SynchronizedResponseQueueTestSuite();
 extern yunit::TestSuite& TLSConcurrentQueueTestSuite();
 
 int main(int, char**) {
@@ -71,11 +70,6 @@ int main(int, char**) {
   // SynchronizedQueue
   std::cout << "SynchronizedQueue:" << std::endl;
   failed_test_case_count += SynchronizedQueueTestSuite().run();
-  std::cout << std::endl;
-
-  // SynchronizedResponseQueue
-  std::cout << "SynchronizedResponseQueue:" << std::endl;
-  failed_test_case_count += SynchronizedResponseQueueTestSuite().run();
   std::cout << std::endl;
 
   // TLSConcurrentQueue

@@ -38,12 +38,23 @@
 
 
 namespace yield {
+class EventQueueTest : public yunit::Test {
+protected:
+  class MockEvent : public Event {
+  public:
+    uint32_t get_type_id() const {
+      return 0;
+    }
+  };
+};
+
+
 template <class EventQueueType>
-class EventQueueDequeueTest : public yunit::Test {
+class EventQueueDequeueTest : public EventQueueTest {
 public:
   // yunit::Test
   void run() {
-    auto_Object<Event> event = new Event;
+    auto_Object<Event> event = new MockEvent;
     EventQueueType event_queue;
 
     bool enqueue_ret = event_queue.enqueue(event->inc_ref());
@@ -59,11 +70,11 @@ public:
 
 
 template <class EventQueueType>
-class EventQueueTimedDequeueTest : public yunit::Test {
+class EventQueueTimedDequeueTest : public EventQueueTest {
 public:
   // yunit::Test
   void run() {
-    auto_Object<Event> event = new Event;
+    auto_Object<Event> event = new MockEvent;
     EventQueueType event_queue;
 
     bool enqueue_ret = event_queue.enqueue(event->inc_ref());
@@ -79,11 +90,11 @@ public:
 
 
 template <class EventQueueType>
-class EventQueueTryDequeueTest : public yunit::Test {
+class EventQueueTryDequeueTest : public EventQueueTest {
 public:
   // yunit::Test
   void run() {
-    auto_Object<Event> event = new Event;
+    auto_Object<Event> event = new MockEvent;
     EventQueueType event_queue;
 
     bool enqueue_ret = event_queue.enqueue(event->inc_ref());

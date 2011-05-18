@@ -38,6 +38,8 @@
 #include "yield/sockets/tcp_socket.hpp"
 
 namespace yield {
+class Log;
+
 namespace sockets {
 namespace aio {
 class acceptAIOCB;
@@ -137,6 +139,8 @@ public:
 
 public:
   void handle(YO_NEW_REF yield::sockets::aio::acceptAIOCB& accept_aiocb);
+  void handle(YO_NEW_REF HTTPMessageBodyChunk& http_message_body_chunk);
+  void handle(YO_NEW_REF HTTPResponse& http_response);
   void handle(YO_NEW_REF recvAIOCB& recv_aiocb);
   void handle(YO_NEW_REF sendAIOCB& send_aiocb);
   void handle(YO_NEW_REF sendfileAIOCB& sendfile_aiocb);
@@ -154,10 +158,6 @@ public:
 public:
   // yield::EventHandler
   void handle(YO_NEW_REF Event& event);
-
-private:
-  void handle(YO_NEW_REF HTTPMessageBodyChunk& http_message_body_chunk);
-  void handle(YO_NEW_REF HTTPResponse& http_response);
 
 private:
   void parse(Buffer& recv_buffer);

@@ -30,7 +30,7 @@
 #ifndef _YIELD_EXCEPTION_HPP_
 #define _YIELD_EXCEPTION_HPP_
 
-#include "yield/response.hpp"
+#include "yield/event.hpp"
 
 #include <exception>
 
@@ -38,7 +38,7 @@ namespace yield {
 /**
   Generic exceptions, also used in the event-driven concurrency subsystem.
 */
-class Exception : public Response, public std::exception {    
+class Exception : public Event, public std::exception {    
 public:
   /**
     Run-time type ID.

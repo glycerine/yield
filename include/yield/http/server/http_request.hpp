@@ -38,14 +38,20 @@ class SocketAddress;
 }
 
 namespace http {
+class HTTPResponse;
+
 namespace server {
+class HTTPConnection;
 class HTTPRequestParser;
 
 class HTTPRequest : public ::yield::http::HTTPRequest {
 public:
+  const static uint32_t TYPE_ID = 2792000307UL;
+
+public:
   HTTPRequest(
+    HTTPConnection& connection,
     Method method,
-    yield::sockets::SocketAddress& peername,
     const yield::uri::URI& uri,
     YO_NEW_REF Object* body = NULL,
     uint8_t http_version = HTTP_VERSION_DEFAULT
@@ -54,8 +60,31 @@ public:
   virtual ~HTTPRequest();
 
 public:
-  const yield::sockets::SocketAddress& get_peername() const {
-    return peername;
+  const HTTPConnection& get_connection() const {
+    return connection;
+  }
+
+public:
+  void respond(YO_NEW_REF HTTPResponse& http_response);
+  void respond(uint16_t status_code);
+  void respond(uint16_t status_code, const char* body);
+  void respond(uint16_t status_code, YO_NEW_REF Object* body);
+  void respond(uint16_t status_code, YO_NEW_REF Object& body);
+
+public:
+  // yield::Object
+  HTTPRequest& inc_ref() {
+    return Object::inc_ref(*this);
+  }
+
+public:
+  // yield::Event
+  uint32_t get_type_id() const {
+    return TYPE_ID;
+  }
+
+  const char* get_type_name() const {
+    return "yield::http::server::HTTPRequest";
   }
 
 protected:
@@ -63,16 +92,16 @@ protected:
 
   HTTPRequest(
     YO_NEW_REF Object* body,
+    HTTPConnection& connection,
     uint16_t fields_offset,
     Buffer& header,
     uint8_t http_version,
     Method method,
-    yield::sockets::SocketAddress& peername,
     const yield::uri::URI& uri
   );
 
 private:
-  yield::sockets::SocketAddress& peername;
+  HTTPConnection& connection;
 };
 }
 }

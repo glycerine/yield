@@ -27,9 +27,6 @@
     <ClInclude Include="..\..\..\include\yield\queue\synchronized_queue.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\queue\synchronized_response_queue.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\yield\queue\tls_concurrent_queue.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

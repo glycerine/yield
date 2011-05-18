@@ -71,16 +71,16 @@ TEST(HTTPRequest, get_uri) {
   throw_assert_eq(HTTPRequest(HTTPRequest::Method::GET, uri).get_uri(), uri);
 }
 
-TEST(HTTPRequest, respond) {
-  auto_Object<HTTPRequest> http_request
-    = new HTTPRequest(HTTPRequest::Method::GET, "/");
-
-  http_request->respond(*new HTTPResponse(200));
-  http_request->respond(404);
-  http_request->respond(404, "test");
-  http_request->respond(404, Buffer::copy("test"));
-  http_request->respond(404, &Buffer::copy("test"));
-  http_request->respond(*new Exception("exception"));
-}
+//TEST(HTTPRequest, respond) {
+//  auto_Object<HTTPRequest> http_request
+//    = new HTTPRequest(HTTPRequest::Method::GET, "/");
+//
+//  http_request->respond(*new HTTPResponse(200));
+//  http_request->respond(404);
+//  http_request->respond(404, "test");
+//  http_request->respond(404, Buffer::copy("test"));
+//  http_request->respond(404, &Buffer::copy("test"));
+//  http_request->respond(*new Exception("exception"));
+//}
 }
 }

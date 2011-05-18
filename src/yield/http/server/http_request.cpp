@@ -27,6 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "yield/http/http_response.hpp"
+#include "yield/http/server/http_connection.hpp"
 #include "yield/http/server/http_request.hpp"
 #include "yield/sockets/socket_address.hpp"
 
@@ -34,22 +36,22 @@ namespace yield {
 namespace http {
 namespace server {
 HTTPRequest::HTTPRequest(
+  HTTPConnection& connection,
   Method method,
-  yield::sockets::SocketAddress& peername,
   const yield::uri::URI& uri,
   YO_NEW_REF Object* body,
   uint8_t http_version
 ) : yield::http::HTTPRequest(method, uri, body, http_version),
-    peername(peername.inc_ref()) {
+    connection(connection.inc_ref()) {
 }
 
 HTTPRequest::HTTPRequest(
   YO_NEW_REF Object* body,
+  HTTPConnection& connection,
   uint16_t fields_offset,
   Buffer& header,
   uint8_t http_version,
-  Method method,
-  yield::sockets::SocketAddress& peername,
+  Method method,  
   const yield::uri::URI& uri
 )
 : yield::http::HTTPRequest(
@@ -60,11 +62,42 @@ HTTPRequest::HTTPRequest(
     method,
     uri
   ),
-  peername(peername.inc_ref()) {
+  connection(connection.inc_ref()) {
 }
 
 HTTPRequest::~HTTPRequest() {
-  yield::sockets::SocketAddress::dec_ref(peername);
+  HTTPConnection::dec_ref(connection);
+}
+
+void HTTPRequest::respond(HTTPResponse& http_response) {
+  connection.handle(http_response);
+}
+
+void HTTPRequest::respond(uint16_t status_code) {
+  respond(status_code, static_cast<Buffer*>(NULL));
+}
+
+void HTTPRequest::respond(uint16_t status_code, const char* body) {
+  respond(status_code, Buffer::copy(body));
+}
+
+void HTTPRequest::respond(uint16_t status_code, YO_NEW_REF Object* body) {
+  HTTPResponse* http_response
+    = new HTTPResponse(status_code, body, get_http_version());
+
+  if (body != NULL && body->get_type_id() == Buffer::TYPE_ID) {
+    http_response->set_field(
+      "Content-Length",
+      14,
+      static_cast<Buffer*>(body)->size()
+    );
+  }
+
+  respond(*http_response);
+}
+
+void HTTPRequest::respond(uint16_t status_code, YO_NEW_REF Object& body) {
+  respond(status_code, &body);
 }
 }
 }

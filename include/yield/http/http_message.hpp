@@ -30,7 +30,7 @@
 #ifndef _YIELD_HTTP_HTTP_MESSAGE_HPP_
 #define _YIELD_HTTP_HTTP_MESSAGE_HPP_
 
-#include "yield/object.hpp"
+#include "yield/event.hpp"
 
 #include <utility> // for std::pair
 
@@ -41,7 +41,7 @@ class DateTime;
 namespace http {
 
 template <class HTTPMessageType>
-class HTTPMessage {
+class HTTPMessage : public Event {
 public:
   const static uint8_t HTTP_VERSION_DEFAULT = 1;
   const static size_t CONTENT_LENGTH_CHUNKED = SIZE_MAX;

@@ -33,6 +33,7 @@
 #include "yield/fs/file.hpp"
 #include "yield/http/http_response.hpp"
 #include "yield/http/server/http_connection.hpp"
+#include "yield/http/server/http_request.hpp"
 #include "yield/http/server/http_message_body_chunk.hpp"
 #include "yield/sockets/aio/accept_aiocb.hpp"
 
@@ -186,7 +187,7 @@ void HTTPConnection::handle(YO_NEW_REF sendfileAIOCB& sendfile_aiocb) {
 void HTTPConnection::parse(Buffer& recv_buffer) {
   debug_assert_false(recv_buffer.empty());
 
-  HTTPRequestParser http_request_parser(recv_buffer, peername);
+  HTTPRequestParser http_request_parser(*this, recv_buffer);
 
   for (;;) {
     Object& object = http_request_parser.parse();
@@ -210,7 +211,6 @@ void HTTPConnection::parse(Buffer& recv_buffer) {
           << ": parsed " << http_request;
       }
 
-      http_request.set_response_handler(*this);
       http_request_handler.handle(http_request);
     }
     break;

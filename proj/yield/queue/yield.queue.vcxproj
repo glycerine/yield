@@ -99,7 +99,6 @@
     <ClInclude Include="..\..\..\include\yield\queue\stl_event_queue.hpp" />
     <ClInclude Include="..\..\..\include\yield\queue\synchronized_event_queue.hpp" />
     <ClInclude Include="..\..\..\include\yield\queue\synchronized_queue.hpp" />
-    <ClInclude Include="..\..\..\include\yield\queue\synchronized_response_queue.hpp" />
     <ClInclude Include="..\..\..\include\yield\queue\tls_concurrent_queue.hpp" />
   </ItemGroup>
 

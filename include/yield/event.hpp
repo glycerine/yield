@@ -44,18 +44,12 @@ public:
   virtual ~Event() { }
 
 public:
-  /**
-    Check if this Event can be downcast to a Message.
-    @return true if this Event is a Message.
-  */
-  virtual bool is_message() const {
-    return false;
-  }
-
-public:
   // yield::Object
   virtual uint32_t get_type_id() const = 0;
-  virtual const char* get_type_name() const = 0;
+
+  virtual const char* get_type_name() const {
+    return "yield::Event";
+  }
 
   Event& inc_ref() {
     return Object::inc_ref(*this);

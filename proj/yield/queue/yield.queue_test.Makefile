@@ -56,7 +56,7 @@ LIBS += -lyield_thread -lyield
 D_FILE_PATHS := $(shell find ../../../build/yield/queue_test -name "*.d")
 
 
-O_FILE_PATHS += ../../../build/yield/queue_test/blocking_concurrent_queue_test.o ../../../build/yield/queue_test/non_blocking_concurrent_queue_test.o ../../../build/yield/queue_test/rendezvous_concurrent_queue_test.o ../../../build/yield/queue_test/stl_event_queue_test.o ../../../build/yield/queue_test/synchronized_event_queue_test.o ../../../build/yield/queue_test/synchronized_queue_test.o ../../../build/yield/queue_test/synchronized_response_queue_test.o ../../../build/yield/queue_test/tls_concurrent_queue_test.o ../../../build/yield/queue_test/yield_queue_test_main.o
+O_FILE_PATHS += ../../../build/yield/queue_test/blocking_concurrent_queue_test.o ../../../build/yield/queue_test/non_blocking_concurrent_queue_test.o ../../../build/yield/queue_test/rendezvous_concurrent_queue_test.o ../../../build/yield/queue_test/stl_event_queue_test.o ../../../build/yield/queue_test/synchronized_event_queue_test.o ../../../build/yield/queue_test/synchronized_queue_test.o ../../../build/yield/queue_test/tls_concurrent_queue_test.o ../../../build/yield/queue_test/yield_queue_test_main.o
 
 
 all: ../../../bin/yield/yield_queue_test
@@ -111,10 +111,6 @@ lcov: ../../../bin/yield/yield_queue_test
 ../../../build/yield/queue_test/synchronized_queue_test.o: ../../../test/yield/queue/synchronized_queue_test.cpp
 	-mkdir -p ../../../build/yield/queue_test 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/queue_test/synchronized_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/queue/synchronized_queue_test.cpp
-
-../../../build/yield/queue_test/synchronized_response_queue_test.o: ../../../test/yield/queue/synchronized_response_queue_test.cpp
-	-mkdir -p ../../../build/yield/queue_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/queue_test/synchronized_response_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/queue/synchronized_response_queue_test.cpp
 
 ../../../build/yield/queue_test/tls_concurrent_queue_test.o: ../../../test/yield/queue/tls_concurrent_queue_test.cpp
 	-mkdir -p ../../../build/yield/queue_test 2>/dev/null

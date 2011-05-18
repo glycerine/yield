@@ -31,7 +31,6 @@
 #include "yield/buffer.hpp"
 #include "yield/exception.hpp"
 #include "yield/http/http_request.hpp"
-#include "yield/http/http_response.hpp"
 
 #include <sstream> // for std::ostringstream
 
@@ -178,41 +177,6 @@ HTTPRequest::HTTPRequest(
       }
       }
   }
-}
-
-void HTTPRequest::respond(HTTPResponse& http_response) {
-  Request::respond(http_response);
-}
-
-void HTTPRequest::respond(uint16_t status_code) {
-  respond(status_code, static_cast<Buffer*>(NULL));
-}
-
-void HTTPRequest::respond(uint16_t status_code, const char* body) {
-  respond(status_code, Buffer::copy(body));
-}
-
-void HTTPRequest::respond(uint16_t status_code, YO_NEW_REF Object* body) {
-  HTTPResponse* http_response
-    = new HTTPResponse(status_code, body, get_http_version());
-
-  if (body != NULL && body->get_type_id() == Buffer::TYPE_ID) {
-    http_response->set_field(
-      "Content-Length",
-      14,
-      static_cast<Buffer*>(body)->size()
-    );
-  }
-
-  respond(*http_response);
-}
-
-void HTTPRequest::respond(uint16_t status_code, YO_NEW_REF Object& body) {
-  respond(status_code, &body);
-}
-
-void HTTPRequest::respond(Exception& exception) {
-  Request::respond(exception);
 }
 
 std::ostream& operator<<(std::ostream& os, const HTTPRequest& http_request) {

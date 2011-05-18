@@ -28,6 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "http_request_parser.hpp"
+#include "yield/http/server/http_connection.hpp"
 #include "yield/http/server/http_request.hpp"
 #include "yield/http/server/http_message_body_chunk.hpp"
 #include "yield/sockets/socket_address.hpp"
@@ -37,20 +38,20 @@ namespace http {
 namespace server {
 using yield::sockets::SocketAddress;
 
-HTTPRequestParser::HTTPRequestParser(Buffer& data, SocketAddress& peername)
+HTTPRequestParser::HTTPRequestParser(HTTPConnection& connection, Buffer& data)
   : yield::http::HTTPRequestParser(data),
-    peername(peername.inc_ref()) {
+    connection(connection.inc_ref()) {
 }
 
 HTTPRequestParser::~HTTPRequestParser() {
-  SocketAddress::dec_ref(peername);
+  HTTPConnection::dec_ref(connection);
 }
 
 YO_NEW_REF yield::http::HTTPMessageBodyChunk&
 HTTPRequestParser::create_http_message_body_chunk(
   YO_NEW_REF Buffer* data
 ) {
-  return *new HTTPMessageBodyChunk(data, peername);
+  return *new HTTPMessageBodyChunk(connection, data);
 }
 
 YO_NEW_REF yield::http::HTTPRequest&
@@ -64,11 +65,11 @@ HTTPRequestParser::create_http_request(
 ) {
   return *new HTTPRequest(
             body,
+            connection,
             fields_offset,
             header,
             http_version,
             method,
-            peername,
             uri
           );
 }

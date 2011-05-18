@@ -118,19 +118,11 @@
     <ClCompile Include="..\..\test\yield\date_time_test.cpp">
     </ClCompile>
     <ClInclude Include="..\..\test\yield\event_queue_test.hpp" />
-    <ClCompile Include="..\..\test\yield\event_test.cpp">
-    </ClCompile>
     <ClCompile Include="..\..\test\yield\exception_test.cpp">
     </ClCompile>
     <ClCompile Include="..\..\test\yield\log_test.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\test\yield\message_test.cpp">
-    </ClCompile>
     <ClCompile Include="..\..\test\yield\object_test.cpp">
-    </ClCompile>
-    <ClCompile Include="..\..\test\yield\request_test.cpp">
-    </ClCompile>
-    <ClCompile Include="..\..\test\yield\response_test.cpp">
     </ClCompile>
     <ClInclude Include="..\..\test\yield\test_object.hpp" />
     <ClCompile Include="..\..\test\yield\time_test.cpp">

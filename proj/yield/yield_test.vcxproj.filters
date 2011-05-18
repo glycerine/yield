@@ -43,25 +43,13 @@
     <ClInclude Include="..\..\test\yield\event_queue_test.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\test\yield\event_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\test\yield\exception_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\test\yield\log_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\test\yield\message_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\test\yield\object_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\test\yield\request_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\test\yield\response_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClInclude Include="..\..\test\yield\test_object.hpp">

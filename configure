@@ -284,9 +284,6 @@ INCLUDE_FILE_PATHS["yield"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "types.hpp"), # before atomic
     path_join(INCLUDE_DIR_PATH, "yield", "atomic.hpp"), # before object
     path_join(INCLUDE_DIR_PATH, "yield", "object.hpp"), # before event
-    path_join(INCLUDE_DIR_PATH, "yield", "event.hpp"), # before message
-    path_join(INCLUDE_DIR_PATH, "yield", "message.hpp"), # before response
-    path_join(INCLUDE_DIR_PATH, "yield", "response.hpp"), # before exception
     path_join(INCLUDE_DIR_PATH, "yield", "time.hpp"), # before event_queue
 ] + \
 INCLUDE_FILE_PATHS["yield"]

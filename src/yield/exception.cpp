@@ -37,7 +37,6 @@
 #include <errno.h>
 #endif
 
-
 namespace yield {
 Exception::Exception()
   : error_message(NULL) {
@@ -93,8 +92,7 @@ const char* Exception::get_error_message() const throw() {
   else if (error_code != 0) {
 #ifdef _WIN32
     DWORD dwMessageLength
-    = FormatMessageA
-      (
+    = FormatMessageA(
         FORMAT_MESSAGE_ALLOCATE_BUFFER |
         FORMAT_MESSAGE_FROM_SYSTEM |
         FORMAT_MESSAGE_IGNORE_INSERTS,
@@ -113,8 +111,7 @@ const char* Exception::get_error_message() const throw() {
       return error_message;
     } else if (error_code >= NERR_BASE || error_code <= MAX_NERR) {
       HMODULE hModule
-      = LoadLibraryEx
-        (
+      = LoadLibraryEx(
           TEXT("netmsg.dll"),
           NULL,
           LOAD_LIBRARY_AS_DATAFILE
@@ -122,8 +119,7 @@ const char* Exception::get_error_message() const throw() {
 
       if (hModule != NULL) {
         dwMessageLength
-        = FormatMessageA
-          (
+        = FormatMessageA(
             FORMAT_MESSAGE_ALLOCATE_BUFFER |
             FORMAT_MESSAGE_FROM_SYSTEM |
             FORMAT_MESSAGE_IGNORE_INSERTS,
@@ -192,8 +188,7 @@ void Exception::set_error_message(const char* error_message) {
   size_t error_message_len = strlen(error_message);
 #ifdef _WIN32
   this->error_message
-  = static_cast<char*>
-    (
+  = static_cast<char*>(
       LocalAlloc(LMEM_FIXED, error_message_len + 1)
     );
 #else
@@ -211,16 +206,14 @@ void Exception::set_error_message(const string& error_message) {
 
 #ifdef _WIN32
   this->error_message
-  = static_cast<char*>
-    (
+  = static_cast<char*>(
       LocalAlloc(LMEM_FIXED, error_message.size() + 1)
     );
 #else
   this->error_message = new char[error_message.size() + 1];
 #endif
 
-  memcpy_s
-  (
+  memcpy_s(
     this->error_message,
     error_message.size() + 1,
     error_message.c_str(),

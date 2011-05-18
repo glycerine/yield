@@ -53,16 +53,7 @@
     <ClInclude Include="..\..\include\yield\log.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\yield\message.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\yield\object.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\yield\request.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\yield\response.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\yield\time.hpp">
@@ -89,9 +80,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\yield\log.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\yield\request.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\yield\time.cpp">

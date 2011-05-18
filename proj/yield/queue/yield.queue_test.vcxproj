@@ -118,8 +118,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\test\yield\queue\synchronized_queue_test.cpp">
     </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\queue\synchronized_response_queue_test.cpp">
-    </ClCompile>
     <ClCompile Include="..\..\..\test\yield\queue\tls_concurrent_queue_test.cpp">
     </ClCompile>
     <ClCompile Include="..\..\..\test\yield\queue\yield_queue_test_main.cpp">
