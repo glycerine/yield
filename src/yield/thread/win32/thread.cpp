@@ -93,9 +93,13 @@ void Thread::nanosleep(const Time& timeout) {
 }
 
 unsigned long __stdcall Thread::run(void* this_) {
-  static_cast<Thread*>(this_)->state = STATE_RUNNING;
-  static_cast<Thread*>(this_)->runnable->run();
-  static_cast<Thread*>(this_)->state = STATE_SUSPENDED;
+  return static_cast<Thread*>(this_)->run();
+}
+
+unsigned long Thread::run() {
+  state = STATE_RUNNING;
+  runnable->run();
+  state = STATE_SUSPENDED;
   return 0;
 }
 

@@ -101,7 +101,13 @@ private:
 #endif
 
 private:
+#ifdef _WIN32
   static unsigned long __stdcall run(void*);
+  unsigned long run();
+#else
+  static void* run(void*);
+  void* run();
+#endif
 
 private:
 #ifdef _WIN32

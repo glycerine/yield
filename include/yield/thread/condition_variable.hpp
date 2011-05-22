@@ -36,6 +36,7 @@
 #include "yield/thread/semaphore.hpp"
 #else
 #include "yield/config.hpp"
+
 #include <pthread.h>
 #endif
 
@@ -61,9 +62,7 @@ public:
     Blocks until the mutex is acquired or is destroyed.
     @return true if the caller now holds the mutex
   */
-  bool lock_mutex() {
-    return mutex.lock();
-  }
+  bool lock_mutex();
 
   /**
     Signal a single waiter.
@@ -85,16 +84,12 @@ public:
       into timedwait or wait. Do not block on failure.
     @return true if the caller now holds the mutex
   */
-  bool trylock_mutex() {
-    return mutex.trylock();
-  }
+  bool trylock_mutex();
 
   /**
     Unlock the mutex associated with this condition variable.
   */
-  void unlock_mutex() {
-    mutex.unlock();
-  }
+  void unlock_mutex();
 
   /**
     Wait on the condition variable for the specified time out.

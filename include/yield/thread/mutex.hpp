@@ -52,6 +52,7 @@ public:
   */
   bool lock();
 
+#ifdef _WIN32
   /**
     Get the underlying HANDLE to this mutex.
     @return the underlying HANDLE to this mutex
@@ -59,6 +60,7 @@ public:
   operator void* () const {
     return hMutex;
   }
+#endif
 
   /**
     Try to lock the mutex, not blocking on failure.

@@ -62,6 +62,10 @@ void ConditionVariable::broadcast() {
     waiters_count_lock.unlock();
 }
 
+bool ConditionVariable::lock_mutex() {
+  return mutex.lock();
+}
+
 void ConditionVariable::signal() {
   waiters_count_lock.lock();
   bool have_waiters = waiters_count > 0;
@@ -101,6 +105,14 @@ bool ConditionVariable::timedwait(const Time& timeout) {
     waiters_count_lock.unlock();
     return false;
   }
+}
+
+bool ConditionVariable::trylock_mutex() {
+  return mutex.trylock();
+}
+
+void ConditionVariable::unlock_mutex() {
+  mutex.unlock();
 }
 
 bool ConditionVariable::wait() {

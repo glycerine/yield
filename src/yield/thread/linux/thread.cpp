@@ -27,16 +27,14 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/thread/linux/thread.hpp"
-#include "yield/thread/linux/processor_set.hpp"
+#include "yield/thread/thread.hpp"
+#include "yield/thread/processor_set.hpp"
 
 #include <sched.h>
 #include <sys/syscall.h>
 
-
 namespace yield {
 namespace thread {
-namespace linux {
 bool Thread::setaffinity(uint16_t logical_processor_i) {
   cpu_set_t cpu_set;
   CPU_ZERO(&cpu_set);
@@ -54,7 +52,6 @@ bool Thread::setaffinity(const ProcessorSet& logical_processor_set) {
 
 void Thread::yield() {
   pthread_yield();
-}
 }
 }
 }
