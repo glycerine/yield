@@ -1,4 +1,4 @@
-// yield/thread/win32/thread.hpp
+// yield/thread/thread.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,8 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_THREAD_WIN32_THREAD_HPP_
-#define _YIELD_THREAD_WIN32_THREAD_HPP_
+#ifndef _YIELD_THREAD_THREAD_HPP_
+#define _YIELD_THREAD_THREAD_HPP_
 
 #include "yield/auto_object.hpp"
 

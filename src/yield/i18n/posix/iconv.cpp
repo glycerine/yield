@@ -44,13 +44,12 @@
 
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
-#include "yield/i18n/posix/iconv.hpp"
+#include "yield/i18n/iconv.hpp"
 
 #include <errno.h>
 
 namespace yield {
 namespace i18n {
-namespace posix {
 iconv::iconv(Code tocode, Code fromcode) {
   cd = ::iconv_open(tocode, fromcode);
   if (cd == reinterpret_cast<iconv_t>(-1))
@@ -138,7 +137,6 @@ bool iconv::operator()(const string& inbuf, string& outbuf) {
 
 bool iconv::reset() {
   return iconv_to_char(NULL, 0, NULL, 0) != static_cast<size_t>(-1);
-}
 }
 }
 }

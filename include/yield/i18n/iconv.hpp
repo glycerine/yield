@@ -30,20 +30,57 @@
 #ifndef _YIELD_I18N_ICONV_HPP_
 #define _YIELD_I18N_ICONV_HPP_
 
-#ifdef _WIN32
-#include "yield/i18n/win32/iconv.hpp"
-#else
-#include "yield/i18n/posix/iconv.hpp"
-#endif
-
+#include "yield/types.hpp"
+#include "yield/i18n/code.hpp"
 
 namespace yield {
 namespace i18n {
+class iconv {
+public:
+  iconv(Code tocode, Code fromcode);
+
+  // iconv.3
+  size_t
+  operator()(
+    const char** inbuf,
+    size_t* inbytesleft,
+    char** outbuf,
+    size_t* outbytesleft
+  );
+
+  bool operator()(const string& inbuf, string& outbuf);
 #ifdef _WIN32
-typedef win32::iconv iconv;
-#else
-typedef posix::iconv iconv;
+  bool operator()(const string& inbuf, std::wstring& outbuf);
+  bool operator()(const std::wstring& inbuf, string& outbuf);
 #endif
+
+private:
+#ifndef _WIN32
+  size_t
+  iconv_to_char(
+    const char** inbuf,
+    size_t* inbytesleft,
+    char** outbuf,
+    size_t* outbytesleft
+  );
+
+  template <class outbufStringType>
+  bool iconv_to_string(
+    const char* inbuf,
+    size_t inbytesleft,
+    outbufStringType& outbuf
+  );
+
+  bool reset();
+#endif
+
+private:
+#ifdef _WIN32
+  Code fromcode, tocode;
+#else
+  void* cd;
+#endif
+};
 }
 }
 

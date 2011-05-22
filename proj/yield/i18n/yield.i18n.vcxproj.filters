@@ -15,12 +15,6 @@
     <Filter Include="Header Files">
       <UniqueIdentifier>{09bc2ddd-3868-4d70-8f87-d9edff51cb87}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\posix">
-      <UniqueIdentifier>{f43f8e57-0784-4a6d-b193-3c3820e03de8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\win32">
-      <UniqueIdentifier>{1eafd54a-b596-4dd3-8ffc-802cfaf7cd44}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\yield\i18n\code.hpp">
@@ -29,26 +23,8 @@
     <ClInclude Include="..\..\..\include\yield\i18n\iconv.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\i18n\posix\code.hpp">
-      <Filter>Header Files\posix</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\i18n\posix\iconv.hpp">
-      <Filter>Header Files\posix</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\i18n\posix\tstring.hpp">
-      <Filter>Header Files\posix</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\yield\i18n\tstring.hpp">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\i18n\win32\code.hpp">
-      <Filter>Header Files\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\i18n\win32\iconv.hpp">
-      <Filter>Header Files\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\i18n\win32\tstring.hpp">
-      <Filter>Header Files\win32</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

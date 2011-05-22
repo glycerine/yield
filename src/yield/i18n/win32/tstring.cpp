@@ -27,15 +27,13 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/i18n/win32/iconv.hpp"
-#include "yield/i18n/win32/tstring.hpp"
+#include "yield/i18n/iconv.hpp"
+#include "yield/i18n/tstring.hpp"
 
 #include <Windows.h>
 
-
 namespace yield {
 namespace i18n {
-namespace win32 {
 tstring::tstring(char s, Code code) {
   init(&s, 1, code);
 }
@@ -76,7 +74,6 @@ string tstring::encode(Code tocode) const {
 
 void tstring::init(const char* s, size_t len, Code code) {
   iconv(Code::CHAR, code)(string(s, len), *this);
-}
 }
 }
 }

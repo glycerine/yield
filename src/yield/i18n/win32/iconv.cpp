@@ -27,29 +27,25 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/i18n/win32/iconv.hpp"
+#include "yield/i18n/iconv.hpp"
 
 #include <Windows.h>
 
-
 namespace yield {
 namespace i18n {
-namespace win32 {
 iconv::iconv(Code tocode, Code fromcode)
   : fromcode(fromcode), tocode(tocode)
 { }
 
 size_t
-iconv::operator()
-(
+iconv::operator()(
   const char** inbuf,
   size_t* inbytesleft,
   char** outbuf,
   size_t* outbytesleft
 ) {
   int inbuf_w_len
-  = MultiByteToWideChar
-    (
+  = MultiByteToWideChar(
       fromcode,
       0,
       *inbuf,
@@ -62,8 +58,7 @@ iconv::operator()
     wchar_t* inbuf_w = new wchar_t[inbuf_w_len];
 
     inbuf_w_len
-    = MultiByteToWideChar
-      (
+    = MultiByteToWideChar(
         fromcode,
         0,
         *inbuf,
@@ -74,8 +69,7 @@ iconv::operator()
 
     if (inbuf_w_len > 0) {
       int outbyteswritten
-      = WideCharToMultiByte
-        (
+      = WideCharToMultiByte(
           tocode,
           0,
           inbuf_w,
@@ -104,8 +98,7 @@ iconv::operator()
 
 bool iconv::operator()(const string& inbuf, string& outbuf) {
   int inbuf_w_len
-  = MultiByteToWideChar
-    (
+  = MultiByteToWideChar(
       fromcode,
       0,
       inbuf.c_str(),
@@ -118,8 +111,7 @@ bool iconv::operator()(const string& inbuf, string& outbuf) {
     wchar_t* inbuf_w = new wchar_t[inbuf_w_len];
 
     inbuf_w_len
-    = MultiByteToWideChar
-      (
+    = MultiByteToWideChar(
         fromcode,
         0,
         inbuf.c_str(),
@@ -130,8 +122,7 @@ bool iconv::operator()(const string& inbuf, string& outbuf) {
 
     if (inbuf_w_len > 0) {
       int outbuf_c_len
-      = WideCharToMultiByte
-        (
+      = WideCharToMultiByte(
           tocode,
           0,
           inbuf_w,
@@ -146,8 +137,7 @@ bool iconv::operator()(const string& inbuf, string& outbuf) {
         char* outbuf_c = new char[outbuf_c_len];
 
         outbuf_c_len
-        = WideCharToMultiByte
-          (
+        = WideCharToMultiByte(
             tocode,
             0,
             inbuf_w,
@@ -175,8 +165,7 @@ bool iconv::operator()(const string& inbuf, string& outbuf) {
 
 bool iconv::operator()(const string& inbuf, std::wstring& outbuf) {
   int outbuf_w_len
-  = MultiByteToWideChar
-    (
+  = MultiByteToWideChar(
       fromcode,
       0,
       inbuf.c_str(),
@@ -189,8 +178,7 @@ bool iconv::operator()(const string& inbuf, std::wstring& outbuf) {
     wchar_t* outbuf_w = new wchar_t[outbuf_w_len];
 
     outbuf_w_len
-    = MultiByteToWideChar
-      (
+    = MultiByteToWideChar(
         fromcode,
         0,
         inbuf.c_str(),
@@ -212,8 +200,7 @@ bool iconv::operator()(const string& inbuf, std::wstring& outbuf) {
 
 bool iconv::operator()(const std::wstring& inbuf, string& outbuf) {
   int outbuf_c_len
-  = WideCharToMultiByte
-    (
+  = WideCharToMultiByte(
       tocode,
       0,
       inbuf.c_str(),
@@ -228,8 +215,7 @@ bool iconv::operator()(const std::wstring& inbuf, string& outbuf) {
     char* outbuf_c = new char[outbuf_c_len];
 
     outbuf_c_len
-    = WideCharToMultiByte
-      (
+    = WideCharToMultiByte(
         tocode,
         0,
         inbuf.c_str(),
@@ -249,7 +235,6 @@ bool iconv::operator()(const std::wstring& inbuf, string& outbuf) {
   }
 
   return false;
-}
 }
 }
 }

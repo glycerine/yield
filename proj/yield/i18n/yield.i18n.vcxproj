@@ -95,13 +95,7 @@
   <ItemGroup Label="ClIncludeItems">
     <ClInclude Include="..\..\..\include\yield\i18n\code.hpp" />
     <ClInclude Include="..\..\..\include\yield\i18n\iconv.hpp" />
-    <ClInclude Include="..\..\..\include\yield\i18n\posix\code.hpp" />
-    <ClInclude Include="..\..\..\include\yield\i18n\posix\iconv.hpp" />
-    <ClInclude Include="..\..\..\include\yield\i18n\posix\tstring.hpp" />
     <ClInclude Include="..\..\..\include\yield\i18n\tstring.hpp" />
-    <ClInclude Include="..\..\..\include\yield\i18n\win32\code.hpp" />
-    <ClInclude Include="..\..\..\include\yield\i18n\win32\iconv.hpp" />
-    <ClInclude Include="..\..\..\include\yield\i18n\win32\tstring.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">

@@ -30,20 +30,48 @@
 #ifndef _YIELD_I18N_CODE_HPP_
 #define _YIELD_I18N_CODE_HPP_
 
-#ifdef _WIN32
-#include "yield/i18n/win32/code.hpp"
-#else
-#include "yield/i18n/posix/code.hpp"
-#endif
-
+#include "yield/types.hpp"
 
 namespace yield {
 namespace i18n {
+class Code {
+public:
+  const static Code CHAR;
+  const static Code ISO88591;
+  const static Code UTF8;
 #ifdef _WIN32
-typedef win32::Code Code;
-#else
-typedef posix::Code Code;
+  const static Code WCHAR_T;
 #endif
+
+public:
+#ifdef _WIN32
+  Code(uint32_t code_page)
+    : code_page(code_page)
+  { }
+#else
+  Code(const char* iconv_code)
+    : iconv_code(iconv_code)
+  { }
+#endif
+
+public:
+#ifdef _WIN32
+  operator uint32_t() const {
+    return code_page;
+  }
+#else
+  operator const char* () const {
+    return iconv_code;
+  }
+#endif
+
+private:
+#ifdef _WIN32
+  uint32_t code_page;
+#else
+  const char* iconv_code;
+#endif
+};
 }
 }
 

@@ -33,14 +33,12 @@
 #include "yield/i18n/iconv.hpp"
 #include "yunit.hpp"
 
-
 #define TEST_STRING_ISO88591 "\304rger mit b\366sen B\374bchen ohne Augenma\337"
 #define TEST_STRING_UTF8\
   "\303\204rger mit b\303\266sen B\303\274bchen ohne Augenma\303\237"
 #ifdef _WIN32
 #define TEST_STRING_WIDE L"test string"
 #endif
-
 
 TEST_SUITE(iconv);
 

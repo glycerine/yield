@@ -30,20 +30,32 @@
 #ifndef _YIELD_I18N_TSTRING_HPP_
 #define _YIELD_I18N_TSTRING_HPP_
 
-#ifdef _WIN32
-#include "yield/i18n/win32/tstring.hpp"
-#else
-#include "yield/i18n/posix/tstring.hpp"
-#endif
-
+#include "yield/types.hpp"
+#include "yield/i18n/code.hpp"
 
 namespace yield {
 namespace i18n {
+class tstring : public std::wstring {
+public:
+  tstring() { }
+
+  tstring(char s, Code code = Code::CHAR);
+  tstring(const char* s, Code code = Code::CHAR);
+  tstring(const string& s, Code code = Code::CHAR);
+  tstring(const char* s, size_t len, Code code = Code::CHAR);
+
 #ifdef _WIN32
-typedef win32::tstring tstring;
-#else
-typedef posix::tstring tstring;
+  tstring(wchar_t s);
+  tstring(const wchar_t* s);
+  tstring(const wchar_t* s, size_t len);
+  tstring(const std::wstring& s);
 #endif
+
+  string encode(Code tocode) const;
+
+private:
+  void init(const char*, size_t, Code);
+};
 }
 }
 

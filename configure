@@ -318,16 +318,6 @@ INCLUDE_FILE_PATHS["yield.http"] = [
 ] + \
 INCLUDE_FILE_PATHS["yield.http"]
 
-INCLUDE_FILE_PATHS["yield.i18n"] = [
-    path_join(INCLUDE_DIR_PATH, "yield", "i18n", "posix", "code.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "i18n", "posix", "iconv.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "i18n", "posix", "tstring.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "i18n", "win32", "code.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "i18n", "win32", "iconv.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "i18n", "win32", "tstring.hpp"),
-] + \
-INCLUDE_FILE_PATHS["yield.i18n"]
-
 INCLUDE_FILE_PATHS["yield.queue"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "queue", "synchronized_queue.hpp"), # before synchronized_event_queue
 ] + \

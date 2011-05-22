@@ -1,4 +1,4 @@
-// yield/thread/win32/lightweight_mutex.hpp
+// yield/thread/lightweight_mutex.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,8 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_THREAD_WIN32_LIGHTWEIGHT_MUTEX_HPP_
-#define _YIELD_THREAD_WIN32_LIGHTWEIGHT_MUTEX_HPP_
+#ifndef _YIELD_THREAD_LIGHTWEIGHT_MUTEX_HPP_
+#define _YIELD_THREAD_LIGHTWEIGHT_MUTEX_HPP_
 
 #ifdef _WIN32
 struct _RTL_CRITICAL_SECTION;

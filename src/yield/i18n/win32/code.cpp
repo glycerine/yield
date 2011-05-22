@@ -27,18 +27,15 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/i18n/win32/code.hpp"
+#include "yield/i18n/code.hpp"
 
 #include <Windows.h>
 
-
 namespace yield {
 namespace i18n {
-namespace win32 {
 const Code Code::CHAR(CP_ACP);
 const Code Code::ISO88591(1252);
 const Code Code::UTF8(CP_UTF8);
 const Code Code::WCHAR_T(0);
-}
 }
 }

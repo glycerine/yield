@@ -1,4 +1,4 @@
-// yield/thread/win32/semaphore.hpp
+// yield/thread/semaphore.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,8 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_THREAD_WIN32_SEMAPHORE_HPP_
-#define _YIELD_THREAD_WIN32_SEMAPHORE_HPP_
+#ifndef _YIELD_THREAD_SEMAPHORE_HPP_
+#define _YIELD_THREAD_SEMAPHORE_HPP_
 
 #include "yield/config.hpp"
 
@@ -55,7 +55,7 @@ public:
   /**
     Get the underlying HANDLE to this semaphore.
     @return the underlying HANDLE to this semaphore
-  */    
+  */
   operator void* () const {
     return hSemaphore;
   }

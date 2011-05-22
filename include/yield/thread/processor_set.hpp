@@ -1,4 +1,4 @@
-// yield/thread/win32/processor_set.hpp
+// yield/thread/processor_set.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,8 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_THREAD_WIN32_PROCESSOR_SET_HPP_
-#define _YIELD_THREAD_WIN32_PROCESSOR_SET_HPP_
+#ifndef _YIELD_THREAD_PROCESSOR_SET_HPP_
+#define _YIELD_THREAD_PROCESSOR_SET_HPP_
 
 #include "yield/types.hpp"
 

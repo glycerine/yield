@@ -1,4 +1,4 @@
-// yield/thread/win32/condition_variable.hpp
+// yield/thread/condition_variable.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,8 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_THREAD_WIN32_CONDITION_VARIABLE_HPP_
-#define _YIELD_THREAD_WIN32_CONDITION_VARIABLE_HPP_
+#ifndef _YIELD_THREAD_CONDITION_VARIABLE_HPP_
+#define _YIELD_THREAD_CONDITION_VARIABLE_HPP_
 
 #ifdef _WIN32
 #include "yield/thread/lightweight_mutex.hpp"

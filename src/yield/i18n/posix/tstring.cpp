@@ -29,15 +29,13 @@
 
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
-#include "yield/i18n/posix/iconv.hpp"
-#include "yield/i18n/posix/tstring.hpp"
+#include "yield/i18n/iconv.hpp"
+#include "yield/i18n/tstring.hpp"
 
 #include <errno.h>
 
-
 namespace yield {
 namespace i18n {
-namespace posix {
 tstring::tstring(char s, Code code) {
   init(&s, 1, code);
 }
@@ -52,22 +50,6 @@ tstring::tstring(const string& s, Code code) {
 
 tstring::tstring(const char* s, size_t len, Code code) {
   init(s, len, code);
-}
-
-tstring::tstring(wchar_t s) {
-  init(&s, 1);
-}
-
-tstring::tstring(const wchar_t* s) {
-  init(s, wcslen(s));
-}
-
-tstring::tstring(const wchar_t* s, size_t len) {
-  init(s, len);
-}
-
-tstring::tstring(const std::wstring& s) {
-  init(s.data(), s.size());
 }
 
 string tstring::encode(Code tocode) const {
@@ -87,11 +69,6 @@ void tstring::init(const char* s, size_t len, Code code) {
     if (!iconv(Code::CHAR, code)(string(s, len), *this))
       throw Exception();
   }
-}
-
-void tstring::init(const wchar_t* s, size_t len) {
-  throw Exception(ENOTSUP);
-}
 }
 }
 }
