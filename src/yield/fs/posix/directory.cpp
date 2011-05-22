@@ -28,16 +28,12 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/assert.hpp"
-#include "yield/fs/posix/directory.hpp"
+#include "yield/fs/directory.hpp"
 
 #include <sys/stat.h>
 
 namespace yield {
 namespace fs {
-Directory::Directory(DIR* dirp)
-  : dirp(dirp)
-{ }
-
 Directory::Directory(DIR* dirp, const Path& path)
   : dirp(dirp), path(path)
 { }
@@ -135,6 +131,10 @@ void Directory::rewind() {
   rewinddir(dirp);
 }
 
+
+Directory::Entry::Type Directory::Entry::get_type() const {
+  return type;
+}
 
 bool Directory::Entry::is_hidden() const {
   return !get_name().empty() && get_name()[0] == '.';

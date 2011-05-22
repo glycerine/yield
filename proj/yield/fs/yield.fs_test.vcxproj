@@ -115,19 +115,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\test\yield\fs\path_test.cpp">
     </ClCompile>
-    <ClInclude Include="..\..\..\test\yield\fs\posix\extended_attributes_test.hpp" />
-    <ClCompile Include="..\..\..\test\yield\fs\posix\file_system_test.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\fs\posix\file_test.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\fs\posix\stat_test.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClInclude Include="..\..\..\test\yield\fs\stat_test.hpp" />
     <ClCompile Include="..\..\..\test\yield\fs\win32\file_system_test.cpp">
       <ObjectFileName>$(IntDir)win32\file_system_test.obj</ObjectFileName>

@@ -33,11 +33,15 @@
 #include "yield/buffer.hpp"
 #include "yield/channel.hpp"
 
+#ifdef _WIN32
 #define O_SYNC     010000
 #define O_ASYNC    020000
 #define O_DIRECT   040000
 #define O_HIDDEN   0100000
 #define O_NONBLOCK 0200000
+#else
+#include <fcntl.h>
+#endif
 
 namespace yield {
 namespace fs {
@@ -55,10 +59,21 @@ public:
       uint64_t start,
       uint64_t len,
       bool exclusive = true,
+#ifndef _WIN32
+      pid_t pid = -1,
+#endif
       int16_t whence = SEEK_SET
     );
 
+#ifndef _WIN32
+    Lock(const struct flock& flock_);
+#endif
+
+  public:
     uint64_t get_len() const;
+#ifndef _WIN32
+    pid_t get_pid() const;
+#endif
     uint64_t get_start() const;
     int16_t get_whence() const;
     bool is_exclusive() const;
@@ -121,13 +136,14 @@ public:
       File& file,
 #ifdef _WIN32
       fd_t file_mapping,
-      uint64_t file_offset,
 #endif
-      unsigned int flags,
-      unsigned int prot,
+      uint64_t file_offset,
 #ifdef _WIN32
       bool read_only,
       bool shared
+#else
+      int flags,
+      int prot
 #endif
     );
 
@@ -137,11 +153,12 @@ public:
     fd_t file_mapping;
 #endif
     uint64_t file_offset;
-    unsigned int flags;
-    unsigned int prot;
 #ifdef _WIN32
     bool read_only;
     bool shared;
+#else
+    int flags;
+    int prot;
 #endif
   };
 
@@ -159,6 +176,11 @@ public:
 
   static YO_NEW_REF File* dup(fd_t fd);
   static YO_NEW_REF File* dup(FILE* file);
+
+public:
+#ifndef _WIN32
+  YO_NEW_REF Lock* getlk(const Lock& lock);
+#endif
 
 public:
   YO_NEW_REF Map*

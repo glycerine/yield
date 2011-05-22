@@ -52,6 +52,8 @@ struct statvfs {
   unsigned long f_flag;     // Bit mask of f_flag values.
   unsigned long f_namemax;  // Maximum filename length.
 };
+#else
+struct statvfs;
 #endif
 
 namespace yield {

@@ -50,10 +50,12 @@ public:
   Path(const char* path, size_t path_len) : tstring(path, path_len) { }
   Path(const string& path) : tstring(path) { }
   Path(const tstring& path) : tstring(path) { }
+#ifdef _WIN32
   Path(wchar_t path) : tstring(path) { }
   Path(const wchar_t* path) : tstring(path) { }
   Path(const wchar_t* path, size_t path_len) : tstring(path, path_len) { }
   Path(const std::wstring& path) : tstring(path) { }
+#endif
 
   Path parent_path() const {
     if (size() > 1 || operator[](0) != SEPARATOR) {

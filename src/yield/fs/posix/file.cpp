@@ -43,9 +43,9 @@ namespace fs {
 File::Lock::Lock(
   uint64_t len,
   uint64_t start,
-  bool exclusive = true,
-  pid_t pid = -1,
-  int16_t whence = SEEK_SET
+  bool exclusive,
+  pid_t pid,
+  int16_t whence
 ) {
   flock_.l_len = len;
   flock_.l_pid = pid;
@@ -181,7 +181,7 @@ YO_NEW_REF File* File::dup(FILE* file) {
   return dup(fileno(file));
 }
 
-File::Lock* File::getlk(const Lock& lock) {
+YO_NEW_REF File::Lock* File::getlk(const Lock& lock) {
   struct flock flock_ = lock;
   if (fcntl(*this, F_GETLK, &flock_) == 0) {
     if (flock_.l_type == F_UNLCK)   // No lock blocking lock

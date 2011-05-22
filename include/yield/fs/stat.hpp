@@ -41,6 +41,8 @@ typedef struct _WIN32_FILE_ATTRIBUTE_DATA WIN32_FILE_ATTRIBUTE_DATA;
 struct _WIN32_FIND_DATAW;
 typedef _WIN32_FIND_DATAW WIN32_FIND_DATAW;
 typedef WIN32_FIND_DATAW WIN32_FIND_DATA;
+#else
+#include <sys/stat.h>
 #endif
 
 namespace yield {
@@ -80,7 +82,7 @@ public:
 
 #ifndef _WIN32
   uint64_t get_blksize() const;
-  uint64_t get_blocks() const
+  uint64_t get_blocks() const;
 #endif
 
   const DateTime& get_ctime() const {
@@ -91,7 +93,7 @@ public:
   uint64_t get_dev() const;
   gid_t get_gid() const;
   uint64_t get_ino() const;
-  mode_t get_mode() const
+  mode_t get_mode() const;
 #endif
 
   const DateTime& get_mtime() const {
@@ -101,10 +103,14 @@ public:
   int16_t get_nlink() const;
 
 #ifndef _WIN32
-  uint64_t get_rdev() const
+  uint64_t get_rdev() const;
 #endif
 
   uint64_t get_size() const;
+
+#ifndef _WIN32
+  uid_t get_uid() const;
+#endif
 
 public:
 #ifndef _WIN32

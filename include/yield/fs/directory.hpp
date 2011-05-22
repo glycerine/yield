@@ -174,7 +174,12 @@ private:
   bool read(OUT Entry*&);
 
 private:
+#ifdef _WIN32
   fd_t hDirectory, hFindFile;
+#else
+  DIR* dirp;
+  Path path;
+#endif
 };
 }
 }

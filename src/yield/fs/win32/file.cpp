@@ -264,8 +264,6 @@ File::mmap(
            *this,
            hFileMapping,
            offset,
-           flags,
-           prot,
            read_only,
            shared
          );

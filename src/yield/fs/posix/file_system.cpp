@@ -133,31 +133,17 @@ FileSystem::open(
   mode_t mode
 ) {
   fd_t fd = ::open(path.c_str(), flags, mode);
-  if (fd >= 0) {
-#if defined(__FreeBSD__)
-    return new freebsd::File(fd);
-#elif defined(__linux__)
-    return new linux::File(fd);
-#elif defined(__MACH__)
-    return new darwin::File(fd);
-#else
+  if (fd >= 0)
     return new File(fd);
-#endif
-  } else
+  else
     return NULL;
 }
 
 Directory* FileSystem::opendir(const Path& path) {
   DIR* dirp = ::opendir(path.c_str());
-  if (dirp != NULL) {
-#if defined(__FreeBSD__) || defined(__MACH__)
-    return new bsd::Directory(dirp);
-#elif defined(__linux__)
-    return new linux::Directory(dirp);
-#else
+  if (dirp != NULL)
     return new Directory(dirp, path);
-#endif
-  } else
+  else
     return NULL;
 }
 
