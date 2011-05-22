@@ -36,6 +36,10 @@
 
 namespace yield {
 namespace poll {
+#if !defined(__linux__) && \
+    !defined(__MACH__) && \
+    !defined(__FreeBSD__) && \
+    !defined(__sun)
 FDEventQueue::FDEventQueue() {
   if (pipe(wake_pipe) != -1) {
     try {
@@ -134,5 +138,6 @@ YO_NEW_REF Event* FDEventQueue::timeddequeue(const Time& timeout) {
     return NULL;
   }
 }
+#endif
 }
 }
