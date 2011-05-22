@@ -86,6 +86,9 @@ using std::vector;
 #endif
 
 namespace yield {
+/**
+  Platform-specific type of integer operands in atomic operations (atomic_*).
+*/
 #if defined(_WIN64)
 typedef __int64 atomic_t;
 #elif defined(_WIN32)
@@ -94,6 +97,9 @@ typedef long atomic_t;
 typedef intptr_t atomic_t;
 #endif
 
+/**
+  Platform-specific file descriptor type (e.g., int on POSIX systems).
+*/
 #ifdef _WIN32
 typedef void* fd_t;
 const static fd_t INVALID_FD = reinterpret_cast<fd_t>(-1);
@@ -102,6 +108,9 @@ typedef int fd_t;
 const static fd_t INVALID_FD = -1;
 #endif
 
+/**
+  Platform-specific socket descriptor type (e.g., int on POSIX systems).
+*/
 #if defined(_WIN64)
 typedef uint64_t socket_t;
 typedef int socklen_t;
@@ -114,6 +123,13 @@ typedef int socket_t;
 }
 
 #ifndef _WIN32
+/**
+  Checked variant of memcpy.
+  @param dest memory location to copy to
+  @param dest_len length of the memory region pointed to by dest
+  @param src memory location to copy from
+  @param src_len length of the memory region pointed to by src
+*/
 inline void
 memcpy_s(
   void* dest,

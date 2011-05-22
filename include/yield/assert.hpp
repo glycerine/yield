@@ -42,8 +42,18 @@ extern "C" {
 #endif
 
 namespace yield {
+/**
+  std::exception subclass thrown by throw_assert_* statements.
+*/
 class AssertionException : public std::exception {
 public:
+  /**
+    Construct an AssertionException with information about the source line
+      throwing the exception.
+    @param file __FILE__
+    @param line __LINE__
+    @param message message to return on what()
+  */
   AssertionException(const char* file, int line, const char* message = "") {
 #ifdef _WIN32
     _snprintf_s(
@@ -59,7 +69,10 @@ public:
    );
   }
 
-  // std::exception
+public:
+  /**
+    Return a human-readable summary of this exception.
+  */
   virtual const char* what() const throw() {
     return what_buffer;
   }

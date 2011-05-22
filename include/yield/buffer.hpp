@@ -470,8 +470,22 @@ private:
   size_t size_;
 };
 
-std::ostream& operator<<(std::ostream&, const Buffer&);
-std::ostream& operator<<(std::ostream&, const Buffer*);
+/**
+  Print a string representation of a Buffer to a std::ostream.
+  @param os std::ostream to print to
+  @param buffer Buffer to print
+  @return os
+*/
+std::ostream& operator<<(std::ostream& os, const Buffer& buffer);
+
+/**
+  Print a string representation of a Buffer to a std::ostream,
+    checking if the pointer to the Buffer is NULL.
+  @param os std::ostream to print to
+  @param buffer Buffer to print, checked for NULL
+  @return os
+*/
+std::ostream& operator<<(std::ostream& os, const Buffer* buffer);
 }
 
 #endif

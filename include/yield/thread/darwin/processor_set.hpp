@@ -37,7 +37,16 @@ namespace thread {
 namespace darwin {
 class ProcessorSet {
 public:
+  /**
+    Query the system for the number of logical processors currently online.
+    @return the number of logical processors currently online
+  */
   static uint16_t get_online_logical_processor_count();
+
+  /**
+    Query the system for the number of logical processors currently online.
+    @return the number of physical processors currently online
+  */
   static uint16_t get_online_physical_processor_count();
 };
 }

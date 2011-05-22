@@ -35,19 +35,38 @@
 namespace yield {
 namespace thread {
 namespace win32 {
+/**
+  Heavyweight mutex synchronization primitive.
+*/
 class Mutex {
 public:
   Mutex();
   ~Mutex();
 
 public:
+  /**
+    Lock the mutex, blocking until acquisition.
+    @return true if the caller now holds the mutex
+  */
   bool lock();
 
+  /**
+    Get the underlying HANDLE to this mutex.
+    @return the underlying HANDLE to this mutex
+  */
   operator void* () const {
     return hMutex;
   }
 
+  /**
+    Try to lock the mutex, not blocking on failure.
+    @return true if the caller now holds the mutex
+  */
   bool trylock();
+
+  /**
+    Unlock the mutex.
+  */
   void unlock();
 
 private:

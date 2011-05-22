@@ -41,29 +41,29 @@ namespace yield {
 namespace http {
 TEST(HTTPMessageParser, MalformedFieldMissingColon) {
   HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\nHost\r\n\r\n");
-  HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
+  HTTPRequest* http_request = Object::cast<HTTPRequest>(http_request_parser.parse());
   throw_assert_eq(http_request, NULL);
 }
 
 TEST(HTTPMessageParser, MalformedFieldMissingName) {
   HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\n: localhost\r\n\r\n");
-  HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
+  HTTPRequest* http_request = Object::cast<HTTPRequest>(http_request_parser.parse());
   throw_assert_eq(http_request, NULL);
 }
 
 TEST(HTTPMessageParser, WellFormedChunkedBodyWithChunkExtension) {
   HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\nTransfer-Encoding: chunked\r\n\r\n1;chunk_ext1;chunk_ext2=\"ChunkExtension\"\r\nx\r\n0\r\n\r\n");
-  HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
+  HTTPRequest* http_request = Object::cast<HTTPRequest>(http_request_parser.parse());
   throw_assert_ne(http_request, NULL);
   throw_assert_eq(http_request->get_http_version(), 1);
   {
-    HTTPMessageBodyChunk* http_message_body_chunk = object_cast<HTTPMessageBodyChunk>(http_request_parser.parse());
+    HTTPMessageBodyChunk* http_message_body_chunk = Object::cast<HTTPMessageBodyChunk>(http_request_parser.parse());
     throw_assert_ne(http_message_body_chunk, NULL);
     throw_assert_eq(http_message_body_chunk->size(), 1);
     HTTPMessageBodyChunk::dec_ref(http_message_body_chunk);
   }
   {
-    HTTPMessageBodyChunk* http_message_body_chunk = object_cast<HTTPMessageBodyChunk>(http_request_parser.parse());
+    HTTPMessageBodyChunk* http_message_body_chunk = Object::cast<HTTPMessageBodyChunk>(http_request_parser.parse());
     throw_assert_ne(http_message_body_chunk, NULL);
     throw_assert_eq(http_message_body_chunk->size(), 0);
     HTTPMessageBodyChunk::dec_ref(http_message_body_chunk);
@@ -73,23 +73,23 @@ TEST(HTTPMessageParser, WellFormedChunkedBodyWithChunkExtension) {
 
 TEST(HTTPMessageParser, WellFormedChunkedBodyWithTrailer) {
   HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\nTransfer-Encoding: chunked\r\n\r\n1\r\nx\r\n1\r\ny\r\n0\r\nHost: localhost\r\nX-Host: x-localhost\r\n\r\n");
-  HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
+  HTTPRequest* http_request = Object::cast<HTTPRequest>(http_request_parser.parse());
   throw_assert_ne(http_request, NULL);
   throw_assert_eq(http_request->get_http_version(), 1);
   {
-    HTTPMessageBodyChunk* http_message_body_chunk = object_cast<HTTPMessageBodyChunk>(http_request_parser.parse());
+    HTTPMessageBodyChunk* http_message_body_chunk = Object::cast<HTTPMessageBodyChunk>(http_request_parser.parse());
     throw_assert_ne(http_message_body_chunk, NULL);
     throw_assert_eq(http_message_body_chunk->size(), 1);
     HTTPMessageBodyChunk::dec_ref(http_message_body_chunk);
   }
   {
-    HTTPMessageBodyChunk* http_message_body_chunk = object_cast<HTTPMessageBodyChunk>(http_request_parser.parse());
+    HTTPMessageBodyChunk* http_message_body_chunk = Object::cast<HTTPMessageBodyChunk>(http_request_parser.parse());
     throw_assert_ne(http_message_body_chunk, NULL);
     throw_assert_eq(http_message_body_chunk->size(), 1);
     HTTPMessageBodyChunk::dec_ref(http_message_body_chunk);
   }
   {
-    HTTPMessageBodyChunk* http_message_body_chunk = object_cast<HTTPMessageBodyChunk>(http_request_parser.parse());
+    HTTPMessageBodyChunk* http_message_body_chunk = Object::cast<HTTPMessageBodyChunk>(http_request_parser.parse());
     throw_assert_ne(http_message_body_chunk, NULL);
     throw_assert_eq(http_message_body_chunk->size(), 0);
     HTTPMessageBodyChunk::dec_ref(http_message_body_chunk);
@@ -99,18 +99,18 @@ TEST(HTTPMessageParser, WellFormedChunkedBodyWithTrailer) {
 
 TEST(HTTPMessageParser, WellFormed1ChunkBody) {
   HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n1\r\nx\r\n0\r\n\r\n");
-  HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
+  HTTPRequest* http_request = Object::cast<HTTPRequest>(http_request_parser.parse());
   throw_assert_ne(http_request, NULL);
   throw_assert_eq(http_request->get_http_version(), 1);
   throw_assert_eq((*http_request)["Host"], "localhost");
   {
-    HTTPMessageBodyChunk* http_message_body_chunk = object_cast<HTTPMessageBodyChunk>(http_request_parser.parse());
+    HTTPMessageBodyChunk* http_message_body_chunk = Object::cast<HTTPMessageBodyChunk>(http_request_parser.parse());
     throw_assert_ne(http_message_body_chunk, NULL);
     throw_assert_eq(http_message_body_chunk->size(), 1);
     HTTPMessageBodyChunk::dec_ref(http_message_body_chunk);
   }
   {
-    HTTPMessageBodyChunk* http_message_body_chunk = object_cast<HTTPMessageBodyChunk>(http_request_parser.parse());
+    HTTPMessageBodyChunk* http_message_body_chunk = Object::cast<HTTPMessageBodyChunk>(http_request_parser.parse());
     throw_assert_ne(http_message_body_chunk, NULL);
     throw_assert_eq(http_message_body_chunk->size(), 0);
     HTTPMessageBodyChunk::dec_ref(http_message_body_chunk);
@@ -120,24 +120,24 @@ TEST(HTTPMessageParser, WellFormed1ChunkBody) {
 
 TEST(HTTPMessageParser, WellFormed2ChunkBody) {
   HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n1\r\nx\r\n1\r\ny\r\n0\r\n\r\n");
-  HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
+  HTTPRequest* http_request = Object::cast<HTTPRequest>(http_request_parser.parse());
   throw_assert_ne(http_request, NULL);
   throw_assert_eq(http_request->get_http_version(), 1);
   throw_assert_eq((*http_request)["Host"], "localhost");
   {
-    HTTPMessageBodyChunk* http_message_body_chunk = object_cast<HTTPMessageBodyChunk>(http_request_parser.parse());
+    HTTPMessageBodyChunk* http_message_body_chunk = Object::cast<HTTPMessageBodyChunk>(http_request_parser.parse());
     throw_assert_ne(http_message_body_chunk, NULL);
     throw_assert_eq(http_message_body_chunk->size(), 1);
     HTTPMessageBodyChunk::dec_ref(http_message_body_chunk);
   }
   {
-    HTTPMessageBodyChunk* http_message_body_chunk = object_cast<HTTPMessageBodyChunk>(http_request_parser.parse());
+    HTTPMessageBodyChunk* http_message_body_chunk = Object::cast<HTTPMessageBodyChunk>(http_request_parser.parse());
     throw_assert_ne(http_message_body_chunk, NULL);
     throw_assert_eq(http_message_body_chunk->size(), 1);
     HTTPMessageBodyChunk::dec_ref(http_message_body_chunk);
   }
   {
-    HTTPMessageBodyChunk* http_message_body_chunk = object_cast<HTTPMessageBodyChunk>(http_request_parser.parse());
+    HTTPMessageBodyChunk* http_message_body_chunk = Object::cast<HTTPMessageBodyChunk>(http_request_parser.parse());
     throw_assert_ne(http_message_body_chunk, NULL);
     throw_assert_eq(http_message_body_chunk->size(), 0);
     HTTPMessageBodyChunk::dec_ref(http_message_body_chunk);
@@ -147,7 +147,7 @@ TEST(HTTPMessageParser, WellFormed2ChunkBody) {
 
 TEST(HTTPMessageParser, WellFormedFieldMissingValue) {
   HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\nHost:\r\n\r\n");
-  HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
+  HTTPRequest* http_request = Object::cast<HTTPRequest>(http_request_parser.parse());
   throw_assert_ne(http_request, NULL);
   throw_assert_eq(http_request->get_http_version(), 1);
   throw_assert_eq((*http_request)["Host"], "");
@@ -156,7 +156,7 @@ TEST(HTTPMessageParser, WellFormedFieldMissingValue) {
 
 TEST(HTTPMessageParser, WellFormedNoBody) {
   HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\nHost: localhost\r\n\r\n");
-  HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
+  HTTPRequest* http_request = Object::cast<HTTPRequest>(http_request_parser.parse());
   throw_assert_ne(http_request, NULL);
   throw_assert_eq(http_request->get_body(), NULL);
   HTTPRequest::dec_ref(http_request);
@@ -164,7 +164,7 @@ TEST(HTTPMessageParser, WellFormedNoBody) {
 
 TEST(HTTPMessageParser, WellFormedNormalBody) {
   HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\nHost: localhost\r\nContent-Length: 2\r\n\r\n12");
-  HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
+  HTTPRequest* http_request = Object::cast<HTTPRequest>(http_request_parser.parse());
   throw_assert_ne(http_request, NULL);
   throw_assert_ne(http_request->get_body(), NULL);
   throw_assert_eq(static_cast<Buffer*>(http_request->get_body())->size(), 2);
@@ -174,7 +174,7 @@ TEST(HTTPMessageParser, WellFormedNormalBody) {
 TEST(HTTPMessageParser, WellFormedPipelinedNoBody) {
   HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\nHost: localhost\r\n\r\nGET / HTTP/1.1\r\nHost: localhost\r\n\r\n");
   {
-    HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
+    HTTPRequest* http_request = Object::cast<HTTPRequest>(http_request_parser.parse());
     throw_assert_ne(http_request, NULL);
     throw_assert_eq(http_request->get_http_version(), 1);
     throw_assert_eq((*http_request)["Host"], "localhost");
@@ -182,7 +182,7 @@ TEST(HTTPMessageParser, WellFormedPipelinedNoBody) {
     HTTPRequest::dec_ref(http_request);
   }
   {
-    HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
+    HTTPRequest* http_request = Object::cast<HTTPRequest>(http_request_parser.parse());
     throw_assert_ne(http_request, NULL);
     throw_assert_eq(http_request->get_http_version(), 1);
     throw_assert_eq((*http_request)["Host"], "localhost");
@@ -194,7 +194,7 @@ TEST(HTTPMessageParser, WellFormedPipelinedNoBody) {
 TEST(HTTPMessageParser, WellFormedPipelinedNormalBody) {
   HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\nHost: localhost\r\nContent-Length: 2\r\n\r\n12GET / HTTP/1.1\r\nHost: localhost\r\nContent-Length: 2\r\n\r\n12");
   {
-    HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
+    HTTPRequest* http_request = Object::cast<HTTPRequest>(http_request_parser.parse());
     throw_assert_ne(http_request, NULL);
     throw_assert_eq(http_request->get_http_version(), 1);
     throw_assert_eq((*http_request)["Host"], "localhost");
@@ -203,7 +203,7 @@ TEST(HTTPMessageParser, WellFormedPipelinedNormalBody) {
     HTTPRequest::dec_ref(http_request);
   }
   {
-    HTTPRequest* http_request = object_cast<HTTPRequest>(http_request_parser.parse());
+    HTTPRequest* http_request = Object::cast<HTTPRequest>(http_request_parser.parse());
     throw_assert_ne(http_request, NULL);
     throw_assert_eq(http_request->get_http_version(), 1);
     throw_assert_eq((*http_request)["Host"], "localhost");

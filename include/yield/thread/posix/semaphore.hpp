@@ -39,15 +39,40 @@ class Time;
 
 namespace thread {
 namespace posix {
+/**
+  Counting semaphore synchronization primitive.
+*/
 class Semaphore {
 public:
   Semaphore();
   ~Semaphore();
 
 public:
+  /**
+    Post to the semaphore, increasing its count by one and waking up a waiter.
+  */
   void post();
+
+  /**
+    Wait for a post to the semaphore for the specified timeout, decrementing the
+      semaphore's count by one if there was a post.
+    @param timeout time to wait for a post
+    @return true if there was a post within the specified timeout
+  */
   bool timedwait(const Time& timeout);
+
+  /**
+    Check for a post to the semaphore, decrementig the semaphore's count by one
+      if there was a post but not blocking if there was none.
+    @return true if there was a post to the semaphore
+  */
   bool trywait();
+
+  /**
+    Wait indefinitely for a post to the semaphore, decrementing the semaphore's
+      count by one on a successful wait
+    @return true if there was a post to the semaphore
+  */
   bool wait();
 
 private:

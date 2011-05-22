@@ -130,7 +130,7 @@ class HTTPMessageParserTest(list):
 
         http_message_type_lower = decamel(self.http_message_type)
 
-        self.append("""%(object_type)s* %(object_instance)s = object_cast<%(object_type)s>(%(http_message_type_lower)s_parser.parse());""" % locals())
+        self.append("""%(object_type)s* %(object_instance)s = Object::cast<%(object_type)s>(%(http_message_type_lower)s_parser.parse());""" % locals())
 
     def PARSER(self, *args):
         args = "".join(args)

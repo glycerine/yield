@@ -31,27 +31,60 @@
 #define _YIELD_THREAD_WIN32_READER_WRITER_LOCK_HPP_
 
 #include "yield/types.hpp"
-#include "yield/thread/win32/lightweight_mutex.hpp"
+
+struct _RTL_CRITICAL_SECTION;
+typedef struct _RTL_CRITICAL_SECTION RTL_CRITICAL_SECTION;
+typedef RTL_CRITICAL_SECTION CRITICAL_SECTION;
 
 namespace yield {
 namespace thread {
 namespace win32 {
+/**
+  Reader-writer lock synchronization primitive.
+*/  
 class ReaderWriterLock {
 public:
   ReaderWriterLock();
   ~ReaderWriterLock();
 
 public:
+  /**
+    Wait indefinitely to acquire a reader (shared) lock.
+    @return true if the caller now holds a reader lock
+  */
   bool rdlock();
+
+  /**
+    Release a reader (shared) lock.
+  */
   void rdunlock();
+
+  /**
+    Try to acquire a reader (shared) lock without blocking.
+    @return true if the caller now holds a reader lock
+  */
   bool tryrdlock();
+
+  /**
+    Try to acquire a writer (exclusive) lock without blocking.
+    @return true if the caller now holds a writer lock
+  */
   bool trywrlock();
+
+  /**
+    Wait indefinitely to acquire a writer (exclusive) lock.
+    @return true if the caller now holds a writer lock
+  */
   bool wrlock();
+
+  /**
+    Release a writer (exclusive) lock.
+  */
   void wrunlock();
 
 private:
   uint32_t active_writer_readers;
-  LightweightMutex cs;
+  CRITICAL_SECTION* cs;
   void* hReadyToRead, *hReadyToWrite;
   int32_t waiting_readers_count, waiting_writers_count;
 };

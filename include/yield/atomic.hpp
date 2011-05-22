@@ -73,6 +73,15 @@ extern "C" {
 
 
 namespace yield {
+/**
+  Atomic compare-and-swap.
+  If *cur_value == old_value, atomically set *cur_value = new_value,
+    otherwise return the conflicting *cur_value.
+  @param cur_value volatile pointer to a memory location
+  @param new_value the new value to swap in
+  @param old_value the old value to compare against before swapping in.
+  @return *cur_value before the swap (== old_value on a successful swap)
+*/
 static inline atomic_t
 atomic_cas(
   volatile atomic_t* cur_value,
@@ -157,6 +166,12 @@ atomic_cas(
 #endif
 }
 
+/**
+  Atomic decrement by one.
+  Atomically sets *cur_value = *cur_value - 1.
+  @param cur_value volatile pointer to a memory location
+  @return the new *cur_value
+*/
 static inline atomic_t atomic_dec(volatile atomic_t* cur_value) {
 #if defined(_WIN64)
   return _InterlockedDecrement64(cur_value);
@@ -186,6 +201,12 @@ static inline atomic_t atomic_dec(volatile atomic_t* cur_value) {
 #endif
 }
 
+/**
+  Atomic increment by one.
+  Atomically sets *cur_value = *cur_value + 1.
+  @param cur_value volatile pointer to a memory location
+  @return the new *cur_value
+*/
 static inline atomic_t atomic_inc(volatile atomic_t* cur_value) {
 #if defined(_WIN64)
   return _InterlockedIncrement64(cur_value);

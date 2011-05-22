@@ -30,7 +30,7 @@
 #ifndef _YIELD_THREAD_MUTEX_TEST_HPP_
 #define _YIELD_THREAD_MUTEX_TEST_HPP_
 
-#include "yield/assert.hpp"
+#include "yield/exception.hpp"
 #include "yield/time.hpp"
 #include "yield/thread/runnable.hpp"
 #include "yield/thread/mutex.hpp"
@@ -82,7 +82,8 @@ public:
   void run() {
     Thread thread(*new typename MutexTest<MutexType>::OtherThread(*this->mutex));
 
-    throw_assert_true(this->mutex->lock());
+    if (!this->mutex->lock())
+      throw Exception();
     Thread::self()->nanosleep(0.1);
     this->mutex->unlock();
 
@@ -98,7 +99,8 @@ public:
   void run() {
     Thread thread(*new typename MutexTest<MutexType>::OtherThread(*this->mutex));
 
-    throw_assert_true(this->mutex->trylock());
+    if (!this->mutex->trylock())
+      throw Exception();
     Thread::self()->nanosleep(0.1);
     this->mutex->unlock();
 

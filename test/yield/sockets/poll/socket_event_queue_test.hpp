@@ -100,7 +100,7 @@ public:
     get_write_socket().send("m", 1, 0);
 
     auto_Object<SocketEvent> socket_event
-    = object_cast<SocketEvent>(socket_event_queue.dequeue());
+    = Object::cast<SocketEvent>(socket_event_queue.dequeue());
   }
 };
 
@@ -161,7 +161,7 @@ public:
     get_write_socket().send("m", 1, 0);
 
     auto_Object<SocketEvent> socket_event
-      = object_cast<SocketEvent>(socket_event_queue.dequeue());
+      = Object::cast<SocketEvent>(socket_event_queue.dequeue());
     throw_assert_eq(socket_event->get_fd(), get_write_socket());
     throw_assert_eq(socket_event->get_type(), SocketEvent::TYPE_READ_READY);
     char m;
@@ -189,7 +189,7 @@ public:
     get_write_socket().send("m", 1, 0);
 
     auto_Object<SocketEvent> socket_event
-    = object_cast<SocketEvent>(socket_event_queue.dequeue());
+    = Object::cast<SocketEvent>(socket_event_queue.dequeue());
   }
 };
 
@@ -210,7 +210,7 @@ public:
 
     for (uint8_t socket_i = 0; socket_i < 2; socket_i++) {
       auto_Object<SocketEvent> socket_event
-      = object_cast<SocketEvent>(socket_event_queue.dequeue());
+      = Object::cast<SocketEvent>(socket_event_queue.dequeue());
 
       throw_assert(
         socket_event->get_socket() == get_read_socket()
@@ -235,7 +235,7 @@ public:
       throw Exception();
 
     auto_Object<SocketEvent> socket_event
-    = object_cast<SocketEvent>(socket_event_queue.dequeue());
+    = Object::cast<SocketEvent>(socket_event_queue.dequeue());
     throw_assert_eq(socket_event->get_socket(), get_read_socket());
     throw_assert_eq(socket_event->get_type(), SocketEvent::TYPE_WRITE_READY);
   }

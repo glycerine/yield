@@ -95,7 +95,7 @@ public:
     TestHTTPRequestQueue http_request_queue(&Log::open(std::cout));
     for (;;) {
       HTTPRequest* http_request
-        = object_cast<HTTPRequest>(http_request_queue.timeddequeue(30.0));
+        = Object::cast<HTTPRequest>(http_request_queue.timeddequeue(30.0));
       if (http_request != NULL)
         handle(*http_request);
       else

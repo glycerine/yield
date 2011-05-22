@@ -55,7 +55,7 @@ TEST(NBIOQueue, partial_send) {
     throw Exception();
 
   auto_Object<sendAIOCB> out_aiocb
-    = object_cast<sendAIOCB>(aio_queue.dequeue());
+    = Object::cast<sendAIOCB>(aio_queue.dequeue());
   throw_assert_eq(&out_aiocb.get(), &aiocb.get());
   throw_assert_eq(out_aiocb->get_error(), 0);
   throw_assert_eq(out_aiocb->get_return(), 4);
@@ -103,7 +103,7 @@ TEST_EX(NBIOQueue, partial_sendfile, NBIOQueuePartialSendFileTest) {
     throw Exception();
 
   auto_Object<sendfileAIOCB> out_aiocb
-    = object_cast<sendfileAIOCB>(aio_queue.dequeue());
+    = Object::cast<sendfileAIOCB>(aio_queue.dequeue());
   throw_assert_eq(&out_aiocb.get(), &aiocb.get());
   throw_assert_eq(out_aiocb->get_error(), 0);
   throw_assert_eq(
@@ -134,7 +134,7 @@ TEST(NBIOQueue, partial_sendmsg) {
     throw Exception();
 
   auto_Object<sendAIOCB> out_aiocb
-  = object_cast<sendAIOCB>(aio_queue.dequeue());
+  = Object::cast<sendAIOCB>(aio_queue.dequeue());
   throw_assert_eq(&out_aiocb.get(), &aiocb.get());
   throw_assert_eq(out_aiocb->get_error(), 0);
   throw_assert_eq(out_aiocb->get_return(), 11);

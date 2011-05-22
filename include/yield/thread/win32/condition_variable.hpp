@@ -38,28 +38,68 @@
 namespace yield {
 namespace thread {
 namespace win32 {
+/**
+  Condition variable synchronization primitive.
+*/
 class ConditionVariable {
 public:
   ConditionVariable();
   ~ConditionVariable();
 
 public:
+  /**
+    Broadcast a signal to all waiters.
+  */
   void broadcast();
+
+  /**
+    Lock the mutex associated with this condition variable before going
+      into timedwait or wait.
+    Blocks until the mutex is acquired or is destroyed.
+    @return true if the caller now holds the mutex
+  */
   bool lock_mutex() {
     return mutex.lock();
   }
 
+  /**
+    Signal a single waiter.
+  */
   void signal();
+
+  /**
+    Wait on the condition variable for the specified time out.
+    The caller must acquire the mutex before calling this method or wait.
+    On a successful return, the caller holds the mutex and must
+      unlock it (with unlock_mutex) again.
+    @param timeout time to wait for a signal
+    @return true if signal or broadcast was called in the wait period
+  */
   bool timedwait(const Time& timeout);
 
+  /**
+    Try to lock the mutex associated with this condition variable before going
+      into timedwait or wait. Do not block on failure.
+    @return true if the caller now holds the mutex
+  */
   bool trylock_mutex() {
     return mutex.trylock();
   }
 
+  /**
+    Unlock the mutex associated with this condition variable.
+  */
   void unlock_mutex() {
     mutex.unlock();
   }
 
+  /**
+    Wait on the condition variable for the specified time out.
+    The caller must acquire the mutex before calling this method or timedwait.
+    On a successful return, the caller holds the mutex and must
+      unlock it (with unlock_mutex) again.
+    @return true if signal or broadcast was called
+  */
   bool wait();
 
 private:

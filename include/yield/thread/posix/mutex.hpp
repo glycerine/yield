@@ -37,14 +37,30 @@
 namespace yield {
 namespace thread {
 namespace posix {
+/**
+  Heavyweight mutex synchronization primitive.
+*/
 class Mutex {
 public:
   Mutex();
   ~Mutex();
 
 public:
+  /**
+    Lock the mutex, blocking until acquisition.
+    @return true if the caller now holds the mutex
+  */
   bool lock();
+
+  /**
+    Try to lock the mutex, not blocking on failure.
+    @return true if the caller now holds the mutex
+  */
   bool trylock();
+
+  /**
+    Unlock the mutex.
+  */
   void unlock();
 
 private:

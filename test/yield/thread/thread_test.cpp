@@ -39,8 +39,11 @@ TEST_SUITE(Thread);
 namespace yield {
 namespace thread {
 TEST(Thread, key_create) {
-  uintptr_t key = Thread::self()->key_create();
-  throw_assert_ne(key, 0);
+  uintptr_t key = Thread::self()->key_create();  
+  if (key != 0)
+    Thread::self()->key_delete(key);
+  else
+    throw Exception();
 }
 
 TEST(Thread, key_delete) {
@@ -56,6 +59,7 @@ TEST(Thread, getspecific) {
     throw Exception();
   void* ret_value = Thread::self()->getspecific(key);
   throw_assert_eq(reinterpret_cast<uintptr_t>(ret_value), 42);
+  Thread::self()->key_delete(key);
 }
 
 TEST(Thread, nanosleep) {
@@ -77,6 +81,7 @@ TEST(Thread, setspecific) {
   uintptr_t key = Thread::self()->key_create();
   if (!Thread::self()->setspecific(key, reinterpret_cast<void*>(42)))
     throw Exception();
+  Thread::self()->key_delete(key);
 }
 
 TEST(Thread, yield) {

@@ -57,7 +57,7 @@ public:
 public:
   /**
     Construct a DateTime from a nanosecond offset from the Unix epoch (1/1/1970).
-    @param unix_date_time_time_ns nanosecond offset from the Unix epoch
+    @param unix_date_time_ns nanosecond offset from the Unix epoch
   */
   DateTime(uint64_t unix_date_time_ns)
     : unix_date_time_ns(unix_date_time_ns)
@@ -132,15 +132,16 @@ public:
     @param tm_hour hours since midnight (0-23)
     @param tm_mday day of the month (1-31)
     @param tm_mon months since January (0-11)
+    @param tm_year years since 1900
     @param local true if the components are a local datetime, false if UTC
   */
   DateTime(
-    int tm_sec, // 
-    int tm_min, // 
-    int tm_hour, //  
-    int tm_mday, //  
-    int tm_mon, // 
-    int tm_year, //  years since 1900
+    int tm_sec,
+    int tm_min,
+    int tm_hour,
+    int tm_mday,
+    int tm_mon,
+    int tm_year,
     bool local = true
   );
 
@@ -339,7 +340,13 @@ private:
   uint64_t unix_date_time_ns;
 };
 
-std::ostream& operator<<(std::ostream&, const DateTime&);
+/**
+  Print a string representation of a DateTime to a std::ostream.
+  @param os std::ostream to print to
+  @param date_time DateTime to print
+  @return os
+*/
+std::ostream& operator<<(std::ostream& os, const DateTime& date_time);
 }
 
 #endif

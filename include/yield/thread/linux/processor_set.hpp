@@ -37,34 +37,77 @@
 namespace yield {
 namespace thread {
 namespace linux {
+/**
+  Describe a set of processors as a contiguous array of bits.
+  Used for setting thread or process affinity.
+*/
 class ProcessorSet {
 public:
   ProcessorSet();
 
 public:
+  /**
+    Clear all bits in the processor set.
+  */
   void clear();
+
+  /**
+    Clear a specific bit in the processor set.
+    @param processor_i index of the bit to clear
+  */
   void clear(uint16_t processor_i);
 
 public:
+  /**
+    Count the number of set bits.
+    @return the number of set bits
+  */
   uint16_t count() const;
 
+  /**
+    Check whether the processor set is empty.
+    @return true if the processor set is empty
+  */
   bool empty() const {
     return count() == 0;
   }
 
 public:
+  /**
+    Query the system for the number of logical processors currently online.
+    @return the number of logical processors currently online
+  */
   static uint16_t get_online_logical_processor_count();
+
+  /**
+    Query the system for the number of logical processors currently online.
+    @return the number of physical processors currently online
+  */
   static uint16_t get_online_physical_processor_count();
 
 public:
+  /**
+    Check if a specific bit is set.
+    @param processor_i index of the bit to check
+    @return true if the bit is set
+  */
   bool isset(uint16_t processor_i) const;
 
 public:
+  /**
+    Get the underlying Linux cpu_set_t.
+    @return the underlying Linux cpu_set_t
+  */
   operator const cpu_set_t* () const {
     return &cpu_set;
   }
 
 public:
+  /**
+    Set a specific bit in the processor set.
+    @param processor_i index of the bit to set
+    @return true if the set succeeded
+  */
   bool set(uint16_t processor_i);
 
 private:

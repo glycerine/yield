@@ -187,7 +187,7 @@ public:
       throw Exception();
 
     auto_Object<FDEvent> fd_event
-    = object_cast<FDEvent>(fd_event_queue.dequeue());
+    = Object::cast<FDEvent>(fd_event_queue.dequeue());
     throw_assert_eq(fd_event->get_fd(), get_write_fd());
     throw_assert_eq(fd_event->get_type(), FDEvent::TYPE_WRITE_READY);
   }

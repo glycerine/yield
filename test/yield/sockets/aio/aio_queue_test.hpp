@@ -79,7 +79,7 @@ public:
       throw Exception();
 
     auto_Object<recvAIOCB> out_aiocb
-    = object_cast<recvAIOCB>(aio_queue.dequeue());
+    = Object::cast<recvAIOCB>(aio_queue.dequeue());
     throw_assert_eq(&out_aiocb.get(), &aiocb.get());
     throw_assert_eq(out_aiocb->get_error(), 0);
     throw_assert_eq(out_aiocb->get_return(), 1);
@@ -110,7 +110,7 @@ public:
       throw Exception();
 
     auto_Object<recvAIOCB> out_aiocb
-    = object_cast<recvAIOCB>(aio_queue.dequeue());
+    = Object::cast<recvAIOCB>(aio_queue.dequeue());
     throw_assert_eq(&out_aiocb.get(), &aiocb.get());
     throw_assert_eq(out_aiocb->get_error(), 0);
     throw_assert_eq(out_aiocb->get_return(), 2);
@@ -141,7 +141,7 @@ class AIOQueueRecvQueuedTest : public yunit::Test {
     // For the NBIOQueue: force the first retry
     {
       recvAIOCB* out_aiocb
-        = object_cast<recvAIOCB>(aio_queue.trydequeue());
+        = Object::cast<recvAIOCB>(aio_queue.trydequeue());
       throw_assert_eq(out_aiocb, NULL);
     }
 
@@ -149,7 +149,7 @@ class AIOQueueRecvQueuedTest : public yunit::Test {
 
     {
       auto_Object<recvAIOCB> out_aiocb
-        = object_cast<recvAIOCB>(aio_queue.dequeue());
+        = Object::cast<recvAIOCB>(aio_queue.dequeue());
       throw_assert_eq(out_aiocb->get_error(), 0);
       throw_assert_eq(out_aiocb->get_return(), 2);
       throw_assert_eq(out_aiocb->get_buffer(), "te");
@@ -158,7 +158,7 @@ class AIOQueueRecvQueuedTest : public yunit::Test {
       
     {
       recvAIOCB* out_aiocb
-        = object_cast<recvAIOCB>(aio_queue.trydequeue());
+        = Object::cast<recvAIOCB>(aio_queue.trydequeue());
       throw_assert_eq(out_aiocb, NULL);
     }
 
@@ -166,7 +166,7 @@ class AIOQueueRecvQueuedTest : public yunit::Test {
 
     {
       auto_Object<recvAIOCB> out_aiocb
-        = object_cast<recvAIOCB>(aio_queue.dequeue());
+        = Object::cast<recvAIOCB>(aio_queue.dequeue());
       throw_assert_eq(out_aiocb->get_error(), 0);
       throw_assert_eq(out_aiocb->get_return(), 2);
       throw_assert_eq(out_aiocb->get_buffer(), "st");
@@ -196,7 +196,7 @@ public:
     // For the NBIOQueue: force the first retry
     {
       recvAIOCB* out_aiocb
-        = object_cast<recvAIOCB>(aio_queue.trydequeue());
+        = Object::cast<recvAIOCB>(aio_queue.trydequeue());
       throw_assert_eq(out_aiocb, NULL);
     }
 
@@ -204,7 +204,7 @@ public:
 
     for (uint8_t i = 0; i < 2; i++) {
       auto_Object<recvAIOCB> out_aiocb
-        = object_cast<recvAIOCB>(aio_queue.dequeue());
+        = Object::cast<recvAIOCB>(aio_queue.dequeue());
       throw_assert_eq(out_aiocb->get_error(), 0);
       throw_assert_eq(out_aiocb->get_return(), 2);
       throw_assert_eq(out_aiocb->get_buffer(), i == 0 ? "te" : "st");
@@ -231,7 +231,7 @@ public:
       throw Exception();
 
     auto_Object<sendAIOCB> out_aiocb
-    = object_cast<sendAIOCB>(aio_queue.dequeue());
+    = Object::cast<sendAIOCB>(aio_queue.dequeue());
     throw_assert_eq(&out_aiocb.get(), &aiocb.get());
     throw_assert_eq(out_aiocb->get_error(), 0);
     throw_assert_eq(out_aiocb->get_return(), 4);
@@ -268,7 +268,7 @@ public:
       throw Exception();
 
     auto_Object<sendfileAIOCB> out_aiocb
-      = object_cast<sendfileAIOCB>(aio_queue.dequeue());
+      = Object::cast<sendfileAIOCB>(aio_queue.dequeue());
     throw_assert_eq(&out_aiocb.get(), &aiocb.get());
     throw_assert_eq(out_aiocb->get_error(), 0);
     throw_assert_eq(
@@ -315,7 +315,7 @@ public:
       throw Exception();
 
     auto_Object<sendAIOCB> out_aiocb
-    = object_cast<sendAIOCB>(aio_queue.dequeue());
+    = Object::cast<sendAIOCB>(aio_queue.dequeue());
     throw_assert_eq(&out_aiocb.get(), &aiocb.get());
     throw_assert_eq(out_aiocb->get_error(), 0);
     throw_assert_eq(out_aiocb->get_return(), 11);

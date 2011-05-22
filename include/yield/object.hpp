@@ -40,6 +40,38 @@ namespace yield {
 class Object {
 public:
   /**
+    Cast an Object to a class derived from Object, using Object::get_type_id
+      and ObjectType::TYPE_ID to determine whether the Object is of
+      the derived type.
+    Checks that object != NULL.
+    @param object the Object to downcast
+    @return an instance of the Object-derived class ObjectType
+  */
+  template <class ObjectType>
+  static ObjectType* cast(Object* object) {
+    if (object != NULL && object->get_type_id() == ObjectType::TYPE_ID)
+      return static_cast<ObjectType*>(object);
+    else
+      return NULL;
+  }
+
+  /**
+    Cast an Object to a class derived from Object, using Object::get_type_id
+      and ObjectType::TYPE_ID to determine whether the Object is of
+      the derived type.
+    @param object the Object to downcast
+    @return an instance of the Object-derived class ObjectType
+  */
+  template <class ObjectType>
+  static ObjectType* cast(Object& object) {
+    if (object.get_type_id() == ObjectType::TYPE_ID)
+      return static_cast<ObjectType*>(&object);
+    else
+      return NULL;
+  }
+
+public:
+  /**
     Atomically decrement the reference count of an Object, deleting the
     Object when the count reaches zero.
     @param object the object whose reference count should be decremented.
@@ -119,39 +151,6 @@ protected:
 private:
   volatile atomic_t refcnt;
 };
-
-
-/**
-  Cast an Object to a class derived from Object, using Object::get_type_id
-    and ObjectType::TYPE_ID to determine whether the Object is of
-    the derived type.
-  Checks that object != NULL.
-  @param object the Object to downcast
-  @return an instance of the Object-derived class ObjectType
-*/
-template <class ObjectType>
-ObjectType* object_cast(Object* object) {
-  if (object != NULL && object->get_type_id() == ObjectType::TYPE_ID)
-    return static_cast<ObjectType*>(object);
-  else
-    return NULL;
-}
-
-
-/**
-  Cast an Object to a class derived from Object, using Object::get_type_id
-    and ObjectType::TYPE_ID to determine whether the Object is of
-    the derived type.
-  @param object the Object to downcast
-  @return an instance of the Object-derived class ObjectType
-*/
-template <class ObjectType>
-ObjectType* object_cast(Object& object) {
-  if (object.get_type_id() == ObjectType::TYPE_ID)
-    return static_cast<ObjectType*>(&object);
-  else
-    return NULL;
-}
 
 
 /**

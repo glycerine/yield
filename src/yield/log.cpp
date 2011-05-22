@@ -133,95 +133,94 @@ Log::Level Log::Level::NOTICE("NOTICE", 5);
 Log::Level Log::Level::INFO("INFO", 6);
 Log::Level Log::Level::DEBUG("DEBUG", 7);
 
-Log::Level::Level(const char* level)
-  : level_string(level) {
-  init(level, strlen(level));
-}
-
-Log::Level::Level(const string& level)
-  : level_string(level) {
-  init(level.data(), level.size());
-}
-
-
-Log::Level::Level(uint8_t level)
-  : level_uint8(level) {
-  switch (level) {
-  case 0: level_string = "EMERG"; break;
-  case 1: level_string = "ALERT"; break;
-  case 2: level_string = "CRIT"; break;
-  case 3: level_string = "ERR"; break;
-  case 4: level_string = "WARNING"; break;
-  case 5: level_string = "NOTICE"; break;
-  case 6: level_string = "INFO"; break;
-  default: level_string = "DEBUG"; break;
-  }
-}
-
 Log::Level::Level(const char* level_string, uint8_t level_uint8)
   : level_string(level_string), level_uint8(level_uint8)
 { }
 
-Log::Level::Level(const Level& other)
-  : level_string(other.level_string), level_uint8(other.level_uint8)
-{ }
+//Log::Level::Level(const char* level)
+//  : level_string(level) {
+//  init(level, strlen(level));
+//}
+//
+//Log::Level::Level(const string& level)
+//  : level_string(level) {
+//  init(level.data(), level.size());
+//}
 
-void Log::Level::init(const char* level, size_t level_len) {
-  level_uint8 = static_cast<uint8_t>(atoi(level));
+//Log::Level::Level(uint8_t level)
+//  : level_uint8(level) {
+//  switch (level) {
+//  case 0: level_string = "EMERG"; break;
+//  case 1: level_string = "ALERT"; break;
+//  case 2: level_string = "CRIT"; break;
+//  case 3: level_string = "ERR"; break;
+//  case 4: level_string = "WARNING"; break;
+//  case 5: level_string = "NOTICE"; break;
+//  case 6: level_string = "INFO"; break;
+//  default: level_string = "DEBUG"; break;
+//  }
+//}
 
-  if (level_uint8 == 0) {
-    if (
-      (level_len == 5 && memcmp(level, "EMERG", 5) == 0) ||
-      (level_len == 9 && memcmp(level, "LOG_EMERG", 9) == 0) ||
-      (level_len == 9 && memcmp(level, "EMERGENCY", 9) == 0) ||
-      (level_len == 5 && memcmp(level, "FATAL", 5) == 0) ||
-      (level_len == 4 && memcmp(level, "FAIL", 4) == 0)
-    )
-      level_uint8 = EMERG;
+//Log::Level::Level(const Level& other)
+//  : level_string(other.level_string), level_uint8(other.level_uint8)
+//{ }
 
-    else if (
-      (level_len == 5 && memcmp(level, "ALERT", 5) == 0) ||
-      (level_len == 9 && memcmp(level, "LOG_ALERT", 9) == 0)
-    )
-      level_uint8 = ALERT;
-
-    else if (
-      (level_len == 4 && memcmp(level, "CRIT", 4) == 0) ||
-      (level_len == 8 && memcmp(level, "LOG_CRIT", 8) == 0) ||
-      (level_len == 8 && memcmp(level, "CRITICAL", 8) == 0)
-    )
-      level_uint8 = CRIT;
-
-    else if (
-      (level_len == 3 && memcmp(level, "ERR", 3) == 0) ||
-      (level_len == 7 && memcmp(level, "LOG_ERR", 7) == 0) ||
-      (level_len == 5 && memcmp(level, "ERROR", 5) == 0)
-    )
-      level_uint8 = ERR;
-
-    else if (
-      (level_len == 7 && memcmp(level, "WARNING", 7) == 0) ||
-      (level_len == 11 && memcmp(level, "LOG_WARNING", 11) == 0) ||
-      (level_len == 4 && memcmp(level, "WARN", 4) == 0)
-    )
-      level_uint8 = WARNING;
-
-    else if (
-      (level_len == 6 && memcmp(level, "NOTICE", 6) == 0) ||
-      (level_len == 10 && memcmp(level, "LOG_NOTICE", 10) == 0)
-    )
-      level_uint8 = NOTICE;
-
-    else if (
-      (level_len == 4 && memcmp(level, "INFO", 4) == 0) ||
-      (level_len == 8 && memcmp(level, "LOG_INFO", level_len) == 0)
-    )
-      level_uint8 = INFO;
-
-    else
-      level_uint8 = DEBUG;
-  }
-}
+//void Log::Level::Level(const char* level, size_t level_len) {
+//  level_uint8 = static_cast<uint8_t>(atoi(level));
+//
+//  if (level_uint8 == 0) {
+//    if (
+//      (level_len == 5 && memcmp(level, "EMERG", 5) == 0) ||
+//      (level_len == 9 && memcmp(level, "LOG_EMERG", 9) == 0) ||
+//      (level_len == 9 && memcmp(level, "EMERGENCY", 9) == 0) ||
+//      (level_len == 5 && memcmp(level, "FATAL", 5) == 0) ||
+//      (level_len == 4 && memcmp(level, "FAIL", 4) == 0)
+//    )
+//      level_uint8 = EMERG;
+//
+//    else if (
+//      (level_len == 5 && memcmp(level, "ALERT", 5) == 0) ||
+//      (level_len == 9 && memcmp(level, "LOG_ALERT", 9) == 0)
+//    )
+//      level_uint8 = ALERT;
+//
+//    else if (
+//      (level_len == 4 && memcmp(level, "CRIT", 4) == 0) ||
+//      (level_len == 8 && memcmp(level, "LOG_CRIT", 8) == 0) ||
+//      (level_len == 8 && memcmp(level, "CRITICAL", 8) == 0)
+//    )
+//      level_uint8 = CRIT;
+//
+//    else if (
+//      (level_len == 3 && memcmp(level, "ERR", 3) == 0) ||
+//      (level_len == 7 && memcmp(level, "LOG_ERR", 7) == 0) ||
+//      (level_len == 5 && memcmp(level, "ERROR", 5) == 0)
+//    )
+//      level_uint8 = ERR;
+//
+//    else if (
+//      (level_len == 7 && memcmp(level, "WARNING", 7) == 0) ||
+//      (level_len == 11 && memcmp(level, "LOG_WARNING", 11) == 0) ||
+//      (level_len == 4 && memcmp(level, "WARN", 4) == 0)
+//    )
+//      level_uint8 = WARNING;
+//
+//    else if (
+//      (level_len == 6 && memcmp(level, "NOTICE", 6) == 0) ||
+//      (level_len == 10 && memcmp(level, "LOG_NOTICE", 10) == 0)
+//    )
+//      level_uint8 = NOTICE;
+//
+//    else if (
+//      (level_len == 4 && memcmp(level, "INFO", 4) == 0) ||
+//      (level_len == 8 && memcmp(level, "LOG_INFO", level_len) == 0)
+//    )
+//      level_uint8 = INFO;
+//
+//    else
+//      level_uint8 = DEBUG;
+//  }
+//}
 
 bool Log::Level::operator<(const Level& other) const {
   return level_uint8 < other.level_uint8;

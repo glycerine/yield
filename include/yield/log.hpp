@@ -37,11 +37,16 @@
 namespace yield {
 class Buffer;
 
+/**
+  Abstract base class for log implementations (files, console, etc.)
+*/
 class Log : public Object {
 public:
+  /**
+    Describes log levels. Adapted from syslog.
+  */
   class Level {
   public:
-    // Adapted from syslog levels
     static Level EMERG;
     static Level ALERT;
     static Level CRIT;
@@ -52,41 +57,71 @@ public:
     static Level DEBUG;
 
   public:
-    Level(const char* level);
-    Level(const string& level);
-    Level(uint8_t level);
-    Level(const char* level_string, uint8_t level_uint8);
-    Level(const Level& other);
-
-  public:
-    operator const string& () const {
+    /**
+      Return a string representation of this level.
+      @return a string representation of this level
+    */
+    operator const char* () const {
       return level_string;
     }
 
-    operator const char* () const {
-      return level_string.c_str();
-    }
-
+    /**
+      Return the integer rank of this level.
+      @return the integer rank of this level
+    */
     inline operator uint8_t() const {
       return level_uint8;
     }
 
   public:
+    /**
+      Compare this level to another.
+      @param other the other level to compare this one to
+      @return true if this level is less than the other
+    */
     bool operator<(const Level& other) const;
+
+    /**
+      Compare this level to another.
+      @param other the other level to compare this one to
+      @return true if this level is less than or equal to the other
+    */
     bool operator<=(const Level& other) const;
+
+    /**
+      Compare this level to another.
+      @param other the other level to compare this one to
+      @return true if this level is equal to the other
+    */
     bool operator==(const Level& other) const;
+
+    /**
+      Compare this level to another.
+      @param other the other level to compare this one to
+      @return true if this level is greater than the other
+    */
     bool operator>(const Level& other) const;
+
+    /**
+      Compare this level to another.
+      @param other the other level to compare this one to
+      @return true if this level is greater than or equal to the other
+    */
     bool operator>=(const Level& other) const;
 
   private:
-    void init(const char* level, size_t level_len);
+    Level(const char* level_string, uint8_t level_uint8);
 
   private:
-    string level_string;
+    const char* level_string;
     uint8_t level_uint8;
   };
 
 public:
+  /**
+    A log stream that acts like a std::ostream.
+    Will write(..., Level) to the log on destruction.
+  */
   class Stream : public std::ostream {
   public:
     Stream(Log& log, Level);
@@ -100,28 +135,81 @@ public:
   };
 
 public:
+  /**
+    Empty virtual destructor.
+  */
   virtual ~Log() { }
 
 public:
+  /**
+    Get the level of this log, i.e. the level at which write(..., Level)'s to
+      the log will actually be written.
+    @return the level of this log
+  */
   const Level& get_level() const {
     return level;
   }
 
+  /**
+    Get a new Stream on this log with the log's default level.
+    @return a new Stream on this log with the log's default level
+  */
   Stream get_stream() {
     return Stream(inc_ref(), level);
   }
 
+  /**
+    Get a new Stream on this log with the the specified level.
+    @param level level of the new stream
+    @return a new Stream on this log with the specified level
+  */
   Stream get_stream(Level level) {
     return Stream(inc_ref(), level);
   }
 
 public:
-  static YO_NEW_REF Log& open(std::ostream&, const Level& = Level::DEBUG);
+  /**
+    Wrap a std::ostream with a Log
+    @param os std::ostream to wrap
+    @param level level of the new Log
+    @return a new reference to the constructed Log
+  */
+  static YO_NEW_REF Log&
+  open(
+    std::ostream& os,
+    const Level& level = Level::DEBUG
+  );
 
 public:
+  /**
+    Write a string message to the log at the specified level.
+    @param message message to write
+    @param level level of the message
+  */
   void write(const char* message, const Level& level);
+
+  /**
+    Write a string message to the log at the specified level.
+    @param message message to write
+    @param level level of the message
+  */
   void write(const string& message, const Level& level);
+
+  /**
+    Write a Buffer message to the log at the specified level.
+    Replaces unprintable characters.
+    @param message message to write
+    @param level level of the message
+  */
   void write(const Buffer& message, const Level& level);
+
+  /**
+    Write arbitrary bytes to the log at the specified level.
+    Replaces unprintable characters.
+    @param message message to write
+    @param message_len length of message, in bytes
+    @param level level of the message
+  */
   void write(const void* message, size_t message_len, const Level& level);
 
 public:

@@ -41,7 +41,7 @@ namespace yield {
 namespace http {
 TEST(HTTPResponseParser, MalformedReasonPhraseMissing) {
   HTTPResponseParser http_response_parser("HTTP/1.1 200\r\n\r\n");
-  HTTPResponse* http_response = object_cast<HTTPResponse>(http_response_parser.parse());
+  HTTPResponse* http_response = Object::cast<HTTPResponse>(http_response_parser.parse());
   throw_assert_ne(http_response, NULL);
   throw_assert_eq(http_response->get_status_code(), 400);
   HTTPResponse::dec_ref(http_response);
@@ -49,7 +49,7 @@ TEST(HTTPResponseParser, MalformedReasonPhraseMissing) {
 
 TEST(HTTPResponseParser, MalformedStatusCodeAlpha) {
   HTTPResponseParser http_response_parser("HTTP/1.1 XX OK\r\n\r\n");
-  HTTPResponse* http_response = object_cast<HTTPResponse>(http_response_parser.parse());
+  HTTPResponse* http_response = Object::cast<HTTPResponse>(http_response_parser.parse());
   throw_assert_ne(http_response, NULL);
   throw_assert_eq(http_response->get_status_code(), 400);
   HTTPResponse::dec_ref(http_response);
@@ -57,7 +57,7 @@ TEST(HTTPResponseParser, MalformedStatusCodeAlpha) {
 
 TEST(HTTPResponseParser, MalformedStatusCodeMissing) {
   HTTPResponseParser http_response_parser("HTTP/1.1 OK\r\n\r\n");
-  HTTPResponse* http_response = object_cast<HTTPResponse>(http_response_parser.parse());
+  HTTPResponse* http_response = Object::cast<HTTPResponse>(http_response_parser.parse());
   throw_assert_ne(http_response, NULL);
   throw_assert_eq(http_response->get_status_code(), 400);
   HTTPResponse::dec_ref(http_response);
@@ -65,7 +65,7 @@ TEST(HTTPResponseParser, MalformedStatusCodeMissing) {
 
 TEST(HTTPResponseParser, MalformedStatusLineMissing) {
   HTTPResponseParser http_response_parser("Host: localhost\r\n\r\n");
-  HTTPResponse* http_response = object_cast<HTTPResponse>(http_response_parser.parse());
+  HTTPResponse* http_response = Object::cast<HTTPResponse>(http_response_parser.parse());
   throw_assert_ne(http_response, NULL);
   throw_assert_eq(http_response->get_status_code(), 400);
   HTTPResponse::dec_ref(http_response);
@@ -73,7 +73,7 @@ TEST(HTTPResponseParser, MalformedStatusLineMissing) {
 
 TEST(HTTPResponseParser, WellFormedStatusLineOnly) {
   HTTPResponseParser http_response_parser("HTTP/1.1 200 OK\r\n\r\n");
-  HTTPResponse* http_response = object_cast<HTTPResponse>(http_response_parser.parse());
+  HTTPResponse* http_response = Object::cast<HTTPResponse>(http_response_parser.parse());
   throw_assert_ne(http_response, NULL);
   throw_assert_eq(http_response->get_status_code(), 200);
   throw_assert_eq(http_response->get_body(), NULL);

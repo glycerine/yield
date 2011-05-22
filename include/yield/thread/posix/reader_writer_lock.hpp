@@ -37,17 +37,47 @@
 namespace yield {
 namespace thread {
 namespace posix {
+/**
+  Reader-writer lock synchronization primitive.
+*/  
 class ReaderWriterLock {
 public:
   ReaderWriterLock();
   ~ReaderWriterLock();
 
 public:
+  /**
+    Wait indefinitely to acquire a reader (shared) lock.
+    @return true if the caller now holds a reader lock
+  */
   bool rdlock();
+
+  /**
+    Release a reader (shared) lock.
+  */
   void rdunlock();
+
+  /**
+    Try to acquire a reader (shared) lock without blocking.
+    @return true if the caller now holds a reader lock
+  */
   bool tryrdlock();
+
+  /**
+    Try to acquire a writer (exclusive) lock without blocking.
+    @return true if the caller now holds a writer lock
+  */
   bool trywrlock();
+
+  /**
+    Wait indefinitely to acquire a writer (exclusive) lock.
+    @return true if the caller now holds a writer lock
+  */
   bool wrlock();
+
+  /**
+    Release a writer (exclusive) lock.
+  */
   void wrunlock();
 
 private:

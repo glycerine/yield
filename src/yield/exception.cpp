@@ -99,7 +99,7 @@ const char* Exception::get_error_message() const throw() {
         NULL,
         error_code,
         MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-        error_message,
+        reinterpret_cast<LPSTR>(&const_cast<Exception*>(this)->error_message),
         0,
         NULL
       );

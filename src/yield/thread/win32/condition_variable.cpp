@@ -78,8 +78,7 @@ bool ConditionVariable::timedwait(const Time& timeout) {
   waiters_count_lock.unlock();
 
   DWORD dwRet
-  = SignalObjectAndWait
-    (
+  = SignalObjectAndWait(
       mutex,
       wait_barrier,
       static_cast<DWORD>(timeout.ms()),

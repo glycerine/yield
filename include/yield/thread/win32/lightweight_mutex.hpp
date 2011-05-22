@@ -39,14 +39,30 @@ typedef RTL_CRITICAL_SECTION CRITICAL_SECTION;
 namespace yield {
 namespace thread {
 namespace win32 {
+/**
+  Lightweight mutex synchronization primitive.
+*/
 class LightweightMutex {
 public:
   LightweightMutex();
   ~LightweightMutex();
 
 public:
+  /**
+    Lock the mutex, blocking until acquisition.
+    @return true if the caller now holds the mutex
+  */
   bool lock();
+
+  /**
+    Try to lock the mutex, not blocking on failure.
+    @return true if the caller now holds the mutex
+  */
   bool trylock();
+
+  /**
+    Unlock the mutex.
+  */
   void unlock();
 
 private:
