@@ -33,7 +33,6 @@
 
 namespace yield {
 namespace fs {
-namespace win32 {
 NamedPipe::NamedPipe(HANDLE hNamedPipe)
   : File(hNamedPipe) {
   connected = false;
@@ -98,7 +97,6 @@ ssize_t NamedPipe::writev(const iovec* iov, int iovlen) {
     return File::writev(iov, iovlen);
   else
     return -1;
-}
 }
 }
 }

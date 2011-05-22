@@ -27,27 +27,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#if defined(__FreeBSD__)
-#include "../bsd/directory.hpp"
-#include "../freebsd/extended_attributes.hpp"
-#include "../freebsd/file.hpp"
-#elif defined(__linux__)
-#include "../linux/directory.hpp"
-#include "../linux/extended_attributes.hpp"
-#include "../linux/file.hpp"
-#elif defined(__MACH__)
-#include "../bsd/directory.hpp"
-#include "../darwin/extended_attributes.hpp"
-#include "../darwin/file.hpp"
-#else
-#include "yield/fs/posix/directory.hpp"
-#include "yield/fs/posix/file.hpp"
-#endif
-
 #include "yield/auto_object.hpp"
 #include "yield/assert.hpp"
-#include "yield/fs/posix/file_system.hpp"
-#include "yield/fs/posix/stat.hpp"
+#include "yield/fs/directory.hpp"
+#include "yield/fs/file.hpp"
+#include "yield/fs/file_system.hpp"
+#include "yield/fs/stat.hpp"
 
 #include <errno.h>
 #include <fcntl.h>
@@ -57,14 +42,10 @@
 #include <sys/statvfs.h>
 #include <sys/time.h>
 
-
 namespace yield {
 namespace fs {
-namespace posix {
 mode_t FileSystem::FILE_MODE_DEFAULT = S_IREAD | S_IWRITE;
 mode_t FileSystem::DIRECTORY_MODE_DEFAULT = S_IREAD | S_IWRITE | S_IEXEC;
-uint32_t FileSystem::OPEN_FLAGS_DEFAULT = O_RDONLY;
-
 
 bool FileSystem::access(const Path& path, int amode) {
   return ::access(path.c_str(), amode) == 0;
@@ -80,6 +61,10 @@ bool FileSystem::chown(const Path& path, uid_t uid) {
 
 bool FileSystem::chown(const Path& path, uid_t uid, gid_t gid) {
   return ::chown(path.c_str(), uid, gid) == 0;
+}
+
+YO_NEW_REF File* FileSystem::creat(const Path& path) {
+  return creat(path, FILE_MODE_DEFAULT);
 }
 
 YO_NEW_REF File* FileSystem::creat(const Path& path, mode_t mode) {
@@ -104,11 +89,15 @@ bool FileSystem::link(const Path& old_path, const Path& new_path) {
   return ::link(old_path.c_str(), new_path.c_str()) == 0;
 }
 
+bool FileSystem::mkdir(const Path& path) {
+  return mkdir(path, DIRECTORY_MODE_DEFAULT);
+}
+
 bool FileSystem::mkdir(const Path& path, mode_t mode) {
   return ::mkdir(path.c_str(), mode) == 0;
 }
 
-File*
+YO_NEW_REF File*
 FileSystem::mkfifo(
   const Path& path,
   uint32_t flags,
@@ -118,6 +107,10 @@ FileSystem::mkfifo(
     return open(path, flags | O_NONBLOCK, mode);
   else
     return NULL;
+}
+
+bool FileSystem::mktree(const Path& path) {
+  return mktree(path, DIRECTORY_MODE_DEFAULT);
 }
 
 bool FileSystem::mktree(const Path& path, mode_t mode) {
@@ -166,18 +159,6 @@ Directory* FileSystem::opendir(const Path& path) {
 #endif
   } else
     return NULL;
-}
-
-YO_NEW_REF ExtendedAttributes* FileSystem::openxattrs(const Path& path) {
-#if defined(__FreeBSD)
-  return new freebsd::ExtendedAttributes(path);
-#elif defined(__linux__)
-  return new linux::ExtendedAttributes(path);
-#elif defined(__MACH__)
-  return new darwin::ExtendedAttributes(path);
-#else
-  return NULL;
-#endif
 }
 
 bool FileSystem::readlink(const Path& path, OUT Path& target_path) {
@@ -255,6 +236,10 @@ bool FileSystem::symlink(const Path& old_path, const Path& new_path) {
   return ::symlink(old_path.c_str(), new_path.c_str()) == 0;
 }
 
+bool FileSystem::touch(const Path& path) {
+  return touch(path, FILE_MODE_DEFAULT);
+}
+
 bool FileSystem::touch(const Path& path, mode_t mode) {
   File* file = creat(path, mode);
   if (file != NULL) {
@@ -273,7 +258,6 @@ bool FileSystem::utime(const Path& path, const DateTime& atime, const DateTime& 
   tv[0] = atime;
   tv[1] = mtime;
   return ::utimes(path.c_str(), tv) == 0;
-}
 }
 }
 }

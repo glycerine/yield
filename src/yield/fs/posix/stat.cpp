@@ -31,7 +31,6 @@
 
 namespace yield {
 namespace fs {
-namespace posix {
 Stat::Stat(const struct stat& stbuf)
   : atime(stbuf.st_atime),
     ctime(stbuf.st_ctime),
@@ -49,6 +48,78 @@ Stat::Stat(const struct stat& stbuf)
   st_rdev = stbuf.st_rdev;
   st_size = stbuf.st_size;
   st_uid = stbuf.st_uid;
+}
+
+uint64_t Stat::get_blksize() const {
+  return st_blksize;
+}
+
+uint64_t Stat::get_blocks() const {
+  return st_blocks;
+}
+
+uint64_t Stat::get_dev() const {
+  return st_dev;
+}
+
+gid_t Stat::get_gid() const {
+  return st_gid;
+}
+
+uint64_t Stat::get_ino() const {
+  return st_ino;
+}
+
+mode_t Stat::get_mode() const {
+  return st_mode;
+}
+
+int16_t Stat::get_nlink() const {
+  return st_nlink;
+}
+
+uint64_t Stat::get_rdev() const {
+  return st_rdev;
+}
+
+uint64_t Stat::get_size() const {
+  return st_size;
+}
+
+uid_t Stat::get_uid() const {
+  return st_uid;
+}
+
+bool Stat::ISBLK() const {
+  return S_ISBLK(get_mode());
+}
+
+bool Stat::ISCHR() const {
+  return S_ISCHR(get_mode());
+}
+
+bool Stat::ISDIR() const {
+  return S_ISDIR(get_mode());
+}
+
+bool Stat::ISFIFO() const {
+  return S_ISFIFO(get_mode());
+}
+
+bool Stat::ISLNK() const {
+  return S_ISLNK(get_mode());
+}
+
+bool Stat::ISREG() const {
+  return S_ISREG(get_mode());
+}
+
+bool Stat::ISSOCK() const {
+  return S_ISSOCK(get_mode());
+}
+
+Stat::operator struct stat() const {
+  return *this;
 }
 
 //Stat::operator struct stat() const {
@@ -101,7 +172,6 @@ bool Stat::operator==(const Stat& other) const {
          get_rdev() == other.get_rdev() &&
          get_size() == other.get_size() &&
          get_uid() == other.get_uid();
-}
 }
 }
 }

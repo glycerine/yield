@@ -30,19 +30,214 @@
 #ifndef _YIELD_FS_FILE_HPP_
 #define _YIELD_FS_FILE_HPP_
 
-#ifdef _WIN32
-#include "win32/file.hpp"
-#else
-#include "posix/file.hpp"
-#endif
+#include "yield/buffer.hpp"
+#include "yield/channel.hpp"
+
+#define O_SYNC     010000
+#define O_ASYNC    020000
+#define O_DIRECT   040000
+#define O_HIDDEN   0100000
+#define O_NONBLOCK 0200000
 
 namespace yield {
 namespace fs {
-#ifdef _WIN32
-typedef win32::File File;
-#else
-typedef posix::File File;
+class Map;
+class Stat;
+
+class File : public Channel {
+public:
+  const static uint32_t TYPE_ID = 1965528734UL;
+
+public:
+  class Lock : public Object {
+  public:
+    Lock(
+      uint64_t start,
+      uint64_t len,
+      bool exclusive = true,
+      int16_t whence = SEEK_SET
+    );
+
+    uint64_t get_len() const;
+    uint64_t get_start() const;
+    int16_t get_whence() const;
+    bool is_exclusive() const;
+
+  public:
+#ifndef _WIN32
+    operator struct flock() const {
+      return flock_;
+    }
 #endif
+
+  public:
+    // yield::Object
+    File::Lock& inc_ref() {
+      return Object::inc_ref(*this);
+    }
+
+  private:
+#ifdef _WIN32
+    bool exclusive;
+    uint64_t len;
+    uint64_t start;
+    int16_t whence;
+#else
+    struct flock flock_;
+#endif
+  };
+
+public:
+  class Map : public Buffer {
+  public:
+    ~Map();
+
+  public:
+    File& get_file() {
+      return file;
+    }
+
+    uint64_t get_file_offset() const {
+      return file_offset;
+    }
+
+    bool is_read_only() const;
+    bool is_shared() const;
+
+  public:
+    bool sync();
+    bool sync(size_t offset, size_t length);
+    bool sync(void* ptr, size_t length);
+
+  public:
+    bool unmap();
+
+  private:
+    friend class File;
+
+    Map(
+      size_t capacity,
+      void* data,
+      File& file,
+#ifdef _WIN32
+      fd_t file_mapping,
+      uint64_t file_offset,
+#endif
+      unsigned int flags,
+      unsigned int prot,
+#ifdef _WIN32
+      bool read_only,
+      bool shared
+#endif
+    );
+
+  private:
+    File& file;
+#ifdef _WIN32
+    fd_t file_mapping;
+#endif
+    uint64_t file_offset;
+    unsigned int flags;
+    unsigned int prot;
+#ifdef _WIN32
+    bool read_only;
+    bool shared;
+#endif
+  };
+
+public:
+  File(fd_t fd);
+  ~File();
+
+public:
+  bool datasync();
+
+public:
+  YO_NEW_REF File* dup() {
+    return dup(fd);
+  }
+
+  static YO_NEW_REF File* dup(fd_t fd);
+  static YO_NEW_REF File* dup(FILE* file);
+
+public:
+  YO_NEW_REF Map*
+  mmap(
+    size_t length = SIZE_MAX,
+    off_t offset = 0,
+    bool read_only = false,
+    bool shared = true
+  );
+
+public:
+  operator fd_t() const {
+    return fd;
+  }
+
+public:
+  ssize_t pread(Buffer& buffer, off_t offset);
+  ssize_t pread(void* buf, size_t buflen, off_t offset);
+  ssize_t preadv(const iovec* iov, int iovlen, off_t offset);
+
+public:
+  ssize_t pwrite(const Buffer& buffer, off_t offset);
+  ssize_t pwrite(const void* buf, size_t buflen, off_t offset);
+  ssize_t pwritev(const iovec* iov, int iovlen, off_t offset);
+
+public:
+  off_t seek(off_t offset, uint8_t whence = SEEK_SET);
+
+public:
+  bool setlk(const Lock&);
+  bool setlkw(const Lock&);
+
+public:
+  YO_NEW_REF Stat* stat();
+
+public:
+  bool sync();
+
+public:
+  off_t tell();
+
+public:
+  bool truncate(off_t length);
+
+public:
+  bool unlk(const Lock&);
+
+public:
+  // yield::Object
+  uint32_t get_type_id() const {
+    return TYPE_ID;
+  }
+
+  const char* get_type_name() const {
+    return "yield::fs::File";
+  }
+
+  File& inc_ref() {
+    return Object::inc_ref(*this);
+  }
+
+public:
+  // yield::Channel
+  bool close();
+  ssize_t read(Buffer& buffer);
+  ssize_t read(void* buf, size_t buflen);
+  ssize_t readv(const iovec* iov, int iovlen);
+  ssize_t write(const Buffer& buffer);
+  ssize_t write(const void* buf, size_t buflen);
+  ssize_t writev(const iovec* iov, int iovlen);
+
+private:
+#ifdef _WIN32
+  bool setlk(const Lock&, bool wait);
+#endif
+
+private:
+  fd_t fd;
+};
 }
 }
 

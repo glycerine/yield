@@ -29,15 +29,42 @@
 
 #include "yield/assert.hpp"
 #include "yield/buffers.hpp"
-#include "yield/fs/win32/file.hpp"
-#include "yield/fs/win32/stat.hpp"
+#include "yield/fs/file.hpp"
+#include "yield/fs/stat.hpp"
 
 #include <io.h>
 #include <Windows.h>
 
 namespace yield {
 namespace fs {
-namespace win32 {
+File::Lock::Lock(
+  uint64_t start,
+  uint64_t len,
+  bool exclusive,
+  int16_t whence
+) : exclusive(exclusive),
+    len(len),
+    start(start),
+    whence(whence)
+{ }
+
+uint64_t File::Lock::get_len() const {
+  return len;
+}
+
+uint64_t File::Lock::get_start() const {
+  return start;
+}
+
+int16_t File::Lock::get_whence() const {
+  return whence;
+}
+
+bool File::Lock::is_exclusive() const {
+  return exclusive;
+}
+
+
 File::Map::Map(
   size_t capacity,
   void* data,
@@ -69,6 +96,14 @@ File::Map::~Map() {
   unmap();
   data_ = NULL;
   File::dec_ref(file);
+}
+
+bool File::Map::is_read_only() const {
+  return read_only;
+}
+
+bool File::Map::is_shared() const {
+  return shared;
 }
 
 bool File::Map::sync() {
@@ -588,7 +623,6 @@ ssize_t File::write(const void* buf, size_t buflen) {
 
 ssize_t File::writev(const iovec* iov, int iovlen) {
   return pwritev(iov, iovlen, tell());
-}
 }
 }
 }

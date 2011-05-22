@@ -291,15 +291,7 @@ INCLUDE_FILE_PATHS["yield"]
 INCLUDE_FILE_PATHS["yield_test"] = [path_join(INCLUDE_DIR_PATH, "yunit.hpp")]
 
 INCLUDE_FILE_PATHS["yield.fs"] = [
-    path_join(INCLUDE_DIR_PATH, "yield", "fs", "path.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "fs", "posix", "directory.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "fs", "posix", "file.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "fs", "posix", "file_system.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "fs", "win32", "stat.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "fs", "win32", "directory.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "fs", "win32", "file.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "fs", "win32", "file_system.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "fs", "file.hpp"), # before aiocb
+    path_join(INCLUDE_DIR_PATH, "yield", "fs", "path.hpp"), # before directory
     path_join(INCLUDE_DIR_PATH, "yield", "fs", "stat.hpp"), # before directory
 ] + \
 INCLUDE_FILE_PATHS["yield.fs"]

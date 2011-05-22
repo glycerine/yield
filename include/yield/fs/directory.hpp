@@ -30,19 +30,152 @@
 #ifndef _YIELD_FS_DIRECTORY_HPP_
 #define _YIELD_FS_DIRECTORY_HPP_
 
+#include "yield/object.hpp"
+#include "yield/fs/path.hpp"
+
 #ifdef _WIN32
-#include "win32/directory.hpp"
+#include "yield/fs/stat.hpp"
 #else
-#include "posix/directory.hpp"
+#include <dirent.h>
 #endif
 
 namespace yield {
 namespace fs {
+class Directory : public Object {
+public:
 #ifdef _WIN32
-typedef win32::Directory Directory;
+  class Entry : public Stat {
 #else
-typedef posix::Directory Directory;
+  class Entry : public Object {
 #endif
+  public:
+    enum Type {
+#ifndef _WIN32
+      TYPE_BLK,
+      TYPE_CHR,
+#endif
+#ifdef _WIN32
+      TYPE_DEV,
+#endif
+      TYPE_DIR,
+#ifndef _WIN32
+      TYPE_FIFO,
+      TYPE_LNK,
+#endif
+      TYPE_REG,
+#ifndef _WIN32
+      TYPE_SOCK
+#endif
+    };
+
+  public:
+#ifdef _WIN32
+    Entry(const WIN32_FIND_DATA&);
+#else
+    Entry(const Path& name, Type type)
+      : name(name), type(type)
+    { }
+#endif
+
+  public:
+    const Path& get_name() const {
+      return name;
+    }
+
+    Type get_type() const;
+
+  public:
+#ifndef _WIN32
+    bool ISCHR() const {
+      return get_type() == TYPE_CHR;
+    }
+
+    bool ISDIR() const {
+      return get_type() == TYPE_DIR;
+    }
+
+    bool ISFIFO() const {
+      return get_type() == TYPE_FIFO;
+    }
+
+    bool ISLNK() const {
+      return get_type() == TYPE_LNK;
+    }
+
+    bool ISREG() const {
+      return get_type() == TYPE_REG;
+    }
+
+    bool ISSOCK() const {
+      return get_type() == TYPE_SOCK;
+    }
+#endif
+
+  public:
+    bool is_hidden() const;
+    bool is_special() const;
+
+  public:
+#ifdef _WIN32
+    Entry& operator=(const WIN32_FIND_DATA&);
+#else
+    void set_name(const Path& name) {
+      this->name = name;
+    }
+
+    void set_type(Type type) {
+      this->type = type;
+    }
+#endif
+
+  private:
+    Path name;
+#ifndef _WIN32
+    Type type;
+#endif
+  };
+
+public:
+#ifdef _WIN32
+  Directory(fd_t hDirectory);
+#else
+  Directory(DIR* dirp, const Path& path);
+#endif
+  virtual ~Directory();
+
+public:
+  bool close();
+
+public:
+#ifdef _WIN32
+  operator fd_t() const {
+    return hDirectory;
+  }
+#else
+  operator DIR* () {
+    return dirp;
+  }
+#endif
+
+public:
+  YO_NEW_REF Entry* read();
+  bool read(Entry&);
+
+public:
+  void rewind();
+
+public:
+  // yield::Object
+  Directory& inc_ref() {
+    return Object::inc_ref(*this);
+  }
+
+private:
+  bool read(OUT Entry*&);
+
+private:
+  fd_t hDirectory, hFindFile;
+};
 }
 }
 

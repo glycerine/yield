@@ -27,13 +27,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/fs/win32/stat.hpp"
+#include "yield/fs/stat.hpp"
 
 #include <Windows.h>
 
 namespace yield {
 namespace fs {
-namespace win32 {
 Stat::Stat(
   const DateTime& atime,
   uint32_t attributes,
@@ -74,6 +73,18 @@ Stat::Stat(const WIN32_FIND_DATA& stbuf)
     mtime(stbuf.ftLastWriteTime),
     nlink(1) {
   set_size(stbuf.nFileSizeLow, stbuf.nFileSizeHigh);
+}
+
+uint32_t Stat::get_attributes() const {
+  return attributes;
+}
+
+int16_t Stat::get_nlink() const {
+  return nlink;
+}
+
+uint64_t Stat::get_size() const {
+  return size;
 }
 
 bool Stat::ISDEV() const {
@@ -175,7 +186,6 @@ void Stat::set_size(uint32_t nFileSizeLow, uint32_t nFileSizeHigh) {
   uliSize.LowPart = nFileSizeLow;
   uliSize.HighPart = nFileSizeHigh;
   size = static_cast<size_t>(uliSize.QuadPart);
-}
 }
 }
 }

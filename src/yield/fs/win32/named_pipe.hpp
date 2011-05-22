@@ -30,12 +30,10 @@
 #ifndef _YIELD_FS_WIN32_NAMED_PIPE_HPP_
 #define _YIELD_FS_WIN32_NAMED_PIPE_HPP_
 
-#include "yield/fs/win32/file.hpp"
-
+#include "yield/fs/file.hpp"
 
 namespace yield {
 namespace fs {
-namespace win32 {
 class NamedPipe : public File {
 public:
   NamedPipe(fd_t hNamedPipe);
@@ -57,7 +55,6 @@ private:
 private:
   bool connected;
 };
-}
 }
 }
 

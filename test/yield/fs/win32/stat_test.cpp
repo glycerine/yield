@@ -28,18 +28,15 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../stat_test.hpp"
-#include "yield/fs/win32/file_system.hpp"
-#include "yield/fs/win32/stat.hpp"
+#include "yield/fs/file_system.hpp"
+#include "yield/fs/stat.hpp"
 
 #include <Windows.h>
-
 
 TEST_SUITE_EX(Win32Stat, yield::fs::StatTestSuite);
 
 namespace yield {
 namespace fs {
-namespace win32 {
-
 TEST_EX(Win32Stat, BY_HANDLE_FILE_INFORMATION, StatTest) {
   auto_Object<Stat> stbuf1
   = static_cast<Stat*>(FileSystem().stat(get_test_file_name()));
@@ -142,7 +139,6 @@ TEST_EX(Win32Stat, WIN32_FIND_DATA, StatTest) {
 
   stbuf2 = fd;
   throw_assert_eq(stbuf2, *stbuf1);
-}
 }
 }
 }

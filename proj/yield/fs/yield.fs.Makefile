@@ -61,21 +61,16 @@ D_FILE_PATHS := $(shell find ../../../build/yield/fs -name "*.d")
 
 O_FILE_PATHS += ../../../build/yield/fs/file_log.o
 ifeq ($(UNAME), Darwin)
-	O_FILE_PATHS += ../../../build/yield/fs/bsd/directory.o
-	O_FILE_PATHS += ../../../build/yield/fs/darwin/extended_attributes.o ../../../build/yield/fs/darwin/file.o
-	O_FILE_PATHS += ../../../build/yield/fs/posix/directory.o ../../../build/yield/fs/posix/extended_attributes.o ../../../build/yield/fs/posix/file.o ../../../build/yield/fs/posix/file_system.o ../../../build/yield/fs/posix/path.o ../../../build/yield/fs/posix/stat.o
+	O_FILE_PATHS += ../../../build/yield/fs/posix/directory.o ../../../build/yield/fs/posix/file.o ../../../build/yield/fs/posix/file_system.o ../../../build/yield/fs/posix/path.o ../../../build/yield/fs/posix/stat.o
 endif
 ifeq ($(UNAME), FreeBSD)
-	O_FILE_PATHS += ../../../build/yield/fs/bsd/directory.o
-	O_FILE_PATHS += ../../../build/yield/fs/freebsd/extended_attributes.o ../../../build/yield/fs/freebsd/file.o
-	O_FILE_PATHS += ../../../build/yield/fs/posix/directory.o ../../../build/yield/fs/posix/extended_attributes.o ../../../build/yield/fs/posix/file.o ../../../build/yield/fs/posix/file_system.o ../../../build/yield/fs/posix/path.o ../../../build/yield/fs/posix/stat.o
+	O_FILE_PATHS += ../../../build/yield/fs/posix/directory.o ../../../build/yield/fs/posix/file.o ../../../build/yield/fs/posix/file_system.o ../../../build/yield/fs/posix/path.o ../../../build/yield/fs/posix/stat.o
 endif
 ifeq ($(UNAME), Linux)
-	O_FILE_PATHS += ../../../build/yield/fs/linux/directory.o ../../../build/yield/fs/linux/extended_attributes.o ../../../build/yield/fs/linux/file.o
-	O_FILE_PATHS += ../../../build/yield/fs/posix/directory.o ../../../build/yield/fs/posix/extended_attributes.o ../../../build/yield/fs/posix/file.o ../../../build/yield/fs/posix/file_system.o ../../../build/yield/fs/posix/path.o ../../../build/yield/fs/posix/stat.o
+	O_FILE_PATHS += ../../../build/yield/fs/posix/directory.o ../../../build/yield/fs/posix/file.o ../../../build/yield/fs/posix/file_system.o ../../../build/yield/fs/posix/path.o ../../../build/yield/fs/posix/stat.o
 endif
 ifeq ($(UNAME), Solaris)
-	O_FILE_PATHS += ../../../build/yield/fs/posix/directory.o ../../../build/yield/fs/posix/extended_attributes.o ../../../build/yield/fs/posix/file.o ../../../build/yield/fs/posix/file_system.o ../../../build/yield/fs/posix/path.o ../../../build/yield/fs/posix/stat.o
+	O_FILE_PATHS += ../../../build/yield/fs/posix/directory.o ../../../build/yield/fs/posix/file.o ../../../build/yield/fs/posix/file_system.o ../../../build/yield/fs/posix/path.o ../../../build/yield/fs/posix/stat.o
 endif
 ifeq ($(UNAME), MINGW32)
 	O_FILE_PATHS += ../../../build/yield/fs/win32/directory.o ../../../build/yield/fs/win32/file.o ../../../build/yield/fs/win32/file_system.o ../../../build/yield/fs/win32/named_pipe.o ../../../build/yield/fs/win32/path.o ../../../build/yield/fs/win32/stat.o
@@ -101,49 +96,13 @@ depclean:
 	-mkdir -p ../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(O_FILE_PATHS)
 
-../../../build/yield/fs/bsd/directory.o: ../../../src/yield/fs/bsd/directory.cpp
-	-mkdir -p ../../../build/yield/fs/bsd 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs/bsd/directory.o -MD $(CXXFLAGS) ../../../src/yield/fs/bsd/directory.cpp
-
-../../../build/yield/fs/darwin/extended_attributes.o: ../../../src/yield/fs/darwin/extended_attributes.cpp
-	-mkdir -p ../../../build/yield/fs/darwin 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs/darwin/extended_attributes.o -MD $(CXXFLAGS) ../../../src/yield/fs/darwin/extended_attributes.cpp
-
-../../../build/yield/fs/darwin/file.o: ../../../src/yield/fs/darwin/file.cpp
-	-mkdir -p ../../../build/yield/fs/darwin 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs/darwin/file.o -MD $(CXXFLAGS) ../../../src/yield/fs/darwin/file.cpp
-
 ../../../build/yield/fs/file_log.o: ../../../src/yield/fs/file_log.cpp
 	-mkdir -p ../../../build/yield/fs 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/fs/file_log.o -MD $(CXXFLAGS) ../../../src/yield/fs/file_log.cpp
 
-../../../build/yield/fs/freebsd/extended_attributes.o: ../../../src/yield/fs/freebsd/extended_attributes.cpp
-	-mkdir -p ../../../build/yield/fs/freebsd 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs/freebsd/extended_attributes.o -MD $(CXXFLAGS) ../../../src/yield/fs/freebsd/extended_attributes.cpp
-
-../../../build/yield/fs/freebsd/file.o: ../../../src/yield/fs/freebsd/file.cpp
-	-mkdir -p ../../../build/yield/fs/freebsd 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs/freebsd/file.o -MD $(CXXFLAGS) ../../../src/yield/fs/freebsd/file.cpp
-
-../../../build/yield/fs/linux/directory.o: ../../../src/yield/fs/linux/directory.cpp
-	-mkdir -p ../../../build/yield/fs/linux 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs/linux/directory.o -MD $(CXXFLAGS) ../../../src/yield/fs/linux/directory.cpp
-
-../../../build/yield/fs/linux/extended_attributes.o: ../../../src/yield/fs/linux/extended_attributes.cpp
-	-mkdir -p ../../../build/yield/fs/linux 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs/linux/extended_attributes.o -MD $(CXXFLAGS) ../../../src/yield/fs/linux/extended_attributes.cpp
-
-../../../build/yield/fs/linux/file.o: ../../../src/yield/fs/linux/file.cpp
-	-mkdir -p ../../../build/yield/fs/linux 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs/linux/file.o -MD $(CXXFLAGS) ../../../src/yield/fs/linux/file.cpp
-
 ../../../build/yield/fs/posix/directory.o: ../../../src/yield/fs/posix/directory.cpp
 	-mkdir -p ../../../build/yield/fs/posix 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/fs/posix/directory.o -MD $(CXXFLAGS) ../../../src/yield/fs/posix/directory.cpp
-
-../../../build/yield/fs/posix/extended_attributes.o: ../../../src/yield/fs/posix/extended_attributes.cpp
-	-mkdir -p ../../../build/yield/fs/posix 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/fs/posix/extended_attributes.o -MD $(CXXFLAGS) ../../../src/yield/fs/posix/extended_attributes.cpp
 
 ../../../build/yield/fs/posix/file.o: ../../../src/yield/fs/posix/file.cpp
 	-mkdir -p ../../../build/yield/fs/posix 2>/dev/null

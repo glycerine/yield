@@ -29,15 +29,13 @@
 
 #include "yield/assert.hpp"
 #include "yield/date_time.hpp"
-#include "yield/fs/win32/directory.hpp"
+#include "yield/fs/directory.hpp"
 
 #include <Windows.h>
 
 namespace yield {
 namespace fs {
-namespace win32 {
 using yield::i18n::tstring;
-
 
 Directory::Directory(HANDLE hDirectory)
   : hDirectory(hDirectory), hFindFile(INVALID_HANDLE_VALUE)
@@ -165,7 +163,6 @@ Directory::Entry::operator=(
   name = find_data.cFileName;
   Stat::operator=(find_data);
   return *this;
-}
 }
 }
 }

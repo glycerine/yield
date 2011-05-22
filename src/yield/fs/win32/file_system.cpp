@@ -31,17 +31,16 @@
 #include "yield/auto_object.hpp"
 #include "yield/assert.hpp"
 #include "yield/fs/path.hpp"
-#include "yield/fs/win32/directory.hpp"
-#include "yield/fs/win32/file.hpp"
-#include "yield/fs/win32/file_system.hpp"
-#include "yield/fs/win32/stat.hpp"
+#include "yield/fs/directory.hpp"
+#include "yield/fs/file.hpp"
+#include "yield/fs/file_system.hpp"
+#include "yield/fs/stat.hpp"
 
 #include <fcntl.h> // For O_*
 #include <Windows.h>
 
 namespace yield {
 namespace fs {
-namespace win32 {
 YO_NEW_REF File* FileSystem::creat(const Path& path) {
   return open(path, O_CREAT | O_WRONLY | O_TRUNC);
 }
@@ -377,7 +376,6 @@ bool FileSystem::utime(
   }
 
   return false;
-}
 }
 }
 }

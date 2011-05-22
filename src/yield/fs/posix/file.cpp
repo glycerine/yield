@@ -27,16 +27,9 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#if defined(__FreeBSD__)
-#include "../freebsd/extended_attributes.hpp"
-#elif defined(__linux__)
-#include "../linux/extended_attributes.hpp"
-#elif defined(__MACH__)
-#include "../darwin/extended_attributes.hpp"
-#endif
 #include "yield/buffers.hpp"
-#include "yield/fs/posix/file.hpp"
-#include "yield/fs/posix/stat.hpp"
+#include "yield/fs/file.hpp"
+#include "yield/fs/stat.hpp"
 
 #include <cstdio>
 #include <errno.h>
@@ -47,7 +40,44 @@
 
 namespace yield {
 namespace fs {
-namespace posix {
+File::Lock::Lock(
+  uint64_t len,
+  uint64_t start,
+  bool exclusive = true,
+  pid_t pid = -1,
+  int16_t whence = SEEK_SET
+) {
+  flock_.l_len = len;
+  flock_.l_pid = pid;
+  flock_.l_start = start;
+  flock_.l_type = exclusive ? F_WRLCK : F_RDLCK;
+  flock_.l_whence = whence;
+}
+
+File::Lock::Lock(const struct flock& flock_) : flock_(flock_) {
+}
+
+uint64_t File::Lock::get_len() const {
+  return flock_.l_len;
+}
+
+pid_t File::Lock::get_pid() const {
+  return flock_.l_pid;
+}
+
+uint64_t File::Lock::get_start() const {
+  return flock_.l_start;
+}
+
+int16_t File::Lock::get_whence() const {
+  return flock_.l_whence;
+}
+
+bool File::Lock::is_exclusive() const {
+  return flock_.l_type == F_WRLCK;
+}
+
+
 File::Map::Map(
   size_t capacity,
   void* data,
@@ -132,7 +162,11 @@ bool File::close() {
 }
 
 bool File::datasync() {
+#ifdef __linux__
+  return fdatasync(*this) != -1;
+#else
   return sync();
+#endif
 }
 
 YO_NEW_REF File* File::dup(fd_t fd) {
@@ -193,11 +227,6 @@ File::mmap(
            flags,
            prot
          );
-}
-
-YO_NEW_REF ExtendedAttributes* File::openxattrs() {
-  errno = ENOTSUP;
-  return NULL;
 }
 
 ssize_t File::pread(Buffer& buffer, off_t offset) {
@@ -305,7 +334,6 @@ ssize_t File::write(const void* buf, size_t buflen) {
 
 ssize_t File::writev(const iovec* iov, int iovlen) {
   return ::writev(*this, iov, iovlen);
-}
 }
 }
 }
