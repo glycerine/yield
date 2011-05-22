@@ -1,4 +1,4 @@
-// stat_test.hpp
+// stat_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,9 +27,6 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_FS_STAT_TEST_HPP_
-#define _YIELD_FS_STAT_TEST_HPP_
-
 #include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/date_time.hpp"
@@ -40,17 +37,17 @@
 #include "yunit.hpp"
 
 #include <sstream>
+#ifdef _WIN32
+#include <Windows.h>
+#endif
 
-
-TEST_SUITE(Stat)
+TEST_SUITE(Stat);
 
 namespace yield {
 namespace fs {
 class StatTest : public yunit::Test {
 public:
-  StatTest()
-    : test_dir_name("stat_test"),
-      test_file_name("stat_test.txt")
+  StatTest() : test_dir_name("stat_test"), test_file_name("stat_test.txt")
   { }
 
   // yunit::Test
@@ -83,107 +80,151 @@ private:
 };
 
 
-class StatGetAtimeTest : public StatTest {
-public:
-  // yunit::Test
-  void run() {
-    DateTime now = DateTime::now();
-    auto_Object<Stat> stbuf = FileSystem().stat(get_test_dir_name());
-    throw_assert_ne(stbuf->get_atime(), DateTime::INVALID_DATE_TIME);
-    throw_assert_le(stbuf->get_atime(), now);
-  }
-};
-
-
-class StatGetCtimeTest : public StatTest {
-public:
-  // yunit::Test
-  void run() {
-    DateTime now = DateTime::now();
-    auto_Object<Stat> stbuf = FileSystem().stat(get_test_dir_name());
-    throw_assert_ne(stbuf->get_ctime(), DateTime::INVALID_DATE_TIME);
-    throw_assert_le(stbuf->get_ctime(), now);
-  }
-};
-
-
-class StatGetMtimeTest : public StatTest {
-public:
-  // yunit::Test
-  void run() {
-    DateTime now = DateTime::now();
-    auto_Object<Stat> stbuf = FileSystem().stat(get_test_dir_name());
-    throw_assert_ne(stbuf->get_mtime(), DateTime::INVALID_DATE_TIME);
-    throw_assert_le(stbuf->get_mtime(), now);
-  }
-};
-
-
-class StatGetNlinkTest : public StatTest {
-public:
-  // yunit::Test
-  void run() {
-    auto_Object<Stat> stbuf = FileSystem().stat(get_test_dir_name());
-    throw_assert_eq(stbuf->get_nlink(), 1);
-  }
-};
-
-
-class StatGetSizeTest : public StatTest {
-public:
-  // yunit::Test
-  void run() {
-    auto_Object<Stat> stbuf = FileSystem().stat(get_test_dir_name());
-    throw_assert_eq(stbuf->get_size(), 0);
-  }
-};
-
-
-class StatISDIRTest : public StatTest {
-public:
-  // yunit::Test
-  void run() {
-    auto_Object<Stat> stbuf = FileSystem().stat(get_test_dir_name());
-    throw_assert(stbuf->ISDIR());
-  }
-};
-
-
-class StatISREGTest : public StatTest {
-public:
-  // yunit::Test
-  void run() {
-    auto_Object<Stat> stbuf = FileSystem().stat(get_test_file_name());
-    throw_assert(stbuf->ISREG());
-  }
-};
-
-
-class StatOperatorEqualsEqualsTest : public StatTest {
-public:
-  // yunit::Test
-  void run() {
-    auto_Object<Stat> stbuf1 = FileSystem().stat(get_test_file_name());
-    auto_Object<Stat> stbuf2 = FileSystem().stat(get_test_file_name());
-    throw_assert_eq(*stbuf1, *stbuf2);
-  }
-};
-
-
-class StatTestSuite : public yunit::TestSuite {
-public:
-  StatTestSuite() {
-    add("Stat::get_atime", new StatGetAtimeTest);
-    add("Stat::get_ctime", new StatGetCtimeTest);
-    add("Stat::get_mtime", new StatGetMtimeTest);
-    add("Stat::get_nlink", new StatGetNlinkTest);
-    add("Stat::get_size", new StatGetSizeTest);
-    add("Stat::ISDIR", new StatISDIRTest);
-    add("Stat::ISREG", new StatISREGTest);
-    add("Stat::operator==", new StatOperatorEqualsEqualsTest);
-  }
-};
-}
+TEST_EX(Stat, get_atime, StatTest) {
+  DateTime now = DateTime::now();
+  auto_Object<Stat> stbuf = FileSystem().stat(get_test_dir_name());
+  throw_assert_ne(stbuf->get_atime(), DateTime::INVALID_DATE_TIME);
+  throw_assert_le(stbuf->get_atime(), now);
 }
 
+TEST_EX(Stat, get_ctime, StatTest) {
+  DateTime now = DateTime::now();
+  auto_Object<Stat> stbuf = FileSystem().stat(get_test_dir_name());
+  throw_assert_ne(stbuf->get_ctime(), DateTime::INVALID_DATE_TIME);
+  throw_assert_le(stbuf->get_ctime(), now);
+}
+
+TEST_EX(Stat, get_mtime, StatTest) {
+  DateTime now = DateTime::now();
+  auto_Object<Stat> stbuf = FileSystem().stat(get_test_dir_name());
+  throw_assert_ne(stbuf->get_mtime(), DateTime::INVALID_DATE_TIME);
+  throw_assert_le(stbuf->get_mtime(), now);
+}
+
+TEST_EX(Stat, get_nlink, StatTest) {
+  auto_Object<Stat> stbuf = FileSystem().stat(get_test_dir_name());
+  throw_assert_eq(stbuf->get_nlink(), 1);
+}
+
+TEST_EX(Stat, get_size, StatTest) {
+  auto_Object<Stat> stbuf = FileSystem().stat(get_test_dir_name());
+  throw_assert_eq(stbuf->get_size(), 0);
+}
+
+TEST_EX(Stat, ISDIR, StatTest) {
+  auto_Object<Stat> stbuf = FileSystem().stat(get_test_dir_name());
+  throw_assert(stbuf->ISDIR());
+}
+
+TEST_EX(Stat, ISREG, StatTest) {
+  auto_Object<Stat> stbuf = FileSystem().stat(get_test_file_name());
+  throw_assert(stbuf->ISREG());
+}
+
+TEST_EX(Stat, operator_equals, StatTest) {
+  auto_Object<Stat> stbuf1 = FileSystem().stat(get_test_file_name());
+  auto_Object<Stat> stbuf2 = FileSystem().stat(get_test_file_name());
+  throw_assert_eq(*stbuf1, *stbuf2);
+}
+
+#ifdef _WIN32
+TEST_EX(Stat, operator_as_BY_HANDLE_FILE_INFORMATION, StatTest) {
+  auto_Object<Stat> stbuf1
+  = static_cast<Stat*>(FileSystem().stat(get_test_file_name()));
+
+  BY_HANDLE_FILE_INFORMATION bhfi = *stbuf1;
+
+  throw_assert_ne(bhfi.dwFileAttributes, 0);
+
+  throw_assert_ne(DateTime(bhfi.ftCreationTime), 0);
+
+  throw_assert_ge(
+    DateTime(bhfi.ftLastAccessTime),
+    DateTime(bhfi.ftCreationTime)
+  );
+
+  throw_assert_ge(
+    DateTime(bhfi.ftLastWriteTime),
+    DateTime(bhfi.ftCreationTime)
+  );
+
+  throw_assert_eq(bhfi.nFileSizeLow, 0);
+  throw_assert_eq(bhfi.nFileSizeHigh, 0);
+
+  throw_assert_eq(bhfi.nNumberOfLinks, 1);
+
+  throw_assert_eq(bhfi.nFileIndexLow, 0);
+  throw_assert_eq(bhfi.nFileIndexHigh, 0);
+
+  Stat stbuf2(bhfi);
+  throw_assert_eq(stbuf2, *stbuf1);
+
+  stbuf2 = bhfi;
+  throw_assert_eq(stbuf2, *stbuf1);
+}
+
+TEST_EX(Stat, operator_as_WIN32_FILE_ATTRIBUTE_DATA, StatTest) {
+  auto_Object<Stat> stbuf1
+  = static_cast<Stat*>(FileSystem().stat(get_test_file_name()));
+
+  WIN32_FILE_ATTRIBUTE_DATA fad = *stbuf1;
+
+  throw_assert_ne(fad.dwFileAttributes, 0);
+
+  throw_assert_ne(DateTime(fad.ftCreationTime), 0);
+
+  throw_assert_ge(
+    DateTime(fad.ftLastAccessTime),
+    DateTime(fad.ftCreationTime)
+  );
+
+  throw_assert_ge(
+    DateTime(fad.ftLastWriteTime),
+    DateTime(fad.ftCreationTime)
+  );
+
+  throw_assert_eq(fad.nFileSizeLow, 0);
+  throw_assert_eq(fad.nFileSizeHigh, 0);
+
+  Stat stbuf2(fad);
+  throw_assert_eq(stbuf2, *stbuf1);
+
+  stbuf2 = fad;
+  throw_assert_eq(stbuf2, *stbuf1);
+}
+
+TEST_EX(Stat, operator_as_WIN32_FIND_DATA, StatTest) {
+  auto_Object<Stat> stbuf1
+  = static_cast<Stat*>(FileSystem().stat(get_test_file_name()));
+
+  WIN32_FIND_DATA fd = *stbuf1;
+
+  throw_assert_ne(fd.dwFileAttributes, 0);
+
+  throw_assert_ne(DateTime(fd.ftCreationTime), 0);
+
+  throw_assert_ge(
+    DateTime(fd.ftLastAccessTime),
+    DateTime(fd.ftCreationTime)
+  );
+
+  throw_assert_ge(
+    DateTime(fd.ftLastWriteTime),
+    DateTime(fd.ftCreationTime)
+  );
+
+  throw_assert_eq(fd.nFileSizeLow, 0);
+  throw_assert_eq(fd.nFileSizeHigh, 0);
+
+  throw_assert_eq(fd.cFileName[0], 0);
+  throw_assert_eq(fd.cAlternateFileName[0], 0);
+
+  Stat stbuf2(fd);
+  throw_assert_eq(stbuf2, *stbuf1);
+
+  stbuf2 = fd;
+  throw_assert_eq(stbuf2, *stbuf1);
+}
 #endif
+}
+}

@@ -37,17 +37,14 @@
 #include <Windows.h>
 #endif
 
-
 TEST_SUITE(Path);
 
 namespace yield {
 namespace fs {
 using std::pair;
 
-
 const static Path TEST_DIR_NAME("path_test");
 const static Path TEST_FILE_NAME("path_test.txt");
-
 
 TEST(Path, copy) {
   Path path_copy(TEST_FILE_NAME);
@@ -55,8 +52,7 @@ TEST(Path, copy) {
   throw_assert_eq(TEST_FILE_NAME, path_copy);
 }
 
-//TEST(Path, cast)
-//{
+//TEST(Path, cast) {
 //  Path path(TEST_FILE_NAME);
 //  string path_str = path;
 //  throw_assert_eq(path, path_str);

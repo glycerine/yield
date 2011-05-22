@@ -108,10 +108,8 @@ private:
 class NamedPipeTestSuite : public ChannelTestSuite {
 public:
   NamedPipeTestSuite()
-    : ChannelTestSuite
-    (
-      *new NamedPipePairFactory
-      (
+    : ChannelTestSuite(
+      *new NamedPipePairFactory(
 #ifdef _WIN32
         "\\\\.\\pipe\\named_pipe_test.txt"
 #else

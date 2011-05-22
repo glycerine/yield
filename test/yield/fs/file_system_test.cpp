@@ -1,4 +1,4 @@
-// file_system_test.hpp
+// file_system_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,9 +27,6 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_FS_FILE_SYSTEM_TEST_HPP_
-#define _YIELD_FS_FILE_SYSTEM_TEST_HPP_
-
 #include "yield/auto_object.hpp"
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
@@ -43,6 +40,7 @@
 #include <sys/statvfs.h>
 #endif
 
+TEST_SUITE(FileSystem);
 
 namespace yield {
 namespace fs {
@@ -86,267 +84,161 @@ private:
 };
 
 
-class FileSystemCreatTest : public FileSystemTest {
-public:
-  // yunit::Test
-  void run() {
-    File* file = FileSystem().creat(get_test_file_name());
-    if (file != NULL)
-      File::dec_ref(*file);
-    else
-      throw Exception();
+TEST_EX(FileSystem, creat, FileSystemTest) {
+  File* file = FileSystem().creat(get_test_file_name());
+  if (file != NULL)
+    File::dec_ref(*file);
+  else
+    throw Exception();
+}
+
+TEST_EX(FileSystem, exists, FileSystemTest) {
+  if (!FileSystem().exists(get_test_file_name()))
+    throw Exception();
+
+  throw_assert_false(FileSystem().exists(Path("some other file.txt")));
+}
+
+TEST_EX(FileSystem, isdir, FileSystemTest) {
+  FileSystem().mkdir(get_test_dir_name());
+  throw_assert(FileSystem().isdir(get_test_dir_name()));
+  throw_assert_false(FileSystem().isdir(get_test_file_name()));
+  throw_assert_false(FileSystem().isdir(Path("nodir")));
+}
+
+TEST_EX(FileSystem, isfile, FileSystemTest) {
+  throw_assert(FileSystem().isfile(get_test_file_name()));
+  FileSystem().mkdir(get_test_dir_name());
+  throw_assert_false(FileSystem().isfile(get_test_dir_name()));
+  throw_assert_false(FileSystem().isfile(Path("nofile.txt")));
+}
+
+TEST_EX(FileSystem, link, FileSystemTest) {
+  if (!FileSystem().link(get_test_file_name(), get_test_link_name()))
+    throw Exception();
+}
+
+TEST_EX(FileSystem, mkdir, FileSystemTest) {
+  if (!FileSystem().mkdir(get_test_dir_name()))
+    throw Exception();
+}
+
+TEST_EX(FileSystem, mktree, FileSystemTest) {
+  Path subdir_path(Path("file_system_test") + Path("subdir"));
+  if (!FileSystem().mktree(subdir_path)) throw Exception();
+  throw_assert(FileSystem().exists(subdir_path));
+}
+
+TEST_EX(FileSystem, open, FileSystemTest) {
+  auto_Object<File> file = FileSystem().open(get_test_file_name());
+
+  File* no_file = FileSystem().open(Path("nofile.txt"), O_RDONLY);
+  if (no_file != NULL) {
+    File::dec_ref(*no_file);
+    throw_assert(false);
   }
-};
+}
 
+TEST_EX(FileSystem, realpath, FileSystemTest) {
+  Path realpath;
+  if (!FileSystem().realpath(get_test_file_name(), realpath))
+    throw Exception();
+  throw_assert_false(realpath.empty());
+  throw_assert_ne(get_test_file_name(), realpath);
+  throw_assert_lt(get_test_file_name().size(), realpath.size());
+}
 
-class FileSystemExistsTest : public FileSystemTest {
-public:
-  // yunit::Test
-  void run() {
-    if (!FileSystem().exists(get_test_file_name()))
-      throw Exception();
+TEST_EX(FileSystem, rename, FileSystemTest) {
+  if (!FileSystem().rename(get_test_file_name(), Path("file_system_test2.txt")))
+    throw Exception();
+  FileSystem().unlink(Path("file_system_test2.txt"));
+}
 
-    throw_assert_false(FileSystem().exists(Path("some other file.txt")));
+TEST_EX(FileSystem, rmdir, FileSystemTest) {
+  FileSystem().mkdir(get_test_dir_name());
+  if (!FileSystem().rmdir(get_test_dir_name()))
+    throw Exception();
+}
+
+TEST_EX(FileSystem, rmtree, FileSystemTest) {
+  if (!FileSystem().mkdir(get_test_dir_name()))
+    throw Exception();
+
+  if (!FileSystem().touch(get_test_dir_name() / get_test_file_name()))
+    throw Exception();
+
+  if (!FileSystem().rmtree(get_test_dir_name()))
+    throw Exception();
+
+  throw_assert_false(FileSystem().exists(get_test_dir_name()));
+}
+
+TEST_EX(FileSystem, stat, FileSystemTest) {
+  DateTime now = DateTime::now();
+  auto_Object<Stat> stbuf = FileSystem().stat(get_test_file_name());
+  throw_assert_ne(stbuf->get_atime(), DateTime::INVALID_DATE_TIME);
+  throw_assert_le(stbuf->get_atime(), now);
+  throw_assert_ne(stbuf->get_ctime(), DateTime::INVALID_DATE_TIME);
+  throw_assert_le(stbuf->get_ctime(), now);
+  throw_assert_ne(stbuf->get_mtime(), DateTime::INVALID_DATE_TIME);
+  throw_assert_le(stbuf->get_mtime(), now);
+  throw_assert_eq(stbuf->get_nlink(), 1);
+  throw_assert_eq(stbuf->get_size(), 0);
+  throw_assert(stbuf->ISREG());
+}
+
+TEST_EX(FileSystem, statvfs, FileSystemTest) {
+  FileSystem().mkdir(get_test_dir_name());
+  struct statvfs stbuf;
+  if (!FileSystem().statvfs(get_test_dir_name(), stbuf))
+    throw Exception();
+  throw_assert_gt(stbuf.f_bsize, 0);
+  throw_assert_gt(stbuf.f_blocks, 0);
+  throw_assert_gt(stbuf.f_bfree, 0);
+  throw_assert_ge(stbuf.f_blocks, stbuf.f_bfree);
+  throw_assert_ge(stbuf.f_namemax, 0);
+}
+
+TEST_EX(FileSystem, touch, FileSystemTest) {
+  if (!FileSystem().touch(get_test_file_name()))
+    throw Exception();
+
+  if (FileSystem().touch(get_test_dir_name() / get_test_file_name())) {
+    throw_assert(false);
   }
-};
+}
 
+TEST_EX(FileSystem, unlink, FileSystemTest) {
+  if (!FileSystem().unlink(get_test_file_name()))
+    throw Exception();
+}
 
-class FileSystemIsDirTest : public FileSystemTest {
-public:
-  // yunit::Test
-  void run() {
-    FileSystem().mkdir(get_test_dir_name());
-    throw_assert(FileSystem().isdir(get_test_dir_name()));
-    throw_assert_false(FileSystem().isdir(get_test_file_name()));
-    throw_assert_false(FileSystem().isdir(Path("nodir")));
-  }
-};
+TEST_EX(FileSystem, utime, FileSystemTest) {
+  DateTime atime = DateTime::now(),
+            mtime = DateTime::now();
 
-
-class FileSystemIsFileTest : public FileSystemTest {
-public:
-  // yunit::Test
-  void run() {
-    throw_assert(FileSystem().isfile(get_test_file_name()));
-    FileSystem().mkdir(get_test_dir_name());
-    throw_assert_false(FileSystem().isfile(get_test_dir_name()));
-    throw_assert_false(FileSystem().isfile(Path("nofile.txt")));
-  }
-};
-
-
-class FileSystemLinkTest : public FileSystemTest {
-public:
-  // yunit::Test
-  void run() {
-    if (!FileSystem().link(get_test_file_name(), get_test_link_name()))
-      throw Exception();
-  }
-};
-
-
-class FileSystemMkdirTest : public FileSystemTest {
-public:
-  // yunit::Test
-  void run() {
-    if (!FileSystem().mkdir(get_test_dir_name()))
-      throw Exception();
-  }
-};
-
-
-class FileSystemMktreeTest : public FileSystemTest {
-public:
-  // yunit::Test
-  void run() {
-    Path subdir_path(Path("file_system_test") + Path("subdir"));
-    if (!FileSystem().mktree(subdir_path)) throw Exception();
-    throw_assert(FileSystem().exists(subdir_path));
-  }
-};
-
-
-class FileSystemOpenTest : public FileSystemTest {
-public:
-  // yunit::Test
-  void run() {
-    auto_Object<File> file = FileSystem().open(get_test_file_name());
-
-    File* no_file = FileSystem().open(Path("nofile.txt"), O_RDONLY);
-    if (no_file != NULL) {
-      File::dec_ref(*no_file);
-      throw_assert(false);
-    }
-  }
-};
-
-
-class FileSystemRealPathTest : public FileSystemTest {
-public:
-  // yunit::Test
-  void run() {
-    Path realpath;
-    if (!FileSystem().realpath(get_test_file_name(), realpath))
-      throw Exception();
-    throw_assert_false(realpath.empty());
-    throw_assert_ne(get_test_file_name(), realpath);
-    throw_assert_lt(get_test_file_name().size(), realpath.size());
-  }
-};
-
-
-class FileSystemRenameTest : public FileSystemTest {
-public:
-  // yunit::Test
-  void run() {
-    if (!FileSystem().rename(get_test_file_name(), Path("file_system_test2.txt")))
-      throw Exception();
-    FileSystem().unlink(Path("file_system_test2.txt"));
-  }
-};
-
-
-class FileSystemRmDirTest : public FileSystemTest {
-public:
-  // yunit::Test
-  void run() {
-    FileSystem().mkdir(get_test_dir_name());
-    if (!FileSystem().rmdir(get_test_dir_name()))
-      throw Exception();
-  }
-};
-
-
-class FileSystemRmTreeTest : public FileSystemTest {
-public:
-  // yunit::Test
-  void run() {
-    if (!FileSystem().mkdir(get_test_dir_name()))
-      throw Exception();
-
-    if (!FileSystem().touch(get_test_dir_name() / get_test_file_name()))
-      throw Exception();
-
-    if (!FileSystem().rmtree(get_test_dir_name()))
-      throw Exception();
-
-    throw_assert_false(FileSystem().exists(get_test_dir_name()));
-  }
-};
-
-
-class FileSystemStatTest : public FileSystemTest {
-public:
-  // yunit::Test
-  void run() {
-    DateTime now = DateTime::now();
+  if (FileSystem().utime(get_test_file_name(), atime, mtime)) {
     auto_Object<Stat> stbuf = FileSystem().stat(get_test_file_name());
-    throw_assert_ne(stbuf->get_atime(), DateTime::INVALID_DATE_TIME);
-    throw_assert_le(stbuf->get_atime(), now);
-    throw_assert_ne(stbuf->get_ctime(), DateTime::INVALID_DATE_TIME);
-    throw_assert_le(stbuf->get_ctime(), now);
-    throw_assert_ne(stbuf->get_mtime(), DateTime::INVALID_DATE_TIME);
-    throw_assert_le(stbuf->get_mtime(), now);
-    throw_assert_eq(stbuf->get_nlink(), 1);
-    throw_assert_eq(stbuf->get_size(), 0);
-    throw_assert(stbuf->ISREG());
-  }
-};
-
-
-class FileSystemStatVFSTest : public FileSystemTest {
-public:
-  // yunit::Test
-  void run() {
-    FileSystem().mkdir(get_test_dir_name());
-    struct statvfs stbuf;
-    if (!FileSystem().statvfs(get_test_dir_name(), stbuf))
-      throw Exception();
-    throw_assert_gt(stbuf.f_bsize, 0);
-    throw_assert_gt(stbuf.f_blocks, 0);
-    throw_assert_gt(stbuf.f_bfree, 0);
-    throw_assert_ge(stbuf.f_blocks, stbuf.f_bfree);
-    throw_assert_ge(stbuf.f_namemax, 0);
-  }
-};
-
-
-class FileSystemTouchTest : public FileSystemTest {
-public:
-  // yunit::Test
-  void run() {
-    if (!FileSystem().touch(get_test_file_name()))
-      throw Exception();
-
-    if (FileSystem().touch(get_test_dir_name() / get_test_file_name())) {
-      throw_assert(false);
-    }
-  }
-};
-
-
-class FileSystemUnlinkTest : public FileSystemTest {
-public:
-  // yunit::Test
-  void run() {
-    if (!FileSystem().unlink(get_test_file_name()))
-      throw Exception();
-  }
-};
-
-
-class FileSystemUtimeTest : public FileSystemTest {
-public:
-  // yunit::Test
-  void run() {
-    DateTime atime = DateTime::now(),
-             mtime = DateTime::now();
-
-    if (FileSystem().utime(get_test_file_name(), atime, mtime)) {
-      auto_Object<Stat> stbuf = FileSystem().stat(get_test_file_name());
-      throw_assert_le(stbuf->get_atime() - atime, Time::NS_IN_S);
-      throw_assert_le(stbuf->get_mtime() - mtime, Time::NS_IN_S);
-    } else
-      throw Exception();
-  }
-};
-
-
-class FileSystemTestSuite : public yunit::TestSuite {
-public:
-  FileSystemTestSuite() {
-    add("FileSystem::creat", new FileSystemCreatTest);
-
-    add("FileSystem::exists", new FileSystemExistsTest);
-
-    add("FileSystem::isdir", new FileSystemIsDirTest);
-    add("FileSystem::isfile", new FileSystemIsFileTest);
-
-    add("FileSystem::link", new FileSystemLinkTest);
-
-    add("FileSystem::mkdir", new FileSystemMkdirTest);
-    add("FileSystem::mktree", new FileSystemMktreeTest);
-
-    add("FileSystem::open", new FileSystemOpenTest);
-
-    add("FileSystem::realpath", new FileSystemRealPathTest);
-
-    add("FileSystem::rename", new FileSystemRenameTest);
-
-    add("FileSystem::rmdir", new FileSystemRmDirTest);
-    add("FileSystem::rmtree", new FileSystemRmTreeTest);
-
-    add("FileSystem::stat", new FileSystemStatTest);
-    add("FileSystem::statvfs", new FileSystemStatVFSTest);
-
-    add("FileSystem::touch", new FileSystemTouchTest);
-
-    add("FileSystem::unlink", new FileSystemUnlinkTest);
-
-    add("FileSystem::utime", new FileSystemUtimeTest);
-  }
-};
-}
+    throw_assert_le(stbuf->get_atime() - atime, Time::NS_IN_S);
+    throw_assert_le(stbuf->get_mtime() - mtime, Time::NS_IN_S);
+  } else
+    throw Exception();
 }
 
+#ifdef _WIN32
+TEST_EX(FileSystem, utime_win32, FileSystemTest) {
+  DateTime atime = DateTime::now();
+  DateTime mtime = DateTime::now();
+  DateTime ctime = DateTime::now();
+
+  if (FileSystem().utime(get_test_file_name(), atime, mtime, ctime)) {
+    auto_Object<Stat> stbuf = FileSystem().stat(get_test_file_name());
+    throw_assert_le(stbuf->get_atime() - atime, Time::NS_IN_S);
+    throw_assert_le(stbuf->get_mtime() - mtime, Time::NS_IN_S);
+    throw_assert_le(stbuf->get_ctime() - ctime, Time::NS_IN_S);
+  } else if (Exception::get_last_error_code() != ENOTSUP)
+    throw Exception();
+}
 #endif
+}
+}

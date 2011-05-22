@@ -109,21 +109,15 @@
     </ClCompile>
     <ClCompile Include="..\..\..\test\yield\fs\file_log_test.cpp">
     </ClCompile>
-    <ClInclude Include="..\..\..\test\yield\fs\file_system_test.hpp" />
-    <ClInclude Include="..\..\..\test\yield\fs\file_test.hpp" />
+    <ClCompile Include="..\..\..\test\yield\fs\file_system_test.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\test\yield\fs\file_test.cpp">
+    </ClCompile>
     <ClCompile Include="..\..\..\test\yield\fs\named_pipe_test.cpp">
     </ClCompile>
     <ClCompile Include="..\..\..\test\yield\fs\path_test.cpp">
     </ClCompile>
-    <ClInclude Include="..\..\..\test\yield\fs\stat_test.hpp" />
-    <ClCompile Include="..\..\..\test\yield\fs\win32\file_system_test.cpp">
-      <ObjectFileName>$(IntDir)win32\file_system_test.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\fs\win32\file_test.cpp">
-      <ObjectFileName>$(IntDir)win32\file_test.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\fs\win32\stat_test.cpp">
-      <ObjectFileName>$(IntDir)win32\stat_test.obj</ObjectFileName>
+    <ClCompile Include="..\..\..\test\yield\fs\stat_test.cpp">
     </ClCompile>
     <ClCompile Include="..\..\..\test\yield\fs\yield_fs_test_main.cpp">
     </ClCompile>

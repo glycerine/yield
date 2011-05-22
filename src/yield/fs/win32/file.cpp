@@ -71,16 +71,12 @@ File::Map::Map(
   File& file,
   fd_t file_mapping,
   uint64_t file_offset,
-  unsigned int flags,
-  unsigned int prot,
   bool read_only,
   bool shared
 ) : Buffer(capacity, data),
   file(file.inc_ref()),
   file_mapping(file_mapping),
   file_offset(file_offset),
-  flags(flags),
-  prot(prot),
   read_only(read_only),
   shared(shared) {
   if (data_ == reinterpret_cast<void*>(-1)) {

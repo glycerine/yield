@@ -33,8 +33,11 @@
 
 extern yunit::TestSuite& DirectoryTestSuite();
 extern yunit::TestSuite& FileLogTestSuite();
+extern yunit::TestSuite& FileSystemTestSuite();
+extern yunit::TestSuite& FileTestSuite();
 extern yunit::TestSuite& NamedPipeTestSuite();
 extern yunit::TestSuite& PathTestSuite();
+extern yunit::TestSuite& StatTestSuite();
 
 int main(int, char**) {
   int failed_test_case_count = 0;
@@ -49,6 +52,16 @@ int main(int, char**) {
   failed_test_case_count += FileLogTestSuite().run();
   std::cout << std::endl;
 
+  // FileSystem
+  std::cout << "FileSystem:" << std::endl;
+  failed_test_case_count += FileSystemTestSuite().run();
+  std::cout << std::endl;
+
+  // File
+  std::cout << "File:" << std::endl;
+  failed_test_case_count += FileTestSuite().run();
+  std::cout << std::endl;
+
   // NamedPipe
   std::cout << "NamedPipe:" << std::endl;
   failed_test_case_count += NamedPipeTestSuite().run();
@@ -57,6 +70,11 @@ int main(int, char**) {
   // Path
   std::cout << "Path:" << std::endl;
   failed_test_case_count += PathTestSuite().run();
+  std::cout << std::endl;
+
+  // Stat
+  std::cout << "Stat:" << std::endl;
+  failed_test_case_count += StatTestSuite().run();
   std::cout << std::endl;
 
   return failed_test_case_count;

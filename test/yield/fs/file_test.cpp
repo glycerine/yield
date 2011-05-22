@@ -1,4 +1,4 @@
-// file_test.hpp
+// file_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -26,9 +26,6 @@
 // ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-#ifndef _YIELD_FS_FILE_TEST_HPP_
-#define _YIELD_FS_FILE_TEST_HPP_
 
 #include "../channel_test.hpp"
 #include "yield/auto_object.hpp"
@@ -674,4 +671,7 @@ public:
 }
 }
 
-#endif
+TEST_SUITE_EX(
+  File,
+  yield::fs::FileTestSuite
+);
