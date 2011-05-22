@@ -38,6 +38,7 @@ namespace i18n {
 class iconv {
 public:
   iconv(Code tocode, Code fromcode);
+  ~iconv();
 
   // iconv.3
   size_t

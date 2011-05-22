@@ -35,7 +35,11 @@
 
 namespace yield {
 namespace i18n {
+#ifdef _WIN32
 class tstring : public std::wstring {
+#else
+class tstring : public std::string {
+#endif
 public:
   tstring() { }
 

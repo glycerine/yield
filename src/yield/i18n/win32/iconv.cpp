@@ -37,6 +37,9 @@ iconv::iconv(Code tocode, Code fromcode)
   : fromcode(fromcode), tocode(tocode)
 { }
 
+iconv::~iconv() {
+}
+
 size_t
 iconv::operator()(
   const char** inbuf,
