@@ -28,11 +28,10 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/exception.hpp"
-#include "yield/thread/posix/reader_writer_lock.hpp"
+#include "yield/thread/reader_writer_lock.hpp"
 
 namespace yield {
 namespace thread {
-namespace posix {
 ReaderWriterLock::ReaderWriterLock() {
   if (pthread_rwlock_init(&rwlock, NULL) != 0)
     throw Exception();
@@ -64,7 +63,6 @@ bool ReaderWriterLock::wrlock() {
 
 void ReaderWriterLock::wrunlock() {
   pthread_rwlock_unlock(&rwlock);
-}
 }
 }
 }

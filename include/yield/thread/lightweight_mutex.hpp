@@ -1,4 +1,4 @@
-// yield/thread/lightweight_mutex.hpp
+// yield/thread/win32/lightweight_mutex.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,21 +27,51 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_THREAD_LIGHTWEIGHT_MUTEX_HPP_
-#define _YIELD_THREAD_LIGHTWEIGHT_MUTEX_HPP_
+#ifndef _YIELD_THREAD_WIN32_LIGHTWEIGHT_MUTEX_HPP_
+#define _YIELD_THREAD_WIN32_LIGHTWEIGHT_MUTEX_HPP_
 
 #ifdef _WIN32
-#include "yield/thread/win32/lightweight_mutex.hpp"
+struct _RTL_CRITICAL_SECTION;
+typedef struct _RTL_CRITICAL_SECTION RTL_CRITICAL_SECTION;
+typedef RTL_CRITICAL_SECTION CRITICAL_SECTION;
 #else
-#include "yield/thread/posix/mutex.hpp"
+#include "yield/thread/mutex.hpp"
 #endif
 
 namespace yield {
 namespace thread {
 #ifdef _WIN32
-typedef win32::LightweightMutex LightweightMutex;
+/**
+  Lightweight mutex synchronization primitive.
+*/
+class LightweightMutex {
+public:
+  LightweightMutex();
+  ~LightweightMutex();
+
+public:
+  /**
+    Lock the mutex, blocking until acquisition.
+    @return true if the caller now holds the mutex
+  */
+  bool lock();
+
+  /**
+    Try to lock the mutex, not blocking on failure.
+    @return true if the caller now holds the mutex
+  */
+  bool trylock();
+
+  /**
+    Unlock the mutex.
+  */
+  void unlock();
+
+private:
+  CRITICAL_SECTION* critical_section;
+};
 #else
-typedef posix::Mutex LightweightMutex;
+typedef Mutex LightweightMutex;
 #endif
 }
 }

@@ -27,27 +27,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "thread.hpp"
-
+#include "yield/thread/thread.hpp"
 
 namespace yield {
 namespace thread {
-namespace darwin {
-Thread::Thread(Runnable& runnable)
-  : yield::thread::posix::Thread(runnable)
-{ }
-
-Thread::Thread(pthread_t pthread)
-  : yield::thread::posix::Thread(handle)
-{ }
-
-auto_Object<Thread> Thread::self() {
-  return new Thread(pthread_self());
-}
-
 void Thread::yield() {
   pthread_YIELD_np();
-}
 }
 }
 }

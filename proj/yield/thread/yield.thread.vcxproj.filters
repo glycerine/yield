@@ -24,61 +24,16 @@
     <Filter Include="Header Files">
       <UniqueIdentifier>{2b0d6c3d-bfb5-4806-b8a3-cac47ae9c926}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\darwin">
-      <UniqueIdentifier>{2f6a245c-8ead-4391-84b5-a054286c93bf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\linux">
-      <UniqueIdentifier>{07a4c99c-f432-45bd-8595-a8fb77be9379}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\posix">
-      <UniqueIdentifier>{7c12b232-fb14-4be7-875c-f424a3a8410d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\sunos">
-      <UniqueIdentifier>{7e996fdd-b96d-427d-a303-8ffdb48c78f4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\win32">
-      <UniqueIdentifier>{c5a3bd7b-a175-4076-9976-34ba11d84421}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\yield\thread\condition_variable.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\thread\darwin\processor_set.hpp">
-      <Filter>Header Files\darwin</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\thread\darwin\semaphore.hpp">
-      <Filter>Header Files\darwin</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\thread\darwin\thread.hpp">
-      <Filter>Header Files\darwin</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\yield\thread\lightweight_mutex.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\thread\linux\processor_set.hpp">
-      <Filter>Header Files\linux</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\thread\linux\thread.hpp">
-      <Filter>Header Files\linux</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\yield\thread\mutex.hpp">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\thread\posix\condition_variable.hpp">
-      <Filter>Header Files\posix</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\thread\posix\mutex.hpp">
-      <Filter>Header Files\posix</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\thread\posix\reader_writer_lock.hpp">
-      <Filter>Header Files\posix</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\thread\posix\semaphore.hpp">
-      <Filter>Header Files\posix</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\thread\posix\thread.hpp">
-      <Filter>Header Files\posix</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\yield\thread\processor_set.hpp">
       <Filter>Header Files</Filter>
@@ -92,35 +47,8 @@
     <ClInclude Include="..\..\..\include\yield\thread\semaphore.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\thread\sunos\processor_set.hpp">
-      <Filter>Header Files\sunos</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\thread\sunos\thread.hpp">
-      <Filter>Header Files\sunos</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\yield\thread\thread.hpp">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\thread\win32\condition_variable.hpp">
-      <Filter>Header Files\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\thread\win32\lightweight_mutex.hpp">
-      <Filter>Header Files\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\thread\win32\mutex.hpp">
-      <Filter>Header Files\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\thread\win32\processor_set.hpp">
-      <Filter>Header Files\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\thread\win32\reader_writer_lock.hpp">
-      <Filter>Header Files\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\thread\win32\semaphore.hpp">
-      <Filter>Header Files\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\thread\win32\thread.hpp">
-      <Filter>Header Files\win32</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

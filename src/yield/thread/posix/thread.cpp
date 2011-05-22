@@ -30,11 +30,14 @@
 #include "yield/exception.hpp"
 #include "yield/time.hpp"
 #include "yield/thread/runnable.hpp"
-#include "yield/thread/posix/thread.hpp"
+#include "yield/thread/thread.hpp"
+
+#ifdef __linux__
+#include <sys/syscall.h>
+#endif
 
 namespace yield {
 namespace thread {
-namespace posix {
 Thread::Thread(YO_NEW_REF Runnable& runnable)
   : runnable(&runnable) {
   state = STATE_READY;
@@ -99,7 +102,13 @@ void Thread::nanosleep(const Time& timeout) {
 }
 
 auto_Object<Thread> Thread::self() {
-  return new Thread(pthread_self());
+  Thread* thread = new Thread(pthread_self());
+#if defined(__linux__)
+  thread->tid = syscall(SYS_gettid);
+#elif defined(__sun)
+  thread->thread = thr_self();
+#endif
+  return thread;
 }
 
 void* Thread::run(void* this_) {
@@ -107,15 +116,22 @@ void* Thread::run(void* this_) {
 }
 
 void* Thread::run() {
+#if defined(__linux__)
+  tid = syscall(SYS_gettid);
+#elif defined(__sun)
+  thread = thr_self();
+#endif
   state = STATE_RUNNING;
   runnable->run();
   state = STATE_SUSPENDED;
   return NULL;
 }
 
+void Thread::set_name(const char* name) {
+}
+
 bool Thread::setspecific(uintptr_t key, void* value) {
   return pthread_setspecific(key, value) == 0;
-}
 }
 }
 }

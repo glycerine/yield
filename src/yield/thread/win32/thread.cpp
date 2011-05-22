@@ -27,17 +27,16 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/thread/win32/processor_set.hpp"
-#include "yield/thread/win32/thread.hpp"
 #include "yield/exception.hpp"
 #include "yield/time.hpp"
+#include "yield/thread/processor_set.hpp"
 #include "yield/thread/runnable.hpp"
+#include "yield/thread/thread.hpp"
 
 #include <Windows.h>
 
 namespace yield {
 namespace thread {
-namespace win32 {
 Thread::Thread(Runnable& runnable)
   : runnable(&runnable) {
   state = STATE_READY;
@@ -160,7 +159,6 @@ bool Thread::setspecific(uintptr_t key, void* value) {
 
 void Thread::yield() {
   SwitchToThread();
-}
 }
 }
 }

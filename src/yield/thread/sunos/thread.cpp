@@ -27,34 +27,14 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "processor_set.hpp"
-#include "thread.hpp"
+#include "yield/thread/processor_set.hpp"
+#include "yield/thread/thread.hpp"
 
 #include <sys/processor.h>
 #include <sys/pset.h>
 
 namespace yield {
 namespace thread {
-namespace sunos {
-Thread::Thread(YO_NEW_REF Runnable& runnable)
-  : yield::thread::posix::Thread(runnable) {
-  thread = 0;
-}
-
-Thread::Thread(pthread_t pthread, thread_t thread)
-  : yield::thread::posix::Thread(pthread),
-    thread(thread)
-{ }
-
-void* Thread::run() {
-  thread = thr_self();
-  return yield::thread::posix::Thread::run();
-}
-
-auto_Object<Thread> Thread::self() {
-  return new Thread(pthread_self(), thr_self());
-}
-
 bool Thread::setaffinity(uint16_t logical_processor_i) {
   return processor_bind(
            P_LWPID,
@@ -75,7 +55,6 @@ bool Thread::setaffinity(const ProcessorSet& logical_processor_set) {
 
 void Thread::yield() {
   sleep(0);
-}
 }
 }
 }

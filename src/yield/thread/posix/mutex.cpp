@@ -28,11 +28,10 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/exception.hpp"
-#include "yield/thread/posix/mutex.hpp"
+#include "yield/thread/mutex.hpp"
 
 namespace yield {
 namespace thread {
-namespace posix {
 Mutex::Mutex() {
   if (pthread_mutex_init(&mutex, NULL) != 0)
     throw Exception();
@@ -52,7 +51,6 @@ bool Mutex::trylock() {
 
 void Mutex::unlock() {
   pthread_mutex_unlock(&mutex);
-}
 }
 }
 }

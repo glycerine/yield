@@ -27,11 +27,10 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "processor_set.hpp"
+#include "yield/thread/processor_set.hpp"
 
 namespace yield {
 namespace thread {
-namespace darwin {
 uint16_t ProcessorSet::get_online_logical_processor_count() {
   return get_online_physical_processor_count();
 }
@@ -45,7 +44,6 @@ uint16_t ProcessorSet::get_online_physical_processor_count() {
     return basic_info.avail_cpus;
   else
     return 1;
-}
 }
 }
 }

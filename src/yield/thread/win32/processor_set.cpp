@@ -27,15 +27,17 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/thread/win32/processor_set.hpp"
+#include "yield/thread/processor_set.hpp"
 
 #include <Windows.h>
 
 namespace yield {
 namespace thread {
-namespace win32 {
 ProcessorSet::ProcessorSet() {
   mask = 0;
+}
+
+ProcessorSet::~ProcessorSet() {
 }
 
 void ProcessorSet::clear() {
@@ -44,21 +46,6 @@ void ProcessorSet::clear() {
 
 void ProcessorSet::clear(uint16_t processor_i) {
   mask &= ~(1L << processor_i);
-}
-
-uint16_t ProcessorSet::count() const {
-  uint16_t count = 0;
-
-  for (
-    uint16_t processor_i = 0;
-    processor_i < static_cast<uint16_t>(-1);
-    processor_i++
-  ) {
-    if (isset(processor_i))
-      count++;
-  }
-
-  return count;
 }
 
 uint16_t ProcessorSet::get_online_logical_processor_count() {
@@ -84,7 +71,6 @@ bool ProcessorSet::isset(uint16_t processor_i) const {
 bool ProcessorSet::set(uint16_t processor_i) {
   mask |= (1UL << processor_i);
   return true;
-}
 }
 }
 }

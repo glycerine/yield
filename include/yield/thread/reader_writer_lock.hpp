@@ -1,4 +1,4 @@
-// yield/thread/reader_writer_lock.hpp
+// yield/thread/win32/reader_writer_lock.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,22 +27,74 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_THREAD_READER_WRITER_LOCK_HPP_
-#define _YIELD_THREAD_READER_WRITER_LOCK_HPP_
+#ifndef _YIELD_THREAD_WIN32_READER_WRITER_LOCK_HPP_
+#define _YIELD_THREAD_WIN32_READER_WRITER_LOCK_HPP_
+
+#include "yield/types.hpp"
 
 #ifdef _WIN32
-#include "yield/thread/win32/reader_writer_lock.hpp"
+struct _RTL_CRITICAL_SECTION;
+typedef struct _RTL_CRITICAL_SECTION RTL_CRITICAL_SECTION;
+typedef RTL_CRITICAL_SECTION CRITICAL_SECTION;
 #else
-#include "yield/thread/posix/reader_writer_lock.hpp"
+#include <pthread.h>
 #endif
 
 namespace yield {
 namespace thread {
+/**
+  Reader-writer lock synchronization primitive.
+*/  
+class ReaderWriterLock {
+public:
+  ReaderWriterLock();
+  ~ReaderWriterLock();
+
+public:
+  /**
+    Wait indefinitely to acquire a reader (shared) lock.
+    @return true if the caller now holds a reader lock
+  */
+  bool rdlock();
+
+  /**
+    Release a reader (shared) lock.
+  */
+  void rdunlock();
+
+  /**
+    Try to acquire a reader (shared) lock without blocking.
+    @return true if the caller now holds a reader lock
+  */
+  bool tryrdlock();
+
+  /**
+    Try to acquire a writer (exclusive) lock without blocking.
+    @return true if the caller now holds a writer lock
+  */
+  bool trywrlock();
+
+  /**
+    Wait indefinitely to acquire a writer (exclusive) lock.
+    @return true if the caller now holds a writer lock
+  */
+  bool wrlock();
+
+  /**
+    Release a writer (exclusive) lock.
+  */
+  void wrunlock();
+
+private:
 #ifdef _WIN32
-typedef win32::ReaderWriterLock ReaderWriterLock;
+  uint32_t active_writer_readers;
+  CRITICAL_SECTION* cs;
+  void* hReadyToRead, *hReadyToWrite;
+  int32_t waiting_readers_count, waiting_writers_count;
 #else
-typedef posix::ReaderWriterLock ReaderWriterLock;
+  pthread_rwlock_t rwlock;
 #endif
+};
 }
 }
 

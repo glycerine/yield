@@ -29,11 +29,10 @@
 
 #include "yield/exception.hpp"
 #include "yield/time.hpp"
-#include "yield/thread/posix/condition_variable.hpp"
+#include "yield/thread/condition_variable.hpp"
 
 namespace yield {
 namespace thread {
-namespace posix {
 ConditionVariable::ConditionVariable() {
   if (pthread_cond_init(&cond, NULL) != 0)
     throw Exception();
@@ -74,7 +73,6 @@ void ConditionVariable::unlock_mutex() {
 
 bool ConditionVariable::wait() {
   return pthread_cond_wait(&cond, &mutex) == 0;
-}
 }
 }
 }

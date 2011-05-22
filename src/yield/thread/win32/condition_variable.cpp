@@ -30,13 +30,12 @@
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
 #include "yield/time.hpp"
-#include "yield/thread/win32/condition_variable.hpp"
+#include "yield/thread/condition_variable.hpp"
 
 #include <Windows.h>
 
 namespace yield {
 namespace thread {
-namespace win32 {
 ConditionVariable::ConditionVariable() {
   wait_barrier_clear_signal = CreateEvent(NULL, FALSE, FALSE, NULL);
   if (wait_barrier_clear_signal == NULL)
@@ -136,7 +135,6 @@ bool ConditionVariable::wait() {
     waiters_count_lock.unlock();
     return false;
   }
-}
 }
 }
 }

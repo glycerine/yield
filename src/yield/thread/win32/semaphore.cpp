@@ -29,13 +29,12 @@
 
 #include "yield/exception.hpp"
 #include "yield/time.hpp"
-#include "yield/thread/win32/semaphore.hpp"
+#include "yield/thread/semaphore.hpp"
 
 #include <Windows.h>
 
 namespace yield {
 namespace thread {
-namespace win32 {
 Semaphore::Semaphore() {
   hSemaphore = CreateSemaphore(NULL, 0, LONG_MAX, NULL);
   if (hSemaphore == NULL)
@@ -64,7 +63,6 @@ bool Semaphore::trywait() {
 bool Semaphore::wait() {
   DWORD dwRet = WaitForSingleObjectEx(hSemaphore, INFINITE, TRUE);
   return dwRet == WAIT_OBJECT_0 || dwRet == WAIT_ABANDONED;
-}
 }
 }
 }

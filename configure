@@ -367,25 +367,6 @@ INCLUDE_FILE_PATHS["yield.sockets.ssl"] = [
 ] + \
 INCLUDE_FILE_PATHS["yield.sockets.ssl"]
 
-INCLUDE_FILE_PATHS["yield.thread"] = [
-    path_join(INCLUDE_DIR_PATH, "yield", "thread", "posix", "thread.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "thread", "darwin", "semaphore.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "thread", "darwin", "thread.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "thread", "linux", "thread.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "thread", "posix", "condition_variable.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "thread", "posix", "mutex.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "thread", "posix", "reader_writer_lock.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "thread", "posix", "semaphore.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "thread", "sunos", "thread.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "thread", "win32", "lightweight_mutex.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "thread", "win32", "mutex.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "thread", "win32", "semaphore.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "thread", "win32", "condition_variable.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "thread", "win32", "reader_writer_lock.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "thread", "win32", "thread.hpp"),
-] + \
-INCLUDE_FILE_PATHS["yield.thread"]
-
 SOURCE_FILE_PATHS["yield.fs.poll"] = [
     path_join(SRC_DIR_PATH, "yield", "fs", "poll", "watch.hpp"), # before scanning_watch
     path_join(SRC_DIR_PATH, "yield", "fs", "poll", "scanning_watch.hpp"), # before scanning_directory_watch

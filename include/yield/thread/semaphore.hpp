@@ -1,4 +1,4 @@
-// yield/thread/semaphore.hpp
+// yield/thread/win32/semaphore.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,26 +27,80 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_THREAD_SEMAPHORE_HPP_
-#define _YIELD_THREAD_SEMAPHORE_HPP_
+#ifndef _YIELD_THREAD_WIN32_SEMAPHORE_HPP_
+#define _YIELD_THREAD_WIN32_SEMAPHORE_HPP_
+
+#include "yield/config.hpp"
 
 #if defined(__MACH__)
-#include "yield/thread/darwin/semaphore.hpp"
-#elif defined(_WIN32)
-#include "yield/thread/win32/semaphore.hpp"
-#else
-#include "yield/thread/posix/semaphore.hpp"
+#include <mach/semaphore.h>
+#elif !defined(_WIN32)
+#include <semaphore.h>
 #endif
 
 namespace yield {
+class Time;
+
 namespace thread {
-#if defined(__MACH__)
-typedef darwin::Semaphore Semaphore;
-#elif defined(_WIN32)
-typedef win32::Semaphore Semaphore;
-#else
-typedef posix::Semaphore Semaphore;
+/**
+  Counting semaphore synchronization primitive.
+*/
+class Semaphore {
+public:
+  Semaphore();
+  ~Semaphore();
+
+public:
+#ifdef _WIN32
+  /**
+    Get the underlying HANDLE to this semaphore.
+    @return the underlying HANDLE to this semaphore
+  */    
+  operator void* () const {
+    return hSemaphore;
+  }
 #endif
+
+public:
+  /**
+    Post to the semaphore, increasing its count by one and waking up a waiter.
+  */
+  void post();
+
+  /**
+    Wait for a post to the semaphore for the specified timeout, decrementing the
+      semaphore's count by one if there was a post.
+    @param timeout time to wait for a post
+    @return true if there was a post within the specified timeout
+  */
+  bool timedwait(const Time& timeout);
+
+  /**
+    Check for a post to the semaphore, decrementig the semaphore's count by one
+      if there was a post but not blocking if there was none.
+    @return true if there was a post to the semaphore
+  */
+  bool trywait();
+
+  /**
+    Wait indefinitely for a post to the semaphore, decrementing the semaphore's
+      count by one on a successful wait
+    @return true if there was a post to the semaphore
+  */
+  bool wait();
+
+private:
+  Semaphore(void* hSemaphore);
+
+private:
+#if defined(__MACH__)
+  semaphore_t sem;
+#elif defined(_WIN32)
+  void* hSemaphore;
+#else
+  sem_t sem;
+#endif
+};
 }
 }
 

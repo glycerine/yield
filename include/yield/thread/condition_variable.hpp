@@ -1,4 +1,4 @@
-// yield/thread/condition_variable.hpp
+// yield/thread/win32/condition_variable.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,22 +27,97 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_THREAD_CONDITION_VARIABLE_HPP_
-#define _YIELD_THREAD_CONDITION_VARIABLE_HPP_
+#ifndef _YIELD_THREAD_WIN32_CONDITION_VARIABLE_HPP_
+#define _YIELD_THREAD_WIN32_CONDITION_VARIABLE_HPP_
 
 #ifdef _WIN32
-#include "yield/thread/win32/condition_variable.hpp"
+#include "yield/thread/lightweight_mutex.hpp"
+#include "yield/thread/mutex.hpp"
+#include "yield/thread/semaphore.hpp"
 #else
-#include "yield/thread/posix/condition_variable.hpp"
+#include "yield/config.hpp"
+#include <pthread.h>
 #endif
 
 namespace yield {
 namespace thread {
+/**
+  Condition variable synchronization primitive.
+*/
+class ConditionVariable {
+public:
+  ConditionVariable();
+  ~ConditionVariable();
+
+public:
+  /**
+    Broadcast a signal to all waiters.
+  */
+  void broadcast();
+
+  /**
+    Lock the mutex associated with this condition variable before going
+      into timedwait or wait.
+    Blocks until the mutex is acquired or is destroyed.
+    @return true if the caller now holds the mutex
+  */
+  bool lock_mutex() {
+    return mutex.lock();
+  }
+
+  /**
+    Signal a single waiter.
+  */
+  void signal();
+
+  /**
+    Wait on the condition variable for the specified time out.
+    The caller must acquire the mutex before calling this method or wait.
+    On a successful return, the caller holds the mutex and must
+      unlock it (with unlock_mutex) again.
+    @param timeout time to wait for a signal
+    @return true if signal or broadcast was called in the wait period
+  */
+  bool timedwait(const Time& timeout);
+
+  /**
+    Try to lock the mutex associated with this condition variable before going
+      into timedwait or wait. Do not block on failure.
+    @return true if the caller now holds the mutex
+  */
+  bool trylock_mutex() {
+    return mutex.trylock();
+  }
+
+  /**
+    Unlock the mutex associated with this condition variable.
+  */
+  void unlock_mutex() {
+    mutex.unlock();
+  }
+
+  /**
+    Wait on the condition variable for the specified time out.
+    The caller must acquire the mutex before calling this method or timedwait.
+    On a successful return, the caller holds the mutex and must
+      unlock it (with unlock_mutex) again.
+    @return true if signal or broadcast was called
+  */
+  bool wait();
+
+private:
 #ifdef _WIN32
-typedef win32::ConditionVariable ConditionVariable;
+  bool last_signal_was_broadcast;
+  Mutex mutex;
+  uint32_t waiters_count;
+  LightweightMutex waiters_count_lock;
+  Semaphore wait_barrier;
+  void* wait_barrier_clear_signal;
 #else
-typedef posix::ConditionVariable ConditionVariable;
+  pthread_cond_t cond;
+  pthread_mutex_t mutex;
 #endif
+};
 }
 }
 

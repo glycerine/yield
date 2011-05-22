@@ -1,4 +1,4 @@
-// yield/thread/mutex.hpp
+// yield/thread/win32/mutex.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,22 +27,57 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_THREAD_MUTEX_HPP_
-#define _YIELD_THREAD_MUTEX_HPP_
+#ifndef _YIELD_THREAD_WIN32_MUTEX_HPP_
+#define _YIELD_THREAD_WIN32_MUTEX_HPP_
 
-#ifdef _WIN32
-#include "yield/thread/win32/mutex.hpp"
-#else
-#include "yield/thread/posix/mutex.hpp"
+#include "yield/config.hpp"
+#ifndef _WIN32
+#include <pthread.h>
 #endif
 
 namespace yield {
 namespace thread {
+/**
+  Heavyweight mutex synchronization primitive.
+*/
+class Mutex {
+public:
+  Mutex();
+  ~Mutex();
+
+public:
+  /**
+    Lock the mutex, blocking until acquisition.
+    @return true if the caller now holds the mutex
+  */
+  bool lock();
+
+  /**
+    Get the underlying HANDLE to this mutex.
+    @return the underlying HANDLE to this mutex
+  */
+  operator void* () const {
+    return hMutex;
+  }
+
+  /**
+    Try to lock the mutex, not blocking on failure.
+    @return true if the caller now holds the mutex
+  */
+  bool trylock();
+
+  /**
+    Unlock the mutex.
+  */
+  void unlock();
+
+private:
 #ifdef _WIN32
-typedef win32::Mutex Mutex;
+  void* hMutex;
 #else
-typedef posix::Mutex Mutex;
+  pthread_mutex_t mutex;
 #endif
+};
 }
 }
 

@@ -29,11 +29,11 @@
 
 #include "yield/exception.hpp"
 #include "yield/time.hpp"
-#include "yield/thread/posix/semaphore.hpp"
+#include "yield/thread/semaphore.hpp"
 
 namespace yield {
 namespace thread {
-namespace posix {
+#ifndef __MACH__
 Semaphore::Semaphore() {
   if (sem_init(&sem, 0, 0) == -1)
     throw Exception();
@@ -59,6 +59,6 @@ bool Semaphore::trywait() {
 bool Semaphore::wait() {
   return sem_wait(&sem) == 0;
 }
-}
+#endif
 }
 }

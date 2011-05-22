@@ -94,32 +94,13 @@
 
   <ItemGroup Label="ClIncludeItems">
     <ClInclude Include="..\..\..\include\yield\thread\condition_variable.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\darwin\processor_set.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\darwin\semaphore.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\darwin\thread.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\lightweight_mutex.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\linux\processor_set.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\linux\thread.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\mutex.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\posix\condition_variable.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\posix\mutex.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\posix\reader_writer_lock.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\posix\semaphore.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\posix\thread.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\processor_set.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\reader_writer_lock.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\runnable.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\semaphore.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\sunos\processor_set.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\sunos\thread.hpp" />
     <ClInclude Include="..\..\..\include\yield\thread\thread.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\win32\condition_variable.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\win32\lightweight_mutex.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\win32\mutex.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\win32\processor_set.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\win32\reader_writer_lock.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\win32\semaphore.hpp" />
-    <ClInclude Include="..\..\..\include\yield\thread\win32\thread.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">

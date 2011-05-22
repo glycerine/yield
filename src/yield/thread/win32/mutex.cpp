@@ -28,13 +28,12 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/exception.hpp"
-#include "yield/thread/win32/mutex.hpp"
+#include "yield/thread/mutex.hpp"
 
 #include <Windows.h>
 
 namespace yield {
 namespace thread {
-namespace win32 {
 Mutex::Mutex() {
   hMutex = CreateEvent(NULL, FALSE, TRUE, NULL);
   if (hMutex == NULL)
@@ -57,7 +56,6 @@ bool Mutex::trylock() {
 
 void Mutex::unlock() {
   SetEvent(hMutex);
-}
 }
 }
 }

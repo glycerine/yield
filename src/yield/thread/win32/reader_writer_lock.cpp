@@ -29,13 +29,12 @@
 
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
-#include "yield/thread/win32/reader_writer_lock.hpp"
+#include "yield/thread/reader_writer_lock.hpp"
 
 #include <Windows.h>
 
 namespace yield {
 namespace thread {
-namespace win32 {
 // Adapted from the RWLockFavorWriters example at
 // http://msdn.microsoft.com/en-us/magazine/cc163405.aspx
 
@@ -173,7 +172,6 @@ void ReaderWriterLock::wrunlock() {
     ReleaseSemaphore(hReadyToWrite, 1, NULL);
   else if (notify_readers)
     SetEvent(hReadyToRead);
-}
 }
 }
 }

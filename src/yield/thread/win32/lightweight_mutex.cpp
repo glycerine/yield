@@ -27,13 +27,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/thread/win32/lightweight_mutex.hpp"
+#include "yield/thread/lightweight_mutex.hpp"
 
 #include <Windows.h>
 
 namespace yield {
 namespace thread {
-namespace win32 {
 LightweightMutex::LightweightMutex() {
   critical_section = new CRITICAL_SECTION;
   InitializeCriticalSection(critical_section);
@@ -55,7 +54,6 @@ bool LightweightMutex::trylock() {
 
 void LightweightMutex::unlock() {
   LeaveCriticalSection(critical_section);
-}
 }
 }
 }

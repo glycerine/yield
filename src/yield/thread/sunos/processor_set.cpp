@@ -27,7 +27,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "processor_set.hpp"
+#include "yield/thread/processor_set.hpp"
 
 #include <kstat.h> // For kstat
 #include <sys/processor.h> // For p_online
@@ -35,7 +35,6 @@
 
 namespace yield {
 namespace thread {
-namespace sunos {
 ProcessorSet::ProcessorSet() {
   psetid = PS_NONE; // Don't pset_create until we actually use the set,
   // to avoid leaving state in the system
@@ -51,21 +50,6 @@ void ProcessorSet::clear() {
     pset_destroy(psetid);
     psetid = PS_NONE;
   }
-}
-
-uint16_t ProcessorSet::count() const {
-  uint16_t count = 0;
-
-  for (
-    uint16_t processor_i = 0;
-    processor_i < static_cast<uint16_t>(-1);
-    processor_i++
-  ) {
-    if (isset(processor_i))
-      count++;
-  }
-
-  return count;
 }
 
 uint16_t ProcessorSet::get_online_logical_processor_count() {
@@ -133,7 +117,6 @@ bool ProcessorSet::set(uint16_t processor_i) {
   }
 
   return pset_assign(psetid, processor_i, NULL) == 0;
-}
 }
 }
 }

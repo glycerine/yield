@@ -27,41 +27,29 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "semaphore.hpp"
+#include "yield/thread/semaphore.hpp"
 
 #include <unistd.h>
 #include <mach/clock.h>
 #include <mach/mach_init.h>
 #include <mach/task.h>
 
-
 namespace yield {
 namespace thread {
-namespace darwin {
-Semaphore::Semaphore(semaphore_t sem)
-  : sem(sem)
-{ }
-
-Semaphore::~Semaphore() {
-  semaphore_destroy(mach_task_self(), sem);
-}
-
-Semaphore* Semaphore::create() {
-  semaphore_t sem;
-  if
-  (
-    semaphore_create
-    (
+Semaphore::Semaphore() {
+  if (
+    semaphore_create(
       mach_task_self(),
       &sem,
       SYNC_POLICY_FIFO,
       0
-    )
-    == KERN_SUCCESS
+    ) != KERN_SUCCESS
   )
-    return new Semaphore(sem);
-  else
-    return NULL;
+    throw Exception();
+}
+
+Semaphore::~Semaphore() {
+  semaphore_destroy(mach_task_self(), sem);
 }
 
 void Semaphore::post() {
@@ -79,7 +67,6 @@ bool Semaphore::trywait() {
 
 bool Semaphore::wait() {
   return semaphore_wait(sem) == KERN_SUCCESS;
-}
 }
 }
 }
