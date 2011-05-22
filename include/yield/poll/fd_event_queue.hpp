@@ -30,33 +30,47 @@
 #ifndef _YIELD_POLL_FD_EVENT_QUEUE_HPP_
 #define _YIELD_POLL_FD_EVENT_QUEUE_HPP_
 
-#include "yield/poll/fd_event.hpp"
+#include "yield/event_queue.hpp"
+#include "yield/queue/blocking_concurrent_queue.hpp"
 
-#if defined(__FreeBSD__) || defined(__MACH__) || defined(__OpenBSD__)
-#include "yield/poll/bsd/fd_event_queue.hpp"
-#elif defined(__linux__)
-#include "yield/poll/linux/fd_event_queue.hpp"
-#elif defined(__sun)
-#include "yield/poll/sunos/fd_event_queue.hpp"
-#elif defined(_WIN32)
-#include "yield/poll/win32/fd_event_queue.hpp"
-#else
-#include "yield/poll/posix/fd_event_queue.hpp"
+#ifndef _WIN32
+#include <sys/poll.h>
 #endif
 
 namespace yield {
 namespace poll {
-#if defined(__FreeBSD__) || defined(__MACH__) || defined(__OpenBSD__)
-typedef bsd::FDEventQueue FDEventQueue;
-#elif defined(__linux__)
-typedef linux::FDEventQueue FDEventQueue;
+class FDEventQueue : public EventQueue {
+public:
+  FDEventQueue();
+  ~FDEventQueue();
+
+public:
+  bool associate(fd_t fd, uint16_t fd_event_types);
+  bool dissociate(fd_t fd);
+
+public:
+  // yield::EventQueue
+  bool enqueue(YO_NEW_REF Event& event);
+  YO_NEW_REF Event* timeddequeue(const Time& timeout);
+
+private:
+  FDEventQueue(void* hWakeEvent);
+
+private:
+  ::yield::queue::BlockingConcurrentQueue<Event> event_queue;
+#if defined(__linux__)
+  int epfd, wake_fd;
+#elif defined(__MACH__) || defined(__FreeBSD__)
+  int kq, wake_pipe[2];
 #elif defined(__sun)
-typedef sunos::FDEventQueue FDEventQueue;
+  int port;
 #elif defined(_WIN32)
-typedef win32::FDEventQueue FDEventQueue;
+  vector<fd_t> fds;
 #else
-typedef posix::FDEventQueue FDEventQueue;
+  vector<pollfd> pollfds;
+  int wake_pipe[2];
 #endif
+};
 }
 }
 

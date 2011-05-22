@@ -29,13 +29,12 @@
 
 #include "yield/exception.hpp"
 #include "yield/poll/fd_event.hpp"
-#include "yield/poll/win32/fd_event_queue.hpp"
+#include "yield/poll/fd_event_queue.hpp"
 
 #include <Windows.h>
 
 namespace yield {
 namespace poll {
-namespace win32 {
 FDEventQueue::FDEventQueue() {
   HANDLE hWakeEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
   if (hWakeEvent != NULL)
@@ -109,7 +108,6 @@ YO_NEW_REF Event* FDEventQueue::timeddequeue(const Time& timeout) {
     return new FDEvent(fds[dwRet - WAIT_OBJECT_0], FDEvent::TYPE_READ_READY);
   else
     return NULL;
-}
 }
 }
 }

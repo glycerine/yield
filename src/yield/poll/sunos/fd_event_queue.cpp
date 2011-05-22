@@ -27,21 +27,23 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "event_port.hpp"
+#include "yield/poll/fd_event_queue.hpp"
 
+#include <port.h>
 
 namespace yield {
 namespace poll {
-namespace sunos {
-EventPort::EventPort(int port)
-  : port(port)
-{ }
+FDEventQueue::FDEventQueue(int port) {
+  port = port_create();
+  if (port == -1)
+    throw Exception();
+}
 
-EventPort::~EventPort() {
+FDEventQueue::~FDEventQueue() {
   close(port);
 }
 
-bool EventPort::associate(fd_t fd, uint16_t fd_event_types) {
+bool FDEventQueue::associate(fd_t fd, uint16_t fd_event_types) {
   if (fd_event_types > 0) {
     return port_associate(
              port,
@@ -50,27 +52,16 @@ bool EventPort::associate(fd_t fd, uint16_t fd_event_types) {
              fd_event_types,
              NULL
            ) != -1;
-  } else {
-    dissociate(fd);
-    return true;
-  }
+  } else
+    return dissociate(fd);
 }
 
-EventPort* EventPort::create() {
-  int port = port_create();
-  if (port != -1)
-    return new EventPort(port);
-  else
-    return NULL;
-}
-
-bool EventPort::dissociate(fd_t fd) {
+bool FDEventQueue::dissociate(fd_t fd) {
   return port_dissociate(port, PORT_SOURCE_FD, fd) != -1;
 }
 
 int16_t
-EventPort::poll
-(
+FDEventQueue::poll(
   FDEvent* fd_events,
   int16_t fd_events_len,
   const Time& timeout
@@ -102,8 +93,7 @@ EventPort::poll
 }
 }
 
-void EventPort::wake() {
+void FDEventQueue::wake() {
   port_send(port, 0, NULL);
-}
 }
 }

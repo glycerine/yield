@@ -30,13 +30,12 @@
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
 #include "yield/poll/fd_event.hpp"
-#include "yield/poll/posix/fd_event_queue.hpp"
+#include "yield/poll/fd_event_queue.hpp"
 
 #include <errno.h>
 
 namespace yield {
 namespace poll {
-namespace posix {
 FDEventQueue::FDEventQueue() {
   if (pipe(wake_pipe) != -1) {
     try {
@@ -134,7 +133,6 @@ YO_NEW_REF Event* FDEventQueue::timeddequeue(const Time& timeout) {
     debug_break();
     return NULL;
   }
-}
 }
 }
 }

@@ -21,46 +21,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Header Files\bsd">
-      <UniqueIdentifier>{0c772dcf-8892-48af-b089-e859e5a07461}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{5573d25d-ba7e-4c0a-855d-b67d7c43c824}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\linux">
-      <UniqueIdentifier>{d88ae629-7fa3-4cba-88e7-3bdb5db2a754}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\posix">
-      <UniqueIdentifier>{77b76401-f489-444e-8402-f15a17513c85}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\sunos">
-      <UniqueIdentifier>{1e044a9b-8157-4c8d-a66d-697f35f176ff}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\win32">
-      <UniqueIdentifier>{3695f502-403e-4e39-a4a4-77c1b396830b}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\include\yield\poll\bsd\fd_event_queue.hpp">
-      <Filter>Header Files\bsd</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\yield\poll\fd_event.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\yield\poll\fd_event_queue.hpp">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\poll\linux\fd_event_queue.hpp">
-      <Filter>Header Files\linux</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\poll\posix\fd_event_queue.hpp">
-      <Filter>Header Files\posix</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\poll\sunos\fd_event_queue.hpp">
-      <Filter>Header Files\sunos</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\yield\poll\win32\fd_event_queue.hpp">
-      <Filter>Header Files\win32</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

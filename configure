@@ -323,15 +323,6 @@ INCLUDE_FILE_PATHS["yield.queue"] = [
 ] + \
 INCLUDE_FILE_PATHS["yield.queue"]
 
-INCLUDE_FILE_PATHS["yield.poll"] = [
-    path_join(INCLUDE_DIR_PATH, "yield", "poll", "bsd", "fd_event_queue.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "poll", "linux", "fd_event_queue.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "poll", "posix", "fd_event_queue.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "poll", "sunos", "fd_event_queue.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "poll", "win32", "fd_event_queue.hpp"),
-] + \
-INCLUDE_FILE_PATHS["yield.poll"]
-
 INCLUDE_FILE_PATHS["yield.sockets"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "sockets", "socket_address.hpp"), # before socket
     path_join(INCLUDE_DIR_PATH, "yield", "sockets", "socket.hpp"), # before datagram_socket

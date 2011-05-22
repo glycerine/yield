@@ -30,14 +30,13 @@
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
 #include "yield/poll/fd_event.hpp"
-#include "yield/poll/bsd/fd_event_queue.hpp"
+#include "yield/poll/fd_event_queue.hpp"
 
 #include <errno.h>
 #include <sys/event.h>
 
 namespace yield {
 namespace poll {
-namespace bsd {
 FDEventQueue::FDEventQueue() {
   kq = kqueue();
   if (kq != -1) {
@@ -145,7 +144,6 @@ YO_NEW_REF Event* FDEventQueue::timeddequeue(const Time& timeout) {
       return NULL;
     }
   }
-}
 }
 }
 }

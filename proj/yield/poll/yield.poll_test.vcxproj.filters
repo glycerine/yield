@@ -1,24 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files\bsd">
-      <UniqueIdentifier>{6e48635b-9349-4bfa-a553-b8bea157df32}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files">
       <UniqueIdentifier>{ea7e1ecf-ccd9-4b4d-8cf0-585789639012}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\linux">
-      <UniqueIdentifier>{93b99ddf-6233-42e2-a658-d514d04f9253}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\posix">
-      <UniqueIdentifier>{cbbefed9-d2b5-4f5e-bb06-7ab7d0dfb151}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\sunos">
-      <UniqueIdentifier>{3707be24-e878-459c-a4f8-704b664cdc91}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\win32">
-      <UniqueIdentifier>{5542d37c-8374-4199-83ca-ba1bc6d20bc6}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
 
@@ -27,26 +12,11 @@
 
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\test\yield\poll\bsd\fd_event_queue_test.cpp">
-      <Filter>Source Files\bsd</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\..\test\yield\poll\fd_event_queue_test.hpp">
+    <ClCompile Include="..\..\..\test\yield\poll\fd_event_queue_test.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
+    </ClCompile>
     <ClCompile Include="..\..\..\test\yield\poll\fd_event_test.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\poll\linux\fd_event_queue_test.cpp">
-      <Filter>Source Files\linux</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\poll\posix\fd_event_queue_test.cpp">
-      <Filter>Source Files\posix</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\poll\sunos\fd_event_queue_test.cpp">
-      <Filter>Source Files\sunos</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\test\yield\poll\win32\fd_event_queue_test.cpp">
-      <Filter>Source Files\win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\test\yield\poll\yield_poll_test_main.cpp">
       <Filter>Source Files</Filter>

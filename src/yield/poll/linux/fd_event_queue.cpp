@@ -30,7 +30,7 @@
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
 #include "yield/poll/fd_event.hpp"
-#include "yield/poll/linux/fd_event_queue.hpp"
+#include "yield/poll/fd_event_queue.hpp"
 
 #include <iostream>
 #include <errno.h>
@@ -40,7 +40,6 @@
 
 namespace yield {
 namespace poll {
-namespace linux {
 FDEventQueue::FDEventQueue() {
   epfd = epoll_create(32768);
   if (epfd != -1) {
@@ -129,7 +128,6 @@ YO_NEW_REF Event* FDEventQueue::timeddequeue(const Time& timeout) {
       return NULL;
     }
   }
-}
 }
 }
 }
