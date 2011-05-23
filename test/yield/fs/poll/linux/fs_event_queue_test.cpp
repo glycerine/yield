@@ -28,9 +28,9 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../fs_event_queue_test.hpp"
-#include "yield/fs/poll/linux/fs_event_queue.hpp"
+#include "yield/fs/poll/fs_event_queue.hpp"
 
 TEST_SUITE_EX(
   LinuxFSEventQueue,
-  yield::fs::poll::FSEventQueueTestSuite<yield::fs::poll::linux::FSEventQueue>
+  yield::fs::poll::FSEventQueueTestSuite<yield::fs::poll::FSEventQueue>
 );

@@ -1,4 +1,4 @@
-// yield/fs/poll/fs_event_queue.hpp
+// yield/fs/poll/win32/fs_event_queue.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,30 +27,70 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_FS_POLL_FS_EVENT_QUEUE_HPP_
-#define _YIELD_FS_POLL_FS_EVENT_QUEUE_HPP_
+#ifndef _YIELD_FS_POLL_WIN32_FS_EVENT_QUEUE_HPP_
+#define _YIELD_FS_POLL_WIN32_FS_EVENT_QUEUE_HPP_
 
+#if defined(__FreeBSD__) || defined(__linux__) || defined(__MACH__) || defined(_WIN32)
+#include "yield/event_queue.hpp"
 #include "yield/fs/poll/fs_event.hpp"
-
-#if defined(__FreeBSD__) || defined(__MACH__)
-#include "yield/fs/poll/bsd/fs_event_queue.hpp"
-#elif defined(__linux__)
-#include "yield/fs/poll/linux/fs_event_queue.hpp"
-#elif defined(_WIN32)
-#include "yield/fs/poll/win32/fs_event_queue.hpp"
 #else
 #include "yield/fs/poll/scanning_fs_event_queue.hpp"
 #endif
 
 namespace yield {
+class Log;
+
 namespace fs {
 namespace poll {
+#if defined(__FreeBSD__) || defined(__linux__) || defined(__MACH__) || defined(_WIN32)
 #if defined(__FreeBSD__) || defined(__MACH__)
-typedef bsd::FSEventQueue FSEventQueue;
+namespace bsd {
+class Watch;
+}
 #elif defined(__linux__)
-typedef linux::FSEventQueue FSEventQueue;
+namespace linux {
+class Watch;
+class Watches;
+}
 #elif defined(_WIN32)
-typedef win32::FSEventQueue FSEventQueue;
+namespace win32 {
+class Watch;
+}
+#endif
+template <class> class Watches;
+
+class FSEventQueue : public EventQueue {
+public:
+  FSEventQueue(YO_NEW_REF Log* log = NULL);
+  ~FSEventQueue();
+
+public:
+  bool associate(
+    const Path& path,
+    FSEvent::Type fs_event_types = FSEvent::TYPE_ALL
+  );
+
+  bool dissociate(const Path& path);
+
+public:
+  // yield::EventQueue
+  bool enqueue(YO_NEW_REF Event& event);
+  YO_NEW_REF Event* timeddequeue(const Time& timeout);
+
+private:
+  Log* log;
+#if defined(__FreeBSD__) || defined(__MACH__)
+  ::yield::queue::BlockingConcurrentQueue<Event> event_queue;
+  int kq, wake_pipe[2];
+  Watches<bsd::Watch>* watches;
+#elif defined(__linux__)
+  int epoll_fd, event_fd, inotify_fd;
+  linux::Watches* watches;
+#elif defined(_WIN32)
+  fd_t hIoCompletionPort;
+  Watches<win32::Watch>* watches;
+#endif
+};
 #else
 typedef ScanningFSEventQueue FSEventQueue;
 #endif

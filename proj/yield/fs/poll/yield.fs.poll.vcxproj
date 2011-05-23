@@ -93,12 +93,9 @@
   </ItemDefinitionGroup>
 
   <ItemGroup Label="ClIncludeItems">
-    <ClInclude Include="..\..\..\..\include\yield\fs\poll\bsd\fs_event_queue.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\fs\poll\fs_event.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\fs\poll\fs_event_queue.hpp" />
-    <ClInclude Include="..\..\..\..\include\yield\fs\poll\linux\fs_event_queue.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\fs\poll\scanning_fs_event_queue.hpp" />
-    <ClInclude Include="..\..\..\..\include\yield\fs\poll\win32\fs_event_queue.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">

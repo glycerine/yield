@@ -296,14 +296,6 @@ INCLUDE_FILE_PATHS["yield.fs"] = [
 ] + \
 INCLUDE_FILE_PATHS["yield.fs"]
 
-INCLUDE_FILE_PATHS["yield.fs.poll"] = [
-    path_join(INCLUDE_DIR_PATH, "yield", "fs", "poll", "fs_event.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "fs", "poll", "bsd", "fs_event_queue.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "fs", "poll", "linux", "fs_event_queue.hpp"),
-    path_join(INCLUDE_DIR_PATH, "yield", "fs", "poll", "win32", "fs_event_queue.hpp"),
-] + \
-INCLUDE_FILE_PATHS["yield.fs.poll"]
-
 INCLUDE_FILE_PATHS["yield.http"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "http", "http_message.hpp"), # before http_response
     path_join(INCLUDE_DIR_PATH, "yield", "http", "http_response.hpp"), # before http_request_parser

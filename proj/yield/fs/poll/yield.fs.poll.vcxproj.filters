@@ -15,37 +15,19 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Header Files\bsd">
-      <UniqueIdentifier>{ba3265f3-b814-420a-8a1c-3f38435ac93c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{8de378a6-1aab-4262-9bad-c9988ac4f590}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\linux">
-      <UniqueIdentifier>{2a4ee6c4-6cf0-478d-adf3-d6896189cf6d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\win32">
-      <UniqueIdentifier>{787e5b2a-b47d-4cea-9b6c-1448194b2d1b}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\include\yield\fs\poll\bsd\fs_event_queue.hpp">
-      <Filter>Header Files\bsd</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\yield\fs\poll\fs_event.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\yield\fs\poll\fs_event_queue.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\yield\fs\poll\linux\fs_event_queue.hpp">
-      <Filter>Header Files\linux</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\yield\fs\poll\scanning_fs_event_queue.hpp">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\yield\fs\poll\win32\fs_event_queue.hpp">
-      <Filter>Header Files\win32</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -42,7 +42,8 @@
 namespace yield {
 namespace fs {
 namespace poll {
-namespace linux {
+using linux::Watches;
+
 FSEventQueue::FSEventQueue(YO_NEW_REF Log* log) : log(log) {
   epoll_fd = epoll_create(32768);
   if (epoll_fd != -1) {
@@ -107,7 +108,7 @@ FSEventQueue::associate(
   const Path& path,
   FSEvent::Type fs_event_types  
 ) {
-  Watch* watch = watches->find(path);
+  linux::Watch* watch = watches->find(path);
   if (watch != NULL) {
     if (watch->get_fs_event_types() == fs_event_types)
       return true;
@@ -146,7 +147,7 @@ FSEventQueue::associate(
 }
 
 bool FSEventQueue::dissociate(const Path& path) {
-  Watch* watch = watches->erase(path);
+  linux::Watch* watch = watches->erase(path);
   if (watch != NULL) {
     delete watch;
     return true;
@@ -197,7 +198,7 @@ YO_NEW_REF Event* FSEventQueue::timeddequeue(const Time& timeout) {
           const inotify_event* inotify_event_
             = reinterpret_cast<const inotify_event*>(inotify_events_p);
 
-          Watch* watch = watches->find(inotify_event_->wd);
+          linux::Watch* watch = watches->find(inotify_event_->wd);
           if (watch != NULL) {
             FSEvent* fs_event = watch->parse(*inotify_event_);
             if (fs_event != NULL)
@@ -214,7 +215,6 @@ YO_NEW_REF Event* FSEventQueue::timeddequeue(const Time& timeout) {
       return NULL;
     }
   }
-}
 }
 }
 }

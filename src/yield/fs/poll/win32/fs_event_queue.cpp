@@ -33,7 +33,7 @@
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
 #include "yield/log.hpp"
-#include "yield/fs/poll/win32/fs_event_queue.hpp"
+#include "yield/fs/poll/fs_event_queue.hpp"
 #include "yield/fs/file_system.hpp"
 
 #include <Windows.h>
@@ -41,11 +41,13 @@
 namespace yield {
 namespace fs {
 namespace poll {
-namespace win32 {
+using win32::DirectoryWatch;
+using win32::FileWatch;
+
 FSEventQueue::FSEventQueue(YO_NEW_REF Log* log) : log(log) {
   hIoCompletionPort = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 0);
   if (hIoCompletionPort != INVALID_HANDLE_VALUE)
-    watches = new Watches<Watch>;
+    watches = new Watches<win32::Watch>;
   else {
     watches = NULL;
     throw Exception();
@@ -82,7 +84,7 @@ bool FSEventQueue::associate(const Path& path, FSEvent::Type fs_event_types) {
         0
       ) != INVALID_HANDLE_VALUE
     ) {
-      Watch* watch;
+      win32::Watch* watch;
       if (path == directory_path)
         watch = new DirectoryWatch(*directory, fs_event_types, path, log);
       else {
@@ -123,7 +125,7 @@ bool FSEventQueue::associate(const Path& path, FSEvent::Type fs_event_types) {
 }
 
 bool FSEventQueue::dissociate(const Path& path) {
-  Watch* watch = watches->erase(path);
+  win32::Watch* watch = watches->erase(path);
   if (watch != NULL) {
     watch->close();
     return true;
@@ -156,7 +158,7 @@ YO_NEW_REF Event* FSEventQueue::timeddequeue(const Time& timeout) {
       );
 
   if (lpOverlapped != NULL) {
-    Watch& watch = Watch::cast(*lpOverlapped);
+    win32::Watch& watch = win32::Watch::cast(*lpOverlapped);
     if (!watch.is_closed()) {
       debug_assert_eq(bRet, TRUE);
       debug_assert_gt(dwBytesTransferred, 0);
@@ -200,7 +202,6 @@ YO_NEW_REF Event* FSEventQueue::timeddequeue(const Time& timeout) {
     return reinterpret_cast<Event*>(ulCompletionKey);
   else
     return NULL;
-}
 }
 }
 }
