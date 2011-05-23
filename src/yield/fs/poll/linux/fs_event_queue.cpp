@@ -31,7 +31,7 @@
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
 #include "yield/log.hpp"
-#include "yield/fs/poll/linux/fs_event_queue.hpp"
+#include "yield/fs/poll/fs_event_queue.hpp"
 
 #include <errno.h>
 #include <limits.h>
@@ -72,7 +72,7 @@ FSEventQueue::FSEventQueue(YO_NEW_REF Log* log) : log(log) {
                     &epoll_event_
                   ) == 0
                 )
-                  watches = new Watches;
+                  watches = new linux::Watches;
                 else
                   throw Exception();
               } catch (Exception&) {
@@ -139,7 +139,7 @@ FSEventQueue::associate(
 
   int wd = inotify_add_watch(inotify_fd, path.c_str(), mask);
   if (wd != -1) {
-    watch = new Watch(fs_event_types, inotify_fd, path, wd, log);
+    watch = new linux::Watch(fs_event_types, inotify_fd, path, wd, log);
     watches->insert(*watch);
     return true;
   } else

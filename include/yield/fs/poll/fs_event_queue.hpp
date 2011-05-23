@@ -32,6 +32,7 @@
 
 #if defined(__FreeBSD__) || defined(__linux__) || defined(__MACH__) || defined(_WIN32)
 #include "yield/event_queue.hpp"
+#include "yield/queue/blocking_concurrent_queue.hpp"
 #include "yield/fs/poll/fs_event.hpp"
 #else
 #include "yield/fs/poll/scanning_fs_event_queue.hpp"
@@ -84,6 +85,7 @@ private:
   int kq, wake_pipe[2];
   Watches<bsd::Watch>* watches;
 #elif defined(__linux__)
+  ::yield::queue::BlockingConcurrentQueue<Event> event_queue;
   int epoll_fd, event_fd, inotify_fd;
   linux::Watches* watches;
 #elif defined(_WIN32)
