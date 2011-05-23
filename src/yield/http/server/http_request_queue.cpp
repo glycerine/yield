@@ -33,6 +33,7 @@
 #include "yield/sockets/tcp_socket.hpp"
 #include "yield/sockets/aio/accept_aiocb.hpp"
 #include "yield/sockets/aio/aio_queue.hpp"
+#include "yield/sockets/aio/nbio_queue.hpp"
 
 namespace yield {
 namespace http {
@@ -232,7 +233,7 @@ YO_NEW_REF Event* HTTPRequestQueue<AIOQueueType>::timeddequeue(const Time& timeo
 }
 
 #ifdef _WIN32
-template class HTTPRequestQueue<yield::sockets::aio::win32::AIOQueue>;
+template class HTTPRequestQueue<yield::sockets::aio::AIOQueue>;
 #endif
 template class HTTPRequestQueue<yield::sockets::aio::NBIOQueue>;
 }
