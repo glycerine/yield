@@ -95,7 +95,6 @@
   <ItemGroup Label="ClIncludeItems">
     <ClInclude Include="..\..\..\..\include\yield\sockets\poll\socket_event.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\sockets\poll\socket_event_queue.hpp" />
-    <ClInclude Include="..\..\..\..\include\yield\sockets\poll\win32\socket_event_queue.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">

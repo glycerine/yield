@@ -328,11 +328,6 @@ INCLUDE_FILE_PATHS["yield.sockets.aio"] = [
 ] + \
 INCLUDE_FILE_PATHS["yield.sockets.aio"]
 
-INCLUDE_FILE_PATHS["yield.sockets.poll"] = [
-    path_join(INCLUDE_DIR_PATH, "yield", "sockets", "poll", "win32", "socket_event_queue.hpp"),
-] + \
-INCLUDE_FILE_PATHS["yield.sockets.poll"]
-
 INCLUDE_FILE_PATHS["yield.sockets.ssl"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "sockets", "ssl", "ssl_version.hpp"), # before ssl_context
 ] + \
