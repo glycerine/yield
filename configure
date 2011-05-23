@@ -323,10 +323,8 @@ INCLUDE_FILE_PATHS["yield.sockets"] = [
 INCLUDE_FILE_PATHS["yield.sockets"]
 
 INCLUDE_FILE_PATHS["yield.sockets.aio"] = [
-    path_join(INCLUDE_DIR_PATH, "yield", "sockets", "aio", "win32", "aiocb.hpp"), # before aiocb
     path_join(INCLUDE_DIR_PATH, "yield", "sockets", "aio", "aiocb.hpp"), # before accept_aiocb
     path_join(INCLUDE_DIR_PATH, "yield", "sockets", "aio", "nbio_queue.hpp"), # before aio_queue
-    path_join(INCLUDE_DIR_PATH, "yield", "sockets", "aio", "win32", "aio_queue.hpp"), # before aio_queue
 ] + \
 INCLUDE_FILE_PATHS["yield.sockets.aio"]
 

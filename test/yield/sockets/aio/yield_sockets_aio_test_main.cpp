@@ -33,7 +33,7 @@
 
 extern yunit::TestSuite& NBIOQueueTestSuite();
 #ifdef _WIN32
-extern yunit::TestSuite& Win32AIOQueueTestSuite();
+extern yunit::TestSuite& AIOQueueTestSuite();
 #endif
 
 int main(int, char**) {
@@ -45,9 +45,9 @@ int main(int, char**) {
   std::cout << std::endl;
 
 #ifdef _WIN32
-  // Win32AIOQueue
-  std::cout << "Win32AIOQueue:" << std::endl;
-  failed_test_case_count += Win32AIOQueueTestSuite().run();
+  // AIOQueue
+  std::cout << "AIOQueue:" << std::endl;
+  failed_test_case_count += AIOQueueTestSuite().run();
   std::cout << std::endl;
 #endif
 

@@ -30,10 +30,11 @@
 #ifndef _YIELD_SOCKETS_AIO_AIOCB_HPP_
 #define _YIELD_SOCKETS_AIO_AIOCB_HPP_
 
-#ifdef _WIN32
-#include "yield/sockets/aio/win32/aiocb.hpp"
-#else
 #include "yield/event.hpp"
+
+#ifdef _WIN32
+struct _OVERLAPPED;
+typedef struct _OVERLAPPED OVERLAPPED;
 #endif
 
 namespace yield {
@@ -41,14 +42,14 @@ namespace sockets {
 class Socket;
 
 namespace aio {
-#ifdef _WIN32
-typedef win32::AIOCB AIOCB;
-#else
-class NBIOQueue;
-
 class AIOCB : public Event {
 public:
   virtual ~AIOCB();
+
+public:
+#ifdef _WIN32
+  static AIOCB& cast(::OVERLAPPED& lpOverlapped);
+#endif
 
 public:
   uint32_t get_error() const {
@@ -62,6 +63,11 @@ public:
   Socket& get_socket() {
     return socket_;
   }
+
+public:
+#ifdef _WIN32
+  operator ::OVERLAPPED*();
+#endif
 
 public:
   void set_error(uint32_t error) {
@@ -86,11 +92,29 @@ protected:
   AIOCB(Socket& socket_, off_t offset);
 
 private:
+#ifdef _WIN32
+  struct {
+    unsigned long* Internal;
+    unsigned long* InternalHigh;
+#pragma warning(push)
+#pragma warning(disable: 4201)
+    union {
+      struct {
+        unsigned long Offset;
+        unsigned long OffsetHigh;
+      };
+      void* Pointer;
+    };
+#pragma warning(pop)
+    void* hEvent;
+  } overlapped;
+  AIOCB* this_;
+#endif
+
   uint32_t error;
   ssize_t return_;
   Socket& socket_;
 };
-#endif
 }
 }
 }

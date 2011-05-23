@@ -31,15 +31,49 @@
 #define _YIELD_SOCKETS_AIO_AIO_QUEUE_HPP_
 
 #ifdef _WIN32
-#include "yield/sockets/aio/win32/aio_queue.hpp"
-#endif
+#include "yield/event_queue.hpp"
+#else
 #include "yield/sockets/aio/nbio_queue.hpp"
+#endif
 
 namespace yield {
+class Log;
+
 namespace sockets {
 namespace aio {
 #ifdef _WIN32
-typedef win32::AIOQueue AIOQueue;
+class AIOQueue : public EventQueue {
+public:
+  AIOQueue(YO_NEW_REF Log* log = NULL);
+  ~AIOQueue();
+
+public:
+  bool associate(socket_t socket_);
+
+public:
+  // yield::Object
+  const char* get_type_name() const {
+    return "yield::sockets::aio::AIOQueue";
+  }
+
+  AIOQueue& inc_ref() {
+    return Object::inc_ref(*this);
+  }
+
+public:
+  // yield::EventQueue
+  bool enqueue(YO_NEW_REF Event& event);
+  YO_NEW_REF Event* timeddequeue(const Time& timeout);
+
+private:
+  template <class AIOCBType> void log_completion(AIOCBType& aiocb);
+  template <class AIOCBType> void log_enqueue(AIOCBType& aiocb);
+  template <class AIOCBType> void log_error(AIOCBType& aiocb);
+
+private:
+  fd_t hIoCompletionPort;
+  Log* log;
+};
 #else
 typedef NBIOQueue AIOQueue;
 #endif

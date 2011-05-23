@@ -27,10 +27,10 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/sockets/aio/win32/aio_queue.hpp"
+#include "yield/sockets/aio/aio_queue.hpp"
 #include "../aio_queue_test.hpp"
 
 TEST_SUITE_EX(
-  Win32AIOQueue,
-  yield::sockets::aio::AIOQueueTestSuite<yield::sockets::aio::win32::AIOQueue>
+  AIOQueue,
+  yield::sockets::aio::AIOQueueTestSuite<yield::sockets::aio::AIOQueue>
 );

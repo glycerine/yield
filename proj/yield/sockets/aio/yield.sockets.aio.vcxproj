@@ -101,8 +101,6 @@
     <ClInclude Include="..\..\..\..\include\yield\sockets\aio\recv_aiocb.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\sockets\aio\send_aiocb.hpp" />
     <ClInclude Include="..\..\..\..\include\yield\sockets\aio\sendfile_aiocb.hpp" />
-    <ClInclude Include="..\..\..\..\include\yield\sockets\aio\win32\aio_queue.hpp" />
-    <ClInclude Include="..\..\..\..\include\yield\sockets\aio\win32\aiocb.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">

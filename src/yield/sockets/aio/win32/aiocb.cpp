@@ -28,14 +28,13 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/sockets/socket.hpp"
-#include "yield/sockets/aio/win32/aiocb.hpp"
+#include "yield/sockets/aio/aiocb.hpp"
 
 #include <Windows.h>
 
 namespace yield {
 namespace sockets {
 namespace aio {
-namespace win32 {
 AIOCB::AIOCB(Socket& socket_) : socket_(socket_.inc_ref()) {
   static_assert(sizeof(overlapped) == sizeof(::OVERLAPPED), "");
   memset(&overlapped, 0, sizeof(overlapped));
@@ -74,7 +73,6 @@ AIOCB& AIOCB::cast(::OVERLAPPED& lpOverlapped) {
 
 AIOCB::operator ::OVERLAPPED* () {
   return reinterpret_cast<::OVERLAPPED*>(&overlapped);
-}
 }
 }
 }

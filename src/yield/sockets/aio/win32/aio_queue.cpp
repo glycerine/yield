@@ -37,12 +37,11 @@
 #include "yield/sockets/aio/recv_aiocb.hpp"
 #include "yield/sockets/aio/send_aiocb.hpp"
 #include "yield/sockets/aio/sendfile_aiocb.hpp"
-#include "yield/sockets/aio/win32/aio_queue.hpp"
+#include "yield/sockets/aio/aio_queue.hpp"
 
 namespace yield {
 namespace sockets {
 namespace aio {
-namespace win32 {
 static LPFN_ACCEPTEX lpfnAcceptEx = NULL;
 static LPFN_CONNECTEX lpfnConnectEx = NULL;
 static LPFN_GETACCEPTEXSOCKADDRS lpfnGetAcceptExSockaddrs = NULL;
@@ -538,7 +537,6 @@ YO_NEW_REF Event* AIOQueue::timeddequeue(const Time& timeout) {
     return reinterpret_cast<Event*>(ulCompletionKey);
   else
     return NULL;
-}
 }
 }
 }

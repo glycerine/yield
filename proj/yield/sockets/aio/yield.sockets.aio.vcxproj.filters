@@ -12,9 +12,6 @@
     <Filter Include="Header Files">
       <UniqueIdentifier>{61a86ccf-0c5e-4092-9565-2069c163d744}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\win32">
-      <UniqueIdentifier>{279aa18c-e600-4064-80f0-59642b8e5ef0}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\yield\sockets\aio\accept_aiocb.hpp">
@@ -40,12 +37,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\yield\sockets\aio\sendfile_aiocb.hpp">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\yield\sockets\aio\win32\aio_queue.hpp">
-      <Filter>Header Files\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\yield\sockets\aio\win32\aiocb.hpp">
-      <Filter>Header Files\win32</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
