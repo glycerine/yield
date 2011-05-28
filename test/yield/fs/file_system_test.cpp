@@ -196,7 +196,6 @@ TEST_EX(FileSystem, statvfs, FileSystemTest) {
   throw_assert_gt(stbuf.f_blocks, 0);
   throw_assert_gt(stbuf.f_bfree, 0);
   throw_assert_ge(stbuf.f_blocks, stbuf.f_bfree);
-  throw_assert_ge(stbuf.f_namemax, 0);
 }
 
 TEST_EX(FileSystem, touch, FileSystemTest) {

@@ -71,21 +71,25 @@ public:
     Construct a Time from a nanosecond value.
     @param ns nanoseconds
   */
-  Time(uint64_t ns) : _ns(ns) { }
+  Time(uint64_t ns)
+    : _ns(ns) {
+  }
 
   /**
     Construct a Time from a second value, usually an integer literal.
     @param s seconds
   */
-  Time(int s) : _ns(s* NS_IN_S) { }
+  Time(int s)
+    : _ns(static_cast<uint32_t>(s) * NS_IN_S) {
+  }
 
   /**
     Construct a Time instance from a second value.
     @param s fractions of seconds
   */
   Time(double s)
-    : _ns(static_cast<uint64_t>(s* static_cast<double>(NS_IN_S)))
-  { }
+    : _ns(static_cast<uint64_t>(s* static_cast<double>(NS_IN_S))) {
+  }
 
   /**
     Copy constructor.

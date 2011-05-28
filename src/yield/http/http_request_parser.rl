@@ -37,6 +37,9 @@
 #ifdef _WIN32
 #pragma warning(push)
 #pragma warning(disable: 4702)
+#else
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 
 namespace yield {
@@ -49,19 +52,18 @@ Object& HTTPRequestParser::parse() {
 
     uint8_t http_version;
     HTTPRequest::Method method;
-    iovec uri_fragment = { 0 };
-    iovec uri_host = { 0 };
-    iovec uri_path = { 0 };
+    iovec uri_fragment = {0, 0};
+    iovec uri_host = {0, 0};
+    iovec uri_path = {0, 0};
     uint16_t uri_port = 0;
-    iovec uri_query = { 0 };
-    iovec uri_scheme = { 0 };
-    iovec uri_userinfo = { 0 };
+    iovec uri_query = {0, 0};
+    iovec uri_scheme = {0, 0};
+    iovec uri_userinfo = {0, 0};
 
     if (
       parse_request_line(
         http_version,
         method,
-        uri_fragment,
         uri_host,
         uri_path,
         uri_port,
@@ -96,12 +98,12 @@ Object& HTTPRequestParser::parse() {
                 );
         } else {
           Buffer& next_buffer
-            = Buffer::copy(
-                Buffer::getpagesize(),
-                p - ps + content_length,
-                ps,
-                eof - ps
-              );
+          = Buffer::copy(
+              Buffer::getpagesize(),
+              p - ps + content_length,
+              ps,
+              eof - ps
+            );
           ps = p;
           return next_buffer;
         }
@@ -114,12 +116,12 @@ Object& HTTPRequestParser::parse() {
 
     if (p == eof) { // EOF parsing
       Buffer& next_buffer
-        = Buffer::copy(
-            Buffer::getpagesize(),
-            eof - ps + Buffer::getpagesize(),
-            ps,
-            eof - ps
-          );
+      = Buffer::copy(
+          Buffer::getpagesize(),
+          eof - ps + Buffer::getpagesize(),
+          ps,
+          eof - ps
+        );
       p = ps;
       return next_buffer;
     } else { // Error parsing
@@ -135,7 +137,6 @@ Object& HTTPRequestParser::parse() {
 bool HTTPRequestParser::parse_request_line(
   OUT uint8_t& http_version,
   OUT HTTPRequest::Method& method,
-  OUT iovec& fragment,
   OUT iovec& host,
   OUT iovec& path,
   OUT uint16_t& port,
@@ -143,69 +144,72 @@ bool HTTPRequestParser::parse_request_line(
   OUT iovec& scheme,
   OUT iovec& userinfo
 ) {
-    int cs;
+  int cs;
 
-    %%{
-      machine request_line_parser;
-      alphtype unsigned char;
+  %%{
+    machine request_line_parser;
+    alphtype unsigned char;
 
-      include rfc2616 "rfc2616.rl";
-      include rfc3986 "../../../include/yield/uri/rfc3986.rl";
+    include rfc2616 "rfc2616.rl";
+    include rfc3986 "../../../include/yield/uri/rfc3986.rl";
 
-      # RFC 2616 5.1.1
-      method
-        = ("CONNECT" % { method = HTTPRequest::Method::CONNECT; }) |
-          ("COPY" % { method = HTTPRequest::Method::COPY; }) |
-          ("DELETE" % { method = HTTPRequest::Method::DELETE; }) |
-          ("GET" % { method = HTTPRequest::Method::GET; }) |
-          ("HEAD" % { method = HTTPRequest::Method::HEAD; }) |
-          ("LOCK" % { method = HTTPRequest::Method::LOCK; }) |
-          ("MKCOL" % { method = HTTPRequest::Method::MKCOL; }) |
-          ("MOVE" % { method = HTTPRequest::Method::MOVE; }) |
-          ("OPTIONS" % { method = HTTPRequest::Method::OPTIONS; }) |
-          ("PATCH" % { method = HTTPRequest::Method::PATCH; }) |
-          ("POST" % { method = HTTPRequest::Method::POST; }) |
-          ("PROPFIND" % { method = HTTPRequest::Method::PROPFIND; }) |
-          ("PROPPATCH" % { method = HTTPRequest::Method::PROPPATCH; }) |
-          ("PUT" % { method = HTTPRequest::Method::PUT; }) |
-          ("TRACE" % { method = HTTPRequest::Method::TRACE; }) |
-          ("UNLOCK" % { method = HTTPRequest::Method::UNLOCK; });
+    # RFC 2616 5.1.1
+    method
+      = ("CONNECT" % { method = HTTPRequest::Method::CONNECT; }) |
+        ("COPY" % { method = HTTPRequest::Method::COPY; }) |
+        ("DELETE" % { method = HTTPRequest::Method::DELETE; }) |
+        ("GET" % { method = HTTPRequest::Method::GET; }) |
+        ("HEAD" % { method = HTTPRequest::Method::HEAD; }) |
+        ("LOCK" % { method = HTTPRequest::Method::LOCK; }) |
+        ("MKCOL" % { method = HTTPRequest::Method::MKCOL; }) |
+        ("MOVE" % { method = HTTPRequest::Method::MOVE; }) |
+        ("OPTIONS" % { method = HTTPRequest::Method::OPTIONS; }) |
+        ("PATCH" % { method = HTTPRequest::Method::PATCH; }) |
+        ("POST" % { method = HTTPRequest::Method::POST; }) |
+        ("PROPFIND" % { method = HTTPRequest::Method::PROPFIND; }) |
+        ("PROPPATCH" % { method = HTTPRequest::Method::PROPPATCH; }) |
+        ("PUT" % { method = HTTPRequest::Method::PUT; }) |
+        ("TRACE" % { method = HTTPRequest::Method::TRACE; }) |
+        ("UNLOCK" % { method = HTTPRequest::Method::UNLOCK; });
 
-      # RFC 2616 5.1.2
-      # Per the spec, Request-URI = "*" | absoluteURI | abs_path | authority
-      # absoluteURI is fully-qualified (http://host...), for use with proxies.
-      # authority is (userinfo "@")? host (":" port)?, used with CONNECT.
-      # abs_path is the common form, but it does NOT include a ["?" query],
-      #   only path segments.
-      # -> an oversight in the spec, corrected here.
-      request_uri = (
-          (
-            '*'
-            >{ path.iov_base = p; }
-            %{ path.iov_len = p - static_cast<char*>(path.iov_base); }
-          ) |
-          absolute_uri |
-          (path_absolute ("?" query)?) |
-          authority
-      );
+    # RFC 2616 5.1.2
+    # Per the spec, Request-URI = "*" | absoluteURI | abs_path | authority
+    # absoluteURI is fully-qualified (http://host...), for use with proxies.
+    # authority is (userinfo "@")? host (":" port)?, used with CONNECT.
+    # abs_path is the common form, but it does NOT include a ["?" query],
+    #   only path segments.
+    # -> an oversight in the spec, corrected here.
+    request_uri = (
+        (
+          '*'
+          >{ path.iov_base = p; }
+          %{ path.iov_len = p - static_cast<char*>(path.iov_base); }
+        ) |
+        absolute_uri |
+        (path_absolute ("?" query)?) |
+        authority
+    );
 
-      # RFC 2616 5.1
-      request_line = method ' '+ request_uri ' '+ http_version crlf;
+    # RFC 2616 5.1
+    request_line = method ' '+ request_uri ' '+ http_version crlf;
 
-      main := request_line
-              @{ fbreak; };
+    main := request_line
+            @{ fbreak; };
 
-      write data;
-      write init;
-      write exec noend;
-    }%%
+    write data;
+    write init;
+    write exec noend;
+  }%%
 
-    return cs != request_line_parser_error;
+  return cs != request_line_parser_error;
 }
 }
 }
 
 #ifdef _WIN32
 #pragma warning(pop)
+#else
+#pragma GCC diagnostic warning "-Wold-style-cast"
+#pragma GCC diagnostic warning "-Wunused-variable"
 #endif
 //

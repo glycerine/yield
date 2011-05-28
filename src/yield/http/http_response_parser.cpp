@@ -27,7 +27,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/* #line 1 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
+/* #line 1 "./src/yield/http/http_response_parser.rl" */
 // yield/http/http_response_parser.rl
 
 // Copyright (c) 2011 Minor Gordon
@@ -66,6 +66,9 @@
 #ifdef _WIN32
 #pragma warning(push)
 #pragma warning(disable: 4702)
+#else
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 
 namespace yield {
@@ -135,7 +138,7 @@ HTTPResponseParser::parse_status_line(
   int cs;
 
 
-  /* #line 2 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.cpp" */
+  /* #line 114 "./src/yield/http/http_response_parser.cpp" */
   static const char _status_line_parser_actions[] = {
     0, 1, 0, 1, 1, 1, 2, 1,
     3, 1, 4
@@ -200,12 +203,12 @@ HTTPResponseParser::parse_status_line(
   static const int status_line_parser_en_main = 1;
 
 
-  /* #line 65 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.cpp" */
+  /* #line 179 "./src/yield/http/http_response_parser.cpp" */
   {
     cs = status_line_parser_start;
   }
 
-  /* #line 68 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.cpp" */
+  /* #line 184 "./src/yield/http/http_response_parser.cpp" */
   {
     int _klen;
     unsigned int _trans;
@@ -276,25 +279,25 @@ _match:
     while (_nacts-- > 0) {
       switch (*_acts++) {
       case 0:
-        /* #line 32 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 32 "./src/yield/http/rfc2616.rl" */
       {
         http_version = 0;
       }
       break;
       case 1:
-        /* #line 33 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
+        /* #line 33 "./src/yield/http/rfc2616.rl" */
       {
         http_version = 1;
       }
       break;
       case 2:
-        /* #line 115 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
+        /* #line 118 "./src/yield/http/http_response_parser.rl" */
       {
         status_code = static_cast<uint16_t>(atoi(p));
       }
       break;
       case 3:
-        /* #line 123 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
+        /* #line 126 "./src/yield/http/http_response_parser.rl" */
       { {
           p++;
           goto _out;
@@ -302,12 +305,12 @@ _match:
       }
       break;
       case 4:
-        /* #line 124 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
+        /* #line 127 "./src/yield/http/http_response_parser.rl" */
       {
         return false;
       }
       break;
-      /* #line 154 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.cpp" */
+      /* #line 276 "./src/yield/http/http_response_parser.cpp" */
       }
     }
 
@@ -322,12 +325,12 @@ _again:
       while (__nacts-- > 0) {
         switch (*__acts++) {
         case 4:
-          /* #line 124 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
+          /* #line 127 "./src/yield/http/http_response_parser.rl" */
         {
           return false;
         }
         break;
-        /* #line 171 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.cpp" */
+        /* #line 295 "./src/yield/http/http_response_parser.cpp" */
         }
       }
     }
@@ -336,7 +339,7 @@ _out:
     {}
   }
 
-  /* #line 129 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_response_parser.rl" */
+  /* #line 132 "./src/yield/http/http_response_parser.rl" */
 
 
   return cs != status_line_parser_error;
@@ -346,5 +349,8 @@ _out:
 
 #ifdef _WIN32
 #pragma warning(pop)
+#else
+#pragma GCC diagnostic warning "-Wold-style-cast"
+#pragma GCC diagnostic warning "-Wunused-variable"
 #endif
 //

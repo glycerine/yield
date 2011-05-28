@@ -142,6 +142,7 @@ public:
   ) {
     return set_field(
              name,
+             name_len,
              static_cast<char*>(value.iov_base),
              value.iov_len
            );
@@ -242,8 +243,8 @@ protected:
 private:
   Object* body;
   uint16_t fields_offset;
-  uint8_t http_version;
   Buffer& header;
+  uint8_t http_version;
 };
 }
 }

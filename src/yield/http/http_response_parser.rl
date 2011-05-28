@@ -36,6 +36,9 @@
 #ifdef _WIN32
 #pragma warning(push)
 #pragma warning(disable: 4702)
+#else
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 
 namespace yield {
@@ -134,6 +137,9 @@ HTTPResponseParser::parse_status_line(
 }
 
 #ifdef _WIN32
-  #pragma warning(pop)
+#pragma warning(pop)
+#else
+#pragma GCC diagnostic warning "-Wold-style-cast"
+#pragma GCC diagnostic warning "-Wunused-variable"
 #endif
 //

@@ -34,6 +34,9 @@
 #ifdef _WIN32
 #pragma warning(push)
 #pragma warning(disable: 4702)
+#else
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 
 namespace yield {
@@ -79,5 +82,8 @@ URIParser::parse(
 
 #ifdef _WIN32
 #pragma warning(pop)
+#else
+#pragma GCC diagnostic error "-Wold-style-cast"
+#pragma GCC diagnostic error "-Wunused-variable"
 #endif
 //

@@ -38,6 +38,9 @@
 #ifdef _WIN32
 #pragma warning(push)
 #pragma warning(disable: 4702)
+#else
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 
 namespace yield {
@@ -87,7 +90,7 @@ Object* HTTPMessageParser::parse_body_chunk() {
   size_t chunk_size = 0;
   const char* chunk_size_p = NULL;
   int cs;
-  iovec field_name = { 0 }, field_value = { 0 };
+  iovec field_name = {0, 0}, field_value = {0, 0};
   size_t seen_chunk_size = 0;
 
   ps = p;
@@ -131,7 +134,7 @@ HTTPMessageParser::parse_content_length_field(
   int cs;
   char* p = const_cast<char*>(ps);
 
-  iovec field_name = {0}, field_value = {0};
+  iovec field_name = {0, 0}, field_value = {0, 0};
 
   // Don't look for the trailing CRLF before the body,
   // since it may not be present yet.
@@ -245,7 +248,7 @@ HTTPMessageParser::parse_field(
   int cs;
   char* p = const_cast<char*>(ps);
 
-  iovec field_name = {0}, field_value = {0};
+  iovec field_name = {0, 0}, field_value = {0, 0};
 
   // Don't look for the trailing CRLF before the body,
   // since it may not be present yet.
@@ -289,7 +292,7 @@ HTTPMessageParser::parse_fields(
   int cs;
   char* p = const_cast<char*>(ps);
 
-  iovec field_name = {0}, field_value = {0};
+  iovec field_name = {0, 0}, field_value = {0, 0};
 
   // Don't look for the trailing CRLF before the body,
   // since it may not be present yet.
@@ -319,7 +322,7 @@ HTTPMessageParser::parse_fields(
   content_length = 0;
 
   int cs;
-  iovec field_name = { 0 }, field_value = { 0 };
+  iovec field_name = {0, 0}, field_value = {0, 0};
 
   %%{
     machine fields_parser;
@@ -351,5 +354,8 @@ HTTPMessageParser::parse_fields(
 
 #ifdef _WIN32
 #pragma warning(pop)
+#else
+#pragma GCC diagnostic warning "-Wold-style-cast"
+#pragma GCC diagnostic warning "-Wunused-variable"
 #endif
 //

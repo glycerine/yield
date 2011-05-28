@@ -31,6 +31,7 @@ from cStringIO import StringIO
 from hashlib import md5
 from os.path import exists, join as path_join, sep as os_sep, split as path_split, splitext
 import subprocess
+import sys
 from time import gmtime
 
 from yutil import bstrip, \
@@ -231,14 +232,16 @@ class SourceFile:
             if self.get_language() == "cpp":
                 astylerc_path = path_join("etc", "astylerc")
                 if exists(astylerc_path):
-                    try:
-                        subprocess.call(["AStyle", "--options=" + astylerc_path, self.get_path()])
-                        printed_wrote = True
-                    except:
-                        pass
+                    if sys.platform == "win32":
+                        astyle_argv = ["AStyle"]
+                    else:
+                        astyle_argv = ["astyle"]
+                    astyle_argv.extend(("--options=" + astylerc_path, self.get_path()))
+                
+                    try: subprocess.call(astyle_argv)
+                    except: pass
 
-            if not printed_wrote:
-                print "wrote", self.get_path()
+            print "wrote", self.get_path()
 
     def get_combined_repr(self):
         comment_prefix = self.__get_comment_prefix()

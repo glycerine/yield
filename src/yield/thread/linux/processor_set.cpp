@@ -33,6 +33,7 @@
 
 namespace yield {
 namespace thread {
+#pragma GCC diagnostic ignored "-Wold-style-cast"
 ProcessorSet::ProcessorSet() {
   CPU_ZERO(&cpu_set);
 }
@@ -64,5 +65,6 @@ bool ProcessorSet::set(uint16_t processor_i) {
   CPU_SET(processor_i, &cpu_set);
   return true;
 }
+#pragma GCC diagnostic warning "-Wold-style-cast"
 }
 }

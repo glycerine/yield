@@ -83,7 +83,6 @@ protected:
   bool parse_request_line(
     OUT uint8_t& http_version,
     OUT HTTPRequest::Method& method,
-    OUT iovec& uri_fragment,
     OUT iovec& uri_host,
     OUT iovec& uri_path,
     OUT uint16_t& uri_port,

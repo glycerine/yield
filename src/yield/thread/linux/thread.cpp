@@ -35,12 +35,14 @@
 
 namespace yield {
 namespace thread {
+#pragma GCC diagnostic ignored "-Wold-style-cast"
 bool Thread::setaffinity(uint16_t logical_processor_i) {
   cpu_set_t cpu_set;
   CPU_ZERO(&cpu_set);
   CPU_SET(logical_processor_i, &cpu_set);
   return sched_setaffinity(tid, sizeof(cpu_set), &cpu_set) == 0;
 }
+#pragma GCC diagnostic warning "-Wold-style-cast"
 
 bool Thread::setaffinity(const ProcessorSet& logical_processor_set) {
   return sched_setaffinity(

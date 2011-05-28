@@ -124,7 +124,8 @@ YO_NEW_REF Event* FDEventQueue::timeddequeue(const Time& timeout) {
       debug_assert_eq(ret, 1);
       if (static_cast<int>(kevent_.ident) == wake_pipe[0]) {
         char m;
-        read(wake_pipe[0], &m, sizeof(m));
+        ssize_t read_ret = read(wake_pipe[0], &m, sizeof(m));
+        debug_assert_eq(read_ret, static_cast<ssize_t>(sizeof(m)));
         return event_queue.trydequeue();
       } else {
         switch (kevent_.filter) {

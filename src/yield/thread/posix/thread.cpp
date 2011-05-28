@@ -127,7 +127,7 @@ void* Thread::run() {
   return NULL;
 }
 
-void Thread::set_name(const char* name) {
+void Thread::set_name(const char*) {
 }
 
 bool Thread::setspecific(uintptr_t key, void* value) {

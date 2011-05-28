@@ -119,7 +119,8 @@ YO_NEW_REF Event* FDEventQueue::timeddequeue(const Time& timeout) {
 
       if (epoll_event_.data.fd == wake_fd) {
         uint64_t data;
-        read(wake_fd, &data, sizeof(data));
+        ssize_t read_ret = read(wake_fd, &data, sizeof(data));
+        debug_assert_eq(read_ret, static_cast<ssize_t>(sizeof(data)));
         return event_queue.trydequeue();
       } else
         return new FDEvent(epoll_event_.data.fd, epoll_event_.events);

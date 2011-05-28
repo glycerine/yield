@@ -50,7 +50,7 @@ public:
     return true;
   }
 
-  YO_NEW_REF Event* timeddequeue(const Time& timeout) {
+  YO_NEW_REF Event* timeddequeue(const Time&) {
     return trydequeue();
   }
 

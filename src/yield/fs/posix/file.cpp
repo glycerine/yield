@@ -115,6 +115,7 @@ bool File::Map::sync(size_t offset, size_t length) {
   return sync(static_cast<char*>(data_) + offset, length);
 }
 
+#pragma GCC diagnostic ignored "-Wold-style-cast"
 bool File::Map::sync(void* ptr, size_t length) {
   if (data_ != MAP_FAILED) {
 #ifdef __sun
@@ -141,6 +142,7 @@ bool File::Map::unmap() {
     return false;
   }
 }
+#pragma GCC diagnostic warning "-Wold-style-cast"
 
 
 File::File(fd_t fd) : fd(fd) {
@@ -192,6 +194,7 @@ YO_NEW_REF File::Lock* File::getlk(const Lock& lock) {
     return NULL;
 }
 
+#pragma GCC diagnostic ignored "-Wold-style-cast"
 YO_NEW_REF File::Map*
 File::mmap(
   size_t length,
@@ -228,6 +231,7 @@ File::mmap(
            prot
          );
 }
+#pragma GCC diagnostic warning "-Wold-style-cast"
 
 ssize_t File::pread(Buffer& buffer, off_t offset) {
   if (buffer.get_next_buffer() == NULL) {
