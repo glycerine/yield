@@ -53,10 +53,10 @@ endif
 LIBS += -lyield_thread -lyield
 
 
-D_FILE_PATHS := $(shell find ../../../build/yield/queue_test -name "*.d")
+D_FILE_PATHS := $(shell find ../../../build/yield/queue -name "*.d")
 
 
-O_FILE_PATHS += ../../../build/yield/queue_test/blocking_concurrent_queue_test.o ../../../build/yield/queue_test/non_blocking_concurrent_queue_test.o ../../../build/yield/queue_test/rendezvous_concurrent_queue_test.o ../../../build/yield/queue_test/stl_event_queue_test.o ../../../build/yield/queue_test/synchronized_event_queue_test.o ../../../build/yield/queue_test/synchronized_queue_test.o ../../../build/yield/queue_test/tls_concurrent_queue_test.o ../../../build/yield/queue_test/yield_queue_test_main.o
+O_FILE_PATHS += ../../../build/yield/queue/blocking_concurrent_queue_test.o ../../../build/yield/queue/non_blocking_concurrent_queue_test.o ../../../build/yield/queue/rendezvous_concurrent_queue_test.o ../../../build/yield/queue/stl_event_queue_test.o ../../../build/yield/queue/synchronized_event_queue_test.o ../../../build/yield/queue/synchronized_queue_test.o ../../../build/yield/queue/tls_concurrent_queue_test.o ../../../build/yield/queue/yield_queue_test_main.o
 
 
 all: ../../../bin/yield/yield_queue_test
@@ -70,9 +70,9 @@ depclean:
 -include $(D_FILE_PATHS)
 			
 lcov: ../../../bin/yield/yield_queue_test
-	lcov --directory ../../../build/yield/queue_test --zerocounters
+	lcov --directory ../../../build/yield/queue --zerocounters
 	-../../../bin/yield/yield_queue_test
-	lcov --base-directory . --directory ../../../build/yield/queue_test --capture --output-file yield.queue_test_lcov-$(TIMESTAMP)
+	lcov --base-directory . --directory ../../../build/yield/queue --capture --output-file yield.queue_test_lcov-$(TIMESTAMP)
 	mkdir yield.queue_test_lcov_html-$(TIMESTAMP)
 	genhtml -o yield.queue_test_lcov_html-$(TIMESTAMP) yield.queue_test_lcov-$(TIMESTAMP)
 	-cp -R yield.queue_test_lcov_html-$(TIMESTAMP) /mnt/hgfs/minorg/Desktop
@@ -88,34 +88,34 @@ lcov: ../../../bin/yield/yield_queue_test
 	-mkdir -p ../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 
-../../../build/yield/queue_test/blocking_concurrent_queue_test.o: ../../../test/yield/queue/blocking_concurrent_queue_test.cpp
-	-mkdir -p ../../../build/yield/queue_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/queue_test/blocking_concurrent_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/queue/blocking_concurrent_queue_test.cpp
+../../../build/yield/queue/blocking_concurrent_queue_test.o: ../../../test/yield/queue/blocking_concurrent_queue_test.cpp
+	-mkdir -p ../../../build/yield/queue 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/queue/blocking_concurrent_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/queue/blocking_concurrent_queue_test.cpp
 
-../../../build/yield/queue_test/non_blocking_concurrent_queue_test.o: ../../../test/yield/queue/non_blocking_concurrent_queue_test.cpp
-	-mkdir -p ../../../build/yield/queue_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/queue_test/non_blocking_concurrent_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/queue/non_blocking_concurrent_queue_test.cpp
+../../../build/yield/queue/non_blocking_concurrent_queue_test.o: ../../../test/yield/queue/non_blocking_concurrent_queue_test.cpp
+	-mkdir -p ../../../build/yield/queue 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/queue/non_blocking_concurrent_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/queue/non_blocking_concurrent_queue_test.cpp
 
-../../../build/yield/queue_test/rendezvous_concurrent_queue_test.o: ../../../test/yield/queue/rendezvous_concurrent_queue_test.cpp
-	-mkdir -p ../../../build/yield/queue_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/queue_test/rendezvous_concurrent_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/queue/rendezvous_concurrent_queue_test.cpp
+../../../build/yield/queue/rendezvous_concurrent_queue_test.o: ../../../test/yield/queue/rendezvous_concurrent_queue_test.cpp
+	-mkdir -p ../../../build/yield/queue 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/queue/rendezvous_concurrent_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/queue/rendezvous_concurrent_queue_test.cpp
 
-../../../build/yield/queue_test/stl_event_queue_test.o: ../../../test/yield/queue/stl_event_queue_test.cpp
-	-mkdir -p ../../../build/yield/queue_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/queue_test/stl_event_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/queue/stl_event_queue_test.cpp
+../../../build/yield/queue/stl_event_queue_test.o: ../../../test/yield/queue/stl_event_queue_test.cpp
+	-mkdir -p ../../../build/yield/queue 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/queue/stl_event_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/queue/stl_event_queue_test.cpp
 
-../../../build/yield/queue_test/synchronized_event_queue_test.o: ../../../test/yield/queue/synchronized_event_queue_test.cpp
-	-mkdir -p ../../../build/yield/queue_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/queue_test/synchronized_event_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/queue/synchronized_event_queue_test.cpp
+../../../build/yield/queue/synchronized_event_queue_test.o: ../../../test/yield/queue/synchronized_event_queue_test.cpp
+	-mkdir -p ../../../build/yield/queue 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/queue/synchronized_event_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/queue/synchronized_event_queue_test.cpp
 
-../../../build/yield/queue_test/synchronized_queue_test.o: ../../../test/yield/queue/synchronized_queue_test.cpp
-	-mkdir -p ../../../build/yield/queue_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/queue_test/synchronized_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/queue/synchronized_queue_test.cpp
+../../../build/yield/queue/synchronized_queue_test.o: ../../../test/yield/queue/synchronized_queue_test.cpp
+	-mkdir -p ../../../build/yield/queue 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/queue/synchronized_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/queue/synchronized_queue_test.cpp
 
-../../../build/yield/queue_test/tls_concurrent_queue_test.o: ../../../test/yield/queue/tls_concurrent_queue_test.cpp
-	-mkdir -p ../../../build/yield/queue_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/queue_test/tls_concurrent_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/queue/tls_concurrent_queue_test.cpp
+../../../build/yield/queue/tls_concurrent_queue_test.o: ../../../test/yield/queue/tls_concurrent_queue_test.cpp
+	-mkdir -p ../../../build/yield/queue 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/queue/tls_concurrent_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/queue/tls_concurrent_queue_test.cpp
 
-../../../build/yield/queue_test/yield_queue_test_main.o: ../../../test/yield/queue/yield_queue_test_main.cpp
-	-mkdir -p ../../../build/yield/queue_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/queue_test/yield_queue_test_main.o -MD $(CXXFLAGS) ../../../test/yield/queue/yield_queue_test_main.cpp
+../../../build/yield/queue/yield_queue_test_main.o: ../../../test/yield/queue/yield_queue_test_main.cpp
+	-mkdir -p ../../../build/yield/queue 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/queue/yield_queue_test_main.o -MD $(CXXFLAGS) ../../../test/yield/queue/yield_queue_test_main.cpp

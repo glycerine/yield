@@ -144,6 +144,10 @@ TEST_EX(FDEventQueue, associate_zero, FDEventQueueTest) {
   throw_assert_eq(event, NULL);
 }
 
+TEST(FDEventQueue, constructor) {
+  FDEventQueue();
+}
+
 TEST_EX(FDEventQueue, dequeue_FDEvent, FDEventQueueTest) {
   FDEventQueue fd_event_queue;
 
@@ -165,6 +169,10 @@ TEST_EX(FDEventQueue, dequeue_writable_FDEvent, FDEventQueueTest) {
   = Object::cast<FDEvent>(fd_event_queue.dequeue());
   throw_assert_eq(fd_event->get_fd(), get_write_fd());
   throw_assert_eq(fd_event->get_type(), FDEvent::TYPE_WRITE_READY);
+}
+
+TEST(FDEventQueue, destructor) {
+  FDEventQueue();
 }
 
 TEST_EX(FDEventQueue, dissociate, FDEventQueueTest) {

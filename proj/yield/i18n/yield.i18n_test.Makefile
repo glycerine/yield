@@ -56,10 +56,10 @@ endif
 LIBS += -lyield_i18n -lyield
 
 
-D_FILE_PATHS := $(shell find ../../../build/yield/i18n_test -name "*.d")
+D_FILE_PATHS := $(shell find ../../../build/yield/i18n -name "*.d")
 
 
-O_FILE_PATHS += ../../../build/yield/i18n_test/iconv_test.o ../../../build/yield/i18n_test/tstring_test.o ../../../build/yield/i18n_test/yield_i18n_test_main.o
+O_FILE_PATHS += ../../../build/yield/i18n/iconv_test.o ../../../build/yield/i18n/tstring_test.o ../../../build/yield/i18n/yield_i18n_test_main.o
 
 
 all: ../../../bin/yield/yield_i18n_test
@@ -73,9 +73,9 @@ depclean:
 -include $(D_FILE_PATHS)
 			
 lcov: ../../../bin/yield/yield_i18n_test
-	lcov --directory ../../../build/yield/i18n_test --zerocounters
+	lcov --directory ../../../build/yield/i18n --zerocounters
 	-../../../bin/yield/yield_i18n_test
-	lcov --base-directory . --directory ../../../build/yield/i18n_test --capture --output-file yield.i18n_test_lcov-$(TIMESTAMP)
+	lcov --base-directory . --directory ../../../build/yield/i18n --capture --output-file yield.i18n_test_lcov-$(TIMESTAMP)
 	mkdir yield.i18n_test_lcov_html-$(TIMESTAMP)
 	genhtml -o yield.i18n_test_lcov_html-$(TIMESTAMP) yield.i18n_test_lcov-$(TIMESTAMP)
 	-cp -R yield.i18n_test_lcov_html-$(TIMESTAMP) /mnt/hgfs/minorg/Desktop
@@ -91,14 +91,14 @@ lcov: ../../../bin/yield/yield_i18n_test
 	-mkdir -p ../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 
-../../../build/yield/i18n_test/iconv_test.o: ../../../test/yield/i18n/iconv_test.cpp
-	-mkdir -p ../../../build/yield/i18n_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/i18n_test/iconv_test.o -MD $(CXXFLAGS) ../../../test/yield/i18n/iconv_test.cpp
+../../../build/yield/i18n/iconv_test.o: ../../../test/yield/i18n/iconv_test.cpp
+	-mkdir -p ../../../build/yield/i18n 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/i18n/iconv_test.o -MD $(CXXFLAGS) ../../../test/yield/i18n/iconv_test.cpp
 
-../../../build/yield/i18n_test/tstring_test.o: ../../../test/yield/i18n/tstring_test.cpp
-	-mkdir -p ../../../build/yield/i18n_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/i18n_test/tstring_test.o -MD $(CXXFLAGS) ../../../test/yield/i18n/tstring_test.cpp
+../../../build/yield/i18n/tstring_test.o: ../../../test/yield/i18n/tstring_test.cpp
+	-mkdir -p ../../../build/yield/i18n 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/i18n/tstring_test.o -MD $(CXXFLAGS) ../../../test/yield/i18n/tstring_test.cpp
 
-../../../build/yield/i18n_test/yield_i18n_test_main.o: ../../../test/yield/i18n/yield_i18n_test_main.cpp
-	-mkdir -p ../../../build/yield/i18n_test 2>/dev/null
-	$(CXX) -c -o ../../../build/yield/i18n_test/yield_i18n_test_main.o -MD $(CXXFLAGS) ../../../test/yield/i18n/yield_i18n_test_main.cpp
+../../../build/yield/i18n/yield_i18n_test_main.o: ../../../test/yield/i18n/yield_i18n_test_main.cpp
+	-mkdir -p ../../../build/yield/i18n 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/i18n/yield_i18n_test_main.o -MD $(CXXFLAGS) ../../../test/yield/i18n/yield_i18n_test_main.cpp

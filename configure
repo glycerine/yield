@@ -325,6 +325,13 @@ INCLUDE_FILE_PATHS["yield.sockets.ssl"] = [
 ] + \
 INCLUDE_FILE_PATHS["yield.sockets.ssl"]
 
+INCLUDE_FILE_PATHS["yield.thread"] = [
+    path_join(INCLUDE_DIR_PATH, "yield", "thread", "mutex.hpp"), # before condition_variable
+    path_join(INCLUDE_DIR_PATH, "yield", "thread", "lightweight_mutex.hpp"), # before condition_variable
+    path_join(INCLUDE_DIR_PATH, "yield", "thread", "semaphore.hpp"), # before condition_variable
+] + \
+INCLUDE_FILE_PATHS["yield.thread"]
+
 SOURCE_FILE_PATHS["yield.fs.poll"] = [
     path_join(SRC_DIR_PATH, "yield", "fs", "poll", "watch.hpp"), # before scanning_watch
     path_join(SRC_DIR_PATH, "yield", "fs", "poll", "scanning_watch.hpp"), # before scanning_directory_watch
@@ -503,7 +510,14 @@ if options.generate_proj:
             ("_test", Project.TYPE_PROGRAM)
         ):
             project = {
-               "build_dir_path": path_join(ROOT_DIR_PATH, "build", path_sep.join(project_name.split('.'))) + project_name_suffix,
+               # the _test build_dir_path has to be a separate directory on Win32 to avoid
+               #   overwriting build logs and such (which causes incremental build problems)
+               # On other systems build_dir_paths should be the same for a project
+               #   in order to get proper coverage results. 
+               "build_dir_path": {
+                   '*': path_join(ROOT_DIR_PATH, "build", path_sep.join(project_name.split('.'))),
+                   "win32": path_join(ROOT_DIR_PATH, "build", path_sep.join(project_name.split('.'))) + project_name_suffix,
+               },
                "cxxdefines": CXXDEFINES.get(project_name, {}),
                "cxxflags": CXXFLAGS,
                "cxxpath": CXXPATH,
@@ -524,12 +538,12 @@ if options.generate_proj:
             }
 
             if sys.platform == "win32":
-                try: makedirs(project["build_dir_path"])
+                try: makedirs(project["build_dir_path"]["win32"])
                 except: pass
                 if project_name != "yield":
                     mirror_subdirectories(
                         project["source_dir_path"],
-                        project["build_dir_path"]
+                        project["build_dir_path"]["win32"]
                     )
 
                 try: makedirs(project["project_dir_path"])

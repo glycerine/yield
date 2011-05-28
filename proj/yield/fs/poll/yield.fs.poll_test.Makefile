@@ -56,18 +56,18 @@ endif
 LIBS += -lyield_fs_poll -lyield_fs -lyield_i18n -lyield_thread -lyield
 
 
-D_FILE_PATHS := $(shell find ../../../../build/yield/fs/poll_test -name "*.d")
+D_FILE_PATHS := $(shell find ../../../../build/yield/fs/poll -name "*.d")
 
 
-O_FILE_PATHS += ../../../../build/yield/fs/poll_test/fs_event_test.o ../../../../build/yield/fs/poll_test/scanning_fs_event_queue_test.o ../../../../build/yield/fs/poll_test/yield_fs_poll_test_main.o
+O_FILE_PATHS += ../../../../build/yield/fs/poll/fs_event_test.o ../../../../build/yield/fs/poll/scanning_fs_event_queue_test.o ../../../../build/yield/fs/poll/yield_fs_poll_test_main.o
 ifeq ($(UNAME), Darwin)
-	O_FILE_PATHS += ../../../../build/yield/fs/poll_test/bsd/fs_event_queue_test.o
+	O_FILE_PATHS += ../../../../build/yield/fs/poll/bsd/fs_event_queue_test.o
 endif
 ifeq ($(UNAME), FreeBSD)
-	O_FILE_PATHS += ../../../../build/yield/fs/poll_test/bsd/fs_event_queue_test.o
+	O_FILE_PATHS += ../../../../build/yield/fs/poll/bsd/fs_event_queue_test.o
 endif
 ifeq ($(UNAME), Linux)
-	O_FILE_PATHS += ../../../../build/yield/fs/poll_test/linux/fs_event_queue_test.o
+	O_FILE_PATHS += ../../../../build/yield/fs/poll/linux/fs_event_queue_test.o
 endif
 ifeq ($(UNAME), MINGW32)
 	O_FILE_PATHS += ../../../../build/yield/fs/poll_test/win32/fs_event_queue_test.o
@@ -85,9 +85,9 @@ depclean:
 -include $(D_FILE_PATHS)
 			
 lcov: ../../../../bin/yield/yield_fs_poll_test
-	lcov --directory ../../../../build/yield/fs/poll_test --zerocounters
+	lcov --directory ../../../../build/yield/fs/poll --zerocounters
 	-../../../../bin/yield/yield_fs_poll_test
-	lcov --base-directory . --directory ../../../../build/yield/fs/poll_test --capture --output-file yield.fs.poll_test_lcov-$(TIMESTAMP)
+	lcov --base-directory . --directory ../../../../build/yield/fs/poll --capture --output-file yield.fs.poll_test_lcov-$(TIMESTAMP)
 	mkdir yield.fs.poll_test_lcov_html-$(TIMESTAMP)
 	genhtml -o yield.fs.poll_test_lcov_html-$(TIMESTAMP) yield.fs.poll_test_lcov-$(TIMESTAMP)
 	-cp -R yield.fs.poll_test_lcov_html-$(TIMESTAMP) /mnt/hgfs/minorg/Desktop
@@ -103,26 +103,26 @@ lcov: ../../../../bin/yield/yield_fs_poll_test
 	-mkdir -p ../../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 
-../../../../build/yield/fs/poll_test/bsd/fs_event_queue_test.o: ../../../../test/yield/fs/poll/bsd/fs_event_queue_test.cpp
-	-mkdir -p ../../../../build/yield/fs/poll_test/bsd 2>/dev/null
-	$(CXX) -c -o ../../../../build/yield/fs/poll_test/bsd/fs_event_queue_test.o -MD $(CXXFLAGS) ../../../../test/yield/fs/poll/bsd/fs_event_queue_test.cpp
+../../../../build/yield/fs/poll/bsd/fs_event_queue_test.o: ../../../../test/yield/fs/poll/bsd/fs_event_queue_test.cpp
+	-mkdir -p ../../../../build/yield/fs/poll/bsd 2>/dev/null
+	$(CXX) -c -o ../../../../build/yield/fs/poll/bsd/fs_event_queue_test.o -MD $(CXXFLAGS) ../../../../test/yield/fs/poll/bsd/fs_event_queue_test.cpp
 
-../../../../build/yield/fs/poll_test/fs_event_test.o: ../../../../test/yield/fs/poll/fs_event_test.cpp
-	-mkdir -p ../../../../build/yield/fs/poll_test 2>/dev/null
-	$(CXX) -c -o ../../../../build/yield/fs/poll_test/fs_event_test.o -MD $(CXXFLAGS) ../../../../test/yield/fs/poll/fs_event_test.cpp
+../../../../build/yield/fs/poll/fs_event_test.o: ../../../../test/yield/fs/poll/fs_event_test.cpp
+	-mkdir -p ../../../../build/yield/fs/poll 2>/dev/null
+	$(CXX) -c -o ../../../../build/yield/fs/poll/fs_event_test.o -MD $(CXXFLAGS) ../../../../test/yield/fs/poll/fs_event_test.cpp
 
-../../../../build/yield/fs/poll_test/linux/fs_event_queue_test.o: ../../../../test/yield/fs/poll/linux/fs_event_queue_test.cpp
-	-mkdir -p ../../../../build/yield/fs/poll_test/linux 2>/dev/null
-	$(CXX) -c -o ../../../../build/yield/fs/poll_test/linux/fs_event_queue_test.o -MD $(CXXFLAGS) ../../../../test/yield/fs/poll/linux/fs_event_queue_test.cpp
+../../../../build/yield/fs/poll/linux/fs_event_queue_test.o: ../../../../test/yield/fs/poll/linux/fs_event_queue_test.cpp
+	-mkdir -p ../../../../build/yield/fs/poll/linux 2>/dev/null
+	$(CXX) -c -o ../../../../build/yield/fs/poll/linux/fs_event_queue_test.o -MD $(CXXFLAGS) ../../../../test/yield/fs/poll/linux/fs_event_queue_test.cpp
 
-../../../../build/yield/fs/poll_test/scanning_fs_event_queue_test.o: ../../../../test/yield/fs/poll/scanning_fs_event_queue_test.cpp
-	-mkdir -p ../../../../build/yield/fs/poll_test 2>/dev/null
-	$(CXX) -c -o ../../../../build/yield/fs/poll_test/scanning_fs_event_queue_test.o -MD $(CXXFLAGS) ../../../../test/yield/fs/poll/scanning_fs_event_queue_test.cpp
+../../../../build/yield/fs/poll/scanning_fs_event_queue_test.o: ../../../../test/yield/fs/poll/scanning_fs_event_queue_test.cpp
+	-mkdir -p ../../../../build/yield/fs/poll 2>/dev/null
+	$(CXX) -c -o ../../../../build/yield/fs/poll/scanning_fs_event_queue_test.o -MD $(CXXFLAGS) ../../../../test/yield/fs/poll/scanning_fs_event_queue_test.cpp
+
+../../../../build/yield/fs/poll/yield_fs_poll_test_main.o: ../../../../test/yield/fs/poll/yield_fs_poll_test_main.cpp
+	-mkdir -p ../../../../build/yield/fs/poll 2>/dev/null
+	$(CXX) -c -o ../../../../build/yield/fs/poll/yield_fs_poll_test_main.o -MD $(CXXFLAGS) ../../../../test/yield/fs/poll/yield_fs_poll_test_main.cpp
 
 ../../../../build/yield/fs/poll_test/win32/fs_event_queue_test.o: ../../../../test/yield/fs/poll/win32/fs_event_queue_test.cpp
 	-mkdir -p ../../../../build/yield/fs/poll_test/win32 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/fs/poll_test/win32/fs_event_queue_test.o -MD $(CXXFLAGS) ../../../../test/yield/fs/poll/win32/fs_event_queue_test.cpp
-
-../../../../build/yield/fs/poll_test/yield_fs_poll_test_main.o: ../../../../test/yield/fs/poll/yield_fs_poll_test_main.cpp
-	-mkdir -p ../../../../build/yield/fs/poll_test 2>/dev/null
-	$(CXX) -c -o ../../../../build/yield/fs/poll_test/yield_fs_poll_test_main.o -MD $(CXXFLAGS) ../../../../test/yield/fs/poll/yield_fs_poll_test_main.cpp
