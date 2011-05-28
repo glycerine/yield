@@ -116,7 +116,20 @@ CXXDEFINES = {
 }
 
 CXXFLAGS = {
-    "unix": ["-fno-rtti", "-Wall", "-Wold-style-cast", "-Wunused-macros"],
+    "unix": [
+        "-fno-rtti",
+        "-Wall",
+        "-Wconversion",
+        "-Wextra",
+        "-Wfloat-equal",
+        "-Winit-self",
+        "-Winline",
+        "-Wlogical-op",
+        "-Wold-style-cast",
+        "-Wpadded",
+        "-Wsign-conversion",
+        "-Wunused",
+    ],
     "win32": [
       "/EHsc", # Enable exceptions
       "/GR-", # Disable RTTI

@@ -54,9 +54,6 @@ public:
   YO_NEW_REF Event* timeddequeue(const Time& timeout);
 
 private:
-  FDEventQueue(void* hWakeEvent);
-
-private:
   ::yield::queue::BlockingConcurrentQueue<Event> event_queue;
 #if defined(__linux__)
   int epfd, wake_fd;
