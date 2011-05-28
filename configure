@@ -248,9 +248,10 @@ for project_name, project_references in PROJECT_REFERENCES_EXPANDED.iteritems():
     for project_reference in project_references:
         if project_reference != "yield.queue":
             project_reference_lib = path_split(OUTPUT_FILE_PATHS[project_reference])[-1]
-            LIBS_EXPANDED[project_name].setdefault('*', [])
-            assert project_reference_lib not in LIBS_EXPANDED[project_name]['*'], LIBS_EXPANDED[project_name]['*']
-            LIBS_EXPANDED[project_name]['*'].append(project_reference_lib)
+            platform = project_reference == "yield.sockets.poll" and "win32" or '*'
+            LIBS_EXPANDED[project_name].setdefault(platform, [])
+            assert project_reference_lib not in LIBS_EXPANDED[project_name][platform], LIBS_EXPANDED[project_name]['*']
+            LIBS_EXPANDED[project_name][platform].append(project_reference_lib)
 
     # dedup
     for platform in LIBS_EXPANDED[project_name].iterkeys():
@@ -566,6 +567,7 @@ if options.generate_proj:
                 (VCXProjUser, ".vcxproj.user"),
             ):
                 project_instance = project_class(**project)
+
                 if project_class == Makefile:
                     makefiles.append(project_instance)
                 elif project_class == VCXProj:

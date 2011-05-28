@@ -50,7 +50,10 @@ endif
 ifeq ($(UNAME), Solaris)
 	LIBS += -lkstat -lnsl -lsocket -lm -lrt -lstdc++
 endif
-LIBS += -lyield_sockets_poll -lyield_poll -lyield_thread -lyield_sockets -lyield
+ifeq ($(UNAME), MINGW32)
+	LIBS += -lyield_sockets_poll
+endif
+LIBS += -lyield_poll -lyield_thread -lyield_sockets -lyield
 
 
 D_FILE_PATHS := $(shell find ../../../../build/yield/sockets/aio -name "*.d")
