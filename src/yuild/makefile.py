@@ -169,68 +169,70 @@ endif
         source_files = self.get_source_files()
         source_files = source_files.exclude(self.get_exclude_files())
         source_files = source_files.filter(C_CXX_SOURCE_FILE_FNMATCH_PATTERNS)
-        source_files_platform_dict = source_files.as_platform_dict()
 
-        for platform, source_files in source_files_platform_dict.iteritems():
-            assert len(source_files) > 0
+        if len(source_files) > 0:
+            source_files_platform_dict = source_files.as_platform_dict()
 
-            for platform in expand_platform(platform):
-                o_file_paths = []
+            for platform, source_files in source_files_platform_dict.iteritems():
+                assert len(source_files) > 0
 
-                for source_file in source_files:
-                    source_file_path = my_dir_path + source_file
+                for platform in expand_platform(platform):
+                    o_file_paths = []
 
-                    o_file_path = \
-                        my_dir_path + \
-                        path_join(
-                            self.get_build_dir_path()[platform],
-                            splitext(
-                                relpath(source_file_path, self.get_source_dir_path()['*'])
-                            )[0] + ".o"
-                        )
-                    object_dir_path = posixpath(dirname(o_file_path))
-                    o_file_path = posixpath(o_file_path)
-                    o_file_paths.append(o_file_path)
+                    for source_file in source_files:
+                        source_file_path = my_dir_path + source_file
 
-                    source_file_path = posixpath(source_file_path)
-                    source_file_rules.append(SOURCE_FILE_RULE % locals())
+                        o_file_path = \
+                            my_dir_path + \
+                            path_join(
+                                self.get_build_dir_path()[platform],
+                                splitext(
+                                    relpath(source_file_path, self.get_source_dir_path()['*'])
+                                )[0] + ".o"
+                            )
+                        object_dir_path = posixpath(dirname(o_file_path))
+                        o_file_path = posixpath(o_file_path)
+                        o_file_paths.append(o_file_path)
 
-                o_file_paths.sort()
-                platform_o_file_paths.setdefault(platform, []).append(
-                    "O_FILE_PATHS += " + \
-                    ' '.join(o_file_paths)
+                        source_file_path = posixpath(source_file_path)
+                        source_file_rules.append(SOURCE_FILE_RULE % locals())
+
+                    o_file_paths.sort()
+                    platform_o_file_paths.setdefault(platform, []).append(
+                        "O_FILE_PATHS += " + \
+                        ' '.join(o_file_paths)
+                    )
+
+            o_file_paths = []
+            platforms = list(platform_o_file_paths.keys()); platforms.sort()
+            for platform in platforms:
+                platform_o_file_paths[platform].sort()
+                o_file_paths.append(
+                    uname_check(
+                        platform,
+                        '\n'.join(platform_o_file_paths[platform])
+                    )
                 )
+            o_file_paths = '\n'.join(o_file_paths)
 
-        o_file_paths = []
-        platforms = list(platform_o_file_paths.keys()); platforms.sort()
-        for platform in platforms:
-            platform_o_file_paths[platform].sort()
-            o_file_paths.append(
-                uname_check(
-                    platform,
-                    '\n'.join(platform_o_file_paths[platform])
-                )
-            )
-        o_file_paths = '\n'.join(o_file_paths)
+            source_file_rules = deduplist(source_file_rules)
+            source_file_rules.sort()
+            source_file_rules = '\n'.join(source_file_rules)
 
-        source_file_rules = deduplist(source_file_rules)
-        source_file_rules.sort()
-        source_file_rules = '\n'.join(source_file_rules)
+            # output_file_path
+            output_file_path = self.get_output_file_path()['*']
+            output_dir_path, output_file_name = path_split(output_file_path)
+            if not output_file_name.startswith(self.OUTPUT_FILE_PREFIX[self.get_type()]):
+                output_file_name = self.OUTPUT_FILE_PREFIX[self.get_type()] + output_file_name
+            if len(splitext(output_file_name)[1]) == 0:
+                output_file_name += self.OUTPUT_FILE_EXT[self.get_type()]
+            output_file_path = path_join(output_dir_path, output_file_name)
+            output_file_recipe = self.OUTPUT_FILE_RECIPE[self.get_type()]
 
-        # output_file_path
-        output_file_path = self.get_output_file_path()['*']
-        output_dir_path, output_file_name = path_split(output_file_path)
-        if not output_file_name.startswith(self.OUTPUT_FILE_PREFIX[self.get_type()]):
-            output_file_name = self.OUTPUT_FILE_PREFIX[self.get_type()] + output_file_name
-        if len(splitext(output_file_name)[1]) == 0:
-            output_file_name += self.OUTPUT_FILE_EXT[self.get_type()]
-        output_file_path = path_join(output_dir_path, output_file_name)
-        output_file_recipe = self.OUTPUT_FILE_RECIPE[self.get_type()]
-
-        if self.get_type() == Project.TYPE_PROGRAM:
-            name = self.get_name()
-            output_file_path = posixpath(output_file_path)
-            lcov_rule = """
+            if self.get_type() == Project.TYPE_PROGRAM:
+                name = self.get_name()
+                output_file_path = posixpath(output_file_path)
+                lcov_rule = """
             
 lcov: %(output_file_path)s
     lcov --directory %(build_dir_path)s --zerocounters
@@ -241,79 +243,79 @@ lcov: %(output_file_path)s
     -cp -R %(name)s_lcov_html-$(TIMESTAMP) /mnt/hgfs/minorg/Desktop
     zip -qr %(name)s_lcov_html-$(TIMESTAMP).zip %(name)s_lcov_html-$(TIMESTAMP)/*
     rm -fr %(name)s_lcov_html-$(TIMESTAMP)""" % locals()
-        else:
-            lcov_rule = ""
+            else:
+                lcov_rule = ""
 
-        output_dir_path = my_dir_path + posixpath(output_dir_path)
-        output_file_path = my_dir_path + posixpath(output_file_path)
+            output_dir_path = my_dir_path + posixpath(output_dir_path)
+            output_file_path = my_dir_path + posixpath(output_file_path)
 
-        output_file_prerequisites = ["$(O_FILE_PATHS)"]
-        project_reference_rules = []
-        for project_reference in self.get_project_references().get('*', []):
-            project_reference_makefile_path = project_reference
-            if not isfile(project_reference_makefile_path):
-                project_reference_makefile_path = \
-                    normpath(
-                        path_join(
-                            self.get_project_dir_path(),
-                            project_reference
-                        )
-                    )
-
+            output_file_prerequisites = ["$(O_FILE_PATHS)"]
+            project_reference_rules = []
+            for project_reference in self.get_project_references().get('*', []):
+                project_reference_makefile_path = project_reference
                 if not isfile(project_reference_makefile_path):
                     project_reference_makefile_path = \
                         normpath(
                             path_join(
                                 self.get_project_dir_path(),
-                                project_reference + ".Makefile"
+                                project_reference
                             )
                         )
+
                     if not isfile(project_reference_makefile_path):
-                        continue
-
-            for line in open(project_reference_makefile_path).readlines():
-                if line.startswith("all: "):
-                    all_targets = line.split()[1:]
-                    if len(all_targets) == 1:
-                        project_reference_output_file_path = \
-                            posixpath(
-                                relpath(
-                                    normpath(
-                                        path_join(
-                                            dirname(project_reference_makefile_path),
-                                            all_targets[0]
-                                        )
-                                    ),
-                                    self.get_project_dir_path()
+                        project_reference_makefile_path = \
+                            normpath(
+                                path_join(
+                                    self.get_project_dir_path(),
+                                    project_reference + ".Makefile"
                                 )
                             )
+                        if not isfile(project_reference_makefile_path):
+                            continue
 
-                        output_file_prerequisites.append(
-                            project_reference_output_file_path
-                        )
-
-                        project_reference_makefile_dir_path, \
-                            project_reference_makefile_name = \
-                                path_split(project_reference_makefile_path)
-
-                        project_reference_makefile_dir_relpath = \
-                            posixpath(
-                                relpath(
-                                    project_reference_makefile_dir_path,
-                                    self.get_project_dir_path()
+                for line in open(project_reference_makefile_path).readlines():
+                    if line.startswith("all: "):
+                        all_targets = line.split()[1:]
+                        if len(all_targets) == 1:
+                            project_reference_output_file_path = \
+                                posixpath(
+                                    relpath(
+                                        normpath(
+                                            path_join(
+                                                dirname(project_reference_makefile_path),
+                                                all_targets[0]
+                                            )
+                                        ),
+                                        self.get_project_dir_path()
+                                    )
                                 )
+
+                            output_file_prerequisites.append(
+                                project_reference_output_file_path
                             )
 
-                        project_reference_rules.append("""\
+                            project_reference_makefile_dir_path, \
+                                project_reference_makefile_name = \
+                                    path_split(project_reference_makefile_path)
+
+                            project_reference_makefile_dir_relpath = \
+                                posixpath(
+                                    relpath(
+                                        project_reference_makefile_dir_path,
+                                        self.get_project_dir_path()
+                                    )
+                                )
+
+                            project_reference_rules.append("""\
 %(project_reference_output_file_path)s:
     $(MAKE) -C %(project_reference_makefile_dir_relpath)s %(project_reference_makefile_name)s
 """ % locals())
-                    break
+                        break
 
-        project_reference_rules = lpad("\n\n\n", "\n\n".join(project_reference_rules))
-        output_file_prerequisites = ' '.join(output_file_prerequisites)
+            project_reference_rules = lpad("\n\n\n", "\n\n".join(project_reference_rules))
+            output_file_prerequisites = ' '.join(output_file_prerequisites)
 
-        return ("""\
+            return ("""\
 TIMESTAMP=$(shell date +%%Y%%m%%dT%%H%%M%%S)
 UNAME := $(shell uname)
 %(CXXFLAGS)s%(LDFLAGS)s%(LIBS)s
@@ -339,7 +341,14 @@ depclean:
     %(output_file_recipe)s
 
 %(source_file_rules)s""" % locals()).replace(' ' * 4, '\t')
+        else:
+            return """\
+all:
 
+clean:
+
+depclean:
+"""
 
 class TopLevelMakefile(object):
     def __init__(self, makefiles):

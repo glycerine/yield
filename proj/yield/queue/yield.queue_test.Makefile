@@ -79,12 +79,7 @@ lcov: ../../../bin/yield/yield_queue_test
 	zip -qr yield.queue_test_lcov_html-$(TIMESTAMP).zip yield.queue_test_lcov_html-$(TIMESTAMP)/*
 	rm -fr yield.queue_test_lcov_html-$(TIMESTAMP)
 
-
-../../../lib/yield/libyield_queue.a:
-	$(MAKE) -C . yield.queue.Makefile
-
-
-../../../bin/yield/yield_queue_test: $(O_FILE_PATHS) ../../../lib/yield/libyield_queue.a
+../../../bin/yield/yield_queue_test: $(O_FILE_PATHS)
 	-mkdir -p ../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 
