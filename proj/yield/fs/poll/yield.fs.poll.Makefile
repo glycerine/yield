@@ -89,11 +89,7 @@ depclean:
 	$(MAKE) -C .. yield.fs.Makefile
 
 
-../../../../lib/yield/libyield_queue.a:
-	$(MAKE) -C ../../queue yield.queue.Makefile
-
-
-../../../../lib/yield/libyield_fs_poll.a: $(O_FILE_PATHS) ../../../../lib/yield/libyield_fs.a ../../../../lib/yield/libyield_queue.a
+../../../../lib/yield/libyield_fs_poll.a: $(O_FILE_PATHS) ../../../../lib/yield/libyield_fs.a
 	-mkdir -p ../../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(O_FILE_PATHS)
 

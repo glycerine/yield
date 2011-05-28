@@ -98,6 +98,10 @@
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
+    <ClCompile Include="..\..\..\..\src\yield\sockets\poll\posix\socket_event_queue.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\sockets\poll\win32\socket_event_queue.cpp">
       <ObjectFileName>$(IntDir)win32\socket_event_queue.obj</ObjectFileName>
     </ClCompile>

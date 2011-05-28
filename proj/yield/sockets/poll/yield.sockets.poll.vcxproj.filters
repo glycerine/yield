@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="Source Files\posix">
+      <UniqueIdentifier>{9903d9f2-3dc8-43ec-9c21-d40fd05da3f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\win32">
+      <UniqueIdentifier>{bb0ef8d4-caa7-47b9-a72f-f3d7b2dd567a}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source Files">
       <UniqueIdentifier>{77683e51-f7b6-4a79-9db1-690661af83b8}</UniqueIdentifier>
     </Filter>
@@ -19,8 +25,11 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\yield\sockets\poll\posix\socket_event_queue.cpp">
+      <Filter>Source Files\posix</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\sockets\poll\win32\socket_event_queue.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\win32</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

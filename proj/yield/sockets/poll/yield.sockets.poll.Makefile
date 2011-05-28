@@ -56,6 +56,18 @@ LIBS += -lyield_poll -lyield_thread -lyield_sockets -lyield
 D_FILE_PATHS := $(shell find ../../../../build/yield/sockets/poll -name "*.d")
 
 
+ifeq ($(UNAME), Darwin)
+	O_FILE_PATHS += ../../../../build/yield/sockets/poll/posix/socket_event_queue.o
+endif
+ifeq ($(UNAME), FreeBSD)
+	O_FILE_PATHS += ../../../../build/yield/sockets/poll/posix/socket_event_queue.o
+endif
+ifeq ($(UNAME), Linux)
+	O_FILE_PATHS += ../../../../build/yield/sockets/poll/posix/socket_event_queue.o
+endif
+ifeq ($(UNAME), Solaris)
+	O_FILE_PATHS += ../../../../build/yield/sockets/poll/posix/socket_event_queue.o
+endif
 ifeq ($(UNAME), MINGW32)
 	O_FILE_PATHS += ../../../../build/yield/sockets/poll/win32/socket_event_queue.o
 endif
@@ -83,6 +95,10 @@ depclean:
 ../../../../lib/yield/libyield_sockets_poll.a: $(O_FILE_PATHS) ../../../../lib/yield/libyield_poll.a ../../../../lib/yield/libyield_sockets.a
 	-mkdir -p ../../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(O_FILE_PATHS)
+
+../../../../build/yield/sockets/poll/posix/socket_event_queue.o: ../../../../src/yield/sockets/poll/posix/socket_event_queue.cpp
+	-mkdir -p ../../../../build/yield/sockets/poll/posix 2>/dev/null
+	$(CXX) -c -o ../../../../build/yield/sockets/poll/posix/socket_event_queue.o -MD $(CXXFLAGS) ../../../../src/yield/sockets/poll/posix/socket_event_queue.cpp
 
 ../../../../build/yield/sockets/poll/win32/socket_event_queue.o: ../../../../src/yield/sockets/poll/win32/socket_event_queue.cpp
 	-mkdir -p ../../../../build/yield/sockets/poll/win32 2>/dev/null
