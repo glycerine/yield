@@ -6,17 +6,17 @@ CXXFLAGS += -I../../include
 ifeq ($(UNAME), FreeBSD)
 	CXXFLAGS += -I/usr/local/include
 endif
-ifeq ($(UNAME), Linux)
-	CXXFLAGS += -fno-rtti -Wall -Wextra -Wfloat-equal -Winit-self -Winline -Wlogical-op -Wold-style-cast -Wunused
-endif
 ifeq ($(UNAME), FreeBSD)
-	CXXFLAGS += -fno-rtti -Wall -Wextra -Wfloat-equal -Winit-self -Winline -Wlogical-op -Wold-style-cast -Wunused
+	CXXFLAGS += -fno-rtti -Wall -Wextra -Wfloat-equal -Winit-self -Winline -Wold-style-cast -Wunused
 endif
-ifeq ($(UNAME), Solaris)
-	CXXFLAGS += -fno-rtti -Wall -Wextra -Wfloat-equal -Winit-self -Winline -Wlogical-op -Wold-style-cast -Wunused
+ifeq ($(UNAME), Linux)
+	CXXFLAGS += -fno-rtti -Wall -Wextra -Wfloat-equal -Winit-self -Winline -Wold-style-cast -Wunused
 endif
 ifeq ($(UNAME), Darwin)
-	CXXFLAGS += -fno-rtti -Wall -Wextra -Wfloat-equal -Winit-self -Winline -Wlogical-op -Wold-style-cast -Wunused
+	CXXFLAGS += -fno-rtti -Wall -Wextra -Wfloat-equal -Winit-self -Winline -Wold-style-cast -Wunused
+endif
+ifeq ($(UNAME), Solaris)
+	CXXFLAGS += -fno-rtti -Wall -Wextra -Wfloat-equal -Winit-self -Winline -Wold-style-cast -Wunused
 endif
 ifeq ($(UNAME), MINGW32)
 	CXXFLAGS += /EHsc /GR- /MP /nologo /wd"4100" /wd"4127" /wd"4290" /wd"4355" /wd"4512"
