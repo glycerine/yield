@@ -37,7 +37,6 @@
 #include <time.h>
 #endif
 
-
 namespace yield {
 Time Time::now() {
 #if defined(__MACH__)
@@ -58,13 +57,6 @@ Time Time::now() {
   return Time(ts);
 #endif
 }
-
-#ifdef __MACH__
-Time::operator mach_timespec_t() const {
-  mach_timespec_t ts = { _ns / NS_IN_S, _ns % NS_IN_S };
-  return ts;
-}
-#endif
 
 #ifndef _WIN32
 Time::Time(const timespec& ts) {

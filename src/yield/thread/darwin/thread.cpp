@@ -32,7 +32,7 @@
 namespace yield {
 namespace thread {
 void Thread::yield() {
-  pthread_YIELD_np();
+  pthread_yield_np();
 }
 }
 }

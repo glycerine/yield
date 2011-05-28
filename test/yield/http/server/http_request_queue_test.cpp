@@ -44,7 +44,7 @@ namespace server {
 class TestHTTPRequestQueue : public HTTPRequestQueue<> {
 public:
   TestHTTPRequestQueue(YO_NEW_REF Log* log = NULL)
-    : HTTPRequestQueue(8000, log) {
+    : HTTPRequestQueue<>(8000, log) {
   }
 };
 

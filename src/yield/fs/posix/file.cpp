@@ -255,7 +255,16 @@ ssize_t File::pread(void* buf, size_t buflen, off_t offset) {
 }
 
 ssize_t File::preadv(const iovec* iov, int iovlen, off_t offset) {
+#ifdef __MACH__
+  if (iovlen == 1)
+    return pread(iov[0].iov_base, iov[0].iov_len, offset);
+  else {
+    errno = EINVAL;
+    return -1;
+  }
+#else  
   return ::preadv(*this, iov, iovlen, offset);
+#endif
 }
 
 ssize_t File::pwrite(const Buffer& buffer, off_t offset) {
@@ -273,7 +282,14 @@ ssize_t File::pwrite(const void* buf, size_t buflen, off_t offset) {
 }
 
 ssize_t File::pwritev(const iovec* iov, int iovlen, off_t offset) {
+#ifdef __MACH__
+  string buf;
+  for (int iov_i = 0; iov_i < iovlen; ++iov_i)
+    buf.append(static_cast<char*>(iov[iov_i].iov_base), iov[iov_i].iov_len);
+  return pwrite(buf.data(), buf.size(), offset);
+#else
   return ::pwritev(*this, iov, iovlen, offset);
+#endif
 }
 
 ssize_t File::read(Buffer& buffer) {

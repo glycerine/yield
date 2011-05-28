@@ -33,7 +33,7 @@
 #include "yield/assert.hpp"
 #include "yield/exception.hpp"
 #include "yield/log.hpp"
-#include "yield/fs/poll/bsd/fs_event_queue.hpp"
+#include "yield/fs/poll/fs_event_queue.hpp"
 #include "yield/fs/file_system.hpp"
 
 #include <errno.h>
@@ -47,7 +47,6 @@
 namespace yield {
 namespace fs {
 namespace poll {
-namespace bsd {
 FSEventQueue::FSEventQueue(YO_NEW_REF Log* log) : log(log) {
   watches = NULL;
   kq = kqueue();
@@ -58,7 +57,7 @@ FSEventQueue::FSEventQueue(YO_NEW_REF Log* log) : log(log) {
           struct kevent kevent_;
           EV_SET(&kevent_, wake_pipe[0], EVFILT_READ, EV_ADD, 0, 0, NULL);
           if (kevent(kq, &kevent_, 1, 0, 0, NULL) == 0)
-            watches = new Watches<Watch>;
+            watches = new Watches<bsd::Watch>;
           else
             throw Exception();
         } catch (Exception&) {
@@ -95,11 +94,11 @@ FSEventQueue::associate(
   if (fd != -1) {
     struct stat stbuf;
     if (::fstat(fd, &stbuf) == 0) {
-      Watch* watch;
+      bsd::Watch* watch;
       if (S_ISDIR(stbuf.st_mode))
-        watch = new DirectoryWatch(fd, fs_event_types, path, log);
+        watch = new bsd::DirectoryWatch(fd, fs_event_types, path, log);
       else
-        watch = new FileWatch(fd, fs_event_types, path, log);
+        watch = new bsd::FileWatch(fd, fs_event_types, path, log);
 
       // Don't try to be clever with fflags, since there
       // appears to be minimal logic in how they work.
@@ -127,7 +126,7 @@ FSEventQueue::associate(
 }
 
 bool FSEventQueue::dissociate(const Path& path) {
-  Watch* watch = watches->erase(path);
+  bsd::Watch* watch = watches->erase(path);
   if (watch != NULL) {
     delete watch;
     return true;
@@ -156,7 +155,8 @@ YO_NEW_REF Event* FSEventQueue::timeddequeue(const Time& timeout) {
       debug_assert_eq(ret, 1);
       if (static_cast<int>(kevent_.ident) == wake_pipe[0]) {
         char m;
-        read(wake_pipe[0], &m, sizeof(m));
+        ssize_t read_ret = read(wake_pipe[0], &m, sizeof(m));
+        debug_assert_eq(read_ret, static_cast<ssize_t>(sizeof(m)));
         return event_queue.trydequeue();
       } else {
         debug_assert_eq(kevent_.filter, EVFILT_VNODE);
@@ -165,7 +165,7 @@ YO_NEW_REF Event* FSEventQueue::timeddequeue(const Time& timeout) {
         //    get_type_name() << "(fd=" << fd << ", path=" << path << "): " <<
         //      "read kevent(fflags=" << kevent_.fflags << ")";
         //}
-        Watch* watch = static_cast<Watch*>(kevent_.udata);
+        bsd::Watch* watch = static_cast<bsd::Watch*>(kevent_.udata);
         watch->read(kevent_, *this);
         return event_queue.trydequeue();
       }
@@ -176,7 +176,6 @@ YO_NEW_REF Event* FSEventQueue::timeddequeue(const Time& timeout) {
       return NULL;
     }
   }
-}
 }
 }
 }

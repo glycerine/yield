@@ -27,11 +27,14 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include "yield/exception.hpp"
+#include "yield/time.hpp"
 #include "yield/thread/semaphore.hpp"
 
 #include <unistd.h>
 #include <mach/clock.h>
 #include <mach/mach_init.h>
+#include <mach/semaphore.h>
 #include <mach/task.h>
 
 namespace yield {
@@ -57,7 +60,10 @@ void Semaphore::post() {
 }
 
 bool Semaphore::timedwait(const Time& timeout) {
-  return semaphore_timedwait(sem, timeout) == KERN_SUCCESS;
+  mach_timespec_t timeout_ts;
+  timeout_ts.tv_sec = timeout.ns() / Time::NS_IN_S;
+  timeout_ts.tv_nsec = timeout.ns() % Time::NS_IN_S;
+  return semaphore_timedwait(sem, timeout_ts) == KERN_SUCCESS;
 }
 
 bool Semaphore::trywait() {

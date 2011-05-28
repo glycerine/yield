@@ -32,11 +32,6 @@
 
 #include "yield/types.hpp"
 
-#ifdef __MACH__
-struct mach_timespec;
-typedef mach_timespec mach_timespec_t;
-#endif
-
 namespace yield {
 /**
   An elapsed time with no reference, similar to struct timespec.
@@ -160,13 +155,6 @@ public:
     return _ns;
   }
 
-#ifdef __MACH__
-  /**
-    Cast this Time to a mach_timespec_t.
-    @return the mach_timespec_t
-  */
-  operator mach_timespec_t() const;
-#endif
 #ifndef _WIN32
   /**
     Set the stored time from a struct timespec.

@@ -40,12 +40,12 @@
 
 namespace yield {
 namespace sockets {
+#pragma GCC diagnostic ignored "-Wold-style-cast"
 const int SocketAddress::GETNAMEINFO_FLAG_NOFQDN = NI_NOFQDN;
 const int SocketAddress::GETNAMEINFO_FLAG_NAMEREQD = NI_NAMEREQD;
 const int SocketAddress::GETNAMEINFO_FLAG_NUMERICHOST = NI_NUMERICHOST;
 const int SocketAddress::GETNAMEINFO_FLAG_NUMERICSERV = NI_NUMERICSERV;
 
-#pragma GCC diagnostic ignored "-Wold-style-cast"
 const SocketAddress
 SocketAddress::IN_ANY(
   static_cast<uint32_t>(INADDR_ANY),
@@ -68,7 +68,6 @@ SocketAddress::IN_LOOPBACK(
   in6addr_loopback,
   0
 );
-#pragma GCC diagnostic warning "-Wold-style-cast"
 
 SocketAddress::SocketAddress(const SocketAddress& other, uint16_t port) {
   memcpy_s(&addr, sizeof(addr), &other.addr, sizeof(other.addr));
@@ -254,5 +253,6 @@ socklen_t SocketAddress::len(int family) {
   default: debug_break(); return 0;
   }
 }
+#pragma GCC diagnostic warning "-Wold-style-cast"
 }
 }

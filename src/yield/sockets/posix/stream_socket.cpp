@@ -67,11 +67,18 @@ ssize_t StreamSocket::sendfile(fd_t fd, off_t offset, size_t nbytes) {
     return -1;
   else
     return sendfile_ret;
-#elif defined(__FreeBSD__) || defined(__MACH__)
+#elif defined(__FreeBSD__)
   off_t sbytes;
   int sendfile_ret = ::sendfile(fd, *this, offset, nbytes, NULL, &sbytes, 0);
   if (sendfile_ret == 0)
     return sbytes;
+  else
+    return sendfile_ret;
+#elif defined(__MACH__)
+  off_t len = nbytes;
+  int sendfile_ret = ::sendfile(fd, *this, offset, &len, NULL, 0);
+  if (sendfile_ret == 0)
+    return static_cast<ssize_t>(len);
   else
     return sendfile_ret;
 #else

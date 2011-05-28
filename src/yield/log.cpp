@@ -63,7 +63,7 @@ Log& Log::open(std::ostream& os, const Level& level) {
 }
 
 void Log::write(const char* message, const Level& level) {
-  write(message, strnlen(message, UINT16_MAX), level);
+  write(message, strlen(message), level);
 }
 
 void Log::write(const string& message, const Level& level) {

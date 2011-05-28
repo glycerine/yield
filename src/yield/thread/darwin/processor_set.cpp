@@ -29,6 +29,10 @@
 
 #include "yield/thread/processor_set.hpp"
 
+#include <mach/host_info.h>
+#include <mach/mach_init.h>
+#include <mach/mach_host.h>
+
 namespace yield {
 namespace thread {
 uint16_t ProcessorSet::get_online_logical_processor_count() {
@@ -37,7 +41,7 @@ uint16_t ProcessorSet::get_online_logical_processor_count() {
 
 uint16_t ProcessorSet::get_online_physical_processor_count() {
   host_basic_info_data_t basic_info;
-  host_info_t info = (host_info_t)&basic_info;
+  host_info_t info = reinterpret_cast<host_info_t>(&basic_info);
   host_flavor_t flavor = HOST_BASIC_INFO;
   mach_msg_type_number_t count = HOST_BASIC_INFO_COUNT;
   if (host_info(mach_host_self(), flavor, info, &count) == KERN_SUCCESS)
