@@ -125,7 +125,7 @@ CXXFLAGS = {
         "-Winline",
         "-Wlogical-op",
         "-Wold-style-cast",
-        "-Wpadded",
+        # "-Wpadded",
         "-Wunused",
     ],
     "win32": [
