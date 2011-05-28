@@ -119,6 +119,16 @@ TEST_EX(FDEventQueue, associate_change, FDEventQueueTest) {
     throw Exception();
 }
 
+TEST_EX(FDEventQueue, associate_duplicate, FDEventQueueTest) {
+  FDEventQueue fd_event_queue;
+
+  if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY))
+    throw Exception();
+
+  if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY))
+    throw Exception();
+}
+
 TEST_EX(FDEventQueue, associate_two, FDEventQueueTest) {
   FDEventQueue fd_event_queue;
 
