@@ -121,7 +121,7 @@ TEST(SocketEventQueue, dissociate_two) {
   throw_assert_eq(socket_event->get_fd(), sockets.second());
   throw_assert_eq(socket_event->get_type(), FDEvent::TYPE_READ_READY);
   char m;
-  if (reinterpret_cast<fd_t>(socket_event->get_fd()) == sockets.first())
+  if (socket_event->get_fd() == sockets.first())
     sockets.first().recv(&m, 1, 0);
   else
     sockets.second().recv(&m, 1, 0);
