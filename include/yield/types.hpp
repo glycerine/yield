@@ -130,6 +130,7 @@ typedef int socket_t;
   @param src memory location to copy from
   @param src_len length of the memory region pointed to by src
 */
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 inline void
 memcpy_s(
   void* dest,
@@ -139,6 +140,7 @@ memcpy_s(
 ) {
   memcpy(dest, src, src_len);
 }
+#pragma GCC diagnostic warning "-Wunused-parameter"
 #endif
 
 #endif
