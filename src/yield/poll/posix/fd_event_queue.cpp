@@ -28,8 +28,6 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/assert.hpp"
-#include "yield/exception.hpp"
-#include "yield/poll/fd_event.hpp"
 #include "yield/poll/fd_event_queue.hpp"
 
 #include <errno.h>
@@ -40,7 +38,7 @@ namespace poll {
     !defined(__MACH__) && \
     !defined(__FreeBSD__) && \
     !defined(__sun)
-FDEventQueue::FDEventQueue() {
+FDEventQueue::FDEventQueue() throw(Exception) {
   if (pipe(wake_pipe) != -1) {
     try {
       if (!associate(wake_pipe[0], FDEvent::TYPE_READ_READY))
@@ -59,7 +57,7 @@ FDEventQueue::~FDEventQueue() {
   close(wake_pipe[1]);
 }
 
-bool FDEventQueue::associate(fd_t fd, uint16_t fd_event_types) {
+bool FDEventQueue::associate(fd_t fd, FDEvent::Type fd_event_types) {
   if (fd_event_types > 0) {
     for (
       vector<pollfd>::iterator pollfd_i = pollfds.begin();

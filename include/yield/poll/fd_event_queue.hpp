@@ -30,7 +30,9 @@
 #ifndef _YIELD_POLL_FD_EVENT_QUEUE_HPP_
 #define _YIELD_POLL_FD_EVENT_QUEUE_HPP_
 
+#include "yield/exception.hpp"
 #include "yield/event_queue.hpp"
+#include "yield/poll/fd_event.hpp"
 #include "yield/queue/blocking_concurrent_queue.hpp"
 
 #ifndef _WIN32
@@ -39,13 +41,38 @@
 
 namespace yield {
 namespace poll {
+/**
+  EventQueue for file descriptor events (FDEvents).
+  Implemented in terms of efficient poll() variants on different platforms.
+*/
 class FDEventQueue : public EventQueue {
 public:
-  FDEventQueue();
+  /**
+    Construct an FDEventQueue, allocating any associated system resources.
+  */
+  FDEventQueue() throw (Exception);
+
+  /**
+    Destroy an FDEventQueue, deallocating any associated system resources.
+  */
   ~FDEventQueue();
 
 public:
-  bool associate(fd_t fd, uint16_t fd_event_types);
+  /**
+    Associate a file descriptor with this FDEventQueue,
+      watching for the specified FDEvent types (read readiness,
+      write readiness, et al.).
+   @param fd the file descriptor to associate
+   @param fd_event_types FDEvent types to monitor
+   @return true on success
+  */
+  bool associate(fd_t fd, FDEvent::Type fd_event_types);
+
+  /**
+    Dissociate a file descriptor from this FDEventQueue.
+    @param fd the file descriptor to dissociate
+    @return true on success
+  */
   bool dissociate(fd_t fd);
 
 public:

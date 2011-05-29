@@ -28,8 +28,6 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/assert.hpp"
-#include "yield/exception.hpp"
-#include "yield/poll/fd_event.hpp"
 #include "yield/poll/fd_event_queue.hpp"
 
 #include <errno.h>
@@ -37,7 +35,7 @@
 
 namespace yield {
 namespace poll {
-FDEventQueue::FDEventQueue() {
+FDEventQueue::FDEventQueue() throw (Exception) {
   kq = kqueue();
   if (kq != -1) {
     try {
@@ -66,7 +64,7 @@ FDEventQueue::~FDEventQueue() {
   close(wake_pipe[1]);
 }
 
-bool FDEventQueue::associate(fd_t fd, uint16_t fd_event_types) {
+bool FDEventQueue::associate(fd_t fd, FDEvent::Type fd_event_types) {
   if (fd_event_types > 0) {
     struct kevent kevent_;
 

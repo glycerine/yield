@@ -59,20 +59,5 @@ FDEvent::FDEvent(fd_t fd, Type type) : fd(fd), type(type) {
     type == TYPE_WRITE_READY
   );
 }
-
-#ifdef _WIN32
-FDEvent::FDEvent(socket_t socket_, Type type)
-  : fd(reinterpret_cast<fd_t>(socket_)), type(type) {
-  debug_assert(
-    type == TYPE_ERROR
-    ||
-    type == TYPE_HUP
-    ||
-    type == TYPE_READ_READY
-    ||
-    type == TYPE_WRITE_READY
-  );
-}
-#endif
 }
 }

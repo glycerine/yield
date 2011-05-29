@@ -417,7 +417,12 @@ Event* NBIOQueue::timeddequeue(const Time& timeout) {
       switch (event->get_type_id()) {
       case SocketEvent::TYPE_ID: {
         SocketEvent* socket_event = static_cast<SocketEvent*>(event);
-        socket_t socket_ = socket_event->get_socket();
+        socket_t socket_;
+#ifdef _WIN32
+          socket_ = reinterpret_cast<socket_t>(socket_event->get_fd());
+#else
+          socket_ = socket_event->get_fd();
+#endif
         SocketEvent::dec_ref(*socket_event);
 
         map<socket_t, SocketState*>::iterator socket_state_i

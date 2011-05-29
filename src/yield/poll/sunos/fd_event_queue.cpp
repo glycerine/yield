@@ -33,7 +33,7 @@
 
 namespace yield {
 namespace poll {
-FDEventQueue::FDEventQueue(int port) {
+FDEventQueue::FDEventQueue() throw(Exception) {
   port = port_create();
   if (port == -1)
     throw Exception();
@@ -43,7 +43,7 @@ FDEventQueue::~FDEventQueue() {
   close(port);
 }
 
-bool FDEventQueue::associate(fd_t fd, uint16_t fd_event_types) {
+bool FDEventQueue::associate(fd_t fd, FDEvent::Type fd_event_types) {
   if (fd_event_types > 0) {
     return port_associate(
              port,

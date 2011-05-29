@@ -27,15 +27,13 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/exception.hpp"
-#include "yield/poll/fd_event.hpp"
 #include "yield/poll/fd_event_queue.hpp"
 
 #include <Windows.h>
 
 namespace yield {
 namespace poll {
-FDEventQueue::FDEventQueue() {
+FDEventQueue::FDEventQueue() throw (Exception) {
   HANDLE hWakeEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
   if (hWakeEvent != NULL)
     fds.push_back(hWakeEvent);
@@ -47,7 +45,7 @@ FDEventQueue::~FDEventQueue() {
   CloseHandle(fds[0]);
 }
 
-bool FDEventQueue::associate(fd_t fd, uint16_t fd_event_types) {
+bool FDEventQueue::associate(fd_t fd, FDEvent::Type fd_event_types) {
   if (fd_event_types != 0) {
     if (fds.size() < MAXIMUM_WAIT_OBJECTS) {
       for (

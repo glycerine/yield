@@ -34,6 +34,10 @@
 
 namespace yield {
 namespace poll {
+/**
+  Event subclass describing file descriptor events
+    (read and write readiness, errors).
+*/
 class FDEvent : public Event {
 public:
   const static uint32_t TYPE_ID = 117149474;
@@ -46,24 +50,24 @@ public:
   const static Type TYPE_WRITE_READY;
 
 public:
+  /**
+    Construct an FDEvent from a file descriptor and a Type.
+  */
   FDEvent(fd_t fd, Type type);
-#ifdef _WIN32
-  FDEvent(socket_t socket_, Type type);
-#endif
 
 public:
+  /**
+    Get the file descriptor associated with this FDEvent.
+    @return the file descriptor associated with this FDEvent
+  */
   fd_t get_fd() const {
     return fd;
   }
 
-  socket_t get_socket() const {
-#ifdef _WIN32
-    return reinterpret_cast<socket_t>(get_fd());
-#else
-    return get_fd();
-#endif
-  }
-
+  /**
+    Get the Type of this FDEvent.
+    @return the Type of this FDEvent
+  */
   Type get_type() const {
     return type;
   }

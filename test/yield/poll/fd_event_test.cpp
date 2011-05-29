@@ -49,13 +49,6 @@ TEST(FDEvent, get_fd) {
   );
 }
 
-TEST(FDEvent, get_socket) {
-  throw_assert_eq(
-    FDEvent(static_cast<socket_t>(0), FDEvent::TYPE_READ_READY).get_socket(),
-    0
-  );
-}
-
 TEST(FDEvent, get_type) {
   throw_assert_eq(
     FDEvent(static_cast<fd_t>(0), FDEvent::TYPE_READ_READY).get_type(),

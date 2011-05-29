@@ -121,7 +121,7 @@ TEST(SocketEventQueue, dissociate_two) {
   throw_assert_eq(socket_event->get_fd(), sockets.second());
   throw_assert_eq(socket_event->get_type(), SocketEvent::TYPE_READ_READY);
   char m;
-  if (socket_event->get_socket() == sockets.first())
+  if (reinterpret_cast<fd_t>(socket_event->get_fd()) == sockets.first())
     sockets.first().recv(&m, 1, 0);
   else
     sockets.second().recv(&m, 1, 0);
@@ -160,9 +160,9 @@ TEST(SocketEventQueue, dequeue_two_SocketEvents) {
     = Object::cast<SocketEvent>(socket_event_queue.dequeue());
 
     throw_assert(
-      socket_event->get_socket() == sockets.first()
+      socket_event->get_fd() == sockets.first()
       ||
-      socket_event->get_socket() == sockets.second()
+      socket_event->get_fd() == sockets.second()
     );
     throw_assert_eq(socket_event->get_type(), SocketEvent::TYPE_READ_READY);
   }
@@ -177,7 +177,7 @@ TEST(SocketEventQueue, dequeue_want_send_SocketEvent) {
 
   auto_Object<SocketEvent> socket_event
   = Object::cast<SocketEvent>(socket_event_queue.dequeue());
-  throw_assert_eq(socket_event->get_socket(), sockets.first());
+  throw_assert_eq(socket_event->get_fd(), sockets.first());
   throw_assert_eq(socket_event->get_type(), SocketEvent::TYPE_WRITE_READY);
 }
 }

@@ -125,13 +125,14 @@ public:
             wake_socket_pair.first().read(&m, 1);
             return event_queue.trydequeue();
           } else {
+            fd_t fd = reinterpret_cast<fd_t>(pollfd_.fd);
             uint16_t revents;
             if (pollfd_.revents == (POLLERR | POLLHUP))
               revents = POLLHUP;
             else
               revents = pollfd_.revents;
             pollfd_.revents = 0;
-            return new SocketEvent(pollfd_.fd, revents);
+            return new SocketEvent(fd, revents);
           }
         }
       } while (++pollfd_i < pollfds.end());
@@ -295,8 +296,12 @@ public:
             wake_socket_pair.second().read(&m, 1);
             return event_queue.trydequeue();
           }
-          else
-            return new SocketEvent(socket_, socket_event_types);
+          else {
+            return new SocketEvent(
+                         reinterpret_cast<fd_t>(socket_),
+                         socket_event_types
+                       );
+          }
         }
 
         ++socket_i;
