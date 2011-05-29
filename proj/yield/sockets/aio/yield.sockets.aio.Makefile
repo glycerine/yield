@@ -48,12 +48,9 @@ ifeq ($(UNAME), Linux)
 	LIBS += -lpthread -lrt -lstdc++
 endif
 ifeq ($(UNAME), Solaris)
-	LIBS += -lkstat -lnsl -lsocket -lm -lrt -lstdc++
+	LIBS += -lkstat -lm -lrt -lstdc++
 endif
-ifeq ($(UNAME), MINGW32)
-	LIBS += -lyield_sockets_poll
-endif
-LIBS += -lyield_poll -lyield_thread -lyield_sockets -lyield
+LIBS += -lyield_poll -lyield_thread -lyield
 
 
 D_FILE_PATHS := $(shell find ../../../../build/yield/sockets/aio -name "*.d")
@@ -76,11 +73,11 @@ depclean:
 -include $(D_FILE_PATHS)
 
 
-../../../../lib/yield/libyield_sockets_poll.a:
-	$(MAKE) -C ../poll yield.sockets.poll.Makefile
+../../../../lib/yield/libyield_poll.a:
+	$(MAKE) -C ../../poll yield.poll.Makefile
 
 
-../../../../lib/yield/libyield_sockets_aio.a: $(O_FILE_PATHS) ../../../../lib/yield/libyield_sockets_poll.a
+../../../../lib/yield/libyield_sockets_aio.a: $(O_FILE_PATHS) ../../../../lib/yield/libyield_poll.a
 	-mkdir -p ../../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(O_FILE_PATHS)
 

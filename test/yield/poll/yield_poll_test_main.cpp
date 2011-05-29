@@ -33,6 +33,7 @@
 
 extern yunit::TestSuite& FDEventQueueTestSuite();
 extern yunit::TestSuite& FDEventTestSuite();
+extern yunit::TestSuite& SocketEventQueueTestSuite();
 
 int main(int, char**) {
   int failed_test_case_count = 0;
@@ -45,6 +46,11 @@ int main(int, char**) {
   // FDEvent
   std::cout << "FDEvent:" << std::endl;
   failed_test_case_count += FDEventTestSuite().run();
+  std::cout << std::endl;
+
+  // SocketEventQueue
+  std::cout << "SocketEventQueue:" << std::endl;
+  failed_test_case_count += SocketEventQueueTestSuite().run();
   std::cout << std::endl;
 
   return failed_test_case_count;

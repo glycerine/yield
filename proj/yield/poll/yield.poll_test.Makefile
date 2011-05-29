@@ -48,15 +48,15 @@ ifeq ($(UNAME), Linux)
 	LIBS += -lpthread -lrt -lstdc++
 endif
 ifeq ($(UNAME), Solaris)
-	LIBS += -lkstat -lm -lrt -lstdc++
+	LIBS += -lkstat -lnsl -lsocket -lm -lrt -lstdc++
 endif
-LIBS += -lyield_poll -lyield_thread -lyield
+LIBS += -lyield_poll -lyield_thread -lyield_sockets -lyield
 
 
 D_FILE_PATHS := $(shell find ../../../build/yield/poll -name "*.d")
 
 
-O_FILE_PATHS += ../../../build/yield/poll/fd_event_queue_test.o ../../../build/yield/poll/fd_event_test.o ../../../build/yield/poll/yield_poll_test_main.o
+O_FILE_PATHS += ../../../build/yield/poll/fd_event_queue_test.o ../../../build/yield/poll/fd_event_test.o ../../../build/yield/poll/socket_event_queue_test.o ../../../build/yield/poll/yield_poll_test_main.o
 
 
 all: ../../../bin/yield/yield_poll_test
@@ -84,7 +84,11 @@ lcov: ../../../bin/yield/yield_poll_test
 	$(MAKE) -C . yield.poll.Makefile
 
 
-../../../bin/yield/yield_poll_test: $(O_FILE_PATHS) ../../../lib/yield/libyield_poll.a
+../../../lib/yield/libyield_sockets.a:
+	$(MAKE) -C ../sockets yield.sockets.Makefile
+
+
+../../../bin/yield/yield_poll_test: $(O_FILE_PATHS) ../../../lib/yield/libyield_poll.a ../../../lib/yield/libyield_sockets.a
 	-mkdir -p ../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
 
@@ -95,6 +99,10 @@ lcov: ../../../bin/yield/yield_poll_test
 ../../../build/yield/poll/fd_event_test.o: ../../../test/yield/poll/fd_event_test.cpp
 	-mkdir -p ../../../build/yield/poll 2>/dev/null
 	$(CXX) -c -o ../../../build/yield/poll/fd_event_test.o -MD $(CXXFLAGS) ../../../test/yield/poll/fd_event_test.cpp
+
+../../../build/yield/poll/socket_event_queue_test.o: ../../../test/yield/poll/socket_event_queue_test.cpp
+	-mkdir -p ../../../build/yield/poll 2>/dev/null
+	$(CXX) -c -o ../../../build/yield/poll/socket_event_queue_test.o -MD $(CXXFLAGS) ../../../test/yield/poll/socket_event_queue_test.cpp
 
 ../../../build/yield/poll/yield_poll_test_main.o: ../../../test/yield/poll/yield_poll_test_main.cpp
 	-mkdir -p ../../../build/yield/poll 2>/dev/null

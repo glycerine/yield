@@ -18,6 +18,9 @@
     <ClCompile Include="..\..\..\test\yield\poll\fd_event_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\test\yield\poll\socket_event_queue_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\test\yield\poll\yield_poll_test_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

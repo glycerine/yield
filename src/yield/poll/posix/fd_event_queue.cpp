@@ -38,7 +38,7 @@ namespace poll {
     !defined(__MACH__) && \
     !defined(__FreeBSD__) && \
     !defined(__sun)
-FDEventQueue::FDEventQueue() throw(Exception) {
+FDEventQueue::FDEventQueue(bool) throw(Exception) {
   if (pipe(wake_pipe) != -1) {
     try {
       if (!associate(wake_pipe[0], FDEvent::TYPE_READ_READY))

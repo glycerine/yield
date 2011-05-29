@@ -66,7 +66,7 @@
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>yield_poll.lib;yield_thread.lib;yield.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_poll.lib;yield_thread.lib;yield_sockets.lib;yield.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -89,7 +89,7 @@
       <WarningLevel>Level4</WarningLevel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>yield_poll.lib;yield_thread.lib;yield.lib</AdditionalDependencies>
+      <AdditionalDependencies>yield_poll.lib;yield_thread.lib;yield_sockets.lib;yield.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -109,6 +109,8 @@
     </ClCompile>
     <ClCompile Include="..\..\..\test\yield\poll\fd_event_test.cpp">
     </ClCompile>
+    <ClCompile Include="..\..\..\test\yield\poll\socket_event_queue_test.cpp">
+    </ClCompile>
     <ClCompile Include="..\..\..\test\yield\poll\yield_poll_test_main.cpp">
     </ClCompile>
   </ItemGroup>
@@ -116,6 +118,10 @@
   <ItemGroup Label="ProjectReferenceItems">
     <ProjectReference Include="yield.poll.vcxproj">
       <Project>{941ab6a9-57ca-4350-9df0-5d1eaec9e355}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\sockets\yield.sockets.vcxproj">
+      <Project>{73120660-a441-4b54-b425-4ae515d22cd8}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>

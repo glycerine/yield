@@ -38,7 +38,7 @@
 
 namespace yield {
 namespace poll {
-FDEventQueue::FDEventQueue() throw (Exception) {
+FDEventQueue::FDEventQueue(bool) throw (Exception) {
   epfd = epoll_create(32768);
   if (epfd != -1) {
     try {

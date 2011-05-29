@@ -51,12 +51,9 @@ ifeq ($(UNAME), Linux)
 	LIBS += -lpthread -lrt -lstdc++
 endif
 ifeq ($(UNAME), Solaris)
-	LIBS += -liconv -lkstat -lnsl -lsocket -lm -lrt -lstdc++
+	LIBS += -liconv -lkstat -lm -lrt -lstdc++
 endif
-ifeq ($(UNAME), MINGW32)
-	LIBS += -lyield_sockets_poll
-endif
-LIBS += -lyield_fs -lyield_i18n -lyield_http -lyield_uri -lyield_sockets_aio -lyield_poll -lyield_thread -lyield_sockets -lyield
+LIBS += -lyield_fs -lyield_i18n -lyield_http -lyield_uri -lyield_sockets_aio -lyield_poll -lyield_thread -lyield
 
 
 D_FILE_PATHS := $(shell find ../../../../build/yield/http/server -name "*.d")

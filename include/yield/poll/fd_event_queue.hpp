@@ -49,8 +49,9 @@ class FDEventQueue : public EventQueue {
 public:
   /**
     Construct an FDEventQueue, allocating any associated system resources.
+    @param for_sockets_only true if this FDEventQueue is only for sockets
   */
-  FDEventQueue() throw (Exception);
+  FDEventQueue(bool for_sockets_only = false);
 
   /**
     Destroy an FDEventQueue, deallocating any associated system resources.
@@ -89,7 +90,12 @@ private:
 #elif defined(__sun)
   int port;
 #elif defined(_WIN32)
-  vector<fd_t> fds;
+  class FDImpl;
+  class Impl;
+  class SocketImpl;
+  class SocketPoller;
+  class SocketSelector;
+  Impl* pimpl;
 #else
   vector<pollfd> pollfds;
   int wake_pipe[2];

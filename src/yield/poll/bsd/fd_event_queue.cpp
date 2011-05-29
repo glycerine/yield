@@ -35,7 +35,7 @@
 
 namespace yield {
 namespace poll {
-FDEventQueue::FDEventQueue() throw (Exception) {
+FDEventQueue::FDEventQueue(bool) throw (Exception) {
   kq = kqueue();
   if (kq != -1) {
     try {
