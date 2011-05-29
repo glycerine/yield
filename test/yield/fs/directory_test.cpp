@@ -100,48 +100,40 @@ TEST_EX(Directory, close, DirectoryTest) {
     throw Exception();
 }
 
-
 TEST_EX(Directory, read, DirectoryTest) {
-  {
+  for (uint8_t i = 0; i < 3; i++) {
     auto_Object<Directory::Entry> dentry = get_directory().read();
-    throw_assert_eq(dentry->get_name(), Path::CURRENT_DIRECTORY);
-    throw_assert(dentry->ISDIR());
-  }
-
-  {
-    auto_Object<Directory::Entry> dentry = get_directory().read();
-    throw_assert_eq(dentry->get_name(), Path::PARENT_DIRECTORY);
-    throw_assert(dentry->ISDIR());
-  }
-
-  {
-    auto_Object<Directory::Entry> dentry = get_directory().read();
-    throw_assert_eq(dentry->get_name(), get_test_file_name());
-    throw_assert_false(dentry->is_hidden());
-    throw_assert(dentry->ISREG());
-  }
-
-  {
-    Directory::Entry* dentry = get_directory().read();
-    if (dentry != NULL) {
-      Directory::Entry::dec_ref(*dentry);
-      throw_assert(false);
+    if (dentry->get_name() == Path::CURRENT_DIRECTORY) {
+      throw_assert_true(dentry->ISDIR());
+      throw_assert_false(dentry->is_hidden());
+      throw_assert_true(dentry->is_special());
+    } else if (dentry->get_name() == Path::PARENT_DIRECTORY) {
+      throw_assert_true(dentry->ISDIR());
+      throw_assert_false(dentry->is_hidden());
+      throw_assert_true(dentry->is_special());
+    } else {
+      throw_assert_eq(dentry->get_name(), get_test_file_name());
+      throw_assert_true(dentry->ISREG());
+      throw_assert_false(dentry->is_hidden());
+      throw_assert_false(dentry->is_special());
     }
   }
 }
 
-
 TEST_EX(Directory, rewind, DirectoryTest) {
-  {
-    auto_Object<Directory::Entry> dentry = get_directory().read();
-    throw_assert_eq(dentry->get_name(), Path::CURRENT_DIRECTORY);
-  }
+  for (uint8_t i = 0; i < 2; i++) {
+    for (uint8_t j = 0; j < 3; j++) {
+      auto_Object<Directory::Entry> dentry = get_directory().read();
+      throw_assert_true(
+        dentry->get_name() == Path::CURRENT_DIRECTORY
+        ||
+        dentry->get_name() == Path::PARENT_DIRECTORY
+        ||
+        dentry->get_name() == get_test_file_name()
+      );
+    }
 
-  get_directory().rewind();
-
-  {
-    auto_Object<Directory::Entry> dentry = get_directory().read();
-    throw_assert_eq(dentry->get_name(), Path::CURRENT_DIRECTORY);
+    get_directory().rewind();
   }
 }
 }
