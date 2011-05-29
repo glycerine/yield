@@ -147,6 +147,15 @@ TEST_EX(FileSystem, link, FileSystemTest) {
     throw Exception();
 }
 
+#ifndef _WIN32
+TEST_EX(FileSystem, lstat, FileSystemTest) {
+  if (!FileSystem().symlink(get_test_file_name(), get_test_link_name()))
+    throw Exception();
+  auto_Object<Stat> stbuf = FileSystem().lstat(get_test_link_name());
+  throw_assert_true(stbuf->ISLNK());
+}
+#endif
+
 TEST_EX(FileSystem, mkdir, FileSystemTest) {
   if (!FileSystem().mkdir(get_test_dir_name()))
     throw Exception();

@@ -92,11 +92,14 @@ public:
 
   bool link(const Path& old_path, const Path& new_path);
 
+#ifndef _WIN32
+  YO_NEW_REF Stat* lstat(const Path&);
+#endif
+
   bool mkdir(const Path&);
 #ifndef _WIN32
   bool mkdir(const Path&, mode_t mode);
 #endif
-
 
 #ifdef _WIN32
   YO_NEW_REF File* mkfifo(const Path&, uint32_t flags = 0);
