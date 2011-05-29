@@ -84,6 +84,35 @@ private:
 };
 
 
+#ifndef _WIN32
+TEST_EX(FileSystem, access, FileSystemTest) {
+  throw_assert_true(FileSystem().access(get_test_file_name(), F_OK));
+}
+
+TEST_EX(FileSystem, chmod, FileSystemTest) {
+  auto_Object<Stat> stbuf = FileSystem().stat(get_test_file_name());
+  throw_assert_true(
+    FileSystem().chmod(get_test_file_name(), stbuf->get_mode()
+  );
+}
+
+TEST_EX(FileSystem, chown, FileSystemTest) {
+  auto_Object<Stat> stbuf = FileSystem().stat(get_test_file_name());
+
+  throw_assert_true(
+    FileSystem().chown(get_test_file_name(), stbuf->get_uid())
+  );
+
+  throw_assert_true(
+    FileSystem().chown(
+      get_test_file_name(),
+      stbuf->get_uid(),
+      stbuf->get_gid()
+    )
+  );
+}
+#endif
+
 TEST_EX(FileSystem, creat, FileSystemTest) {
   File* file = FileSystem().creat(get_test_file_name());
   if (file != NULL)
@@ -138,6 +167,19 @@ TEST_EX(FileSystem, open, FileSystemTest) {
     throw_assert(false);
   }
 }
+
+#ifndef _WIN32
+TEST_EX(FileSystem, readlink, FileSystemTest) {
+  if (!FileSystem().symlink(get_test_file_name(), get_test_link_name()))
+    throw Exception();
+
+  Path target_path;
+  if (FileSystem().readlink(get_test_link_name(), target_path)) {
+    throw_assert_eq(target_path, get_test_file_name());
+  } else
+    throw Exception();
+}
+#endif
 
 TEST_EX(FileSystem, realpath, FileSystemTest) {
   Path realpath;
@@ -197,6 +239,13 @@ TEST_EX(FileSystem, statvfs, FileSystemTest) {
   throw_assert_gt(stbuf.f_bfree, 0);
   throw_assert_ge(stbuf.f_blocks, stbuf.f_bfree);
 }
+
+#ifndef _WIN32
+TEST_EX(FileSystem, symlink, FileSystemTest) {
+  if (!FileSystem().symlink(get_test_file_name(), get_test_link_name()))
+    throw Exception();
+}
+#endif
 
 TEST_EX(FileSystem, touch, FileSystemTest) {
   if (!FileSystem().touch(get_test_file_name()))

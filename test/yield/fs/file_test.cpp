@@ -273,6 +273,8 @@ TEST_EX(File, pread_Buffer, FileTest) {
 }
 
 TEST_EX(File, pread_Buffers, FileTest) {
+  write();
+
   auto_Object<Buffer> _str = new Buffer(Buffer::getpagesize(), 4);
   auto_Object<Buffer> ing = new Buffer(Buffer::getpagesize(), 3);
   _str->set_next_buffer(ing->inc_ref());
