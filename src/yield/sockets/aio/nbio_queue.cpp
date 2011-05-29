@@ -39,13 +39,12 @@
 #include "yield/sockets/aio/recv_aiocb.hpp"
 #include "yield/sockets/aio/send_aiocb.hpp"
 #include "yield/sockets/aio/sendfile_aiocb.hpp"
-#include "yield/sockets/poll/socket_event.hpp"
 
 namespace yield {
 namespace sockets {
 namespace aio {
 using std::map;
-using yield::sockets::poll::SocketEvent;
+using yield::poll::FDEvent;
 
 class NBIOQueue::AIOCBState {
 public:
@@ -90,7 +89,8 @@ public:
   AIOCBState* aiocb_state[4]; // accept, connect, send, recv
 };
 
-NBIOQueue::NBIOQueue(YO_NEW_REF Log* log) : log(log) {
+NBIOQueue::NBIOQueue(YO_NEW_REF Log* log)
+  : fd_event_queue(true), log(log) {
 }
 
 NBIOQueue::~NBIOQueue() {
@@ -101,9 +101,9 @@ void NBIOQueue::associate(AIOCB& aiocb, RetryStatus retry_status) {
   switch (retry_status) {
   case RETRY_STATUS_WANT_RECV: {
     bool associate_ret =
-      socket_event_queue.associate(
+      fd_event_queue.associate(
         aiocb.get_socket(),
-        SocketEvent::TYPE_READ_READY
+        FDEvent::TYPE_READ_READY
       );
     debug_assert_true(associate_ret);
   }
@@ -111,9 +111,9 @@ void NBIOQueue::associate(AIOCB& aiocb, RetryStatus retry_status) {
 
   case RETRY_STATUS_WANT_SEND: {
     bool associate_ret =
-      socket_event_queue.associate(
+      fd_event_queue.associate(
         aiocb.get_socket(),
-        SocketEvent::TYPE_WRITE_READY
+        FDEvent::TYPE_WRITE_READY
       );
     debug_assert_true(associate_ret);
   }
@@ -124,7 +124,7 @@ void NBIOQueue::associate(AIOCB& aiocb, RetryStatus retry_status) {
 }
 
 bool NBIOQueue::enqueue(Event& event) {
-  return socket_event_queue.enqueue(event);
+  return fd_event_queue.enqueue(event);
 }
 
 uint8_t NBIOQueue::get_aiocb_priority(const AIOCB& aiocb) {
@@ -411,26 +411,21 @@ Event* NBIOQueue::timeddequeue(const Time& timeout) {
   for (;;) {
     Time start_time = Time::now();
 
-    Event* event = socket_event_queue.timeddequeue(timeout_remaining);
+    Event* event = fd_event_queue.timeddequeue(timeout_remaining);
 
     if (event != NULL) {
       switch (event->get_type_id()) {
-      case SocketEvent::TYPE_ID: {
-        SocketEvent* socket_event = static_cast<SocketEvent*>(event);
-        socket_t socket_;
-#ifdef _WIN32
-          socket_ = reinterpret_cast<socket_t>(socket_event->get_fd());
-#else
-          socket_ = socket_event->get_fd();
-#endif
-        SocketEvent::dec_ref(*socket_event);
+      case FDEvent::TYPE_ID: {
+        FDEvent* fd_event = static_cast<FDEvent*>(event);
+        fd_t fd = fd_event->get_fd();
+        FDEvent::dec_ref(*fd_event);
 
-        map<socket_t, SocketState*>::iterator socket_state_i
-          = this->socket_state.find(socket_);
+        map<fd_t, SocketState*>::iterator socket_state_i
+          = this->socket_state.find(fd);
         debug_assert_ne(socket_state_i, this->socket_state.end());
         SocketState* socket_state = socket_state_i->second;
 
-        uint16_t want_socket_event_types = 0;
+        uint16_t want_fd_event_types = 0;
 
         for (uint8_t aiocb_priority = 0; aiocb_priority < 4; ++aiocb_priority) {
           AIOCBState* aiocb_state = socket_state->aiocb_state[aiocb_priority];
@@ -452,7 +447,7 @@ Event* NBIOQueue::timeddequeue(const Time& timeout) {
                 if (socket_state->empty()) {
                   delete socket_state;
                   this->socket_state.erase(socket_state_i);
-                  socket_event_queue.dissociate(socket_);
+                  fd_event_queue.dissociate(fd);
                 }
               } else {
                 socket_state->aiocb_state[aiocb_priority]
@@ -463,18 +458,18 @@ Event* NBIOQueue::timeddequeue(const Time& timeout) {
 
               return aiocb;
             } else if (retry_status == RETRY_STATUS_WANT_RECV) {
-              want_socket_event_types |= SocketEvent::TYPE_READ_READY;
+              want_fd_event_types |= FDEvent::TYPE_READ_READY;
               break;
             } else if (retry_status == RETRY_STATUS_WANT_SEND) {
-              want_socket_event_types |= SocketEvent::TYPE_WRITE_READY;
+              want_fd_event_types |= FDEvent::TYPE_WRITE_READY;
               break;
             }
           }
         }
 
-        debug_assert_ne(want_socket_event_types, 0);
+        debug_assert_ne(want_fd_event_types, 0);
         bool associate_ret
-          = socket_event_queue.associate(socket_, want_socket_event_types);
+          = fd_event_queue.associate(fd, want_fd_event_types);
         debug_assert_true(associate_ret);
       }
       break;
@@ -486,7 +481,7 @@ Event* NBIOQueue::timeddequeue(const Time& timeout) {
       case sendfileAIOCB::TYPE_ID: {
         AIOCB* aiocb = static_cast<AIOCB*>(event);
 
-        map<socket_t, SocketState*>::iterator socket_state_i
+        map<fd_t, SocketState*>::iterator socket_state_i
           = this->socket_state.find(aiocb->get_socket());
 
         if (socket_state_i == this->socket_state.end()) {

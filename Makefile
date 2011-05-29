@@ -115,7 +115,7 @@ yield.queue: yield.thread
 yield.queue_test: yield.queue
 	$(MAKE) -C proj/yield/queue -f yield.queue_test.Makefile
 
-yield.sockets.aio: yield.poll
+yield.sockets.aio: yield.poll yield.sockets
 	$(MAKE) -C proj/yield/sockets/aio -f yield.sockets.aio.Makefile
 
 yield.sockets.aio_test: yield.fs yield.sockets.aio

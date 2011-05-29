@@ -31,8 +31,8 @@
 #define _YIELD_SOCKETS_AIO_NBIO_QUEUE_HPP_
 
 #include "yield/event_queue.hpp"
+#include "yield/poll/fd_event_queue.hpp"
 #include "yield/sockets/aio/aiocb.hpp"
-#include "yield/sockets/poll/socket_event_queue.hpp"
 
 #include <map>
 
@@ -109,8 +109,8 @@ private:
 
 private:
   Log* log;
-  yield::sockets::poll::SocketEventQueue socket_event_queue;
-  std::map<socket_t, SocketState*> socket_state;
+  yield::poll::FDEventQueue fd_event_queue;
+  std::map<fd_t, SocketState*> socket_state;
 };
 }
 }

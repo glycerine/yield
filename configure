@@ -90,7 +90,7 @@ PROJECT_REFERENCES = {
     "yield.poll": ("yield.queue",),
     "yield.queue": ("yield.thread",),
     "yield.sockets": ("yield",),
-    "yield.sockets.aio": ("yield.poll",),
+    "yield.sockets.aio": ("yield.poll", "yield.sockets",),
     "yield.thread": ("yield",),
     "yield.uri": ("yield",),
 }
