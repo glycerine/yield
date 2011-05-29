@@ -51,7 +51,7 @@ public:
     Construct an FDEventQueue, allocating any associated system resources.
     @param for_sockets_only true if this FDEventQueue is only for sockets
   */
-  FDEventQueue(bool for_sockets_only = false);
+  FDEventQueue(bool for_sockets_only = false) throw (Exception);
 
   /**
     Destroy an FDEventQueue, deallocating any associated system resources.
