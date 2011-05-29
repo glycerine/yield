@@ -32,6 +32,7 @@
 #include "yield/fs/path.hpp"
 #include "yunit.hpp"
 
+#include <sstream>
 #include <utility>
 #ifdef _WIN32
 #include <Windows.h>
@@ -127,6 +128,12 @@ TEST(Path, join) {
     throw_assert_eq(joined, "path_test/path_test.txt");
 #endif
   }
+}
+
+TEST(Path, print) {
+  std::ostringstream oss;
+  oss << TEST_FILE_NAME;
+  throw_assert_eq(TEST_FILE_NAME.encode(yield::i18n::Code::CHAR), oss.str());
 }
 
 TEST(Path, split_head_tail) {
