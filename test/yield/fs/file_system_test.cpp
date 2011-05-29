@@ -153,9 +153,10 @@ TEST_EX(FileSystem, mkdir, FileSystemTest) {
 }
 
 TEST_EX(FileSystem, mktree, FileSystemTest) {
-  Path subdir_path(Path("file_system_test") + Path("subdir"));
-  if (!FileSystem().mktree(subdir_path)) throw Exception();
-  throw_assert(FileSystem().exists(subdir_path));
+  Path test_subdir_path(get_test_dir_name() / get_test_dir_name());
+  if (!FileSystem().mktree(test_subdir_path))
+    throw Exception();
+  throw_assert(FileSystem().exists(test_subdir_path));
 }
 
 TEST_EX(FileSystem, open, FileSystemTest) {
@@ -205,7 +206,8 @@ TEST_EX(FileSystem, rmdir, FileSystemTest) {
 TEST_EX(FileSystem, rmtree, FileSystemTest) {
   if (!FileSystem().mkdir(get_test_dir_name()))
     throw Exception();
-
+  if (!FileSystem().mkdir(get_test_dir_name() / get_test_dir_name()))
+    throw Exception();
   if (!FileSystem().touch(get_test_dir_name() / get_test_file_name()))
     throw Exception();
 
