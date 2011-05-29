@@ -34,8 +34,14 @@
 
 namespace yield {
 namespace thread {
+/**
+  Simple interface for fiber/thread entry points.
+*/
 class Runnable : public Object {
 public:
+  /**
+    Fiber/thread entry point.
+  */
   virtual void run() = 0;
 
 public:

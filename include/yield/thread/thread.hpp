@@ -46,52 +46,129 @@ namespace thread {
 class ProcessorSet;
 class Runnable;
 
+/**
+  A kernel-level thread.
+*/
 class Thread : public Object {
 public:
-  Thread(YO_NEW_REF Runnable&);
+  /**
+    Construct and start a thread with the entry point runnable.
+    @param runnable the thread entry point.
+  */
+  Thread(YO_NEW_REF Runnable& runnable);
+
+  /**
+    Cancel and destroy the thread.
+  */
   ~Thread();
 
 public:
+  /**
+    Cancel/stop the thread's execution.
+  */
   bool cancel();
 
 public:
+  /**
+    Get the Runnable associated with this thread.
+    @return the Runnable associated with this thread
+  */
   Runnable* get_runnable() const {
     return runnable;
   }
 
 public:
-  void* getspecific(uintptr_t key);
+  /**
+    Get a value from the caller's thread-local storage.
+    @param key the key to get, created with key_create
+    @return the value in thread-local storage associated with key
+  */
+  static void* getspecific(uintptr_t key);
 
 public:
+  /**
+    Join the caller's thread to the callee's thread.
+    Blocks the caller's thread until the callee thread has exited.
+    @return true if the join was successful
+  */
   bool join();
 
 public:
+  /**
+    Check if this thread is running.
+    @return true if this thread is running
+  */
   bool is_running() {
     return state == STATE_RUNNING;
   }
 
 public:
-  uintptr_t key_create();
-  bool key_delete(uintptr_t key);
+  /**
+    Create a key in the caller's thread-local storage.
+    @return a new key for thread-local storage or -1 on failure
+  */
+  static uintptr_t key_create();
+
+  /**
+    Delete a thread-local storage key when it's no longer needed.
+    @param key the thread-local storage key
+    @return true if the delete succeeded
+  */
+  static bool key_delete(uintptr_t key);
 
 public:
-  void nanosleep(const Time&);
+  /**
+    Make the caller's thread sleep for the specified timeout.
+    The system sleep time granularity may be coarser than nanoseconds,
+      (e.g., milliseconds on Win32).
+    @param timeout time to sleep
+  */
+  static void nanosleep(const Time& timeout);
 
 public:
+  /**
+    Wrap the caller's thread in a Thread object.
+    @return the caller's Thread
+  */
   static auto_Object<Thread> self();
 
 public:
+  /**
+    Set the name of the thread.
+    Mainly used in debugging.
+    @param name new name of the thread
+  */
   void set_name(const char* name);
 
 public:
+  /**
+    Set the affinity of the thread, binding it to a single [logical] processor.
+    @param logical_processor_i index of the logical processor to bind the thread to
+    @return true if the binding succeeded.
+  */
   bool setaffinity(uint16_t logical_processor_i);
+
+  /**
+    Set the affinity of the thread, bindingi t to one or more [logical] processors.
+    @param logical_processor_set ProcessorSet describing the processors to bind to
+    @return true if the binding succeeded
+  */
   bool setaffinity(const ProcessorSet& logical_processor_set);
 
 public:
-  bool setspecific(uintptr_t key, void* value);
+  /**
+    Set a value in thread-local storage.
+    @param key key in thread-local storage, returned by key_create
+    @param value value to set
+    @return true if the set succeeded
+  */
+  static bool setspecific(uintptr_t key, void* value);
 
 public:
-  void yield();
+  /**
+    Yield the caller's thread to other threads.
+  */
+  static void yield();
 
 private:
 #ifdef _WIN32

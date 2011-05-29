@@ -133,7 +133,7 @@ typedef int socket_t;
 inline void
 memcpy_s(
   void* dest,
-  size_t, // dest_len
+  size_t dest_len,
   const void* src,
   size_t src_len
 ) {
