@@ -92,7 +92,7 @@ TEST_EX(FileSystem, access, FileSystemTest) {
 TEST_EX(FileSystem, chmod, FileSystemTest) {
   auto_Object<Stat> stbuf = FileSystem().stat(get_test_file_name());
   throw_assert_true(
-    FileSystem().chmod(get_test_file_name(), stbuf->get_mode()
+    FileSystem().chmod(get_test_file_name(), stbuf->get_mode())
   );
 }
 
