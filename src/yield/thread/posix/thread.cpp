@@ -50,7 +50,7 @@ Thread::Thread(YO_NEW_REF Runnable& runnable)
     pthread_attr_destroy(&attr);
 
     while (state == STATE_READY)
-      nanosleep(0);
+      sleep(0);
   } else {
     pthread_attr_destroy(&attr);
     throw Exception();
@@ -96,11 +96,6 @@ bool Thread::key_delete(uintptr_t key) {
   return pthread_key_delete(key) == 0;
 }
 
-void Thread::nanosleep(const Time& timeout) {
-  timespec timeout_ts = timeout;
-  ::nanosleep(&timeout_ts, NULL);
-}
-
 auto_Object<Thread> Thread::self() {
   Thread* thread = new Thread(pthread_self());
 #if defined(__linux__)
@@ -132,6 +127,11 @@ void Thread::set_name(const char*) {
 
 bool Thread::setspecific(uintptr_t key, void* value) {
   return pthread_setspecific(key, value) == 0;
+}
+
+void Thread::sleep(const Time& timeout) {
+  timespec timeout_ts = timeout;
+  nanosleep(&timeout_ts, NULL);
 }
 }
 }

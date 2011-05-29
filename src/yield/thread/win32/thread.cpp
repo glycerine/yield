@@ -88,10 +88,6 @@ bool Thread::key_delete(uintptr_t key) {
   return TlsFree(key) == TRUE;
 }
 
-void Thread::nanosleep(const Time& timeout) {
-  Sleep(static_cast<DWORD>(timeout.ms()));
-}
-
 unsigned long __stdcall Thread::run(void* this_) {
   return static_cast<Thread*>(this_)->run();
 }
@@ -159,6 +155,10 @@ bool Thread::setaffinity(const ProcessorSet& logical_processor_set) {
 
 bool Thread::setspecific(uintptr_t key, void* value) {
   return TlsSetValue(key, value) == TRUE;
+}
+
+void Thread::sleep(const Time& timeout) {
+  Sleep(static_cast<DWORD>(timeout.ms()));
 }
 
 void Thread::yield() {

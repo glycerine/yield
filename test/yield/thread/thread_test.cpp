@@ -62,13 +62,6 @@ TEST(Thread, getspecific) {
   Thread::self()->key_delete(key);
 }
 
-TEST(Thread, nanosleep) {
-  Time start_time(Time::now());
-  Thread::self()->nanosleep(0.05);
-  Time slept_time(Time::now() - start_time);
-  throw_assert_ge(slept_time.ms(), 50);
-}
-
 TEST(Thread, set_name) {
  Thread::self()->set_name("test thread");
 }
@@ -82,6 +75,13 @@ TEST(Thread, setspecific) {
   if (!Thread::self()->setspecific(key, reinterpret_cast<void*>(42)))
     throw Exception();
   Thread::self()->key_delete(key);
+}
+
+TEST(Thread, sleep) {
+  Time start_time(Time::now());
+  Thread::sleep(0.05);
+  Time slept_time(Time::now() - start_time);
+  throw_assert_ge(slept_time.ms(), 50);
 }
 
 TEST(Thread, yield) {

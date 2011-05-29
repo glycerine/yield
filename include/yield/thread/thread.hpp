@@ -118,15 +118,6 @@ public:
 
 public:
   /**
-    Make the caller's thread sleep for the specified timeout.
-    The system sleep time granularity may be coarser than nanoseconds,
-      (e.g., milliseconds on Win32).
-    @param timeout time to sleep
-  */
-  static void nanosleep(const Time& timeout);
-
-public:
-  /**
     Wrap the caller's thread in a Thread object.
     @return the caller's Thread
   */
@@ -149,7 +140,7 @@ public:
   bool setaffinity(uint16_t logical_processor_i);
 
   /**
-    Set the affinity of the thread, bindingi t to one or more [logical] processors.
+    Set the affinity of the thread, binding it to one or more [logical] processors.
     @param logical_processor_set ProcessorSet describing the processors to bind to
     @return true if the binding succeeded
   */
@@ -166,7 +157,17 @@ public:
 
 public:
   /**
-    Yield the caller's thread to other threads.
+    Make the caller's thread sleep for the specified timeout.
+    The system sleep time granularity may be coarser than nanoseconds,
+      (e.g., milliseconds on Win32).
+    @param timeout time to sleep
+  */
+  static void sleep(const Time& timeout);
+
+public:
+  /**
+    Yield the caller's thread to the scheduler.
+    Often a more efficient alternative to sleep(0).
   */
   static void yield();
 

@@ -156,7 +156,7 @@ class FSEventQueueAssociateDirDequeueDirModifyTest : public FSEventQueueTest {
     )
       throw Exception();
 
-    yield::thread::Thread::self()->nanosleep(1.0);
+    yield::thread::Thread::sleep(1.0);
 
     DateTime atime = DateTime::now(), mtime = atime;
     if (!FileSystem().utime(get_test_directory_path(), atime, mtime))
@@ -332,7 +332,7 @@ class FSEventQueueAssociateDirDequeueFileModifyTest : public FSEventQueueTest {
     )
       throw Exception();
 
-    yield::thread::Thread::self()->nanosleep(1.0);
+    yield::thread::Thread::sleep(1.0);
 
     DateTime atime = DateTime::now(), mtime = atime;
     if (!FileSystem().utime(get_test_file_path(), atime, mtime))
@@ -447,7 +447,7 @@ class FSEventQueueAssociateFileDequeueFileModifyTest
     )
       throw Exception();
 
-    yield::thread::Thread::self()->nanosleep(1.0);
+    yield::thread::Thread::sleep(1.0);
 
     DateTime atime = DateTime::now(), mtime = atime;
     if (!FileSystem().utime(get_test_file_path(), atime, mtime))

@@ -83,7 +83,7 @@ TEST_EX(ConditionVariable, timedwait, ConditionVariableTest) {
 
   Thread thread(*new OtherThread(*cond));
 
-  Thread::self()->nanosleep(0.01);
+  Thread::sleep(0.01);
 
   cond->unlock_mutex();
 
@@ -99,7 +99,7 @@ TEST_EX(ConditionVariable, wait, ConditionVariableTest) {
   bool wait_ret = cond->wait();
   throw_assert(wait_ret);
 
-  Thread::self()->nanosleep(0.1);
+  Thread::sleep(0.1);
 
   cond->unlock_mutex();
 

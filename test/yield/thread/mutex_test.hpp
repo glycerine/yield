@@ -62,7 +62,7 @@ protected:
     // yield::thread::Runnable
     void run() {
       mutex.lock();
-      Thread::self()->nanosleep(0.1);
+      Thread::sleep(0.1);
       mutex.unlock();
     }
 
@@ -84,7 +84,7 @@ public:
 
     if (!this->mutex->lock())
       throw Exception();
-    Thread::self()->nanosleep(0.1);
+    Thread::sleep(0.1);
     this->mutex->unlock();
 
     thread.join();
@@ -101,7 +101,7 @@ public:
 
     if (!this->mutex->trylock())
       throw Exception();
-    Thread::self()->nanosleep(0.1);
+    Thread::sleep(0.1);
     this->mutex->unlock();
 
     thread.join();
