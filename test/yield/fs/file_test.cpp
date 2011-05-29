@@ -274,7 +274,7 @@ TEST_EX(File, pread_Buffer, FileTest) {
 
 TEST_EX(File, pread_Buffers, FileTest) {
   auto_Object<Buffer> _str = new Buffer(Buffer::getpagesize(), 4);
-  auto_Object<Buffer> ing = new Buffer(Buffer::getpagesize(), 7);
+  auto_Object<Buffer> ing = new Buffer(Buffer::getpagesize(), 3);
   _str->set_next_buffer(ing->inc_ref());
 
   ssize_t pread_ret = get_read_file().pread(*_str, 4);
