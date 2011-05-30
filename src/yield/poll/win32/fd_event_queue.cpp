@@ -30,10 +30,6 @@
 #include "yield/poll/fd_event_queue.hpp"
 
 #include <WinSock2.h>
-#include <MSWSock.h>
-#include <Ws2TcpIp.h>
-#include <Windows.h>
-#pragma comment(lib, "Mswsock.lib")
 #pragma comment(lib, "ws2_32.lib")
 #include <Windows.h>
 

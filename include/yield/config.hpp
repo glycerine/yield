@@ -57,7 +57,6 @@
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN 1
 #endif
-#include <SdkDdkver.h> // For _WIN32_WINNT
 #endif
 
 #ifdef unix
