@@ -80,7 +80,7 @@ bool FileSystem::isdir(const Path& path) {
   return ::stat(path.c_str(), &stbuf) != -1 && S_ISDIR(stbuf.st_mode);
 }
 
-bool FileSystem::isfile(const Path& path) {
+bool FileSystem::isreg(const Path& path) {
   struct stat stbuf;
   return ::stat(path.c_str(), &stbuf) != -1 && S_ISREG(stbuf.st_mode);
 }

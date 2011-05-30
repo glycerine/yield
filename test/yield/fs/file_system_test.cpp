@@ -135,11 +135,11 @@ TEST_EX(FileSystem, isdir, FileSystemTest) {
   throw_assert_false(FileSystem().isdir(Path("nodir")));
 }
 
-TEST_EX(FileSystem, isfile, FileSystemTest) {
-  throw_assert(FileSystem().isfile(get_test_file_name()));
+TEST_EX(FileSystem, isreg, FileSystemTest) {
+  throw_assert(FileSystem().isreg(get_test_file_name()));
   FileSystem().mkdir(get_test_dir_name());
-  throw_assert_false(FileSystem().isfile(get_test_dir_name()));
-  throw_assert_false(FileSystem().isfile(Path("nofile.txt")));
+  throw_assert_false(FileSystem().isreg(get_test_dir_name()));
+  throw_assert_false(FileSystem().isreg(Path("nofile.txt")));
 }
 
 TEST_EX(FileSystem, link, FileSystemTest) {

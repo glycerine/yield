@@ -56,7 +56,7 @@ bool FileSystem::isdir(const Path& path) {
          (dwAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
 }
 
-bool FileSystem::isfile(const Path& path) {
+bool FileSystem::isreg(const Path& path) {
   DWORD dwAttributes = GetFileAttributes(path.c_str());
   return dwAttributes != INVALID_FILE_ATTRIBUTES
          &&
