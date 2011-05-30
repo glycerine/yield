@@ -89,7 +89,7 @@ bool FileSystem::link(const Path& old_path, const Path& new_path) {
   return ::link(old_path.c_str(), new_path.c_str()) == 0;
 }
 
-YO_NEW_REF FileSystem::lstat(const Path& path) {
+YO_NEW_REF Stat* FileSystem::lstat(const Path& path) {
   struct stat stbuf;
   if (::lstat(path.c_str(), &stbuf) == 0)
     return new Stat(stbuf);

@@ -47,12 +47,7 @@ typedef WIN32_FIND_DATAW WIN32_FIND_DATA;
 
 namespace yield {
 namespace fs {
-class Stat
-  : public Object
-#ifndef _WIN32
-    , private stat
-#endif
-{
+class Stat : public Object {
 public:
 #ifdef _WIN32
   Stat(
@@ -160,12 +155,27 @@ private:
   DateTime atime;
 #ifdef _WIN32
   uint32_t attributes;
+#else
+  blksize_t blksize;
+  blkcnt_t blocks;
 #endif
   DateTime ctime;
+#ifndef _WIN32
+  dev_t dev;
+  gid_t gid;
+  ino_t ino;
+  mode_t mode;
+#endif
   DateTime mtime;
 #ifdef _WIN32
   int16_t nlink;
+#else
+  nlink_t nlink;
+  dev_t rdev;
+#endif
   uint64_t size;
+#ifndef _WIN32
+  uid_t uid;
 #endif
 };
 }

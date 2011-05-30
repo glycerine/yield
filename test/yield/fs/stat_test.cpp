@@ -171,8 +171,7 @@ TEST_EX(Stat, operator_as_BY_HANDLE_FILE_INFORMATION, StatTest) {
   if (!FileSystem().touch(get_test_file_name()))
     throw Exception();
 
-  auto_Object<Stat> stbuf1
-  = static_cast<Stat*>(FileSystem().stat(get_test_file_name()));
+  auto_Object<Stat> stbuf1 = FileSystem().stat(get_test_file_name());
 
   BY_HANDLE_FILE_INFORMATION bhfi = *stbuf1;
 
@@ -209,8 +208,7 @@ TEST_EX(Stat, operator_as_WIN32_FILE_ATTRIBUTE_DATA, StatTest) {
   if (!FileSystem().touch(get_test_file_name()))
     throw Exception();
 
-  auto_Object<Stat> stbuf1
-  = static_cast<Stat*>(FileSystem().stat(get_test_file_name()));
+  auto_Object<Stat> stbuf1 = FileSystem().stat(get_test_file_name());
 
   WIN32_FILE_ATTRIBUTE_DATA fad = *stbuf1;
 
@@ -242,8 +240,7 @@ TEST_EX(Stat, operator_as_WIN32_FIND_DATA, StatTest) {
   if (!FileSystem().touch(get_test_file_name()))
     throw Exception();
 
-  auto_Object<Stat> stbuf1
-  = static_cast<Stat*>(FileSystem().stat(get_test_file_name()));
+  auto_Object<Stat> stbuf1 = FileSystem().stat(get_test_file_name());
 
   WIN32_FIND_DATA fd = *stbuf1;
 
@@ -272,6 +269,29 @@ TEST_EX(Stat, operator_as_WIN32_FIND_DATA, StatTest) {
 
   stbuf2 = fd;
   throw_assert_eq(stbuf2, *stbuf1);
+}
+#else
+TEST_EX(Stat, operator_as_struct_stat, StatTest) {
+  if (!FileSystem().touch(get_test_file_name()))
+    throw Exception();
+
+  auto_Object<Stat> stbuf1 = FileSystem().stat(get_test_file_name());
+
+  struct stat ss = static_cast<struct stat>(*stbuf1);
+  throw_assert_eq(ss.st_blksize, stbuf1->get_blksize());
+  throw_assert_eq(ss.st_blocks, stbuf1->get_blocks());
+  throw_assert_eq(ss.st_dev, stbuf1->get_dev());
+  throw_assert_eq(ss.st_gid, stbuf1->get_gid());
+  throw_assert_eq(ss.st_ino, stbuf1->get_ino());
+  throw_assert_eq(ss.st_mode, stbuf1->get_mode());
+  throw_assert_eq(ss.st_nlink, stbuf1->get_nlink());
+  throw_assert_eq(ss.st_rdev, stbuf1->get_rdev());
+  throw_assert_eq(ss.st_size, stbuf1->get_size());
+  throw_assert_eq(ss.st_uid, stbuf1->get_uid());
+
+  Stat stbuf2(ss);
+  throw_assert_eq(stbuf2, *stbuf1);
+
 }
 #endif
 }

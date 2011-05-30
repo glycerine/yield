@@ -100,6 +100,17 @@ TEST_EX(Directory, close, DirectoryTest) {
     throw Exception();
 }
 
+#ifndef _WIN32
+TEST_EX(Directory, read_dev, DirectoryTest) {
+  auto_Object<Directory> directory = FileSystem().opendir("/dev");
+  Directory::Entry* dentry = directory->read();
+  while (dentry != NULL) {
+    Directory::Entry::dec_ref(*dentry);
+    dentry = directory->read();
+  }
+}
+#endif
+
 TEST_EX(Directory, read, DirectoryTest) {
   for (uint8_t i = 0; i < 3; i++) {
     auto_Object<Directory::Entry> dentry = get_directory().read();

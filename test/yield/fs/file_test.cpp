@@ -163,6 +163,17 @@ TEST_EX(File, getlk, FileTest) {
 }
 #endif
 
+TEST_EX(File, get_type_id, FileTest) {
+  throw_assert_eq(get_write_file().get_type_id(), File::TYPE_ID);
+}
+
+TEST_EX(File, get_type_name, FileTest) {
+  throw_assert_eq(
+    strcmp(get_write_file().get_type_name(), "yield::fs::File"),
+    0
+  );
+}
+
 TEST_EX(File, map, FileTest) {
   auto_Object<File::Map> mmf = get_read_file().mmap();
 }
