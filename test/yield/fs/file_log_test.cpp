@@ -66,7 +66,7 @@ TEST_EX(FileLog, constructor, FileLogTest) {
 TEST_EX(FileLog, write, FileLogTest) {
   throw_assert_false(FileSystem().exists(get_test_file_path()));
   FileLog file_log(get_test_file_path());
-  file_log.write("test", Log::Level::DEBUG);
+  static_cast<Log&>(file_log).write("test", Log::Level::DEBUG);
   throw_assert(FileSystem().exists(get_test_file_path()));
 }
 }

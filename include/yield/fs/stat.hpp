@@ -47,9 +47,21 @@ typedef WIN32_FIND_DATAW WIN32_FIND_DATA;
 
 namespace yield {
 namespace fs {
+/**
+  File metadata, akin to struct stat on POSIX systems.
+*/
 class Stat : public Object {
 public:
 #ifdef _WIN32
+  /**
+    Construct a Stat from its component parts.
+    @param atime file last access time
+    @param attributes file attributes
+    @param ctime file creation time
+    @param mtime file last modified time
+    @param nlink number of links to the file
+    @param size size of the file
+  */
   Stat(
     const DateTime& atime,
     uint32_t attributes,
@@ -59,35 +71,96 @@ public:
     uint64_t size
   );
 
-  Stat(const BY_HANDLE_FILE_INFORMATION&);
-  Stat(const WIN32_FILE_ATTRIBUTE_DATA&);
-  Stat(const WIN32_FIND_DATA&);
+  /**
+    Construct a Stat from a struct BY_HANDLE_FILE_INFORMATION.
+    @param by_handle_file_information struct describing file metadata
+  */
+  Stat(const BY_HANDLE_FILE_INFORMATION& by_handle_file_information);
+
+  /**
+    Construct a Stat from a struct WIN32_FILE_ATTRIBUTE_DATA.
+    @param win32_file_attribute_data struct describing file metadata
+  */
+  Stat(const WIN32_FILE_ATTRIBUTE_DATA& win32_file_attribute_data);
+
+  /**
+    Construct a Stat from a struct WIN32_FIND_DATA.
+    @param win32_find_data struct describing file metadata
+  */
+  Stat(const WIN32_FIND_DATA& win32_find_data);
 #else
-  Stat(const struct stat&);
+  /**
+    Construct a Stat from a struct stat.
+    @param stbuf struct describing file metadata
+  */
+  Stat(const struct stat& stbuf);
 #endif
 
 public:
+  /**
+    Get the last access time of the file referred to by this Stat.
+    @return the last access time of the file referred to by this Stat
+  */
   const DateTime& get_atime() const {
     return atime;
   }
 
 #ifdef _WIN32
+  /**
+    Get the Win32 attributes of the file referred to by this Stat.
+    @return the Win32 attributes of the file referred to by this Stat
+  */
   uint32_t get_attributes() const;
 #endif
 
 #ifndef _WIN32
+  /**
+    Get the block size of the file referred to by this Stat.
+    @return the block size of the file referred to by this Stat
+  */
   uint64_t get_blksize() const;
+
+  /**
+    Get the block count of the file referred to by this Stat.
+    @return the block count of the file referred to by this Stat
+  */
   uint64_t get_blocks() const;
 #endif
 
+
+  /**
+    Get the creation time of the file referred to by this Stat.
+    @return the creation time of the file referred to by this Stat
+  */
   const DateTime& get_ctime() const {
     return ctime;
   }
 
 #ifndef _WIN32
+  /**
+    Get the ID of the device containing the file referred to by this Stat.
+    @return the ID of the device containing file referred to by this Stat
+  */
   uint64_t get_dev() const;
+
+  /**
+    Get the group ID (gid) of the owner of the file referred to by this Stat.
+    @return the group ID (gid) of the owner of the file referred to by this Stat
+  */
   gid_t get_gid() const;
+
+  /**
+    Get the inode number of the file referred to by this Stat.
+    @return the inode number of the file referred to by this Stat
+  */
   uint64_t get_ino() const;
+
+  /**
+    Get the mode bits (including permissions) of the file referred to by this
+      Stat.
+    @return the mode bits (including permissions) of the file referred to by
+      this Stat
+  */
   mode_t get_mode() const;
 #endif
 
@@ -95,51 +168,155 @@ public:
     return mtime;
   }
 
+  /**
+    Get the number of hard links that point to the file referred to by this
+      Stat.
+    @return the number of hard links that point to the file referred to by this
+      Stat
+  */
   int16_t get_nlink() const;
 
 #ifndef _WIN32
+  /**
+    Get the device ID of the file referred to by this Stat, if the file is a
+      device.
+    @return the device ID of the file referred to by this Stat, if the file is
+      a device.
+  */
   uint64_t get_rdev() const;
 #endif
 
+  /**
+    Get the size of the file referred to by this Stat.
+    @return the size of the file referred to by this Stat
+  */
   uint64_t get_size() const;
 
 #ifndef _WIN32
+  /**
+    Get the user ID (uid) of the owner of the file referred to by this Stat.
+    @return the user ID (uid) of the owner of the file referred to by this Stat
+  */
   uid_t get_uid() const;
 #endif
 
 public:
 #ifndef _WIN32
+  /**
+    Check if this Stat refers to a block device.
+    @return true if this Stat refers to a block device
+  */
   bool ISBLK() const;
+
+  /**
+    Check if this Stat refers to a character device.
+    @return true if this Stat refers to a character device
+  */
   bool ISCHR() const;
 #endif
+
+#ifdef _WIN32
+  /**
+    Check if this Stat refers to a device.
+    @return true if this Stat refers to a device
+  */
   bool ISDEV() const;
+#endif
+
+  /**
+    Check if this Stat refers to a directory.
+    @return true if this Stat refers to a directory
+  */
   bool ISDIR() const;
+
 #ifndef _WIN32
+  /**
+    Check if this Stat refers to a named pipe.
+    @return true if this Stat refers to a named pipe
+  */
   bool ISFIFO() const;
+
+  /**
+    Check if this Stat refers to a symbolic link.
+    @return true if this Stat refers to a symbolic link
+  */
   bool ISLNK() const;
 #endif
+
+  /**
+    Check if this Stat refers to a regular file.
+    @return true if this Stat refers to a regular file
+  */
   bool ISREG() const;
+
 #ifndef _WIN32
+  /**
+    Check if this Stat refers to a Unix socket.
+    @return true if this Stat refers to a Unix socket
+  */
   bool ISSOCK() const;
 #endif
 
 public:
-  bool operator==(const Stat&) const;
+  /**
+    Compare two Stat objects for equality
+    @param other Stat object to compare this one to
+    @return true if the Stat objects are equal
+  */
+  bool operator==(const Stat& other) const;
 
 public:
 #ifdef _WIN32
+  /**
+    Cast this Stat to a struct BY_HANDLE_FILE_INFORMATION.
+    @return this Stat as a struct BY_HANDLE_FILE_INFORMATION
+  */
   operator BY_HANDLE_FILE_INFORMATION() const;
+
+  /**
+    Cast this Stat to a struct WIN32_FILE_ATTRIBUTE_DATA.
+    @return this Stat as a struct WIN32_FILE_ATTRIBUTE_DATA
+  */
   operator WIN32_FILE_ATTRIBUTE_DATA() const;
+
+  /**
+    Cast this Stat to a struct WIN32_FIND_DATA.
+    @return this Stat as a struct WIN32_FIND_DATA
+  */
   operator WIN32_FIND_DATA() const;
 #else
+  /**
+    Cast this Stat to a struct stat.
+    @return this Stat as a struct stat
+  */
   operator struct stat() const;
 #endif
 
 public:
 #ifdef _WIN32
-  Stat& operator=(const BY_HANDLE_FILE_INFORMATION&);
-  Stat& operator=(const WIN32_FILE_ATTRIBUTE_DATA&);
-  virtual Stat& operator=(const WIN32_FIND_DATA&);
+  /**
+    Replace the contents of this Stat with the contents of a struct
+      BY_HANDLE_FILE_INFORMATION.
+    @param by_handle_file_info new contents of this Stat
+    @return *this
+  */
+  Stat& operator=(const BY_HANDLE_FILE_INFORMATION& by_handle_file_info);
+
+  /**
+    Replace the contents of this Stat with the contents of a struct
+      WIN32_FILE_ATTRIBUTE_DATA.
+    @param win32_file_attribute_data new contents of this Stat
+    @return *this
+  */
+  Stat& operator=(const WIN32_FILE_ATTRIBUTE_DATA& win32_file_attribute_data);
+
+  /**
+    Replace the contents of this Stat with the contents of a struct
+      WIN32_FIND_DATA.
+    @param win32_find_data new contents of this Stat
+    @return *this
+  */
+  virtual Stat& operator=(const WIN32_FIND_DATA& win32_find_data);
 #endif
 
 public:

@@ -38,27 +38,24 @@
 
 namespace yield {
 namespace fs {
+/**
+  Log implementation that appends to a file.
+*/
 class FileLog : public Log {
 public:
+  /**
+    Construct a FileLog that will append to a file at the given path with
+      messages at or below the given level.
+    The file is created on demand on the first log write.
+    @param file_path path to the log file
+    @param level level of the new log
+  */
   FileLog(const Path& file_path, const Level& level = Level::DEBUG);
+
+  /**
+    Destruct the FileLog, closing the associated file if necessary.
+  */
   ~FileLog();
-
-public:
-  void write(const char* message, const Level& level) {
-    Log::write(message, level);
-  }
-
-  void write(const string& message, const Level& level) {
-    Log::write(message, level);
-  }
-
-  void write(const Buffer& message, const Level& level) {
-    Log::write(message, level);
-  }
-
-  void write(const void* message, size_t message_len, const Level& level) {
-    Log::write(message, message_len, level);
-  }
 
 private:
   // yield::Log

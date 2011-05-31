@@ -50,7 +50,7 @@ class Stat;
 
 /**
   File operations: read, write, retrieve metadata, et al.
-  Wraps a file handle/descriptor.
+  Wraps a platform-specific file handle/descriptor.
 */
 class File : public Channel {
 public:

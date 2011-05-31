@@ -41,14 +41,25 @@
 
 namespace yield {
 namespace fs {
+/**
+  A simple directory iterator, returned by FileSystem::opendir.
+  Wraps a platform-specific directory handle.
+*/
 class Directory : public Object {
 public:
+  /**
+    Metadata for a directory entry, mainly name and entry type.
+  */
 #ifdef _WIN32
   class Entry : public Stat {
 #else
   class Entry : public Object {
 #endif
   public:
+    /**
+      Type of a directory entry: directory, regular file, et al.
+      Mirrors Stat::IS*.
+    */
     enum Type {
 #ifndef _WIN32
       TYPE_BLK,
@@ -69,56 +80,106 @@ public:
     };
 
   public:
-#ifdef _WIN32
-    Entry(const WIN32_FIND_DATA&);
-#else
-    Entry(const Path& name, Type type)
-      : name(name), type(type)
-    { }
-#endif
-
-  public:
+    /**
+      Get the name of this directory entry.
+      @return the name of this directory entry
+    */
     const Path& get_name() const {
       return name;
     }
 
+    /**
+      Get the type of this directory entry.
+      @return the type of this directory entry
+    */
     Type get_type() const;
 
   public:
 #ifndef _WIN32
+    /**
+      Check if this directory entry refers to a block device.
+      @return true if this directory entry refers to a block device
+    */
+    bool ISBLK() const {
+      return get_type() == TYPE_BLK;
+    }
+
+    /**
+      Check if this directory entry refers to a character device.
+      @return true if this directory entry refers to a character device
+    */
     bool ISCHR() const {
       return get_type() == TYPE_CHR;
     }
 
+    /**
+      Check if this directory entry refers to a directory.
+      @return true if this directory entry refers to a directory
+    */
     bool ISDIR() const {
       return get_type() == TYPE_DIR;
     }
 
+    /**
+      Check if this directory entry refers to a named pipe.
+      @return true if this directory entry refers to a named pipe
+    */
     bool ISFIFO() const {
       return get_type() == TYPE_FIFO;
     }
 
+    /**
+      Check if this directory entry refers to a symbolic link.
+      @return true if this directory entry refers to a symbolic link
+    */
     bool ISLNK() const {
       return get_type() == TYPE_LNK;
     }
 
+    /**
+      Check if this directory entry refers to a regular file.
+      @return true if this directory entry refers to a regular file
+    */
     bool ISREG() const {
       return get_type() == TYPE_REG;
     }
 
+    /**
+      Check if this directory entry refers to a Unix socket.
+      @return true if this directory entry refers to a Unix socket
+    */
     bool ISSOCK() const {
       return get_type() == TYPE_SOCK;
     }
 #endif
 
   public:
+    /**
+      Check if this directory entry refers to a hidden file.
+      On Win32 hidden files have the FILE_ATTRIBUTE_HIDDEN attribute.
+      On POSIX hidden files have a name starting with '.'.
+      @return true if this directory entry refers to a hidden file
+    */
     bool is_hidden() const;
+
+    /**
+      Check if this directory entry refers to a special file, e.g.
+        Path::CURRENT_DIRECTORY or Path::PARENT_DIRECTORY.
+      @return true if this directory entry refers to a special file
+    */
     bool is_special() const;
 
-  public:
+  private:
+    friend class Directory;
+
 #ifdef _WIN32
+    Entry(const WIN32_FIND_DATA& win32_find_data);
     Entry& operator=(const WIN32_FIND_DATA&);
 #else
+    Entry(const Path& name, Type type)
+      : name(name), type(type)
+    { }
+
     void set_name(const Path& name) {
       this->name = name;
     }
