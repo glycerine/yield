@@ -1,4 +1,4 @@
-// yield/http/server/ygi/ygi_server.cpp
+// yield_http_server_ygi_test_main.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -26,3 +26,20 @@
 // ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+#include "yunit.hpp"
+
+#include <iostream>
+
+extern yunit::TestSuite& YGIServerTestSuite();
+
+int main(int, char**) {
+  int failed_test_case_count = 0;
+
+  // YGIServer
+  std::cout << "YGIServer:" << std::endl;
+  failed_test_case_count += YGIServerTestSuite().run();
+  std::cout << std::endl;
+
+  return failed_test_case_count;
+}

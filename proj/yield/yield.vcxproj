@@ -91,6 +91,7 @@
   </ItemDefinitionGroup>
 
   <ItemGroup Label="ClIncludeItems">
+    <ClInclude Include="..\..\include\ygi.h" />
     <ClInclude Include="..\..\include\yield\assert.hpp" />
     <ClInclude Include="..\..\include\yield\atomic.hpp" />
     <ClInclude Include="..\..\include\yield\auto_object.hpp" />

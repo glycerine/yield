@@ -167,7 +167,7 @@ class SourceFile:
         # Cut out empty lines after the boilerplate
         lines = tstrip(lines)
 
-        if self.get_language() == "cpp":
+        if self.get_language() in ("c", "cpp"):
             # Cut out the header guard
             line_i = 0
             while line_i < len(lines):
@@ -229,7 +229,7 @@ class SourceFile:
             new_file.close()
             printed_wrote = False
 
-            if self.get_language() == "cpp":
+            if self.get_language() in ("c", "cpp"):
                 astylerc_path = path_join("etc", "astylerc")
                 if exists(astylerc_path):
                     if sys.platform == "win32":
@@ -237,7 +237,7 @@ class SourceFile:
                     else:
                         astyle_argv = ["astyle"]
                     astyle_argv.extend(("--options=" + astylerc_path, self.get_path()))
-                
+
                     try: subprocess.call(astyle_argv)
                     except: pass
 

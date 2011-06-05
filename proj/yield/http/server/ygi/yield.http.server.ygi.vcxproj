@@ -93,11 +93,15 @@
   </ItemDefinitionGroup>
 
   <ItemGroup Label="ClIncludeItems">
+    <ClInclude Include="..\..\..\..\..\include\yield\http\server\ygi\ygi_request.hpp" />
+    <ClInclude Include="..\..\..\..\..\include\yield\http\server\ygi\ygi_request_handler.hpp" />
     <ClInclude Include="..\..\..\..\..\include\yield\http\server\ygi\ygi_server.hpp" />
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
-    <ClCompile Include="..\..\..\..\..\src\yield\http\server\ygi\ygi_server.cpp">
+    <ClCompile Include="..\..\..\..\..\src\yield\http\server\ygi\ygi_request.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\src\yield\http\server\ygi\ygi_request_handler.cpp">
     </ClCompile>
   </ItemGroup>
 

@@ -59,7 +59,7 @@ LIBS += -lyield_http_server -lyield_fs -lyield_i18n -lyield_http -lyield_uri -ly
 D_FILE_PATHS := $(shell find ../../../../../build/yield/http/server/ygi -name "*.d")
 
 
-O_FILE_PATHS += ../../../../../build/yield/http/server/ygi/ygi_server.o
+O_FILE_PATHS += ../../../../../build/yield/http/server/ygi/ygi_request.o ../../../../../build/yield/http/server/ygi/ygi_request_handler.o
 
 
 all: ../../../../../lib/yield/libyield_http_server_ygi.a
@@ -81,6 +81,10 @@ depclean:
 	-mkdir -p ../../../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(O_FILE_PATHS)
 
-../../../../../build/yield/http/server/ygi/ygi_server.o: ../../../../../src/yield/http/server/ygi/ygi_server.cpp
+../../../../../build/yield/http/server/ygi/ygi_request.o: ../../../../../src/yield/http/server/ygi/ygi_request.cpp
 	-mkdir -p ../../../../../build/yield/http/server/ygi 2>/dev/null
-	$(CXX) -c -o ../../../../../build/yield/http/server/ygi/ygi_server.o -MD $(CXXFLAGS) ../../../../../src/yield/http/server/ygi/ygi_server.cpp
+	$(CXX) -c -o ../../../../../build/yield/http/server/ygi/ygi_request.o -MD $(CXXFLAGS) ../../../../../src/yield/http/server/ygi/ygi_request.cpp
+
+../../../../../build/yield/http/server/ygi/ygi_request_handler.o: ../../../../../src/yield/http/server/ygi/ygi_request_handler.cpp
+	-mkdir -p ../../../../../build/yield/http/server/ygi 2>/dev/null
+	$(CXX) -c -o ../../../../../build/yield/http/server/ygi/ygi_request_handler.o -MD $(CXXFLAGS) ../../../../../src/yield/http/server/ygi/ygi_request_handler.cpp

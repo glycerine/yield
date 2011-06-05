@@ -59,7 +59,7 @@ LIBS += -lyield_http_server_ygi -lyield_http_server -lyield_fs -lyield_i18n -lyi
 D_FILE_PATHS := $(shell find ../../../../../build/yield/http/server/ygi -name "*.d")
 
 
-O_FILE_PATHS += ../../../../../build/yield/http/server/ygi/yield_http_server_ygi_test_main.o
+O_FILE_PATHS += ../../../../../build/yield/http/server/ygi/test_ygi_request_handler.o ../../../../../build/yield/http/server/ygi/ygi_server_test.o ../../../../../build/yield/http/server/ygi/yield_http_server_ygi_test_main.o
 
 
 all: ../../../../../bin/yield/yield_http_server_ygi_test
@@ -90,6 +90,14 @@ lcov: ../../../../../bin/yield/yield_http_server_ygi_test
 ../../../../../bin/yield/yield_http_server_ygi_test: $(O_FILE_PATHS) ../../../../../lib/yield/libyield_http_server_ygi.a
 	-mkdir -p ../../../../../bin/yield 2>/dev/null
 	$(LINK.cpp) $(O_FILE_PATHS) -o $@ $(LIBS)
+
+../../../../../build/yield/http/server/ygi/test_ygi_request_handler.o: ../../../../../test/yield/http/server/ygi/test_ygi_request_handler.c
+	-mkdir -p ../../../../../build/yield/http/server/ygi 2>/dev/null
+	$(CXX) -c -o ../../../../../build/yield/http/server/ygi/test_ygi_request_handler.o -MD $(CXXFLAGS) ../../../../../test/yield/http/server/ygi/test_ygi_request_handler.c
+
+../../../../../build/yield/http/server/ygi/ygi_server_test.o: ../../../../../test/yield/http/server/ygi/ygi_server_test.cpp
+	-mkdir -p ../../../../../build/yield/http/server/ygi 2>/dev/null
+	$(CXX) -c -o ../../../../../build/yield/http/server/ygi/ygi_server_test.o -MD $(CXXFLAGS) ../../../../../test/yield/http/server/ygi/ygi_server_test.cpp
 
 ../../../../../build/yield/http/server/ygi/yield_http_server_ygi_test_main.o: ../../../../../test/yield/http/server/ygi/yield_http_server_ygi_test_main.cpp
 	-mkdir -p ../../../../../build/yield/http/server/ygi 2>/dev/null

@@ -293,6 +293,7 @@ for project_name in PROJECT_NAMES:
 
 
 INCLUDE_FILE_PATHS["yield"] = [
+    path_join(INCLUDE_DIR_PATH, "ygi.h"),
     path_join(INCLUDE_DIR_PATH, "yield", "config.hpp"), # before types
     path_join(INCLUDE_DIR_PATH, "yield", "types.hpp"), # before atomic
     path_join(INCLUDE_DIR_PATH, "yield", "atomic.hpp"), # before object

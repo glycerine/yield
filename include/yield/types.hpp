@@ -36,11 +36,13 @@
 #include <stdint.h>
 
 #ifdef _WIN32
+#ifndef _STRUCT_IOVEC_DEFINED
 struct iovec {
   size_t iov_len;
   void* iov_base;
 };
-
+#define _STRUCT_IOVEC_DEFINED 1
+#endif
 typedef int64_t _off_t;
 typedef int64_t off_t;
 #define _OFF_T_DEFINED

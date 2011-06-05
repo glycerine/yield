@@ -1,4 +1,4 @@
-// http_file_server_test.cpp
+// yield/http/server/ygi/ygi_request_handler.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,24 +27,26 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/http/server/file/http_file_server.hpp"
-#include "yunit.hpp"
-
-TEST_SUITE(HTTPFileServer);
+#include "yield/assert.hpp"
+#include "yield/http/server/http_request.hpp"
+#include "yield/http/server/ygi/ygi_request.hpp"
+#include "yield/http/server/ygi/ygi_request_handler.hpp"
 
 namespace yield {
 namespace http {
 namespace server {
-namespace file {
-TEST(HTTPFileServer, constructor) {
-  HTTPFileServer<>(".", "/", 8080);
+namespace ygi {
+YGIRequestHandler::YGIRequestHandler(ygi_request_handler_t ygi_request_handler)
+ : ygi_request_handler(ygi_request_handler) {
 }
 
-//TEST(HTTPFileServer, visit) {
-//  HTTPFileServer<> http_file_server(".", "/", 8080);
-//  for (;;)
-//    http_file_server.visit();
-//}
+void YGIRequestHandler::handle(YO_NEW_REF Event& event) {
+  debug_assert_eq(event.get_type_id(), HTTPRequest::TYPE_ID);
+  HTTPRequest& http_request = static_cast<HTTPRequest&>(event);
+
+  YGIRequest ygi_request(http_request);
+  ygi_request_handler(&ygi_request);
+}
 }
 }
 }

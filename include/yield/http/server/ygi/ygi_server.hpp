@@ -30,6 +30,33 @@
 #ifndef _YIELD_HTTP_SERVER_YGI_YGI_SERVER_HPP_
 #define _YIELD_HTTP_SERVER_YGI_YGI_SERVER_HPP_
 
-#endif
+#include "yield/http/server/http_server.hpp"
+#include "yield/http/server/ygi/ygi_request_handler.hpp"
+
+#include <ygi.h>
+
+namespace yield {
+namespace http {
+namespace server {
+namespace ygi {
+template <class AIOQueueType = yield::sockets::aio::AIOQueue>
+class YGIServer : public HTTPServer<AIOQueueType> {
+public:
+  YGIServer(
+    const yield::sockets::SocketAddress& sockname,
+    ygi_request_handler_t ygi_request_handler,
+    YO_NEW_REF Log* log = NULL
+  )
+   : HTTPServer<AIOQueueType>(
+      *new YGIRequestHandler(ygi_request_handler),
+      sockname,
+      log
+     ) {
+     }
+};
+}
+}
+}
+}
 
 #endif

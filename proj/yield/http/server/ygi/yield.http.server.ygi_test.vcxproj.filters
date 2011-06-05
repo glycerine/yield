@@ -12,6 +12,15 @@
 
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\..\test\yield\http\server\ygi\test_ygi_request_handler.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\..\test\yield\http\server\ygi\test_ygi_request_handler.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\..\..\test\yield\http\server\ygi\ygi_server_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\test\yield\http\server\ygi\yield_http_server_ygi_test_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -9,58 +9,64 @@
     <Filter Include="Header Files">
       <UniqueIdentifier>{8bce42e2-8404-4f71-ac67-81fd4cfae393}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\yield">
+      <UniqueIdentifier>{2258f284-a981-4574-a1dc-521dbb9017a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\yield\assert.hpp">
+    <ClInclude Include="..\..\include\ygi.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\yield\assert.hpp">
+      <Filter>Header Files\yield</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\yield\atomic.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\yield</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\yield\auto_object.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\yield</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\yield\buffer.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\yield</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\yield\buffers.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\yield</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\yield\channel.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\yield</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\yield\channel_pair.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\yield</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\yield\config.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\yield</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\yield\date_time.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\yield</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\yield\event.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\yield</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\yield\event_handler.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\yield</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\yield\event_queue.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\yield</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\yield\exception.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\yield</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\yield\log.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\yield</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\yield\object.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\yield</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\yield\time.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\yield</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\yield\types.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\yield</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,4 @@
-// http_file_server_test.cpp
+// yield_http_server_file_test_main.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,25 +27,19 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/http/server/file/http_file_server.hpp"
 #include "yunit.hpp"
 
-TEST_SUITE(HTTPFileServer);
+#include <iostream>
 
-namespace yield {
-namespace http {
-namespace server {
-namespace file {
-TEST(HTTPFileServer, constructor) {
-  HTTPFileServer<>(".", "/", 8080);
-}
+extern yunit::TestSuite& HTTPFileServerTestSuite();
 
-//TEST(HTTPFileServer, visit) {
-//  HTTPFileServer<> http_file_server(".", "/", 8080);
-//  for (;;)
-//    http_file_server.visit();
-//}
-}
-}
-}
+int main(int, char**) {
+  int failed_test_case_count = 0;
+
+  // HTTPFileServer
+  std::cout << "HTTPFileServer:" << std::endl;
+  failed_test_case_count += HTTPFileServerTestSuite().run();
+  std::cout << std::endl;
+
+  return failed_test_case_count;
 }

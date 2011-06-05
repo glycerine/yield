@@ -105,6 +105,11 @@
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
+    <ClCompile Include="..\..\..\..\..\test\yield\http\server\ygi\test_ygi_request_handler.c">
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\..\test\yield\http\server\ygi\test_ygi_request_handler.h" />
+    <ClCompile Include="..\..\..\..\..\test\yield\http\server\ygi\ygi_server_test.cpp">
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\test\yield\http\server\ygi\yield_http_server_ygi_test_main.cpp">
     </ClCompile>
   </ItemGroup>

@@ -81,11 +81,11 @@ TEST(Buffer, constructor_capacity) {
 class TestBuffer : public Buffer {
 public:
   TestBuffer()
-    : Buffer(Buffer::getpagesize(), static_cast<void*>(NULL)) {
+    : Buffer(Buffer::getpagesize(), static_cast<void*>(NULL), 0) {
   }
 };
 
-TEST(Buffer, constructor_capacity_data) {
+TEST(Buffer, constructor_capacity_data_size) {
   auto_Object<TestBuffer> buffer = new TestBuffer;
 }
 
