@@ -41,20 +41,72 @@ class tstring : public std::wstring {
 class tstring : public std::string {
 #endif
 public:
+  /**
+    Construct an empty tstring.
+  */
   tstring() { }
 
+  /**
+    Construct a tstring from a single character.
+    @param s new contents of the tstring
+    @param code iconv code of the tstring
+  */
   tstring(char s, Code code = Code::CHAR);
+
+  /**
+    Construct a tstring from a C string.
+    @param s new contents of the tstring, copied
+    @param code iconv code of the tstring
+  */
   tstring(const char* s, Code code = Code::CHAR);
+
+  /**
+    Construct a tstring from a C++ string.
+    @param s new contents of the tstring, copied
+    @param code iconv code of the tstring
+  */
   tstring(const string& s, Code code = Code::CHAR);
+
+  /**
+    Construct a tstring from a string and length.
+    @param s new contents of the tstring, copied
+    @param len length of s
+    @param code iconv code of the tstring
+  */
   tstring(const char* s, size_t len, Code code = Code::CHAR);
 
 #ifdef _WIN32
+  /**
+    Construct a tstring from a single wide character.
+    @param s new contents of the tstring
+  */
   tstring(wchar_t s);
+
+  /**
+    Construct a tstring from a wide C string.
+    @param s new contents of the tstring, copied
+  */
   tstring(const wchar_t* s);
+
+  /**
+    Construct a tstring from a wide string and length.
+    @param s new contents of the tstring, copied
+    @param len length of s
+  */
   tstring(const wchar_t* s, size_t len);
+
+  /**
+    Construct a tstring from a C++ wstring.
+    @param s new contents of the tstring, copied
+  */
   tstring(const std::wstring& s);
 #endif
 
+  /**
+    Encode a tstring as a multibyte C++ string.
+    @param tocode the iconv code with which to encode the tstring
+    @return the encoded tstring as a multibyte C++ string
+  */
   string encode(Code tocode) const;
 
 private:

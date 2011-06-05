@@ -34,21 +34,47 @@
 
 namespace yield {
 namespace i18n {
+/**
+  iconv code constants. Similar to Win32 code pages. See iconv(3) for details.
+*/
 class Code {
 public:
+  /**
+    The default platform multibyte character code.
+  */
   const static Code CHAR;
+
+  /**
+    ISO-8859-1 code.
+  */
   const static Code ISO88591;
+
+  /**
+    UTF-8 code.
+  */
   const static Code UTF8;
+
 #ifdef _WIN32
+  /**
+    Wide character (wchar_t) code.
+  */
   const static Code WCHAR_T;
 #endif
 
 public:
 #ifdef _WIN32
+  /**
+    Construct a Code from a Win32 code page constant.
+    @param code_page Win32 code page constant
+  */
   Code(uint32_t code_page)
     : code_page(code_page)
   { }
 #else
+  /**
+    Construct a Code from an iconv(3) code name.
+    @param iconv_code iconv(3) code name
+  */
   Code(const char* iconv_code)
     : iconv_code(iconv_code)
   { }
@@ -56,10 +82,18 @@ public:
 
 public:
 #ifdef _WIN32
+  /**
+    Get this Code as a Win32 code page constant.
+    @return the Win32 code page constant equivalent of this Code
+  */
   operator uint32_t() const {
     return code_page;
   }
 #else
+  /**
+    Get this Code as an iconv(3) code name
+    @return the iconv(3) code name equivalent of this Code
+  */
   operator const char* () const {
     return iconv_code;
   }

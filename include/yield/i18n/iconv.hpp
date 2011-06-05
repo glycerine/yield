@@ -35,23 +35,70 @@
 
 namespace yield {
 namespace i18n {
+/**
+  Character set converter, similar to iconv(3).
+*/
 class iconv {
 public:
+  /**
+    Construct a converter between two character sets.
+    @param tocode the target character set of the converter
+    @param fromcode the source character set of the converter
+  */
   iconv(Code tocode, Code fromcode);
+
+  /**
+    Destruct the converter, deallocating any system resources
+      (e.g., the iconv handle).
+  */
   ~iconv();
 
-  // iconv.3
+  /**
+    The equivalent of iconv(3): perform character set conversion between
+      fixed buffers.
+    The other methods of this class are implemented in terms of this one.
+    @param[in, out] inbuf pointer to the the input buffer, updated on
+      return to point to the first unprocessed character
+    @param[in, out] inbytesleft length of inbuf on call,
+      number of unprocessed bytes in inbuf on return
+    @param[out] outbuf pointer to the the output buffer, updated on
+      return to point to the last converted character
+    @param[in, out] outbytesleft length of outbuf on call,
+      number of converted bytes in outbuf on return
+    @return the number of characters converted on success,
+      (size_t)-1+errno on failure
+  */
   size_t
   operator()(
-    const char** inbuf,
-    size_t* inbytesleft,
-    char** outbuf,
-    size_t* outbytesleft
+    INOUT const char** inbuf,
+    INOUT size_t* inbytesleft,
+    INOUT char** outbuf,
+    INOUT size_t* outbytesleft
   );
 
+  /**
+    Perform character set conversion between C++ strings.
+    @param inbuf the input buffer
+    @param[out] outbuf the output buffer
+    @return true if the entire input buffer was converted
+  */
   bool operator()(const string& inbuf, string& outbuf);
+
 #ifdef _WIN32
+  /**
+    Perform character set conversion between a C++ string and a C++ wstring.
+    @param inbuf the input buffer
+    @param[out] outbuf the output buffer
+    @return true if the entire input buffer was converted
+  */
   bool operator()(const string& inbuf, std::wstring& outbuf);
+
+  /**
+    Perform character set conversion between a C++ wstring and a C++ string.
+    @param inbuf the input buffer
+    @param[out] outbuf the output buffer
+    @return true if the entire input buffer was converted
+  */
   bool operator()(const std::wstring& inbuf, string& outbuf);
 #endif
 
