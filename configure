@@ -85,12 +85,14 @@ PROJECT_REFERENCES = {
     "yield.fs": ("yield.i18n",),
     "yield.fs.poll": ("yield.fs", "yield.queue",),
     "yield.http": ("yield.uri",),
-    "yield.http.server": ("yield.fs", "yield.http", "yield.sockets.aio",),
+    "yield.http.server": ("yield.fs", "yield.http", "yield.sockets.aio", "yield.stage",),
+    "yield.http.server.ygi": ("yield.http.server",),
     "yield.i18n": ("yield",),
     "yield.poll": ("yield.queue",),
     "yield.queue": ("yield.thread",),
     "yield.sockets": ("yield",),
     "yield.sockets.aio": ("yield.poll", "yield.sockets",),
+    "yield.stage": ("yield.thread",),
     "yield.thread": ("yield",),
     "yield.uri": ("yield",),
 }
@@ -395,6 +397,7 @@ if not options.calculate_type_id and\
    not options.generate_test and\
    not options.generate_test_main_cpp and\
    not options.generate_test_py:
+    options.format_src = True
     options.generate_proj = True
 
 if options.project_names is not None and len(options.project_names) > 0:

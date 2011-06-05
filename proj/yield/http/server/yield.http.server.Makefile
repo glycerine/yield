@@ -51,15 +51,15 @@ ifeq ($(UNAME), Linux)
 	LIBS += -lpthread -lrt -lstdc++
 endif
 ifeq ($(UNAME), Solaris)
-	LIBS += -liconv -lkstat -lnsl -lsocket -lm -lrt -lstdc++
+	LIBS += -liconv -lnsl -lsocket -lkstat -lm -lrt -lstdc++
 endif
-LIBS += -lyield_fs -lyield_i18n -lyield_http -lyield_uri -lyield_sockets_aio -lyield_poll -lyield_thread -lyield_sockets -lyield
+LIBS += -lyield_fs -lyield_i18n -lyield_http -lyield_uri -lyield_sockets_aio -lyield_poll -lyield_sockets -lyield_stage -lyield_thread -lyield
 
 
 D_FILE_PATHS := $(shell find ../../../../build/yield/http/server -name "*.d")
 
 
-O_FILE_PATHS += ../../../../build/yield/http/server/http_connection.o ../../../../build/yield/http/server/http_message_body_chunk.o ../../../../build/yield/http/server/http_request.o ../../../../build/yield/http/server/http_request_parser.o ../../../../build/yield/http/server/http_request_queue.o
+O_FILE_PATHS += ../../../../build/yield/http/server/http_connection.o ../../../../build/yield/http/server/http_file_server.o ../../../../build/yield/http/server/http_message_body_chunk.o ../../../../build/yield/http/server/http_request.o ../../../../build/yield/http/server/http_request_parser.o ../../../../build/yield/http/server/http_request_queue.o ../../../../build/yield/http/server/http_server.o
 
 
 all: ../../../../lib/yield/libyield_http_server.a
@@ -85,13 +85,21 @@ depclean:
 	$(MAKE) -C ../../sockets/aio yield.sockets.aio.Makefile
 
 
-../../../../lib/yield/libyield_http_server.a: $(O_FILE_PATHS) ../../../../lib/yield/libyield_fs.a ../../../../lib/yield/libyield_http.a ../../../../lib/yield/libyield_sockets_aio.a
+../../../../lib/yield/libyield_stage.a:
+	$(MAKE) -C ../../stage yield.stage.Makefile
+
+
+../../../../lib/yield/libyield_http_server.a: $(O_FILE_PATHS) ../../../../lib/yield/libyield_fs.a ../../../../lib/yield/libyield_http.a ../../../../lib/yield/libyield_sockets_aio.a ../../../../lib/yield/libyield_stage.a
 	-mkdir -p ../../../../lib/yield 2>/dev/null
 	$(AR) -r $@ $(O_FILE_PATHS)
 
 ../../../../build/yield/http/server/http_connection.o: ../../../../src/yield/http/server/http_connection.cpp
 	-mkdir -p ../../../../build/yield/http/server 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/http/server/http_connection.o -MD $(CXXFLAGS) ../../../../src/yield/http/server/http_connection.cpp
+
+../../../../build/yield/http/server/http_file_server.o: ../../../../src/yield/http/server/http_file_server.cpp
+	-mkdir -p ../../../../build/yield/http/server 2>/dev/null
+	$(CXX) -c -o ../../../../build/yield/http/server/http_file_server.o -MD $(CXXFLAGS) ../../../../src/yield/http/server/http_file_server.cpp
 
 ../../../../build/yield/http/server/http_message_body_chunk.o: ../../../../src/yield/http/server/http_message_body_chunk.cpp
 	-mkdir -p ../../../../build/yield/http/server 2>/dev/null
@@ -108,3 +116,7 @@ depclean:
 ../../../../build/yield/http/server/http_request_queue.o: ../../../../src/yield/http/server/http_request_queue.cpp
 	-mkdir -p ../../../../build/yield/http/server 2>/dev/null
 	$(CXX) -c -o ../../../../build/yield/http/server/http_request_queue.o -MD $(CXXFLAGS) ../../../../src/yield/http/server/http_request_queue.cpp
+
+../../../../build/yield/http/server/http_server.o: ../../../../src/yield/http/server/http_server.cpp
+	-mkdir -p ../../../../build/yield/http/server 2>/dev/null
+	$(CXX) -c -o ../../../../build/yield/http/server/http_server.o -MD $(CXXFLAGS) ../../../../src/yield/http/server/http_server.cpp

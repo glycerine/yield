@@ -37,6 +37,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.sockets.aio", "proj\y
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.sockets.aio_test", "proj\yield\sockets\aio\yield.sockets.aio_test.vcxproj", "{397305B4-2AED-4FA9-A739-973F1195A881}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.http.server.ygi", "proj\yield\http\server\ygi\yield.http.server.ygi.vcxproj", "{5604A018-4483-473D-A850-174E9EB55B71}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.http.server.ygi_test", "proj\yield\http\server\ygi\yield.http.server.ygi_test.vcxproj", "{438D66A2-8117-429A-9CA5-1DAAA5CEAAAD}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.fs", "proj\yield\fs\yield.fs.vcxproj", "{56FED322-DC66-4B39-A033-20D7E90ACF26}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.fs_test", "proj\yield\fs\yield.fs_test.vcxproj", "{72E7FE5E-5885-423B-A231-570D8362417F}"
@@ -44,6 +48,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.queue", "proj\yield\queue\yield.queue.vcxproj", "{241F6BF4-1864-44F4-B7A2-FB285B1419F0}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.queue_test", "proj\yield\queue\yield.queue_test.vcxproj", "{406F22D8-5A4B-4D54-AEC8-BFC0734D4F0B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.stage", "proj\yield\stage\yield.stage.vcxproj", "{DC118032-9ADA-45B7-98B3-1D742AC12051}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.stage_test", "proj\yield\stage\yield.stage_test.vcxproj", "{6919E2A7-51F8-47A4-B909-18A6A0062938}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.poll", "proj\yield\poll\yield.poll.vcxproj", "{941AB6A9-57CA-4350-9DF0-5D1EAEC9E355}"
 EndProject
@@ -131,6 +139,14 @@ Global
 		{397305B4-2AED-4FA9-A739-973F1195A881}.Debug|Win32.Build.0 = Debug|Win32
 		{397305B4-2AED-4FA9-A739-973F1195A881}.Release|Win32.ActiveCfg = Release|Win32
 		{397305B4-2AED-4FA9-A739-973F1195A881}.Release|Win32.Build.0 = Release|Win32
+		{5604A018-4483-473D-A850-174E9EB55B71}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5604A018-4483-473D-A850-174E9EB55B71}.Debug|Win32.Build.0 = Debug|Win32
+		{5604A018-4483-473D-A850-174E9EB55B71}.Release|Win32.ActiveCfg = Release|Win32
+		{5604A018-4483-473D-A850-174E9EB55B71}.Release|Win32.Build.0 = Release|Win32
+		{438D66A2-8117-429A-9CA5-1DAAA5CEAAAD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{438D66A2-8117-429A-9CA5-1DAAA5CEAAAD}.Debug|Win32.Build.0 = Debug|Win32
+		{438D66A2-8117-429A-9CA5-1DAAA5CEAAAD}.Release|Win32.ActiveCfg = Release|Win32
+		{438D66A2-8117-429A-9CA5-1DAAA5CEAAAD}.Release|Win32.Build.0 = Release|Win32
 		{56FED322-DC66-4B39-A033-20D7E90ACF26}.Debug|Win32.ActiveCfg = Debug|Win32
 		{56FED322-DC66-4B39-A033-20D7E90ACF26}.Debug|Win32.Build.0 = Debug|Win32
 		{56FED322-DC66-4B39-A033-20D7E90ACF26}.Release|Win32.ActiveCfg = Release|Win32
@@ -147,6 +163,14 @@ Global
 		{406F22D8-5A4B-4D54-AEC8-BFC0734D4F0B}.Debug|Win32.Build.0 = Debug|Win32
 		{406F22D8-5A4B-4D54-AEC8-BFC0734D4F0B}.Release|Win32.ActiveCfg = Release|Win32
 		{406F22D8-5A4B-4D54-AEC8-BFC0734D4F0B}.Release|Win32.Build.0 = Release|Win32
+		{DC118032-9ADA-45B7-98B3-1D742AC12051}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DC118032-9ADA-45B7-98B3-1D742AC12051}.Debug|Win32.Build.0 = Debug|Win32
+		{DC118032-9ADA-45B7-98B3-1D742AC12051}.Release|Win32.ActiveCfg = Release|Win32
+		{DC118032-9ADA-45B7-98B3-1D742AC12051}.Release|Win32.Build.0 = Release|Win32
+		{6919E2A7-51F8-47A4-B909-18A6A0062938}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6919E2A7-51F8-47A4-B909-18A6A0062938}.Debug|Win32.Build.0 = Debug|Win32
+		{6919E2A7-51F8-47A4-B909-18A6A0062938}.Release|Win32.ActiveCfg = Release|Win32
+		{6919E2A7-51F8-47A4-B909-18A6A0062938}.Release|Win32.Build.0 = Release|Win32
 		{941AB6A9-57CA-4350-9DF0-5D1EAEC9E355}.Debug|Win32.ActiveCfg = Debug|Win32
 		{941AB6A9-57CA-4350-9DF0-5D1EAEC9E355}.Debug|Win32.Build.0 = Debug|Win32
 		{941AB6A9-57CA-4350-9DF0-5D1EAEC9E355}.Release|Win32.ActiveCfg = Release|Win32
