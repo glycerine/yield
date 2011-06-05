@@ -34,7 +34,7 @@
 
 namespace yield {
 /**
-  An elapsed time with no reference, similar to struct timespec.
+  An interval time with no reference, similar to struct timespec.
   Often used for specifying timeouts.
   Stores the time in nanoseconds internally.
 */

@@ -35,6 +35,10 @@
 
 namespace yield {
 namespace i18n {
+/**
+  Platform-specific internationalized string: a wide string on Win32,
+    a multibyte string with the default character set on POSIX systems.
+*/
 #ifdef _WIN32
 class tstring : public std::wstring {
 #else
