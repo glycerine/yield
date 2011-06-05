@@ -73,7 +73,7 @@ File::Map::Map(
   uint64_t file_offset,
   bool read_only,
   bool shared
-) : Buffer(capacity, data),
+) : Buffer(capacity, data, capacity),
   file(file.inc_ref()),
   file_mapping(file_mapping),
   file_offset(file_offset),

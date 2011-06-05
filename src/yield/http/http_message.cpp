@@ -77,20 +77,6 @@ HTTPMessage<HTTPMessageType>::~HTTPMessage() {
 
 template <class HTTPMessageType>
 void HTTPMessage<HTTPMessageType>::finalize() {
-  size_t content_length;
-  if (
-    !HTTPMessageParser::parse_content_length_field(
-      static_cast<const char*>(header) + fields_offset,
-      static_cast<const char*>(header) + header.size(),
-      content_length
-    )
-  ) {
-    if (body == NULL)
-      set_field("Content-Length", 14, "0", 1);
-    else if (body->get_type_id() == Buffer::TYPE_ID)
-      set_field("Content-Length", 14, static_cast<Buffer*>(body)->size());
-  }
-
   header.put("\r\n", 2);
 }
 

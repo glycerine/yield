@@ -51,9 +51,10 @@ Buffer::Buffer(size_t alignment, size_t capacity) {
   size_ = 0;
 }
 
-Buffer::Buffer(size_t capacity, void* data)
+Buffer::Buffer(size_t capacity, void* data, size_t size)
   : capacity_(capacity),
-    data_(data)
+    data_(data),
+    size_(size)
 {
   next_buffer = NULL;
 }

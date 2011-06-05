@@ -21,6 +21,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.sockets.ssl", "proj\y
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.sockets.ssl_test", "proj\yield\sockets\ssl\yield.sockets.ssl_test.vcxproj", "{F38269B9-D039-4655-B6BA-0496AB3C4E6E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.http.server.file", "proj\yield\http\server\file\yield.http.server.file.vcxproj", "{95DD6437-FE07-49EC-95F7-B68D3C0DD840}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.http.server.file_test", "proj\yield\http\server\file\yield.http.server.file_test.vcxproj", "{A82CF949-9A5C-44B3-BF7E-A2309D99D674}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.i18n", "proj\yield\i18n\yield.i18n.vcxproj", "{B1F5A78E-7515-4986-9861-A64214C05494}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yield.i18n_test", "proj\yield\i18n\yield.i18n_test.vcxproj", "{8334D9EB-32B7-46BA-B042-3E0E40205D67}"
@@ -107,6 +111,14 @@ Global
 		{F38269B9-D039-4655-B6BA-0496AB3C4E6E}.Debug|Win32.Build.0 = Debug|Win32
 		{F38269B9-D039-4655-B6BA-0496AB3C4E6E}.Release|Win32.ActiveCfg = Release|Win32
 		{F38269B9-D039-4655-B6BA-0496AB3C4E6E}.Release|Win32.Build.0 = Release|Win32
+		{95DD6437-FE07-49EC-95F7-B68D3C0DD840}.Debug|Win32.ActiveCfg = Debug|Win32
+		{95DD6437-FE07-49EC-95F7-B68D3C0DD840}.Debug|Win32.Build.0 = Debug|Win32
+		{95DD6437-FE07-49EC-95F7-B68D3C0DD840}.Release|Win32.ActiveCfg = Release|Win32
+		{95DD6437-FE07-49EC-95F7-B68D3C0DD840}.Release|Win32.Build.0 = Release|Win32
+		{A82CF949-9A5C-44B3-BF7E-A2309D99D674}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A82CF949-9A5C-44B3-BF7E-A2309D99D674}.Debug|Win32.Build.0 = Debug|Win32
+		{A82CF949-9A5C-44B3-BF7E-A2309D99D674}.Release|Win32.ActiveCfg = Release|Win32
+		{A82CF949-9A5C-44B3-BF7E-A2309D99D674}.Release|Win32.Build.0 = Release|Win32
 		{B1F5A78E-7515-4986-9861-A64214C05494}.Debug|Win32.ActiveCfg = Debug|Win32
 		{B1F5A78E-7515-4986-9861-A64214C05494}.Debug|Win32.Build.0 = Debug|Win32
 		{B1F5A78E-7515-4986-9861-A64214C05494}.Release|Win32.ActiveCfg = Release|Win32

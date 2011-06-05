@@ -452,10 +452,11 @@ protected:
   /**
     Construct a <code>Buffer</code> by stealing data.
     data_ must be freed in the derived class's destructor before ~Buffer is called!
-    @param capacity capacity of data, assumes size = 0
+    @param capacity capacity of data
     @param data to steal for the new <code>Buffer</code>
+    @param size size of data
   */
-  Buffer(size_t capacity, void* data);
+  Buffer(size_t capacity, void* data, size_t size);
 
 protected:
   size_t capacity_;

@@ -14,9 +14,6 @@
     <ClInclude Include="..\..\..\..\include\yield\http\server\http_connection.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\yield\http\server\http_file_server.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\yield\http\server\http_message_body_chunk.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -37,9 +34,6 @@
     <ClCompile Include="..\..\..\..\src\yield\http\server\http_connection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\http\server\http_file_server.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\yield\http\server\http_message_body_chunk.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -53,9 +47,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClCompile Include="..\..\..\..\src\yield\http\server\http_request_queue.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\yield\http\server\http_server.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

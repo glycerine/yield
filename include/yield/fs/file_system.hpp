@@ -30,7 +30,11 @@
 #ifndef _YIELD_FS_FILE_SYSTEM_HPP_
 #define _YIELD_FS_FILE_SYSTEM_HPP_
 
+#include "yield/date_time.hpp"
+#include "yield/fs/directory.hpp"
+#include "yield/fs/file.hpp"
 #include "yield/fs/path.hpp"
+#include "yield/fs/stat.hpp"
 
 #ifdef _WIN32
 struct _FILETIME;
@@ -57,14 +61,7 @@ struct statvfs;
 #endif
 
 namespace yield {
-class DateTime;
-
 namespace fs {
-class Directory;
-class File;
-class Path;
-class Stat;
-
 /**
   File system operations: creating, deleting, opening, and manipulating
     the metadata of files and directories.

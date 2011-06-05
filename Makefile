@@ -1,4 +1,4 @@
-all: yield yield.fs yield.fs.poll yield.fs.poll_test yield.fs_test yield.http yield.http.server yield.http.server.ygi yield.http.server.ygi_test yield.http.server_test yield.http_test yield.i18n yield.i18n_test yield.poll yield.poll_test yield.queue yield.queue_test yield.sockets yield.sockets.aio yield.sockets.aio_test yield.sockets.ssl yield.sockets.ssl_test yield.sockets_test yield.stage yield.stage_test yield.thread yield.thread_test yield.uri yield.uri_test yield_test
+all: yield yield.fs yield.fs.poll yield.fs.poll_test yield.fs_test yield.http yield.http.server yield.http.server.file yield.http.server.file_test yield.http.server.ygi yield.http.server.ygi_test yield.http.server_test yield.http_test yield.i18n yield.i18n_test yield.poll yield.poll_test yield.queue yield.queue_test yield.sockets yield.sockets.aio yield.sockets.aio_test yield.sockets.ssl yield.sockets.ssl_test yield.sockets_test yield.stage yield.stage_test yield.thread yield.thread_test yield.uri yield.uri_test yield_test
 
 clean:
 	$(MAKE) -C proj/yield -f yield.Makefile clean
@@ -11,6 +11,8 @@ clean:
 	$(MAKE) -C proj/yield/http -f yield.http_test.Makefile clean
 	$(MAKE) -C proj/yield/http/server -f yield.http.server.Makefile clean
 	$(MAKE) -C proj/yield/http/server -f yield.http.server_test.Makefile clean
+	$(MAKE) -C proj/yield/http/server/file -f yield.http.server.file.Makefile clean
+	$(MAKE) -C proj/yield/http/server/file -f yield.http.server.file_test.Makefile clean
 	$(MAKE) -C proj/yield/http/server/ygi -f yield.http.server.ygi.Makefile clean
 	$(MAKE) -C proj/yield/http/server/ygi -f yield.http.server.ygi_test.Makefile clean
 	$(MAKE) -C proj/yield/i18n -f yield.i18n.Makefile clean
@@ -43,6 +45,8 @@ depclean:
 	$(MAKE) -C proj/yield/http -f yield.http_test.Makefile depclean
 	$(MAKE) -C proj/yield/http/server -f yield.http.server.Makefile depclean
 	$(MAKE) -C proj/yield/http/server -f yield.http.server_test.Makefile depclean
+	$(MAKE) -C proj/yield/http/server/file -f yield.http.server.file.Makefile depclean
+	$(MAKE) -C proj/yield/http/server/file -f yield.http.server.file_test.Makefile depclean
 	$(MAKE) -C proj/yield/http/server/ygi -f yield.http.server.ygi.Makefile depclean
 	$(MAKE) -C proj/yield/http/server/ygi -f yield.http.server.ygi_test.Makefile depclean
 	$(MAKE) -C proj/yield/i18n -f yield.i18n.Makefile depclean
@@ -64,9 +68,10 @@ depclean:
 	$(MAKE) -C proj/yield/uri -f yield.uri.Makefile depclean
 	$(MAKE) -C proj/yield/uri -f yield.uri_test.Makefile depclean
 
-test: yield.fs.poll_test yield.fs_test yield.http.server.ygi_test yield.http.server_test yield.http_test yield.i18n_test yield.poll_test yield.queue_test yield.sockets.aio_test yield.sockets.ssl_test yield.sockets_test yield.stage_test yield.thread_test yield.uri_test yield_test
+test: yield.fs.poll_test yield.fs_test yield.http.server.file_test yield.http.server.ygi_test yield.http.server_test yield.http_test yield.i18n_test yield.poll_test yield.queue_test yield.sockets.aio_test yield.sockets.ssl_test yield.sockets_test yield.stage_test yield.thread_test yield.uri_test yield_test
 	-bin/yield/yield_fs_poll_test
 	-bin/yield/yield_fs_test
+	-bin/yield/yield_http_server_file_test
 	-bin/yield/yield_http_server_test
 	-bin/yield/yield_http_server_ygi_test
 	-bin/yield/yield_http_test
@@ -94,6 +99,12 @@ yield.fs: yield.i18n
 
 yield.fs_test: yield.fs
 	$(MAKE) -C proj/yield/fs -f yield.fs_test.Makefile
+
+yield.http.server.file: yield.fs yield.http.server
+	$(MAKE) -C proj/yield/http/server/file -f yield.http.server.file.Makefile
+
+yield.http.server.file_test: yield.http.server.file
+	$(MAKE) -C proj/yield/http/server/file -f yield.http.server.file_test.Makefile
 
 yield.http.server.ygi: yield.http.server
 	$(MAKE) -C proj/yield/http/server/ygi -f yield.http.server.ygi.Makefile

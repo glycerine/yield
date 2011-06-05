@@ -1,4 +1,4 @@
-// yield/http/server/http_server.hpp
+// http_file_server_test.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,31 +27,25 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_HTTP_SERVER_HTTP_SERVER_HPP_
-#define _YIELD_HTTP_SERVER_HTTP_SERVER_HPP_
+#include "yield/http/server/file/http_file_server.hpp"
+#include "yunit.hpp"
 
-#include "yield/stage/stage.hpp"
-#include "yield/http/server/http_request_queue.hpp"
+TEST_SUITE(HTTPFileServer);
 
 namespace yield {
 namespace http {
 namespace server {
-template <class AIOQueueType = yield::sockets::aio::AIOQueue>
-class HTTPServer : public yield::stage::Stage {
-public:
-  HTTPServer(
-    YO_NEW_REF EventHandler& http_request_handler,
-    const yield::sockets::SocketAddress& sockname,
-    YO_NEW_REF Log* log = NULL
-  )
-   : yield::stage::Stage(
-       http_request_handler,
-      *new HTTPRequestQueue<AIOQueueType>(sockname, log)
-     ) {
-     }
-};
-}
-}
+namespace file {
+TEST(HTTPFileServer, constructor) {
+  HTTPFileServer<>(".", "/", 8080);
 }
 
-#endif
+TEST(HTTPFileServer, visit) {
+  HTTPFileServer<> http_file_server(".", "/", 8080);
+  for (;;)
+    http_file_server.visit();
+}
+}
+}
+}
+}

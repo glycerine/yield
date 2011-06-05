@@ -1,4 +1,4 @@
-// yield/http/server/http_server.cpp
+// yield/http/server/ygi/ygi_server.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -26,3 +26,10 @@
 // ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+#ifndef _YIELD_HTTP_SERVER_YGI_YGI_SERVER_HPP_
+#define _YIELD_HTTP_SERVER_YGI_YGI_SERVER_HPP_
+
+#endif
+
+#endif

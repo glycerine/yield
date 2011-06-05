@@ -1,4 +1,4 @@
-// yield/http/server/http_file_server.hpp
+// yield/http/server/file/http_file_request_handler.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -27,7 +27,36 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef _YIELD_HTTP_SERVER_HTTP_FILE_SERVER_HPP_
-#define _YIELD_HTTP_SERVER_HTTP_FILE_SERVER_HPP_
+#ifndef _YIELD_HTTP_SERVER_FILE_HTTP_FILE_REQUEST_HANDLER_HPP_
+#define _YIELD_HTTP_SERVER_FILE_HTTP_FILE_REQUEST_HANDLER_HPP_
+
+#include "yield/event_handler.hpp"
+#include "yield/fs/path.hpp"
+#include "yield/uri/uri.hpp"
+
+namespace yield {
+namespace http {
+namespace server {
+namespace file {
+class HTTPFileRequestHandler : public EventHandler {
+public:
+  HTTPFileRequestHandler(
+    const yield::fs::Path& root_directory_path,
+    const yield::uri::URI& root_uri
+  );
+
+public:
+  // yield::EventHandler
+  void handle(YO_NEW_REF Event& event);
+
+private:
+  yield::fs::Path root_directory_path;
+  yield::uri::URI root_uri;
+  iovec root_uri_path;
+};
+}
+}
+}
+}
 
 #endif

@@ -1,4 +1,4 @@
-// yield/http/server/http_file_server.cpp
+// yield/http/server/file/http_file_server.hpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved
@@ -26,3 +26,36 @@
 // ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+#ifndef _YIELD_HTTP_SERVER_FILE_HTTP_FILE_SERVER_HPP_
+#define _YIELD_HTTP_SERVER_FILE_HTTP_FILE_SERVER_HPP_
+
+#include "yield/http/server/http_server.hpp"
+#include "yield/http/server/file/http_file_request_handler.hpp"
+
+namespace yield {
+namespace http {
+namespace server {
+namespace file {
+template <class AIOQueueType = yield::sockets::aio::AIOQueue>
+class HTTPFileServer : public HTTPServer<AIOQueueType> {
+public:
+  HTTPFileServer(
+    const yield::fs::Path& root_directory_path,
+    const yield::uri::URI& root_uri,
+    const yield::sockets::SocketAddress& sockname,
+    YO_NEW_REF Log* log = NULL
+  )
+   : HTTPServer<AIOQueueType>(
+      *new HTTPFileRequestHandler(root_directory_path, root_uri),
+      sockname,
+      log
+     ) {
+     }
+};
+}
+}
+}
+}
+
+#endif

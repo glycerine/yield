@@ -86,7 +86,7 @@ File::Map::Map(
   int flags,
   int prot
 )
-  : Buffer(capacity, data),
+  : Buffer(capacity, data, capacity),
     file(file.inc_ref()),
     file_offset(file_offset),
     flags(flags),

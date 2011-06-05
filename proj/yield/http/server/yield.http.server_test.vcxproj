@@ -105,8 +105,6 @@
   </ItemGroup>
 
   <ItemGroup Label="ClCompileItems">
-    <ClCompile Include="..\..\..\..\test\yield\http\server\http_file_server_test.cpp">
-    </ClCompile>
     <ClCompile Include="..\..\..\..\test\yield\http\server\http_request_queue_test.cpp">
     </ClCompile>
     <ClCompile Include="..\..\..\..\test\yield\http\server\yield_http_server_test_main.cpp">

@@ -1,4 +1,4 @@
-// http_file_server_test.cpp
+// yield/http/server/ygi/ygi_server.cpp
 
 // Copyright (c) 2011 Minor Gordon
 // All rights reserved

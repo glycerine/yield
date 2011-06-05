@@ -87,23 +87,31 @@ void HTTPRequest::respond(uint16_t status_code) {
   respond(status_code, static_cast<Buffer*>(NULL));
 }
 
+void HTTPRequest::respond(uint16_t status_code, YO_NEW_REF Buffer* body) {
+  HTTPResponse* http_response = new HTTPResponse(status_code, body, get_http_version());
+  if (body != NULL)
+    http_response->set_field("Content-Length", 14, body->size());
+  else
+    http_response->set_field("Content-Length", 14, "0", 1);
+  respond(*http_response);
+}
+
+void HTTPRequest::respond(uint16_t status_code, YO_NEW_REF Buffer& body) {
+  HTTPResponse* http_response = new HTTPResponse(status_code, &body, get_http_version());
+  http_response->set_field("Content-Length", 14, body.size());
+  respond(*http_response);  
+}
+
 void HTTPRequest::respond(uint16_t status_code, const char* body) {
   respond(status_code, Buffer::copy(body));
 }
 
+void HTTPRequest::respond(uint16_t status_code, const Exception& body) {
+  respond(status_code, Buffer::copy(body.get_error_message()));
+}
+
 void HTTPRequest::respond(uint16_t status_code, YO_NEW_REF Object* body) {
-  HTTPResponse* http_response
-    = new HTTPResponse(status_code, body, get_http_version());
-
-  if (body != NULL && body->get_type_id() == Buffer::TYPE_ID) {
-    http_response->set_field(
-      "Content-Length",
-      14,
-      static_cast<Buffer*>(body)->size()
-    );
-  }
-
-  respond(*http_response);
+  respond(*new HTTPResponse(status_code, body, get_http_version()));
 }
 
 void HTTPRequest::respond(uint16_t status_code, YO_NEW_REF Object& body) {
