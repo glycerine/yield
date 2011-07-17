@@ -106,7 +106,7 @@ bool
 HTTPMessage<HTTPMessageType>::get_field(
   const char* name,
   size_t name_len,
-  OUT iovec& value
+  iovec& value
 ) const {
   iovec name_iov;
   name_iov.iov_base = const_cast<char*>(name);
@@ -122,7 +122,7 @@ HTTPMessage<HTTPMessageType>::get_field(
 template <class HTTPMessageType>
 void
 HTTPMessage<HTTPMessageType>::get_fields(
-  OUT vector< std::pair<iovec, iovec> >& fields
+  vector< std::pair<iovec, iovec> >& fields
 ) const {
   return HTTPMessageParser::parse_fields(
            static_cast<const char*>(header) + fields_offset,

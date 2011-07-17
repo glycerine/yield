@@ -202,9 +202,9 @@ SocketAddress::_getaddrinfo(
 
 bool
 SocketAddress::getnameinfo(
-  OUT char* nodename,
+  char* nodename,
   size_t nodenamelen,
-  OUT char* servname,
+  char* servname,
   size_t servnamelen,
   int flags
 ) const {

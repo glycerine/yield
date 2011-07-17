@@ -210,16 +210,6 @@ bool Socket::setsockopt(int option_name, int option_value) {
           ) == 0;
 }
 
-bool Socket::shutdown(bool shut_rd, bool shut_wr) {
-  int how;
-  if (shut_rd && shut_wr) how = SHUT_RDWR;
-  else if (shut_rd) how = SHUT_RD;
-  else if (shut_wr) how = SHUT_WR;
-  else return false;
-
-  return ::shutdown(*this, how) != -1;
-}
-
 bool Socket::want_recv() const {
   return errno == EWOULDBLOCK;
 }

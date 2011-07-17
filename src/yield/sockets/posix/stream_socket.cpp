@@ -108,6 +108,16 @@ bool StreamSocket::setsockopt(int option_name, int option_value) {
     return Socket::setsockopt(option_name, option_value);
 }
 
+bool StreamSocket::shutdown(bool shut_rd, bool shut_wr) {
+  int how;
+  if (shut_rd && shut_wr) how = SHUT_RDWR;
+  else if (shut_rd) how = SHUT_RD;
+  else if (shut_wr) how = SHUT_WR;
+  else return false;
+
+  return ::shutdown(*this, how) != -1;
+}
+
 bool StreamSocket::want_accept() const {
   return errno == EWOULDBLOCK;
 }

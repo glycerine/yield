@@ -165,7 +165,7 @@ bool FileSystem::readlink(const Path& path, Path& target_path) {
     return false;
 }
 
-bool FileSystem::realpath(const Path& path, OUT Path& realpath) {
+bool FileSystem::realpath(const Path& path, Path& realpath) {
   char realpath_[PATH_MAX];
   if (::realpath(path.c_str(), realpath_) != NULL) {
     realpath.assign(realpath_);
