@@ -35,8 +35,15 @@
 
 namespace yield {
 namespace sockets {
+/**
+  A connected pair of stream sockets.
+*/
 class StreamSocketPair : public SocketPair<StreamSocket> {
 public:
+  /**
+    Construct a connected pair of stream sockets.
+    The domain and protocol of the sockets is platform-specific.
+  */
   StreamSocketPair();
 };
 }

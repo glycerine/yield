@@ -34,22 +34,48 @@
 
 namespace yield {
 namespace sockets {
+/**
+  A TCP/IP socket.
+*/
 class TCPSocket : public StreamSocket {
 public:
-  const static int DOMAIN_DEFAULT; // AF_INET
-  const static int PROTOCOL; // IPPROTO_TCP
+  /**
+    The default domain of the socket in the (domain, type, protocol) tuple.
+    Equivalent to the AF_INET constant on POSIX systems.
+  */
+  const static int DOMAIN_DEFAULT;
+
+  /**
+    The protocol of the socket in the (domain, type, protocol) tuple.
+    Equivalent to the IPPROTO_TCP constant on POSIX systems.
+  */
+  const static int PROTOCOL;
 
 public:
+  /**
+    TCP-specific options for setsockopt.
+  */
   class Option : public StreamSocket::Option {
   public:
+    /**
+      Disable the Nagle algorithm for coalescing small writes before
+        transmission.
+    */
     const static int NODELAY;
   };
 
 public:
+  /**
+    Construct a TCPSocket with the given domain.
+    @param domain the domain of the new socket
+  */
   TCPSocket(int domain = DOMAIN_DEFAULT)
     : StreamSocket(domain, PROTOCOL)
   { }
 
+  /**
+    Empty virtual destructor.
+  */
   virtual ~TCPSocket() { }
 
 public:

@@ -35,32 +35,72 @@
 
 namespace yield {
 namespace sockets {
+/**
+  A connection-oriented, stream-type socket.
+*/
 class StreamSocket : public Socket {
 public:
-  const static int TYPE; // SOCK_STREAM
+  /**
+    The type of the socket in the (domain, type, protocol) tuple.
+    Equivalent to the SOCK_STREAM constant on POSIX systems.
+  */
+  const static int TYPE;
 
 public:
+  /**
+    setsockopt options specifically for connection-oriented sockets.
+  */
   class Option : public Socket::Option {
   public:
+    /**
+      Keep the connection alive even if there's no activity on it.
+    */
     const static int KEEPALIVE;
+
+    /**
+      Linger on close().
+    */
     const static int LINGER;
   };
 
 public:
+  /**
+    Construct a StreamSocket with the given domain.
+    @param domain domain for the new socket e.g., AF_INET.
+    @param protocol protocol for the new socket e.g., IPPROTO_TCP.
+  */
   StreamSocket(int domain, int protocol = PROTOCOL_DEFAULT)
     : Socket(domain, TYPE, protocol)
   { }
 
+  /**
+    Empty virtual destructor.
+  */
+  virtual ~StreamSocket() { }
+
 public:
+  /**
+    Accept an incoming connection on the socket.
+    @return the accepted StreamSocket on success, NULL+errno on failure
+  */
   YO_NEW_REF StreamSocket* accept() {
     SocketAddress peername;
     return accept(peername);
   }
 
 public:
+  /**
+    Accept an incoming connection on the socket.
+    @param[out] peername address of the new peer
+    @return the accepted StreamSocket on success, NULL+errno on failure
+  */
   virtual YO_NEW_REF StreamSocket* accept(SocketAddress& peername);
 
 public:
+  /**
+    Duplicate this socket, including its underlying descriptor.
+    @return the duplicate StreamSocket on success, NULL+errno on failure.
+  */
   virtual YO_NEW_REF StreamSocket* dup() {
     socket_t socket_ = Socket::create(get_domain(), TYPE, get_protocol());
     if (socket_ != static_cast<socket_t>(-1))
@@ -70,16 +110,44 @@ public:
   }
 
 public:
+  /**
+    Listen for connections on the socket.
+    @return true on success, false+errno on failure
+  */
   virtual bool listen();
 
 public:
+  /**
+    Send data from a file to the socket without copying into userspace.
+    @param fd file descriptor to send data from
+    @param offset offset in the file from which to send data
+    @param nbytes number of bytes to send
+    @return the number of bytes sent on success, -1+errno on failure
+  */
   virtual ssize_t sendfile(fd_t fd, off_t offset, size_t nbytes);
 
 public:
+  /**
+    Shut down part of the socket's connection.
+    @param shut_rd shut down the read half of the connection
+    @param shut_wr shut down the write half of the connection
+    @return true on success, false+errno on failure
+  */
   virtual bool shutdown(bool shut_rd = true, bool shut_wr = true);
 
 public:
+  /**
+    Check if the last accept call failed because it would have blocked.
+    Equivalent to errno == EWOULDBLOCK on POSIX systems.
+    @return true if the last accept call failed because it would have blocked
+  */
   virtual bool want_accept() const;
+
+  /**
+    Check if the last connect call failed because it would have blocked.
+    Equivalent to errno == EWOULDBLOCK on POSIX systems.
+    @return true if the last connect call failed because it would have blocked
+  */
   virtual bool want_connect() const;
 
 public:

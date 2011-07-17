@@ -58,76 +58,173 @@ struct in6_addr;
 
 namespace yield {
 namespace sockets {
+/**
+  The address of a socket, such as an IP-port pair.
+  Roughly equivalent to a sockaddr_storage.
+*/
 class SocketAddress : public Object {
 public:
+  /**
+    getnameinfo flag: return the unqualified host name for an address instead
+      of its fully-qualified domain name (FQDN).
+  */
   const static int GETNAMEINFO_FLAG_NOFQDN;
+
+  /**
+    getnameinfo flag: always return a host name for an address, never a numeric
+      representation of the address.
+  */
   const static int GETNAMEINFO_FLAG_NAMEREQD;
+
+  /**
+    getnameinfo flag: return a numeric representation of an address rather than
+      a host name or fully-qualified domain name.
+  */
   const static int GETNAMEINFO_FLAG_NUMERICHOST;
+
+  /**
+    getnameinfo flag: return a numeric representation of a service e.g., a
+      a port rather than a service name.
+  */
   const static int GETNAMEINFO_FLAG_NUMERICSERV;
 
 public:
+  /**
+    Special socket addresses: the IPv4 address to bind to all available
+      addresses.
+  */
   const static SocketAddress IN_ANY;
+
+  /**
+    Special socket addresses: the IP broadcast address.
+  */
   const static SocketAddress IN_BROADCAST;
+
+  /**
+    Special socket addresses: the IP loopback address.
+  */
   const static SocketAddress IN_LOOPBACK;
 
 public:
+  /**
+    Construct an empty SocketAddress, suitable for using as an out parameter
+      to Socket methods such as getsockname or getpeername.
+  */
   SocketAddress() {
     memset(&addr, 0, sizeof(addr));
     next_socket_address = NULL;
   }
 
+  /**
+    Construct a SocketAddress from a struct addrinfo linked list, usually
+      returned by getaddrinfo.
+    @param addrinfo_ a linked list of <code>struct addrinfo</code>s
+  */
   SocketAddress(const addrinfo& addrinfo_) {
     next_socket_address = NULL;
     assign(addrinfo_);
   }
 
+  /**
+    Construct a SocketAddress from an IPv4 struct sockaddr_in.
+    @param sockaddr_in_ an IPv4 struct sockaddr_in
+  */
   SocketAddress(const sockaddr_in& sockaddr_in_) {
     assign(sockaddr_in_);
     next_socket_address = NULL;
   }
 
+  /**
+    Construct a SocketAddress from an IPv6 struct sockaddr_in6.
+    @param sockaddr_in6_ an IPv6 struct sockaddr_in6_
+  */
   SocketAddress(const sockaddr_in6& sockaddr_in6_) {
     assign(sockaddr_in6_);
     next_socket_address = NULL;
   }
 
+  /**
+    Construct a SocketAddress from a generic struct sockaddr, first
+      downcasting it to the specified family.
+    @param sockaddr_ a generic struct sockaddr
+    @param family the address family (e.g., AF_INET) of the struct sockaddr
+  */
   SocketAddress(const sockaddr& sockaddr_, int family) {
     assign(sockaddr_, family);
     next_socket_address = NULL;
   }
 
+  /**
+    Construct a SocketAddress from an IPv4 IP and port.
+    @param in_addr_ an IPv4 IP
+    @param port port
+  */
   SocketAddress(const in_addr& in_addr_, uint16_t port) {
     assign(in_addr_, port);
     next_socket_address = NULL;
   }
 
+  /**
+    Construct a SocketAddress from an IPv4 IP and port.
+    @param in_addr_ an IPv4 IP
+    @param port port
+  */
   SocketAddress(uint32_t in_addr_, uint16_t port) {
     assign(in_addr_, port);
     next_socket_address = NULL;
   }
 
+  /**
+    Construct a SocketAddress from an IPv6 IP and port.
+    @param in6_addr_ an IPv6 IP
+    @param port port
+  */
   SocketAddress(const in6_addr& in6_addr_, uint16_t port) {
     assign(in6_addr_, port);
     next_socket_address = NULL;
   }
 
+  /**
+    Construct a SocketAddress from IN_ANY and the given port.
+    @param port port
+  */
   SocketAddress(uint16_t port) {
     init(NULL, port);
   }
 
+  /**
+    Construct a SocketAddress from the given node name and service name,
+      first resolving both (node name to address, service name to port).
+    @param nodename node (host) name to resolve
+    @param servname service name to resolve
+  */
   SocketAddress(const char* nodename, const char* servname) throw(Exception) {
     init(nodename, servname);
   }
 
+  /**
+    Construct a SocketAddress from the given node name and port,
+      first resolving the node name to an address.
+    @param nodename node (host) name to resolve
+    @param port port
+  */
   SocketAddress(const char* nodename, uint16_t port) throw(Exception) {
     init(nodename, port);
   }
 
+  /**
+    Copy constructor with minimal allocations.
+    @param other SocketAddress to copy
+  */
   SocketAddress(SocketAddress& other) {
     memcpy_s(&addr, sizeof(addr), &other.addr, sizeof(other.addr));
     next_socket_address = Object::inc_ref(other.next_socket_address);
   }
 
+  /**
+    Copy constructor that may do extra allocations.
+    @param other SocketAddress to copy
+  */
   SocketAddress(const SocketAddress& other) {
     memcpy_s(&addr, sizeof(addr), &other.addr, sizeof(other.addr));
     if (other.next_socket_address != NULL)
@@ -136,52 +233,131 @@ public:
       next_socket_address = NULL;
   }
 
-  SocketAddress(const SocketAddress&, uint16_t port);
+  /**
+    Copy constructor that overwrites port in the copy.
+    @param other SocketAddress to copy
+    @param port port of the new copy
+  */
+  SocketAddress(const SocketAddress& other, uint16_t port);
 
+  /**
+    Destructor.
+  */
   ~SocketAddress() {
     dec_ref(next_socket_address);
   }
 
 public:
-  void assign(const addrinfo&);
-  void assign(const sockaddr_in&);
-  void assign(const sockaddr_in6&);
+  /**
+    Replace the contents of this SocketAddress with those of a struct addrinfo
+      linked list, usually returned by getaddrinfo.
+    @param addrinfo_ a linked list of <code>struct addrinfo</code>s
+  */
+  void assign(const addrinfo& addrinfo_);
 
+  /**
+    Replace the contents of this SocketAddress with those of an IPv4
+      struct sockaddr_in.
+    @param sockaddr_in_ an IPv4 struct sockaddr_in
+  */
+  void assign(const sockaddr_in& sockaddr_in_);
+
+  /**
+    Replace the contents of this SocketAddress with those of an an IPv6
+      struct sockaddr_in6.
+    @param sockaddr_in6_ an IPv6 struct sockaddr_in6_
+  */
+  void assign(const sockaddr_in6& sockaddr_in6_);
+
+  /**
+    Replace the contents of this SocketAddress with those of a generic
+      struct sockaddr, first downcasting it to the specified family.
+    @param sockaddr_ a generic struct sockaddr
+    @param family the address family (e.g., AF_INET) of the struct sockaddr
+  */
   void assign(const sockaddr& sockaddr_, int family) {
     memcpy_s(&this->addr, sizeof(this->addr), &sockaddr_, len(family));
     this->addr.ss_family = static_cast<uint16_t>(family);
   }
 
+  /**
+    Replace the contents of this SocketAddress with the given IPv4 IP and port.
+    @param in_addr_ an IPv4 IP
+    @param port port
+  */
+  void assign(const in_addr& in_addr_, uint16_t port);
+
+  /**
+    Replace the contents of this SocketAddress with the given IPv4 IP and port.
+    @param in_addr_ an IPv4 IP
+    @param port port
+  */
   void assign(uint32_t in_addr_, uint16_t port);
-  void assign(const in_addr&, uint16_t port);
-  void assign(const in6_addr&, uint16_t port);
+
+  /**
+    Replace the contents of this SocketAddress with the given IPv6 IP and port.
+    @param in6_addr_ an IPv4 IP
+    @param port port
+  */
+  void assign(const in6_addr& in6_addr_, uint16_t port);
 
 public:
+  /**
+    Filter the SocketAddress to only cover one address family (e.g, AF_INET).
+    @param family the address family of the desired SocketAddress
+    @return a SocketAddress with the desired address family on success,
+      NULL+errno on failure
+  */
   const SocketAddress* filter(int family) const;
 
 public:
+  /**
+    Translate a node and service name pair into a SocketAddress.
+    @param nodename node (host) name to resolve into an address
+    @param servname service name to resolve into a port
+    @return the resolved SocketAddress on success, NULL+errno on failure
+  */
   static YO_NEW_REF SocketAddress*
   getaddrinfo(
     const char* nodename,
     const char* servname
   );
 
+  /**
+    Translate a node name into a SocketAddress.
+    @param nodename node (host) name to resolve into an address
+    @param port port of the new SocketAddress
+    @return the resolved SocketAddress on success, NULL+errno on failure
+  */
   static YO_NEW_REF SocketAddress*
   getaddrinfo(
     const char* nodename,
-    uint16_t servname
+    uint16_t port
   ) {
-    std::ostringstream servname_;
-    servname_ << servname;
-    return getaddrinfo(nodename, servname_.str().c_str());
+    std::ostringstream servname;
+    servname << port;
+    return getaddrinfo(nodename, servname.str().c_str());
   }
 
 public:
+  /**
+    Get the family of this SocketAddress e.g., AF_INET.
+    This is usually the same as a Socket's domain.
+  */
   int get_family() const {
     return addr.ss_family;
   }
 
 public:
+  /**
+    Translate this SocketAddress into a node (host) and service name pair,
+      performing a reverse lookup if necessary.
+    @param[out] nodename the translated node (host) name
+    @param[out] servname the translated service name or port,
+      or NULL if this is not required
+    @param flags flags controlling the output of the translation process;
+      see the GETNAMEINFO_FLAG constants
+  */
   bool getnameinfo(
     OUT string& nodename,
     OUT uint16_t* servname = NULL,
@@ -205,37 +381,76 @@ public:
       return false;
   }
 
+  /**
+    Translate this SocketAddress into a node (host) and service name pair,
+      performing a reverse lookup if necessary.
+    @param[out] nodename the translated node (host) name
+    @param nodenamelen length of nodename, in bytes
+    @param[out] servname the translated service name or port,
+      or NULL if this is not required
+    @param servnamelen length of servname, in bytes
+    @param flags flags controlling the output of the translation process;
+      see the GETNAMEINFO_FLAG constants
+  */
   bool
   getnameinfo(
-    OUT char* nodename,
+    char* nodename,
     size_t nodenamelen,
-    OUT char* servname,
+    char* servname,
     size_t servnamelen,
     int flags = GETNAMEINFO_FLAG_NUMERICHOST | GETNAMEINFO_FLAG_NUMERICSERV
   ) const;
 
 public:
+  /**
+    Get the length in bytes of the underlying platform-specific socket address.
+    @return the length in bytes of the underlying platform-specific socket address
+  */
   socklen_t len() const {
     return len(get_family());
   }
 
+  /**
+    Get the length in bytes of the platform-specific socket address
+      corresponding to the given family.
+    @param family a socket address family such as AF_INET
+    @return the length in bytes of the platform-specific socket address
+      corresponding to the given family
+  */
   static socklen_t len(int family);
 
 public:
+  /**
+    Cast to a human-readable string representation.
+    @return a human-rceadable string representation
+  */
   operator string() const {
     std::ostringstream repr;
     repr << *this;
     return repr.str();
   }
 
+  /**
+    Get the underlying platform-specific socket address.
+    @return the underlying platform-specific socket address
+  */
   operator sockaddr*() {
     return reinterpret_cast<sockaddr*>(&addr);
   }
 
+  /**
+    Get the underlying platform-specific socket address.
+    @return the underlying platform-specific socket address
+  */
   operator const sockaddr*() const {
     return reinterpret_cast<const sockaddr*>(&addr);
   }
 
+  /**
+    Compare two SocketAddress objects for equality.
+    @param other SocketAddress object to compare this one to
+    @return true if the two SocketAddress objects are equal
+  */
   bool operator==(const SocketAddress& other) const {
     if (memcmp(&addr, &other.addr, sizeof(addr)) == 0) {
       if (next_socket_address == NULL)
@@ -247,6 +462,11 @@ public:
     return false;
   }
 
+  /**
+    Compare two SocketAddress objects for inequality.
+    @param other SocketAddress object to compare this one to
+    @return true if the two SocketAddress objects are not equal
+  */
   bool operator!=(const SocketAddress& other) const {
     return !operator==(other);
   }

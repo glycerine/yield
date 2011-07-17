@@ -34,18 +34,44 @@
 
 namespace yield {
 namespace sockets {
+/**
+  A connectionless, datagram-type socket.
+*/
 class DatagramSocket : public Socket {
 public:
-  const static int TYPE; // SOCK_DGRAM
+  /**
+    The type of the socket in the (domain, type, protocol) tuple.
+    Equivalent to the SOCK_DGRAM constant on POSIX systems.
+  */
+  const static int TYPE;
 
 public:
+  /**
+    Construct a DatagramSocket with the given domain.
+    @param domain domain for the new socket e.g., AF_INET.
+    @param protocol protocol for the new socket e.g., IPPROTO_UDP.
+  */
   DatagramSocket(int domain, int protocol = PROTOCOL_DEFAULT)
     : Socket(domain, TYPE, protocol)
   { }
 
+  /**
+    Empty virtual destructor.
+  */
   virtual ~DatagramSocket() { }
 
 public:
+  /**
+    Read from the socket into a Buffer, also recording the sender's address.
+    May be a recvfrom(void*, size_t, const MessageFlags&, SocketAddress&) or a
+      recvmsg(const iovec*, int, const MessageFlags&, SocketAddress&),
+      depending on whether buffer is a single buffer or a linked list of them.
+    Updates buffer's size depending on how many bytes were read.
+    @param[in, out] buffer the buffer to read data into
+    @param[out] peername the sender's address
+    @param flags flags altering the behavior of the underlying system call
+    @return the number of bytes read on success, -1+errno on failure
+  */
   ssize_t
   recvfrom(
     Buffer& buffer,
@@ -68,14 +94,31 @@ public:
     }
   }
 
+  /**
+    Read from the socket into a single buffer, also recording the sender's address.
+    @param[in, out] buf pointer to the buffer
+    @param buflen the length of the memory region pointed to by buf
+    @param flags flags altering the behavior of the underlying system call
+    @param[out] peername the sender's address
+    @return the number of bytes read on success, -1+errno on failure
+  */
   virtual ssize_t
   recvfrom(
     void* buf,
-    size_t len,
+    size_t buflen,
     const MessageFlags& flags,
     SocketAddress& peername
   );
 
+  /**
+    Read from the socket into multiple buffers (scatter I/O),
+      also recording the sender's address.
+    @param[in, out] iov array of I/O vectors describing the buffers
+    @param iovlen length of the I/O vectors array
+    @param flags flags altering the behavior of the underlying system call
+    @param[out] peername the sender's address
+    @return the number of bytes read on success, -1+errno on failure
+  */
   virtual ssize_t
   recvmsg(
     const iovec* iov,
@@ -85,6 +128,14 @@ public:
   );
 
 public:
+  /**
+    Write to the socket and a specific peer from multiple buffers (gather I/O).
+    @param iov array of I/O vectors describing the buffers
+    @param iovlen length of the I/O vectors array
+    @param flags flags altering the behavior of the underlying system call
+    @param peername address of the receiver
+    @return the number of bytes written on success, -1+errno on failure
+  */ 
   virtual ssize_t
   sendmsg(
     const iovec* iov,
@@ -93,10 +144,20 @@ public:
     const SocketAddress& peername
   );
 
+  /**
+    Write to the socket and a specific peer from a Buffer.
+    May be a sendto(const void*, size_t, const MessageFlags&, const SocketAddress&) or a
+      sendmsg(const iovec*, int, const MessageFlags&, const SocketAdress&),
+      depending on whether buffer is a single buffer or a linked list of them.
+    @param buffer the buffer to write from
+    @param flags flags altering the behavior of the underlying system call
+    @param peername address of the receiver
+    @return the number of bytes written on success, -1+errno on failure
+  */
   ssize_t
   sendto(
     const Buffer& buffer,
-   const MessageFlags& flags,
+    const MessageFlags& flags,
     const SocketAddress& peername
   ) {
     if (buffer.get_next_buffer() == NULL) {
@@ -110,10 +171,18 @@ public:
     }
   }
 
+  /**
+    Write to the socket and a specific peer from a single buffer.
+    @param buf pointer to the buffer
+    @param buflen the length of the memory region pointed to by buf
+    @param flags flags altering the behavior of the underlying system call
+    @param peername address of the receiver
+    @return the number of bytes written on success, -1+errno on failure
+  */
   virtual ssize_t
   sendto(
     const void* buf,
-    size_t len,
+    size_t buflen,
     const MessageFlags& flags,
     const SocketAddress& peername
   );

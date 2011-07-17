@@ -34,15 +34,36 @@
 
 namespace yield {
 namespace sockets {
+/**
+  A UDPs/IP socket.
+*/
 class UDPSocket : public DatagramSocket {
 public:
-  const static int DOMAIN_DEFAULT; // AF_INET
-  const static int PROTOCOL; // IPPROTO_UDP
+  /**
+    The default domain of the socket in the (domain, type, protocol) tuple.
+    Equivalent to the AF_INET constant on POSIX systems.
+  */
+  const static int DOMAIN_DEFAULT;
+
+  /**
+    The protocol of the socket in the (domain, type, protocol) tuple.
+    Equivalent to the IPPROTO_UDP constant on POSIX systems.
+  */
+  const static int PROTOCOL;
 
 public:
+  /**
+    Construct a UDPSocket with the given domain.
+    @param domain the domain of the new socket
+  */
   UDPSocket(int domain = DOMAIN_DEFAULT)
     : DatagramSocket(domain)
   { }
+
+  /**
+    Empty virtual destructor.
+  */
+  virtual ~UDPSocket() { }
 
 public:
   // yield::Object

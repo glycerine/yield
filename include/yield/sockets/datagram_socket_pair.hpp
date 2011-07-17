@@ -35,8 +35,15 @@
 
 namespace yield {
 namespace sockets {
+/**
+  A connected pair of datagram sockets.
+*/
 class DatagramSocketPair : public SocketPair<DatagramSocket> {
 public:
+  /**
+    Construct a connected pair of datagram sockets.
+    The domain and protocol of the sockets is platform-specific.
+  */
   DatagramSocketPair();
 };
 }

@@ -34,19 +34,40 @@
 
 namespace yield {
 namespace sockets {
+/**
+  A pair of connected sockets. The (domain, type, protocol) of the sockets
+    are platform-specific, because not all combinations are supported on
+    every platform.
+  The sockets in the pair are functionally equivalent: they are both connected
+    to each other at full-duplex.
+  Equivalent to socketpair(2) sockets on POSIX systems.
+*/
 template <class SocketType>
 class SocketPair : public ChannelPair {
 public:
+  /**
+    Destruct the SocketPair, releasing underlying system resources as necessary.
+  */
   ~SocketPair() {
     SocketType::dec_ref(sockets[0]);
     SocketType::dec_ref(sockets[1]);
   }
 
 public:
+  /**
+    Get the "first" socket in the pair.
+    Since the two sockets are functionally equivalent this is only a convention.
+    @return the "first" socket in the pair
+  */
   SocketType& first() {
     return *sockets[0];
   }
 
+  /**
+    Get the "second" socket in the pair.
+    Since the two sockets are functionally equivalent this is only a convention.
+    @return the "second" socket in the pair
+  */
   SocketType& second() {
     return *sockets[1];
   }
