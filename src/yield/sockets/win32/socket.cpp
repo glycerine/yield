@@ -280,15 +280,6 @@ bool Socket::setsockopt(int option_name, int option_value) {
           ) == 0;
 }
 
-bool Socket::shutdown(bool shut_rd, bool shut_wr) {
-  int how;
-  if (shut_rd && shut_wr) how = SD_BOTH;
-  else if (shut_rd) how = SD_RECEIVE;
-  else if (shut_wr) how = SD_SEND;
-  else return false;
-  return ::shutdown(*this, how) == 0;
-}
-
 bool Socket::want_recv() const {
   return WSAGetLastError() == WSAEWOULDBLOCK;
 }

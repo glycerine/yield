@@ -144,24 +144,6 @@ private:
 
 
 template <class SocketPairType>
-class SocketShutdownTest : public yunit::Test {
-public:
-  // yunit::Test
-  void run() {
-    SocketPairType sockets;
-
-    if (!sockets.first().shutdown(true, false))
-      throw Exception();
-    if (!sockets.first().shutdown(false, true))
-      throw Exception();
-
-    if (!sockets.second().shutdown(true, true))
-      throw Exception();
-  }
-};
-
-
-template <class SocketPairType>
 class SocketWantRecvTest : public yunit::Test {
 public:
   // yunit::Test
@@ -210,8 +192,6 @@ public:
       "Socket::setsockopt(SNDBUF, 4096)",
       new SocketSetSocketOptionTest<SocketPairType>(Socket::Option::SNDBUF, 4096)
     );
-
-    add("Socket::shutdown", new SocketShutdownTest<SocketPairType>);
 
     add("Socket::want_recv", new SocketWantRecvTest<SocketPairType>);
   }

@@ -208,9 +208,6 @@ public:
   virtual bool setsockopt(int option_name, int option_value);
 
 public:
-  virtual bool shutdown(bool shut_rd = true, bool shut_wr = true);
-
-public:
   virtual bool want_recv() const;
   virtual bool want_send() const;
 

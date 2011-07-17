@@ -151,6 +151,18 @@ TEST(StreamSocket, setsockopt_LINGER) {
     throw Exception();
 }
 
+TEST(StreamSocket, shutdown) {
+  StreamSocketPair stream_sockets;
+
+  if (!stream_sockets.first().shutdown(true, false))
+    throw Exception();
+  if (!stream_sockets.first().shutdown(false, true))
+    throw Exception();
+
+  if (!stream_sockets.second().shutdown(true, true))
+    throw Exception();
+}
+
 TEST(StreamSocket, want_accept) {
   StreamSocket listen_stream_socket(TCPSocket::DOMAIN_DEFAULT);
   if (listen_stream_socket.bind(SocketAddress::IN_LOOPBACK)) {

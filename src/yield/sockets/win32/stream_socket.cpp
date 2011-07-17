@@ -141,6 +141,15 @@ bool StreamSocket::setsockopt(int option_name, int option_value) {
     return Socket::setsockopt(option_name, option_value);
 }
 
+bool StreamSocket::shutdown(bool shut_rd, bool shut_wr) {
+  int how;
+  if (shut_rd && shut_wr) how = SD_BOTH;
+  else if (shut_rd) how = SD_RECEIVE;
+  else if (shut_wr) how = SD_SEND;
+  else return false;
+  return ::shutdown(*this, how) == 0;
+}
+
 bool StreamSocket::want_accept() const {
   return WSAGetLastError() == WSAEWOULDBLOCK;
 }
