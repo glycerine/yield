@@ -135,14 +135,14 @@ Object& HTTPRequestParser::parse() {
 }
 
 bool HTTPRequestParser::parse_request_line(
-  OUT uint8_t& http_version,
-  OUT HTTPRequest::Method& method,
-  OUT iovec& host,
-  OUT iovec& path,
-  OUT uint16_t& port,
-  OUT iovec& query,
-  OUT iovec& scheme,
-  OUT iovec& userinfo
+  uint8_t& http_version,
+  HTTPRequest::Method& method,
+  iovec& host,
+  iovec& path,
+  uint16_t& port,
+  iovec& query,
+  iovec& scheme,
+  iovec& userinfo
 ) {
   int cs;
 

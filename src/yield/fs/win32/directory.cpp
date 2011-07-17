@@ -68,12 +68,12 @@ Directory::Entry* Directory::read() {
     return NULL;
 }
 
-bool Directory::read(OUT Entry& entry) {
+bool Directory::read(Entry& entry) {
   Entry* p_dentry = &entry;
   return read(p_dentry);
 }
 
-bool Directory::read(OUT Entry*& entry) {
+bool Directory::read(Entry*& entry) {
   if (hFindFile == INVALID_HANDLE_VALUE) {
     const size_t file_name_info_size
     = sizeof(FILE_NAME_INFO) + sizeof(WCHAR) * MAX_PATH;

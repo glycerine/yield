@@ -155,7 +155,7 @@ Directory* FileSystem::opendir(const Path& path) {
     return NULL;
 }
 
-bool FileSystem::readlink(const Path& path, OUT Path& target_path) {
+bool FileSystem::readlink(const Path& path, Path& target_path) {
   char target_path_[PATH_MAX];
   ssize_t target_path_len = ::readlink(path.c_str(), target_path_, PATH_MAX);
   if (target_path_len > 0) {

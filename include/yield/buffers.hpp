@@ -50,7 +50,7 @@ public:
   static void
   as_read_iovecs(
     Buffer& buffers,
-    OUT vector<iovec>& read_iovecs
+    vector<iovec>& read_iovecs
   );
 
   /**
@@ -62,7 +62,7 @@ public:
   static size_t
   as_write_iovecs(
     const Buffer& buffers,
-    OUT vector<iovec>& write_iovecs
+    vector<iovec>& write_iovecs
   );
 
   /**
@@ -77,7 +77,7 @@ public:
   as_write_iovecs(
     const Buffer& buffers,
     size_t offset,
-    OUT vector<iovec>& write_iovecs
+    vector<iovec>& write_iovecs
   );
 
 public:

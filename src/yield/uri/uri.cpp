@@ -205,7 +205,7 @@ URI::rebase(
   char* old_base,
   const iovec& old_iov,
   char* new_base,
-  OUT iovec& new_iov
+  iovec& new_iov
 ) {
   if (old_iov.iov_base != NULL) {
     if (old_iov.iov_base >= old_base) {

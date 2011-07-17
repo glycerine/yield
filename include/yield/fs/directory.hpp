@@ -232,7 +232,7 @@ public:
   }
 
 private:
-  bool read(OUT Entry*&);
+  bool read(Entry*&);
 
 private:
 #ifdef _WIN32

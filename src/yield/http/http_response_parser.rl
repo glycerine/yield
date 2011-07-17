@@ -102,8 +102,8 @@ Object& HTTPResponseParser::parse() {
 
 bool
 HTTPResponseParser::parse_status_line(
-  OUT uint8_t& http_version,
-  OUT uint16_t& status_code
+  uint8_t& http_version,
+  uint16_t& status_code
 ) {
   int cs;
 

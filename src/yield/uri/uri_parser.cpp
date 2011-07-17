@@ -27,7 +27,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/* #line 1 "./src/yield/uri/uri_parser.rl" */
+/* #line 1 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\uri_parser.rl" */
 // yield/uri/uri_parser.rl
 
 // Copyright (c) 2011 Minor Gordon
@@ -93,7 +93,7 @@ URIParser::parse(
   const char* eof = pe;
 
 
-  /* #line 69 "./src/yield/uri/uri_parser.cpp" */
+  /* #line 2 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\uri_parser.cpp" */
   static const char _parse_uri_reference_actions[] = {
     0, 1, 1, 1, 3, 1, 4, 1,
     5, 1, 6, 1, 7, 1, 8, 1,
@@ -1656,12 +1656,12 @@ URIParser::parse(
   static const int parse_uri_reference_en_main = 1;
 
 
-  /* #line 1632 "./src/yield/uri/uri_parser.cpp" */
+  /* #line 1563 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\uri_parser.cpp" */
   {
     cs = parse_uri_reference_start;
   }
 
-  /* #line 1637 "./src/yield/uri/uri_parser.cpp" */
+  /* #line 1566 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\uri_parser.cpp" */
   {
     int _klen;
     unsigned int _trans;
@@ -1734,78 +1734,78 @@ _match:
     while (_nacts-- > 0) {
       switch (*_acts++) {
       case 0:
-        /* #line 67 "./src/yield/uri/../../../include/yield/uri/rfc3986.rl" */
+        /* #line 67 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\../../../include/yield/uri/rfc3986.rl" */
       {
         scheme.iov_base = p;
       }
       break;
       case 1:
-        /* #line 68 "./src/yield/uri/../../../include/yield/uri/rfc3986.rl" */
+        /* #line 68 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\../../../include/yield/uri/rfc3986.rl" */
       {
         scheme.iov_len =  p - static_cast<char*>(scheme.iov_base);
       }
       break;
       case 2:
-        /* #line 71 "./src/yield/uri/../../../include/yield/uri/rfc3986.rl" */
+        /* #line 71 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\../../../include/yield/uri/rfc3986.rl" */
       {
         userinfo.iov_base = p;
       }
       break;
       case 3:
-        /* #line 72 "./src/yield/uri/../../../include/yield/uri/rfc3986.rl" */
+        /* #line 72 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\../../../include/yield/uri/rfc3986.rl" */
       {
         userinfo.iov_len = p - static_cast<char*>(userinfo.iov_base);
       }
       break;
       case 4:
-        /* #line 76 "./src/yield/uri/../../../include/yield/uri/rfc3986.rl" */
+        /* #line 76 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\../../../include/yield/uri/rfc3986.rl" */
       {
         host.iov_base = p;
       }
       break;
       case 5:
-        /* #line 77 "./src/yield/uri/../../../include/yield/uri/rfc3986.rl" */
+        /* #line 77 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\../../../include/yield/uri/rfc3986.rl" */
       {
         host.iov_len = p - static_cast<char*>(host.iov_base);
       }
       break;
       case 6:
-        /* #line 80 "./src/yield/uri/../../../include/yield/uri/rfc3986.rl" */
+        /* #line 80 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\../../../include/yield/uri/rfc3986.rl" */
       {
         port = static_cast<uint16_t>(atoi(p));
       }
       break;
       case 7:
-        /* #line 85 "./src/yield/uri/../../../include/yield/uri/rfc3986.rl" */
+        /* #line 85 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\../../../include/yield/uri/rfc3986.rl" */
       {
         path.iov_base = p;
       }
       break;
       case 8:
-        /* #line 86 "./src/yield/uri/../../../include/yield/uri/rfc3986.rl" */
+        /* #line 86 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\../../../include/yield/uri/rfc3986.rl" */
       {
         path.iov_len = p - static_cast<char*>(path.iov_base);
       }
       break;
       case 9:
-        /* #line 104 "./src/yield/uri/../../../include/yield/uri/rfc3986.rl" */
+        /* #line 104 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\../../../include/yield/uri/rfc3986.rl" */
       {
         query.iov_base = p;
       }
       break;
       case 10:
-        /* #line 105 "./src/yield/uri/../../../include/yield/uri/rfc3986.rl" */
+        /* #line 105 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\../../../include/yield/uri/rfc3986.rl" */
       {
         query.iov_len = p - static_cast<char*>(query.iov_base);
       }
       break;
       case 11:
-        /* #line 107 "./src/yield/uri/../../../include/yield/uri/rfc3986.rl" */
+        /* #line 107 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\../../../include/yield/uri/rfc3986.rl" */
       {
         fragment.iov_base = p;
       }
       break;
-      /* #line 1759 "./src/yield/uri/uri_parser.cpp" */
+      /* #line 1675 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\uri_parser.cpp" */
       }
     }
 
@@ -1822,60 +1822,60 @@ _test_eof:
       while (__nacts-- > 0) {
         switch (*__acts++) {
         case 4:
-          /* #line 76 "./src/yield/uri/../../../include/yield/uri/rfc3986.rl" */
+          /* #line 76 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\../../../include/yield/uri/rfc3986.rl" */
         {
           host.iov_base = p;
         }
         break;
         case 5:
-          /* #line 77 "./src/yield/uri/../../../include/yield/uri/rfc3986.rl" */
+          /* #line 77 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\../../../include/yield/uri/rfc3986.rl" */
         {
           host.iov_len = p - static_cast<char*>(host.iov_base);
         }
         break;
         case 6:
-          /* #line 80 "./src/yield/uri/../../../include/yield/uri/rfc3986.rl" */
+          /* #line 80 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\../../../include/yield/uri/rfc3986.rl" */
         {
           port = static_cast<uint16_t>(atoi(p));
         }
         break;
         case 7:
-          /* #line 85 "./src/yield/uri/../../../include/yield/uri/rfc3986.rl" */
+          /* #line 85 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\../../../include/yield/uri/rfc3986.rl" */
         {
           path.iov_base = p;
         }
         break;
         case 8:
-          /* #line 86 "./src/yield/uri/../../../include/yield/uri/rfc3986.rl" */
+          /* #line 86 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\../../../include/yield/uri/rfc3986.rl" */
         {
           path.iov_len = p - static_cast<char*>(path.iov_base);
         }
         break;
         case 9:
-          /* #line 104 "./src/yield/uri/../../../include/yield/uri/rfc3986.rl" */
+          /* #line 104 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\../../../include/yield/uri/rfc3986.rl" */
         {
           query.iov_base = p;
         }
         break;
         case 10:
-          /* #line 105 "./src/yield/uri/../../../include/yield/uri/rfc3986.rl" */
+          /* #line 105 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\../../../include/yield/uri/rfc3986.rl" */
         {
           query.iov_len = p - static_cast<char*>(query.iov_base);
         }
         break;
         case 11:
-          /* #line 107 "./src/yield/uri/../../../include/yield/uri/rfc3986.rl" */
+          /* #line 107 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\../../../include/yield/uri/rfc3986.rl" */
         {
           fragment.iov_base = p;
         }
         break;
         case 12:
-          /* #line 108 "./src/yield/uri/../../../include/yield/uri/rfc3986.rl" */
+          /* #line 108 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\../../../include/yield/uri/rfc3986.rl" */
         {
           fragment.iov_len = p - static_cast<char*>(fragment.iov_base);
         }
         break;
-        /* #line 1811 "./src/yield/uri/uri_parser.cpp" */
+        /* #line 1717 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\uri_parser.cpp" */
         }
       }
     }
@@ -1884,7 +1884,7 @@ _out:
     {}
   }
 
-  /* #line 76 "./src/yield/uri/uri_parser.rl" */
+  /* #line 76 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\uri\\uri_parser.rl" */
 
 
   return cs != parse_uri_reference_error;

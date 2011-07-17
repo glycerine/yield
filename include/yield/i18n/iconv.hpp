@@ -70,10 +70,10 @@ public:
   */
   size_t
   operator()(
-    INOUT const char** inbuf,
-    INOUT size_t* inbytesleft,
-    INOUT char** outbuf,
-    INOUT size_t* outbytesleft
+    const char** inbuf,
+    size_t* inbytesleft,
+    char** outbuf,
+    size_t* outbytesleft
   );
 
   /**

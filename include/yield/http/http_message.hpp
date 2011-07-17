@@ -70,13 +70,13 @@ public:
       return default_value;
   }
 
-  bool get_field(const char* name, OUT iovec& value) const {
+  bool get_field(const char* name, iovec& value) const {
     return get_field(name, strlen(name), value);
   }
 
-  bool get_field(const char* name, size_t name_len, OUT iovec& value) const;
+  bool get_field(const char* name, size_t name_len, iovec& value) const;
 
-  void get_fields(OUT vector<std::pair<iovec, iovec> >& fields) const;
+  void get_fields(vector<std::pair<iovec, iovec> >& fields) const;
 
 public:
   Buffer& get_header() const {

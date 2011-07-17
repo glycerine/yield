@@ -328,7 +328,7 @@ public:
 public:
   /**
     Read from the file from the specified offset.
-    @param buffer buffer into which to read
+    @param[in, out] buffer buffer into which to read
     @param offset offset from which to read
     @return the number of bytes read on success, -1+errno on failure
   */
@@ -336,7 +336,7 @@ public:
 
   /**
     Read from the file from the specified offset.
-    @param buf buffer into which to read
+    @param[in, out] buf buffer into which to read
     @param buflen length of the memory region pointed to by buf
     @param offset offset from which to read
     @return the number of bytes read on success, -1+errno on failure
@@ -345,7 +345,7 @@ public:
 
   /**
     Read from the file from the specified offset.
-    @param iov pointer to an array of iovecs describing buffers in which to read
+    @param[in, out] iov pointer to an array of iovecs describing buffers in which to read
     @param iovlen length of the iovecs array
     @param offset offset from which to read
     @return the number of bytes read on success, -1+errno on failure

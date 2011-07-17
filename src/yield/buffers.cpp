@@ -35,7 +35,7 @@ namespace yield {
 void
 Buffers::as_read_iovecs(
   Buffer& buffers,
-  OUT vector<iovec>& read_iovecs
+  vector<iovec>& read_iovecs
 ) {
   Buffer* next_buffer = &buffers;
   do {
@@ -47,7 +47,7 @@ Buffers::as_read_iovecs(
 size_t
 Buffers::as_write_iovecs(
   const Buffer& buffers,
-  OUT vector<iovec>& write_iovecs
+  vector<iovec>& write_iovecs
 ) {
   size_t ret = 0;
 
@@ -66,7 +66,7 @@ size_t
 Buffers::as_write_iovecs(
   const Buffer& buffers,
   size_t offset,
-  OUT vector<iovec>& write_iovecs
+  vector<iovec>& write_iovecs
 ) {
   size_t ret = 0;
 

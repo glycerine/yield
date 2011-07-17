@@ -132,7 +132,7 @@ string Socket::gethostname() {
   return string();
 }
 
-bool Socket::getpeername(OUT SocketAddress& peername) const {
+bool Socket::getpeername(SocketAddress& peername) const {
   socklen_t peernamelen = peername.len();
   if (::getpeername(*this, peername, &peernamelen) != -1) {
     debug_assert_eq(peername.get_family(), get_domain());
@@ -141,7 +141,7 @@ bool Socket::getpeername(OUT SocketAddress& peername) const {
     return false;
 }
 
-bool Socket::getsockname(OUT SocketAddress& sockname) const {
+bool Socket::getsockname(SocketAddress& sockname) const {
   socklen_t socknamelen = sockname.len();
   if (::getsockname(*this, sockname, &socknamelen) != -1) {
     debug_assert_eq(sockname.get_family(), get_domain());

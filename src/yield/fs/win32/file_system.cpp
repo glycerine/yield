@@ -211,7 +211,7 @@ Directory* FileSystem::opendir(const Path& path) {
     return NULL;
 }
 
-bool FileSystem::realpath(const Path& path, OUT Path& realpath) {
+bool FileSystem::realpath(const Path& path, Path& realpath) {
   wchar_t full_path_name[MAX_PATH];
 
   DWORD full_path_name_len

@@ -45,7 +45,7 @@ public:
   parse_content_length_field(
     const char* ps,
     const char* pe,
-    OUT size_t& content_length
+    size_t& content_length
   );
 
   static DateTime parse_date(const iovec& date);
@@ -56,14 +56,14 @@ public:
     const char* ps,
     const char* pe,
     const iovec& field_name,
-    OUT iovec& field_value
+    iovec& field_value
   );
 
   static void
   parse_fields(
     const char* ps,
     const char* pe,
-    OUT vector< std::pair<iovec, iovec> >& fields
+    vector< std::pair<iovec, iovec> >& fields
   );
 
 protected:
@@ -80,9 +80,9 @@ protected:
   }
 
 protected:
-  bool parse_body(size_t content_length, OUT YO_NEW_REF Object*& body);
+  bool parse_body(size_t content_length, YO_NEW_REF Object*& body);
   Object* parse_body_chunk();
-  bool parse_fields(OUT uint16_t& fields_offset, OUT size_t& content_length);
+  bool parse_fields(uint16_t& fields_offset, size_t& content_length);
 
 protected:
   Buffer& buffer;
@@ -94,7 +94,7 @@ private:
   parse_content_length_field(
     const iovec& field_name,
     const iovec& field_value,
-    OUT size_t& content_length
+    size_t& content_length
   );
 };
 }

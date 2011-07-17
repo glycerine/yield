@@ -156,7 +156,7 @@ public:
     @param[out] components sequence of the path's components
   */
   template <class ContainerType>
-  void split(OUT ContainerType& components) const {
+  void split(ContainerType& components) const {
     size_t last_sep = find_first_not_of(SEPARATOR, 0);
     size_t next_sep = find_first_of(SEPARATOR, last_sep);
 

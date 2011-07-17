@@ -81,14 +81,14 @@ protected:
 
 protected:
   bool parse_request_line(
-    OUT uint8_t& http_version,
-    OUT HTTPRequest::Method& method,
-    OUT iovec& uri_host,
-    OUT iovec& uri_path,
-    OUT uint16_t& uri_port,
-    OUT iovec& uri_query,
-    OUT iovec& uri_scheme,
-    OUT iovec& uri_userinfo
+    uint8_t& http_version,
+    HTTPRequest::Method& method,
+    iovec& uri_host,
+    iovec& uri_path,
+    uint16_t& uri_port,
+    iovec& uri_query,
+    iovec& uri_scheme,
+    iovec& uri_userinfo
   );
 };
 }

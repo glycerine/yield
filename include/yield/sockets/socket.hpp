@@ -437,7 +437,24 @@ private:
   @param socket_ Socket to print
   @return os
 */
-static std::ostream& operator<<(std::ostream& os, Socket& socket_);
+static std::ostream& operator<<(std::ostream& os, Socket& socket_) {
+    os << 
+      socket_.get_type_name() <<
+      "(";
+        SocketAddress sockname;
+        if (socket_.getsockname(sockname))
+          os << sockname;
+        else
+          os << "(unknown)";
+        os << "/";
+        SocketAddress peername;
+        if (socket_.getpeername(peername))
+          os << peername;
+        else
+          os << "(unknown)";
+      os << ")";
+    return os;
+}
 
 /**
   Print a string representation of a Socket to a std::ostream,
@@ -446,7 +463,14 @@ static std::ostream& operator<<(std::ostream& os, Socket& socket_);
   @param socket_ Socket to print, checked for NULL
   @return os
 */
-static std::ostream& operator<<(std::ostream& os, Socket* socket_);
+static inline std::ostream& operator<<(std::ostream& os, Socket* socket_) {
+  if (socket_ != NULL)
+    return operator<<(os, *socket_);
+  else {
+    os << "NULL";
+    return os;
+  }
+}
 }
 }
 

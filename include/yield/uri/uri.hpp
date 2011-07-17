@@ -69,7 +69,7 @@ public:
     return iovec_to_string(fragment);
   }
 
-  void get_fragment(OUT iovec& frag) const {
+  void get_fragment(iovec& frag) const {
     frag = this->fragment;
   }
 
@@ -77,7 +77,7 @@ public:
     return iovec_to_string(host);
   }
 
-  void get_host(OUT iovec& host) const {
+  void get_host(iovec& host) const {
     host = this->host;
   }
 
@@ -85,7 +85,7 @@ public:
     return iovec_to_string(path);
   }
 
-  void get_path(OUT iovec& path) const {
+  void get_path(iovec& path) const {
     path = this->path;
   }
 
@@ -97,7 +97,7 @@ public:
     return iovec_to_string(scheme);
   }
 
-  void get_scheme(OUT iovec& scheme) const {
+  void get_scheme(iovec& scheme) const {
     scheme = this->scheme;
   }
 
@@ -105,7 +105,7 @@ public:
     return iovec_to_string(query);
   }
 
-  void get_query(OUT iovec& query) const {
+  void get_query(iovec& query) const {
     query = this->query;
   }
 
@@ -113,7 +113,7 @@ public:
     return iovec_to_string(userinfo);
   }
 
-  void get_userinfo(OUT iovec& userinfo) const {
+  void get_userinfo(iovec& userinfo) const {
     userinfo = this->userinfo;
   }
 
@@ -177,7 +177,7 @@ private:
     char* old_base,
     const iovec& old_iov,
     char* new_base,
-    OUT iovec& new_iov
+    iovec& new_iov
   );
 
 private:

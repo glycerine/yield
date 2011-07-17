@@ -77,16 +77,6 @@ using std::string;
 #include <vector>
 using std::vector;
 
-#ifndef IN
-#define IN
-#endif
-#ifndef INOUT
-#define INOUT
-#endif
-#ifndef OUT
-#define OUT
-#endif
-
 namespace yield {
 /**
   Platform-specific type of integer operands in atomic operations (atomic_*).

@@ -68,7 +68,7 @@ HTTPMessageParser::~HTTPMessageParser() {
 bool
 HTTPMessageParser::parse_body(
   size_t content_length,
-  OUT YO_NEW_REF Object*& body
+  YO_NEW_REF Object*& body
 ) {
   if (
     content_length == 0
@@ -129,7 +129,7 @@ bool
 HTTPMessageParser::parse_content_length_field(
   const char* ps,
   const char* pe,
-  OUT size_t& content_length
+  size_t& content_length
 ) {
   int cs;
   char* p = const_cast<char*>(ps);
@@ -169,7 +169,7 @@ bool
 HTTPMessageParser::parse_content_length_field(
   const iovec& field_name,
   const iovec& field_value,
-  OUT size_t& content_length
+  size_t& content_length
 ) {
   if (
     field_name.iov_len == 14
@@ -243,7 +243,7 @@ HTTPMessageParser::parse_field(
   const char* ps,
   const char* pe,
   const iovec& in_field_name,
-  OUT iovec& out_field_value
+  iovec& out_field_value
 ) {
   int cs;
   char* p = const_cast<char*>(ps);
@@ -287,7 +287,7 @@ void
 HTTPMessageParser::parse_fields(
   const char* ps,
   const char* pe,
-  OUT vector< std::pair<iovec, iovec> >& fields
+  vector< std::pair<iovec, iovec> >& fields
 ) {
   int cs;
   char* p = const_cast<char*>(ps);
@@ -314,8 +314,8 @@ HTTPMessageParser::parse_fields(
 
 bool
 HTTPMessageParser::parse_fields(
-  OUT uint16_t& fields_offset,
-  OUT size_t& content_length
+  uint16_t& fields_offset,
+  size_t& content_length
 ) {
   fields_offset = static_cast<uint16_t>(p - ps);
 

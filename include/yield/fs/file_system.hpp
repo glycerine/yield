@@ -291,7 +291,7 @@ public:
     @param[out] target_path path to which the symbolic link points
     @return true on success, false+errno on failure
   */
-  bool readlink(const Path& path, OUT Path& target_path);
+  bool readlink(const Path& path, Path& target_path);
 #endif
 
 public:
@@ -302,7 +302,7 @@ public:
     @param[out] realpath real path of a file
     @return true on success, false+errno on failure
   */
-  bool realpath(const Path& path, OUT Path& realpath);
+  bool realpath(const Path& path, Path& realpath);
 
 public:
   /**
@@ -343,7 +343,7 @@ public:
     @param[out] statvfs_ file system metadata
     @return true on success, false+errno on failure
   */
-  bool statvfs(const Path& path, OUT struct statvfs& statvfs_);
+  bool statvfs(const Path& path, struct statvfs& statvfs_);
 
 public:
 #ifndef _WIN32

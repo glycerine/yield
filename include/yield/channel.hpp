@@ -55,27 +55,27 @@ public:
 public:
   /**
     Read from the channel into a Buffer.
-    May be a read(void*, size_t) or a read(const iovec*, int),
+    May be a read(void*, size_t) or a readv(const iovec*, int),
       depending on whether buffer is a single buffer or a linked list of them.
     Updates buffer's size depending on how many bytes were read.
-    @param buffer the buffer to read data into
-    @return the number of bytes read or -1 on error
+    @param[in, out] buffer the buffer to read data into
+    @return the number of bytes read on success, -1+errno on failure
   */
   virtual ssize_t read(Buffer& buffer);
 
   /**
     Read from the channel into a single buffer.
-    @param buf pointer to the buffer
+    @param[in, out] buf pointer to the buffer
     @param buflen the length of the memory region pointed to by buf
-    @return the number of bytes read or -1 on error
+    @return the number of bytes read on success, -1+errno on failure
   */
   virtual ssize_t read(void* buf, size_t buflen) = 0;
 
   /**
     Read from the channel into multiple buffers (scatter I/O).
-    @param iov array of I/O vectors describing the buffers
+    @param[in, out] iov array of I/O vectors describing the buffers
     @param iovlen length of the I/O vectors array
-    @return the number of bytes read or -1 on error
+    @return the number of bytes read on success, -1+errno on failure
   */
   virtual ssize_t readv(const iovec* iov, int iovlen) = 0;
 
@@ -85,7 +85,7 @@ public:
     May be a write(const void*, size_t) or a writev(const iovec*, int),
       depending on whether buffer is a single buffer or a linked list of them.
     @param buffer the buffer to write from
-    @return the number of bytes written or -1 on error
+    @return the number of bytes written on success, -1+errno on failure
   */
   virtual ssize_t write(const Buffer& buffer);
 
@@ -93,7 +93,7 @@ public:
     Write to the channel from a single buffer.
     @param buf pointer to the buffer
     @param buflen the length of the memory region pointed to by buf
-    @return the number of bytes written or -1 on error
+    @return the number of bytes written on success, -1+errno on failure
   */
   virtual ssize_t write(const void* buf, size_t buflen) = 0;
 
@@ -101,7 +101,7 @@ public:
     Write to the channel from multiple buffers (gather I/O).
     @param iov array of I/O vectors describing the buffers
     @param iovlen length of the I/O vectors array
-    @return the number of bytes written or -1 on error
+    @return the number of bytes written on success, -1+errno on failure
   */   
   virtual ssize_t writev(const iovec* iov, int iovlen);
 

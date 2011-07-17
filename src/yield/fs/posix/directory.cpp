@@ -59,12 +59,12 @@ Directory::Entry* Directory::read() {
     return NULL;
 }
 
-bool Directory::read(OUT Entry& entry) {
+bool Directory::read(Entry& entry) {
   Entry* p_entry = &entry;
   return read(p_entry);
 }
 
-bool Directory::read(OUT Entry*& entry) {
+bool Directory::read(Entry*& entry) {
   struct dirent* dirent_;
   while ((dirent_ = readdir(dirp)) != NULL) {
     Entry::Type entry_type;

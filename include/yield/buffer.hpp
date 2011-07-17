@@ -32,7 +32,6 @@
 
 #include "yield/object.hpp"
 
-
 namespace yield {
 /**
   Generic buffer class, mainly used for I/O with aligned buffers.

@@ -359,8 +359,8 @@ public:
       see the GETNAMEINFO_FLAG constants
   */
   bool getnameinfo(
-    OUT string& nodename,
-    OUT uint16_t* servname = NULL,
+    string& nodename,
+    uint16_t* servname = NULL,
     int flags = GETNAMEINFO_FLAG_NUMERICHOST | GETNAMEINFO_FLAG_NUMERICSERV
   ) const {
     char nodename_[256], servname_[16];
