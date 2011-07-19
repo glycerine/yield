@@ -34,18 +34,41 @@
 
 namespace yield {
 namespace uri {
+/**
+  An RFC 3986-conformant Uniform Resource Identifier (URI) parser.
+*/
 class URIParser {
 public:
+  /**
+    Construct a URI parser on the specified string.
+    @param ps pointer to the beginning of the URI string
+    @param pe pointer to the end of the URI string
+  */
   URIParser(const char* ps, const char* pe)
     : p(const_cast<char*>(ps)), pe(pe), ps(ps) {
   }
 
+  /**
+    Construct a URI parser on the specified buffer.
+    @param buffer buffer with the URI
+  */
   URIParser(Buffer& buffer) {
     p = buffer;
     ps = buffer;
     pe = static_cast<const char*>(buffer) + buffer.size();
   }
 
+  /**
+    Parse a URI from the string or buffer specified in the constructor.
+    @param[out] fragment component of the URI
+    @param[out] host component of the URI
+    @param[out] path component of the URI
+    @param[out] port component of the URI
+    @param[out] query component of the URI
+    @param[out] scheme component of the URI
+    @param[out] userinfo component of the URI
+    @return true if a URI was successfully parsed, false on failure
+  */
   bool parse(
     iovec& fragment,
     iovec& host,
