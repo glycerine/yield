@@ -37,6 +37,9 @@
 
 namespace yield {
 namespace queue {
+/**
+  An EventQueue implementation that wraps a std::queue.
+*/
 class STLEventQueue : public EventQueue, private std::queue<Event*> {
 public:
   // yield::EventQueue

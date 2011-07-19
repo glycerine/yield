@@ -40,6 +40,25 @@ namespace yield {
 namespace queue {
 using yield::thread::Thread;
 
+/**
+  A queue that can handle multiple concurrent enqueues and dequeues but may
+    block the caller indefinitely in either operation.
+
+  This queue is an optimization of a normal blocking concurrent queue. It minimizes
+    contention between threads by storing some queue elements in thread-local
+    storage. There are two caveats to using this queue:
+    1) Elements may be reordered as an additional cache-related optimization,
+      so the queue discipline is not guaranteed to be FIFO.
+    2) Callers of trydequeue must continue to poll trydequeue indefinitely in
+      order to dequeue elements from thread-local storage.
+
+  Inspired by:
+    James R. Larus and Michael Parkes. 2002. Using Cohort-Scheduling to Enhance
+      Server Performance. In Proceedings of the General Track of the annual
+      conference on USENIX Annual Technical Conference (ATEC '02),
+      Carla Schlatter Ellis (Ed.).
+      USENIX Association, Berkeley, CA, USA, 103-114.
+*/
 template <class ElementType>
 class TLSConcurrentQueue : private BlockingConcurrentQueue<ElementType> {
 private:
@@ -70,8 +89,7 @@ public:
   ~TLSConcurrentQueue() {
     Thread::self()->key_delete(tls_key);
 
-    for
-    (
+    for (
       typename vector<Stack*>::iterator stack_i = stacks.begin();
       stack_i != stacks.end();
       stack_i++
@@ -79,9 +97,13 @@ public:
       delete *stack_i;
   }
 
+  /**
+    Enqueue a new element.
+    @param element the element to enqueue
+    @return true if the enqueue was successful.
+  */
   bool enqueue(ElementType& element) {
-    Stack* stack
-    = static_cast<Stack*>(Thread::self()->getspecific(tls_key));
+    Stack* stack = static_cast<Stack*>(Thread::self()->getspecific(tls_key));
 
     if (stack != NULL) {
       stack->push(element);
@@ -90,15 +112,18 @@ public:
       return BlockingConcurrentQueue<ElementType>::enqueue(element);
   }
 
+  /**
+    Try to dequeue an element.
+    @return the dequeued element or NULL if the queue was empty
+  */
   ElementType* trydequeue() {
     ElementType* element;
 
-    Stack* stack
-    = static_cast<Stack*>(Thread::self()->getspecific(tls_key));
+    Stack* stack = static_cast<Stack*>(Thread::self()->getspecific(tls_key));
 
-    if (stack != NULL)
+    if (stack != NULL) {
       element = stack->pop();
-    else {
+    } Selse {
       stack = new Stack;
       Thread::self()->setspecific(tls_key, stack);
       stacks.push_back(stack);

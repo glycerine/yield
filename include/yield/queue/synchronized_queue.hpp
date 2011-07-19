@@ -37,9 +37,20 @@
 
 namespace yield {
 namespace queue {
+/**
+  A queue whose operations are synchronized by a condition variable.
+
+  The queue can handle multiple concurrent enqueues and dequeues but may block the caller
+    indefinitely in either operation.
+*/
 template <class ElementType>
 class SynchronizedQueue : private std::queue<ElementType*> {
 public:
+  /**
+    Dequeue an element.
+    Always succeeds.
+    @return the dequeued element
+  */
   ElementType& dequeue() {
     cond.lock_mutex();
 
@@ -54,6 +65,11 @@ public:
     return *element;
   }
 
+  /**
+    Enqueue a new element.
+    @param element the element to enqueue
+    @return true if the enqueue was successful.
+  */
   bool enqueue(ElementType& element) {
     cond.lock_mutex();
     std::queue<ElementType*>::push(&element);
@@ -62,6 +78,12 @@ public:
     return true;
   }
 
+  /**
+    Dequeue an element, blocking until a timeout if the queue is empty.
+    @param timeout time to block on an empty queue
+    @return the dequeued element or NULL if queue was empty for the duration
+      of the timeout
+  */
   ElementType* timeddequeue(const Time& timeout) {
     Time timeout_left(timeout);
 
@@ -96,6 +118,11 @@ public:
     }
   }
 
+  /**
+    Try to dequeue an element.
+    Never blocks.
+    @return the dequeue element or NULL if the queue was empty
+  */
   ElementType* trydequeue() {
     if (cond.trylock_mutex()) {
       if (!std::queue<ElementType*>::empty()) {

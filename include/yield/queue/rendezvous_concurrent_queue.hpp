@@ -34,6 +34,10 @@
 
 namespace yield {
 namespace queue {
+/**
+  A queue that can store only a single element, aka a rendezvous.
+  Queue operations are atomic operations on a pointer to the element.
+*/
 template <class ElementType>
 class RendezvousConcurrentQueue {
 public:
@@ -41,11 +45,21 @@ public:
     element = 0;
   }
 
+  /**
+    Enqueue a new element.
+    @param element the element to enqueue
+    @return true if the enqueue was successful.
+  */
   bool enqueue(ElementType& element) {
     atomic_t atomic_element = reinterpret_cast<atomic_t>(&element);
     return atomic_cas(&this->element, atomic_element, 0) == 0;
   }
 
+  /**
+    Try to dequeue an element.
+    Never blocks.
+    @return the dequeued element or NULL if the queue was empty
+  */
   ElementType* trydequeue() {
     atomic_t element = static_cast<atomic_t>(this->element);
     while (element != 0) {

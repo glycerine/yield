@@ -36,9 +36,18 @@
 
 namespace yield {
 namespace queue {
+/**
+  A queue that can handle multiple concurrent enqueues and dequeues but may
+    block the caller indefinitely in either operation.
+*/
 template <class ElementType>
 class BlockingConcurrentQueue : private std::queue<ElementType*> {
 public:
+  /**
+    Enqueue a new element.
+    @param element the element to enqueue
+    @return true if the enqueue was successful.
+  */
   bool enqueue(ElementType& element) {
     mutex.lock();
     std::queue<ElementType*>::push(&element);
@@ -46,6 +55,10 @@ public:
     return true;
   }
 
+  /**
+    Try to dequeue an element.
+    @return the dequeued element or NULL if the queue was empty
+  */
   ElementType* trydequeue() {
     mutex.lock();
     if (!std::queue<ElementType*>::empty()) {

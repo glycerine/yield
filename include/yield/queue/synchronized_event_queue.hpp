@@ -35,6 +35,9 @@
 
 namespace yield {
 namespace queue {
+/**
+  An EventQueue implementation that wraps a SynchronizedQueue.
+*/
 class SynchronizedEventQueue
   : public EventQueue,
     private SynchronizedQueue<Event> {

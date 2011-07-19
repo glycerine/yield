@@ -35,9 +35,13 @@
 
 namespace yield {
 namespace queue {
-// Adapted from Michael, M. M. and Scott, M. L. 1996. Simple, fast, and practical
-// non-blocking and blocking concurrent queue algorithms.
+/**
+  A finite queue that can handle multiple concurrent enqueues and dequeues
+    without ever blocking the caller. Also called a "lock-free" queue.
 
+  Adapted from Michael, M. M. and Scott, M. L. 1996. Simple, fast, and practical
+    non-blocking and blocking concurrent queue algorithms.
+*/
 template <class ElementType, size_t Length>
 class NonBlockingConcurrentQueue {
 public:
@@ -52,6 +56,11 @@ public:
     tail_element_i = 1;
   }
 
+  /**
+    Enqueue a new element.
+    @param element the element to enqueue
+    @return true if the enqueue was successful, false if the queue was full
+  */
   bool enqueue(ElementType& element) {
     atomic_t new_element = reinterpret_cast<atomic_t>(&element);
     debug_assert_false(new_element & 1);
@@ -92,10 +101,8 @@ public:
       if (tail_element_i_copy != tail_element_i)
         continue;
 
-      if
-      (
-        atomic_cas
-        (
+      if (
+        atomic_cas(
           &elements[last_try_element_i],
           try_element == 1
           ? (new_element | POINTER_HIGH_BIT)
@@ -113,6 +120,10 @@ public:
     }
   }
 
+  /**
+    Try to dequeue an element.
+    @return the dequeued element or NULL if the queue was empty
+  */
   ElementType* trydequeue() {
     for (;;) {
       atomic_t head_element_i_copy = head_element_i;
@@ -130,8 +141,7 @@ public:
         continue;
 
       if (try_element_i == tail_element_i) {
-        atomic_cas
-        (
+        atomic_cas(
           &tail_element_i,
           (try_element_i + 1) % (Length + 2),
           try_element_i
@@ -143,10 +153,8 @@ public:
       if (head_element_i_copy != head_element_i)
         continue;
 
-      if
-      (
-        atomic_cas
-        (
+      if (
+        atomic_cas(
           &elements[try_element_i],
           (try_element & POINTER_HIGH_BIT) ? 1 : 0,
           try_element
