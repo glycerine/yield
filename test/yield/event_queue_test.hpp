@@ -101,11 +101,11 @@ public:
     throw_assert(enqueue_ret);
 
     auto_Object<Event> dequeued_event
-      = static_cast<EventQueue&>(event_queue).trydequeue();
+    = static_cast<EventQueue&>(event_queue).trydequeue();
     throw_assert_eq(event, dequeued_event);
 
     Event* null_event
-      = static_cast<EventQueue&>(event_queue).trydequeue();
+    = static_cast<EventQueue&>(event_queue).trydequeue();
     throw_assert_eq(null_event, NULL);
   }
 };

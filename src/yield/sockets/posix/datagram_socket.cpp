@@ -85,8 +85,9 @@ DatagramSocket::sendmsg(
     const sockaddr* peername_sockaddr = *peername_;
     msghdr_.msg_name = const_cast<sockaddr*>(peername_sockaddr);
     msghdr_.msg_namelen = peername_->len();
-  } else
+  } else {
     return -1;
+  }
   return ::sendmsg(*this, &msghdr_, flags);
 }
 
@@ -107,8 +108,9 @@ DatagramSocket::sendto(
              *peername_,
              peername_->len()
            );
-  } else
+  } else {
     return -1;
+  }
 }
 }
 }

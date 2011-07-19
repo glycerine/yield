@@ -71,40 +71,58 @@ FSEvent::FSEvent(const Path& old_path, const Path& new_path, Type type)
 std::ostream& operator<<(std::ostream& os, const FSEvent& fs_event) {
   std::string type;
   switch (fs_event.get_type()) {
-  case FSEvent::TYPE_DIRECTORY_ADD: type = "DIRECTORY_ADD"; break;
-  case FSEvent::TYPE_DIRECTORY_MODIFY: type = "DIRECTORY_MODIFY"; break;
-  case FSEvent::TYPE_DIRECTORY_REMOVE: type = "DIRECTORY_REMOVE"; break;
-  case FSEvent::TYPE_DIRECTORY_RENAME: type = "DIRECTORY_RENAME"; break;
-  case FSEvent::TYPE_FILE_ADD: type = "FILE_ADD"; break;
-  case FSEvent::TYPE_FILE_MODIFY: type = "FILE_MODIFY"; break;
-  case FSEvent::TYPE_FILE_REMOVE: type = "FILE_REMOVE"; break;
-  case FSEvent::TYPE_FILE_RENAME: type = "FILE_RENAME"; break;
-  default: debug_break(); break;
+  case FSEvent::TYPE_DIRECTORY_ADD:
+    type = "DIRECTORY_ADD";
+    break;
+  case FSEvent::TYPE_DIRECTORY_MODIFY:
+    type = "DIRECTORY_MODIFY";
+    break;
+  case FSEvent::TYPE_DIRECTORY_REMOVE:
+    type = "DIRECTORY_REMOVE";
+    break;
+  case FSEvent::TYPE_DIRECTORY_RENAME:
+    type = "DIRECTORY_RENAME";
+    break;
+  case FSEvent::TYPE_FILE_ADD:
+    type = "FILE_ADD";
+    break;
+  case FSEvent::TYPE_FILE_MODIFY:
+    type = "FILE_MODIFY";
+    break;
+  case FSEvent::TYPE_FILE_REMOVE:
+    type = "FILE_REMOVE";
+    break;
+  case FSEvent::TYPE_FILE_RENAME:
+    type = "FILE_RENAME";
+    break;
+  default:
+    debug_break();
+    break;
   }
 
   switch (fs_event.get_type()) {
   case FSEvent::TYPE_DIRECTORY_RENAME:
   case FSEvent::TYPE_FILE_RENAME: {
     os <<
-      fs_event.get_type_name() <<
-      "("
-        "type=" << type <<
-        ", " <<
-        "old_path=" << fs_event.get_old_path() <<
-        ", "
-        "new_path=" << fs_event.get_new_path() <<
-      ")";
+       fs_event.get_type_name() <<
+       "("
+       "type=" << type <<
+       ", " <<
+       "old_path=" << fs_event.get_old_path() <<
+       ", "
+       "new_path=" << fs_event.get_new_path() <<
+       ")";
   }
   break;
 
   default: {
     os <<
-      fs_event.get_type_name() <<
-      "("
-        "type=" << type <<
-        ", " <<
-        "path=" << fs_event.get_path() <<
-      ")";
+       fs_event.get_type_name() <<
+       "("
+       "type=" << type <<
+       ", " <<
+       "path=" << fs_event.get_path() <<
+       ")";
   }
   }
 

@@ -268,10 +268,11 @@ public:
     @return the resulting DateTime
   */
   Time operator-(const DateTime& other) const {
-    if (unix_date_time_ns >= other.unix_date_time_ns)
+    if (unix_date_time_ns >= other.unix_date_time_ns) {
       return Time(unix_date_time_ns - other.unix_date_time_ns);
-    else
+    } else {
       return Time(static_cast<uint64_t>(0));
+    }
   }
 
   /**

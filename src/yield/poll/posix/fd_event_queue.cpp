@@ -41,15 +41,17 @@ namespace poll {
 FDEventQueue::FDEventQueue(bool) throw(Exception) {
   if (pipe(wake_pipe) != -1) {
     try {
-      if (!associate(wake_pipe[0], FDEvent::TYPE_READ_READY))
+      if (!associate(wake_pipe[0], FDEvent::TYPE_READ_READY)) {
         throw Exception();
+      }
     } catch (Exception&) {
       close(wake_pipe[0]);
       close(wake_pipe[1]);
       throw;
     }
-  } else
+  } else {
     throw Exception();
+  }
 }
 
 FDEventQueue::~FDEventQueue() {
@@ -76,8 +78,9 @@ bool FDEventQueue::associate(fd_t fd, FDEvent::Type fd_event_types) {
     pollfd_.events = fd_event_types;
     pollfds.push_back(pollfd_);
     return true;
-  } else
+  } else {
     return dissociate(fd);
+  }
 }
 
 bool FDEventQueue::dissociate(fd_t fd) {
@@ -101,13 +104,14 @@ bool FDEventQueue::enqueue(YO_NEW_REF Event& event) {
     ssize_t write_ret = write(wake_pipe[1], "m", 1);
     debug_assert_eq(write_ret, 1);
     return true;
-  } else
+  } else {
     return false;
+  }
 }
 
 YO_NEW_REF Event* FDEventQueue::timeddequeue(const Time& timeout) {
   int timeout_ms
-    = (timeout == Time::FOREVER) ? -1 : static_cast<int>(timeout.ms());
+  = (timeout == Time::FOREVER) ? -1 : static_cast<int>(timeout.ms());
   int ret = ::poll(&pollfds[0], pollfds.size(), timeout_ms);
   if (ret > 0) {
     vector<pollfd>::const_iterator pollfd_i = pollfds.begin();
@@ -120,18 +124,21 @@ YO_NEW_REF Event* FDEventQueue::timeddequeue(const Time& timeout) {
           char data;
           read(wake_pipe[0], &data, sizeof(data));
           return event_queue.trydequeue();
-        } else
+        } else {
           return new FDEvent(pollfd_.fd, pollfd_.revents);
+        }
 
-        if (--ret == 0) break;
+        if (--ret == 0) {
+          break;
+        }
       }
     } while (++pollfd_i != pollfds.end());
 
     debug_break();
     return NULL;
-  } else if (ret == 0 || errno == EINTR)
+  } else if (ret == 0 || errno == EINTR) {
     return NULL;
-  else {
+  } else {
     debug_break();
     return NULL;
   }

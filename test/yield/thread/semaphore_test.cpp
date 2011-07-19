@@ -84,8 +84,9 @@ protected:
 TEST_EX(Semaphore, threaded, SemaphoreTest) {
   semaphore->post();
   Thread thread(*new OtherThread(exit_count, *semaphore));
-  while (exit_count < 1)
+  while (exit_count < 1) {
     Thread::self()->yield();
+  }
   thread.join();
 }
 

@@ -164,7 +164,9 @@ TEST(DateTime, from_unix_time_s) {
 TEST(DateTime, now) {
   DateTime date_time1(DateTime::now());
   throw_assert_gt(static_cast<uint64_t>(date_time1), 0);
-  for (uint32_t i = 0; i < UINT32_MAX / 16; i++) ;
+  for (uint32_t i = 0; i < UINT32_MAX / 16; i++) {
+    ;
+  }
   DateTime date_time2(DateTime::now());
   throw_assert_gt(date_time2, date_time1);
 }

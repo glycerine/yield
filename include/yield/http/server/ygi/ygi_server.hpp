@@ -47,12 +47,12 @@ public:
     ygi_request_handler_t ygi_request_handler,
     YO_NEW_REF Log* log = NULL
   )
-   : HTTPServer<AIOQueueType>(
+    : HTTPServer<AIOQueueType>(
       *new YGIRequestHandler(ygi_request_handler),
       sockname,
       log
-     ) {
-     }
+    ) {
+  }
 };
 }
 }

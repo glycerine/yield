@@ -117,7 +117,7 @@ public:
   EventHandler& get_http_request_handler() {
     return http_request_handler;
   }
-  
+
   yield::sockets::SocketAddress& get_peername() const {
     return peername;
   }

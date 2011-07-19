@@ -50,8 +50,9 @@ Exception::Exception(uint32_t error_code)
 
 Exception::Exception(const char* error_message)
   : error_code(0), error_message(NULL) {
-  if (error_message != NULL)
+  if (error_message != NULL) {
     set_error_message(error_message);
+  }
 }
 
 Exception::Exception(const string& error_message)
@@ -62,8 +63,9 @@ Exception::Exception(const string& error_message)
 Exception::Exception(uint32_t error_code, const char* error_message)
   : error_message(NULL) {
   set_error_code(error_code);
-  if (error_message != NULL)
+  if (error_message != NULL) {
     set_error_message(error_message);
+  }
 }
 
 Exception::Exception(uint32_t error_code, const string& error_message)
@@ -74,8 +76,9 @@ Exception::Exception(uint32_t error_code, const string& error_message)
 
 Exception::Exception(const Exception& other)
   : error_code(other.error_code), error_message(NULL) {
-  if (other.error_message != NULL)
+  if (other.error_message != NULL) {
     set_error_message(other.error_message);
+  }
 }
 
 Exception::~Exception() throw() {
@@ -87,9 +90,9 @@ Exception::~Exception() throw() {
 }
 
 const char* Exception::get_error_message() const throw() {
-  if (error_message != NULL)
+  if (error_message != NULL) {
     return error_message;
-  else if (error_code != 0) {
+  } else if (error_code != 0) {
 #ifdef _WIN32
     DWORD dwMessageLength
     = FormatMessageA(
@@ -105,8 +108,9 @@ const char* Exception::get_error_message() const throw() {
       );
 
     if (dwMessageLength > 0) {
-      if (dwMessageLength > 2)
-        error_message[dwMessageLength - 2] = 0; // Cut off trailing \r\n
+      if (dwMessageLength > 2) {
+        error_message[dwMessageLength - 2] = 0;  // Cut off trailing \r\n
+      }
 
       return error_message;
     } else if (error_code >= NERR_BASE || error_code <= MAX_NERR) {
@@ -134,12 +138,14 @@ const char* Exception::get_error_message() const throw() {
         if (dwMessageLength > 0) {
           FreeLibrary(hModule);
 
-          if (dwMessageLength > 2)   // Cut off trailing \r\n
+          if (dwMessageLength > 2) { // Cut off trailing \r\n
             error_message[dwMessageLength - 2] = 0;
+          }
 
           return error_message;
-        } else
+        } else {
           FreeLibrary(hModule);
+        }
       }
     }
 
@@ -160,8 +166,9 @@ const char* Exception::get_error_message() const throw() {
     ->set_error_message(strerror(error_code));
     return error_message;
 #endif
-  } else
+  } else {
     return "(unknown)";
+  }
 }
 
 uint32_t Exception::get_last_error_code() {

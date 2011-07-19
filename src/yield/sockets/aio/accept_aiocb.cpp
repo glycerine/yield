@@ -40,8 +40,9 @@ acceptAIOCB::acceptAIOCB(StreamSocket& socket_, YO_NEW_REF Buffer* recv_buffer)
     recv_buffer(recv_buffer) {
   accepted_socket = NULL;
   peername = NULL;
-  if (recv_buffer != NULL)
+  if (recv_buffer != NULL) {
     debug_assert_eq(recv_buffer->get_next_buffer(), NULL);
+  }
 }
 
 acceptAIOCB::~acceptAIOCB() {
@@ -74,20 +75,20 @@ void acceptAIOCB::set_recv_buffer(YO_NEW_REF Buffer* recv_buffer) {
 
 std::ostream& operator<<(std::ostream& os, acceptAIOCB& accept_aiocb) {
   os <<
-    accept_aiocb.get_type_name() <<
-    "(" <<
-      "accepted_socket=" << accept_aiocb.get_accepted_socket() <<
-      ", " <<
-      "error=" << accept_aiocb.get_error() <<
-      ", " <<
-      "peername=" << accept_aiocb.get_peername() <<
-      ", " <<
-      "recv_buffer=" << accept_aiocb.get_recv_buffer() <<
-      ", " <<
-      "return=" << accept_aiocb.get_return() <<
-      ", " <<
-      "socket=" << accept_aiocb.get_socket() <<
-    ")";
+     accept_aiocb.get_type_name() <<
+     "(" <<
+     "accepted_socket=" << accept_aiocb.get_accepted_socket() <<
+     ", " <<
+     "error=" << accept_aiocb.get_error() <<
+     ", " <<
+     "peername=" << accept_aiocb.get_peername() <<
+     ", " <<
+     "recv_buffer=" << accept_aiocb.get_recv_buffer() <<
+     ", " <<
+     "return=" << accept_aiocb.get_return() <<
+     ", " <<
+     "socket=" << accept_aiocb.get_socket() <<
+     ")";
   return os;
 }
 }

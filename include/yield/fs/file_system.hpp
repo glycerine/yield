@@ -115,7 +115,7 @@ public:
     @param gid group id (gid) of the new owner
     @return true on success, false+errno on failure
   */
-  bool chown(const Path&path, uid_t uid, gid_t gid);
+  bool chown(const Path& path, uid_t uid, gid_t gid);
 #endif
 
 public:
@@ -296,7 +296,7 @@ public:
 
 public:
   /**
-    Resolve the real path to a file: normalizing relative paths and 
+    Resolve the real path to a file: normalizing relative paths and
       following symbolic links.
     @param path path to the file
     @param[out] realpath real path of a file
@@ -326,7 +326,7 @@ public:
       under path.
     @param path path to the parent directory
     @return true on success, false+errno on failure
-  */    
+  */
   bool rmtree(const Path& path);
 
 public:

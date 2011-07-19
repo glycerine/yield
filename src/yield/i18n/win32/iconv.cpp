@@ -92,8 +92,9 @@ iconv::operator()(
         *outbytesleft -= outbyteswritten;
         return outbyteswritten;
       }
-    } else
+    } else {
       delete [] inbuf_w;
+    }
   }
 
   return static_cast<size_t>(-1);
@@ -155,12 +156,15 @@ bool iconv::operator()(const string& inbuf, string& outbuf) {
           outbuf.append(outbuf_c, outbuf_c_len);
           delete [] outbuf_c;
           return true;
-        } else
+        } else {
           delete [] outbuf_c;
-      } else
+        }
+      } else {
         delete [] inbuf_w;
-    } else
+      }
+    } else {
       delete [] inbuf_w;
+    }
   }
 
   return false;
@@ -194,8 +198,9 @@ bool iconv::operator()(const string& inbuf, std::wstring& outbuf) {
       outbuf.append(outbuf_w, outbuf_w_len);
       delete [] outbuf_w;
       return true;
-    } else
+    } else {
       delete [] outbuf_w;
+    }
   }
 
   return false;
@@ -233,8 +238,9 @@ bool iconv::operator()(const std::wstring& inbuf, string& outbuf) {
       outbuf.append(outbuf_c, outbuf_c_len);
       delete [] outbuf_c;
       return true;
-    } else
+    } else {
       delete [] outbuf_c;
+    }
   }
 
   return false;

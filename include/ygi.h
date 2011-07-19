@@ -50,51 +50,51 @@ struct iovec {
 extern "C" {
 #endif
 
-typedef struct __ygi_response_t {
-  void
-  (*set_body)(
-    struct __ygi_response_t* this_,
-    const struct iovec* body
-  );
+  typedef struct __ygi_response_t {
+    void
+    (*set_body)(
+      struct __ygi_response_t* this_,
+      const struct iovec* body
+    );
 
-  void
-  (*set_chunked_body_callback)(
-    struct __ygi_response_t* this_,
-    struct iovec (*chunked_body_callback)()
-  );
+    void
+    (*set_chunked_body_callback)(
+      struct __ygi_response_t* this_,
+      struct iovec(*chunked_body_callback)()
+    );
 
-  void
-  (*set_field)(
-    struct __ygi_response_t* this_,
-    const char* field_name,
-    const struct iovec* field_value
-  );
-} ygi_response_t;
+    void
+    (*set_field)(
+      struct __ygi_response_t* this_,
+      const char* field_name,
+      const struct iovec* field_value
+    );
+  } ygi_response_t;
 
-typedef struct __ygi_request_t {
-  size_t (*CONTENT_LENGTH)(struct __ygi_request_t* this_);
-  struct iovec (*DOCUMENT_ROOT)(struct __ygi_request_t* this_);
-  struct iovec (*HTTP_)(struct __ygi_request_t* this_, const char* field_name);
-  struct iovec (*HTTP_REFERER)(struct __ygi_request_t* this_);
-  struct iovec (*HTTP_USER_AGENT)(struct __ygi_request_t* this_);
-  struct iovec (*PATH_INFO)(struct __ygi_request_t* this_);
-  struct iovec (*PATH_TRANSLATED)(struct __ygi_request_t* this_);
-  struct iovec (*QUERY_STRING)(struct __ygi_request_t* this_);
-  struct iovec (*REMOTE_ADDR)(struct __ygi_request_t* this_);
-  struct iovec (*REMOTE_HOST)(struct __ygi_request_t* this_);
-  struct iovec (*REQUEST_METHOD)(struct __ygi_request_t* this_);
-  struct iovec (*SCRIPT_NAME)(struct __ygi_request_t* this_);
-  struct iovec (*SERVER_NAME)(struct __ygi_request_t* this_);
-  uint16_t (*SERVER_PORT)(struct __ygi_request_t* this_);
+  typedef struct __ygi_request_t {
+    size_t (*CONTENT_LENGTH)(struct __ygi_request_t* this_);
+    struct iovec(*DOCUMENT_ROOT)(struct __ygi_request_t* this_);
+    struct iovec(*HTTP_)(struct __ygi_request_t* this_, const char* field_name);
+    struct iovec(*HTTP_REFERER)(struct __ygi_request_t* this_);
+    struct iovec(*HTTP_USER_AGENT)(struct __ygi_request_t* this_);
+    struct iovec(*PATH_INFO)(struct __ygi_request_t* this_);
+    struct iovec(*PATH_TRANSLATED)(struct __ygi_request_t* this_);
+    struct iovec(*QUERY_STRING)(struct __ygi_request_t* this_);
+    struct iovec(*REMOTE_ADDR)(struct __ygi_request_t* this_);
+    struct iovec(*REMOTE_HOST)(struct __ygi_request_t* this_);
+    struct iovec(*REQUEST_METHOD)(struct __ygi_request_t* this_);
+    struct iovec(*SCRIPT_NAME)(struct __ygi_request_t* this_);
+    struct iovec(*SERVER_NAME)(struct __ygi_request_t* this_);
+    uint16_t (*SERVER_PORT)(struct __ygi_request_t* this_);
 
-  ygi_response_t*
-  (*respond)(
-    struct __ygi_request_t* this_,
-    uint16_t status_code
-  );
-} ygi_request_t;
+    ygi_response_t*
+    (*respond)(
+      struct __ygi_request_t* this_,
+      uint16_t status_code
+    );
+  } ygi_request_t;
 
-typedef ygi_response_t* (*ygi_request_handler_t)(ygi_request_t* ygi_request);
+  typedef ygi_response_t* (*ygi_request_handler_t)(ygi_request_t* ygi_request);
 
 #ifdef __cplusplus
 }

@@ -82,8 +82,9 @@ public:
   void run() {
     Thread thread(*new typename MutexTest<MutexType>::OtherThread(*this->mutex));
 
-    if (!this->mutex->lock())
+    if (!this->mutex->lock()) {
       throw Exception();
+    }
     Thread::sleep(0.1);
     this->mutex->unlock();
 
@@ -99,8 +100,9 @@ public:
   void run() {
     Thread thread(*new typename MutexTest<MutexType>::OtherThread(*this->mutex));
 
-    if (!this->mutex->trylock())
+    if (!this->mutex->trylock()) {
       throw Exception();
+    }
     Thread::sleep(0.1);
     this->mutex->unlock();
 

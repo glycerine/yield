@@ -96,4 +96,3 @@ TEST(FSEvent, print) {
 }
 }
 }
-

@@ -48,8 +48,9 @@ bool NamedPipe::connect() {
   ) {
     connected = true;
     return true;
-  } else
+  } else {
     return false;
+  }
 #else
   debug_break();
   return false;
@@ -61,16 +62,17 @@ bool NamedPipe::datasync() {
 }
 
 ssize_t NamedPipe::read(void* buf, size_t buflen) {
-  if (connected || connect())
+  if (connected || connect()) {
     return File::read(buf, buflen);
-  else
+  } else {
     return -1;
+  }
 }
 
 ssize_t NamedPipe::readv(const iovec* iov, int iovlen) {
-  if (iovlen == 1)
+  if (iovlen == 1) {
     return read(iov[0].iov_base, iov[0].iov_len);
-  else {
+  } else {
     SetLastError(ERROR_NOT_SUPPORTED);
     return -1;
   }
@@ -86,17 +88,19 @@ bool NamedPipe::sync() {
 }
 
 ssize_t NamedPipe::write(const void* buf, size_t buflen) {
-  if (connected || connect())
+  if (connected || connect()) {
     return File::write(buf, buflen);
-  else
+  } else {
     return -1;
+  }
 }
 
 ssize_t NamedPipe::writev(const iovec* iov, int iovlen) {
-  if (connected || connect())
+  if (connected || connect()) {
     return File::writev(iov, iovlen);
-  else
+  } else {
     return -1;
+  }
 }
 }
 }

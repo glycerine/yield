@@ -102,7 +102,7 @@ public:
     @param iov array of I/O vectors describing the buffers
     @param iovlen length of the I/O vectors array
     @return the number of bytes written on success, -1+errno on failure
-  */   
+  */
   virtual ssize_t writev(const iovec* iov, int iovlen);
 
 public:

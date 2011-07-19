@@ -53,7 +53,7 @@ public:
     const string& pem_private_key,
     const string& pem_private_key_passphrase,
     SSLVersion ssl_version = SSL_VERSION_23
-  ) throw (Exception);
+  ) throw(Exception);
 
   ~SSLContext();
 
@@ -76,24 +76,24 @@ public:
   void
   use_pem_certificate(
     const string& pem_certificate
-  ) throw (Exception);
+  ) throw(Exception);
 
   void
   use_pem_certificate_file(
     const string& pem_certificate_file_path
-  ) throw (Exception);
+  ) throw(Exception);
 
   void
   use_pem_private_key(
     const string& pem_private_key,
     const string& pem_private_key_passphrase
-  ) throw (Exception);
+  ) throw(Exception);
 
   void
   use_pem_private_key_file(
     const string& pem_private_key_file_path,
     const string& pem_private_key_passphrase
-  ) throw (Exception);
+  ) throw(Exception);
 
 private:
   SSL_CTX* ctx;

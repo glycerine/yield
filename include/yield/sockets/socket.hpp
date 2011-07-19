@@ -110,8 +110,9 @@ public:
       type(type),
       protocol(protocol) {
     socket_ = create(domain, type, protocol);
-    if (socket_ == static_cast<socket_t>(-1))
+    if (socket_ == static_cast<socket_t>(-1)) {
       throw Exception();
+    }
   }
 
   /**
@@ -124,7 +125,7 @@ public:
 public:
   /**
     Bind to the given address.
-    @param to_sockaddr socket address to bind 
+    @param to_sockaddr socket address to bind
     @return true on success, false+errno on failure
   */
   virtual bool bind(const SocketAddress& to_sockaddr);
@@ -166,10 +167,11 @@ public:
   auto_Object<SocketAddress> getpeername() const throw(Exception) {
     SocketAddress* peername = new SocketAddress;
     try {
-      if (getpeername(*peername))
+      if (getpeername(*peername)) {
         return peername;
-      else
+      } else {
         throw Exception();
+      }
     } catch (Exception&) {
       SocketAddress::dec_ref(*peername);
       throw;
@@ -200,10 +202,11 @@ public:
   auto_Object<SocketAddress> getsockname() const throw(Exception) {
     SocketAddress* sockname = new SocketAddress;
     try {
-      if (getsockname(*sockname))
+      if (getsockname(*sockname)) {
         return sockname;
-      else
+      } else {
         throw Exception();
+      }
     } catch (Exception&) {
       SocketAddress::dec_ref(*sockname);
       throw;
@@ -260,15 +263,17 @@ public:
     if (buffer.get_next_buffer() == NULL) {
       iovec iov = buffer.as_read_iovec();
       ssize_t recv_ret = recv(iov.iov_base, iov.iov_len, flags);
-      if (recv_ret > 0)
+      if (recv_ret > 0) {
         buffer.put(NULL, static_cast<size_t>(recv_ret));
+      }
       return recv_ret;
     } else {
       vector<iovec> iov;
       Buffers::as_read_iovecs(buffer, iov);
       ssize_t recv_ret = recvmsg(&iov[0], iov.size(), flags);
-      if (recv_ret > 0)
+      if (recv_ret > 0) {
         Buffers::put(buffer, NULL, static_cast<size_t>(recv_ret));
+      }
       return recv_ret;
     }
   }
@@ -309,8 +314,7 @@ public:
     if (buffer.get_next_buffer() == NULL) {
       iovec iov = buffer.as_write_iovec();
       return send(iov.iov_base, iov.iov_len, flags);
-    }
-    else {
+    } else {
       vector<iovec> iov;
       Buffers::as_write_iovecs(buffer, iov);
       return sendmsg(&iov[0], iov.size(), flags);
@@ -332,7 +336,7 @@ public:
     @param iovlen length of the I/O vectors array
     @param flags flags altering the behavior of the underlying system call
     @return the number of bytes written on success, -1+errno on failure
-  */ 
+  */
   virtual ssize_t
   sendmsg(
     const iovec* iov,
@@ -438,22 +442,24 @@ private:
   @return os
 */
 static std::ostream& operator<<(std::ostream& os, Socket& socket_) {
-    os << 
-      socket_.get_type_name() <<
-      "(";
-        SocketAddress sockname;
-        if (socket_.getsockname(sockname))
-          os << sockname;
-        else
-          os << "(unknown)";
-        os << "/";
-        SocketAddress peername;
-        if (socket_.getpeername(peername))
-          os << peername;
-        else
-          os << "(unknown)";
-      os << ")";
-    return os;
+  os <<
+     socket_.get_type_name() <<
+     "(";
+  SocketAddress sockname;
+  if (socket_.getsockname(sockname)) {
+    os << sockname;
+  } else {
+    os << "(unknown)";
+  }
+  os << "/";
+  SocketAddress peername;
+  if (socket_.getpeername(peername)) {
+    os << peername;
+  } else {
+    os << "(unknown)";
+  }
+  os << ")";
+  return os;
 }
 
 /**
@@ -464,9 +470,9 @@ static std::ostream& operator<<(std::ostream& os, Socket& socket_) {
   @return os
 */
 static inline std::ostream& operator<<(std::ostream& os, Socket* socket_) {
-  if (socket_ != NULL)
+  if (socket_ != NULL) {
     return operator<<(os, *socket_);
-  else {
+  } else {
     os << "NULL";
     return os;
   }

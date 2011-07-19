@@ -44,18 +44,20 @@ TEST(NBIOQueue, partial_send) {
 
   StreamSocketPair sockets;
   auto_Object<PartialSendStreamSocket>
-    partial_send_stream_socket = new PartialSendStreamSocket(sockets.first());
-  if (!aio_queue.associate(sockets.first()))
+  partial_send_stream_socket = new PartialSendStreamSocket(sockets.first());
+  if (!aio_queue.associate(sockets.first())) {
     throw Exception();
+  }
 
   auto_Object<sendAIOCB> aiocb
   = new sendAIOCB(*partial_send_stream_socket, Buffer::copy("test"), 0);
 
-  if (!aio_queue.enqueue(aiocb->inc_ref()))
+  if (!aio_queue.enqueue(aiocb->inc_ref())) {
     throw Exception();
+  }
 
   auto_Object<sendAIOCB> out_aiocb
-    = Object::cast<sendAIOCB>(aio_queue.dequeue());
+  = Object::cast<sendAIOCB>(aio_queue.dequeue());
   throw_assert_eq(&out_aiocb.get(), &aiocb.get());
   throw_assert_eq(out_aiocb->get_error(), 0);
   throw_assert_eq(out_aiocb->get_return(), 4);
@@ -63,7 +65,7 @@ TEST(NBIOQueue, partial_send) {
   char test[4];
   ssize_t recv_ret = sockets.second().recv(test, 4, 0);
   throw_assert_eq(recv_ret, 4);
-  throw_assert_eq(memcmp(test, "test", 4), 0);  
+  throw_assert_eq(memcmp(test, "test", 4), 0);
 }
 
 class NBIOQueuePartialSendFileTest : public yunit::Test {
@@ -71,7 +73,7 @@ public:
   void setup() {
     teardown();
     auto_Object<yield::fs::File> file
-      = yield::fs::FileSystem().creat("NBIOQueuePartialSendFileTest.txt");
+    = yield::fs::FileSystem().creat("NBIOQueuePartialSendFileTest.txt");
     file->write("test", 4);
     file->close();
   }
@@ -86,24 +88,26 @@ TEST_EX(NBIOQueue, partial_sendfile, NBIOQueuePartialSendFileTest) {
 
   StreamSocketPair sockets;
   auto_Object<PartialSendStreamSocket>
-    partial_send_stream_socket = new PartialSendStreamSocket(sockets.first());
-  if (!aio_queue.associate(sockets.first()))
+  partial_send_stream_socket = new PartialSendStreamSocket(sockets.first());
+  if (!aio_queue.associate(sockets.first())) {
     throw Exception();
+  }
 
   auto_Object<yield::fs::File> file
-    = yield::fs::FileSystem().open("NBIOQueuePartialSendFileTest.txt");
+  = yield::fs::FileSystem().open("NBIOQueuePartialSendFileTest.txt");
   auto_Object<yield::fs::Stat> stbuf = file->stat();
 
   auto_Object<sendfileAIOCB> aiocb
-    = new sendfileAIOCB(*partial_send_stream_socket, *file);
+  = new sendfileAIOCB(*partial_send_stream_socket, *file);
   throw_assert_eq(aiocb->get_nbytes(), stbuf->get_size());
   throw_assert_eq(aiocb->get_offset(), 0);
 
-  if (!aio_queue.enqueue(aiocb->inc_ref()))
+  if (!aio_queue.enqueue(aiocb->inc_ref())) {
     throw Exception();
+  }
 
   auto_Object<sendfileAIOCB> out_aiocb
-    = Object::cast<sendfileAIOCB>(aio_queue.dequeue());
+  = Object::cast<sendfileAIOCB>(aio_queue.dequeue());
   throw_assert_eq(&out_aiocb.get(), &aiocb.get());
   throw_assert_eq(out_aiocb->get_error(), 0);
   throw_assert_eq(
@@ -122,16 +126,18 @@ TEST(NBIOQueue, partial_sendmsg) {
 
   StreamSocketPair sockets;
   auto_Object<PartialSendStreamSocket>
-    partial_send_stream_socket = new PartialSendStreamSocket(sockets.first());
-  if (!aio_queue.associate(sockets.first()))
+  partial_send_stream_socket = new PartialSendStreamSocket(sockets.first());
+  if (!aio_queue.associate(sockets.first())) {
     throw Exception();
+  }
 
   auto_Object<Buffer> buffer = Buffer::copy("test");
   buffer->set_next_buffer(Buffer::copy(" string"));
   auto_Object<sendAIOCB> aiocb
-    = new sendAIOCB(*partial_send_stream_socket, buffer->inc_ref(), 0);
-  if (!aio_queue.enqueue(aiocb->inc_ref()))
+  = new sendAIOCB(*partial_send_stream_socket, buffer->inc_ref(), 0);
+  if (!aio_queue.enqueue(aiocb->inc_ref())) {
     throw Exception();
+  }
 
   auto_Object<sendAIOCB> out_aiocb
   = Object::cast<sendAIOCB>(aio_queue.dequeue());

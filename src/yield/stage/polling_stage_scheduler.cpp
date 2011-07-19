@@ -58,8 +58,9 @@ PollingStageScheduler::schedule(
       StagePoller* stage_poller
       = static_cast<StagePoller*>(thread->get_runnable());
       stage_poller->schedule(stage);
-    } else
+    } else {
       threads.push_back(new Thread(createStagePoller(stage)));
+    }
   }
 }
 
@@ -73,8 +74,9 @@ PollingStageScheduler::StagePoller::~StagePoller() {
     vector<Stage*>::iterator stage_i = stages.begin();
     stage_i != stages.end();
     ++stage_i
-  )
+  ) {
     Stage::dec_ref(**stage_i);
+  }
 }
 
 vector<Stage*>& PollingStageScheduler::StagePoller::get_stages() {
@@ -89,8 +91,9 @@ vector<Stage*>& PollingStageScheduler::StagePoller::get_stages() {
 
 void PollingStageScheduler::StagePoller::schedule(Stage& stage) {
   stage.inc_ref();
-  while (!new_stage.enqueue(stage))
+  while (!new_stage.enqueue(stage)) {
     ;
+  }
 }
 }
 }

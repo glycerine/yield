@@ -47,10 +47,11 @@ const int Socket::Option::SNDBUF = SO_SNDBUF;
 
 bool Socket::bind(const SocketAddress& _name) {
   const SocketAddress* name = _name.filter(get_domain());
-  if (name != NULL)
+  if (name != NULL) {
     return ::bind(*this, *name, name->len()) != -1;
-  else
+  } else {
     return false;
+  }
 }
 
 bool Socket::close() {
@@ -60,12 +61,14 @@ bool Socket::close() {
 bool Socket::connect(const SocketAddress& _peername) {
   const SocketAddress* peername = _peername.filter(get_domain());
   if (peername != NULL) {
-    if (::connect(*this, *peername, peername->len()) != -1)
+    if (::connect(*this, *peername, peername->len()) != -1) {
       return true;
-    else
+    } else {
       return errno == EISCONN;
-  } else
+    }
+  } else {
     return false;
+  }
 }
 
 socket_t Socket::create(int domain, int type, int protocol) {
@@ -76,7 +79,9 @@ string Socket::getfqdn() {
   char fqdn[256];
   ::gethostname(fqdn, 256);
   char* first_dot = strstr(fqdn, ".");
-  if (first_dot != NULL) *first_dot = 0;
+  if (first_dot != NULL) {
+    *first_dot = 0;
+  }
 
   // getnameinfo does not return aliases, which means we get "localhost"
   // on Linux if that's the first
@@ -89,9 +94,9 @@ string Socket::getfqdn() {
       domainname[0] != 0 &&
       strcmp(domainname, "(none)") != 0 &&
       strcmp(domainname, fqdn) != 0 &&
-      strstr(domainname, "localdomain") == NULL)
+      strstr(domainname, "localdomain") == NULL) {
     strcat(fqdn, domainname);
-  else {
+  } else {
 #endif
     // Try gethostbyaddr, like Python
     uint32_t local_host_addr = inet_addr("127.0.0.1");
@@ -137,8 +142,9 @@ bool Socket::getpeername(SocketAddress& peername) const {
   if (::getpeername(*this, peername, &peernamelen) != -1) {
     debug_assert_eq(peername.get_family(), get_domain());
     return true;
-  } else
+  } else {
     return false;
+  }
 }
 
 bool Socket::getsockname(SocketAddress& sockname) const {
@@ -146,8 +152,9 @@ bool Socket::getsockname(SocketAddress& sockname) const {
   if (::getsockname(*this, sockname, &socknamelen) != -1) {
     debug_assert_eq(sockname.get_family(), get_domain());
     return true;
-  } else
+  } else {
     return false;
+  }
 }
 
 ssize_t Socket::recv(void* buf, size_t buflen, const MessageFlags& flags) {
@@ -192,22 +199,24 @@ Socket::sendmsg(
 bool Socket::set_blocking_mode(bool blocking_mode) {
   int current_fcntl_flags = fcntl(*this, F_GETFL, 0);
   if (blocking_mode) {
-    if ((current_fcntl_flags & O_NONBLOCK) == O_NONBLOCK)
+    if ((current_fcntl_flags & O_NONBLOCK) == O_NONBLOCK) {
       return fcntl(*this, F_SETFL, current_fcntl_flags ^ O_NONBLOCK) != -1;
-    else
+    } else {
       return true;
-  } else
+    }
+  } else {
     return fcntl(*this, F_SETFL, current_fcntl_flags | O_NONBLOCK) != -1;
+  }
 }
 
 bool Socket::setsockopt(int option_name, int option_value) {
   return ::setsockopt(
-            *this,
-            SOL_SOCKET,
-            option_name,
-            reinterpret_cast<char*>(&option_value),
-            static_cast<int>(sizeof(option_value))
-          ) == 0;
+           *this,
+           SOL_SOCKET,
+           option_name,
+           reinterpret_cast<char*>(&option_value),
+           static_cast<int>(sizeof(option_value))
+         ) == 0;
 }
 
 bool Socket::want_recv() const {

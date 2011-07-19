@@ -48,11 +48,12 @@ public:
   ~Watches() {
     for (
       typename std::map<Path, WatchType*>::iterator watch_i
-        = std::map<Path, WatchType*>::begin();
+      = std::map<Path, WatchType*>::begin();
       watch_i != std::map<Path, WatchType*>::end();
       ++watch_i
-    )
+    ) {
       delete watch_i->second;
+    }
   }
 
   const_iterator begin() const {
@@ -69,29 +70,32 @@ public:
 
   WatchType* erase(const Path& path) {
     typename std::map<Path, WatchType*>::iterator watch_i
-      = std::map<Path, WatchType*>::find(path);
+    = std::map<Path, WatchType*>::find(path);
     if (watch_i != std::map<Path, WatchType*>::end()) {
       WatchType* watch = watch_i->second;
       std::map<Path, WatchType*>::erase(watch_i);
       return watch;
-    } else
+    } else {
       return NULL;
+    }
   }
 
   WatchType* find(const Path& path) const {
     typename std::map<Path, WatchType*>::const_iterator watch_i
-      = std::map<Path, WatchType*>::find(path);
-    if (watch_i != std::map<Path, WatchType*>::end())
+    = std::map<Path, WatchType*>::find(path);
+    if (watch_i != std::map<Path, WatchType*>::end()) {
       return watch_i->second;
-    else
+    } else {
       return NULL;
+    }
   }
 
   void insert(const Path& path, YO_NEW_REF WatchType& watch) {
-    if (std::map<Path,WatchType*>::find(path) == end())
+    if (std::map<Path, WatchType*>::find(path) == end()) {
       std::map<Path, WatchType*>::insert(std::make_pair(path, &watch));
-    else
+    } else {
       debug_break();
+    }
   }
 };
 }

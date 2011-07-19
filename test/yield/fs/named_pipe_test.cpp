@@ -52,8 +52,9 @@ public:
   File& get_read_file() {
     if (read_file == NULL) {
       read_file = FileSystem().mkfifo(path);
-      if (read_file == NULL)
+      if (read_file == NULL) {
         throw Exception();
+      }
     }
 
     return *read_file;
@@ -63,8 +64,9 @@ public:
     if (write_file == NULL) {
       get_read_file(); // To start the server if necessary
       write_file = FileSystem().open(path, O_WRONLY);
-      if (write_file == NULL)
+      if (write_file == NULL) {
         throw Exception();
+      }
     }
 
     return *write_file;

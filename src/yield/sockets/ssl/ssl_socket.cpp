@@ -56,8 +56,8 @@ SSLSocket::SSLSocket(
   SSL* ssl,
   SSLContext& ssl_context
 ) : TCPSocket(domain, socket_),
-    ssl(ssl),
-    ssl_context(ssl_context.inc_ref()) {
+  ssl(ssl),
+  ssl_context(ssl_context.inc_ref()) {
   init(ssl);
 }
 
@@ -73,8 +73,9 @@ YO_NEW_REF SSLSocket* SSLSocket::accept() {
 
 YO_NEW_REF SSLSocket* SSLSocket::accept(SocketAddress& peername) {
   SSLSocket* ssl_socket = static_cast<SSLSocket*>(TCPSocket::accept(peername));
-  if (ssl_socket != NULL)
+  if (ssl_socket != NULL) {
     SSL_set_accept_state(*ssl_socket);
+  }
   return ssl_socket;
 }
 
@@ -82,8 +83,9 @@ bool SSLSocket::connect(const SocketAddress& peername) {
   if (TCPSocket::connect(peername)) {
     SSL_set_connect_state(ssl);
     return true;
-  } else
+  } else {
     return false;
+  }
 }
 
 bool SSLSocket::do_handshake() {
@@ -94,22 +96,24 @@ YO_NEW_REF SSLSocket* SSLSocket::dup() {
   socket_t socket_ = Socket::create(get_domain(), TYPE, PROTOCOL);
   if (socket_ != -1) {
     SSL* ssl = SSL_new(ssl_context);
-    if (ssl != NULL)
+    if (ssl != NULL) {
       return new SSLSocket(get_domain(), socket_, ssl, ssl_context);
-    else {
+    } else {
       SSL_free(ssl);
       return NULL;
     }
-  } else
+  } else {
     return NULL;
+  }
 }
 
 YO_NEW_REF SSLSocket* SSLSocket::dup2(socket_t socket_) {
   SSL* ssl = SSL_new(ssl_context);
-  if (ssl != NULL)
+  if (ssl != NULL) {
     return new SSLSocket(get_domain(), socket_, ssl, ssl_context);
-  else
+  } else {
     return NULL;
+  }
 }
 
 void SSLSocket::init(SSLContext& ssl_context) {
@@ -121,16 +125,18 @@ void SSLSocket::init(SSLContext& ssl_context) {
       SSL_free(ssl);
       throw;
     }
-  } else
+  } else {
     throw SSLException();
+  }
 }
 
 void SSLSocket::init(SSL* ssl) {
   BIO* bio = BIO_new_socket(static_cast<socket_t>(*this), BIO_NOCLOSE);
-  if (bio != NULL)
+  if (bio != NULL) {
     SSL_set_bio(ssl, bio, bio);
-  else
+  } else {
     throw SSLException();
+  }
 
   //if (!SSL_set_fd(ssl, *this))
   //  throw SSLException();
@@ -191,10 +197,11 @@ ssize_t SSLSocket::recv(void* buf, size_t buflen, const MessageFlags&) {
 }
 
 ssize_t SSLSocket::recvmsg(const iovec* iov, int iovlen, const MessageFlags& flags) {
-  if (iovlen == 1)
+  if (iovlen == 1) {
     return recv(iov[0].iov_base, iov[0].iov_len, flags);
-  else
+  } else {
     return -1;
+  }
 }
 
 ssize_t SSLSocket::send(const void* buf, size_t buflen, const MessageFlags&) {
@@ -211,10 +218,11 @@ ssize_t SSLSocket::sendmsg(const iovec* iov, int iovlen, const MessageFlags&) {
 }
 
 bool SSLSocket::shutdown(bool shut_rd, bool shut_wr) {
-  if (SSL_shutdown(ssl) != -1)
+  if (SSL_shutdown(ssl) != -1) {
     return TCPSocket::shutdown(shut_rd, shut_wr);
-  else
+  } else {
     return false;
+  }
 }
 
 bool SSLSocket::want_recv() const {

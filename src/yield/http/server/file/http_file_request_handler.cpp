@@ -45,7 +45,7 @@ HTTPFileRequestHandler::HTTPFileRequestHandler(
   const Path& root_directory_path,
   const URI& root_uri
 ) : root_directory_path(root_directory_path),
-    root_uri(root_uri) {
+  root_uri(root_uri) {
   this->root_uri.get_path(root_uri_path);
 }
 
@@ -66,7 +66,7 @@ void HTTPFileRequestHandler::handle(YO_NEW_REF Event& event) {
     ) {
       Path file_relpath(
         static_cast<char*>(http_request_uri_path.iov_base) +
-          root_uri_path.iov_len,
+        root_uri_path.iov_len,
         http_request_uri_path.iov_len - root_uri_path.iov_len
       );
 
@@ -75,14 +75,16 @@ void HTTPFileRequestHandler::handle(YO_NEW_REF Event& event) {
       File* file = FileSystem().open(file_abspath);
       if (file != NULL) {
         File::Map* map = file->mmap(SIZE_MAX, 0, true);
-        if (map != NULL)
+        if (map != NULL) {
           http_request.respond(200, *map);
-        else
+        } else {
           http_request.respond(404, Exception());
+        }
 
         File::dec_ref(*file);
-      } else
+      } else {
         http_request.respond(404, Exception());
+      }
 
       HTTPRequest::dec_ref(http_request);
     }

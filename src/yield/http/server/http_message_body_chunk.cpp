@@ -37,7 +37,7 @@ HTTPMessageBodyChunk::HTTPMessageBodyChunk(
   HTTPConnection& connection,
   YO_NEW_REF Buffer* data
 ) : yield::http::HTTPMessageBodyChunk(data),
-    connection(connection.inc_ref()) {
+  connection(connection.inc_ref()) {
 }
 
 HTTPMessageBodyChunk::~HTTPMessageBodyChunk() {

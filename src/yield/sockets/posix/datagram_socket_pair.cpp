@@ -38,8 +38,9 @@ DatagramSocketPair::DatagramSocketPair() {
   if (::socketpair(AF_UNIX, SOCK_DGRAM, 0, sv) != -1) {
     sockets[0] = new DatagramSocket(AF_UNIX, 0, sv[0]);
     sockets[1] = new DatagramSocket(AF_UNIX, 0, sv[1]);
-  } else
+  } else {
     throw Exception();
+  }
 }
 }
 }

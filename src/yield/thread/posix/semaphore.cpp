@@ -35,8 +35,9 @@ namespace yield {
 namespace thread {
 #ifndef __MACH__
 Semaphore::Semaphore() {
-  if (sem_init(&sem, 0, 0) == -1)
+  if (sem_init(&sem, 0, 0) == -1) {
     throw Exception();
+  }
 }
 
 Semaphore::~Semaphore() {

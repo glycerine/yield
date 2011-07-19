@@ -243,10 +243,11 @@ public:
     @return a new Time instance
   */
   Time operator-(const Time& time) const {
-    if (_ns >= time._ns)
+    if (_ns >= time._ns) {
       return Time(_ns - time._ns);
-    else
+    } else {
       return Time(static_cast<uint64_t>(0));
+    }
   }
 
   /**
@@ -255,10 +256,11 @@ public:
     @return a new Time instance
   */
   Time operator-(uint64_t ns) const {
-    if (_ns >= ns)
+    if (_ns >= ns) {
       return Time(_ns - ns);
-    else
+    } else {
       return Time(static_cast<uint64_t>(0));
+    }
   }
 
   /**
@@ -277,10 +279,11 @@ public:
     @return *this
   */
   Time& operator-=(uint64_t ns) {
-    if (_ns >= ns)
+    if (_ns >= ns) {
       _ns -= ns;
-    else
+    } else {
       _ns = 0;
+    }
 
     return *this;
   }

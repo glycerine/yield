@@ -40,7 +40,7 @@ namespace yield {
   auto_Object is similar to the TR1 intrusive_ptr. It takes an Object reference
     (no NULLs allowed). Instead of delete auto_Object decrements the Object
     on destruction.
- 
+
  auto_Object is primarily intended for use in testing, where an object
    should be deleted when it goes out of scope because of an exception.
 */
@@ -53,8 +53,9 @@ public:
   */
   auto_Object(YO_NEW_REF ObjectType* object) throw(std::exception)
     : object(*object) {
-    if (object == NULL)
+    if (object == NULL) {
       throw std::exception();
+    }
   }
 
   /**

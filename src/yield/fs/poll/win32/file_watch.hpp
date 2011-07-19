@@ -45,7 +45,7 @@ public:
     FSEvent::Type fs_event_types,
     Log* log = NULL
   ) : Watch(directory, fs_event_types, log, file_path),
-      directory_path(directory_path) {
+    directory_path(directory_path) {
   }
 
 public:

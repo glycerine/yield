@@ -51,7 +51,7 @@ TEST(HTTPRequest, get_creation_date_time) {
   throw_assert_ge(
     HTTPRequest(HTTPRequest::Method::GET, "/").get_creation_date_time(),
     now
-  );  
+  );
 }
 
 TEST(HTTPRequest, get_method) {

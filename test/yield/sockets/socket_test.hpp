@@ -112,14 +112,17 @@ public:
   void run() {
     SocketPairType sockets;
 
-    if (!sockets.first().set_blocking_mode(true))
+    if (!sockets.first().set_blocking_mode(true)) {
       throw Exception();
+    }
 
-    if (!sockets.first().set_blocking_mode(false))
+    if (!sockets.first().set_blocking_mode(false)) {
       throw Exception();
+    }
 
-    if (!sockets.first().set_blocking_mode(true))
+    if (!sockets.first().set_blocking_mode(true)) {
       throw Exception();
+    }
   }
 };
 
@@ -134,8 +137,9 @@ public:
   // yunit::Test
   void run() {
     SocketPairType sockets;
-    if (!sockets.first().setsockopt(option_name, option_value))
+    if (!sockets.first().setsockopt(option_name, option_value)) {
       throw Exception();
+    }
   }
 
 private:
@@ -149,11 +153,12 @@ public:
   // yunit::Test
   void run() {
     SocketPairType sockets;
-    if (!sockets.first().set_blocking_mode(false))
+    if (!sockets.first().set_blocking_mode(false)) {
       throw Exception();
+    }
     auto_Object<Buffer> buffer = new Buffer(1);
     ssize_t recv_ret
-      = sockets.first().recv(*buffer, 0);
+    = sockets.first().recv(*buffer, 0);
     throw_assert_eq(recv_ret, -1);
     throw_assert(sockets.first().want_recv());
   }

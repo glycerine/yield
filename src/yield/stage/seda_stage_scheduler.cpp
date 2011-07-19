@@ -52,8 +52,9 @@ public:
 
   // yield::thread::Runnable
   void run() {
-    while (should_run)
+    while (should_run) {
       stage.visit();
+    }
   }
 
 private:
@@ -80,8 +81,9 @@ SEDAStageScheduler::schedule(
   ConcurrencyLevel concurrency_level
 ) {
   auto_Object<SEDAStage> seda_stage = new SEDAStage(stage);
-  for (int16_t thread_i = 0; thread_i < concurrency_level; thread_i++)
+  for (int16_t thread_i = 0; thread_i < concurrency_level; thread_i++) {
     threads.push_back(new Thread(seda_stage->inc_ref()));
+  }
 }
 }
 }

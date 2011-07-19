@@ -70,7 +70,7 @@ iovec YGIRequest::HTTP_(const char* field_name) {
 iovec YGIRequest::HTTP_REFERER() {
   iovec field_value = { 0, 0 };
   http_request.get_field("Referer", field_value);
-  return field_value;  
+  return field_value;
 }
 
 iovec YGIRequest::HTTP_USER_AGENT() {
@@ -104,7 +104,7 @@ iovec YGIRequest::REMOTE_HOST() {
 iovec YGIRequest::REQUEST_METHOD() {
   iovec request_method;
   request_method.iov_base
-    = const_cast<char*>(http_request.get_method().get_name());
+  = const_cast<char*>(http_request.get_method().get_name());
   request_method.iov_len = http_request.get_method().get_name_len();
   return request_method;
 }

@@ -52,8 +52,9 @@ namespace yield {
 namespace i18n {
 iconv::iconv(Code tocode, Code fromcode) {
   cd = ::iconv_open(tocode, fromcode);
-  if (cd == reinterpret_cast<iconv_t>(-1))
+  if (cd == reinterpret_cast<iconv_t>(-1)) {
     throw Exception();
+  }
 }
 
 iconv::~iconv() {
@@ -122,17 +123,19 @@ iconv::operator()(
   char** outbuf,
   size_t* outbytesleft
 ) {
-  if (reset())
+  if (reset()) {
     return iconv_to_char(inbuf, inbytesleft, outbuf, outbytesleft);
-  else
+  } else {
     return static_cast<size_t>(-1);
+  }
 }
 
 bool iconv::operator()(const string& inbuf, string& outbuf) {
-  if (reset())
+  if (reset()) {
     return iconv_to_string(inbuf.data(), inbuf.size(), outbuf);
-  else
+  } else {
     return false;
+  }
 }
 
 bool iconv::reset() {

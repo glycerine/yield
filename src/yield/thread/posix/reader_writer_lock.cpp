@@ -33,8 +33,9 @@
 namespace yield {
 namespace thread {
 ReaderWriterLock::ReaderWriterLock() {
-  if (pthread_rwlock_init(&rwlock, NULL) != 0)
+  if (pthread_rwlock_init(&rwlock, NULL) != 0) {
     throw Exception();
+  }
 }
 
 ReaderWriterLock::~ReaderWriterLock() {

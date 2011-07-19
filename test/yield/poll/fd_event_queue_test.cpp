@@ -70,10 +70,12 @@ public:
 
   void teardown() {
 #ifdef _WIN32
-    if (fds[0] != INVALID_HANDLE_VALUE)
+    if (fds[0] != INVALID_HANDLE_VALUE) {
       CloseHandle(fds[0]);
-    if (fds[1] != INVALID_HANDLE_VALUE)
+    }
+    if (fds[1] != INVALID_HANDLE_VALUE) {
       CloseHandle(fds[1]);
+    }
 #else
     close(fds[0]);
     close(fds[1]);
@@ -105,48 +107,57 @@ private:
 
 
 TEST_EX(FDEventQueue, associate, FDEventQueueTest) {
-  if (!FDEventQueue().associate(get_read_fd(), FDEvent::TYPE_READ_READY))
+  if (!FDEventQueue().associate(get_read_fd(), FDEvent::TYPE_READ_READY)) {
     throw Exception();
+  }
 }
 
 TEST_EX(FDEventQueue, associate_change, FDEventQueueTest) {
   FDEventQueue fd_event_queue;
 
-  if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY))
+  if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY)) {
     throw Exception();
+  }
 
-  if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_WRITE_READY))
+  if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_WRITE_READY)) {
     throw Exception();
+  }
 }
 
 TEST_EX(FDEventQueue, associate_duplicate, FDEventQueueTest) {
   FDEventQueue fd_event_queue;
 
-  if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY))
+  if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY)) {
     throw Exception();
+  }
 
-  if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY))
+  if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY)) {
     throw Exception();
+  }
 }
 
 TEST_EX(FDEventQueue, associate_two, FDEventQueueTest) {
   FDEventQueue fd_event_queue;
 
-  if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY))
+  if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY)) {
     throw Exception();
+  }
 
-  if (!fd_event_queue.associate(get_write_fd(), FDEvent::TYPE_WRITE_READY))
+  if (!fd_event_queue.associate(get_write_fd(), FDEvent::TYPE_WRITE_READY)) {
     throw Exception();
+  }
 }
 
 TEST_EX(FDEventQueue, associate_zero, FDEventQueueTest) {
   FDEventQueue fd_event_queue;
 
-  if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY))
+  if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY)) {
     throw Exception();
+  }
 
-  if (!fd_event_queue.associate(get_read_fd(), 0))
+  if (!fd_event_queue.associate(get_read_fd(), 0)) {
     throw Exception();
+  }
 
   signal_pipe();
 
@@ -161,8 +172,9 @@ TEST(FDEventQueue, constructor) {
 TEST_EX(FDEventQueue, dequeue_FDEvent, FDEventQueueTest) {
   FDEventQueue fd_event_queue;
 
-  if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY))
+  if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY)) {
     throw Exception();
+  }
 
   signal_pipe();
 
@@ -172,8 +184,9 @@ TEST_EX(FDEventQueue, dequeue_FDEvent, FDEventQueueTest) {
 TEST_EX(FDEventQueue, dequeue_writable_FDEvent, FDEventQueueTest) {
   FDEventQueue fd_event_queue;
 
-  if (!fd_event_queue.associate(get_write_fd(), FDEvent::TYPE_WRITE_READY))
+  if (!fd_event_queue.associate(get_write_fd(), FDEvent::TYPE_WRITE_READY)) {
     throw Exception();
+  }
 
   auto_Object<FDEvent> fd_event
   = Object::cast<FDEvent>(fd_event_queue.dequeue());
@@ -188,22 +201,26 @@ TEST(FDEventQueue, destructor) {
 TEST_EX(FDEventQueue, dissociate, FDEventQueueTest) {
   FDEventQueue fd_event_queue;
 
-  if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY))
+  if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY)) {
     throw Exception();
+  }
 
-  if (!fd_event_queue.dissociate(get_read_fd()))
+  if (!fd_event_queue.dissociate(get_read_fd())) {
     throw Exception();
+  }
 
   signal_pipe();
 
   Event* event = fd_event_queue.timeddequeue(0);
   throw_assert_eq(event, NULL);
 
-  if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY))
-    throw Exception(); // associate after dissociate should succeed
+  if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY)) {
+    throw Exception();  // associate after dissociate should succeed
+  }
 
-  if (!fd_event_queue.dissociate(get_read_fd()))
+  if (!fd_event_queue.dissociate(get_read_fd())) {
     throw Exception();
+  }
 
   throw_assert_false(fd_event_queue.dissociate(get_read_fd()));
 }

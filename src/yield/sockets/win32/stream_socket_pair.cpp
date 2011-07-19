@@ -40,18 +40,22 @@ StreamSocketPair::StreamSocketPair() {
         sockets[0] = new StreamSocket(AF_INET);
         if (sockets[0]->connect(*listen_stream_socket.getsockname())) {
           sockets[1] = listen_stream_socket.accept();
-          if (sockets[1] == NULL)
+          if (sockets[1] == NULL) {
             throw Exception();
-        } else
+          }
+        } else {
           throw Exception();
+        }
       } catch (Exception&) {
         StreamSocket::dec_ref(sockets[0]);
         throw;
       }
-    } else
+    } else {
       throw Exception();
-  } else
+    }
+  } else {
     throw Exception();
+  }
 }
 }
 }

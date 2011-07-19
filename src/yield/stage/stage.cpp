@@ -64,9 +64,9 @@ void Stage::enqueue(YO_NEW_REF Event& event) {
   event_queue_length++;
   event_queue_arrival_count++;
 
-  if (event_queue.enqueue(event))
+  if (event_queue.enqueue(event)) {
     return;
-  else {
+  } else {
     //cerr << event_handler.get_type_name() <<
     //  ": event queue full, stopping.";
     debug_break();
@@ -106,8 +106,9 @@ bool Stage::visit(const Time& timeout) {
     Time service_time(Time::now() - service_time_start);
 
     return true;
-  } else
+  } else {
     return false;
+  }
 }
 }
 }

@@ -49,8 +49,9 @@ static LPFN_TRANSMITFILE lpfnTransmitFile = NULL;
 
 AIOQueue::AIOQueue(YO_NEW_REF Log* log) : log(log) {
   hIoCompletionPort = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 0);
-  if (hIoCompletionPort == INVALID_HANDLE_VALUE)
+  if (hIoCompletionPort == INVALID_HANDLE_VALUE) {
     throw Exception();
+  }
 }
 
 AIOQueue::~AIOQueue() {
@@ -124,7 +125,7 @@ bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
 
       DWORD dwBytesReceived;
       DWORD dwLocalAddressLength
-        = SocketAddress::len(accepted_socket->get_domain()) + 16;
+      = SocketAddress::len(accepted_socket->get_domain()) + 16;
       DWORD dwReceiveDataLength;
       DWORD dwRemoteAddressLength = dwLocalAddressLength;
 
@@ -139,9 +140,8 @@ bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
         ) {
           dwReceiveDataLength =
             recv_buffer->capacity() - recv_buffer->size() -
-              (dwLocalAddressLength + dwRemoteAddressLength);
-        }
-        else {
+            (dwLocalAddressLength + dwRemoteAddressLength);
+        } else {
           accept_aiocb.set_error(WSAEINVAL);
           log_error(accept_aiocb);
           return false;
@@ -165,8 +165,9 @@ bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
         ) == TRUE
         ||
         WSAGetLastError() == WSA_IO_PENDING
-      )
+      ) {
         return true;
+      }
     }
 
     accept_aiocb.set_error(WSAGetLastError());
@@ -204,9 +205,9 @@ bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
     }
 
     const SocketAddress* peername
-      = connect_aiocb.get_peername().filter(
-          connect_aiocb.get_socket().get_domain()
-        );
+    = connect_aiocb.get_peername().filter(
+        connect_aiocb.get_socket().get_domain()
+      );
 
     if (peername != NULL) {
       PVOID lpSendBuffer;
@@ -233,8 +234,9 @@ bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
         )
         ||
         WSAGetLastError() == WSA_IO_PENDING
-      )
+      ) {
         return true;
+      }
     }
 
     connect_aiocb.set_error(WSAGetLastError());
@@ -266,8 +268,9 @@ bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
         ) == 0
         ||
         WSAGetLastError() == WSA_IO_PENDING
-      )
+      ) {
         return true;
+      }
     } else { // Scatter I/O
       vector<iovec> wsabufs;
       Buffers::as_read_iovecs(recv_aiocb.get_buffer(), wsabufs);
@@ -284,8 +287,9 @@ bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
         ) == 0
         ||
         WSAGetLastError() == WSA_IO_PENDING
-      )
+      ) {
         return true;
+      }
     }
 
     recv_aiocb.set_error(WSAGetLastError());
@@ -315,8 +319,9 @@ bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
         ) == 0
         ||
         WSAGetLastError() == WSA_IO_PENDING
-      )
+      ) {
         return true;
+      }
     } else { // Gather I/O
       vector<iovec> wsabufs;
       Buffers::as_write_iovecs(send_aiocb.get_buffer(), wsabufs);
@@ -333,8 +338,9 @@ bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
         ) == 0
         ||
         WSAGetLastError() == WSA_IO_PENDING
-      )
+      ) {
         return true;
+      }
     }
 
     send_aiocb.set_error(WSAGetLastError());
@@ -381,8 +387,9 @@ bool AIOQueue::enqueue(YO_NEW_REF Event& event) {
       )
       ||
       WSAGetLastError() == WSA_IO_PENDING
-    )
+    ) {
       return true;
+    }
 
     sendfile_aiocb.set_error(WSAGetLastError());
     log_error(sendfile_aiocb);
@@ -408,22 +415,23 @@ template <class AIOCBType> void AIOQueue::log_completion(AIOCBType& aiocb) {
   if (aiocb.get_return() >= 0) {
     if (log != NULL)
       log->get_stream(Log::Level::DEBUG) <<
-        get_type_name() << ": completed " << aiocb;
-  } else
+                                         get_type_name() << ": completed " << aiocb;
+  } else {
     log_error(aiocb);
+  }
 }
 
 template <class AIOCBType> void AIOQueue::log_enqueue(AIOCBType& aiocb) {
   if (log != NULL) {
     log->get_stream(Log::Level::DEBUG) <<
-      get_type_name() << ": enqueuing " << aiocb;
+                                       get_type_name() << ": enqueuing " << aiocb;
   }
 }
 
 template <class AIOCBType> void AIOQueue::log_error(AIOCBType& aiocb) {
   if (log != NULL) {
     log->get_stream(Log::Level::ERR) <<
-        get_type_name() << ": error on " << aiocb;
+                                     get_type_name() << ": error on " << aiocb;
   }
 }
 
@@ -433,21 +441,22 @@ YO_NEW_REF Event* AIOQueue::timeddequeue(const Time& timeout) {
   LPOVERLAPPED lpOverlapped = NULL;
 
   BOOL bRet
-    = GetQueuedCompletionStatus(
-        hIoCompletionPort,
-        &dwBytesTransferred,
-        &ulCompletionKey,
-        &lpOverlapped,
-        static_cast<DWORD>(timeout.ms())
-      );
+  = GetQueuedCompletionStatus(
+      hIoCompletionPort,
+      &dwBytesTransferred,
+      &ulCompletionKey,
+      &lpOverlapped,
+      static_cast<DWORD>(timeout.ms())
+    );
 
   if (lpOverlapped != NULL) {
     AIOCB& aiocb = AIOCB::cast(*lpOverlapped);
 
-    if (bRet)
+    if (bRet) {
       aiocb.set_return(dwBytesTransferred);
-    else
+    } else {
       aiocb.set_error(GetLastError());
+    }
 
     switch (aiocb.get_type_id()) {
     case acceptAIOCB::TYPE_ID: {
@@ -458,7 +467,7 @@ YO_NEW_REF Event* AIOQueue::timeddequeue(const Time& timeout) {
         // local and remote socket addresses.
 
         StreamSocket& accepted_socket
-          = *accept_aiocb.get_accepted_socket();
+        = *accept_aiocb.get_accepted_socket();
         Buffer& recv_buffer = *accept_aiocb.get_recv_buffer();
 
         int optval = accept_aiocb.get_socket();
@@ -471,11 +480,11 @@ YO_NEW_REF Event* AIOQueue::timeddequeue(const Time& timeout) {
         );
 
         DWORD dwLocalAddressLength
-          = SocketAddress::len(accepted_socket.get_domain()) + 16;
+        = SocketAddress::len(accepted_socket.get_domain()) + 16;
         DWORD dwRemoteAddressLength = dwLocalAddressLength;
         DWORD dwReceiveDataLength =
-            recv_buffer.capacity() - recv_buffer.size() -
-              (dwLocalAddressLength + dwRemoteAddressLength);
+          recv_buffer.capacity() - recv_buffer.size() -
+          (dwLocalAddressLength + dwRemoteAddressLength);
 
         sockaddr* peername = NULL;
         socklen_t peernamelen;
@@ -533,10 +542,11 @@ YO_NEW_REF Event* AIOQueue::timeddequeue(const Time& timeout) {
     }
 
     return &aiocb;
-  } else if (ulCompletionKey != 0)
+  } else if (ulCompletionKey != 0) {
     return reinterpret_cast<Event*>(ulCompletionKey);
-  else
+  } else {
     return NULL;
+  }
 }
 }
 }

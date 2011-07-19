@@ -38,7 +38,7 @@ namespace yield {
 /**
   Generic exceptions, also used in the event-driven concurrency subsystem.
 */
-class Exception : public Event, public std::exception {    
+class Exception : public Event, public std::exception {
 public:
   /**
     Run-time type ID.

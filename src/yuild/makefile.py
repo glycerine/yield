@@ -233,7 +233,7 @@ endif
                 name = self.get_name()
                 output_file_path = posixpath(output_file_path)
                 lcov_rule = """
-            
+
 lcov: %(output_file_path)s
     lcov --directory %(build_dir_path)s --zerocounters
     -%(output_file_path)s

@@ -81,15 +81,17 @@ public:
     if (buffer.get_next_buffer() == NULL) {
       iovec iov = buffer.as_read_iovec();
       ssize_t recv_ret = recvfrom(iov.iov_base, iov.iov_len, flags, peername);
-      if (recv_ret > 0)
+      if (recv_ret > 0) {
         buffer.put(NULL, static_cast<size_t>(recv_ret));
+      }
       return recv_ret;
     } else {
       vector<iovec> iov;
       Buffers::as_read_iovecs(buffer, iov);
       ssize_t recv_ret = recvmsg(&iov[0], iov.size(), flags, peername);
-      if (recv_ret > 0)
+      if (recv_ret > 0) {
         Buffers::put(buffer, NULL, static_cast<size_t>(recv_ret));
+      }
       return recv_ret;
     }
   }
@@ -135,7 +137,7 @@ public:
     @param flags flags altering the behavior of the underlying system call
     @param peername address of the receiver
     @return the number of bytes written on success, -1+errno on failure
-  */ 
+  */
   virtual ssize_t
   sendmsg(
     const iovec* iov,
@@ -163,8 +165,7 @@ public:
     if (buffer.get_next_buffer() == NULL) {
       iovec iov = buffer.as_write_iovec();
       return sendto(iov.iov_base, iov.iov_len, flags, peername);
-    }
-    else {
+    } else {
       vector<iovec> iov;
       Buffers::as_write_iovecs(buffer, iov);
       return sendmsg(&iov[0], iov.size(), flags, peername);

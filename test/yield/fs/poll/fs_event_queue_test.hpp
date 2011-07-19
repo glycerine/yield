@@ -86,8 +86,9 @@ template <class FSEventQueueType>
 class FSEventQueueAssociateTest : public FSEventQueueTest {
   // yunit::Test
   void run() {
-    if (!FSEventQueueType().associate(get_test_root_path()))
+    if (!FSEventQueueType().associate(get_test_root_path())) {
       throw Exception();
+    }
   }
 };
 
@@ -98,26 +99,29 @@ class FSEventQueueAssociateChangeTest : public FSEventQueueTest {
   void run() {
     FSEventQueueType fs_event_queue(&Log::open(std::cout));
 
-    if (!fs_event_queue.associate(get_test_root_path()))
+    if (!fs_event_queue.associate(get_test_root_path())) {
       throw Exception();
+    }
 
-    if (!fs_event_queue.associate(get_test_root_path()))
+    if (!fs_event_queue.associate(get_test_root_path())) {
       throw Exception();
+    }
 
     if (
       !fs_event_queue.associate(
-         get_test_root_path(),
-         FSEvent::TYPE_FILE_ADD
-       )
-     )
+        get_test_root_path(),
+        FSEvent::TYPE_FILE_ADD
+      )
+    ) {
       throw Exception();
+    }
   }
 };
 
 
 template <class FSEventQueueType>
 class FSEventQueueAssociateDirDequeueDirAddTest
-  : public FSEventQueueTest {
+    : public FSEventQueueTest {
   // yunit::Test
   void run() {
     FSEventQueueType fs_event_queue(&Log::open(std::cout));
@@ -126,11 +130,13 @@ class FSEventQueueAssociateDirDequeueDirAddTest
         get_test_root_path(),
         FSEvent::TYPE_DIRECTORY_ADD
       )
-    )
+    ) {
       throw Exception();
+    }
 
-    if (!FileSystem().mkdir(get_test_directory_path()))
+    if (!FileSystem().mkdir(get_test_directory_path())) {
       throw Exception();
+    }
 
     auto_Object<FSEvent> fs_event =
       Object::cast<FSEvent>(fs_event_queue.dequeue());
@@ -144,8 +150,9 @@ template <class FSEventQueueType>
 class FSEventQueueAssociateDirDequeueDirModifyTest : public FSEventQueueTest {
   // yunit::Test
   void run() {
-    if (!FileSystem().mkdir(get_test_directory_path()))
+    if (!FileSystem().mkdir(get_test_directory_path())) {
       throw Exception();
+    }
 
     FSEventQueueType fs_event_queue(&Log::open(std::cout));
     if (
@@ -153,14 +160,16 @@ class FSEventQueueAssociateDirDequeueDirModifyTest : public FSEventQueueTest {
         get_test_root_path(),
         FSEvent::TYPE_DIRECTORY_MODIFY
       )
-    )
+    ) {
       throw Exception();
+    }
 
     yield::thread::Thread::sleep(1.0);
 
     DateTime atime = DateTime::now(), mtime = atime;
-    if (!FileSystem().utime(get_test_directory_path(), atime, mtime))
+    if (!FileSystem().utime(get_test_directory_path(), atime, mtime)) {
       throw Exception();
+    }
 
     auto_Object<FSEvent> fs_event =
       Object::cast<FSEvent>(fs_event_queue.dequeue());
@@ -193,8 +202,9 @@ template <class FSEventQueueType>
 class FSEventQueueAssociateDirDequeueDirRemoveTest : public FSEventQueueTest {
   // yunit::Test
   void run() {
-    if (!FileSystem().mkdir(get_test_directory_path()))
+    if (!FileSystem().mkdir(get_test_directory_path())) {
       throw Exception();
+    }
 
     FSEventQueueType fs_event_queue(&Log::open(std::cout));
     if (
@@ -202,11 +212,13 @@ class FSEventQueueAssociateDirDequeueDirRemoveTest : public FSEventQueueTest {
         get_test_root_path(),
         FSEvent::TYPE_DIRECTORY_REMOVE
       )
-    )
+    ) {
       throw Exception();
+    }
 
-    if (!FileSystem().rmdir(get_test_directory_path()))
+    if (!FileSystem().rmdir(get_test_directory_path())) {
       throw Exception();
+    }
 
     auto_Object<FSEvent> fs_event =
       Object::cast<FSEvent>(fs_event_queue.dequeue());
@@ -242,13 +254,15 @@ template <class FSEventQueueType>
 class FSEventQueueAssociateDirDequeueDirRenameTest : public FSEventQueueTest {
   // yunit::Test
   void run() {
-    if (!FileSystem().mkdir(get_test_directory_path()))
+    if (!FileSystem().mkdir(get_test_directory_path())) {
       throw Exception();
+    }
 
     Path new_test_directory_path = get_test_root_path() / "test_dir_renamed";
     if (FileSystem().exists(new_test_directory_path))
-      if (!FileSystem().rmdir(new_test_directory_path))
+      if (!FileSystem().rmdir(new_test_directory_path)) {
         throw Exception();
+      }
 
     FSEventQueueType fs_event_queue(&Log::open(std::cout));
     if (
@@ -256,11 +270,13 @@ class FSEventQueueAssociateDirDequeueDirRenameTest : public FSEventQueueTest {
         get_test_root_path(),
         FSEvent::TYPE_DIRECTORY_RENAME
       )
-    )
+    ) {
       throw Exception();
+    }
 
-    if (!FileSystem().rename(get_test_directory_path(), new_test_directory_path))
+    if (!FileSystem().rename(get_test_directory_path(), new_test_directory_path)) {
       throw Exception();
+    }
 
     auto_Object<FSEvent> fs_event =
       Object::cast<FSEvent>(fs_event_queue.dequeue());
@@ -283,11 +299,13 @@ class FSEventQueueAssociateDirDequeueFileAddTest : public FSEventQueueTest {
         get_test_root_path(),
         FSEvent::TYPE_FILE_ADD
       )
-    )
+    ) {
       throw Exception();
+    }
 
-    if (!FileSystem().touch(get_test_file_path()))
+    if (!FileSystem().touch(get_test_file_path())) {
       throw Exception();
+    }
 
     auto_Object<FSEvent> fs_event =
       Object::cast<FSEvent>(fs_event_queue.dequeue());
@@ -320,8 +338,9 @@ template <class FSEventQueueType>
 class FSEventQueueAssociateDirDequeueFileModifyTest : public FSEventQueueTest {
   // yunit::Test
   void run() {
-    if (!FileSystem().touch(get_test_file_path()))
+    if (!FileSystem().touch(get_test_file_path())) {
       throw Exception();
+    }
 
     FSEventQueueType fs_event_queue(&Log::open(std::cout));
     if (
@@ -329,14 +348,16 @@ class FSEventQueueAssociateDirDequeueFileModifyTest : public FSEventQueueTest {
         get_test_root_path(),
         FSEvent::TYPE_FILE_MODIFY
       )
-    )
+    ) {
       throw Exception();
+    }
 
     yield::thread::Thread::sleep(1.0);
 
     DateTime atime = DateTime::now(), mtime = atime;
-    if (!FileSystem().utime(get_test_file_path(), atime, mtime))
+    if (!FileSystem().utime(get_test_file_path(), atime, mtime)) {
       throw Exception();
+    }
 
     auto_Object<FSEvent> fs_event =
       Object::cast<FSEvent>(fs_event_queue.dequeue());
@@ -350,8 +371,9 @@ template <class FSEventQueueType>
 class FSEventQueueAssociateDirDequeueFileRemoveTest : public FSEventQueueTest {
   // yunit::Test
   void run() {
-    if (!FileSystem().touch(get_test_file_path()))
+    if (!FileSystem().touch(get_test_file_path())) {
       throw Exception();
+    }
 
     FSEventQueueType fs_event_queue(&Log::open(std::cout));
     if (
@@ -359,11 +381,13 @@ class FSEventQueueAssociateDirDequeueFileRemoveTest : public FSEventQueueTest {
         get_test_root_path(),
         FSEvent::TYPE_FILE_REMOVE
       )
-    )
+    ) {
       throw Exception();
+    }
 
-    if (!FileSystem().unlink(get_test_file_path()))
+    if (!FileSystem().unlink(get_test_file_path())) {
       throw Exception();
+    }
 
     auto_Object<FSEvent> fs_event =
       Object::cast<FSEvent>(fs_event_queue.dequeue());
@@ -399,13 +423,15 @@ template <class FSEventQueueType>
 class FSEventQueueAssociateDirDequeueFileRenameTest : public FSEventQueueTest {
   // yunit::Test
   void run() {
-    if (!FileSystem().touch(get_test_file_path()))
+    if (!FileSystem().touch(get_test_file_path())) {
       throw Exception();
+    }
 
     Path new_test_file_path = get_test_root_path() / "test_file_renamed.txt";
     if (FileSystem().exists(new_test_file_path))
-      if (!FileSystem().unlink(new_test_file_path))
+      if (!FileSystem().unlink(new_test_file_path)) {
         throw Exception();
+      }
 
     FSEventQueueType fs_event_queue(&Log::open(std::cout));
     if (
@@ -413,11 +439,13 @@ class FSEventQueueAssociateDirDequeueFileRenameTest : public FSEventQueueTest {
         get_test_root_path(),
         FSEvent::TYPE_FILE_RENAME
       )
-   )
+    ) {
       throw Exception();
+    }
 
-    if (!FileSystem().rename(get_test_file_path(), new_test_file_path))
+    if (!FileSystem().rename(get_test_file_path(), new_test_file_path)) {
       throw Exception();
+    }
 
     auto_Object<FSEvent> fs_event =
       Object::cast<FSEvent>(fs_event_queue.dequeue());
@@ -432,11 +460,12 @@ class FSEventQueueAssociateDirDequeueFileRenameTest : public FSEventQueueTest {
 
 template <class FSEventQueueType>
 class FSEventQueueAssociateFileDequeueFileModifyTest
-  : public FSEventQueueTest {
+    : public FSEventQueueTest {
   // yunit::Test
   void run() {
-    if (!FileSystem().touch(get_test_file_path()))
+    if (!FileSystem().touch(get_test_file_path())) {
       throw Exception();
+    }
 
     FSEventQueueType fs_event_queue(&Log::open(std::cout));
     if (
@@ -444,14 +473,16 @@ class FSEventQueueAssociateFileDequeueFileModifyTest
         get_test_file_path(),
         FSEvent::TYPE_FILE_MODIFY
       )
-    )
+    ) {
       throw Exception();
+    }
 
     yield::thread::Thread::sleep(1.0);
 
     DateTime atime = DateTime::now(), mtime = atime;
-    if (!FileSystem().utime(get_test_file_path(), atime, mtime))
+    if (!FileSystem().utime(get_test_file_path(), atime, mtime)) {
       throw Exception();
+    }
 
     auto_Object<FSEvent> fs_event =
       Object::cast<FSEvent>(fs_event_queue.dequeue());
@@ -463,11 +494,12 @@ class FSEventQueueAssociateFileDequeueFileModifyTest
 
 template <class FSEventQueueType>
 class FSEventQueueAssociateFileDequeueFileRemoveTest
-  : public FSEventQueueTest {
+    : public FSEventQueueTest {
   // yunit::Test
   void run() {
-    if (!FileSystem().touch(get_test_file_path()))
+    if (!FileSystem().touch(get_test_file_path())) {
       throw Exception();
+    }
 
     FSEventQueueType fs_event_queue(&Log::open(std::cout));
     if (
@@ -475,11 +507,13 @@ class FSEventQueueAssociateFileDequeueFileRemoveTest
         get_test_file_path(),
         FSEvent::TYPE_FILE_REMOVE
       )
-    )
+    ) {
       throw Exception();
+    }
 
-    if (!FileSystem().unlink(get_test_file_path()))
+    if (!FileSystem().unlink(get_test_file_path())) {
       throw Exception();
+    }
 
     auto_Object<FSEvent> fs_event =
       Object::cast<FSEvent>(fs_event_queue.dequeue());
@@ -496,11 +530,13 @@ class FSEventQueueDissociateTest : public FSEventQueueTest {
     FSEventQueueType fs_event_queue(&Log::open(std::cout));
     fs_event_queue.associate(get_test_root_path());
 
-    if (!FileSystem().touch(get_test_file_path()))
+    if (!FileSystem().touch(get_test_file_path())) {
       throw Exception();
+    }
 
-    if (!fs_event_queue.dissociate(get_test_root_path()))
+    if (!fs_event_queue.dissociate(get_test_root_path())) {
       throw Exception();
+    }
 
     Event* fs_event = fs_event_queue.timeddequeue(0);
     throw_assert_eq(fs_event, NULL);

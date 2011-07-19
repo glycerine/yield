@@ -46,8 +46,9 @@ bool TCPSocket::setsockopt(int option_name, int option_value) {
              reinterpret_cast<char*>(&option_value),
              static_cast<int>(sizeof(option_value))
            ) == 0;
-  } else
+  } else {
     return StreamSocket::setsockopt(option_name, option_value);
+  }
 }
 }
 }

@@ -62,8 +62,9 @@ public:
       Event* event = std::queue<Event*>::front();
       std::queue<Event*>::pop();
       return event;
-    } else
+    } else {
       return NULL;
+    }
   }
 };
 }

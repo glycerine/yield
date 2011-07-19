@@ -78,20 +78,23 @@ bool FileSystem::mkdir(const Path& path) {
 File* FileSystem::mkfifo(const Path& path, uint32_t flags) {
   if (path.find_first_of(L"\\\\.\\pipe") != Path::npos) {
     DWORD dwOpenMode = 0;
-    if ((flags & O_ASYNC) == O_ASYNC)
+    if ((flags & O_ASYNC) == O_ASYNC) {
       dwOpenMode |= FILE_FLAG_OVERLAPPED;
-    if ((flags & O_RDWR) == O_RDWR)
+    }
+    if ((flags & O_RDWR) == O_RDWR) {
       dwOpenMode |= PIPE_ACCESS_DUPLEX;
-    else if ((flags & O_WRONLY) == O_WRONLY)
+    } else if ((flags & O_WRONLY) == O_WRONLY) {
       dwOpenMode |= PIPE_ACCESS_OUTBOUND;
-    else
+    } else {
       dwOpenMode |= PIPE_ACCESS_INBOUND;
+    }
 
     DWORD dwPipeMode = PIPE_TYPE_BYTE | PIPE_READMODE_BYTE;
-    if ((flags & O_NONBLOCK) == O_NONBLOCK)
+    if ((flags & O_NONBLOCK) == O_NONBLOCK) {
       dwPipeMode |= PIPE_NOWAIT;
-    else
+    } else {
       dwPipeMode |= PIPE_WAIT;
+    }
 
     HANDLE hNamedPipe
     = CreateNamedPipe(
@@ -105,10 +108,11 @@ File* FileSystem::mkfifo(const Path& path, uint32_t flags) {
         NULL
       );
 
-    if (hNamedPipe != INVALID_HANDLE_VALUE)
+    if (hNamedPipe != INVALID_HANDLE_VALUE) {
       return new NamedPipe(hNamedPipe);
-    else
+    } else {
       return NULL;
+    }
   } else {
     SetLastError(ERROR_INVALID_PARAMETER);
     return NULL;
@@ -119,11 +123,13 @@ bool FileSystem::mktree(const Path& path) {
   bool ret = true;
 
   std::pair<Path, Path> path_parts = path.split();
-  if (!path_parts.first.empty())
+  if (!path_parts.first.empty()) {
     ret &= mktree(path_parts.first);
+  }
 
-  if (!exists(path) && !mkdir(path))
+  if (!exists(path) && !mkdir(path)) {
     return false;
+  }
 
   return ret;
 }
@@ -138,37 +144,44 @@ FileSystem::open(
         dwCreationDisposition = 0,
         dwFlagsAndAttributes = attributes | FILE_FLAG_SEQUENTIAL_SCAN;
 
-  if ((flags & O_APPEND) == O_APPEND)
+  if ((flags & O_APPEND) == O_APPEND) {
     dwDesiredAccess |= FILE_APPEND_DATA;
-  else if ((flags & O_RDWR) == O_RDWR)
+  } else if ((flags & O_RDWR) == O_RDWR) {
     dwDesiredAccess |= GENERIC_READ | GENERIC_WRITE;
-  else if ((flags & O_WRONLY) == O_WRONLY)
+  } else if ((flags & O_WRONLY) == O_WRONLY) {
     dwDesiredAccess |= GENERIC_WRITE;
-  else
+  } else {
     dwDesiredAccess |= GENERIC_READ;
+  }
 
   if ((flags & O_CREAT) == O_CREAT) {
-    if ((flags & O_TRUNC) == O_TRUNC)
+    if ((flags & O_TRUNC) == O_TRUNC) {
       dwCreationDisposition = CREATE_ALWAYS;
-    else
+    } else {
       dwCreationDisposition = OPEN_ALWAYS;
-  } else
+    }
+  } else {
     dwCreationDisposition = OPEN_EXISTING;
+  }
 
   //  if ((flags & O_SPARSE ) == O_SPARSE)
   //    dwFlagsAndAttributes |= FILE_ATTRIBUTE_SPARSE_FILE;
 
-  if ((flags & O_SYNC) == O_SYNC)
+  if ((flags & O_SYNC) == O_SYNC) {
     dwFlagsAndAttributes |= FILE_FLAG_WRITE_THROUGH;
+  }
 
-  if ((flags & O_DIRECT) == O_DIRECT)
+  if ((flags & O_DIRECT) == O_DIRECT) {
     dwFlagsAndAttributes |= FILE_FLAG_NO_BUFFERING;
+  }
 
-  if ((flags & O_ASYNC) == O_ASYNC)
+  if ((flags & O_ASYNC) == O_ASYNC) {
     dwFlagsAndAttributes |= FILE_FLAG_OVERLAPPED;
+  }
 
-  if ((flags & O_HIDDEN) == O_HIDDEN)
+  if ((flags & O_HIDDEN) == O_HIDDEN) {
     dwFlagsAndAttributes = FILE_ATTRIBUTE_HIDDEN;
+  }
 
   HANDLE fd
   = CreateFile(
@@ -205,10 +218,11 @@ Directory* FileSystem::opendir(const Path& path) {
       NULL
     );
 
-  if (hDirectory != INVALID_HANDLE_VALUE)
+  if (hDirectory != INVALID_HANDLE_VALUE) {
     return new Directory(hDirectory);
-  else
+  } else {
     return NULL;
+  }
 }
 
 bool FileSystem::realpath(const Path& path, Path& realpath) {
@@ -220,8 +234,9 @@ bool FileSystem::realpath(const Path& path, Path& realpath) {
   if (full_path_name_len > 0) {
     realpath.assign(full_path_name, full_path_name_len);
     return true;
-  } else
+  } else {
     return false;
+  }
 }
 
 bool FileSystem::rename(const Path& from_path, const Path& to_path) {
@@ -245,20 +260,23 @@ bool FileSystem::rmtree(const Path& path) {
       auto_Object<Directory::Entry> dentry(*test_dentry);
 
       do {
-        if (dentry->is_special())
+        if (dentry->is_special()) {
           continue;
+        }
 
         Path dentry_path(path / dentry->get_name());
 
         if (dentry->ISDIR()) {
-          if (rmtree(dentry_path))
+          if (rmtree(dentry_path)) {
             continue;
-          else
+          } else {
             return false;
-        } else if (unlink(dentry_path))
+          }
+        } else if (unlink(dentry_path)) {
           continue;
-        else
+        } else {
           return false;
+        }
       } while (dir->read(*dentry));
 
       return rmdir(path);
@@ -270,10 +288,11 @@ bool FileSystem::rmtree(const Path& path) {
 
 Stat* FileSystem::stat(const Path& path) {
   WIN32_FILE_ATTRIBUTE_DATA stbuf;
-  if (GetFileAttributesEx(path.c_str(), GetFileExInfoStandard, &stbuf))
+  if (GetFileAttributesEx(path.c_str(), GetFileExInfoStandard, &stbuf)) {
     return new Stat(stbuf);
-  else
+  } else {
     return NULL;
+  }
 }
 
 bool FileSystem::statvfs(const Path& path, struct statvfs& stbuf) {
@@ -298,8 +317,9 @@ bool FileSystem::statvfs(const Path& path, struct statvfs& stbuf) {
     stbuf.f_bavail = uFreeBytesAvailableToCaller.QuadPart / stbuf.f_bsize;
     stbuf.f_namemax = MAX_PATH;
     return true;
-  } else
+  } else {
     return false;
+  }
 }
 
 bool FileSystem::touch(const Path& path) {
@@ -307,8 +327,9 @@ bool FileSystem::touch(const Path& path) {
   if (file != NULL) {
     File::dec_ref(*file);
     return true;
-  } else
+  } else {
     return false;
+  }
 }
 
 bool FileSystem::unlink(const Path& path) {
@@ -347,22 +368,23 @@ bool FileSystem::utime(
 ) {
   if (isdir(path)) {
     HANDLE hDir
-      = CreateFile(
-          path.c_str(),
-          GENERIC_WRITE,
-          FILE_SHARE_READ|FILE_SHARE_DELETE,
-          NULL,
-          OPEN_EXISTING,
-          FILE_FLAG_BACKUP_SEMANTICS,
-          NULL
-        );
+    = CreateFile(
+        path.c_str(),
+        GENERIC_WRITE,
+        FILE_SHARE_READ | FILE_SHARE_DELETE,
+        NULL,
+        OPEN_EXISTING,
+        FILE_FLAG_BACKUP_SEMANTICS,
+        NULL
+      );
 
     if (hDir != INVALID_HANDLE_VALUE) {
       if (SetFileTime(hDir, ftCreationTime, ftLastAccessTime, ftLastWriteTime)) {
         CloseHandle(hDir);
         return true;
-      } else
+      } else {
         CloseHandle(hDir);
+      }
     }
   } else {
     File* file = open(path, O_WRONLY);
@@ -370,8 +392,9 @@ bool FileSystem::utime(
       if (SetFileTime(*file, ftCreationTime, ftLastAccessTime, ftLastWriteTime)) {
         File::dec_ref(*file);
         return true;
-      } else
+      } else {
         File::dec_ref(*file);
+      }
     }
   }
 

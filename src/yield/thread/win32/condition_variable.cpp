@@ -38,8 +38,9 @@ namespace yield {
 namespace thread {
 ConditionVariable::ConditionVariable() {
   wait_barrier_clear_signal = CreateEvent(NULL, FALSE, FALSE, NULL);
-  if (wait_barrier_clear_signal == NULL)
+  if (wait_barrier_clear_signal == NULL) {
     throw Exception();
+  }
 
   last_signal_was_broadcast = false;
   waiters_count = 0;
@@ -58,8 +59,9 @@ void ConditionVariable::broadcast() {
     waiters_count_lock.unlock();
     WaitForSingleObject(wait_barrier_clear_signal, INFINITE);
     last_signal_was_broadcast = false;
-  } else
+  } else {
     waiters_count_lock.unlock();
+  }
 }
 
 bool ConditionVariable::lock_mutex() {
@@ -71,8 +73,9 @@ void ConditionVariable::signal() {
   bool have_waiters = waiters_count > 0;
   waiters_count_lock.unlock();
 
-  if (have_waiters)
+  if (have_waiters) {
     wait_barrier.post();
+  }
 }
 
 bool ConditionVariable::timedwait(const Time& timeout) {
@@ -97,8 +100,9 @@ bool ConditionVariable::timedwait(const Time& timeout) {
     if (last_waiter) {
       dwRet = SignalObjectAndWait(wait_barrier_clear_signal, mutex, INFINITE, FALSE);
       return dwRet == WAIT_OBJECT_0;
-    } else
+    } else {
       return mutex.lock();
+    }
   } else {
     waiters_count_lock.lock();
     waiters_count--;
@@ -138,8 +142,9 @@ bool ConditionVariable::wait() {
     if (last_waiter) {
       dwRet = SignalObjectAndWait(wait_barrier_clear_signal, mutex, INFINITE, FALSE);
       return dwRet == WAIT_OBJECT_0;
-    } else
+    } else {
       return mutex.lock();
+    }
   } else {
     debug_break();
     waiters_count_lock.lock();

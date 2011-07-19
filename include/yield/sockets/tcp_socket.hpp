@@ -104,10 +104,11 @@ public:
 
   virtual YO_NEW_REF TCPSocket* dup() {
     socket_t socket_ = Socket::create(get_domain(), TYPE, PROTOCOL);
-    if (socket_ != static_cast<socket_t>(-1))
+    if (socket_ != static_cast<socket_t>(-1)) {
       return new TCPSocket(get_domain(), socket_);
-    else
+    } else {
       return NULL;
+    }
   }
 
 protected:

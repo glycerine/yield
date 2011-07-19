@@ -54,16 +54,19 @@ TEST(SocketAddress, copy_constructor_with_port) {
 TEST(SocketAddress, getnameinfo) {
   SocketAddress sockaddr(TEST_NODENAME, TEST_SERVNAME);
 
-  string hostname; uint16_t servname;
-  if (!sockaddr.getnameinfo(hostname, &servname))
+  string hostname;
+  uint16_t servname;
+  if (!sockaddr.getnameinfo(hostname, &servname)) {
     throw Exception();
+  }
   throw_assert_false(hostname.empty());
   throw_assert_eq(servname, TEST_SERVNAME);
   // hostname may not == TEST_NODENAME if the address was resolved differently
 
   string hostname_numeric;
-  if (!sockaddr.getnameinfo(hostname_numeric, &servname))
+  if (!sockaddr.getnameinfo(hostname_numeric, &servname)) {
     throw Exception();
+  }
   throw_assert(
     hostname_numeric.find('.') != string::npos
     ||

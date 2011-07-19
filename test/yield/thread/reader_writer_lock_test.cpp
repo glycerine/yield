@@ -37,8 +37,9 @@ TEST_SUITE(ReaderWriterLock);
 namespace yield {
 namespace thread {
 TEST(ReaderWriterLock, rdlock) {
-  if (!ReaderWriterLock().rdlock())
+  if (!ReaderWriterLock().rdlock()) {
     throw Exception();
+  }
 }
 
 //class ReaderWriterLockMultiReaderTest : public ReaderWriterLockTest {
@@ -71,35 +72,42 @@ TEST(ReaderWriterLock, rdlock) {
 
 TEST(ReaderWriterLock, rdunlock) {
   ReaderWriterLock rwlock;
-  if (!rwlock.rdlock())
+  if (!rwlock.rdlock()) {
     throw Exception();
+  }
   rwlock.rdunlock();
-  if (!rwlock.rdlock())
+  if (!rwlock.rdlock()) {
     throw Exception();
+  }
 }
 
 TEST(ReaderWriterLock, tryrdlock) {
-  if (!ReaderWriterLock().tryrdlock())
+  if (!ReaderWriterLock().tryrdlock()) {
     throw Exception();
+  }
 }
 
 TEST(ReaderWriterLock, trywrlock) {
-  if (!ReaderWriterLock().trywrlock())
+  if (!ReaderWriterLock().trywrlock()) {
     throw Exception();
+  }
 }
 
 TEST(ReaderWriterLock, wrlock) {
-  if (!ReaderWriterLock().wrlock())
+  if (!ReaderWriterLock().wrlock()) {
     throw Exception();
+  }
 }
 
 TEST(ReaderWriterLock, wrunlock) {
   ReaderWriterLock rwlock;
-  if (!rwlock.wrlock())
-    throw Exception();  
-  rwlock.wrunlock();
-  if (!rwlock.wrlock())
+  if (!rwlock.wrlock()) {
     throw Exception();
+  }
+  rwlock.wrunlock();
+  if (!rwlock.wrlock()) {
+    throw Exception();
+  }
 }
 }
 }

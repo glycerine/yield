@@ -88,7 +88,7 @@ public:
     }
 
   public:
-    operator const char*() const {
+    operator const char* () const {
       return name;
     }
 

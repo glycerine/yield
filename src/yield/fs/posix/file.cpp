@@ -135,8 +135,9 @@ bool File::Map::unmap() {
       capacity_ = 0;
       data_ = MAP_FAILED;
       return true;
-    } else
+    } else {
       return false;
+    }
   } else {
     errno = EBADF;
     return false;
@@ -157,10 +158,12 @@ bool File::close() {
     if (::close(fd) == 0) {
       fd = -1;
       return true;
-    } else
+    } else {
       return false;
-  } else
+    }
+  } else {
     return false;
+  }
 }
 
 bool File::datasync() {
@@ -173,10 +176,11 @@ bool File::datasync() {
 
 YO_NEW_REF File* File::dup(fd_t fd) {
   fd_t dup_fd = ::dup(fd);
-  if (dup_fd != -1)
+  if (dup_fd != -1) {
     return new File(dup_fd);
-  else
+  } else {
     return NULL;
+  }
 }
 
 YO_NEW_REF File* File::dup(FILE* file) {
@@ -186,12 +190,14 @@ YO_NEW_REF File* File::dup(FILE* file) {
 YO_NEW_REF File::Lock* File::getlk(const Lock& lock) {
   struct flock flock_ = lock;
   if (fcntl(*this, F_GETLK, &flock_) == 0) {
-    if (flock_.l_type == F_UNLCK)   // No lock blocking lock
+    if (flock_.l_type == F_UNLCK) { // No lock blocking lock
       return NULL;
-    else
+    } else {
       return new Lock(flock_);
-  } else
+    }
+  } else {
     return NULL;
+  }
 }
 
 #pragma GCC diagnostic ignored "-Wold-style-cast"
@@ -204,10 +210,11 @@ File::mmap(
 ) {
   if (length == SIZE_MAX) {
     struct stat stbuf;
-    if (::fstat(*this, &stbuf) == 0)
+    if (::fstat(*this, &stbuf) == 0) {
       length = stbuf.st_size;
-    else
+    } else {
       return NULL;
+    }
   }
 
   int flags = shared ? MAP_SHARED : MAP_PRIVATE;
@@ -216,10 +223,12 @@ File::mmap(
   void* data;
   if (length > 0) {
     data = ::mmap(NULL, length, prot, flags, *this, offset);
-    if (data == MAP_FAILED)
+    if (data == MAP_FAILED) {
       return NULL;
-  } else
+    }
+  } else {
     data = MAP_FAILED;
+  }
 
   return new
          File::Map(
@@ -236,16 +245,18 @@ File::mmap(
 ssize_t File::pread(Buffer& buffer, off_t offset) {
   if (buffer.get_next_buffer() == NULL) {
     ssize_t pread_ret
-      = pread(buffer, buffer.capacity() - buffer.size(), offset);
-    if (pread_ret > 0)
+    = pread(buffer, buffer.capacity() - buffer.size(), offset);
+    if (pread_ret > 0) {
       buffer.put(NULL, static_cast<size_t>(pread_ret));
+    }
     return pread_ret;
   } else {
     vector<iovec> iov;
     Buffers::as_read_iovecs(buffer, iov);
     ssize_t preadv_ret = preadv(&iov[0], iov.size(), offset);
-    if (preadv_ret > 0)
+    if (preadv_ret > 0) {
       Buffers::put(buffer, NULL, preadv_ret);
+    }
     return preadv_ret;
   }
 }
@@ -256,21 +267,21 @@ ssize_t File::pread(void* buf, size_t buflen, off_t offset) {
 
 ssize_t File::preadv(const iovec* iov, int iovlen, off_t offset) {
 #ifdef __MACH__
-  if (iovlen == 1)
+  if (iovlen == 1) {
     return pread(iov[0].iov_base, iov[0].iov_len, offset);
-  else {
+  } else {
     errno = EINVAL;
     return -1;
   }
-#else  
+#else
   return ::preadv(*this, iov, iovlen, offset);
 #endif
 }
 
 ssize_t File::pwrite(const Buffer& buffer, off_t offset) {
-  if (buffer.get_next_buffer() == NULL)
+  if (buffer.get_next_buffer() == NULL) {
     return pwrite(buffer, buffer.size(), offset);
-  else {
+  } else {
     vector<iovec> iov;
     Buffers::as_write_iovecs(buffer, iov);
     return pwritev(&iov[0], iov.size(), offset);
@@ -284,8 +295,9 @@ ssize_t File::pwrite(const void* buf, size_t buflen, off_t offset) {
 ssize_t File::pwritev(const iovec* iov, int iovlen, off_t offset) {
 #ifdef __MACH__
   string buf;
-  for (int iov_i = 0; iov_i < iovlen; ++iov_i)
+  for (int iov_i = 0; iov_i < iovlen; ++iov_i) {
     buf.append(static_cast<char*>(iov[iov_i].iov_base), iov[iov_i].iov_len);
+  }
   return pwrite(buf.data(), buf.size(), offset);
 #else
   return ::pwritev(*this, iov, iovlen, offset);
@@ -320,10 +332,11 @@ bool File::setlkw(const Lock& lock) {
 
 Stat* File::stat() {
   struct stat stbuf;
-  if (fstat(*this, &stbuf) == 0)
+  if (fstat(*this, &stbuf) == 0) {
     return new Stat(stbuf);
-  else
+  } else {
     return NULL;
+  }
 }
 
 bool File::sync() {

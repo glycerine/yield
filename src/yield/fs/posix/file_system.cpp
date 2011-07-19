@@ -91,10 +91,11 @@ bool FileSystem::link(const Path& old_path, const Path& new_path) {
 
 YO_NEW_REF Stat* FileSystem::lstat(const Path& path) {
   struct stat stbuf;
-  if (::lstat(path.c_str(), &stbuf) == 0)
+  if (::lstat(path.c_str(), &stbuf) == 0) {
     return new Stat(stbuf);
-  else
+  } else {
     return NULL;
+  }
 }
 
 bool FileSystem::mkdir(const Path& path) {
@@ -111,10 +112,11 @@ FileSystem::mkfifo(
   uint32_t flags,
   mode_t mode
 ) {
-  if (::mkfifo(path.c_str(), mode) == 0)
+  if (::mkfifo(path.c_str(), mode) == 0) {
     return open(path, flags | O_NONBLOCK, mode);
-  else
+  } else {
     return NULL;
+  }
 }
 
 bool FileSystem::mktree(const Path& path) {
@@ -125,11 +127,13 @@ bool FileSystem::mktree(const Path& path, mode_t mode) {
   bool ret = true;
 
   std::pair<Path, Path> path_parts = path.split();
-  if (!path_parts.first.empty())
+  if (!path_parts.first.empty()) {
     ret &= mktree(path_parts.first, mode);
+  }
 
-  if (!exists(path) && !mkdir(path, mode))
+  if (!exists(path) && !mkdir(path, mode)) {
     return false;
+  }
 
   return ret;
 }
@@ -141,18 +145,20 @@ FileSystem::open(
   mode_t mode
 ) {
   fd_t fd = ::open(path.c_str(), flags, mode);
-  if (fd >= 0)
+  if (fd >= 0) {
     return new File(fd);
-  else
+  } else {
     return NULL;
+  }
 }
 
 Directory* FileSystem::opendir(const Path& path) {
   DIR* dirp = ::opendir(path.c_str());
-  if (dirp != NULL)
+  if (dirp != NULL) {
     return new Directory(dirp, path);
-  else
+  } else {
     return NULL;
+  }
 }
 
 bool FileSystem::readlink(const Path& path, Path& target_path) {
@@ -161,8 +167,9 @@ bool FileSystem::readlink(const Path& path, Path& target_path) {
   if (target_path_len > 0) {
     target_path.assign(target_path_, target_path_len);
     return true;
-  } else
+  } else {
     return false;
+  }
 }
 
 bool FileSystem::realpath(const Path& path, Path& realpath) {
@@ -170,8 +177,9 @@ bool FileSystem::realpath(const Path& path, Path& realpath) {
   if (::realpath(path.c_str(), realpath_) != NULL) {
     realpath.assign(realpath_);
     return true;
-  } else
+  } else {
     return false;
+  }
 }
 
 bool FileSystem::rename(const Path& from_path, const Path& to_path) {
@@ -191,20 +199,23 @@ bool FileSystem::rmtree(const Path& path) {
       auto_Object<Directory::Entry> dentry(*test_dentry);
 
       do {
-        if (dentry->is_special())
+        if (dentry->is_special()) {
           continue;
+        }
 
         Path dentry_path(path / dentry->get_name());
 
         if (dentry->ISDIR()) {
-          if (rmtree(dentry_path))
+          if (rmtree(dentry_path)) {
             continue;
-          else
+          } else {
             return false;
-        } else if (unlink(dentry_path))
+          }
+        } else if (unlink(dentry_path)) {
           continue;
-        else
+        } else {
           return false;
+        }
       } while (dir->read(*dentry));
 
       return rmdir(path);
@@ -216,10 +227,11 @@ bool FileSystem::rmtree(const Path& path) {
 
 Stat* FileSystem::stat(const Path& path) {
   struct stat stbuf;
-  if (::stat(path.c_str(), &stbuf) == 0)
+  if (::stat(path.c_str(), &stbuf) == 0) {
     return new Stat(stbuf);
-  else
+  } else {
     return NULL;
+  }
 }
 
 bool FileSystem::statvfs(const Path& path, struct statvfs& stbuf) {
@@ -239,8 +251,9 @@ bool FileSystem::touch(const Path& path, mode_t mode) {
   if (file != NULL) {
     File::dec_ref(*file);
     return true;
-  } else
+  } else {
     return false;
+  }
 }
 
 bool FileSystem::unlink(const Path& path) {

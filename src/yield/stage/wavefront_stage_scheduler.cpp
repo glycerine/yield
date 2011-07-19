@@ -50,18 +50,20 @@ public:
 
       // Forward
       for (size_t stage_i = 0; stage_i < stage_i_max; stage_i++) {
-        if (stages[stage_i]->visit(visit_timeout))
+        if (stages[stage_i]->visit(visit_timeout)) {
           visit_timeout = static_cast<uint64_t>(0);
-        else if (visit_timeout < 1 * Time::NS_IN_S)
+        } else if (visit_timeout < 1 * Time::NS_IN_S) {
           visit_timeout += 1 * Time::NS_IN_US;
+        }
       }
 
       // Back
       for (ssize_t stage_i = stage_i_max - 1; stage_i >= 0; stage_i--) {
-        if (stages[stage_i]->visit(visit_timeout))
+        if (stages[stage_i]->visit(visit_timeout)) {
           visit_timeout = static_cast<uint64_t>(0);
-        else if (visit_timeout < 1 * Time::NS_IN_S)
+        } else if (visit_timeout < 1 * Time::NS_IN_S) {
           visit_timeout += 1 * Time::NS_IN_US;
+        }
       }
     }
   }

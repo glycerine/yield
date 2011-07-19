@@ -43,12 +43,13 @@ DirectoryWatch::DirectoryWatch(
   FSEvent::Type fs_event_types,
   const Path& path,
   Log* log
-) : Watch(directory, fs_event_types, log, path) {  
+) : Watch(directory, fs_event_types, log, path) {
   Directory::Entry* dirent = directory.read();
   if (dirent != NULL) {
     do {
-      if (dirent->ISDIR() && !dirent->is_hidden() && !dirent->is_special())
+      if (dirent->ISDIR() && !dirent->is_hidden() && !dirent->is_special()) {
         subdirectory_names.push_back(dirent->get_name());
+      }
     } while (directory.read(*dirent));
 
     Directory::Entry::dec_ref(*dirent);
@@ -64,26 +65,28 @@ DirectoryWatch::parse(
 
   FSEvent::Type fs_event_type;
   Path name(
-         file_notify_info.FileName,
-         file_notify_info.FileNameLength / sizeof(wchar_t)
-       );
+    file_notify_info.FileName,
+    file_notify_info.FileNameLength / sizeof(wchar_t)
+  );
   Path path = this->get_path() / name;
 
   switch (file_notify_info.Action) {
   case FILE_ACTION_ADDED: {
-    if (FileSystem().isdir(path)) {          
+    if (FileSystem().isdir(path)) {
       subdirectory_names.push_back(name);
       fs_event_type = FSEvent::TYPE_DIRECTORY_ADD;
-    } else
+    } else {
       fs_event_type = FSEvent::TYPE_FILE_ADD;
+    }
   }
   break;
 
   case FILE_ACTION_MODIFIED: {
-    if (FileSystem().isdir(path))
+    if (FileSystem().isdir(path)) {
       fs_event_type = FSEvent::TYPE_DIRECTORY_MODIFY;
-    else
+    } else {
       fs_event_type = FSEvent::TYPE_FILE_MODIFY;
+    }
   }
   break;
 
@@ -92,7 +95,7 @@ DirectoryWatch::parse(
 
     for (
       vector<Path>::iterator subdirectory_name_i
-        = subdirectory_names.begin();
+      = subdirectory_names.begin();
       subdirectory_name_i != subdirectory_names.end();
       ++subdirectory_name_i
     ) {
@@ -111,8 +114,9 @@ DirectoryWatch::parse(
     if (FileSystem().isdir(path)) {
       fs_event_type = FSEvent::TYPE_DIRECTORY_RENAME;
       subdirectory_names.push_back(path);
-    } else
+    } else {
       fs_event_type = FSEvent::TYPE_FILE_RENAME;
+    }
 
     if (want_fs_event_type(fs_event_type)) {
       FSEvent* fs_event = new FSEvent(old_paths.top(), path, fs_event_type);
@@ -145,15 +149,18 @@ DirectoryWatch::parse(
   }
   break;
 
-  default: debug_break(); return NULL;
+  default:
+    debug_break();
+    return NULL;
   }
 
   if (want_fs_event_type(fs_event_type)) {
     FSEvent* fs_event = new FSEvent(path, fs_event_type);
     log_fs_event(*fs_event);
     return fs_event;
-  } else
+  } else {
     return NULL;
+  }
 }
 }
 }

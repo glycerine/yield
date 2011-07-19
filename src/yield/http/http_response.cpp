@@ -42,7 +42,7 @@ HTTPResponse::HTTPResponse(
   uint8_t http_version,
   uint16_t status_code
 )
-: HTTPMessage<HTTPResponse>(
+  : HTTPMessage<HTTPResponse>(
     body,
     fields_offset,
     header,
@@ -56,8 +56,8 @@ HTTPResponse::HTTPResponse(
   YO_NEW_REF Object* body,
   uint8_t http_version
 )
-: HTTPMessage<HTTPResponse>(body, http_version),
-  status_code(status_code) {
+  : HTTPMessage<HTTPResponse>(body, http_version),
+    status_code(status_code) {
   const char* status_line;
   size_t status_line_len;
 
@@ -250,25 +250,27 @@ HTTPResponse::HTTPResponse(
 std::ostream& operator<<(std::ostream& os, const HTTPResponse& http_response) {
   std::ostringstream body;
   if (http_response.get_body() != NULL) {
-    if (http_response.get_body()->get_type_id() == Buffer::TYPE_ID)
+    if (http_response.get_body()->get_type_id() == Buffer::TYPE_ID) {
       body << static_cast<Buffer*>(http_response.get_body());
-    else
+    } else {
       body << http_response.get_body()->get_type_name();
-  } else
+    }
+  } else {
     body << "NULL";
+  }
 
-  os << 
-    http_response.get_type_name() <<
-    "(" <<
-      "content_length=" << http_response.get_content_length() <<
-      ", " <<
-      "http_version=" <<
-        static_cast<uint16_t>(http_response.get_http_version()) <<
-      ", " <<
-      "status_code=" << http_response.get_status_code() <<
-      ", " <<
-      "body=" << body.str() <<
-    ")";
+  os <<
+     http_response.get_type_name() <<
+     "(" <<
+     "content_length=" << http_response.get_content_length() <<
+     ", " <<
+     "http_version=" <<
+     static_cast<uint16_t>(http_response.get_http_version()) <<
+     ", " <<
+     "status_code=" << http_response.get_status_code() <<
+     ", " <<
+     "body=" << body.str() <<
+     ")";
   return os;
 }
 }

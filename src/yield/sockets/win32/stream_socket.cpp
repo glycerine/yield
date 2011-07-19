@@ -44,10 +44,11 @@ StreamSocket* StreamSocket::accept(SocketAddress& peername) {
 
   socket_t peer_socket = ::accept(*this, peername, &peernamelen);
 
-  if (peer_socket != INVALID_SOCKET)
+  if (peer_socket != INVALID_SOCKET) {
     return dup2(peer_socket);
-  else
+  } else {
     return NULL;
+  }
 }
 
 bool StreamSocket::listen() {
@@ -70,8 +71,9 @@ ssize_t StreamSocket::sendfile(fd_t fd, off_t offset, size_t nbytes) {
       NULL
     );
 
-    if (lpfnTransmitFile == NULL)
+    if (lpfnTransmitFile == NULL) {
       return -1;
+    }
   }
 
   OVERLAPPED overlapped;
@@ -137,16 +139,22 @@ bool StreamSocket::setsockopt(int option_name, int option_value) {
              reinterpret_cast<char*>(&optval),
              static_cast<int>(sizeof(optval))
            ) == 0;
-  } else
+  } else {
     return Socket::setsockopt(option_name, option_value);
+  }
 }
 
 bool StreamSocket::shutdown(bool shut_rd, bool shut_wr) {
   int how;
-  if (shut_rd && shut_wr) how = SD_BOTH;
-  else if (shut_rd) how = SD_RECEIVE;
-  else if (shut_wr) how = SD_SEND;
-  else return false;
+  if (shut_rd && shut_wr) {
+    how = SD_BOTH;
+  } else if (shut_rd) {
+    how = SD_RECEIVE;
+  } else if (shut_wr) {
+    how = SD_SEND;
+  } else {
+    return false;
+  }
   return ::shutdown(*this, how) == 0;
 }
 

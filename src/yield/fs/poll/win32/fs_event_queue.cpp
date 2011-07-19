@@ -46,9 +46,9 @@ using win32::FileWatch;
 
 FSEventQueue::FSEventQueue(YO_NEW_REF Log* log) : log(log) {
   hIoCompletionPort = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 0);
-  if (hIoCompletionPort != INVALID_HANDLE_VALUE)
+  if (hIoCompletionPort != INVALID_HANDLE_VALUE) {
     watches = new Watches<win32::Watch>;
-  else {
+  } else {
     watches = NULL;
     throw Exception();
   }
@@ -62,17 +62,19 @@ FSEventQueue::~FSEventQueue() {
 bool FSEventQueue::associate(const Path& path, FSEvent::Type fs_event_types) {
   Watch* watch = watches->find(path);
   if (watch != NULL) {
-    if (watch->get_fs_event_types() == fs_event_types)
+    if (watch->get_fs_event_types() == fs_event_types) {
       return true;
-    else
+    } else {
       delete watches->erase(path);
+    }
   }
 
   Path directory_path;
-  if (FileSystem().isdir(path))
+  if (FileSystem().isdir(path)) {
     directory_path = path;
-  else
+  } else {
     directory_path = path.split().first;
+  }
 
   Directory* directory = FileSystem().opendir(directory_path);
   if (directory != NULL) {
@@ -85,17 +87,17 @@ bool FSEventQueue::associate(const Path& path, FSEvent::Type fs_event_types) {
       ) != INVALID_HANDLE_VALUE
     ) {
       win32::Watch* watch;
-      if (path == directory_path)
+      if (path == directory_path) {
         watch = new DirectoryWatch(*directory, fs_event_types, path, log);
-      else {
+      } else {
         watch
-          = new FileWatch(
-                  *directory,
-                  directory_path,
-                  path,
-                  fs_event_types,
-                  log
-                );
+        = new FileWatch(
+          *directory,
+          directory_path,
+          path,
+          fs_event_types,
+          log
+        );
       }
 
       DWORD dwBytesRead = 0;
@@ -118,10 +120,12 @@ bool FSEventQueue::associate(const Path& path, FSEvent::Type fs_event_types) {
         delete watch;
         return false;
       }
-    } else
+    } else {
       return false;
-  } else
+    }
+  } else {
     return false;
+  }
 }
 
 bool FSEventQueue::dissociate(const Path& path) {
@@ -129,8 +133,9 @@ bool FSEventQueue::dissociate(const Path& path) {
   if (watch != NULL) {
     watch->close();
     return true;
-  } else
+  } else {
     return false;
+  }
 }
 
 bool FSEventQueue::enqueue(YO_NEW_REF Event& event) {
@@ -149,13 +154,13 @@ YO_NEW_REF Event* FSEventQueue::timeddequeue(const Time& timeout) {
   LPOVERLAPPED lpOverlapped = NULL;
 
   BOOL bRet
-    = GetQueuedCompletionStatus(
-        hIoCompletionPort,
-        &dwBytesTransferred,
-        &ulCompletionKey,
-        &lpOverlapped,
-        static_cast<DWORD>(timeout.ms())
-      );
+  = GetQueuedCompletionStatus(
+      hIoCompletionPort,
+      &dwBytesTransferred,
+      &ulCompletionKey,
+      &lpOverlapped,
+      static_cast<DWORD>(timeout.ms())
+    );
 
   if (lpOverlapped != NULL) {
     win32::Watch& watch = win32::Watch::cast(*lpOverlapped);
@@ -166,42 +171,45 @@ YO_NEW_REF Event* FSEventQueue::timeddequeue(const Time& timeout) {
       DWORD dwReadUntilBufferOffset = 0;
       for (;;) {
         const FILE_NOTIFY_INFORMATION* file_notify_info
-          = reinterpret_cast<const FILE_NOTIFY_INFORMATION*>(
-              &watch.get_buffer()[dwReadUntilBufferOffset]
-            );
+        = reinterpret_cast<const FILE_NOTIFY_INFORMATION*>(
+            &watch.get_buffer()[dwReadUntilBufferOffset]
+          );
 
         FSEvent* fs_event = watch.parse(*file_notify_info);
-        if (fs_event != NULL)
+        if (fs_event != NULL) {
           enqueue(*fs_event);
+        }
 
-        if (file_notify_info->NextEntryOffset > 0)
+        if (file_notify_info->NextEntryOffset > 0) {
           dwReadUntilBufferOffset += file_notify_info->NextEntryOffset;
-        else
+        } else {
           break;
+        }
       }
 
       DWORD dwBytesRead;
-      //BOOL bRet = 
-        ReadDirectoryChangesW(
-          watch.get_directory(),
-          watch.get_buffer(),
-          watch.get_buffer_length(),
-          FALSE,
-          watch.get_notify_filter(),
-          &dwBytesRead,
-          watch,
-          NULL
-        );
+      //BOOL bRet =
+      ReadDirectoryChangesW(
+        watch.get_directory(),
+        watch.get_buffer(),
+        watch.get_buffer_length(),
+        FALSE,
+        watch.get_notify_filter(),
+        &dwBytesRead,
+        watch,
+        NULL
+      );
 
       return trydequeue();
     } else {
       delete &watch;
       return NULL;
     }
-  } else if (ulCompletionKey != 0)
+  } else if (ulCompletionKey != 0) {
     return reinterpret_cast<Event*>(ulCompletionKey);
-  else
+  } else {
     return NULL;
+  }
 }
 }
 }

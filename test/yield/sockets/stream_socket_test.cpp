@@ -44,11 +44,11 @@ namespace sockets {
 TEST(StreamSocket, accept) {
   StreamSocket client_stream_socket(TCPSocket::DOMAIN_DEFAULT),
                listen_stream_socket(TCPSocket::DOMAIN_DEFAULT);
-  if (listen_stream_socket.bind(SocketAddress::IN_LOOPBACK)) { 
+  if (listen_stream_socket.bind(SocketAddress::IN_LOOPBACK)) {
     if (listen_stream_socket.listen()) {
       if (client_stream_socket.connect(*listen_stream_socket.getsockname())) {
         auto_Object<StreamSocket> server_stream_socket
-          = listen_stream_socket.accept();
+        = listen_stream_socket.accept();
         return;
       }
     }
@@ -86,16 +86,19 @@ TEST(StreamSocket, inc_ref) {
 TEST(StreamSocket, listen) {
   StreamSocket stream_socket(TCPSocket::DOMAIN_DEFAULT);
 
-  if (!stream_socket.bind(SocketAddress::IN_LOOPBACK))
+  if (!stream_socket.bind(SocketAddress::IN_LOOPBACK)) {
     throw Exception();
+  }
 
-  if (!stream_socket.listen())
+  if (!stream_socket.listen()) {
     throw Exception();
+  }
 }
 
 TEST(StreamSocket, setsockopt_KEEPALIVE) {
-  if (!StreamSocketPair().first().setsockopt(StreamSocket::Option::KEEPALIVE, true))
+  if (!StreamSocketPair().first().setsockopt(StreamSocket::Option::KEEPALIVE, true)) {
     throw Exception();
+  }
 }
 
 class StreamSocketSendFileTest : public yunit::Test {
@@ -103,7 +106,7 @@ public:
   void setup() {
     teardown();
     auto_Object<yield::fs::File> file
-      = yield::fs::FileSystem().creat(test_file_path);
+    = yield::fs::FileSystem().creat(test_file_path);
     file->write("test", 4);
     file->close();
   }
@@ -123,7 +126,7 @@ protected:
 
 TEST_EX(StreamSocket, sendfile, StreamSocketSendFileTest) {
   auto_Object<yield::fs::File> file
-    = yield::fs::FileSystem().open(test_file_path);
+  = yield::fs::FileSystem().open(test_file_path);
   auto_Object<yield::fs::Stat> stbuf = file->stat();
   size_t size = static_cast<size_t>(stbuf->get_size());
 
@@ -141,26 +144,32 @@ TEST_EX(StreamSocket, sendfile, StreamSocketSendFileTest) {
 TEST(StreamSocket, setsockopt_LINGER) {
   StreamSocketPair stream_sockets;
 
-  if (!stream_sockets.first().setsockopt(StreamSocket::Option::LINGER, 1))
+  if (!stream_sockets.first().setsockopt(StreamSocket::Option::LINGER, 1)) {
     throw Exception();
+  }
 
-  if (!stream_sockets.first().setsockopt(StreamSocket::Option::LINGER, 30))
+  if (!stream_sockets.first().setsockopt(StreamSocket::Option::LINGER, 30)) {
     throw Exception();
+  }
 
-  if (!stream_sockets.first().setsockopt(StreamSocket::Option::LINGER, false))
+  if (!stream_sockets.first().setsockopt(StreamSocket::Option::LINGER, false)) {
     throw Exception();
+  }
 }
 
 TEST(StreamSocket, shutdown) {
   StreamSocketPair stream_sockets;
 
-  if (!stream_sockets.first().shutdown(true, false))
+  if (!stream_sockets.first().shutdown(true, false)) {
     throw Exception();
-  if (!stream_sockets.first().shutdown(false, true))
+  }
+  if (!stream_sockets.first().shutdown(false, true)) {
     throw Exception();
+  }
 
-  if (!stream_sockets.second().shutdown(true, true))
+  if (!stream_sockets.second().shutdown(true, true)) {
     throw Exception();
+  }
 }
 
 TEST(StreamSocket, want_accept) {

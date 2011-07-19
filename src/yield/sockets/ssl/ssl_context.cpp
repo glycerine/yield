@@ -51,7 +51,7 @@ namespace yield {
 namespace sockets {
 #ifdef YIELD_HAVE_OPENSSL
 namespace ssl {
-SSLContext::SSLContext(SSLVersion ssl_version) throw (Exception) {
+SSLContext::SSLContext(SSLVersion ssl_version) throw(Exception) {
   init(ssl_version);
 }
 
@@ -60,7 +60,7 @@ SSLContext::SSLContext(
   const string& pem_private_key,
   const string& pem_private_key_passphrase,
   SSLVersion ssl_version
-) throw (Exception) {
+) throw(Exception) {
   init(ssl_version);
   use_pem_certificate(pem_certificate);
   use_pem_private_key(pem_private_key, pem_private_key_passphrase);
@@ -76,12 +76,25 @@ void SSLContext::init(SSLVersion ssl_version) {
 
   const SSL_METHOD* method;
   switch (ssl_version) {
-  case SSL_VERSION_2: method = SSLv2_method(); break;
-  case SSL_VERSION_23: method = SSLv23_method(); break;
-  case SSL_VERSION_3: method = SSLv3_method(); break;
-  case TLS_VERSION_1: method = TLSv1_method(); break;
-  case DTLS_VERSION_1: method = DTLSv1_method(); break;
-  default: debug_break(); method = SSLv23_method(); break;
+  case SSL_VERSION_2:
+    method = SSLv2_method();
+    break;
+  case SSL_VERSION_23:
+    method = SSLv23_method();
+    break;
+  case SSL_VERSION_3:
+    method = SSLv3_method();
+    break;
+  case TLS_VERSION_1:
+    method = TLSv1_method();
+    break;
+  case DTLS_VERSION_1:
+    method = DTLSv1_method();
+    break;
+  default:
+    debug_break();
+    method = SSLv23_method();
+    break;
   }
 
 #if OPENSSL_VERSION_NUMBER >= 0x10000000L
@@ -97,15 +110,17 @@ void SSLContext::init(SSLVersion ssl_version) {
     SSL_CTX_set_options(ctx, SSL_OP_ALL);
 #endif
     SSL_CTX_set_verify(ctx, SSL_VERIFY_NONE, NULL);
-  } else
+  } else {
     throw SSLException();
+  }
 }
 
 int SSLContext::pem_password_callback(char* buf, int size, int, void* userdata) {
   const string* pem_password
   = static_cast<const string*>(userdata);
-  if (size > static_cast<int>(pem_password->size()))
+  if (size > static_cast<int>(pem_password->size())) {
     size = static_cast<int>(pem_password->size());
+  }
   memcpy_s(buf, size, pem_password->c_str(), size);
   return size;
 }
@@ -113,7 +128,7 @@ int SSLContext::pem_password_callback(char* buf, int size, int, void* userdata) 
 void
 SSLContext::use_pem_certificate(
   const string& pem_certificate
-) throw (Exception) {
+) throw(Exception) {
   try {
     BIO* bio
     = BIO_new_mem_buf(
@@ -129,20 +144,23 @@ SSLContext::use_pem_certificate(
             if (SSL_CTX_use_certificate(ctx, cert) == 1) {
               BIO_free(bio);
               return;
-            } else
+            } else {
               throw SSLException();
+            }
           } catch (SSLException&) {
             X509_free(cert);
             throw;
           }
-        } else
+        } else {
           throw SSLException();
+        }
       } catch (SSLException&) {
         BIO_free(bio);
         throw;
       }
-    } else
+    } else {
       throw SSLException();
+    }
   } catch (SSLException&) {
     use_pem_certificate_file(pem_certificate);
   }
@@ -151,22 +169,23 @@ SSLContext::use_pem_certificate(
 void
 SSLContext::use_pem_certificate_file(
   const string& pem_certificate_file_path
-) throw (Exception) {
+) throw(Exception) {
   if (
     SSL_CTX_use_certificate_file(
       ctx,
       pem_certificate_file_path.c_str(),
       SSL_FILETYPE_PEM
     ) != 1
-  )
+  ) {
     throw SSLException();
+  }
 }
 
 void
 SSLContext::use_pem_private_key(
   const string& pem_private_key,
   const string& pem_private_key_passphrase
-) throw (Exception) {
+) throw(Exception) {
   try {
     BIO* bio
     = BIO_new_mem_buf(
@@ -185,18 +204,21 @@ SSLContext::use_pem_private_key(
           );
 
         if (pkey != NULL) {
-          if (SSL_CTX_use_PrivateKey(ctx, pkey) == 1)
+          if (SSL_CTX_use_PrivateKey(ctx, pkey) == 1) {
             BIO_free(bio);
-          else
+          } else {
             throw SSLException();
-        } else
+          }
+        } else {
           throw SSLException();
+        }
       } catch (SSLException&) {
         BIO_free(bio);
         throw;
       }
-    } else
+    } else {
       throw SSLException();
+    }
   } catch (SSLException&) {
     use_pem_private_key_file(pem_private_key, pem_private_key_passphrase);
   }
@@ -206,7 +228,7 @@ void
 SSLContext::use_pem_private_key_file(
   const string& pem_private_key_file_path,
   const string& pem_private_key_passphrase
-) throw (Exception) {
+) throw(Exception) {
   SSL_CTX_set_default_passwd_cb(ctx, pem_password_callback);
   SSL_CTX_set_default_passwd_cb_userdata(
     ctx,
@@ -222,8 +244,9 @@ SSLContext::use_pem_private_key_file(
   ) {
     SSL_CTX_set_default_passwd_cb(ctx, NULL);
     SSL_CTX_set_default_passwd_cb_userdata(ctx, NULL);
-  } else
+  } else {
     throw SSLException();
+  }
 }
 
 //void

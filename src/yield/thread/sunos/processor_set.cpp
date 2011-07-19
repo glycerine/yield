@@ -41,8 +41,9 @@ ProcessorSet::ProcessorSet() {
 }
 
 ProcessorSet::~ProcessorSet() {
-  if (psetid != PS_NONE)
+  if (psetid != PS_NONE) {
     pset_destroy(psetid);
+  }
 }
 
 void ProcessorSet::clear() {
@@ -57,8 +58,9 @@ uint16_t ProcessorSet::get_online_logical_processor_count() {
 
   processorid_t cpuid_max = sysconf(_SC_CPUID_MAX);
   for (processorid_t cpuid_i = 0; cpuid_i <= cpuid_max; cpuid_i++) {
-    if (p_online(cpuid_i, P_STATUS) == P_ONLINE)
+    if (p_online(cpuid_i, P_STATUS) == P_ONLINE) {
       online_logical_processor_count++;
+    }
   }
 
   return online_logical_processor_count;
@@ -88,13 +90,15 @@ uint16_t ProcessorSet::get_online_physical_processor_count() {
     kstat_close(kc);
 
     return online_physical_processor_count;
-  } else
+  } else {
     return 1;
+  }
 }
 
 void ProcessorSet::clear(uint16_t processor_i) {
-  if (psetid != PS_NONE)
+  if (psetid != PS_NONE) {
     pset_assign(PS_NONE, processor_i, NULL);
+  }
 }
 
 bool ProcessorSet::isset(uint16_t processor_i) const {
@@ -112,8 +116,9 @@ bool ProcessorSet::isset(uint16_t processor_i) const {
 
 bool ProcessorSet::set(uint16_t processor_i) {
   if (psetid == PS_NONE) {
-    if (pset_create(&psetid) != 0)
+    if (pset_create(&psetid) != 0) {
       return false;
+    }
   }
 
   return pset_assign(psetid, processor_i, NULL) == 0;

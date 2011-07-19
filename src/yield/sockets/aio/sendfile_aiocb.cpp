@@ -50,7 +50,7 @@ sendfileAIOCB::sendfileAIOCB(StreamSocket& socket_, fd_t fd)
   ULARGE_INTEGER uliFilePointer;
   LONG lFilePointerHigh = 0;
   uliFilePointer.LowPart
-    = SetFilePointer(fd, 0, &lFilePointerHigh, FILE_CURRENT);
+  = SetFilePointer(fd, 0, &lFilePointerHigh, FILE_CURRENT);
   if (uliFilePointer.LowPart != INVALID_SET_FILE_POINTER) {
     uliFilePointer.HighPart = lFilePointerHigh;
     offset = static_cast<off_t>(uliFilePointer.QuadPart);
@@ -59,21 +59,25 @@ sendfileAIOCB::sendfileAIOCB(StreamSocket& socket_, fd_t fd)
     uliFileSize.LowPart = GetFileSize(fd, &uliFileSize.HighPart);
     if (uliFileSize.LowPart != INVALID_FILE_SIZE) {
       nbytes
-        = static_cast<size_t>(uliFileSize.QuadPart - uliFilePointer.QuadPart);
-    } else
+      = static_cast<size_t>(uliFileSize.QuadPart - uliFilePointer.QuadPart);
+    } else {
       throw Exception();
-  } else
+    }
+  } else {
     throw Exception();
+  }
 #else
   offset = lseek(fd, 0, SEEK_CUR);
   if (offset != static_cast<off_t>(-1)) {
     struct stat stbuf;
-    if (fstat(fd, &stbuf) == 0)
+    if (fstat(fd, &stbuf) == 0) {
       nbytes = stbuf.st_size - offset;
-    else
+    } else {
       throw Exception();
-  } else
+    }
+  } else {
     throw Exception();
+  }
 #endif
 }
 
@@ -83,7 +87,7 @@ sendfileAIOCB::sendfileAIOCB(
   off_t offset,
   size_t nbytes
 ) : AIOCB(socket_, offset),
-    nbytes(nbytes) {
+  nbytes(nbytes) {
   init(fd);
 }
 
@@ -111,31 +115,33 @@ void sendfileAIOCB::init(fd_t fd) {
       FALSE,
       DUPLICATE_SAME_ACCESS
     )
-  )
+  ) {
     throw Exception();
+  }
 #else
   this->fd = dup(fd);
-  if (this->fd == -1)
+  if (this->fd == -1) {
     throw Exception();
+  }
 #endif
 }
 
 std::ostream& operator<<(std::ostream& os, sendfileAIOCB& sendfile_aiocb) {
   os <<
-    sendfile_aiocb.get_type_name() <<
-    "(" <<
-      //"error=" << sendfile_aiocb.get_error() <<
-      //", " <<
-      "fd=" << sendfile_aiocb.get_fd() <<
-      ", " <<
-      "nbytes=" << sendfile_aiocb.get_nbytes() <<
-      ", " <<
-      "offset=" << sendfile_aiocb.get_offset() <<
-      ", " <<
-      //"return=" << sendfile_aiocb.get_return() <<
-      //"," <<
-      "socket=" << sendfile_aiocb.get_socket() <<
-    ")";
+     sendfile_aiocb.get_type_name() <<
+     "(" <<
+     //"error=" << sendfile_aiocb.get_error() <<
+     //", " <<
+     "fd=" << sendfile_aiocb.get_fd() <<
+     ", " <<
+     "nbytes=" << sendfile_aiocb.get_nbytes() <<
+     ", " <<
+     "offset=" << sendfile_aiocb.get_offset() <<
+     ", " <<
+     //"return=" << sendfile_aiocb.get_return() <<
+     //"," <<
+     "socket=" << sendfile_aiocb.get_socket() <<
+     ")";
   return os;
 }
 }

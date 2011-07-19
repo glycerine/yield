@@ -40,18 +40,18 @@ recvAIOCB::~recvAIOCB() {
 
 std::ostream& operator<<(std::ostream& os, recvAIOCB& recv_aiocb) {
   os <<
-    recv_aiocb.get_type_name() <<
-    "(" <<
-      "buffer=" << recv_aiocb.get_buffer() <<
-      ", " <<
-      "error=" << recv_aiocb.get_error() <<
-      ", " <<
-      "flags=" << recv_aiocb.get_flags() <<
-      ", " <<
-      "return=" << recv_aiocb.get_return() <<
-      ", " <<
-      "socket=" << recv_aiocb.get_socket() <<
-    ")";
+     recv_aiocb.get_type_name() <<
+     "(" <<
+     "buffer=" << recv_aiocb.get_buffer() <<
+     ", " <<
+     "error=" << recv_aiocb.get_error() <<
+     ", " <<
+     "flags=" << recv_aiocb.get_flags() <<
+     ", " <<
+     "return=" << recv_aiocb.get_return() <<
+     ", " <<
+     "socket=" << recv_aiocb.get_socket() <<
+     ")";
   return os;
 }
 }

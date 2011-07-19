@@ -177,7 +177,7 @@ def %(name)s():
 %(includes)s%(source)s
 \"\"\")
     source_file.close()
-    
+
     try:
         os.unlink(
             distutils.ccompiler.new_compiler().compile(
@@ -227,7 +227,7 @@ class _CompileLinkCheck(_CompileCheck):
         return """\
 def %(name)s():
     import distutils.ccompiler, os.path, sys, tempfile, traceback
-    
+
     try:
         source_file = open("%(source_file_path)s", "w+b")
         source_file.write(\"\"\"\\
@@ -236,19 +236,19 @@ def %(name)s():
         source_file.close()
 
         cc = distutils.ccompiler.new_compiler()
-        
+
         object = \
             cc.compile(
                 ["%(source_file_path)s"],
                 extra_preargs=(sys.platform == "win32" and ["/EHsc"] or None)
             )[0]
-    
+
         try:
             bin_file = \
                 tempfile.NamedTemporaryFile(
                     suffix=(sys.platform == "win32" and ".exe" or "")
                 )
-            
+
             try:
                 cc.link_executable(
                     [object],
@@ -283,7 +283,7 @@ int main() {
 #endif
     ;
     return 0;
-}            
+}
 """)
 
 

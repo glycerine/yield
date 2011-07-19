@@ -81,7 +81,7 @@ public:
 
 private:
   char* p;
-  const char *pe, *ps;
+  const char* pe, *ps;
 };
 }
 }

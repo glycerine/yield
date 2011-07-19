@@ -38,8 +38,9 @@ using std::make_pair;
 using std::map;
 
 Watches::~Watches() {
-  for (iterator watch_i = begin(); watch_i != end(); ++watch_i)
+  for (iterator watch_i = begin(); watch_i != end(); ++watch_i) {
     delete watch_i->second;
+  }
 }
 
 Watch* Watches::erase(const Path& path) {
@@ -56,8 +57,9 @@ Watch* Watches::erase(const Path& path) {
 
 Watch* Watches::find(const Path& path) {
   for (iterator watch_i = begin(); watch_i != end(); ++watch_i) {
-    if (watch_i->second->get_path() == path)
+    if (watch_i->second->get_path() == path) {
       return watch_i->second;
+    }
   }
 
   return NULL;
@@ -65,10 +67,11 @@ Watch* Watches::find(const Path& path) {
 
 Watch* Watches::find(int wd) {
   iterator watch_i = map<int, Watch*>::find(wd);
-  if (watch_i != end())
+  if (watch_i != end()) {
     return watch_i->second;
-  else
+  } else {
     return NULL;
+  }
 }
 
 void Watches::insert(Watch& watch) {

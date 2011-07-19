@@ -40,10 +40,11 @@ connectAIOCB::connectAIOCB(
   SocketAddress& peername,
   YO_NEW_REF Buffer* send_buffer
 ) : AIOCB(socket_),
-    peername(peername.inc_ref()),
-    send_buffer(send_buffer) {
-  if (send_buffer != NULL)
+  peername(peername.inc_ref()),
+  send_buffer(send_buffer) {
+  if (send_buffer != NULL) {
     debug_assert_eq(send_buffer->get_next_buffer(), NULL);
+  }
 }
 
 connectAIOCB::~connectAIOCB() {
@@ -57,18 +58,18 @@ StreamSocket& connectAIOCB::get_socket() {
 
 std::ostream& operator<<(std::ostream& os, connectAIOCB& connect_aiocb) {
   os <<
-    connect_aiocb.get_type_name() <<
-    "(" <<
-      "error=" << connect_aiocb.get_error() <<
-      ", " <<
-      "peername=" << connect_aiocb.get_peername() <<
-      ", " <<
-      "return=" << connect_aiocb.get_return() <<
-      ", " <<
-      "send_buffer=" << connect_aiocb.get_send_buffer() <<
-      ", " <<
-      "socket=" << connect_aiocb.get_socket() <<
-    ")";
+     connect_aiocb.get_type_name() <<
+     "(" <<
+     "error=" << connect_aiocb.get_error() <<
+     ", " <<
+     "peername=" << connect_aiocb.get_peername() <<
+     ", " <<
+     "return=" << connect_aiocb.get_return() <<
+     ", " <<
+     "send_buffer=" << connect_aiocb.get_send_buffer() <<
+     ", " <<
+     "socket=" << connect_aiocb.get_socket() <<
+     ")";
   return os;
 }
 }

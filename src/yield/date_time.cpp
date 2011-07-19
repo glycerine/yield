@@ -48,10 +48,11 @@ DateTime::DateTime(const FILETIME& file_time) {
 }
 
 DateTime::DateTime(const FILETIME* file_time) {
-  if (file_time != NULL)
+  if (file_time != NULL) {
     init(*file_time);
-  else
+  } else {
     unix_date_time_ns = 0;
+  }
 }
 
 DateTime::DateTime(const SYSTEMTIME& system_time, bool local) {
@@ -174,8 +175,9 @@ void DateTime::init(const SYSTEMTIME& system_time, bool local) {
       &utc_system_time
     );
     SystemTimeToFileTime(&utc_system_time, &file_time);
-  } else
+  } else {
     SystemTimeToFileTime(&system_time, &file_time);
+  }
 
   init(file_time);
 }
@@ -201,15 +203,17 @@ DateTime::operator SYSTEMTIME() const {
 void DateTime::init(tm& tm_, bool local) {
   time_t unix_date_time_s;
 
-  if (local)
+  if (local) {
     unix_date_time_s = mktime(&tm_);
-  else
+  } else {
     unix_date_time_s = timegm(&tm_);
+  }
 
-  if (unix_date_time_s != static_cast<time_t>(-1))
+  if (unix_date_time_s != static_cast<time_t>(-1)) {
     unix_date_time_ns = unix_date_time_s * Time::NS_IN_S;
-  else
+  } else {
     *this = INVALID_DATE_TIME;
+  }
 }
 
 DateTime::operator timeval() const {

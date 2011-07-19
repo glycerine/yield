@@ -56,23 +56,26 @@ FSEventQueue::FSEventQueue(YO_NEW_REF Log* log) : log(log) {
         try {
           struct kevent kevent_;
           EV_SET(&kevent_, wake_pipe[0], EVFILT_READ, EV_ADD, 0, 0, NULL);
-          if (kevent(kq, &kevent_, 1, 0, 0, NULL) == 0)
+          if (kevent(kq, &kevent_, 1, 0, 0, NULL) == 0) {
             watches = new Watches<bsd::Watch>;
-          else
+          } else {
             throw Exception();
+          }
         } catch (Exception&) {
           close(wake_pipe[0]);
           close(wake_pipe[1]);
           throw;
         }
-      } else
+      } else {
         throw Exception();
+      }
     } catch (Exception&) {
       close(kq);
       throw;
     }
-  } else
+  } else {
     throw Exception();
+  }
 }
 
 FSEventQueue::~FSEventQueue() {
@@ -95,10 +98,11 @@ FSEventQueue::associate(
     struct stat stbuf;
     if (::fstat(fd, &stbuf) == 0) {
       bsd::Watch* watch;
-      if (S_ISDIR(stbuf.st_mode))
+      if (S_ISDIR(stbuf.st_mode)) {
         watch = new bsd::DirectoryWatch(fd, fs_event_types, path, log);
-      else
+      } else {
         watch = new bsd::FileWatch(fd, fs_event_types, path, log);
+      }
 
       // Don't try to be clever with fflags, since there
       // appears to be minimal logic in how they work.
@@ -109,7 +113,7 @@ FSEventQueue::associate(
         EVFILT_VNODE,
         EV_ADD,
         NOTE_ATTRIB | NOTE_DELETE | NOTE_EXTEND |
-          NOTE_LINK | NOTE_RENAME | NOTE_REVOKE | NOTE_WRITE,
+        NOTE_LINK | NOTE_RENAME | NOTE_REVOKE | NOTE_WRITE,
         0,
         watch
       );
@@ -117,8 +121,9 @@ FSEventQueue::associate(
       if (kevent(kq, &kevent_, 1, 0, 0, NULL) != -1) {
         watches->insert(path, *watch);
         return true;
-      } else
+      } else {
         delete watch;
+      }
     }
   }
 
@@ -130,8 +135,9 @@ bool FSEventQueue::dissociate(const Path& path) {
   if (watch != NULL) {
     delete watch;
     return true;
-  } else
+  } else {
     return false;
+  }
 }
 
 bool FSEventQueue::enqueue(YO_NEW_REF Event& event) {
@@ -139,15 +145,16 @@ bool FSEventQueue::enqueue(YO_NEW_REF Event& event) {
     ssize_t write_ret = write(wake_pipe[1], "m", 1);
     debug_assert_eq(write_ret, 1);
     return true;
-  } else
+  } else {
     return false;
+  }
 }
 
 YO_NEW_REF Event* FSEventQueue::timeddequeue(const Time& timeout) {
   Event* event = event_queue.trydequeue();
-  if (event != NULL)
+  if (event != NULL) {
     return event;
-  else {
+  } else {
     struct kevent kevent_;
     timespec timeout_ts = timeout;
     int ret = kevent(kq, 0, 0, &kevent_, 1, &timeout_ts);
@@ -169,9 +176,9 @@ YO_NEW_REF Event* FSEventQueue::timeddequeue(const Time& timeout) {
         watch->read(kevent_, *this);
         return event_queue.trydequeue();
       }
-    } else if (ret == 0 || errno == EINTR)
+    } else if (ret == 0 || errno == EINTR) {
       return NULL;
-    else {
+    } else {
       debug_break();
       return NULL;
     }

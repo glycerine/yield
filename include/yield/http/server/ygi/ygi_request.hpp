@@ -41,7 +41,7 @@ namespace ygi {
 class YGIRequest : public ygi_request_t {
 public:
   YGIRequest(HTTPRequest& http_request);
-  
+
 public:
   size_t CONTENT_LENGTH();
   iovec DOCUMENT_ROOT();

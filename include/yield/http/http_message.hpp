@@ -66,8 +66,9 @@ public:
                static_cast<char*>(value_iov.iov_base),
                value_iov.iov_len
              );
-    } else
+    } else {
       return default_value;
+    }
   }
 
   bool get_field(const char* name, iovec& value) const {

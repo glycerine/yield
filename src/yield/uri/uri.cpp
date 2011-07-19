@@ -101,7 +101,7 @@ URI::~URI() {
 
 void URI::init(const char* uri, size_t uri_len) {
   buffer = &Buffer::copy(uri, uri_len);
-  
+
   if (
     !URIParser(*buffer).parse(
       fragment,
@@ -112,8 +112,9 @@ void URI::init(const char* uri, size_t uri_len) {
       scheme,
       userinfo
     )
-  )
+  ) {
     throw Exception("invalid URI");
+  }
 }
 
 string URI::iovec_to_string(const iovec& iovec_) {
@@ -126,17 +127,21 @@ std::ostream& operator<<(std::ostream& os, const URI& uri) {
     os.write("://", 3);
   }
 
-  if (uri.has_userinfo())
+  if (uri.has_userinfo()) {
     os.write(static_cast<char*>(uri.userinfo.iov_base), uri.userinfo.iov_len);
+  }
 
-  if (uri.has_host())
+  if (uri.has_host()) {
     os.write(static_cast<char*>(uri.host.iov_base), uri.host.iov_len);
+  }
 
-  if (uri.has_port())
+  if (uri.has_port()) {
     os << ":" << uri.port;
+  }
 
-  if (uri.has_path())
+  if (uri.has_path()) {
     os.write(static_cast<char*>(uri.path.iov_base), uri.path.iov_len);
+  }
 
   if (uri.has_query()) {
     os.write("?", 1);
@@ -212,10 +217,12 @@ URI::rebase(
       new_iov.iov_base
       = new_base + (static_cast<char*>(old_iov.iov_base) - old_base);
       new_iov.iov_len = old_iov.iov_len;
-    } else // assume old_iov points to a literal
+    } else { // assume old_iov points to a literal
       new_iov = old_iov;
-  } else
+    }
+  } else {
     memset(&new_iov, 0, sizeof(new_iov));
+  }
 }
 }
 }

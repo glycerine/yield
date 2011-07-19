@@ -75,8 +75,9 @@ void Log::write(const Buffer& buffer, const Level& level) {
 }
 
 void Log::write(const void* message, size_t message_len, const Level& level) {
-  if (level <= this->level)
+  if (level <= this->level) {
     write(message, message_len);
+  }
 }
 
 void Log::write(const void* message, size_t message_len) {
@@ -86,33 +87,35 @@ void Log::write(const void* message, size_t message_len) {
       static_cast<const uint8_t*>(message)[message_i] == '\r' ||
       static_cast<const uint8_t*>(message)[message_i] == '\n' ||
       (static_cast<const uint8_t*>(message)[message_i] >= 32 &&
-        static_cast<const uint8_t*>(message)[message_i] <= 126)
-    )
+       static_cast<const uint8_t*>(message)[message_i] <= 126)
+    ) {
       continue;
-    else {
+    } else {
       str_is_printable = false;
       break;
     }
   }
 
-  if (str_is_printable)
+  if (str_is_printable) {
     write(reinterpret_cast<const char*>(message), message_len);
-  else {
+  } else {
     char* printable_str = new char[message_len * 3];
     size_t printable_str_len = 0;
 
     for (size_t message_i = 0; message_i < message_len; message_i++) {
       char hex_digit = (static_cast<const uint8_t*>(message)[message_i] >> 4) & 0x0F;
-      if (hex_digit >= 0 && hex_digit <= 9)
+      if (hex_digit >= 0 && hex_digit <= 9) {
         printable_str[printable_str_len++] = '0' + hex_digit;
-      else
+      } else {
         printable_str[printable_str_len++] = 'A' + hex_digit - 10;
+      }
 
       hex_digit = static_cast<const uint8_t*>(message)[message_i] & 0x0F;
-      if (hex_digit >= 0 && hex_digit <= 9)
+      if (hex_digit >= 0 && hex_digit <= 9) {
         printable_str[printable_str_len++] = '0' + hex_digit;
-      else
+      } else {
         printable_str[printable_str_len++] = 'A' + hex_digit - 10;
+      }
 
       printable_str[printable_str_len++] = ' ';
     }

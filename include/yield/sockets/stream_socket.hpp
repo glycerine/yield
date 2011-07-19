@@ -103,10 +103,11 @@ public:
   */
   virtual YO_NEW_REF StreamSocket* dup() {
     socket_t socket_ = Socket::create(get_domain(), TYPE, get_protocol());
-    if (socket_ != static_cast<socket_t>(-1))
+    if (socket_ != static_cast<socket_t>(-1)) {
       return new StreamSocket(get_domain(), get_protocol(), socket_);
-    else
+    } else {
       return NULL;
+    }
   }
 
 public:

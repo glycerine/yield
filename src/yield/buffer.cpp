@@ -54,8 +54,7 @@ Buffer::Buffer(size_t alignment, size_t capacity) {
 Buffer::Buffer(size_t capacity, void* data, size_t size)
   : capacity_(capacity),
     data_(data),
-    size_(size)
-{
+    size_(size) {
   next_buffer = NULL;
 }
 
@@ -106,9 +105,9 @@ Buffer::copy(
 }
 
 size_t Buffer::getpagesize() {
-  if (pagesize != 0)
+  if (pagesize != 0) {
     return pagesize;
-  else {
+  } else {
 #ifdef _WIN32
     SYSTEM_INFO system_info;
     GetSystemInfo(&system_info);
@@ -132,20 +131,24 @@ std::ostream& operator<<(std::ostream& os, const Buffer& buffer) {
   string data_str(1, '\"');
   if (buffer.size() > 0) {
     const uint8_t* data = static_cast<const uint8_t*>(buffer.data());
-    
+
     for (uint8_t data_range_i = 0; data_range_i < 2; ++data_range_i) {
       size_t data_i_min, data_i_max;
       if (buffer.size() <= 131) {
         if (data_range_i == 0) {
-          data_i_min = 0; data_i_max = buffer.size();
-        } else
+          data_i_min = 0;
+          data_i_max = buffer.size();
+        } else {
           break;
+        }
       } else {
         if (data_range_i == 0) {
-          data_i_min = 0; data_i_max = 64;
+          data_i_min = 0;
+          data_i_max = 64;
         } else {
           data_str.append("...");
-          data_i_min = buffer.size() - 64; data_i_max = buffer.size();
+          data_i_min = buffer.size() - 64;
+          data_i_max = buffer.size();
         }
       }
 
@@ -156,57 +159,61 @@ std::ostream& operator<<(std::ostream& os, const Buffer& buffer) {
           data[data_i] == '\n'
           ||
           (data[data_i] >= 32 && data[data_i] <= 126)
-        )
+        ) {
           data_str.append(1, static_cast<char>(data[data_i]));
-        else
+        } else {
           data_str.append(1, '?');
+        }
       }
     }
   }
   data_str.append(1, '\"');
 
   os <<
-    buffer.get_type_name() <<
-    "(" <<
-      "capacity=" << buffer.capacity() <<
-      ", " <<
-      "data=" << data_str <<
-      ", " <<
-      "next_buffer=" << buffer.get_next_buffer() <<
-      ", " <<
-      "size=" << buffer.size() <<
-    ")";
+     buffer.get_type_name() <<
+     "(" <<
+     "capacity=" << buffer.capacity() <<
+     ", " <<
+     "data=" << data_str <<
+     ", " <<
+     "next_buffer=" << buffer.get_next_buffer() <<
+     ", " <<
+     "size=" << buffer.size() <<
+     ")";
   return os;
 }
 
 std::ostream& operator<<(std::ostream& os, const Buffer* buffer) {
-  if (buffer != NULL)
+  if (buffer != NULL) {
     return operator<<(os, *buffer);
-  else {
+  } else {
     os << "NULL";
     return os;
   }
 }
 
 bool Buffer::operator==(const Buffer& other) const {
-  if (size() == other.size())
+  if (size() == other.size()) {
     return memcmp(data(), other.data(), size()) == 0;
-  else
+  } else {
     return false;
+  }
 }
 
 bool Buffer::operator==(const char* other) const {
-  if (size() == strlen(other))
+  if (size() == strlen(other)) {
     return memcmp(data(), other, size()) == 0;
-  else
+  } else {
     return 0;
+  }
 }
 
 bool Buffer::operator==(const string& other) const {
-  if (size() == other.size())
+  if (size() == other.size()) {
     return memcmp(data(), other.data(), size()) == 0;
-  else
+  } else {
     return false;
+  }
 }
 
 void Buffer::put(const void* data, size_t size) {
@@ -229,9 +236,9 @@ void Buffer::put(const void* data, size_t size) {
 }
 
 void Buffer::set_next_buffer(YO_NEW_REF Buffer* next_buffer) {
-  if (next_buffer != NULL)
+  if (next_buffer != NULL) {
     set_next_buffer(*next_buffer);
-  else if (this->next_buffer != NULL) {
+  } else if (this->next_buffer != NULL) {
     Buffer::dec_ref(*this->next_buffer);
     this->next_buffer = NULL;
   }

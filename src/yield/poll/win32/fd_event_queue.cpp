@@ -55,9 +55,9 @@ public:
     if (hWakeEvent != NULL) {
       fd_event_types.push_back(FDEvent::TYPE_READ_READY);
       handles.push_back(hWakeEvent);
-    }
-    else
+    } else {
       throw Exception();
+    }
   }
 
   ~FDImpl() {
@@ -70,8 +70,9 @@ public:
     if (event_queue.enqueue(event)) {
       SetEvent(handles[0]);
       return true;
-    } else
+    } else {
       return false;
+    }
   }
 
   YO_NEW_REF Event* timeddequeue(const Time& timeout) {
@@ -84,16 +85,16 @@ public:
         TRUE
       );
 
-    if (dwRet == WAIT_OBJECT_0)
+    if (dwRet == WAIT_OBJECT_0) {
       return event_queue.trydequeue();
-    else if (dwRet > WAIT_OBJECT_0 && dwRet < WAIT_OBJECT_0 + handles.size()) {
+    } else if (dwRet > WAIT_OBJECT_0 && dwRet < WAIT_OBJECT_0 + handles.size()) {
       return new FDEvent(
-                   handles[dwRet - WAIT_OBJECT_0],
-                   fd_event_types[dwRet - WAIT_OBJECT_0]
-                 );
-    }
-    else
+               handles[dwRet - WAIT_OBJECT_0],
+               fd_event_types[dwRet - WAIT_OBJECT_0]
+             );
+    } else {
       return NULL;
+    }
   }
 
 public:
@@ -125,8 +126,9 @@ public:
         SetLastError(ERROR_INVALID_PARAMETER);
         return false;
       }
-    } else
+    } else {
       return dissociate(fd);
+    }
   }
 
   bool dissociate(fd_t fd) {
@@ -159,8 +161,9 @@ public:
     if (event_queue.enqueue(event)) {
       send(wake_socket_pair[1], "m", 1, 0);
       return true;
-    } else
-      return false;      
+    } else {
+      return false;
+    }
   }
 
 public:
@@ -214,28 +217,33 @@ protected:
                       SOCKADDR_IN peername;
                       int peernamelen = sizeof(peername);
                       wake_socket_pair[1]
-                        = accept(
-                            listen_socket,
-                            reinterpret_cast<SOCKADDR*>(&peername),
-                            &peernamelen
-                          );
-                      if (wake_socket_pair[1] != INVALID_SOCKET)
+                      = accept(
+                          listen_socket,
+                          reinterpret_cast<SOCKADDR*>(&peername),
+                          &peernamelen
+                        );
+                      if (wake_socket_pair[1] != INVALID_SOCKET) {
                         return;
-                      else
+                      } else {
                         throw Exception();
-                    } else
+                      }
+                    } else {
                       throw Exception();
+                    }
                   } catch (Exception&) {
                     closesocket(wake_socket_pair[0]);
                     throw;
                   }
                 }
-              } else
+              } else {
                 throw Exception();
-            } else
+              }
+            } else {
               throw Exception();
-          } else
+            }
+          } else {
             throw Exception();
+          }
         } catch (Exception&) {
           closesocket(listen_socket);
           throw;
@@ -245,8 +253,9 @@ protected:
         WSADATA wsaData;
         WSAStartup(wVersionRequested, &wsaData);
         continue;
-      } else
+      } else {
         throw Exception();
+      }
     }
   }
 
@@ -263,8 +272,9 @@ protected:
 class FDEventQueue::SocketPoller : public SocketImpl {
 public:
   SocketPoller() {
-    if (!associate(wake_socket_pair[0], FDEvent::TYPE_READ_READY))
-      throw Exception();    
+    if (!associate(wake_socket_pair[0], FDEvent::TYPE_READ_READY)) {
+      throw Exception();
+    }
   }
 
 public:
@@ -288,10 +298,11 @@ public:
           } else {
             fd_t fd = reinterpret_cast<fd_t>(pollfd_.fd);
             uint16_t revents;
-            if (pollfd_.revents == (POLLERR | POLLHUP))
+            if (pollfd_.revents == (POLLERR | POLLHUP)) {
               revents = POLLHUP;
-            else
+            } else {
               revents = pollfd_.revents;
+            }
             pollfd_.revents = 0;
             return new FDEvent(fd, revents);
           }
@@ -329,8 +340,9 @@ public:
       pollfd_.events = fd_event_types;
       pollfds.push_back(pollfd_);
       return true;
-    } else
+    } else {
       return dissociate(socket_);
+    }
   }
 
   bool dissociate(socket_t socket_) {
@@ -360,8 +372,9 @@ public:
     FD_ZERO(&read_fd_set);
     FD_ZERO(&write_fd_set);
 
-    if (!associate(wake_socket_pair[0], POLLIN))
+    if (!associate(wake_socket_pair[0], POLLIN)) {
       throw Exception();
+    }
   }
 
 public:
@@ -440,12 +453,11 @@ public:
             char m;
             recv(wake_socket_pair[0], &m, 1, 0);
             return event_queue.trydequeue();
-          }
-          else {
+          } else {
             return new FDEvent(
-                         reinterpret_cast<fd_t>(socket_),
-                         fd_event_types
-                       );
+                     reinterpret_cast<fd_t>(socket_),
+                     fd_event_types
+                   );
           }
         }
 
@@ -466,34 +478,38 @@ public:
         FD_SET(socket_, &read_fd_set);
         FD_SET(socket_, &except_fd_set);
         added_socket_to_except_fd_set = true;
-      }
-      else
+      } else {
         FD_CLR(socket_, &read_fd_set);
+      }
 
       if (fd_event_types & FDEvent::TYPE_WRITE_READY) {
         FD_SET(socket_, &write_fd_set);
-        if (!added_socket_to_except_fd_set)
+        if (!added_socket_to_except_fd_set) {
           FD_SET(socket_, &except_fd_set);
-      }
-      else
+        }
+      } else {
         FD_CLR(socket_, &write_fd_set);
+      }
 
-      if (!added_socket_to_except_fd_set)
+      if (!added_socket_to_except_fd_set) {
         FD_CLR(socket_, &except_fd_set);
+      }
 
       for (
         vector<SOCKET>::iterator socket_i = sockets.begin();
         socket_i != sockets.end();
         ++socket_i
       ) {
-        if (*socket_i == socket_)
+        if (*socket_i == socket_) {
           return true;
+        }
       }
 
       sockets.push_back(socket_);
       return true;
-    } else
+    } else {
       return dissociate(socket_);
+    }
   }
 
   bool dissociate(socket_t socket_) {
@@ -520,15 +536,16 @@ private:
 };
 
 
-FDEventQueue::FDEventQueue(bool for_sockets_only) throw (Exception) {
+FDEventQueue::FDEventQueue(bool for_sockets_only) throw(Exception) {
   if (for_sockets_only) {
 #if _WIN32_WINNT >= 0x0600
     pimpl = new SocketPoller;
 #else
     pimpl = new SocketSelector;
 #endif
-  } else
+  } else {
     pimpl = new FDImpl;
+  }
 }
 
 FDEventQueue::~FDEventQueue() {

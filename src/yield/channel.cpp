@@ -35,23 +35,25 @@ namespace yield {
 ssize_t Channel::read(Buffer& buffer) {
   if (buffer.get_next_buffer() == NULL) {
     ssize_t read_ret = read(buffer, buffer.capacity() - buffer.size());
-    if (read_ret > 0)
+    if (read_ret > 0) {
       buffer.put(NULL, static_cast<size_t>(read_ret));
+    }
     return read_ret;
   } else {
     vector<iovec> iov;
     Buffers::as_read_iovecs(buffer, iov);
     ssize_t readv_ret = readv(&iov[0], iov.size());
-    if (readv_ret > 0)
+    if (readv_ret > 0) {
       Buffers::put(buffer, NULL, static_cast<size_t>(readv_ret));
+    }
     return readv_ret;
   }
 }
 
 ssize_t Channel::write(const Buffer& buffer) {
-  if (buffer.get_next_buffer() == NULL)
+  if (buffer.get_next_buffer() == NULL) {
     return write(buffer, buffer.size());
-  else {
+  } else {
     vector<iovec> iov;
     Buffers::as_write_iovecs(buffer, iov);
     return writev(&iov[0], iov.size());
@@ -60,8 +62,9 @@ ssize_t Channel::write(const Buffer& buffer) {
 
 ssize_t Channel::writev(const iovec* iov, int iovlen) {
   string buf;
-  for (int iov_i = 0; iov_i < iovlen; ++iov_i)
+  for (int iov_i = 0; iov_i < iovlen; ++iov_i) {
     buf.append(static_cast<char*>(iov[iov_i].iov_base), iov[iov_i].iov_len);
+  }
   return write(buf.data(), buf.size());
 }
 }

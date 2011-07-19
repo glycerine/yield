@@ -43,8 +43,9 @@ ReaderWriterLock::ReaderWriterLock() {
   InitializeCriticalSection(cs);
 
   hReadyToRead = CreateEvent(NULL, TRUE, FALSE, NULL);
-  if (hReadyToRead == NULL)
+  if (hReadyToRead == NULL) {
     throw Exception();
+  }
 
   hReadyToWrite = CreateSemaphore(NULL, 0, 1, NULL);
   if (hReadyToWrite == NULL) {
@@ -83,23 +84,26 @@ bool ReaderWriterLock::rdlock() {
         waiting_writers_count == 0
         &&
         HIWORD(active_writer_readers) == 0
-      )
+      ) {
         break;
+      }
     }
 
     waiting_readers_count--;
     debug_assert_ge(waiting_readers_count, 0);
 
     active_writer_readers++;
-  } else if ((++active_writer_readers == 1) && waiting_readers_count != 0)
+  } else if ((++active_writer_readers == 1) && waiting_readers_count != 0) {
     notify_readers = true;
+  }
 
   debug_assert_eq(HIWORD(active_writer_readers), 0);
 
   LeaveCriticalSection(cs);
 
-  if (notify_readers)
+  if (notify_readers) {
     SetEvent(hReadyToRead);
+  }
 
   return true;
 }
@@ -110,8 +114,9 @@ void ReaderWriterLock::rdunlock() {
   debug_assert_eq(HIWORD(active_writer_readers), 0);
   debug_assert_gt(LOWORD(active_writer_readers), 0);
 
-  if (--active_writer_readers == 0)
+  if (--active_writer_readers == 0) {
     ResetEvent(hReadyToRead);
+  }
 
   if (waiting_writers_count != 0 && active_writer_readers == 0) {
     waiting_writers_count--;
@@ -162,16 +167,18 @@ void ReaderWriterLock::wrunlock() {
     notify_writer = true;
   } else {
     active_writer_readers = 0;
-    if (waiting_readers_count != 0)
+    if (waiting_readers_count != 0) {
       notify_readers = true;
+    }
   }
 
   LeaveCriticalSection(cs);
 
-  if (notify_writer)
+  if (notify_writer) {
     ReleaseSemaphore(hReadyToWrite, 1, NULL);
-  else if (notify_readers)
+  } else if (notify_readers) {
     SetEvent(hReadyToRead);
+  }
 }
 }
 }

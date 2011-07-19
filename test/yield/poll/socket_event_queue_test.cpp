@@ -42,12 +42,13 @@ TEST_SUITE_EX(
 
 namespace yield {
 namespace poll {
-  using yield::sockets::StreamSocketPair;
+using yield::sockets::StreamSocketPair;
 
 TEST(SocketEventQueue, associate) {
   StreamSocketPair sockets;
-  if (!FDEventQueue(true).associate(sockets.first(), FDEvent::TYPE_READ_READY))
+  if (!FDEventQueue(true).associate(sockets.first(), FDEvent::TYPE_READ_READY)) {
     throw Exception();
+  }
 }
 
 TEST(SocketEventQueue, associate_change) {
@@ -55,15 +56,17 @@ TEST(SocketEventQueue, associate_change) {
   FDEventQueue socket_event_queue(true);
 
   if (!
-    socket_event_queue.associate(
-      sockets.first(),
-      FDEvent::TYPE_READ_READY | FDEvent::TYPE_WRITE_READY
-    )
-  )
+      socket_event_queue.associate(
+        sockets.first(),
+        FDEvent::TYPE_READ_READY | FDEvent::TYPE_WRITE_READY
+      )
+     ) {
     throw Exception();
+  }
 
-  if (!socket_event_queue.associate(sockets.first(), FDEvent::TYPE_READ_READY))
+  if (!socket_event_queue.associate(sockets.first(), FDEvent::TYPE_READ_READY)) {
     throw Exception();
+  }
 
   sockets.second().send("m", 1, 0);
 
@@ -75,56 +78,65 @@ TEST(SocketEventQueue, associate_two) {
   StreamSocketPair sockets;
   FDEventQueue socket_event_queue(true);
 
-  if (!socket_event_queue.associate(sockets.first(), FDEvent::TYPE_READ_READY))
+  if (!socket_event_queue.associate(sockets.first(), FDEvent::TYPE_READ_READY)) {
     throw Exception();
+  }
 
-  if (!socket_event_queue.associate(sockets.second(), FDEvent::TYPE_WRITE_READY))
+  if (!socket_event_queue.associate(sockets.second(), FDEvent::TYPE_WRITE_READY)) {
     throw Exception();
+  }
 }
 
 TEST(SocketEventQueue, dissociate) {
   StreamSocketPair sockets;
   FDEventQueue socket_event_queue(true);
 
-  if (!socket_event_queue.associate(sockets.first(), FDEvent::TYPE_READ_READY))
+  if (!socket_event_queue.associate(sockets.first(), FDEvent::TYPE_READ_READY)) {
     throw Exception();
+  }
 
-  if (!socket_event_queue.dissociate(sockets.first()))
+  if (!socket_event_queue.dissociate(sockets.first())) {
     throw Exception();
+  }
 
   sockets.first().send("m", 1, 0);
 
   Event* event = socket_event_queue.timeddequeue(0);
   throw_assert_eq(event, NULL);
 
-  if (!socket_event_queue.associate(sockets.first(), FDEvent::TYPE_READ_READY))
-    throw Exception(); // associate after dissociate should succeed
+  if (!socket_event_queue.associate(sockets.first(), FDEvent::TYPE_READ_READY)) {
+    throw Exception();  // associate after dissociate should succeed
+  }
 }
 
 TEST(SocketEventQueue, dissociate_two) {
   StreamSocketPair sockets;
   FDEventQueue socket_event_queue(true);
 
-  if (!socket_event_queue.associate(sockets.first(), FDEvent::TYPE_READ_READY))
+  if (!socket_event_queue.associate(sockets.first(), FDEvent::TYPE_READ_READY)) {
     throw Exception();
-  if (!socket_event_queue.associate(sockets.second(), FDEvent::TYPE_READ_READY))
+  }
+  if (!socket_event_queue.associate(sockets.second(), FDEvent::TYPE_READ_READY)) {
     throw Exception();
+  }
 
-  if (!socket_event_queue.dissociate(sockets.first()))
+  if (!socket_event_queue.dissociate(sockets.first())) {
     throw Exception();
+  }
 
   sockets.first().send("m", 1, 0);
   sockets.second().send("m", 1, 0);
 
   auto_Object<FDEvent> socket_event
-    = Object::cast<FDEvent>(socket_event_queue.dequeue());
+  = Object::cast<FDEvent>(socket_event_queue.dequeue());
   throw_assert_eq(socket_event->get_fd(), sockets.second());
   throw_assert_eq(socket_event->get_type(), FDEvent::TYPE_READ_READY);
   char m;
-  if (socket_event->get_fd() == sockets.first())
+  if (socket_event->get_fd() == sockets.first()) {
     sockets.first().recv(&m, 1, 0);
-  else
+  } else {
     sockets.second().recv(&m, 1, 0);
+  }
 
   Event* event = socket_event_queue.timeddequeue(0);
   throw_assert_eq(event, NULL);
@@ -134,8 +146,9 @@ TEST(SocketEventQueue, dequeue_SocketEvent) {
   StreamSocketPair sockets;
   FDEventQueue socket_event_queue(true);
 
-  if (!socket_event_queue.associate(sockets.first(), FDEvent::TYPE_READ_READY))
+  if (!socket_event_queue.associate(sockets.first(), FDEvent::TYPE_READ_READY)) {
     throw Exception();
+  }
 
   sockets.second().send("m", 1, 0);
 
@@ -147,10 +160,12 @@ TEST(SocketEventQueue, dequeue_two_SocketEvents) {
   StreamSocketPair sockets;
   FDEventQueue socket_event_queue(true);
 
-  if (!socket_event_queue.associate(sockets.first(), FDEvent::TYPE_READ_READY))
+  if (!socket_event_queue.associate(sockets.first(), FDEvent::TYPE_READ_READY)) {
     throw Exception();
-  if (!socket_event_queue.associate(sockets.second(), FDEvent::TYPE_READ_READY))
+  }
+  if (!socket_event_queue.associate(sockets.second(), FDEvent::TYPE_READ_READY)) {
     throw Exception();
+  }
 
   sockets.first().send("m", 1, 0);
   sockets.second().send("m", 1, 0);
@@ -172,8 +187,9 @@ TEST(SocketEventQueue, dequeue_want_send_SocketEvent) {
   StreamSocketPair sockets;
   FDEventQueue socket_event_queue(true);
 
-  if (!socket_event_queue.associate(sockets.first(), FDEvent::TYPE_WRITE_READY))
+  if (!socket_event_queue.associate(sockets.first(), FDEvent::TYPE_WRITE_READY)) {
     throw Exception();
+  }
 
   auto_Object<FDEvent> socket_event
   = Object::cast<FDEvent>(socket_event_queue.dequeue());

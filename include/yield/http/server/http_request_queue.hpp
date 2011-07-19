@@ -55,13 +55,13 @@ public:
   HTTPRequestQueue(
     const yield::sockets::SocketAddress& sockname,
     YO_NEW_REF Log* log = NULL
-  ) throw (Exception);
+  ) throw(Exception);
 
   HTTPRequestQueue(
     YO_NEW_REF yield::sockets::TCPSocket& socket_,
     const yield::sockets::SocketAddress& sockname,
     YO_NEW_REF Log* log = NULL
-  ) throw (Exception);
+  ) throw(Exception);
 
   ~HTTPRequestQueue();
 
@@ -77,7 +77,7 @@ public:
 private:
   void handle(YO_NEW_REF yield::sockets::aio::acceptAIOCB& accept_aiocb);
   template <class AIOCBType> void handle(YO_NEW_REF AIOCBType& aiocb);
-  void init(const yield::sockets::SocketAddress& sockname) throw (Exception);
+  void init(const yield::sockets::SocketAddress& sockname) throw(Exception);
 
 private:
   AIOQueueType& aio_queue;

@@ -72,8 +72,9 @@ public:
       processor_i < UINT16_MAX;
       processor_i++
     ) {
-      if (isset(processor_i))
+      if (isset(processor_i)) {
         count++;
+      }
     }
 
     return count;

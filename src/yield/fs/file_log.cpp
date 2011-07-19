@@ -43,8 +43,9 @@ FileLog::~FileLog() {
 void FileLog::write(const char* str, size_t str_len) {
   if (file == NULL) {
     file = FileSystem().open(file_path, O_CREAT | O_WRONLY | O_APPEND);
-    if (file == NULL)
+    if (file == NULL) {
       return;
+    }
   }
 
   file->write(str, str_len);

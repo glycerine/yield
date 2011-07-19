@@ -49,10 +49,11 @@ public:
   */
   template <class ObjectType>
   static ObjectType* cast(Object* object) {
-    if (object != NULL && object->get_type_id() == ObjectType::TYPE_ID)
+    if (object != NULL && object->get_type_id() == ObjectType::TYPE_ID) {
       return static_cast<ObjectType*>(object);
-    else
+    } else {
       return NULL;
+    }
   }
 
   /**
@@ -64,10 +65,11 @@ public:
   */
   template <class ObjectType>
   static ObjectType* cast(Object& object) {
-    if (object.get_type_id() == ObjectType::TYPE_ID)
+    if (object.get_type_id() == ObjectType::TYPE_ID) {
       return static_cast<ObjectType*>(&object);
-    else
+    } else {
       return NULL;
+    }
   }
 
 public:
@@ -77,8 +79,9 @@ public:
     @param object the object whose reference count should be decremented.
   */
   static inline void dec_ref(Object& object) {
-    if (atomic_dec(&object.refcnt) == 0)
+    if (atomic_dec(&object.refcnt) == 0) {
       delete &object;
+    }
   }
 
   /**
@@ -88,8 +91,9 @@ public:
     @param object the Object whose reference count should be decremented.
   */
   static inline void dec_ref(Object* object) {
-    if (object != 0)
+    if (object != 0) {
       Object::dec_ref(*object);
+    }
   }
 
 public:
@@ -129,8 +133,9 @@ public:
   */
   template <class ObjectType>
   static inline ObjectType* inc_ref(ObjectType* object) {
-    if (object != 0)
+    if (object != 0) {
       inc_ref(*object);
+    }
 
     return object;
   }

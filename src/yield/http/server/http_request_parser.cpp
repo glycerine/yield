@@ -64,14 +64,14 @@ HTTPRequestParser::create_http_request(
   const yield::uri::URI& uri
 ) {
   return *new HTTPRequest(
-            body,
-            connection,
-            fields_offset,
-            header,
-            http_version,
-            method,
-            uri
-          );
+           body,
+           connection,
+           fields_offset,
+           header,
+           http_version,
+           method,
+           uri
+         );
 }
 }
 }

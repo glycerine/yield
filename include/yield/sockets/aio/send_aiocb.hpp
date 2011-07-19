@@ -46,8 +46,8 @@ public:
     YO_NEW_REF Buffer& buffer,
     const Socket::MessageFlags& flags
   ) : AIOCB(socket_),
-      buffer(buffer),
-      flags(flags) {
+    buffer(buffer),
+    flags(flags) {
   }
 
   ~sendAIOCB();

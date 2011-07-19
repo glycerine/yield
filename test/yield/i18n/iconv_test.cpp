@@ -60,8 +60,9 @@ TEST(iconv, c_strings) {
       &outbytesleft
     );
 
-  if (iconv_ret == static_cast<size_t>(-1))
+  if (iconv_ret == static_cast<size_t>(-1)) {
     throw Exception();
+  }
 
   // throw_assert_ne(inbuf, TEST_STRING_ISO88591);
   throw_assert_eq(inbytesleft, 0);
@@ -72,16 +73,18 @@ TEST(iconv, c_strings) {
 
 TEST(iconv, iso88591_to_utf8) {
   string outbuf;
-  if (!iconv(Code::UTF8, Code::ISO88591)(TEST_STRING_ISO88591, outbuf))
+  if (!iconv(Code::UTF8, Code::ISO88591)(TEST_STRING_ISO88591, outbuf)) {
     throw Exception();
+  }
   throw_assert_false(outbuf.empty());
   throw_assert_eq(outbuf, TEST_STRING_UTF8);
 }
 
 TEST(iconv, utf8_to_iso88591) {
   string outbuf;
-  if (!iconv(Code::ISO88591, Code::UTF8)(TEST_STRING_UTF8, outbuf))
+  if (!iconv(Code::ISO88591, Code::UTF8)(TEST_STRING_UTF8, outbuf)) {
     throw Exception();
+  }
   throw_assert_false(outbuf.empty());
   throw_assert_eq(outbuf, TEST_STRING_ISO88591);
 }
@@ -89,15 +92,17 @@ TEST(iconv, utf8_to_iso88591) {
 #ifdef _WIN32
 TEST(iconv, utf8_to_wide) {
   std::wstring outbuf;
-  if (!iconv(Code::WCHAR_T, Code::UTF8)(TEST_STRING_UTF8, outbuf))
+  if (!iconv(Code::WCHAR_T, Code::UTF8)(TEST_STRING_UTF8, outbuf)) {
     throw Exception();
+  }
   throw_assert_false(outbuf.empty());
 }
 
 TEST(iconv, wide_to_utf8) {
   string outbuf;
-  if (!iconv(Code::UTF8, Code::WCHAR_T)(TEST_STRING_WIDE, outbuf))
+  if (!iconv(Code::UTF8, Code::WCHAR_T)(TEST_STRING_WIDE, outbuf)) {
     throw Exception();
+  }
   throw_assert_eq(outbuf.size(), wcslen(TEST_STRING_WIDE));
 }
 #endif

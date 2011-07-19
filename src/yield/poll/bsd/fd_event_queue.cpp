@@ -35,27 +35,30 @@
 
 namespace yield {
 namespace poll {
-FDEventQueue::FDEventQueue(bool) throw (Exception) {
+FDEventQueue::FDEventQueue(bool) throw(Exception) {
   kq = kqueue();
   if (kq != -1) {
     try {
       if (pipe(wake_pipe) != -1) {
         try {
-          if (!associate(wake_pipe[0], FDEvent::TYPE_READ_READY))
+          if (!associate(wake_pipe[0], FDEvent::TYPE_READ_READY)) {
             throw Exception();
+          }
         } catch (Exception&) {
           close(wake_pipe[0]);
           close(wake_pipe[1]);
           throw;
         }
-      } else
+      } else {
         throw Exception();
+      }
     } catch (Exception&) {
       close(kq);
       throw;
     }
-  } else
+  } else {
     throw Exception();
+  }
 }
 
 FDEventQueue::~FDEventQueue() {
@@ -70,8 +73,9 @@ bool FDEventQueue::associate(fd_t fd, FDEvent::Type fd_event_types) {
 
     if (fd_event_types & FDEvent::TYPE_READ_READY) {
       EV_SET(&kevent_, fd, EVFILT_READ, EV_ADD, 0, 0, NULL);
-      if (kevent(kq, &kevent_, 1, 0, 0, NULL) == -1)
+      if (kevent(kq, &kevent_, 1, 0, 0, NULL) == -1) {
         return false;
+      }
     } else {
       EV_SET(&kevent_, fd, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
       kevent(kq, &kevent_, 1, 0, 0, NULL); // Ignore the result
@@ -79,16 +83,18 @@ bool FDEventQueue::associate(fd_t fd, FDEvent::Type fd_event_types) {
 
     if (fd_event_types & FDEvent::TYPE_WRITE_READY) {
       EV_SET(&kevent_, fd, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
-      if (kevent(kq, &kevent_, 1, 0, 0, NULL) == -1)
+      if (kevent(kq, &kevent_, 1, 0, 0, NULL) == -1) {
         return false;
+      }
     } else {
       EV_SET(&kevent_, fd, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
       kevent(kq, &kevent_, 1, 0, 0, NULL); // Ignore the result
     }
 
     return true;
-  } else
+  } else {
     return dissociate(fd);
+  }
 }
 
 bool FDEventQueue::dissociate(fd_t fd) {
@@ -106,15 +112,16 @@ bool FDEventQueue::enqueue(Event& event) {
     ssize_t write_ret = write(wake_pipe[1], "m", 1);
     debug_assert_eq(write_ret, 1);
     return true;
-  } else
+  } else {
     return false;
+  }
 }
 
 YO_NEW_REF Event* FDEventQueue::timeddequeue(const Time& timeout) {
   Event* event = event_queue.trydequeue();
-  if (event != NULL)
+  if (event != NULL) {
     return event;
-  else {
+  } else {
     struct kevent kevent_;
     timespec timeout_ts = timeout;
     int ret = kevent(kq, 0, 0, &kevent_, 1, &timeout_ts);
@@ -127,18 +134,20 @@ YO_NEW_REF Event* FDEventQueue::timeddequeue(const Time& timeout) {
         return event_queue.trydequeue();
       } else {
         switch (kevent_.filter) {
-          case EVFILT_READ:
-            return new FDEvent(kevent_.ident, FDEvent::TYPE_READ_READY);
+        case EVFILT_READ:
+          return new FDEvent(kevent_.ident, FDEvent::TYPE_READ_READY);
 
-          case EVFILT_WRITE:
-            return new FDEvent(kevent_.ident, FDEvent::TYPE_WRITE_READY);
+        case EVFILT_WRITE:
+          return new FDEvent(kevent_.ident, FDEvent::TYPE_WRITE_READY);
 
-          default: debug_break(); return NULL;
+        default:
+          debug_break();
+          return NULL;
         }
       }
-    } else if (ret == 0 || errno == EINTR)
+    } else if (ret == 0 || errno == EINTR) {
       return NULL;
-    else {
+    } else {
       debug_break();
       return NULL;
     }

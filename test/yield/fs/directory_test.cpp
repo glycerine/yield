@@ -51,15 +51,18 @@ protected:
   void setup() {
     teardown();
 
-    if (!FileSystem().mkdir(get_test_dir_name()))
+    if (!FileSystem().mkdir(get_test_dir_name())) {
       throw Exception();
+    }
 
-    if (!FileSystem().touch(get_test_file_path()))
+    if (!FileSystem().touch(get_test_file_path())) {
       throw Exception();
+    }
 
     directory = FileSystem().opendir(get_test_dir_name());
-    if (directory == NULL)
+    if (directory == NULL) {
       throw Exception();
+    }
   }
 
   void teardown() {
@@ -67,8 +70,9 @@ protected:
     directory = NULL;
 
     if (FileSystem().exists(get_test_dir_name())) {
-      if (!FileSystem().rmtree(get_test_dir_name()))
+      if (!FileSystem().rmtree(get_test_dir_name())) {
         throw Exception();
+      }
     }
   }
 
@@ -96,8 +100,9 @@ private:
 
 
 TEST_EX(Directory, close, DirectoryTest) {
-  if (!get_directory().close())
+  if (!get_directory().close()) {
     throw Exception();
+  }
 }
 
 #ifndef _WIN32

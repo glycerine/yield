@@ -80,7 +80,9 @@ TEST(Time, from_timeval) {
 TEST(Time, now) {
   Time time1(Time::now());
   throw_assert_gt(static_cast<uint64_t>(time1), 0);
-  for (uint32_t i = 0; i < UINT32_MAX / 16; i++) ;
+  for (uint32_t i = 0; i < UINT32_MAX / 16; i++) {
+    ;
+  }
   Time time2(Time::now());
   throw_assert_gt(time2, time1);
 }

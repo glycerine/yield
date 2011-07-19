@@ -40,10 +40,10 @@ const int SocketAddress::GETNAMEINFO_FLAG_NUMERICHOST = NI_NUMERICHOST;
 const int SocketAddress::GETNAMEINFO_FLAG_NUMERICSERV = NI_NUMERICSERV;
 
 const SocketAddress
-  SocketAddress::IN_ANY(static_cast<uint32_t>(INADDR_ANY), in6addr_any, 0);
+SocketAddress::IN_ANY(static_cast<uint32_t>(INADDR_ANY), in6addr_any, 0);
 
 const SocketAddress
-  SocketAddress::IN_BROADCAST(static_cast<uint32_t>(INADDR_BROADCAST), 0);
+SocketAddress::IN_BROADCAST(static_cast<uint32_t>(INADDR_BROADCAST), 0);
 
 const SocketAddress
 SocketAddress::IN_LOOPBACK(
@@ -70,10 +70,11 @@ SocketAddress::SocketAddress(const SocketAddress& other, uint16_t port) {
     debug_break();
   }
 
-  if (other.next_socket_address != NULL)
+  if (other.next_socket_address != NULL) {
     next_socket_address = new SocketAddress(*other.next_socket_address, port);
-  else
+  } else {
     next_socket_address = NULL;
+  }
 }
 
 void SocketAddress::assign(const addrinfo& addrinfo_) {
@@ -89,10 +90,11 @@ void SocketAddress::assign(const addrinfo& addrinfo_) {
   addr.ss_family = static_cast<uint16_t>(addrinfo_.ai_family);
 
   SocketAddress::dec_ref(next_socket_address);
-  if (addrinfo_.ai_next != NULL)
+  if (addrinfo_.ai_next != NULL) {
     next_socket_address = new SocketAddress(*addrinfo_.ai_next);
-  else
+  } else {
     next_socket_address = NULL;
+  }
 }
 
 void SocketAddress::assign(uint32_t ip, uint16_t port) {
@@ -139,10 +141,11 @@ const SocketAddress* SocketAddress::filter(int family) const {
   const SocketAddress* next_socket_address = this;
 
   do {
-    if (next_socket_address->get_family() == family)
+    if (next_socket_address->get_family() == family) {
       return next_socket_address;
-    else
+    } else {
       next_socket_address = next_socket_address->next_socket_address;
+    }
   } while (next_socket_address != NULL);
 
   WSASetLastError(WSAEAFNOSUPPORT);
@@ -160,8 +163,9 @@ SocketAddress::getaddrinfo(
     SocketAddress* socket_address = new SocketAddress(*addrinfo_);
     freeaddrinfo(addrinfo_);
     return socket_address;
-  } else
+  } else {
     return NULL;
+  }
 }
 
 addrinfo*
@@ -172,8 +176,9 @@ SocketAddress::_getaddrinfo(
   addrinfo addrinfo_hints;
   memset(&addrinfo_hints, 0, sizeof(addrinfo_hints));
   addrinfo_hints.ai_family = AF_UNSPEC;
-  if (nodename == NULL)
-    addrinfo_hints.ai_flags |= AI_PASSIVE; // To get INADDR_ANYs
+  if (nodename == NULL) {
+    addrinfo_hints.ai_flags |= AI_PASSIVE;  // To get INADDR_ANYs
+  }
 
   addrinfo* addrinfo_;
 
@@ -189,10 +194,11 @@ SocketAddress::_getaddrinfo(
     = ::getaddrinfo(nodename, servname, &addrinfo_hints, &addrinfo_);
   }
 
-  if (getaddrinfo_ret == 0)
+  if (getaddrinfo_ret == 0) {
     return addrinfo_;
-  else
+  } else {
     return NULL;
+  }
 }
 
 bool
@@ -215,8 +221,9 @@ SocketAddress::getnameinfo(
         servnamelen,
         flags
       ) == 0
-    )
+    ) {
       return true;
+    }
 
     next_socket_address = next_socket_address->next_socket_address;
   } while (next_socket_address != NULL);
@@ -235,16 +242,22 @@ throw(Exception) {
     next_socket_address = NULL;
     assign(*addrinfo_);
     freeaddrinfo(addrinfo_);
-  } else
+  } else {
     throw Exception();
+  }
 }
 
 socklen_t SocketAddress::len(int family) {
   switch (family) {
-  case 0: return sizeof(sockaddr_storage);
-  case AF_INET: return sizeof(sockaddr_in);
-  case AF_INET6: return sizeof(sockaddr_in6);
-  default: debug_break(); return 0;
+  case 0:
+    return sizeof(sockaddr_storage);
+  case AF_INET:
+    return sizeof(sockaddr_in);
+  case AF_INET6:
+    return sizeof(sockaddr_in6);
+  default:
+    debug_break();
+    return 0;
   }
 }
 }

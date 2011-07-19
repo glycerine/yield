@@ -87,7 +87,7 @@ protected:
 protected:
   Buffer& buffer;
   const char* eof;
-  char *p, *ps;
+  char* p, *ps;
 
 private:
   static bool

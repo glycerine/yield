@@ -32,21 +32,21 @@ namespace sockets {
 #ifdef YIELD_HAVE_OPENSSL
 namespace ssl {
 const char* TEST_PEM_PRIVATE_KEY = \
-    "-----BEGIN RSA PRIVATE KEY-----\n"
-    "MIICXAIBAAKBgQDCjEmDQzzp4+FtNw31mJM6D85EDW8mhrX1xWBRKd4Tr3fibYjY\n"
-    "VgkoXX03QmIqmtA4Rbbu7cqkq8grOdX7a2LcZ3tNaByS9C1wFc5QVqXd2ZyKj7O7\n"
-    "bvTEawwDbU2gdgFgFsrt7AGT3fPeT3bqK7W0bS/Rgw0hn8OAm6QL9NqiiQIDAQAB\n"
-    "AoGAeYyQuXQe8Lqxszy8ef9zrMkHRDlogpeTxBQnU05nM8Fjk5J/9zn5ysBuZUIS\n"
-    "dy/2e9ICs1DaVPwGugsOiGDViGqVwzNJUo5Odst0POEEFCc04EdPlLutOdd8vaFC\n"
-    "fgj7toeosynhL6nqvAzQRe1qCp0oDkxa5zwymijYp7hlbEkCQQD4tqWSrizdpHVI\n"
-    "wJS/NbUD67ggoaQ37Pjdp+TkueGFgZaBMrE1XNFX39Go3bl7MK4lhU8ENc+A7s8U\n"
-    "tA4aau8bAkEAyD9mHgC2V8BBE1VuIdq9FwGwu9Khl4a0OjWCRIDLNZyjSaYGNCWU\n"
-    "7R+g6rHU3C9LiJvrsPz8eMZsgcfWO6/7KwJAFtDKh5Yqz3pSuAXSn2fR3zY0genS\n"
-    "Ir8+ZTcNrF3Q7mpg4CFCWF7XZXRGy3LrnP1uPErqYLx++JjvrjqGQK4mmQJAJxUw\n"
-    "ohRzgkb0rIhU+WiO1UmwK8hdX4yb6mx9I0+b2bfbqskrlsvq+CjfKE9TAzJ75IrC\n"
-    "AoYt5IidrurI5ldfhwJBAN0odw6+SW/AiUl4maE38y5iCGwg6vOUNAiW0HinZjCE\n"
-    "rarUI6jSyCc4DeiLp7DTF5n9OLdkXq8qUx8OaX5qcRU=\n"
-    "-----END RSA PRIVATE KEY-----\n";
+                                   "-----BEGIN RSA PRIVATE KEY-----\n"
+                                   "MIICXAIBAAKBgQDCjEmDQzzp4+FtNw31mJM6D85EDW8mhrX1xWBRKd4Tr3fibYjY\n"
+                                   "VgkoXX03QmIqmtA4Rbbu7cqkq8grOdX7a2LcZ3tNaByS9C1wFc5QVqXd2ZyKj7O7\n"
+                                   "bvTEawwDbU2gdgFgFsrt7AGT3fPeT3bqK7W0bS/Rgw0hn8OAm6QL9NqiiQIDAQAB\n"
+                                   "AoGAeYyQuXQe8Lqxszy8ef9zrMkHRDlogpeTxBQnU05nM8Fjk5J/9zn5ysBuZUIS\n"
+                                   "dy/2e9ICs1DaVPwGugsOiGDViGqVwzNJUo5Odst0POEEFCc04EdPlLutOdd8vaFC\n"
+                                   "fgj7toeosynhL6nqvAzQRe1qCp0oDkxa5zwymijYp7hlbEkCQQD4tqWSrizdpHVI\n"
+                                   "wJS/NbUD67ggoaQ37Pjdp+TkueGFgZaBMrE1XNFX39Go3bl7MK4lhU8ENc+A7s8U\n"
+                                   "tA4aau8bAkEAyD9mHgC2V8BBE1VuIdq9FwGwu9Khl4a0OjWCRIDLNZyjSaYGNCWU\n"
+                                   "7R+g6rHU3C9LiJvrsPz8eMZsgcfWO6/7KwJAFtDKh5Yqz3pSuAXSn2fR3zY0genS\n"
+                                   "Ir8+ZTcNrF3Q7mpg4CFCWF7XZXRGy3LrnP1uPErqYLx++JjvrjqGQK4mmQJAJxUw\n"
+                                   "ohRzgkb0rIhU+WiO1UmwK8hdX4yb6mx9I0+b2bfbqskrlsvq+CjfKE9TAzJ75IrC\n"
+                                   "AoYt5IidrurI5ldfhwJBAN0odw6+SW/AiUl4maE38y5iCGwg6vOUNAiW0HinZjCE\n"
+                                   "rarUI6jSyCc4DeiLp7DTF5n9OLdkXq8qUx8OaX5qcRU=\n"
+                                   "-----END RSA PRIVATE KEY-----\n";
 
 const char* TEST_PEM_PRIVATE_KEY_PASSPHRASE = "passphrase";
 }

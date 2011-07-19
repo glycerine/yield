@@ -42,8 +42,9 @@ ScanningFileWatch::ScanningFileWatch(
   Log* log
 ) : ScanningWatch(fs_event_types, log, path) {
   stbuf = FileSystem().stat(get_path());
-  if (stbuf == NULL)
+  if (stbuf == NULL) {
     throw Exception();
+  }
 }
 
 ScanningFileWatch::~ScanningFileWatch() {
@@ -63,12 +64,15 @@ void ScanningFileWatch::scan(EventHandler& fs_event_handler) {
         delete old_stbuf;
         stbuf = new_stbuf;
         return;
-      } else
+      } else {
         fs_event_type = FSEvent::TYPE_FILE_MODIFY;
-    } else // File has changed type
+      }
+    } else { // File has changed type
       fs_event_type = FSEvent::TYPE_FILE_REMOVE;
-  } else // File does not exist any longer
+    }
+  } else { // File does not exist any longer
     fs_event_type = FSEvent::TYPE_FILE_REMOVE;
+  }
 
   if (want_fs_event_type(fs_event_type)) {
     FSEvent* fs_event = new FSEvent(get_path(), fs_event_type);

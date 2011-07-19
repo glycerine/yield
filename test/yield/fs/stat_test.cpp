@@ -75,8 +75,9 @@ private:
 
 
 TEST_EX(Stat, get_atime, StatTest) {
-  if (!FileSystem().mkdir(get_test_dir_name()))
+  if (!FileSystem().mkdir(get_test_dir_name())) {
     throw Exception();
+  }
 
   DateTime now = DateTime::now();
   auto_Object<Stat> stbuf = FileSystem().stat(get_test_dir_name());
@@ -85,8 +86,9 @@ TEST_EX(Stat, get_atime, StatTest) {
 }
 
 TEST_EX(Stat, get_ctime, StatTest) {
-  if (!FileSystem().mkdir(get_test_dir_name()))
+  if (!FileSystem().mkdir(get_test_dir_name())) {
     throw Exception();
+  }
   DateTime now = DateTime::now();
   auto_Object<Stat> stbuf = FileSystem().stat(get_test_dir_name());
   throw_assert_ne(stbuf->get_ctime(), DateTime::INVALID_DATE_TIME);
@@ -94,8 +96,9 @@ TEST_EX(Stat, get_ctime, StatTest) {
 }
 
 TEST_EX(Stat, get_mtime, StatTest) {
-  if (!FileSystem().mkdir(get_test_dir_name()))
+  if (!FileSystem().mkdir(get_test_dir_name())) {
     throw Exception();
+  }
   DateTime now = DateTime::now();
   auto_Object<Stat> stbuf = FileSystem().stat(get_test_dir_name());
   throw_assert_ne(stbuf->get_mtime(), DateTime::INVALID_DATE_TIME);
@@ -103,15 +106,17 @@ TEST_EX(Stat, get_mtime, StatTest) {
 }
 
 TEST_EX(Stat, get_nlink, StatTest) {
-  if (!FileSystem().mkdir(get_test_dir_name()))
+  if (!FileSystem().mkdir(get_test_dir_name())) {
     throw Exception();
+  }
   auto_Object<Stat> stbuf = FileSystem().stat(get_test_dir_name());
   throw_assert_eq(stbuf->get_nlink(), 1);
 }
 
 TEST_EX(Stat, get_size, StatTest) {
-  if (!FileSystem().mkdir(get_test_dir_name()))
+  if (!FileSystem().mkdir(get_test_dir_name())) {
     throw Exception();
+  }
   auto_Object<Stat> stbuf = FileSystem().stat(get_test_dir_name());
   throw_assert_eq(stbuf->get_size(), 0);
 }
@@ -129,38 +134,43 @@ TEST(Stat, ISCHR) {
 #endif
 
 TEST_EX(Stat, ISDIR, StatTest) {
-  if (!FileSystem().mkdir(get_test_dir_name()))
+  if (!FileSystem().mkdir(get_test_dir_name())) {
     throw Exception();
+  }
   auto_Object<Stat> stbuf = FileSystem().stat(get_test_dir_name());
   throw_assert(stbuf->ISDIR());
 }
 
 #ifndef _WIN32
 TEST_EX(Stat, ISFIFO, StatTest) {
-  if (!FileSystem().mkfifo(get_test_file_name()))
+  if (!FileSystem().mkfifo(get_test_file_name())) {
     throw Exception();
+  }
   auto_Object<Stat> stbuf = FileSystem().stat(get_test_file_name());
   throw_assert(stbuf->ISFIFO());
 }
 
 TEST_EX(Stat, ISLNK, StatTest) {
-  if (!FileSystem().symlink(get_test_dir_name(), get_test_file_name()))
+  if (!FileSystem().symlink(get_test_dir_name(), get_test_file_name())) {
     throw Exception();
+  }
   auto_Object<Stat> stbuf = FileSystem().lstat(get_test_file_name());
   throw_assert_true(stbuf->ISLNK());
 }
 #endif
 
 TEST_EX(Stat, ISREG, StatTest) {
-  if (!FileSystem().touch(get_test_file_name()))
+  if (!FileSystem().touch(get_test_file_name())) {
     throw Exception();
+  }
   auto_Object<Stat> stbuf = FileSystem().stat(get_test_file_name());
   throw_assert(stbuf->ISREG());
 }
 
 TEST_EX(Stat, operator_equals, StatTest) {
-  if (!FileSystem().touch(get_test_file_name()))
+  if (!FileSystem().touch(get_test_file_name())) {
     throw Exception();
+  }
   auto_Object<Stat> stbuf1 = FileSystem().stat(get_test_file_name());
   auto_Object<Stat> stbuf2 = FileSystem().stat(get_test_file_name());
   throw_assert_eq(*stbuf1, *stbuf2);
@@ -168,8 +178,9 @@ TEST_EX(Stat, operator_equals, StatTest) {
 
 #ifdef _WIN32
 TEST_EX(Stat, operator_as_BY_HANDLE_FILE_INFORMATION, StatTest) {
-  if (!FileSystem().touch(get_test_file_name()))
+  if (!FileSystem().touch(get_test_file_name())) {
     throw Exception();
+  }
 
   auto_Object<Stat> stbuf1 = FileSystem().stat(get_test_file_name());
 
@@ -205,8 +216,9 @@ TEST_EX(Stat, operator_as_BY_HANDLE_FILE_INFORMATION, StatTest) {
 }
 
 TEST_EX(Stat, operator_as_WIN32_FILE_ATTRIBUTE_DATA, StatTest) {
-  if (!FileSystem().touch(get_test_file_name()))
+  if (!FileSystem().touch(get_test_file_name())) {
     throw Exception();
+  }
 
   auto_Object<Stat> stbuf1 = FileSystem().stat(get_test_file_name());
 
@@ -237,8 +249,9 @@ TEST_EX(Stat, operator_as_WIN32_FILE_ATTRIBUTE_DATA, StatTest) {
 }
 
 TEST_EX(Stat, operator_as_WIN32_FIND_DATA, StatTest) {
-  if (!FileSystem().touch(get_test_file_name()))
+  if (!FileSystem().touch(get_test_file_name())) {
     throw Exception();
+  }
 
   auto_Object<Stat> stbuf1 = FileSystem().stat(get_test_file_name());
 
@@ -272,8 +285,9 @@ TEST_EX(Stat, operator_as_WIN32_FIND_DATA, StatTest) {
 }
 #else
 TEST_EX(Stat, operator_as_struct_stat, StatTest) {
-  if (!FileSystem().touch(get_test_file_name()))
+  if (!FileSystem().touch(get_test_file_name())) {
     throw Exception();
+  }
 
   auto_Object<Stat> stbuf1 = FileSystem().stat(get_test_file_name());
 

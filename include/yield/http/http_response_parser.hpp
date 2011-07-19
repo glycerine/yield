@@ -67,12 +67,12 @@ protected:
     uint16_t status_code
   ) {
     return *new HTTPResponse(
-                  body,
-                  fields_offset,
-                  header,
-                  http_version,
-                  status_code
-                );
+             body,
+             fields_offset,
+             header,
+             http_version,
+             status_code
+           );
   }
 
 protected:

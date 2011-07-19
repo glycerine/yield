@@ -66,7 +66,7 @@ public:
       line,
       file,
       message
-   );
+    );
   }
 
 public:

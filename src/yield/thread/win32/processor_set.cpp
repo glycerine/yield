@@ -64,8 +64,9 @@ bool ProcessorSet::isset(uint16_t processor_i) const {
   if (processor_i < sizeof(uintptr_t) * 8) {
     uintptr_t bit = (1UL << processor_i);
     return (bit & mask) == bit;
-  } else
+  } else {
     return false;
+  }
 }
 
 bool ProcessorSet::set(uint16_t processor_i) {

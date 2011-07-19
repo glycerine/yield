@@ -36,8 +36,9 @@ namespace yield {
 namespace thread {
 Mutex::Mutex() {
   hMutex = CreateEvent(NULL, FALSE, TRUE, NULL);
-  if (hMutex == NULL)
+  if (hMutex == NULL) {
     throw Exception();
+  }
 }
 
 Mutex::~Mutex() {

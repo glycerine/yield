@@ -43,11 +43,11 @@ namespace sockets {
 namespace ssl {
 TEST(SSLContext, construct_from_pem_certificate_string) {
   auto_Object<SSLContext> ssl_context
-    = new SSLContext(      
-        TEST_PEM_CERTIFICATE,
-        TEST_PEM_PRIVATE_KEY,
-        TEST_PEM_PRIVATE_KEY_PASSPHRASE
-    );
+  = new SSLContext(
+    TEST_PEM_CERTIFICATE,
+    TEST_PEM_PRIVATE_KEY,
+    TEST_PEM_PRIVATE_KEY_PASSPHRASE
+  );
 }
 }
 #endif

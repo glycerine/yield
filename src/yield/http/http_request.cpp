@@ -62,36 +62,49 @@ HTTPRequest::Method::parse(
 ) throw(Exception) {
   if (method != NULL) {
     switch (method[0]) {
-    case 'D': return DELETE;
-    case 'G': return GET;
-    case 'H': return HEAD;
+    case 'D':
+      return DELETE;
+    case 'G':
+      return GET;
+    case 'H':
+      return HEAD;
     case 'M': {
       switch (method[1]) {
-      case 'K': return MKCOL;
-      case 'O': return MOVE;
+      case 'K':
+        return MKCOL;
+      case 'O':
+        return MOVE;
       }
     }
     break;
-    case 'O': return OPTIONS;
+    case 'O':
+      return OPTIONS;
     case 'P': {
       switch (method[1]) {
-      case 'A': return PATCH;
-      case 'O': return POST;
+      case 'A':
+        return PATCH;
+      case 'O':
+        return POST;
       case 'R': {
         if (method[2] == 'O' && method[3] == 'P') {
           switch (method[3]) {
-          case 'F': return PROPFIND;
-          case 'P': return PROPPATCH;
+          case 'F':
+            return PROPFIND;
+          case 'P':
+            return PROPPATCH;
           }
         }
       }
       break;
-      case 'U': return PUT;
+      case 'U':
+        return PUT;
       }
     }
     break;
-    case 'T': return TRACE;
-    case 'U': return UNLOCK;
+    case 'T':
+      return TRACE;
+    case 'U':
+      return UNLOCK;
     }
   }
 
@@ -106,11 +119,11 @@ HTTPRequest::HTTPRequest(
   Method method,
   const yield::uri::URI& uri
 )
-: HTTPMessage<HTTPRequest>(
-      body,
-      fields_offset,
-      header,
-      http_version
+  : HTTPMessage<HTTPRequest>(
+    body,
+    fields_offset,
+    header,
+    http_version
   ),
   creation_date_time(DateTime::now()),
   method(method),
@@ -135,22 +148,23 @@ HTTPRequest::HTTPRequest(
   uri.get_path(uri_path);
   get_header().put(uri_path);
 
-  if (http_version == 0)
+  if (http_version == 0) {
     get_header().put(" HTTP/1.0\r\n", 11);
-  else
+  } else {
     get_header().put(" HTTP/1.1\r\n", 11);
+  }
 
   set_fields_offset(static_cast<uint16_t>(get_header().size()));
 
   if (uri.has_host()) {
     iovec uri_host;
     uri.get_host(uri_host);
-    if (uri.get_port() == 80)
+    if (uri.get_port() == 80) {
       set_field("Host", 4, uri_host);
-    else {
+    } else {
       const char* uri_port_p
       = static_cast<char*>(uri_host.iov_base) + uri_host.iov_len;
-      if(
+      if (
         uri_port_p >= static_cast<char*>(uri_path.iov_base) - 6
         &&
         uri_port_p < uri_path.iov_base
@@ -159,8 +173,9 @@ HTTPRequest::HTTPRequest(
       ) {
         const char* uri_port_ps = uri_port_p;
         uri_port_p++;
-        while (uri_port_p < uri_path.iov_base && isdigit(*uri_port_p))
+        while (uri_port_p < uri_path.iov_base && isdigit(*uri_port_p)) {
           uri_port_p++;
+        }
         uri_host.iov_len += uri_port_p - uri_port_ps;
 
         set_field("Host", 4, uri_host);
@@ -175,36 +190,38 @@ HTTPRequest::HTTPRequest(
 
         set_field("Host", 4, host.str());
       }
-      }
+    }
   }
 }
 
 std::ostream& operator<<(std::ostream& os, const HTTPRequest& http_request) {
   std::ostringstream body;
   if (http_request.get_body() != NULL) {
-    if (http_request.get_body()->get_type_id() == Buffer::TYPE_ID)
+    if (http_request.get_body()->get_type_id() == Buffer::TYPE_ID) {
       body << static_cast<Buffer*>(http_request.get_body());
-    else
+    } else {
       body << http_request.get_body()->get_type_name();
-  } else
+    }
+  } else {
     body << "NULL";
+  }
 
-  os << 
-    http_request.get_type_name() <<
-    "(" <<
-      "content_length=" << http_request.get_content_length() << 
-      ", " <<
-      "creation_date_time=" << http_request.get_creation_date_time() <<
-      ", " <<
-      "http_version=" <<
-        static_cast<uint16_t>(http_request.get_http_version()) <<
-      ", " <<
-      "method=" << http_request.get_method() <<
-      ", " <<
-      "uri=" << http_request.get_uri() <<
-      ", " <<
-      "body=" << body.str() <<
-    ")";
+  os <<
+     http_request.get_type_name() <<
+     "(" <<
+     "content_length=" << http_request.get_content_length() <<
+     ", " <<
+     "creation_date_time=" << http_request.get_creation_date_time() <<
+     ", " <<
+     "http_version=" <<
+     static_cast<uint16_t>(http_request.get_http_version()) <<
+     ", " <<
+     "method=" << http_request.get_method() <<
+     ", " <<
+     "uri=" << http_request.get_uri() <<
+     ", " <<
+     "body=" << body.str() <<
+     ")";
   return os;
 }
 

@@ -51,8 +51,9 @@ public:
     auto_Object<StageScheduler> stage_scheduler = new StageSchedulerType;
     stage_scheduler->schedule(*stage);
     stage->handle(*new TestEvent);
-    while (event_handler->get_seen_events_count() < 1)
+    while (event_handler->get_seen_events_count() < 1) {
       yield::thread::Thread::sleep(0.1);
+    }
   }
 };
 

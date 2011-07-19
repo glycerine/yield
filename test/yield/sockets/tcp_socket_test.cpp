@@ -41,14 +41,14 @@ TEST(TCPSocket, dup) {
 
 TEST(TCPSocket, dup2) {
   TCPSocket client_tcp_socket, listen_tcp_socket;
-  if (listen_tcp_socket.bind(SocketAddress::IN_LOOPBACK))    
+  if (listen_tcp_socket.bind(SocketAddress::IN_LOOPBACK))
     if (listen_tcp_socket.listen()) {
       if (client_tcp_socket.connect(*listen_tcp_socket.getsockname())) {
         auto_Object<StreamSocket> server_tcp_socket
-          = listen_tcp_socket.accept();
+        = listen_tcp_socket.accept();
         return;
       }
-  }
+    }
 
   throw Exception();
 }
@@ -61,8 +61,9 @@ TEST(TCPSocket, get_type_name) {
 }
 
 TEST(TCPSocket, setsockopt_NODELAY) {
-  if (!TCPSocket().setsockopt(TCPSocket::Option::NODELAY, true))
+  if (!TCPSocket().setsockopt(TCPSocket::Option::NODELAY, true)) {
     throw Exception();
+  }
 }
 }
 }

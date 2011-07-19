@@ -33,8 +33,9 @@
 namespace yield {
 namespace thread {
 Mutex::Mutex() {
-  if (pthread_mutex_init(&mutex, NULL) != 0)
+  if (pthread_mutex_init(&mutex, NULL) != 0) {
     throw Exception();
+  }
 }
 
 Mutex::~Mutex() {

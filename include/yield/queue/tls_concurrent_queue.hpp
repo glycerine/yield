@@ -69,8 +69,9 @@ private:
         ElementType* element = std::stack<ElementType*>::top();
         std::stack<ElementType*>::pop();
         return element;
-      } else
+      } else {
         return NULL;
+      }
     }
 
     bool push(ElementType& element) {
@@ -82,8 +83,9 @@ private:
 public:
   TLSConcurrentQueue() {
     tls_key = Thread::self()->key_create();
-    if (tls_key == static_cast<uintptr_t>(-1))
+    if (tls_key == static_cast<uintptr_t>(-1)) {
       throw Exception();
+    }
   }
 
   ~TLSConcurrentQueue() {
@@ -93,8 +95,9 @@ public:
       typename vector<Stack*>::iterator stack_i = stacks.begin();
       stack_i != stacks.end();
       stack_i++
-    )
+    ) {
       delete *stack_i;
+    }
   }
 
   /**
@@ -108,8 +111,9 @@ public:
     if (stack != NULL) {
       stack->push(element);
       return true;
-    } else
+    } else {
       return BlockingConcurrentQueue<ElementType>::enqueue(element);
+    }
   }
 
   /**
@@ -123,17 +127,18 @@ public:
 
     if (stack != NULL) {
       element = stack->pop();
-    } Selse {
+    } else {
       stack = new Stack;
       Thread::self()->setspecific(tls_key, stack);
       stacks.push_back(stack);
       element = stack->pop();
     }
 
-    if (element != NULL)
+    if (element != NULL) {
       return element;
-    else
+    } else {
       return BlockingConcurrentQueue<ElementType>::trydequeue();
+    }
   }
 
 private:

@@ -38,8 +38,9 @@ StreamSocketPair::StreamSocketPair() {
   if (::socketpair(AF_UNIX, SOCK_STREAM, 0, sv) != -1) {
     sockets[0] = new StreamSocket(AF_UNIX, 0, sv[0]);
     sockets[1] = new StreamSocket(AF_UNIX, 0, sv[1]);
-  } else
+  } else {
     throw Exception();
+  }
 }
 }
 }

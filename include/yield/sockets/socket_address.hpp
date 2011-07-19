@@ -227,10 +227,11 @@ public:
   */
   SocketAddress(const SocketAddress& other) {
     memcpy_s(&addr, sizeof(addr), &other.addr, sizeof(other.addr));
-    if (other.next_socket_address != NULL)
+    if (other.next_socket_address != NULL) {
       next_socket_address = new SocketAddress(*other.next_socket_address);
-    else
+    } else {
       next_socket_address = NULL;
+    }
   }
 
   /**
@@ -367,18 +368,20 @@ public:
     if (
       getnameinfo(
         nodename_,
-        256,        
+        256,
         servname_,
         16,
         flags | GETNAMEINFO_FLAG_NUMERICSERV
       )
     ) {
       nodename.assign(nodename_);
-      if (servname != NULL)
+      if (servname != NULL) {
         *servname = static_cast<uint16_t>(atoi(servname_));
+      }
       return true;
-    } else
+    } else {
       return false;
+    }
   }
 
   /**
@@ -434,7 +437,7 @@ public:
     Get the underlying platform-specific socket address.
     @return the underlying platform-specific socket address
   */
-  operator sockaddr*() {
+  operator sockaddr* () {
     return reinterpret_cast<sockaddr*>(&addr);
   }
 
@@ -442,7 +445,7 @@ public:
     Get the underlying platform-specific socket address.
     @return the underlying platform-specific socket address
   */
-  operator const sockaddr*() const {
+  operator const sockaddr* () const {
     return reinterpret_cast<const sockaddr*>(&addr);
   }
 
@@ -453,10 +456,11 @@ public:
   */
   bool operator==(const SocketAddress& other) const {
     if (memcmp(&addr, &other.addr, sizeof(addr)) == 0) {
-      if (next_socket_address == NULL)
+      if (next_socket_address == NULL) {
         return true;
-      else if (other.next_socket_address != NULL)
+      } else if (other.next_socket_address != NULL) {
         return *next_socket_address == *other.next_socket_address;
+      }
     }
 
     return false;
@@ -523,11 +527,14 @@ operator<<(
   const SocketAddress& sockaddr_
 ) {
   if (sockaddr_.get_family() != 0) {
-    string nodename; uint16_t servname;
-    if (sockaddr_.getnameinfo(nodename, &servname))
+    string nodename;
+    uint16_t servname;
+    if (sockaddr_.getnameinfo(nodename, &servname)) {
       os << nodename << ":" << servname;
-  } else
+    }
+  } else {
     os << "(unknown)";
+  }
   return os;
 }
 
@@ -537,9 +544,9 @@ operator<<(
   std::ostream& os,
   SocketAddress* socket_address
 ) {
-  if (socket_address != NULL)
+  if (socket_address != NULL) {
     return operator<<(os, *socket_address);
-  else {
+  } else {
     os << "NULL";
     return os;
   }

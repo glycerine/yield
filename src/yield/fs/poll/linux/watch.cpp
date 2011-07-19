@@ -47,8 +47,8 @@ Watch::Watch(
   int wd,
   Log* log
 ) : yield::fs::poll::Watch(fs_event_types, log, path),
-    inotify_fd(inotify_fd),
-    wd(wd) {
+  inotify_fd(inotify_fd),
+  wd(wd) {
 }
 
 Watch::~Watch() {
@@ -62,21 +62,23 @@ YO_NEW_REF FSEvent* Watch::parse(const inotify_event& inotify_event_) {
   if ((mask & IN_ISDIR) == IN_ISDIR) {
     mask ^= IN_ISDIR;
     isdir = true;
-  } else
+  } else {
     isdir = false;
+  }
   Path name, path;
   if (inotify_event_.len > 1) {
     // len includes a NULL terminator, but may also include
     // one or more bytes of padding. Do a strlen to find the real length.
     name = Path(inotify_event_.name); //, inotify_event_.len - 1);
     path = this->get_path() / name;
-  } else
+  } else {
     path = this->get_path();
+  }
 
   if (get_log() != NULL) {
     get_log()->get_stream(Log::Level::DEBUG) <<
-      get_type_name() << "(path=" << get_path() << ", wd=" << get_wd() << ")"
-      << ": read inotify_event(" <<
+        get_type_name() << "(path=" << get_path() << ", wd=" << get_wd() << ")"
+        << ": read inotify_event(" <<
         "cookie=" << inotify_event_.cookie <<
         ", " <<
         "isdir=" << (isdir ? "true" : "false") <<
@@ -86,7 +88,7 @@ YO_NEW_REF FSEvent* Watch::parse(const inotify_event& inotify_event_) {
         "mask=" << inotify_event_.mask <<
         ", "
         "name=" << name <<
-      ")";
+        ")";
   }
 
   FSEvent::Type fs_event_type;
@@ -128,16 +130,16 @@ YO_NEW_REF FSEvent* Watch::parse(const inotify_event& inotify_event_) {
       isdir ? FSEvent::TYPE_DIRECTORY_RENAME : FSEvent::TYPE_FILE_RENAME;
 
     map<uint32_t, Path>::iterator old_name_i
-      = old_names.find(inotify_event_.cookie);
+    = old_names.find(inotify_event_.cookie);
     debug_assert_ne(old_name_i, old_names.end());
 
     if (want_fs_event_type(fs_event_type)) {
       FSEvent* fs_event
-        = new FSEvent(
-                this->get_path() / old_name_i->second,
-                path,
-                fs_event_type
-              );
+      = new FSEvent(
+        this->get_path() / old_name_i->second,
+        path,
+        fs_event_type
+      );
       old_names.erase(old_name_i);
       log_fs_event(*fs_event);
       return fs_event;
@@ -153,8 +155,9 @@ YO_NEW_REF FSEvent* Watch::parse(const inotify_event& inotify_event_) {
     FSEvent* fs_event = new FSEvent(path, fs_event_type);
     log_fs_event(*fs_event);
     return fs_event;
-  } else
+  } else {
     return NULL;
+  }
 }
 }
 }

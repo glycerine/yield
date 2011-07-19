@@ -208,7 +208,7 @@ Extension("%(ext_module_name)s", [%(ext_source_file_paths)s], **Extension_kwds)"
 
         return """\
 #!/usr/bin/env python
-        
+
 from distutils.core import setup, Extension
 import sys
 
@@ -233,4 +233,3 @@ setup(
 )
 
 """ % locals()
-

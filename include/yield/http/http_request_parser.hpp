@@ -61,13 +61,13 @@ protected:
     const yield::uri::URI& uri
   ) {
     return *new HTTPRequest(
-                 body,
-                 fields_offset,
-                 header,
-                 http_version,
-                 method,
-                 uri
-               );
+             body,
+             fields_offset,
+             header,
+             http_version,
+             method,
+             uri
+           );
   }
 
   virtual HTTPResponse&

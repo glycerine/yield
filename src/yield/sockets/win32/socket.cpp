@@ -39,10 +39,11 @@ const int Socket::Option::SNDBUF = SO_SNDBUF;
 
 bool Socket::bind(const SocketAddress& _name) {
   const SocketAddress* name = _name.filter(get_domain());
-  if (name != NULL)
+  if (name != NULL) {
     return ::bind(*this, *name, name->len()) != -1;
-  else
+  } else {
     return false;
+  }
 }
 
 bool Socket::close() {
@@ -52,12 +53,14 @@ bool Socket::close() {
 bool Socket::connect(const SocketAddress& _peername) {
   const SocketAddress* peername = _peername.filter(get_domain());
   if (peername != NULL) {
-    if (::connect(*this, *peername, peername->len()) != -1)
+    if (::connect(*this, *peername, peername->len()) != -1) {
       return true;
-    else
+    } else {
       return WSAGetLastError() == WSAEISCONN;
-  } else
+    }
+  } else {
     return false;
+  }
 }
 
 socket_t Socket::create(int domain, int type, int protocol) {
@@ -82,8 +85,9 @@ socket_t Socket::create(int domain, int type, int protocol) {
         sizeof(ipv6only)
       );
     }
-  } else
+  } else {
     return INVALID_SOCKET;
+  }
 
   return socket_;
 }
@@ -103,8 +107,9 @@ string Socket::getfqdn() {
       string fqdn(fqdn_temp, dwFQDNLength);
       delete [] fqdn_temp;
       return fqdn;
-    } else
+    } else {
       delete [] fqdn_temp;
+    }
   }
 
   return string();
@@ -125,8 +130,9 @@ string Socket::gethostname() {
       string hostname(hostname_temp, dwHostNameLength);
       delete [] hostname_temp;
       return hostname;
-    } else
+    } else {
       delete [] hostname_temp;
+    }
   }
 
   return string();
@@ -137,8 +143,9 @@ bool Socket::getpeername(SocketAddress& peername) const {
   if (::getpeername(*this, peername, &peernamelen) != -1) {
     debug_assert_eq(peername.get_family(), get_domain());
     return true;
-  } else
+  } else {
     return false;
+  }
 }
 
 bool Socket::getsockname(SocketAddress& sockname) const {
@@ -146,8 +153,9 @@ bool Socket::getsockname(SocketAddress& sockname) const {
   if (::getsockname(*this, sockname, &socknamelen) != -1) {
     debug_assert_eq(sockname.get_family(), get_domain());
     return true;
-  } else
+  } else {
     return false;
+  }
 }
 
 ssize_t
@@ -157,11 +165,11 @@ Socket::recv(
   const MessageFlags& flags
 ) {
   return ::recv(
-            *this,
-            static_cast<char*>(buf),
-            static_cast<int>(buflen),
-            flags
-          ); // No real advantage to WSARecv on Win for one buffer
+           *this,
+           static_cast<char*>(buf),
+           static_cast<int>(buflen),
+           flags
+         ); // No real advantage to WSARecv on Win for one buffer
 }
 
 ssize_t
@@ -195,10 +203,11 @@ Socket::recvmsg(
       NULL
     );
 
-  if (recv_ret == 0)
+  if (recv_ret == 0) {
     return static_cast<ssize_t>(dwNumberOfBytesRecvd);
-  else
+  } else {
     return recv_ret;
+  }
 }
 
 ssize_t
@@ -223,10 +232,11 @@ Socket::send(
       NULL
     );
 
-  if (send_ret >= 0)
+  if (send_ret >= 0) {
     return static_cast<ssize_t>(dwNumberOfBytesSent);
-  else
+  } else {
     return send_ret;
+  }
 }
 
 ssize_t
@@ -259,10 +269,11 @@ Socket::sendmsg(
       NULL
     );
 
-  if (send_ret >= 0)
+  if (send_ret >= 0) {
     return static_cast<ssize_t>(dwNumberOfBytesSent);
-  else
+  } else {
     return send_ret;
+  }
 }
 
 bool Socket::set_blocking_mode(bool blocking_mode) {
@@ -272,12 +283,12 @@ bool Socket::set_blocking_mode(bool blocking_mode) {
 
 bool Socket::setsockopt(int option_name, int option_value) {
   return ::setsockopt(
-            *this,
-            SOL_SOCKET,
-            option_name,
-            reinterpret_cast<char*>(&option_value),
-            static_cast<int>(sizeof(option_value))
-          ) == 0;
+           *this,
+           SOL_SOCKET,
+           option_name,
+           reinterpret_cast<char*>(&option_value),
+           static_cast<int>(sizeof(option_value))
+         ) == 0;
 }
 
 bool Socket::want_recv() const {

@@ -105,7 +105,7 @@ void Buffers::put(Buffer& buffers, const void* data, size_t size) {
   Buffer* next_buffer = &buffers;
   do {
     size_t next_buffer_left
-      = next_buffer->capacity() - next_buffer->size();
+    = next_buffer->capacity() - next_buffer->size();
 
     if (next_buffer_left > 0) {
       if (size <= next_buffer_left) {

@@ -111,8 +111,9 @@ HTTPMessageParser::parse_body(
     body = &Buffer::copy(p, content_length);
     p += content_length;
     return true;
-  } else
+  } else {
     return false;
+  }
 }
 
 Object* HTTPMessageParser::parse_body_chunk() {
@@ -389,8 +390,9 @@ Object* HTTPMessageParser::parse_body_chunk() {
     unsigned int _nacts;
     const short* _keys;
 
-    if (cs == 0)
+    if (cs == 0) {
       goto _out;
+    }
 _resume:
     _widec = (*p);
     _klen = _chunk_parser_cond_lengths[cs];
@@ -400,21 +402,24 @@ _resume:
       const short* _mid;
       const short* _upper = _keys + (_klen << 1) - 2;
       while (1) {
-        if (_upper < _lower)
+        if (_upper < _lower) {
           break;
+        }
 
         _mid = _lower + (((_upper - _lower) >> 1) & ~1);
-        if (_widec < _mid[0])
+        if (_widec < _mid[0]) {
           _upper = _mid - 2;
-        else if (_widec > _mid[1])
+        } else if (_widec > _mid[1]) {
           _lower = _mid + 2;
-        else {
+        } else {
           switch (_chunk_parser_cond_spaces[_chunk_parser_cond_offsets[cs] + ((_mid - _keys) >> 1)]) {
           case 0: {
             _widec = (short)(256u + ((*p) - 0u));
             if (
               /* #line 100 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\rfc2616.rl" */
-              seen_chunk_size++ < chunk_size) _widec += 256;
+              seen_chunk_size++ < chunk_size) {
+              _widec += 256;
+            }
             break;
           }
           }
@@ -432,15 +437,16 @@ _resume:
       const short* _mid;
       const short* _upper = _keys + _klen - 1;
       while (1) {
-        if (_upper < _lower)
+        if (_upper < _lower) {
           break;
+        }
 
         _mid = _lower + ((_upper - _lower) >> 1);
-        if (_widec < *_mid)
+        if (_widec < *_mid) {
           _upper = _mid - 1;
-        else if (_widec > *_mid)
+        } else if (_widec > *_mid) {
           _lower = _mid + 1;
-        else {
+        } else {
           _trans += (_mid - _keys);
           goto _match;
         }
@@ -455,15 +461,16 @@ _resume:
       const short* _mid;
       const short* _upper = _keys + (_klen << 1) - 2;
       while (1) {
-        if (_upper < _lower)
+        if (_upper < _lower) {
           break;
+        }
 
         _mid = _lower + (((_upper - _lower) >> 1) & ~1);
-        if (_widec < _mid[0])
+        if (_widec < _mid[0]) {
           _upper = _mid - 2;
-        else if (_widec > _mid[1])
+        } else if (_widec > _mid[1]) {
           _lower = _mid + 2;
-        else {
+        } else {
           _trans += ((_mid - _keys) >> 1);
           goto _match;
         }
@@ -475,8 +482,9 @@ _match:
     _trans = _chunk_parser_indicies[_trans];
     cs = _chunk_parser_trans_targs[_trans];
 
-    if (_chunk_parser_trans_actions[_trans] == 0)
+    if (_chunk_parser_trans_actions[_trans] == 0) {
       goto _again;
+    }
 
     _acts = _chunk_parser_actions + _chunk_parser_trans_actions[_trans];
     _nacts = (unsigned int) * _acts++;
@@ -553,8 +561,9 @@ _match:
     }
 
 _again:
-    if (cs == 0)
+    if (cs == 0) {
       goto _out;
+    }
     p += 1;
     goto _resume;
     if (p == eof) {
@@ -587,12 +596,14 @@ _out:
       return &create_http_message_body_chunk(
                &Buffer::copy(chunk_data_p, p - chunk_data_p - 2)
              );
-    } else // Last chunk
+    } else { // Last chunk
       return &create_http_message_body_chunk(NULL);
-  } else if (p == eof && chunk_size != 0)
-    return new Buffer(chunk_size + 2); // Assumes no trailers.
-  else
+    }
+  } else if (p == eof && chunk_size != 0) {
+    return new Buffer(chunk_size + 2);  // Assumes no trailers.
+  } else {
     return NULL;
+  }
 }
 
 bool
@@ -676,10 +687,12 @@ HTTPMessageParser::parse_content_length_field(
     unsigned int _nacts;
     const unsigned char* _keys;
 
-    if (p == pe)
+    if (p == pe) {
       goto _test_eof;
-    if (cs == 0)
+    }
+    if (cs == 0) {
       goto _out;
+    }
 _resume:
     _keys = _content_length_field_parser_trans_keys + _content_length_field_parser_key_offsets[cs];
     _trans = _content_length_field_parser_index_offsets[cs];
@@ -690,15 +703,16 @@ _resume:
       const unsigned char* _mid;
       const unsigned char* _upper = _keys + _klen - 1;
       while (1) {
-        if (_upper < _lower)
+        if (_upper < _lower) {
           break;
+        }
 
         _mid = _lower + ((_upper - _lower) >> 1);
-        if ((*p) < *_mid)
+        if ((*p) < *_mid) {
           _upper = _mid - 1;
-        else if ((*p) > *_mid)
+        } else if ((*p) > *_mid) {
           _lower = _mid + 1;
-        else {
+        } else {
           _trans += (_mid - _keys);
           goto _match;
         }
@@ -713,15 +727,16 @@ _resume:
       const unsigned char* _mid;
       const unsigned char* _upper = _keys + (_klen << 1) - 2;
       while (1) {
-        if (_upper < _lower)
+        if (_upper < _lower) {
           break;
+        }
 
         _mid = _lower + (((_upper - _lower) >> 1) & ~1);
-        if ((*p) < _mid[0])
+        if ((*p) < _mid[0]) {
           _upper = _mid - 2;
-        else if ((*p) > _mid[1])
+        } else if ((*p) > _mid[1]) {
           _lower = _mid + 2;
-        else {
+        } else {
           _trans += ((_mid - _keys) >> 1);
           goto _match;
         }
@@ -733,8 +748,9 @@ _match:
     _trans = _content_length_field_parser_indicies[_trans];
     cs = _content_length_field_parser_trans_targs[_trans];
 
-    if (_content_length_field_parser_trans_actions[_trans] == 0)
+    if (_content_length_field_parser_trans_actions[_trans] == 0) {
       goto _again;
+    }
 
     _acts = _content_length_field_parser_actions + _content_length_field_parser_trans_actions[_trans];
     _nacts = (unsigned int) * _acts++;
@@ -773,8 +789,9 @@ _match:
             field_value,
             content_length
           )
-        )
+        ) {
           return true;
+        }
       }
       break;
       /* #line 565 "c:\\Users\\minorg\\projects\\yield\\src\\yield\\http\\http_message_parser.cpp" */
@@ -782,10 +799,12 @@ _match:
     }
 
 _again:
-    if (cs == 0)
+    if (cs == 0) {
       goto _out;
-    if (++p != pe)
+    }
+    if (++p != pe) {
       goto _resume;
+    }
 _test_eof:
     {}
 _out:
@@ -829,8 +848,9 @@ HTTPMessageParser::parse_content_length_field(
   ) {
     content_length = HTTPRequest::CONTENT_LENGTH_CHUNKED;
     return true;
-  } else
+  } else {
     return false;
+  }
 }
 
 DateTime HTTPMessageParser::parse_date(const iovec& date) {
@@ -1088,10 +1108,12 @@ DateTime HTTPMessageParser::parse_date(const char* ps, const char* pe) {
     unsigned int _nacts;
     const unsigned char* _keys;
 
-    if (p == pe)
+    if (p == pe) {
       goto _test_eof;
-    if (cs == 0)
+    }
+    if (cs == 0) {
       goto _out;
+    }
 _resume:
     _keys = _date_parser_trans_keys + _date_parser_key_offsets[cs];
     _trans = _date_parser_index_offsets[cs];
@@ -1102,15 +1124,16 @@ _resume:
       const unsigned char* _mid;
       const unsigned char* _upper = _keys + _klen - 1;
       while (1) {
-        if (_upper < _lower)
+        if (_upper < _lower) {
           break;
+        }
 
         _mid = _lower + ((_upper - _lower) >> 1);
-        if ((*p) < *_mid)
+        if ((*p) < *_mid) {
           _upper = _mid - 1;
-        else if ((*p) > *_mid)
+        } else if ((*p) > *_mid) {
           _lower = _mid + 1;
-        else {
+        } else {
           _trans += (_mid - _keys);
           goto _match;
         }
@@ -1125,15 +1148,16 @@ _resume:
       const unsigned char* _mid;
       const unsigned char* _upper = _keys + (_klen << 1) - 2;
       while (1) {
-        if (_upper < _lower)
+        if (_upper < _lower) {
           break;
+        }
 
         _mid = _lower + (((_upper - _lower) >> 1) & ~1);
-        if ((*p) < _mid[0])
+        if ((*p) < _mid[0]) {
           _upper = _mid - 2;
-        else if ((*p) > _mid[1])
+        } else if ((*p) > _mid[1]) {
           _lower = _mid + 2;
-        else {
+        } else {
           _trans += ((_mid - _keys) >> 1);
           goto _match;
         }
@@ -1145,8 +1169,9 @@ _match:
     _trans = _date_parser_indicies[_trans];
     cs = _date_parser_trans_targs[_trans];
 
-    if (_date_parser_trans_actions[_trans] == 0)
+    if (_date_parser_trans_actions[_trans] == 0) {
       goto _again;
+    }
 
     _acts = _date_parser_actions + _date_parser_trans_actions[_trans];
     _nacts = (unsigned int) * _acts++;
@@ -1259,10 +1284,12 @@ _match:
     }
 
 _again:
-    if (cs == 0)
+    if (cs == 0) {
       goto _out;
-    if (++p != pe)
+    }
+    if (++p != pe) {
       goto _resume;
+    }
 _test_eof:
     {}
     if (p == eof) {
@@ -1289,11 +1316,14 @@ _out:
 
 
   if (cs != date_parser_error) {
-    if (year < 100) year += 2000;
+    if (year < 100) {
+      year += 2000;
+    }
     year -= 1900;
     return DateTime(second, minute, hour, day, month - 1, year, false);
-  } else
+  } else {
     return DateTime::INVALID_DATE_TIME;
+  }
 }
 
 bool
@@ -1378,10 +1408,12 @@ HTTPMessageParser::parse_field(
     unsigned int _nacts;
     const unsigned char* _keys;
 
-    if (p == pe)
+    if (p == pe) {
       goto _test_eof;
-    if (cs == 0)
+    }
+    if (cs == 0) {
       goto _out;
+    }
 _resume:
     _keys = _field_parser_trans_keys + _field_parser_key_offsets[cs];
     _trans = _field_parser_index_offsets[cs];
@@ -1392,15 +1424,16 @@ _resume:
       const unsigned char* _mid;
       const unsigned char* _upper = _keys + _klen - 1;
       while (1) {
-        if (_upper < _lower)
+        if (_upper < _lower) {
           break;
+        }
 
         _mid = _lower + ((_upper - _lower) >> 1);
-        if ((*p) < *_mid)
+        if ((*p) < *_mid) {
           _upper = _mid - 1;
-        else if ((*p) > *_mid)
+        } else if ((*p) > *_mid) {
           _lower = _mid + 1;
-        else {
+        } else {
           _trans += (_mid - _keys);
           goto _match;
         }
@@ -1415,15 +1448,16 @@ _resume:
       const unsigned char* _mid;
       const unsigned char* _upper = _keys + (_klen << 1) - 2;
       while (1) {
-        if (_upper < _lower)
+        if (_upper < _lower) {
           break;
+        }
 
         _mid = _lower + (((_upper - _lower) >> 1) & ~1);
-        if ((*p) < _mid[0])
+        if ((*p) < _mid[0]) {
           _upper = _mid - 2;
-        else if ((*p) > _mid[1])
+        } else if ((*p) > _mid[1]) {
           _lower = _mid + 2;
-        else {
+        } else {
           _trans += ((_mid - _keys) >> 1);
           goto _match;
         }
@@ -1435,8 +1469,9 @@ _match:
     _trans = _field_parser_indicies[_trans];
     cs = _field_parser_trans_targs[_trans];
 
-    if (_field_parser_trans_actions[_trans] == 0)
+    if (_field_parser_trans_actions[_trans] == 0) {
       goto _again;
+    }
 
     _acts = _field_parser_actions + _field_parser_trans_actions[_trans];
     _nacts = (unsigned int) * _acts++;
@@ -1488,10 +1523,12 @@ _match:
     }
 
 _again:
-    if (cs == 0)
+    if (cs == 0) {
       goto _out;
-    if (++p != pe)
+    }
+    if (++p != pe) {
       goto _resume;
+    }
 _test_eof:
     {}
 _out:
@@ -1585,10 +1622,12 @@ HTTPMessageParser::parse_fields(
     unsigned int _nacts;
     const unsigned char* _keys;
 
-    if (p == pe)
+    if (p == pe) {
       goto _test_eof;
-    if (cs == 0)
+    }
+    if (cs == 0) {
       goto _out;
+    }
 _resume:
     _keys = _static_fields_parser_trans_keys + _static_fields_parser_key_offsets[cs];
     _trans = _static_fields_parser_index_offsets[cs];
@@ -1599,15 +1638,16 @@ _resume:
       const unsigned char* _mid;
       const unsigned char* _upper = _keys + _klen - 1;
       while (1) {
-        if (_upper < _lower)
+        if (_upper < _lower) {
           break;
+        }
 
         _mid = _lower + ((_upper - _lower) >> 1);
-        if ((*p) < *_mid)
+        if ((*p) < *_mid) {
           _upper = _mid - 1;
-        else if ((*p) > *_mid)
+        } else if ((*p) > *_mid) {
           _lower = _mid + 1;
-        else {
+        } else {
           _trans += (_mid - _keys);
           goto _match;
         }
@@ -1622,15 +1662,16 @@ _resume:
       const unsigned char* _mid;
       const unsigned char* _upper = _keys + (_klen << 1) - 2;
       while (1) {
-        if (_upper < _lower)
+        if (_upper < _lower) {
           break;
+        }
 
         _mid = _lower + (((_upper - _lower) >> 1) & ~1);
-        if ((*p) < _mid[0])
+        if ((*p) < _mid[0]) {
           _upper = _mid - 2;
-        else if ((*p) > _mid[1])
+        } else if ((*p) > _mid[1]) {
           _lower = _mid + 2;
-        else {
+        } else {
           _trans += ((_mid - _keys) >> 1);
           goto _match;
         }
@@ -1642,8 +1683,9 @@ _match:
     _trans = _static_fields_parser_indicies[_trans];
     cs = _static_fields_parser_trans_targs[_trans];
 
-    if (_static_fields_parser_trans_actions[_trans] == 0)
+    if (_static_fields_parser_trans_actions[_trans] == 0) {
       goto _again;
+    }
 
     _acts = _static_fields_parser_actions + _static_fields_parser_trans_actions[_trans];
     _nacts = (unsigned int) * _acts++;
@@ -1684,10 +1726,12 @@ _match:
     }
 
 _again:
-    if (cs == 0)
+    if (cs == 0) {
       goto _out;
-    if (++p != pe)
+    }
+    if (++p != pe) {
       goto _resume;
+    }
 _test_eof:
     {}
 _out:
@@ -1793,8 +1837,9 @@ HTTPMessageParser::parse_fields(
     unsigned int _nacts;
     const unsigned char* _keys;
 
-    if (cs == 0)
+    if (cs == 0) {
       goto _out;
+    }
 _resume:
     _keys = _fields_parser_trans_keys + _fields_parser_key_offsets[cs];
     _trans = _fields_parser_index_offsets[cs];
@@ -1805,15 +1850,16 @@ _resume:
       const unsigned char* _mid;
       const unsigned char* _upper = _keys + _klen - 1;
       while (1) {
-        if (_upper < _lower)
+        if (_upper < _lower) {
           break;
+        }
 
         _mid = _lower + ((_upper - _lower) >> 1);
-        if ((*p) < *_mid)
+        if ((*p) < *_mid) {
           _upper = _mid - 1;
-        else if ((*p) > *_mid)
+        } else if ((*p) > *_mid) {
           _lower = _mid + 1;
-        else {
+        } else {
           _trans += (_mid - _keys);
           goto _match;
         }
@@ -1828,15 +1874,16 @@ _resume:
       const unsigned char* _mid;
       const unsigned char* _upper = _keys + (_klen << 1) - 2;
       while (1) {
-        if (_upper < _lower)
+        if (_upper < _lower) {
           break;
+        }
 
         _mid = _lower + (((_upper - _lower) >> 1) & ~1);
-        if ((*p) < _mid[0])
+        if ((*p) < _mid[0]) {
           _upper = _mid - 2;
-        else if ((*p) > _mid[1])
+        } else if ((*p) > _mid[1]) {
           _lower = _mid + 2;
-        else {
+        } else {
           _trans += ((_mid - _keys) >> 1);
           goto _match;
         }
@@ -1848,8 +1895,9 @@ _match:
     _trans = _fields_parser_indicies[_trans];
     cs = _fields_parser_trans_targs[_trans];
 
-    if (_fields_parser_trans_actions[_trans] == 0)
+    if (_fields_parser_trans_actions[_trans] == 0) {
       goto _again;
+    }
 
     _acts = _fields_parser_actions + _fields_parser_trans_actions[_trans];
     _nacts = (unsigned int) * _acts++;
@@ -1908,8 +1956,9 @@ _match:
     }
 
 _again:
-    if (cs == 0)
+    if (cs == 0) {
       goto _out;
+    }
     p += 1;
     goto _resume;
     if (p == eof) {

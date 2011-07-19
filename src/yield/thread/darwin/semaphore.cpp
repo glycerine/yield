@@ -47,8 +47,9 @@ Semaphore::Semaphore() {
       SYNC_POLICY_FIFO,
       0
     ) != KERN_SUCCESS
-  )
+  ) {
     throw Exception();
+  }
 }
 
 Semaphore::~Semaphore() {

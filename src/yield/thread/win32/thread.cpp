@@ -44,10 +44,12 @@ Thread::Thread(Runnable& runnable)
   handle = CreateThread(NULL, 0, run, this, NULL, &id);
 
   if (handle != NULL) {
-    while (state == STATE_READY)
+    while (state == STATE_READY) {
       yield();
-  } else
+    }
+  } else {
     throw Exception();
+  }
 }
 
 Thread::Thread(HANDLE handle, DWORD id)
@@ -136,10 +138,11 @@ void Thread::set_name(const char* thread_name) {
 }
 
 bool Thread::setaffinity(uint16_t logical_processor_i) {
-  if (id != 0)
+  if (id != 0) {
     return SetThreadAffinityMask(handle, (1L << logical_processor_i)) != 0;
-  else
+  } else {
     return false;
+  }
 }
 
 bool Thread::setaffinity(const ProcessorSet& logical_processor_set) {
@@ -149,8 +152,9 @@ bool Thread::setaffinity(const ProcessorSet& logical_processor_set) {
              handle,
              logical_processor_set
            ) != 0;
-  } else
+  } else {
     return false;
+  }
 }
 
 bool Thread::setspecific(uintptr_t key, void* value) {

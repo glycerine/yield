@@ -42,7 +42,7 @@ HTTPRequest::HTTPRequest(
   YO_NEW_REF Object* body,
   uint8_t http_version
 ) : yield::http::HTTPRequest(method, uri, body, http_version),
-    connection(connection.inc_ref()) {
+  connection(connection.inc_ref()) {
 }
 
 HTTPRequest::HTTPRequest(
@@ -51,10 +51,10 @@ HTTPRequest::HTTPRequest(
   uint16_t fields_offset,
   Buffer& header,
   uint8_t http_version,
-  Method method,  
+  Method method,
   const yield::uri::URI& uri
 )
-: yield::http::HTTPRequest(
+  : yield::http::HTTPRequest(
     body,
     fields_offset,
     header,
@@ -89,17 +89,18 @@ void HTTPRequest::respond(uint16_t status_code) {
 
 void HTTPRequest::respond(uint16_t status_code, YO_NEW_REF Buffer* body) {
   HTTPResponse* http_response = new HTTPResponse(status_code, body, get_http_version());
-  if (body != NULL)
+  if (body != NULL) {
     http_response->set_field("Content-Length", 14, body->size());
-  else
+  } else {
     http_response->set_field("Content-Length", 14, "0", 1);
+  }
   respond(*http_response);
 }
 
 void HTTPRequest::respond(uint16_t status_code, YO_NEW_REF Buffer& body) {
   HTTPResponse* http_response = new HTTPResponse(status_code, &body, get_http_version());
   http_response->set_field("Content-Length", 14, body.size());
-  respond(*http_response);  
+  respond(*http_response);
 }
 
 void HTTPRequest::respond(uint16_t status_code, const char* body) {

@@ -80,14 +80,15 @@ protected:
       throw_assert_eq(
         static_cast<size_t>(read_ret),
         get_test_string().size()
-     );
+      );
 
       throw_assert_eq(
         memcmp(buf, get_test_string().data(), get_test_string().size()),
         0
-     );
-    } else
+      );
+    } else {
       throw Exception();
+    }
   }
 
   void check_write(ssize_t write_ret) {
@@ -95,9 +96,10 @@ protected:
       throw_assert_eq(
         static_cast<size_t>(write_ret),
         get_test_string().size()
-     );
-    } else
+      );
+    } else {
       throw Exception();
+    }
   }
 
   void read() {
@@ -108,8 +110,8 @@ protected:
       get_read_channel().read(
         const_cast<char*>(test_string.data()),
         test_string.capacity()
-     )
-   );
+      )
+    );
   }
 
   void write() {
@@ -117,8 +119,8 @@ protected:
       get_write_channel().write(
         get_test_string().data(),
         get_test_string().size()
-     )
-   );
+      )
+    );
   }
 
 private:
@@ -137,8 +139,9 @@ public:
 public:
   // yunit::Test
   void run() {
-    if (!get_read_channel().close())
+    if (!get_read_channel().close()) {
       throw Exception();
+    }
   }
 };
 
@@ -212,7 +215,7 @@ public:
     check_read(
       test_string.data(),
       get_read_channel().readv(&iov, 1)
-   );
+    );
   }
 };
 
@@ -239,7 +242,7 @@ public:
     check_read(
       test_string.data(),
       get_read_channel().readv(iov, 2)
-   );
+    );
   }
 };
 

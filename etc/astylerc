@@ -1,4 +1,5 @@
 style=java
+add-brackets
 align-pointer=type
 convert-tabs
 formatted

@@ -80,7 +80,7 @@ FileWatch::read(
       debug_break();
       return;
     }
-      
+
     FSEvent* fs_event = new FSEvent(get_path(), fs_event_type);
     log_fs_event(*fs_event);
     fs_event_handler.handle(*fs_event);

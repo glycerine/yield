@@ -44,11 +44,11 @@ public:
     const yield::sockets::SocketAddress& sockname,
     YO_NEW_REF Log* log = NULL
   )
-   : yield::stage::Stage(
-       http_request_handler,
+    : yield::stage::Stage(
+      http_request_handler,
       *new HTTPRequestQueue<AIOQueueType>(sockname, log)
-     ) {
-     }
+    ) {
+  }
 };
 }
 }

@@ -129,12 +129,14 @@ public:
     if (size() > 1 || operator[](0) != SEPARATOR) {
       vector<Path> components;
       split(components);
-      if (components.size() > 1)
+      if (components.size() > 1) {
         return components[components.size() - 2];
-      else
+      } else {
         return Path(SEPARATOR);
-    } else
+      }
+    } else {
       return Path(SEPARATOR);
+    }
   }
 
   /**
@@ -144,10 +146,11 @@ public:
   */
   std::pair<Path, Path> split() const {
     size_type sep = find_last_of(SEPARATOR);
-    if (sep != npos)
+    if (sep != npos) {
       return make_pair(substr(0, sep), substr(sep + 1));
-    else
+    } else {
       return make_pair(Path(), *this);
+    }
   }
 
   /**
@@ -185,19 +188,20 @@ public:
   @return the left and right Paths joined by a separator
 */
 inline Path operator/(const Path& left, const Path& right) {
-  if (left.empty())
+  if (left.empty()) {
     return right;
-  else if (right.empty())
+  } else if (right.empty()) {
     return left;
-  else {
+  } else {
     yield::i18n::tstring combined(left);
 
     if (
       left[left.size() - 1] != Path::SEPARATOR
       &&
       right[0] != Path::SEPARATOR
-    )
+    ) {
       combined += Path::SEPARATOR;
+    }
 
     combined.append(right);
 

@@ -43,9 +43,9 @@ File::Lock::Lock(
   bool exclusive,
   int16_t whence
 ) : exclusive(exclusive),
-    len(len),
-    start(start),
-    whence(whence)
+  len(len),
+  start(start),
+  whence(whence)
 { }
 
 uint64_t File::Lock::get_len() const {
@@ -111,9 +111,9 @@ bool File::Map::sync(size_t offset, size_t length) {
 }
 
 bool File::Map::sync(void* ptr, size_t length) {
-  if (data() != reinterpret_cast<void*>(-1))
+  if (data() != reinterpret_cast<void*>(-1)) {
     return FlushViewOfFile(ptr, length) == TRUE;
-  else {
+  } else {
     SetLastError(ERROR_INVALID_PARAMETER);
     return false;
   }
@@ -158,8 +158,9 @@ bool File::close() {
       fd = INVALID_HANDLE_VALUE;
       return false;
     }
-  } else
+  } else {
     return false;
+  }
 }
 
 bool File::datasync() {
@@ -178,10 +179,11 @@ YO_NEW_REF File* File::dup(fd_t fd) {
       FALSE,
       DUPLICATE_SAME_ACCESS
     )
-  )
+  ) {
     return new File(dup_fd);
-  else
+  } else {
     return NULL;
+  }
 }
 
 YO_NEW_REF File* File::dup(FILE* file) {
@@ -198,17 +200,19 @@ File::mmap(
   if (length == SIZE_MAX) {
     ULARGE_INTEGER uliFileSize;
     uliFileSize.LowPart = GetFileSize(*this, &uliFileSize.HighPart);
-    if (uliFileSize.LowPart != INVALID_FILE_SIZE)
+    if (uliFileSize.LowPart != INVALID_FILE_SIZE) {
       length = static_cast<size_t>(uliFileSize.QuadPart);
-    else
+    } else {
       return NULL;
+    }
   }
 
   DWORD flags;
-  if (shared)
+  if (shared) {
     flags = read_only ? FILE_MAP_READ : FILE_MAP_WRITE;
-  else
+  } else {
     flags = FILE_MAP_COPY;
+  }
   DWORD prot = read_only ? PAGE_READONLY : PAGE_READWRITE;
 
   HANDLE hFileMapping;
@@ -244,8 +248,9 @@ File::mmap(
         CloseHandle(hFileMapping);
         return NULL;
       }
-    } else
+    } else {
       return NULL;
+    }
   } else { // length == 0
     // Can't CreateFileMapping on an empty file; instead
     // return an "empty" mapping (lpMapAddress=NULL).
@@ -268,16 +273,18 @@ File::mmap(
 ssize_t File::pread(Buffer& buffer, off_t offset) {
   if (buffer.get_next_buffer() == NULL) {
     ssize_t pread_ret
-      = pread(buffer, buffer.capacity() - buffer.size(), offset);
-    if (pread_ret > 0)
+    = pread(buffer, buffer.capacity() - buffer.size(), offset);
+    if (pread_ret > 0) {
       buffer.put(NULL, static_cast<size_t>(pread_ret));
+    }
     return pread_ret;
   } else {
     vector<iovec> iov;
     Buffers::as_read_iovecs(buffer, iov);
     ssize_t preadv_ret = preadv(&iov[0], iov.size(), offset);
-    if (preadv_ret > 0)
+    if (preadv_ret > 0) {
       Buffers::put(buffer, NULL, preadv_ret);
+    }
     return preadv_ret;
   }
 }
@@ -320,9 +327,9 @@ ssize_t File::pread(void* buf, size_t buflen, off_t offset) {
 ssize_t File::preadv(const iovec* iov, int iovlen, off_t offset) {
   for (int iov_i = 0; iov_i < iovlen; iov_i++) {
     if (!Buffer::is_page_aligned(iov[iov_i])) {
-      if (iovlen == 1)
+      if (iovlen == 1) {
         return pread(iov[0].iov_base, iov[0].iov_len, offset);
-      else {
+      } else {
         SetLastError(ERROR_INVALID_PARAMETER);
         return -1;
       }
@@ -382,9 +389,9 @@ ssize_t File::preadv(const iovec* iov, int iovlen, off_t offset) {
 }
 
 ssize_t File::pwrite(const Buffer& buffer, off_t offset) {
-  if (buffer.get_next_buffer() == NULL)
+  if (buffer.get_next_buffer() == NULL) {
     return pwrite(buffer, buffer.size(), offset);
-  else {
+  } else {
     vector<iovec> iov;
     Buffers::as_write_iovecs(buffer, iov);
     return pwritev(&iov[0], iov.size(), offset);
@@ -429,9 +436,9 @@ ssize_t File::pwrite(const void* buf, size_t buflen, off_t offset) {
 ssize_t File::pwritev(const iovec* iov, int iovlen, off_t offset) {
   for (int iov_i = 0; iov_i < iovlen; iov_i++) {
     if (!Buffer::is_page_aligned(iov[iov_i])) {
-      if (iovlen == 1)
+      if (iovlen == 1) {
         return pwrite(iov[0].iov_base, iov[0].iov_len, offset);
-      else {
+      } else {
         string buffer;
         for (int iov_i = 0; iov_i < iovlen; iov_i++) {
           buffer.append(
@@ -515,12 +522,13 @@ off_t File::seek(off_t offset, uint8_t whence) {
   liOffset.QuadPart = offset;
 
   liOffset.LowPart
-    = SetFilePointer(*this, liOffset.LowPart, &liOffset.HighPart, whence);
+  = SetFilePointer(*this, liOffset.LowPart, &liOffset.HighPart, whence);
 
-  if (liOffset.LowPart != INVALID_SET_FILE_POINTER)
+  if (liOffset.LowPart != INVALID_SET_FILE_POINTER) {
     return static_cast<off_t>(liOffset.QuadPart);
-  else
+  } else {
     return static_cast<off_t>(-1);
+  }
 }
 
 bool File::setlk(const Lock& lock) {
@@ -533,8 +541,12 @@ bool File::setlkw(const Lock& lock) {
 
 bool File::setlk(const Lock& lock, bool wait) {
   DWORD dwFlags = 0;
-  if (lock.is_exclusive()) dwFlags |= LOCKFILE_EXCLUSIVE_LOCK;
-  if (!wait) dwFlags |= LOCKFILE_FAIL_IMMEDIATELY;
+  if (lock.is_exclusive()) {
+    dwFlags |= LOCKFILE_EXCLUSIVE_LOCK;
+  }
+  if (!wait) {
+    dwFlags |= LOCKFILE_FAIL_IMMEDIATELY;
+  }
 
   OVERLAPPED overlapped;
   ZeroMemory(&overlapped, sizeof(overlapped));
@@ -571,10 +583,11 @@ bool File::setlk(const Lock& lock, bool wait) {
 
 YO_NEW_REF Stat* File::stat() {
   BY_HANDLE_FILE_INFORMATION by_handle_file_information;
-  if (GetFileInformationByHandle(*this, &by_handle_file_information) != 0)
+  if (GetFileInformationByHandle(*this, &by_handle_file_information) != 0) {
     return new Stat(by_handle_file_information);
-  else
+  } else {
     return NULL;
+  }
 }
 
 bool File::sync() {
@@ -585,16 +598,17 @@ off_t File::tell() {
   ULARGE_INTEGER uliFilePointer;
   LONG lFilePointerHigh = 0;
   uliFilePointer.LowPart
-    = SetFilePointer(*this, 0, &lFilePointerHigh, FILE_CURRENT);
+  = SetFilePointer(*this, 0, &lFilePointerHigh, FILE_CURRENT);
   uliFilePointer.HighPart = lFilePointerHigh;
   return static_cast<off_t>(uliFilePointer.QuadPart);
 }
 
 bool File::truncate(off_t length) {
-  if (seek(length, SEEK_SET) == length)
+  if (seek(length, SEEK_SET) == length) {
     return SetEndOfFile(*this) != 0;
-  else
+  } else {
     return false;
+  }
 }
 
 bool File::unlk(const Lock& lock) {

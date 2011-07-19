@@ -46,8 +46,9 @@ TEST(DatagramSocket, recvfrom) {
   char m;
   SocketAddress peername;
   ssize_t recvfrom_ret = sockets.second().recvfrom(&m, 1, 0, peername);
-  if (recvfrom_ret == -1)
+  if (recvfrom_ret == -1) {
     throw Exception();
+  }
   throw_assert_eq(recvfrom_ret, 1);
   throw_assert_eq(m, 'm');
   throw_assert_eq(peername, *sockets.first().getsockname());
@@ -65,8 +66,9 @@ TEST(DatagramSocket, recvmsg) {
   iov[1].iov_len = 1;
   SocketAddress peername;
   ssize_t recvmsg_ret = sockets.second().recvmsg(iov, 2, 0, peername);
-  if (recvmsg_ret == -1)
+  if (recvmsg_ret == -1) {
     throw Exception();
+  }
   throw_assert_eq(recvmsg_ret, 2);
   throw_assert_eq(m, 'm');
   throw_assert_eq(n, 'n');
@@ -83,8 +85,9 @@ TEST(DatagramSocket, sendmsg) {
   iov[1].iov_len = 1;
   ssize_t sendmsg_ret =
     sockets.first().sendmsg(iov, 2, 0, *sockets.second().getsockname());
-  if (sendmsg_ret == -1)
+  if (sendmsg_ret == -1) {
     throw Exception();
+  }
   throw_assert_eq(sendmsg_ret, 2);
   char mn[2];
   ssize_t read_ret = sockets.second().read(mn, 2);
@@ -96,9 +99,10 @@ TEST(DatagramSocket, sendmsg) {
 TEST(DatagramSocket, sendto) {
   DatagramSocketPair sockets;
   ssize_t sendto_ret
-    = sockets.first().sendto("m", 1, 0, *sockets.second().getsockname());
-  if (sendto_ret == -1)
+  = sockets.first().sendto("m", 1, 0, *sockets.second().getsockname());
+  if (sendto_ret == -1) {
     throw Exception();
+  }
   throw_assert_eq(sendto_ret, 1);
   char m;
   ssize_t read_ret = sockets.second().read(&m, 1);

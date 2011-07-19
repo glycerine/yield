@@ -112,8 +112,9 @@ public:
 class TestSuite : private std::vector< std::pair<std::string, Test*> > {
 public:
   virtual ~TestSuite() {
-    for (iterator test_i = begin(); test_i != end(); test_i++)
+    for (iterator test_i = begin(); test_i != end(); test_i++) {
       delete test_i->second;
+    }
   }
 
   void add(const std::string& name, Test* test) {

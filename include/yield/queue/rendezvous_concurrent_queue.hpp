@@ -63,10 +63,11 @@ public:
   ElementType* trydequeue() {
     atomic_t element = static_cast<atomic_t>(this->element);
     while (element != 0) {
-      if (atomic_cas(&this->element, 0, element) == element)
+      if (atomic_cas(&this->element, 0, element) == element) {
         return reinterpret_cast<ElementType*>(element);
-      else
+      } else {
         element = static_cast<atomic_t>(this->element);
+      }
     }
 
     return NULL;

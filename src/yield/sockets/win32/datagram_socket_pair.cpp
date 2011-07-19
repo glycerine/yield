@@ -40,19 +40,23 @@ DatagramSocketPair::DatagramSocketPair() {
     SocketAddress socknames[2];
     for (uint8_t i = 0; i < 2; ++i) {
       if (sockets[i]->bind(SocketAddress::IN_LOOPBACK)) {
-        if (!sockets[i]->getsockname(socknames[i]))
+        if (!sockets[i]->getsockname(socknames[i])) {
           throw Exception();
-      } else
+        }
+      } else {
         throw Exception();
+      }
     }
 
     for (uint8_t i = 0; i < 2; ++i) {
-      if (!sockets[i]->connect(socknames[(i+1)%2]))
+      if (!sockets[i]->connect(socknames[(i + 1) % 2])) {
         throw Exception();
+      }
     }
   } catch (Exception&) {
-    for (uint8_t i = 0; i < 2; ++i)
+    for (uint8_t i = 0; i < 2; ++i) {
       DatagramSocket::dec_ref(*sockets[i]);
+    }
     throw;
   }
 }

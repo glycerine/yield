@@ -1669,10 +1669,12 @@ URIParser::parse(
     unsigned int _nacts;
     const unsigned char* _keys;
 
-    if (p == pe)
+    if (p == pe) {
       goto _test_eof;
-    if (cs == 0)
+    }
+    if (cs == 0) {
       goto _out;
+    }
 _resume:
     _keys = _parse_uri_reference_trans_keys + _parse_uri_reference_key_offsets[cs];
     _trans = _parse_uri_reference_index_offsets[cs];
@@ -1683,15 +1685,16 @@ _resume:
       const unsigned char* _mid;
       const unsigned char* _upper = _keys + _klen - 1;
       while (1) {
-        if (_upper < _lower)
+        if (_upper < _lower) {
           break;
+        }
 
         _mid = _lower + ((_upper - _lower) >> 1);
-        if ((*p) < *_mid)
+        if ((*p) < *_mid) {
           _upper = _mid - 1;
-        else if ((*p) > *_mid)
+        } else if ((*p) > *_mid) {
           _lower = _mid + 1;
-        else {
+        } else {
           _trans += (_mid - _keys);
           goto _match;
         }
@@ -1706,15 +1709,16 @@ _resume:
       const unsigned char* _mid;
       const unsigned char* _upper = _keys + (_klen << 1) - 2;
       while (1) {
-        if (_upper < _lower)
+        if (_upper < _lower) {
           break;
+        }
 
         _mid = _lower + (((_upper - _lower) >> 1) & ~1);
-        if ((*p) < _mid[0])
+        if ((*p) < _mid[0]) {
           _upper = _mid - 2;
-        else if ((*p) > _mid[1])
+        } else if ((*p) > _mid[1]) {
           _lower = _mid + 2;
-        else {
+        } else {
           _trans += ((_mid - _keys) >> 1);
           goto _match;
         }
@@ -1726,8 +1730,9 @@ _match:
     _trans = _parse_uri_reference_indicies[_trans];
     cs = _parse_uri_reference_trans_targs[_trans];
 
-    if (_parse_uri_reference_trans_actions[_trans] == 0)
+    if (_parse_uri_reference_trans_actions[_trans] == 0) {
       goto _again;
+    }
 
     _acts = _parse_uri_reference_actions + _parse_uri_reference_trans_actions[_trans];
     _nacts = (unsigned int) * _acts++;
@@ -1810,10 +1815,12 @@ _match:
     }
 
 _again:
-    if (cs == 0)
+    if (cs == 0) {
       goto _out;
-    if (++p != pe)
+    }
+    if (++p != pe) {
       goto _resume;
+    }
 _test_eof:
     {}
     if (p == eof) {

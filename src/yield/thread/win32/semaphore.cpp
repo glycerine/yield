@@ -37,8 +37,9 @@ namespace yield {
 namespace thread {
 Semaphore::Semaphore() {
   hSemaphore = CreateSemaphore(NULL, 0, LONG_MAX, NULL);
-  if (hSemaphore == NULL)
+  if (hSemaphore == NULL) {
     throw Exception();
+  }
 }
 
 Semaphore::~Semaphore() {

@@ -116,7 +116,7 @@ TEST(Buffer, copy_const_void_size_t) {
   throw_assert_eq(buffer->size(), 4);
 }
 
-TEST(Buffer, copy_c_string) { 
+TEST(Buffer, copy_c_string) {
   auto_Object<Buffer> buffer = Buffer::copy("test");
   throw_assert_eq(strncmp(*buffer, "test", 4), 0);
   throw_assert_eq(buffer->size(), 4);
@@ -171,20 +171,20 @@ TEST(Buffer, inc_ref) {
 }
 
 TEST(Buffer, is_page_aligned) {
-  auto_Object<Buffer> buffer 
-    = new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
+  auto_Object<Buffer> buffer
+  = new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
   throw_assert(buffer->is_page_aligned());
 }
 
 TEST(Buffer, is_page_aligned_const_void) {
-  auto_Object<Buffer> buffer 
-    = new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
+  auto_Object<Buffer> buffer
+  = new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
   throw_assert(Buffer::is_page_aligned(buffer->data()));
 }
 
 TEST(Buffer, is_page_aligned_iovec) {
-  auto_Object<Buffer> buffer 
-    = new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
+  auto_Object<Buffer> buffer
+  = new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
   throw_assert(Buffer::is_page_aligned(buffer->as_read_iovec()));
 }
 
@@ -245,8 +245,9 @@ TEST(Buffer, print) {
 
   {
     auto_Object<Buffer> buffer = new Buffer(Buffer::getpagesize());
-    for (uint16_t i = 0; i < Buffer::getpagesize(); ++i)
+    for (uint16_t i = 0; i < Buffer::getpagesize(); ++i) {
       buffer->put('m');
+    }
     std::ostringstream oss;
     oss << *buffer;
     throw_assert_ne(oss.str().size(), 0);
@@ -339,7 +340,7 @@ TEST(Buffer, set_next_buffer) {
   throw_assert_eq(buffer->get_next_buffer(), &buffer3.get());
 
   buffer->set_next_buffer(NULL);
-  throw_assert_eq(buffer->get_next_buffer(), NULL);  
+  throw_assert_eq(buffer->get_next_buffer(), NULL);
 }
 
 TEST(Buffer, size) {
@@ -347,8 +348,9 @@ TEST(Buffer, size) {
   throw_assert_eq(buffer->size(), 0);
   buffer->put('m');
   throw_assert_eq(buffer->size(), 1);
-  while (buffer->size() < buffer->capacity())
+  while (buffer->size() < buffer->capacity()) {
     buffer->put('m');
+  }
   throw_assert_eq(buffer->size(), buffer->capacity());
   buffer->put('m');
   throw_assert_eq(buffer->size(), buffer->capacity());

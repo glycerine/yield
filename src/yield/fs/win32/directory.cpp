@@ -56,16 +56,18 @@ bool Directory::close() {
     }
 
     return true;
-  } else
+  } else {
     return false;
+  }
 }
 
 Directory::Entry* Directory::read() {
   Entry* entry = NULL;
-  if (read(entry))
+  if (read(entry)) {
     return entry;
-  else
+  } else {
     return NULL;
+  }
 }
 
 bool Directory::read(Entry& entry) {
@@ -96,24 +98,28 @@ bool Directory::read(Entry*& entry) {
       WIN32_FIND_DATA find_data;
       hFindFile = FindFirstFile(search_pattern.c_str(), &find_data);
       if (hFindFile != INVALID_HANDLE_VALUE) {
-        if (entry == NULL)
+        if (entry == NULL) {
           entry = new Entry(find_data);
-        else
+        } else {
           *entry = find_data;
+        }
 
         return true;
-      } else
+      } else {
         return false;
-    } else
+      }
+    } else {
       return false;
+    }
   }
 
   WIN32_FIND_DATA find_data;
   while (FindNextFile(hFindFile, &find_data)) {
-    if (entry == NULL)
+    if (entry == NULL) {
       entry = new Entry(find_data);
-    else
+    } else {
       *entry = find_data;
+    }
 
     return true;
   }
@@ -138,12 +144,13 @@ Directory::Entry::Entry(const WIN32_FIND_DATA& find_data)
 }
 
 Directory::Entry::Type Directory::Entry::get_type() const {
-  if (ISDEV())
+  if (ISDEV()) {
     return TYPE_DEV;
-  else if (ISDIR())
+  } else if (ISDIR()) {
     return TYPE_DIR;
-  else
+  } else {
     return TYPE_REG;
+  }
 }
 
 bool Directory::Entry::is_hidden() const {

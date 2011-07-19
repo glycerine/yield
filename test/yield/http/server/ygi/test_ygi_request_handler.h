@@ -36,7 +36,7 @@
 extern "C" {
 #endif
 
-ygi_response_t* test_ygi_request_handler(ygi_request_t* ygi_request);
+  ygi_response_t* test_ygi_request_handler(ygi_request_t* ygi_request);
 
 #ifdef __cplusplus
 }

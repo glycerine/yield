@@ -132,7 +132,7 @@ OPTIONS_ITEM_DEFINITION_GROUP = """\
     <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)s</AdditionalIncludeDirectories>
     <AdditionalOptions>%(AdditionalOptions)s</AdditionalOptions>
     <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-    <MinimalRebuild>false</MinimalRebuild>    
+    <MinimalRebuild>false</MinimalRebuild>
     <Optimization>Disabled</Optimization>
     <PreprocessorDefinitions>%(PreprocessorDefinitions)s</PreprocessorDefinitions>
     <RuntimeLibrary>%(RuntimeLibrary)s</RuntimeLibrary>
@@ -374,7 +374,7 @@ class VCXProj(VCProj):
 %(configuration_property_groups)s
 
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  
+
   <ImportGroup Label="ExtensionSettings" />
 
 %(user_props_import_groups)s

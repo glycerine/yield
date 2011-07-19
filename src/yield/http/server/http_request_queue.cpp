@@ -48,9 +48,9 @@ template <class AIOQueueType>
 HTTPRequestQueue<AIOQueueType>::HTTPRequestQueue(
   const SocketAddress& sockname,
   YO_NEW_REF Log* log
-) throw (Exception) : aio_queue(*new AIOQueueType(log)),
-    log(Object::inc_ref(log)),
-    socket_(*new TCPSocket(sockname.get_family())) {
+) throw(Exception) : aio_queue(*new AIOQueueType(log)),
+  log(Object::inc_ref(log)),
+  socket_(*new TCPSocket(sockname.get_family())) {
   init(sockname);
 }
 
@@ -59,9 +59,9 @@ HTTPRequestQueue<AIOQueueType>::HTTPRequestQueue(
   YO_NEW_REF TCPSocket& socket_,
   const SocketAddress& sockname,
   YO_NEW_REF Log* log
-) throw (Exception) : aio_queue(*new AIOQueueType(log)),
-    log(Object::inc_ref(log)),
-    socket_(socket_) {
+) throw(Exception) : aio_queue(*new AIOQueueType(log)),
+  log(Object::inc_ref(log)),
+  socket_(socket_) {
   init(sockname);
 }
 
@@ -97,24 +97,25 @@ template <class AIOQueueType>
 void HTTPRequestQueue<AIOQueueType>::handle(YO_NEW_REF acceptAIOCB& accept_aiocb) {
   if (accept_aiocb.get_return() >= 0) {
     TCPSocket& accepted_socket
-      = static_cast<TCPSocket&>(*accept_aiocb.get_accepted_socket());
+    = static_cast<TCPSocket&>(*accept_aiocb.get_accepted_socket());
 
     if (aio_queue.associate(accepted_socket)) {
       HTTPConnection* connection
-        = new HTTPConnection(
-                  aio_queue,
-                  aio_queue,
-                  *accept_aiocb.get_peername(),
-                  static_cast<TCPSocket&>(accepted_socket),
-                  log                  
-                );
+      = new HTTPConnection(
+        aio_queue,
+        aio_queue,
+        *accept_aiocb.get_peername(),
+        static_cast<TCPSocket&>(accepted_socket),
+        log
+      );
 
       connection->handle(accept_aiocb);
 
-      if (connection->get_state() == HTTPConnection::STATE_CONNECTED)
+      if (connection->get_state() == HTTPConnection::STATE_CONNECTED) {
         connections.push_back(connection);
-      else
+      } else {
         HTTPConnection::dec_ref(*connection);
+      }
     } else {
       accepted_socket.shutdown();
       accepted_socket.close();
@@ -125,10 +126,11 @@ void HTTPRequestQueue<AIOQueueType>::handle(YO_NEW_REF acceptAIOCB& accept_aiocb
   }
 
   Buffer* recv_buffer
-    = new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
+  = new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
   acceptAIOCB* next_accept_aiocb = new acceptAIOCB(socket_, recv_buffer);
-  if (!aio_queue.enqueue(*next_accept_aiocb))
+  if (!aio_queue.enqueue(*next_accept_aiocb)) {
     acceptAIOCB::dec_ref(next_accept_aiocb);
+  }
 }
 
 template <class AIOQueueType>
@@ -151,16 +153,16 @@ void HTTPRequestQueue<AIOQueueType>::handle(YO_NEW_REF AIOCBType& aiocb) {
         }
       }
     }
-  }
-  else
+  } else {
     AIOCBType::dec_ref(aiocb);
+  }
 }
 
 template <class AIOQueueType>
 void
 HTTPRequestQueue<AIOQueueType>::init(
   const SocketAddress& sockname
-) throw (Exception) {
+) throw(Exception) {
   if (aio_queue.associate(socket_)) {
 #ifdef __linux__
     if (socket_.setsockopt(Socket::Option::REUSEADDR, true)) {
@@ -168,10 +170,11 @@ HTTPRequestQueue<AIOQueueType>::init(
       if (socket_.bind(sockname)) {
         if (socket_.listen()) {
           Buffer* recv_buffer
-            = new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
+          = new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
           acceptAIOCB* accept_aiocb = new acceptAIOCB(socket_, recv_buffer);
-          if (aio_queue.enqueue(*accept_aiocb))
+          if (aio_queue.enqueue(*accept_aiocb)) {
             return;
+          }
         }
       }
 #ifdef __linux__
@@ -219,16 +222,19 @@ YO_NEW_REF Event* HTTPRequestQueue<AIOQueueType>::timeddequeue(const Time& timeo
       }
       break;
 
-      default: return event;
+      default:
+        return event;
       }
     } else if (timeout_remaining > static_cast<uint64_t>(0)) {
       Time elapsed_time = Time::now() - start_time;
-      if (timeout_remaining > elapsed_time)
+      if (timeout_remaining > elapsed_time) {
         timeout_remaining -= elapsed_time;
-      else
+      } else {
         timeout_remaining = 0;
-    } else
+      }
+    } else {
       return NULL;
+    }
   }
 }
 

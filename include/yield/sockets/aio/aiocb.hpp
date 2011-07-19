@@ -66,7 +66,7 @@ public:
 
 public:
 #ifdef _WIN32
-  operator ::OVERLAPPED*();
+  operator ::OVERLAPPED* ();
 #endif
 
 public:

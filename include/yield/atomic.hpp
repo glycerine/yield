@@ -126,8 +126,9 @@ atomic_cas(
   if (*cur_value == old_value) {
     *cur_value = new_value;
     return old_value;
-  } else
+  } else {
     return *cur_value;
+  }
 #endif
 #elif defined(__i386__)
   atomic_t prev;

@@ -72,7 +72,7 @@ public:
     @param buffers a linked list of <code>Buffer</code>s
     @param offset byte offset into the buffer space
     @param[out] write_iovecs the resulting array of iovecs for writing
- */
+  */
   static size_t
   as_write_iovecs(
     const Buffer& buffers,
@@ -86,7 +86,7 @@ public:
     @param buffers a linked list of <code>Buffer</code>s
     @param data data to write
     @param size size of data
- */
+  */
   static void put(Buffer& buffers, const void* data, size_t size);
 
 public:
@@ -95,7 +95,7 @@ public:
       as the sum of the sizes of the constituent <code>Buffer</code>s.
     @param buffers a linked list of <code>Buffer</code>s
     @return the summed size of the buffers
- */
+  */
   static size_t size(const Buffer& buffers);
 };
 }

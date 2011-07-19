@@ -106,8 +106,9 @@ Object& HTTPResponseParser::parse() {
       }
     } else {
       Object* object = parse_body_chunk();
-      if (object != NULL)
+      if (object != NULL) {
         return *object;
+      }
     }
 
     if (p == eof) { // EOF parsing
@@ -126,8 +127,9 @@ Object& HTTPResponseParser::parse() {
       http_response.set_field("Content-Length", 14, "0", 1);
       return http_response;
     }
-  } else // p == eof
+  } else { // p == eof
     return *new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
+  }
 }
 
 bool
@@ -216,8 +218,9 @@ HTTPResponseParser::parse_status_line(
     unsigned int _nacts;
     const unsigned char* _keys;
 
-    if (cs == 0)
+    if (cs == 0) {
       goto _out;
+    }
 _resume:
     _keys = _status_line_parser_trans_keys + _status_line_parser_key_offsets[cs];
     _trans = _status_line_parser_index_offsets[cs];
@@ -228,15 +231,16 @@ _resume:
       const unsigned char* _mid;
       const unsigned char* _upper = _keys + _klen - 1;
       while (1) {
-        if (_upper < _lower)
+        if (_upper < _lower) {
           break;
+        }
 
         _mid = _lower + ((_upper - _lower) >> 1);
-        if ((*p) < *_mid)
+        if ((*p) < *_mid) {
           _upper = _mid - 1;
-        else if ((*p) > *_mid)
+        } else if ((*p) > *_mid) {
           _lower = _mid + 1;
-        else {
+        } else {
           _trans += (_mid - _keys);
           goto _match;
         }
@@ -251,15 +255,16 @@ _resume:
       const unsigned char* _mid;
       const unsigned char* _upper = _keys + (_klen << 1) - 2;
       while (1) {
-        if (_upper < _lower)
+        if (_upper < _lower) {
           break;
+        }
 
         _mid = _lower + (((_upper - _lower) >> 1) & ~1);
-        if ((*p) < _mid[0])
+        if ((*p) < _mid[0]) {
           _upper = _mid - 2;
-        else if ((*p) > _mid[1])
+        } else if ((*p) > _mid[1]) {
           _lower = _mid + 2;
-        else {
+        } else {
           _trans += ((_mid - _keys) >> 1);
           goto _match;
         }
@@ -271,8 +276,9 @@ _match:
     _trans = _status_line_parser_indicies[_trans];
     cs = _status_line_parser_trans_targs[_trans];
 
-    if (_status_line_parser_trans_actions[_trans] == 0)
+    if (_status_line_parser_trans_actions[_trans] == 0) {
       goto _again;
+    }
 
     _acts = _status_line_parser_actions + _status_line_parser_trans_actions[_trans];
     _nacts = (unsigned int) * _acts++;
@@ -315,8 +321,9 @@ _match:
     }
 
 _again:
-    if (cs == 0)
+    if (cs == 0) {
       goto _out;
+    }
     p += 1;
     goto _resume;
     if (p == eof) {

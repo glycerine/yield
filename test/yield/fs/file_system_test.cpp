@@ -115,15 +115,17 @@ TEST_EX(FileSystem, chown, FileSystemTest) {
 
 TEST_EX(FileSystem, creat, FileSystemTest) {
   File* file = FileSystem().creat(get_test_file_name());
-  if (file != NULL)
+  if (file != NULL) {
     File::dec_ref(*file);
-  else
+  } else {
     throw Exception();
+  }
 }
 
 TEST_EX(FileSystem, exists, FileSystemTest) {
-  if (!FileSystem().exists(get_test_file_name()))
+  if (!FileSystem().exists(get_test_file_name())) {
     throw Exception();
+  }
 
   throw_assert_false(FileSystem().exists(Path("some other file.txt")));
 }
@@ -143,28 +145,32 @@ TEST_EX(FileSystem, isreg, FileSystemTest) {
 }
 
 TEST_EX(FileSystem, link, FileSystemTest) {
-  if (!FileSystem().link(get_test_file_name(), get_test_link_name()))
+  if (!FileSystem().link(get_test_file_name(), get_test_link_name())) {
     throw Exception();
+  }
 }
 
 #ifndef _WIN32
 TEST_EX(FileSystem, lstat, FileSystemTest) {
-  if (!FileSystem().symlink(get_test_file_name(), get_test_link_name()))
+  if (!FileSystem().symlink(get_test_file_name(), get_test_link_name())) {
     throw Exception();
+  }
   auto_Object<Stat> stbuf = FileSystem().lstat(get_test_link_name());
   throw_assert_true(stbuf->ISLNK());
 }
 #endif
 
 TEST_EX(FileSystem, mkdir, FileSystemTest) {
-  if (!FileSystem().mkdir(get_test_dir_name()))
+  if (!FileSystem().mkdir(get_test_dir_name())) {
     throw Exception();
+  }
 }
 
 TEST_EX(FileSystem, mktree, FileSystemTest) {
   Path test_subdir_path(get_test_dir_name() / get_test_dir_name());
-  if (!FileSystem().mktree(test_subdir_path))
+  if (!FileSystem().mktree(test_subdir_path)) {
     throw Exception();
+  }
   throw_assert(FileSystem().exists(test_subdir_path));
 }
 
@@ -180,48 +186,57 @@ TEST_EX(FileSystem, open, FileSystemTest) {
 
 #ifndef _WIN32
 TEST_EX(FileSystem, readlink, FileSystemTest) {
-  if (!FileSystem().symlink(get_test_file_name(), get_test_link_name()))
+  if (!FileSystem().symlink(get_test_file_name(), get_test_link_name())) {
     throw Exception();
+  }
 
   Path target_path;
   if (FileSystem().readlink(get_test_link_name(), target_path)) {
     throw_assert_eq(target_path, get_test_file_name());
-  } else
+  } else {
     throw Exception();
+  }
 }
 #endif
 
 TEST_EX(FileSystem, realpath, FileSystemTest) {
   Path realpath;
-  if (!FileSystem().realpath(get_test_file_name(), realpath))
+  if (!FileSystem().realpath(get_test_file_name(), realpath)) {
     throw Exception();
+  }
   throw_assert_false(realpath.empty());
   throw_assert_ne(get_test_file_name(), realpath);
   throw_assert_lt(get_test_file_name().size(), realpath.size());
 }
 
 TEST_EX(FileSystem, rename, FileSystemTest) {
-  if (!FileSystem().rename(get_test_file_name(), Path("file_system_test2.txt")))
+  if (!FileSystem().rename(get_test_file_name(), Path("file_system_test2.txt"))) {
     throw Exception();
+  }
   FileSystem().unlink(Path("file_system_test2.txt"));
 }
 
 TEST_EX(FileSystem, rmdir, FileSystemTest) {
   FileSystem().mkdir(get_test_dir_name());
-  if (!FileSystem().rmdir(get_test_dir_name()))
+  if (!FileSystem().rmdir(get_test_dir_name())) {
     throw Exception();
+  }
 }
 
 TEST_EX(FileSystem, rmtree, FileSystemTest) {
-  if (!FileSystem().mkdir(get_test_dir_name()))
+  if (!FileSystem().mkdir(get_test_dir_name())) {
     throw Exception();
-  if (!FileSystem().mkdir(get_test_dir_name() / get_test_dir_name()))
+  }
+  if (!FileSystem().mkdir(get_test_dir_name() / get_test_dir_name())) {
     throw Exception();
-  if (!FileSystem().touch(get_test_dir_name() / get_test_file_name()))
+  }
+  if (!FileSystem().touch(get_test_dir_name() / get_test_file_name())) {
     throw Exception();
+  }
 
-  if (!FileSystem().rmtree(get_test_dir_name()))
+  if (!FileSystem().rmtree(get_test_dir_name())) {
     throw Exception();
+  }
 
   throw_assert_false(FileSystem().exists(get_test_dir_name()));
 }
@@ -243,8 +258,9 @@ TEST_EX(FileSystem, stat, FileSystemTest) {
 TEST_EX(FileSystem, statvfs, FileSystemTest) {
   FileSystem().mkdir(get_test_dir_name());
   struct statvfs stbuf;
-  if (!FileSystem().statvfs(get_test_dir_name(), stbuf))
+  if (!FileSystem().statvfs(get_test_dir_name(), stbuf)) {
     throw Exception();
+  }
   throw_assert_gt(stbuf.f_bsize, 0);
   throw_assert_gt(stbuf.f_blocks, 0);
   throw_assert_gt(stbuf.f_bfree, 0);
@@ -253,14 +269,16 @@ TEST_EX(FileSystem, statvfs, FileSystemTest) {
 
 #ifndef _WIN32
 TEST_EX(FileSystem, symlink, FileSystemTest) {
-  if (!FileSystem().symlink(get_test_file_name(), get_test_link_name()))
+  if (!FileSystem().symlink(get_test_file_name(), get_test_link_name())) {
     throw Exception();
+  }
 }
 #endif
 
 TEST_EX(FileSystem, touch, FileSystemTest) {
-  if (!FileSystem().touch(get_test_file_name()))
+  if (!FileSystem().touch(get_test_file_name())) {
     throw Exception();
+  }
 
   if (FileSystem().touch(get_test_dir_name() / get_test_file_name())) {
     throw_assert(false);
@@ -268,20 +286,22 @@ TEST_EX(FileSystem, touch, FileSystemTest) {
 }
 
 TEST_EX(FileSystem, unlink, FileSystemTest) {
-  if (!FileSystem().unlink(get_test_file_name()))
+  if (!FileSystem().unlink(get_test_file_name())) {
     throw Exception();
+  }
 }
 
 TEST_EX(FileSystem, utime, FileSystemTest) {
   DateTime atime = DateTime::now(),
-            mtime = DateTime::now();
+           mtime = DateTime::now();
 
   if (FileSystem().utime(get_test_file_name(), atime, mtime)) {
     auto_Object<Stat> stbuf = FileSystem().stat(get_test_file_name());
     throw_assert_le(stbuf->get_atime() - atime, Time::NS_IN_S);
     throw_assert_le(stbuf->get_mtime() - mtime, Time::NS_IN_S);
-  } else
+  } else {
     throw Exception();
+  }
 }
 
 #ifdef _WIN32
@@ -295,8 +315,9 @@ TEST_EX(FileSystem, utime_win32, FileSystemTest) {
     throw_assert_le(stbuf->get_atime() - atime, Time::NS_IN_S);
     throw_assert_le(stbuf->get_mtime() - mtime, Time::NS_IN_S);
     throw_assert_le(stbuf->get_ctime() - ctime, Time::NS_IN_S);
-  } else if (Exception::get_last_error_code() != ENOTSUP)
+  } else if (Exception::get_last_error_code() != ENOTSUP) {
     throw Exception();
+  }
 }
 #endif
 }

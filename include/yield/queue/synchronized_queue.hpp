@@ -54,8 +54,9 @@ public:
   ElementType& dequeue() {
     cond.lock_mutex();
 
-    while (std::queue<ElementType*>::empty())
+    while (std::queue<ElementType*>::empty()) {
       cond.wait();
+    }
 
     ElementType* element = std::queue<ElementType*>::front();
     std::queue<ElementType*>::pop();
@@ -107,9 +108,9 @@ public:
           return element;
         } else {
           Time elapsed_time(Time::now() - start_time);
-          if (elapsed_time < timeout_left)
+          if (elapsed_time < timeout_left) {
             timeout_left -= elapsed_time;
-          else {
+          } else {
             cond.unlock_mutex();
             return NULL;
           }
@@ -130,8 +131,9 @@ public:
         std::queue<ElementType*>::pop();
         cond.unlock_mutex();
         return element;
-      } else
+      } else {
         cond.unlock_mutex();
+      }
     }
 
     return NULL;

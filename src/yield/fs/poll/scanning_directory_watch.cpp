@@ -62,14 +62,16 @@ ScanningDirectoryWatch::ScanningDirectoryWatch(
           }
         }
 
-        if (!directory->read(*dentry))
+        if (!directory->read(*dentry)) {
           break;
+        }
       }
       Directory::Entry::dec_ref(*dentry);
     }
     Directory::dec_ref(*directory);
-  } else
+  } else {
     throw Exception();
+  }
 }
 
 ScanningDirectoryWatch::~ScanningDirectoryWatch() {
@@ -78,8 +80,9 @@ ScanningDirectoryWatch::~ScanningDirectoryWatch() {
       map<Path, Stat*>::iterator dentry_i = dentries->begin();
       dentry_i != dentries->end();
       ++dentry_i
-    )
+    ) {
       Stat::dec_ref(*dentry_i->second);
+    }
     delete dentries;
   }
 }
@@ -125,15 +128,16 @@ ScanningDirectoryWatch::scan(
                   if ((fs_event_type & fs_event_types) == fs_event_type) {
                     FSEvent* fs_event
                     = new FSEvent(
-                            this->get_path() / new_dentry->get_name(),
-                            fs_event_type
-                          );
+                      this->get_path() / new_dentry->get_name(),
+                      fs_event_type
+                    );
                     log_fs_event(*fs_event);
                     fs_event_handler.handle(*fs_event);
                   }
                 }
-              } else // dentry type has changed
+              } else { // dentry type has changed
                 debug_break();
+              }
 
               Stat::dec_ref(*old_dentry_i->second);
               old_dentries->erase(old_dentry_i);
@@ -146,8 +150,9 @@ ScanningDirectoryWatch::scan(
           }
         }
 
-        if (!directory->read(*new_dentry))
+        if (!directory->read(*new_dentry)) {
           break;
+        }
       }
 
       // Check the remaining old_dentries against new_new_dentries
@@ -158,41 +163,42 @@ ScanningDirectoryWatch::scan(
           old_dentry_i != old_dentries->end();
           ++old_dentry_i
         ) {
-            Stat* old_dentry_stat = old_dentry_i->second;
+          Stat* old_dentry_stat = old_dentry_i->second;
 
-            for (
-              vector< pair<Path, Stat*> >::iterator new_dentry_i
-              = new_new_dentries.begin();
-              new_dentry_i != new_new_dentries.end();
-            ) {
-              Stat* new_dentry_stat = new_dentry_i->second;
+          for (
+            vector< pair<Path, Stat*> >::iterator new_dentry_i
+            = new_new_dentries.begin();
+            new_dentry_i != new_new_dentries.end();
+          ) {
+            Stat* new_dentry_stat = new_dentry_i->second;
 
-              if (equals(*old_dentry_stat, *new_dentry_stat)) {
-                FSEvent::Type fs_event_type =
-                  new_dentry_stat->ISDIR() ?
-                  FSEvent::TYPE_DIRECTORY_RENAME :
-                  FSEvent::TYPE_FILE_RENAME;
+            if (equals(*old_dentry_stat, *new_dentry_stat)) {
+              FSEvent::Type fs_event_type =
+                new_dentry_stat->ISDIR() ?
+                FSEvent::TYPE_DIRECTORY_RENAME :
+                FSEvent::TYPE_FILE_RENAME;
 
-                if ((fs_event_type & fs_event_types) == fs_event_type) {
-                  FSEvent* fs_event
-                  = new FSEvent(
-                    this->get_path() / old_dentry_i->first,
-                    this->get_path() / new_dentry_i->first,
-                    fs_event_type
-                  );
-                  log_fs_event(*fs_event);
-                  fs_event_handler.handle(*fs_event);
-                }
+              if ((fs_event_type & fs_event_types) == fs_event_type) {
+                FSEvent* fs_event
+                = new FSEvent(
+                  this->get_path() / old_dentry_i->first,
+                  this->get_path() / new_dentry_i->first,
+                  fs_event_type
+                );
+                log_fs_event(*fs_event);
+                fs_event_handler.handle(*fs_event);
+              }
 
-                // Don't dec_ref new_dentry_i->second, the Stat;
-                // it's owned by new_dentries
-                new_dentry_i = new_new_dentries.erase(new_dentry_i);
-                Stat::dec_ref(*old_dentry_i->second);
-                old_dentry_i->second = NULL;
-                break;
-              } else
-                ++new_dentry_i;
+              // Don't dec_ref new_dentry_i->second, the Stat;
+              // it's owned by new_dentries
+              new_dentry_i = new_new_dentries.erase(new_dentry_i);
+              Stat::dec_ref(*old_dentry_i->second);
+              old_dentry_i->second = NULL;
+              break;
+            } else {
+              ++new_dentry_i;
             }
+          }
         }
 
         // Any remaining new_new_dentries here are adds.
@@ -214,10 +220,10 @@ ScanningDirectoryWatch::scan(
 
             if ((fs_event_type & fs_event_types) == fs_event_type) {
               FSEvent* fs_event
-                = new FSEvent(
-                        this->get_path() / new_dentry_i->first,
-                        fs_event_type
-                      );
+              = new FSEvent(
+                this->get_path() / new_dentry_i->first,
+                fs_event_type
+              );
               log_fs_event(*fs_event);
               fs_event_handler.handle(*fs_event);
             }

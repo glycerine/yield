@@ -49,8 +49,9 @@ Thread::Thread(YO_NEW_REF Runnable& runnable)
   if (pthread_create(&pthread, &attr, &run, this) == 0) {
     pthread_attr_destroy(&attr);
 
-    while (state == STATE_READY)
+    while (state == STATE_READY) {
       sleep(0);
+    }
   } else {
     pthread_attr_destroy(&attr);
     throw Exception();
@@ -86,10 +87,11 @@ bool Thread::join() {
 
 uintptr_t Thread::key_create() {
   pthread_key_t key;
-  if (pthread_key_create(&key, NULL) == 0)
+  if (pthread_key_create(&key, NULL) == 0) {
     return key;
-  else
+  } else {
     return static_cast<uintptr_t>(-1);
+  }
 }
 
 bool Thread::key_delete(uintptr_t key) {

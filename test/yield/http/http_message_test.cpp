@@ -55,7 +55,7 @@ TEST(HTTPMessage, get_body) {
 
 TEST(HTTPMessage, get_date_field) {
   auto_Object<HTTPRequest> http_request
-    = new HTTPRequest(HTTPRequest::Method::GET, "/");
+  = new HTTPRequest(HTTPRequest::Method::GET, "/");
   http_request->set_field("Date", "Wed, 15 Nov 1995 06:25:24 GMT");
   DateTime date = http_request->get_date_field("Date");
   throw_assert_ne(date, DateTime::INVALID_DATE_TIME);
@@ -63,7 +63,7 @@ TEST(HTTPMessage, get_date_field) {
 
 TEST(HTTPMessage, get_field) {
   auto_Object<HTTPRequest> http_request
-    = new HTTPRequest(HTTPRequest::Method::GET, "/");
+  = new HTTPRequest(HTTPRequest::Method::GET, "/");
   // Set a field before the desired field
   http_request->set_field("Host", "localhost");
   http_request->set_field("Date", "Wed, 15 Nov 1995 06:25:24 GMT");
@@ -95,7 +95,7 @@ TEST(HTTPMessage, get_field) {
 
 TEST(HTTPMessage, get_fields) {
   auto_Object<HTTPRequest> http_request
-    = new HTTPRequest(HTTPRequest::Method::GET, "/");
+  = new HTTPRequest(HTTPRequest::Method::GET, "/");
   http_request->set_field("Host", "localhost");
   http_request->set_field("XHost", "localhost");
 

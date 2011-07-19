@@ -51,8 +51,8 @@ HTTPMessage<HTTPMessageType>::HTTPMessage(
   YO_NEW_REF Object* body,
   uint8_t http_version
 ) : body(body),
-    header(*new Buffer(Buffer::getpagesize(), Buffer::getpagesize())),
-    http_version(http_version) {
+  header(*new Buffer(Buffer::getpagesize(), Buffer::getpagesize())),
+  http_version(http_version) {
   fields_offset = 0;
 }
 
@@ -64,9 +64,9 @@ HTTPMessage(
   Buffer& header,
   uint8_t http_version
 ) : body(body),
-    fields_offset(fields_offset),
-    header(header.inc_ref()),
-    http_version(http_version) {
+  fields_offset(fields_offset),
+  header(header.inc_ref()),
+  http_version(http_version) {
 }
 
 template <class HTTPMessageType>
@@ -95,10 +95,11 @@ size_t HTTPMessage<HTTPMessageType>::get_content_length() const {
 template <class HTTPMessageType>
 DateTime HTTPMessage<HTTPMessageType>::get_date_field(const char* name) const {
   iovec value;
-  if (get_field(name, value))
+  if (get_field(name, value)) {
     return HTTPMessageParser::parse_date(value);
-  else
+  } else {
     return DateTime::INVALID_DATE_TIME;
+  }
 }
 
 template <class HTTPMessageType>
@@ -141,9 +142,9 @@ template <class HTTPMessageType>
 HTTPMessageType&
 HTTPMessage<HTTPMessageType>::
 set_field(
-  const char * name,
+  const char* name,
   size_t name_len,
-  const DateTime & value
+  const DateTime& value
 ) {
   static const char* months[] = {
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -199,7 +200,7 @@ template <class HTTPMessageType>
 HTTPMessageType&
 HTTPMessage<HTTPMessageType>::
 set_field(
-  const char * name,
+  const char* name,
   size_t name_len,
   size_t value
 ) {
@@ -219,9 +220,9 @@ template <class HTTPMessageType>
 HTTPMessageType&
 HTTPMessage<HTTPMessageType>::
 set_field(
-  const char * name,
+  const char* name,
   size_t name_len,
-  const void * value,
+  const void* value,
   size_t value_len
 ) {
   debug_assert_gt(fields_offset, 0);

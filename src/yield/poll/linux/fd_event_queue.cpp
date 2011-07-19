@@ -38,27 +38,30 @@
 
 namespace yield {
 namespace poll {
-FDEventQueue::FDEventQueue(bool) throw (Exception) {
+FDEventQueue::FDEventQueue(bool) throw(Exception) {
   epfd = epoll_create(32768);
   if (epfd != -1) {
     try {
       wake_fd = eventfd(0, 0);
       if (wake_fd != -1) {
         try {
-          if (!associate(wake_fd, POLLIN))
+          if (!associate(wake_fd, POLLIN)) {
             throw Exception();
+          }
         } catch (Exception&) {
           close(wake_fd);
           throw;
         }
-      } else
+      } else {
         throw Exception();
+      }
     } catch (Exception&) {
       close(epfd);
       throw;
     }
-  } else
+  } else {
     throw Exception();
+  }
 }
 
 FDEventQueue::~FDEventQueue() {
@@ -73,14 +76,16 @@ bool FDEventQueue::associate(fd_t fd, FDEvent::Type fd_event_types) {
     epoll_event_.data.fd = fd;
     epoll_event_.events = fd_event_types;
 
-    if (epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &epoll_event_) == 0)
+    if (epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &epoll_event_) == 0) {
       return true;
-    else if (errno == EEXIST)
+    } else if (errno == EEXIST) {
       return epoll_ctl(epfd, EPOLL_CTL_MOD, fd, &epoll_event_) == 0;
-    else
+    } else {
       return false;
-  } else
+    }
+  } else {
     return dissociate(fd);
+  }
 }
 
 bool FDEventQueue::dissociate(fd_t fd) {
@@ -99,18 +104,19 @@ bool FDEventQueue::enqueue(Event& event) {
     ssize_t write_ret = write(wake_fd, &data, sizeof(data));
     debug_assert_eq(write_ret, static_cast<ssize_t>(sizeof(data)));
     return true;
-  } else
+  } else {
     return false;
+  }
 }
 
 YO_NEW_REF Event* FDEventQueue::timeddequeue(const Time& timeout) {
   Event* event = event_queue.trydequeue();
-  if (event != NULL)
+  if (event != NULL) {
     return event;
-  else {
+  } else {
     epoll_event epoll_event_;
     int timeout_ms
-      = (timeout == Time::FOREVER) ? -1 : static_cast<int>(timeout.ms());
+    = (timeout == Time::FOREVER) ? -1 : static_cast<int>(timeout.ms());
     int ret = epoll_wait(epfd, &epoll_event_, 1, timeout_ms);
     if (ret > 0) {
       debug_assert_eq(ret, 1);
@@ -120,8 +126,9 @@ YO_NEW_REF Event* FDEventQueue::timeddequeue(const Time& timeout) {
         ssize_t read_ret = read(wake_fd, &data, sizeof(data));
         debug_assert_eq(read_ret, static_cast<ssize_t>(sizeof(data)));
         return event_queue.trydequeue();
-      } else
+      } else {
         return new FDEvent(epoll_event_.data.fd, epoll_event_.events);
+      }
     } else {
       debug_assert_true(ret == 0 || errno == EINTR);
       return NULL;

@@ -48,11 +48,10 @@ HTTPConnection::HTTPConnection(
   TCPSocket& socket_,
   Log* log
 ) : aio_queue(aio_queue.inc_ref()),
-    http_request_handler(http_request_handler.inc_ref()),
-    log(Object::inc_ref(log)),
-    peername(peername.inc_ref()),
-    socket_(static_cast<TCPSocket&>(socket_.inc_ref()))
-{
+  http_request_handler(http_request_handler.inc_ref()),
+  log(Object::inc_ref(log)),
+  peername(peername.inc_ref()),
+  socket_(static_cast<TCPSocket&>(socket_.inc_ref())) {
   state = STATE_CONNECTED;
 }
 
@@ -68,11 +67,11 @@ void HTTPConnection::handle(YO_NEW_REF acceptAIOCB& accept_aiocb) {
     accept_aiocb.get_recv_buffer() != NULL
     &&
     accept_aiocb.get_return() > 0
-  )
+  ) {
     parse(*accept_aiocb.get_recv_buffer());
-  else {
+  } else {
     Buffer* recv_buffer
-      = new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
+    = new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
     recvAIOCB* recv_aiocb = new recvAIOCB(*this, *recv_buffer);
     if (!aio_queue.enqueue(*recv_aiocb)) {
       recvAIOCB::dec_ref(*recv_aiocb);
@@ -88,10 +87,11 @@ HTTPConnection::handle(
   YO_NEW_REF ::yield::http::HTTPMessageBodyChunk& http_message_body_chunk
 ) {
   Buffer* send_buffer;
-  if (http_message_body_chunk.data() != NULL)
+  if (http_message_body_chunk.data() != NULL) {
     send_buffer = &http_message_body_chunk.data()->inc_ref();
-  else
+  } else {
     send_buffer = &Buffer::copy("0\r\n\r\n", 5);
+  }
   HTTPMessageBodyChunk::dec_ref(http_message_body_chunk);
 
   sendAIOCB* send_aiocb = new sendAIOCB(*this, *send_buffer);
@@ -106,8 +106,8 @@ HTTPConnection::handle(
   YO_NEW_REF ::yield::http::HTTPResponse& http_response
 ) {
   if (log != NULL) {
-    log->get_stream(Log::Level::DEBUG) << get_type_name() 
-      << ": sending " << http_response;
+    log->get_stream(Log::Level::DEBUG) << get_type_name()
+                                       << ": sending " << http_response;
   }
 
   http_response.finalize();
@@ -128,10 +128,10 @@ HTTPConnection::handle(
       sendAIOCB* send_aiocb = new sendAIOCB(*this, http_response_header);
       if (aio_queue.enqueue(*send_aiocb)) {
         sendfileAIOCB* sendfile_aiocb
-          = new sendfileAIOCB(*this, *static_cast<File*>(http_response_body));
-        if (aio_queue.enqueue(*sendfile_aiocb))
+        = new sendfileAIOCB(*this, *static_cast<File*>(http_response_body));
+        if (aio_queue.enqueue(*sendfile_aiocb)) {
           return;
-        else {
+        } else {
           sendfileAIOCB::dec_ref(*sendfile_aiocb);
           state = STATE_ERROR;
         }
@@ -142,7 +142,8 @@ HTTPConnection::handle(
     }
     break;
 
-    default: debug_break();
+    default:
+      debug_break();
     }
   }
 
@@ -157,8 +158,9 @@ void
 HTTPConnection::handle(
   YO_NEW_REF ::yield::sockets::aio::recvAIOCB& recv_aiocb
 ) {
-  if (recv_aiocb.get_return() > 0)
+  if (recv_aiocb.get_return() > 0) {
     parse(recv_aiocb.get_buffer());
+  }
 
   ::yield::sockets::aio::recvAIOCB::dec_ref(recv_aiocb);
 }
@@ -166,7 +168,7 @@ HTTPConnection::handle(
 void
 HTTPConnection::handle(
   YO_NEW_REF ::yield::sockets::aio::sendAIOCB& send_aiocb
-){
+) {
   sendAIOCB::dec_ref(send_aiocb);
 }
 
@@ -200,8 +202,8 @@ void HTTPConnection::parse(Buffer& recv_buffer) {
       HTTPRequest& http_request = static_cast<HTTPRequest&>(object);
 
       if (log != NULL) {
-        log->get_stream(Log::Level::DEBUG) << get_type_name() 
-          << ": parsed " << http_request;
+        log->get_stream(Log::Level::DEBUG) << get_type_name()
+                                           << ": parsed " << http_request;
       }
 
       http_request_handler.handle(http_request);
@@ -213,8 +215,8 @@ void HTTPConnection::parse(Buffer& recv_buffer) {
       debug_assert_eq(http_response.get_status_code(), 400);
 
       if (log != NULL) {
-        log->get_stream(Log::Level::DEBUG) << get_type_name() 
-          << ": parsed " << http_response;
+        log->get_stream(Log::Level::DEBUG) << get_type_name()
+                                           << ": parsed " << http_response;
       }
 
       handle(http_response);

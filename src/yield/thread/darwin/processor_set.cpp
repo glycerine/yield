@@ -44,10 +44,11 @@ uint16_t ProcessorSet::get_online_physical_processor_count() {
   host_info_t info = reinterpret_cast<host_info_t>(&basic_info);
   host_flavor_t flavor = HOST_BASIC_INFO;
   mach_msg_type_number_t count = HOST_BASIC_INFO_COUNT;
-  if (host_info(mach_host_self(), flavor, info, &count) == KERN_SUCCESS)
+  if (host_info(mach_host_self(), flavor, info, &count) == KERN_SUCCESS) {
     return basic_info.avail_cpus;
-  else
+  } else {
     return 1;
+  }
 }
 }
 }

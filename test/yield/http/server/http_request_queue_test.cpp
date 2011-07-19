@@ -52,11 +52,11 @@ public:
 class HTTPRequestQueueTest : public yunit::Test {
 protected:
   void handle(HTTPRequest& http_request) {
-    if (http_request.get_uri().get_path() == "/")
+    if (http_request.get_uri().get_path() == "/") {
       http_request.respond(200, "Hello world");
-    else if (http_request.get_uri().get_path() == "/drop")
+    } else if (http_request.get_uri().get_path() == "/drop") {
       ;
-    else if (http_request.get_uri().get_path() == "/sendfile") {
+    } else if (http_request.get_uri().get_path() == "/sendfile") {
       yield::fs::File* file
 #ifdef _WIN32
       = yield::fs::FileSystem().open("yield.http.server.Makefile");
@@ -77,11 +77,12 @@ protected:
           yield::fs::File::dec_ref(*file);
           http_request.respond(404);
         }
-      }
-      else
+      } else {
         http_request.respond(404);
-    } else
+      }
+    } else {
       http_request.respond(404);
+    }
 
     HTTPRequest::dec_ref(http_request);
   }
@@ -95,11 +96,12 @@ public:
     TestHTTPRequestQueue http_request_queue(&Log::open(std::cout));
     for (;;) {
       HTTPRequest* http_request
-        = Object::cast<HTTPRequest>(http_request_queue.timeddequeue(30.0));
-      if (http_request != NULL)
+      = Object::cast<HTTPRequest>(http_request_queue.timeddequeue(30.0));
+      if (http_request != NULL) {
         handle(*http_request);
-      else
+      } else {
         break;
+      }
     }
   }
 };

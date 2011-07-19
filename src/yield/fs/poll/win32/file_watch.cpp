@@ -40,7 +40,7 @@ namespace poll {
 namespace win32 {
 YO_NEW_REF FSEvent*
 FileWatch::parse(
-const FILE_NOTIFY_INFORMATION& file_notify_info
+  const FILE_NOTIFY_INFORMATION& file_notify_info
 ) {
   log_read(file_notify_info);
 
@@ -70,30 +70,35 @@ const FILE_NOTIFY_INFORMATION& file_notify_info
     }
     break;
 
-    default: debug_break(); return NULL;
+    default:
+      debug_break();
+      return NULL;
     }
 
     if (want_fs_event_type(fs_event_type)) {
       FSEvent* fs_event = new FSEvent(get_path(), fs_event_type);
       log_fs_event(*fs_event);
       return fs_event;
-    } else
+    } else {
       return NULL;
+    }
   } else if (
-      !old_name.empty()
-      &&
-      file_notify_info.Action == FILE_ACTION_RENAMED_NEW_NAME
-    ) {
+    !old_name.empty()
+    &&
+    file_notify_info.Action == FILE_ACTION_RENAMED_NEW_NAME
+  ) {
     debug_assert_eq(directory_path / old_name, get_path());
     fs_event_type = FSEvent::TYPE_FILE_RENAME;
     if (want_fs_event_type(fs_event_type)) {
       FSEvent* fs_event = new FSEvent(get_path(), path, fs_event_type);
       log_fs_event(*fs_event);
       return fs_event;
-    } else
+    } else {
       return NULL;
-  } else
+    }
+  } else {
     return NULL;
+  }
 }
 }
 }

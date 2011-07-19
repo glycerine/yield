@@ -37,7 +37,7 @@ namespace http {
 namespace server {
 namespace ygi {
 YGIRequestHandler::YGIRequestHandler(ygi_request_handler_t ygi_request_handler)
- : ygi_request_handler(ygi_request_handler) {
+  : ygi_request_handler(ygi_request_handler) {
 }
 
 void YGIRequestHandler::handle(YO_NEW_REF Event& event) {

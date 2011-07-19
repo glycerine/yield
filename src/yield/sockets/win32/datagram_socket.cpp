@@ -43,13 +43,13 @@ DatagramSocket::recvfrom(
 ) {
   socklen_t peernamelen = peername.len();
   return ::recvfrom(
-            *this,
-            static_cast<char*>(buf),
-            buflen,
-            flags,
-            static_cast<sockaddr*>(peername),
-            &peernamelen
-          );
+           *this,
+           static_cast<char*>(buf),
+           buflen,
+           flags,
+           static_cast<sockaddr*>(peername),
+           &peernamelen
+         );
 }
 
 ssize_t
@@ -71,26 +71,27 @@ DatagramSocket::recvmsg(
 
   socklen_t peernamelen = peername.len();
   ssize_t recvfrom_ret
-    = WSARecvFrom(
-        *this,
+  = WSARecvFrom(
+      *this,
 #ifdef _WIN64
-        & wsabufs[0],
+      & wsabufs[0],
 #else
-        reinterpret_cast<WSABUF*>(const_cast<iovec*>(iov)),
+      reinterpret_cast<WSABUF*>(const_cast<iovec*>(iov)),
 #endif
-        iovlen,
-        &dwNumberOfBytesRecvd,
-        &dwFlags,
-        peername,
-        &peernamelen,
-        NULL,
-        NULL
-      );
+      iovlen,
+      &dwNumberOfBytesRecvd,
+      &dwFlags,
+      peername,
+      &peernamelen,
+      NULL,
+      NULL
+    );
 
-  if (recvfrom_ret == 0)
+  if (recvfrom_ret == 0) {
     return static_cast<ssize_t>(dwNumberOfBytesRecvd);
-  else
+  } else {
     return recvfrom_ret;
+  }
 }
 
 ssize_t
@@ -128,12 +129,14 @@ DatagramSocket::sendmsg(
         NULL
       );
 
-    if (sendto_ret >= 0)
+    if (sendto_ret >= 0) {
       return static_cast<ssize_t>(dwNumberOfBytesSent);
-    else
+    } else {
       return sendto_ret;
-  } else
+    }
+  } else {
     return -1;
+  }
 }
 
 ssize_t
@@ -146,15 +149,16 @@ DatagramSocket::sendto(
   const SocketAddress* peername_ = peername.filter(get_domain());
   if (peername_ != NULL) {
     return ::sendto(
-              *this,
-              static_cast<const char*>(buf),
-              buflen,
-              flags,
-              *peername_,
-              peername_->len()
-            );
-  } else
+             *this,
+             static_cast<const char*>(buf),
+             buflen,
+             flags,
+             *peername_,
+             peername_->len()
+           );
+  } else {
     return -1;
+  }
 }
 }
 }

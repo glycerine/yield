@@ -37,11 +37,11 @@ namespace sockets {
 namespace ssl {
 SSLSocketPair::SSLSocketPair() {
   auto_Object<SSLContext> listen_ssl_context
-    = new SSLContext(
-            TEST_PEM_CERTIFICATE,
-            TEST_PEM_PRIVATE_KEY,
-            TEST_PEM_PRIVATE_KEY_PASSPHRASE
-          );
+  = new SSLContext(
+    TEST_PEM_CERTIFICATE,
+    TEST_PEM_PRIVATE_KEY,
+    TEST_PEM_PRIVATE_KEY_PASSPHRASE
+  );
   SSLSocket listen_ssl_socket(*listen_ssl_context);
   if (listen_ssl_socket.bind(SocketAddress::IN_LOOPBACK)) {
     if (listen_ssl_socket.listen()) {
@@ -58,30 +58,37 @@ SSLSocketPair::SSLSocketPair() {
               did_handshake[0] = did_handshake[1] = false;
               while (!did_handshake[0] || !did_handshake[1]) {
                 for (uint8_t i = 0; i < 2; i++) {
-                  if (!did_handshake[i])
+                  if (!did_handshake[i]) {
                     did_handshake[i] = sockets[i]->do_handshake();
+                  }
                 }
               }
 
               if (
                 !sockets[0]->set_blocking_mode(true) ||
                 !sockets[1]->set_blocking_mode(true)
-              )
+              ) {
                 throw Exception();
-            } else
+              }
+            } else {
               throw Exception();
-          } else
+            }
+          } else {
             throw Exception();
-        } else
+          }
+        } else {
           throw Exception();
+        }
       } catch (Exception&) {
         SSLSocket::dec_ref(sockets[0]);
         throw;
       }
-    } else
+    } else {
       throw Exception();
-  } else
+    }
+  } else {
     throw Exception();
+  }
 }
 }
 #endif

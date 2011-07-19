@@ -57,14 +57,16 @@ ScanningFSEventQueue::associate(
   Stat* stbuf = FileSystem().stat(path);
   if (stbuf != NULL) {
     ScanningWatch* watch;
-    if (stbuf->ISDIR())
+    if (stbuf->ISDIR()) {
       watch = new ScanningDirectoryWatch(fs_event_types, path, log);
-    else
+    } else {
       watch = new ScanningFileWatch(fs_event_types, path, log);
+    }
     watches->insert(path, *watch);
     return true;
-  } else
+  } else {
     return false;
+  }
 }
 
 bool ScanningFSEventQueue::dissociate(const Path& path) {
@@ -72,8 +74,9 @@ bool ScanningFSEventQueue::dissociate(const Path& path) {
   if (watch != NULL) {
     delete watch;
     return true;
-  } else
+  } else {
     return false;
+  }
 }
 
 bool ScanningFSEventQueue::enqueue(YO_NEW_REF Event& event) {
@@ -82,9 +85,9 @@ bool ScanningFSEventQueue::enqueue(YO_NEW_REF Event& event) {
 
 YO_NEW_REF Event* ScanningFSEventQueue::timeddequeue(const Time& timeout) {
   Event* event = event_queue.trydequeue();
-  if (event != NULL)
+  if (event != NULL) {
     return event;
-  else if (!watches->empty()) {
+  } else if (!watches->empty()) {
     Time timeout_remaining(timeout);
     for (;;) {
       for (
@@ -96,18 +99,21 @@ YO_NEW_REF Event* ScanningFSEventQueue::timeddequeue(const Time& timeout) {
 
         watch_i->second->scan(event_queue);
         event = event_queue.trydequeue();
-        if (event != NULL)
+        if (event != NULL) {
           return event;
+        }
 
         Time elapsed_time = Time::now() - start_time;
-        if (elapsed_time < timeout_remaining)
+        if (elapsed_time < timeout_remaining) {
           timeout_remaining -= elapsed_time;
-        else
+        } else {
           return event_queue.trydequeue();
+        }
       }
     }
-  } else
+  } else {
     return event_queue.timeddequeue(timeout);
+  }
 }
 }
 }

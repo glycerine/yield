@@ -46,12 +46,12 @@ public:
     const yield::sockets::SocketAddress& sockname,
     YO_NEW_REF Log* log = NULL
   )
-   : HTTPServer<AIOQueueType>(
+    : HTTPServer<AIOQueueType>(
       *new HTTPFileRequestHandler(root_directory_path, root_uri),
       sockname,
       log
-     ) {
-     }
+    ) {
+  }
 };
 }
 }

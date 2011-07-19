@@ -34,11 +34,13 @@
 namespace yield {
 namespace thread {
 ConditionVariable::ConditionVariable() {
-  if (pthread_cond_init(&cond, NULL) != 0)
+  if (pthread_cond_init(&cond, NULL) != 0) {
     throw Exception();
+  }
 
-  if (pthread_mutex_init(&mutex, NULL) != 0)
+  if (pthread_mutex_init(&mutex, NULL) != 0) {
     throw Exception();
+  }
 }
 
 ConditionVariable::~ConditionVariable() {

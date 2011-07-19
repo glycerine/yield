@@ -39,31 +39,34 @@ TEST_SUITE(Thread);
 namespace yield {
 namespace thread {
 TEST(Thread, key_create) {
-  uintptr_t key = Thread::self()->key_create();  
-  if (key != 0)
+  uintptr_t key = Thread::self()->key_create();
+  if (key != 0) {
     Thread::self()->key_delete(key);
-  else
+  } else {
     throw Exception();
+  }
 }
 
 TEST(Thread, key_delete) {
   uintptr_t key = Thread::self()->key_create();
   throw_assert_ne(key, 0);
-  if (!Thread::self()->key_delete(key))
+  if (!Thread::self()->key_delete(key)) {
     throw Exception();
+  }
 }
 
 TEST(Thread, getspecific) {
   uintptr_t key = Thread::self()->key_create();
-  if (!Thread::self()->setspecific(key, reinterpret_cast<void*>(42)))
+  if (!Thread::self()->setspecific(key, reinterpret_cast<void*>(42))) {
     throw Exception();
+  }
   void* ret_value = Thread::self()->getspecific(key);
   throw_assert_eq(reinterpret_cast<uintptr_t>(ret_value), 42);
   Thread::self()->key_delete(key);
 }
 
 TEST(Thread, set_name) {
- Thread::self()->set_name("test thread");
+  Thread::self()->set_name("test thread");
 }
 
 TEST(Thread, setaffinity) {
@@ -72,8 +75,9 @@ TEST(Thread, setaffinity) {
 
 TEST(Thread, setspecific) {
   uintptr_t key = Thread::self()->key_create();
-  if (!Thread::self()->setspecific(key, reinterpret_cast<void*>(42)))
+  if (!Thread::self()->setspecific(key, reinterpret_cast<void*>(42))) {
     throw Exception();
+  }
   Thread::self()->key_delete(key);
 }
 

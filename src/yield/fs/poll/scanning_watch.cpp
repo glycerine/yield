@@ -43,27 +43,29 @@ bool ScanningWatch::equals(const Stat& left, const Stat& right) {
 
 Directory::Entry::Type ScanningWatch::type(const Stat& stbuf) {
 #ifdef _WIN32
-  if (stbuf.ISDEV())
+  if (stbuf.ISDEV()) {
     return Directory::Entry::TYPE_DEV;
-  else if (stbuf.ISDIR())
+  } else if (stbuf.ISDIR()) {
     return Directory::Entry::TYPE_DIR;
-  else if (stbuf.ISREG())
+  } else if (stbuf.ISREG()) {
     return Directory::Entry::TYPE_REG;
+  }
 #else
-  if (stbuf.ISBLK())
+  if (stbuf.ISBLK()) {
     return Directory::Entry::TYPE_BLK;
-  else if (stbuf.ISCHR())
+  } else if (stbuf.ISCHR()) {
     return Directory::Entry::TYPE_CHR;
-  else if (stbuf.ISDIR())
+  } else if (stbuf.ISDIR()) {
     return Directory::Entry::TYPE_DIR;
-  else if (stbuf.ISFIFO())
+  } else if (stbuf.ISFIFO()) {
     return Directory::Entry::TYPE_FIFO;
-  else if (stbuf.ISLNK())
+  } else if (stbuf.ISLNK()) {
     return Directory::Entry::TYPE_LNK;
-  else if (stbuf.ISREG())
+  } else if (stbuf.ISREG()) {
     return Directory::Entry::TYPE_REG;
-  else if (stbuf.ISSOCK())
+  } else if (stbuf.ISSOCK()) {
     return Directory::Entry::TYPE_SOCK;
+  }
 #endif
   else {
     debug_break();
@@ -73,4 +75,3 @@ Directory::Entry::Type ScanningWatch::type(const Stat& stbuf) {
 }
 }
 }
-

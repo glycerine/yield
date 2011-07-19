@@ -47,10 +47,11 @@ StreamSocket* StreamSocket::accept(SocketAddress& peername) {
 
   socket_t peer_socket = ::accept(*this, peername, &peernamelen);
 
-  if (peer_socket != -1)
+  if (peer_socket != -1) {
     return dup2(peer_socket);
-  else
+  } else {
     return NULL;
+  }
 }
 
 bool StreamSocket::listen() {
@@ -61,26 +62,29 @@ ssize_t StreamSocket::sendfile(fd_t fd, off_t offset, size_t nbytes) {
 #if defined(__linux__)
   off_t* p_offset = &offset;
   ssize_t sendfile_ret = ::sendfile(*this, fd, p_offset, nbytes);
-  if (sendfile_ret > 0)
+  if (sendfile_ret > 0) {
     return sendfile_ret;
-  else if (sendfile_ret == 0 && errno == EWOULDBLOCK) // Linux "feature"
+  } else if (sendfile_ret == 0 && errno == EWOULDBLOCK) { // Linux "feature"
     return -1;
-  else
+  } else {
     return sendfile_ret;
+  }
 #elif defined(__FreeBSD__)
   off_t sbytes;
   int sendfile_ret = ::sendfile(fd, *this, offset, nbytes, NULL, &sbytes, 0);
-  if (sendfile_ret == 0)
+  if (sendfile_ret == 0) {
     return sbytes;
-  else
+  } else {
     return sendfile_ret;
+  }
 #elif defined(__MACH__)
   off_t len = nbytes;
   int sendfile_ret = ::sendfile(fd, *this, offset, &len, NULL, 0);
-  if (sendfile_ret == 0)
+  if (sendfile_ret == 0) {
     return static_cast<ssize_t>(len);
-  else
+  } else {
     return sendfile_ret;
+  }
 #else
 #error
 #endif
@@ -104,16 +108,22 @@ bool StreamSocket::setsockopt(int option_name, int option_value) {
              reinterpret_cast<char*>(&optval),
              static_cast<int>(sizeof(optval))
            ) == 0;
-  } else
+  } else {
     return Socket::setsockopt(option_name, option_value);
+  }
 }
 
 bool StreamSocket::shutdown(bool shut_rd, bool shut_wr) {
   int how;
-  if (shut_rd && shut_wr) how = SHUT_RDWR;
-  else if (shut_rd) how = SHUT_RD;
-  else if (shut_wr) how = SHUT_WR;
-  else return false;
+  if (shut_rd && shut_wr) {
+    how = SHUT_RDWR;
+  } else if (shut_rd) {
+    how = SHUT_RD;
+  } else if (shut_wr) {
+    how = SHUT_WR;
+  } else {
+    return false;
+  }
 
   return ::shutdown(*this, how) != -1;
 }

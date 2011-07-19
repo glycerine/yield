@@ -111,7 +111,7 @@ TEST(Buffers, put) {
   throw_assert_eq(Buffers::size(*buffers), Buffer::getpagesize());
   Buffers::put(*buffers, NULL, Buffer::getpagesize() / 2);
   throw_assert_eq(
-    Buffers::size(*buffers), 
+    Buffers::size(*buffers),
     Buffer::getpagesize() + Buffer::getpagesize() / 2
   );
 }
@@ -125,7 +125,7 @@ TEST(Buffers, size) {
   throw_assert_eq(Buffers::size(*buffers), Buffer::getpagesize());
   Buffers::put(*buffers, NULL, Buffer::getpagesize() / 2);
   throw_assert_eq(
-    Buffers::size(*buffers), 
+    Buffers::size(*buffers),
     Buffer::getpagesize() + Buffer::getpagesize() / 2
   );
 }

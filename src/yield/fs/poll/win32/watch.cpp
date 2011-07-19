@@ -58,8 +58,9 @@ Watch::Watch(
     fs_event_types & FSEvent::TYPE_DIRECTORY_REMOVE
     ||
     fs_event_types & FSEvent::TYPE_DIRECTORY_RENAME
-  )
+  ) {
     notify_filter |= FILE_NOTIFY_CHANGE_DIR_NAME;
+  }
 
   if (
     fs_event_types & FSEvent::TYPE_DIRECTORY_MODIFY
@@ -79,8 +80,9 @@ Watch::Watch(
     fs_event_types & FSEvent::TYPE_FILE_REMOVE
     ||
     fs_event_types & FSEvent::TYPE_FILE_RENAME
-  )
+  ) {
     notify_filter |= FILE_NOTIFY_CHANGE_FILE_NAME;
+  }
 }
 
 Watch::~Watch() {
@@ -116,18 +118,18 @@ bool Watch::is_closed() const {
 void Watch::log_read(const FILE_NOTIFY_INFORMATION& file_notify_info) {
   if (get_log() != NULL) {
     get_log()->get_stream(Log::Level::DEBUG) <<
-      "yield::fs::poll::win32::Watch(" <<
+        "yield::fs::poll::win32::Watch(" <<
         "path=" << get_path() <<
-      ")" <<
-      ": read FILE_NOTIFY_INFORMATION(" <<
+        ")" <<
+        ": read FILE_NOTIFY_INFORMATION(" <<
         "Action=" << file_notify_info.Action <<
         ", "
         "FileName=" <<
-          Path(
-            file_notify_info.FileName,
-            file_notify_info.FileNameLength / sizeof(wchar_t)
-          ) <<
-      ")";
+        Path(
+          file_notify_info.FileName,
+          file_notify_info.FileNameLength / sizeof(wchar_t)
+        ) <<
+        ")";
   }
 }
 
