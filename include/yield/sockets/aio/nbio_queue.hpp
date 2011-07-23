@@ -47,12 +47,32 @@ class recvAIOCB;
 class sendAIOCB;
 class sendfileAIOCB;
 
+/**
+  Queue for asynchronous input/output (AIO) operations on sockets,
+    implemented in terms of non-blocking I/O.
+  The NBIOQueue presents the same interface and emulates the semantics of
+    AIOQueue for platforms that do not natively support socket AIO (e.g., all
+    platforms besides Win32). Even on Win32 the NBIOQueue is needed for socket
+    types that only support blocking or non-blocking I/O, like SSL sockets.
+  @see AIOQueue
+*/
+
 class NBIOQueue : public EventQueue {
 public:
+  /**
+    Construct an NBIOQueue with an optional error and tracing log.
+    @param log optional error and tracing log
+  */
   NBIOQueue(YO_NEW_REF Log* log = NULL);
+
   ~NBIOQueue();
 
 public:
+  /**
+    Associate a socket with this AIOQueue.
+    This is a no-op in the NBIOQueue, intended only to conform to the interface
+      of the AIOQueue on Win32.
+  */
   bool associate(socket_t) {
     return true;
   }

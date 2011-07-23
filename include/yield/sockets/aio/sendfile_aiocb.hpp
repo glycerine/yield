@@ -39,28 +39,61 @@ namespace sockets {
 class StreamSocket;
 
 namespace aio {
+/**
+  AIO control block for sendfile operations on sockets.
+*/
 class sendfileAIOCB : public AIOCB {
 public:
   const static uint32_t TYPE_ID = 2151573397UL;
 
 public:
-  sendfileAIOCB(StreamSocket&, fd_t fd);
-  sendfileAIOCB(StreamSocket&, fd_t fd, off_t offset, size_t nbytes);
+  /**
+    Construct a sendfileAIOCB, passing the same parameters as to sendfile.
+    @param socket_ socket to send data on
+    @param fd file descriptor from which to send data
+  */
+  sendfileAIOCB(StreamSocket& socket_, fd_t fd);
+
+  /**
+    Construct a sendfileAIOCB, passing the same parameters as to sendfile.
+    @param socket_ socket to send data on
+    @param fd file descriptor from which to send data
+    @param offset offset in the file from which to send data
+    @param nbytes number of bytes to send
+  */
+  sendfileAIOCB(StreamSocket& socket_, fd_t fd, off_t offset, size_t nbytes);
+
   ~sendfileAIOCB();
 
 public:
+  /**
+    Get the descriptor of the file from which data is sent.
+    @return the descriptor of the file from which data is sent
+  */
   fd_t get_fd() {
     return fd;
   }
 
+  /**
+    Get the number of bytes to send from the file.
+    @return the number of bytes to send from the file
+  */
   size_t get_nbytes() const {
     return nbytes;
   }
 
+  /**
+    Get the offset in the file from which to send data.
+    @return the offset in the file from which to send data.
+  */
   off_t get_offset() const {
     return offset;
   }
 
+  /**
+    Get the socket in this sendfile operation.
+    @return the socket in this sendfile operation
+  */
   StreamSocket& get_socket();
 
 public:
@@ -82,7 +115,13 @@ private:
   off_t offset;
 };
 
-std::ostream& operator<<(std::ostream&, sendfileAIOCB&);
+/**
+  Print a string representation of a sendfileAIOCB to a std::ostream.
+  @param os std::ostream to print to
+  @param sendfile_aiocb sendfileAIOCB to print
+  @return os
+*/
+std::ostream& operator<<(std::ostream& os, sendfileAIOCB& sendfile_aiocb);
 }
 }
 }

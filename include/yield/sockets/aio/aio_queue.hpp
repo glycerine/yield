@@ -41,13 +41,31 @@ class Log;
 
 namespace sockets {
 namespace aio {
+/**
+  Queue for asynchronous input/output (AIO) operations on sockets.
+  The queue is similar to Win32 I/O completion ports or Linux io_submit AIO:
+    AIO operations are described by AIO control blocks (AIOCBs), enqueued
+    to the AIO queue, and dequeued on completion.
+  The AIOQueue also serves as a general thread-safe EventQueue, passing non-AIOCB
+    events through from producer to consumer.
+*/
 #ifdef _WIN32
 class AIOQueue : public EventQueue {
 public:
+  /**
+    Construct an AIOQueue with an optional error and tracing log.
+    @param log optional error and tracing log
+  */
   AIOQueue(YO_NEW_REF Log* log = NULL);
+
   ~AIOQueue();
 
 public:
+  /**
+    Associate a socket with this AIOQueue.
+    On Win32 it is necessary to call this method once per socket before
+      enqueueing an AIO operation/AIO operation on the socket.
+  */
   bool associate(socket_t socket_);
 
 public:

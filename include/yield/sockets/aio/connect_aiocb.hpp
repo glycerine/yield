@@ -39,11 +39,22 @@ namespace sockets {
 class StreamSocket;
 
 namespace aio {
+/**
+  AIO control block for connect operations on sockets.
+*/
 class connectAIOCB : public AIOCB {
 public:
   const static uint32_t TYPE_ID = 2458109810UL;
 
 public:
+  /**
+    Construct a connectAIOCB with an optional buffer for sending data
+      after a connection is established.
+    @param socket_ socket to connect
+    @param peername address of the peer to connect to
+    @param send_buffer optional buffer of data to send after the connection is
+      established
+  */
   connectAIOCB(
     StreamSocket& socket_,
     SocketAddress& peername,
@@ -53,14 +64,26 @@ public:
   ~connectAIOCB();
 
 public:
+  /**
+    Get the address of the peer to connect to.
+    @return the address of the peer to connect to
+  */
   const SocketAddress& get_peername() const {
     return peername;
   }
 
+  /**
+    Get the buffer of data to send after the connection is established.
+    @return the buffer of data to send after the connection is established
+  */
   Buffer* get_send_buffer() {
     return send_buffer;
   }
 
+  /**
+    Get the socket in this connect operation.
+    @return the socket in this connect operation
+  */
   StreamSocket& get_socket();
 
 public:
@@ -78,7 +101,13 @@ private:
   Buffer* send_buffer;
 };
 
-std::ostream& operator<<(std::ostream&, connectAIOCB&);
+/**
+  Print a string representation of a connectAIOCB to a std::ostream.
+  @param os std::ostream to print to
+  @param connect_aiocb connectAIOCB to print
+  @return os
+*/
+std::ostream& operator<<(std::ostream& os, connectAIOCB& connect_aiocb);
 }
 }
 }

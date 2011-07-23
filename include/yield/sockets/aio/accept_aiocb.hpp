@@ -41,11 +41,21 @@ class SocketAddress;
 class StreamSocket;
 
 namespace aio {
+/**
+  AIO control block for accept operations on sockets.
+*/
 class acceptAIOCB : public AIOCB {
 public:
   const static uint32_t TYPE_ID = 3895043741UL;
 
 public:
+  /**
+    Construct an acceptAIOCB with an optional buffer for receiving data
+      after a new connection is accepted.
+    @param socket_ listen socket to accept on
+    @param recv_buffer optional buffer for receiving data after a new
+      connection is accepted
+  */
   acceptAIOCB(
     StreamSocket& socket_,
     YO_NEW_REF Buffer* recv_buffer = NULL
@@ -54,24 +64,37 @@ public:
   ~acceptAIOCB();
 
 public:
+  /**
+    Get the accepted socket, once the accept operation is complete.
+    @return the accepted socket
+  */
   StreamSocket* get_accepted_socket() {
     return accepted_socket;
   }
 
+  /**
+    Get the address of the peer of the accepted connection, once the accept
+      operation is complete.
+    @return the new peer's address
+  */
   SocketAddress* get_peername() {
     return peername;
   }
 
+  /**
+    Get the buffer with data received from the new peer.
+    The buffer is updated after the accept operation if it is specified.
+    @return the buffer with data received from the new peer, or NULL
+      if no buffer was passed to the constructor
+  */
   Buffer* get_recv_buffer() {
     return recv_buffer;
   }
 
+  /**
+    Get the listen socket in this accept operation.
+  */
   StreamSocket& get_socket();
-
-public:
-  void set_accepted_socket(YO_NEW_REF StreamSocket& accepted_socket);
-  void set_peername(YO_NEW_REF SocketAddress* peername);
-  void set_recv_buffer(YO_NEW_REF Buffer* recv_buffer);
 
 public:
   // yield::Object
@@ -83,13 +106,27 @@ public:
     return "yield::sockets::aio::acceptAIOCB";
   }
 
+protected:
+  friend class AIOQueue;
+  friend class NBIOQueue;
+
+  void set_accepted_socket(YO_NEW_REF StreamSocket& accepted_socket);
+  void set_peername(YO_NEW_REF SocketAddress* peername);
+  void set_recv_buffer(YO_NEW_REF Buffer* recv_buffer);
+
 private:
   StreamSocket* accepted_socket;
   SocketAddress* peername;
   Buffer* recv_buffer;
 };
 
-std::ostream& operator<<(std::ostream&, acceptAIOCB&);
+/**
+  Print a string representation of an acceptAIOCB to a std::ostream.
+  @param os std::ostream to print to
+  @param accept_aiocb acceptAIOCB to print
+  @return os
+*/
+std::ostream& operator<<(std::ostream& os, acceptAIOCB& accept_aiocb);
 }
 }
 }

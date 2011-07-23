@@ -36,11 +36,20 @@
 namespace yield {
 namespace sockets {
 namespace aio {
+/**
+  AIO control block for receive operations on sockets.
+*/
 class recvAIOCB : public AIOCB {
 public:
   const static uint32_t TYPE_ID = 3045195539UL;
 
 public:
+  /**
+    Construct a recvAIOCB, passing the same parameters as to recv.
+    @param socket_ socket to receive data on
+    @param buffer buffer to receive data into
+    @param flags flags to pass to the recv method
+  */
   recvAIOCB(
     Socket& socket_,
     YO_NEW_REF Buffer& buffer,
@@ -53,10 +62,18 @@ public:
   ~recvAIOCB();
 
 public:
+  /**
+    Get the buffer in which to receive data.
+    @return the buffer in which to receive data
+  */
   Buffer& get_buffer() const {
     return buffer;
   }
 
+  /**
+    Get the flags to pass to the recv method.
+    @return the flags to pass to the recv method
+  */
   const Socket::MessageFlags& get_flags() const {
     return flags;
   }
@@ -76,7 +93,13 @@ private:
   Socket::MessageFlags flags;
 };
 
-std::ostream& operator<<(std::ostream&, recvAIOCB&);
+/**
+  Print a string representation of a recvAIOCB to a std::ostream.
+  @param os std::ostream to print to
+  @param recv_aiocb recvAIOCB to print
+  @return os
+*/
+std::ostream& operator<<(std::ostream& os, recvAIOCB& recv_aiocb);
 }
 }
 }

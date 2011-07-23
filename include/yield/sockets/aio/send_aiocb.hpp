@@ -36,11 +36,20 @@
 namespace yield {
 namespace sockets {
 namespace aio {
+/**
+  AIO control block for send operations on sockets.
+*/
 class sendAIOCB : public AIOCB {
 public:
   const static uint32_t TYPE_ID = 2368940288UL;
 
 public:
+  /**
+    Construct a sendAIOCB, passing the same parameters as to send.
+    @param socket_ socket to send data on
+    @param buffer buffer to send data from
+    @param flags flags to pass to the send method
+  */
   sendAIOCB(
     Socket& socket_,
     YO_NEW_REF Buffer& buffer,
@@ -53,10 +62,18 @@ public:
   ~sendAIOCB();
 
 public:
+  /**
+    Get the buffer from which to send data.
+    @return the buffer from which to send data
+  */
   Buffer& get_buffer() const {
     return buffer;
   }
 
+  /**
+    Get the flags to pass to the send method.
+    @return the flags to pass to the send method
+  */
   const Socket::MessageFlags& get_flags() const {
     return flags;
   }
@@ -77,7 +94,13 @@ private:
   SocketAddress* peername;
 };
 
-std::ostream& operator<<(std::ostream&, sendAIOCB&);
+/**
+  Print a string representation of a sendAIOCB to a std::ostream.
+  @param os std::ostream to print to
+  @param send_aiocb sendAIOCB to print
+  @return os
+*/
+std::ostream& operator<<(std::ostream& os, sendAIOCB& send_aiocb);
 }
 }
 }
