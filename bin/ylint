@@ -1,0 +1,88 @@
+#!/usr/bin/env python
+
+if options.check_src_namespace or \
+   options.check_src_type_id or \
+   options.check_src_width or \
+   options.check_src_yunit:
+
+    include_file_paths = []
+    source_file_paths = []
+    for project_name in options.project_names:
+        for include_file_paths_ in INCLUDE_FILE_PATHS[project_name]:
+            include_file_paths.extend(list(rglob(include_file_paths_)))
+        for source_file_paths_ in SOURCE_FILE_PATHS[project_name]:
+            source_file_paths.extend(list(rglob(source_file_paths_)))
+
+    if options.check_src_namespace or options.check_src_type_id:
+        for include_file_path in include_file_paths:
+            namespaces = include_file_path[len(INCLUDE_DIR_PATH) + 1:].split(path_sep)[:-1]
+            assert len(namespaces) > 0
+
+            include_file_lines = [include_file_line.strip()
+                                  for include_file_line in
+                                  open(include_file_path).readlines()]
+
+            for include_file_line in include_file_lines:
+                if options.check_src_namespace:
+                    if include_file_line.startswith("namespace ") and \
+                       not '{' in include_file_line:
+                        namespace = include_file_line[10:]
+                        if namespace == namespaces[0]:
+                            del namespaces[0]
+                        else:
+                            print include_file_path[len(path_join(INCLUDE_DIR_PATH, "yield")) + 1:] + ":",
+                            print "expected namespace", namespaces[0],
+                            print "but found", namespace
+                            break
+
+                if options.check_src_type_id:
+                    from zlib import crc32
+
+                    if include_file_line.startswith("class") and \
+                       not include_file_line.endswith(';'):
+                        globals()["class_"] = include_file_line.split(' ')[1]
+                    elif "TYPE_ID = " in include_file_line:
+                        type_id = include_file_line.split(' ')[-1][:-1]
+                        if type_id.endswith("UL"): type_id = type_id[:-2]
+                        type_name = "::".join(namespaces + [class_])
+                        expected_type_id = str(crc32(type_name) & 0xffffffff)
+
+                        if type_id != expected_type_id:
+                            print type_name + ": expected TYPE_ID =",
+                            print expected_type_id, "but found", type_id
+
+                        quoted_type_name = '"' + type_name + '"'
+                        found_quoted_type_name = False
+                        for other_include_file_line in include_file_lines:
+                            if quoted_type_name in other_include_file_line:
+                                found_quoted_type_name = True
+                                break
+                        if not found_quoted_type_name:
+                            print type_name + ": could not find type name literal"
+
+    if options.check_src_width:
+        for file_path in include_file_paths + source_file_paths:
+            if not fnmatch(file_path, THIRD_PARTY_SOURCE_FNMATCH_PATTERNS):
+                file_lines = open(file_path).readlines()
+                for file_line_i in xrange(len(file_lines)):
+                    file_line = file_lines[file_line_i]
+                    if len(file_line) > 80:
+                        print file_path + ':' + str(file_line_i + 1) + " is " + \
+                              str(len(file_line)) + " columns wide"
+
+    if options.check_src_yunit:
+        source_files = SourceFiles(source_file_paths)
+        source_files = source_files.filter(CXX_SOURCE_FILE_FNMATCH_PATTERNS)
+        source_files = source_files.exclude(THIRD_PARTY_SOURCE_FNMATCH_PATTERNS)
+        for source_file_path in source_files['*']:
+            source_dir_path, source_file_name = path_split(source_file_path)
+            source_file_stem, source_file_ext = splitext(source_file_name)
+            if not source_file_stem.endswith("_test") and\
+               not source_file_stem.endswith("_test_main"):
+                test_file_path = \
+                    path_join(
+                        source_dir_path,
+                        source_file_stem + "_test" + source_file_ext
+                    )
+                if not exists(test_file_path):
+                    print "missing", test_file_path[len(YIELD_SRC_ROOT_DIR_PATH) + 1:]
