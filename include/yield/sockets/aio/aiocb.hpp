@@ -42,12 +42,10 @@ namespace sockets {
 class Socket;
 
 namespace aio {
-class NBIOQueue;
 #ifdef _WIN32
-namespace win32 {
 class AIOQueue;
-}
 #endif
+class NBIOQueue;
 
 /**
   Asynchronous Input/Output Control Block (AIOCB) for sockets.
@@ -122,7 +120,9 @@ protected:
   AIOCB(Socket& socket_, off_t offset);
 
 protected:
-  friend class AIOQueue;
+#ifdef _WIN32
+  friend class win32::AIOQueue;
+#endif
   friend class NBIOQueue;
 
   void set_error(uint32_t error) {

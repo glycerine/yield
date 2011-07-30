@@ -107,7 +107,9 @@ public:
   }
 
 protected:
+#ifdef _WIN32
   friend class AIOQueue;
+#endif
   friend class NBIOQueue;
 
   void set_accepted_socket(YO_NEW_REF StreamSocket& accepted_socket);
