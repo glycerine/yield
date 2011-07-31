@@ -36,18 +36,44 @@
 
 namespace yield {
 namespace http {
+/**
+  An RFC 2616-conformant HTTP request parser.
+*/
 class HTTPRequestParser : public HTTPMessageParser {
 public:
+  /**
+    Construct an HTTPRequestParser on the underlying buffer.
+    References to buffer may be created for any objects (such as HTTPRequest)
+      produced by the parser.
+    @param buffer buffer to parse
+  */
   HTTPRequestParser(Buffer& buffer)
     : HTTPMessageParser(buffer)
   { }
 
-  // For testing
+  /**
+    Construct an HTTPRequestParser on the string buffer.
+    Only used for testing.
+    @param buffer buffer to parse.
+  */
   HTTPRequestParser(const string& buffer)
     : HTTPMessageParser(buffer)
   { }
 
 public:
+  /**
+    Parse the next object from the buffer specified in the constructor.
+    The caller is responsible for checking the Object's get_type_id
+      and downcasting to the appropriate type.
+    Object may be of the following types:
+    - yield::http::HTTPRequest or subclasses: an HTTP request, including its
+        body for requests with fixed Content-Length's.
+    - yield::Buffer: the next Buffer to read; may include the remainder of
+      the previous Buffer that was passed to the constructor
+    - yield::http::HTTPMessageBodyChunk: a chunk of body data, for requests
+        with chunked Transfer-Encoding.
+    - yield::http::HTTPResponse: an error HTTP response, usually a 400
+  */
   YO_NEW_REF Object& parse();
 
 protected:

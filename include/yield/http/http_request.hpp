@@ -37,13 +37,24 @@
 
 namespace yield {
 namespace http {
+/**
+  An RFC 2616 HTTP request.
+  Unlike its counterparts in yield.http.client and yield.http.server, this
+    HTTPRequest is not tied to a particular connection.
+*/
 class HTTPRequest : public HTTPMessage<HTTPRequest> {
 public:
   const static uint32_t TYPE_ID = 707981577;
 
 public:
+  /**
+    A method enum class.
+  */
   class Method {
   public:
+    /**
+      Known methods from RFC 2616.
+    */
     static Method CONNECT;
     static Method COPY;
     static Method DELETE;
@@ -62,41 +73,78 @@ public:
     static Method UNLOCK;
 
   public:
+    /**
+      Construct an empty Method. Used in parsing.
+    */
     Method()
       : id(0), name(NULL), name_len(0) {
     }
 
+    /**
+      Construct a method with a unique numeric identifier (for switches) and
+        string representation.
+      @param id unique numeric identifier of this method
+      @param name string representation of this method e.g., GET
+      @param name_len length of name in bytes
+    */
     Method(uint8_t id, const char* name, uint8_t name_len)
       : id(id), name(name), name_len(name_len) {
     }
 
+    /**
+      Copy constructor.
+    */
     Method(const Method& other)
       : id(other.id), name(other.name), name_len(other.name_len) {
     }
 
   public:
+    /**
+      Get the unique numeric identifier of this method.
+      @return the unique numeric identifier of this method
+    */
     uint8_t get_id() const {
       return id;
     }
 
+    /**
+      Get the string representation of this method e.g., GET.
+      @return the string representation of this method
+    */
     const char* get_name() const {
       return name;
     }
 
+    /**
+      Get the length in bytes of the string representation of this method.
+      @return the length in bytes of the string representation of this method
+    */
     uint8_t get_name_len() const {
       return name_len;
     }
 
   public:
+    /**
+      Get the string representation of this method e.g., GET.
+      @return the string representation of this method
+    */
     operator const char* () const {
       return name;
     }
 
+    /**
+      Get the unique numeric identifier of this method.
+      @return the unique numeric identifier of this method
+    */
     operator uint8_t() const {
       return id;
     }
 
   public:
+    /**
+      Assignment operator that copies the contents of another 
+        Method to this one. Used in parsing.
+    */
     Method& operator=(const Method& other) {
       id = other.id;
       name = other.name;
@@ -104,15 +152,30 @@ public:
       return *this;
     }
 
+    /**
+      Compare two Method objects for equality using their unique numeric ids.
+      @param other the Method to compare this one to
+      @return true if the two Methods are equal
+    */
     bool operator==(const Method& other) const {
       return id == other.id;
     }
 
+    /**
+      Compare two Method objects for inequality using their unique numeric ids.
+      @param other the Method to compare this one to
+      @return true if the two Methods are not equal
+    */
     bool operator!=(const Method& other) const {
       return !operator==(other);
     }
 
   public:
+    /**
+      Parse a Method from a string representation.
+      @param method string representation of a method e.g., GET
+      @return the Method corresponding to the string
+    */
     static Method parse(const char* method) throw(Exception);
 
   private:
@@ -122,6 +185,14 @@ public:
   };
 
 public:
+  /**
+    Construct an HTTPRequest from its constituent parts.
+    @param method the HTTP request method e.g., HTTPRequest::Method::GET
+    @param uri the HTTP request URI e.g., /
+    @param body an optional body, usually a Buffer
+    @param http_version the HTTP version as a single byte (0 or 1 for HTTP/1.0
+      and HTTP/1.1, respectively)
+  */
   HTTPRequest(
     Method method,
     const yield::uri::URI& uri,
@@ -129,17 +200,24 @@ public:
     uint8_t http_version = HTTP_VERSION_DEFAULT
   );
 
+  /**
+    Empty virtual destructor.
+  */
   virtual ~HTTPRequest() { }
 
 public:
-  const DateTime& get_creation_date_time() const {
-    return creation_date_time;
-  }
-
+  /**
+    Get the HTTP request method e.g., HTTPRequest::Method::GET
+    @return the request method
+  */
   Method get_method() const {
     return method;
   }
 
+  /**
+    Get the HTTP request URI e.g., /
+    @return the request URI
+  */
   const yield::uri::URI& get_uri() const {
     return uri;
   }
@@ -173,7 +251,6 @@ protected:
   );
 
 private:
-  DateTime creation_date_time;
   Method method;
   yield::uri::URI uri;
 };

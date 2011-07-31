@@ -39,8 +39,40 @@ class DateTime;
 namespace http {
 class HTTPBodyChunk;
 
+/**
+  An RFC 2616-compliant HTTP message parser, the parent class of
+    HTTPRequestParser and HTTPResponseParser.
+*/
 class HTTPMessageParser {
-public:
+protected:
+  HTTPMessageParser(Buffer& buffer);
+  HTTPMessageParser(const string& buffer); // For testing
+  ~HTTPMessageParser();
+
+protected:
+  virtual YO_NEW_REF HTTPMessageBodyChunk&
+  create_http_message_body_chunk(
+    YO_NEW_REF Buffer* data
+  ) {
+    return *new HTTPMessageBodyChunk(data);
+  }
+
+protected:
+  bool parse_body(size_t content_length, YO_NEW_REF Object*& body);
+  Object* parse_body_chunk();
+
+protected:
+  bool parse_fields(uint16_t& fields_offset, size_t& content_length);
+
+protected:
+  Buffer& buffer;
+  const char* eof;
+  char* p, *ps;
+
+private:
+  template <class> friend class HTTPMessage;
+
+  // Helper methods for HTTPMessage
   static bool
   parse_content_length_field(
     const char* ps,
@@ -66,30 +98,6 @@ public:
     vector< std::pair<iovec, iovec> >& fields
   );
 
-protected:
-  HTTPMessageParser(Buffer& buffer);
-  HTTPMessageParser(const string& buffer); // For testing
-  ~HTTPMessageParser();
-
-protected:
-  virtual YO_NEW_REF HTTPMessageBodyChunk&
-  create_http_message_body_chunk(
-    YO_NEW_REF Buffer* data
-  ) {
-    return *new HTTPMessageBodyChunk(data);
-  }
-
-protected:
-  bool parse_body(size_t content_length, YO_NEW_REF Object*& body);
-  Object* parse_body_chunk();
-  bool parse_fields(uint16_t& fields_offset, size_t& content_length);
-
-protected:
-  Buffer& buffer;
-  const char* eof;
-  char* p, *ps;
-
-private:
   static bool
   parse_content_length_field(
     const iovec& field_name,

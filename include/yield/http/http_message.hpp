@@ -39,26 +39,74 @@ class Buffer;
 class DateTime;
 
 namespace http {
-
+/**
+  An RFC 2616 HTTP message, the parent class of HTTPRequest and HTTPResponse.
+*/
 template <class HTTPMessageType>
 class HTTPMessage : public Event {
 public:
+  /**
+    The default HTTP version to use for outgoing HTTP messages, as a single
+      byte (0 or 1, for HTTP/1.0 and HTTP/1.0, respectively).
+  */
   const static uint8_t HTTP_VERSION_DEFAULT = 1;
+
+  /**
+    A constant returned by HTTPMessage::get_content_length that indicates
+      that the HTTP message does not contain a Content-Length header,
+      but has an unbounded Transfer-Encoding: chunked body.
+  */
   const static size_t CONTENT_LENGTH_CHUNKED = SIZE_MAX;
 
 public:
+  /**
+    Finalize an outgoing HTTP message, adding a trailing CRLF to its header.
+    No more fields can be added to the header after this call is made.
+  */
   void finalize();
 
 public:
+  /**
+    Get the body of this HTTP message.
+    This may be a Buffer*. The caller should first check if get_body is NULL,
+      then switch on get_body()->get_type_id() to determine whether the body
+      is a Buffer or some other object type.
+    @return the body of this HTTP messag, or NULL if no body is present
+  */
   Object* get_body() const {
     return body;
   }
 
 public:
+  /**
+    Get the value of the Content-Length field of this HTTP message, or its
+      equivalent.
+    Returns CONTENT_LENGTH_CHUNKED if the Transfer-Encoding: chunked field is
+      present in lieu of a fixed Content-Length.
+    Returns 0 if no Content-Length and no Transfer-Encoding: chunked fields
+      are present.
+    @return the value of the Content-Length field of this HTTP message,
+      or its equivalent
+  */
   size_t get_content_length() const;
 
+  /**
+    Get a field value as a DateTime. HTTP has various date fields, the
+      prototypical one being the mandatory "Date" timestamp on all server
+      responses.
+    This method will parse the various date-time formats mandated by RFC 2616.
+    All HTTP dates-times are in UTC.
+    @param name the field name
+    @return the field value as a date time
+  */
   DateTime get_date_field(const char* name = "Date") const;
 
+  /**
+    Get a field value, copying into a temporary string.
+    @param name the field name
+    @param default_value a default value to return if the field is not present
+    @return the field value or default_value if the field is not present
+  */
   string get_field(const char* name, const char* default_value = "") const {
     iovec value_iov;
     if (get_field(name, value_iov)) {
@@ -71,52 +119,119 @@ public:
     }
   }
 
+  /**
+    Get a field value.
+    @param name the field name
+    @param[out] value a pointer and length to the field value in the 
+      HTTPMessage's underlying buffer
+    @return true if the field is present, false if not
+  */
   bool get_field(const char* name, iovec& value) const {
     return get_field(name, strlen(name), value);
   }
 
+  /**
+    Get a field value.
+    @param name the field name
+    @param name_len length in bytes of name
+    @param[out] value a pointer and length to the field value in the
+      HTTPMessage's underlying buffer
+    @return true if the field is present, false if not
+  */
   bool get_field(const char* name, size_t name_len, iovec& value) const;
 
+  /**
+    Get all field name-value pairs.
+    @param[out] fields growable vector of name-value pairs as pointers
+      into the HTTPMessage's underlying buffer
+  */
   void get_fields(vector<std::pair<iovec, iovec> >& fields) const;
 
 public:
+  /**
+    Get the buffer underlying the HTTP message's header
+      (request or response line, fields).
+  */
   Buffer& get_header() const {
     return header;
   }
 
 public:
+  /**
+    Get the HTTP version of this message as a single byte
+    (0 or 1, for HTTP/1.0 and HTTP/1.0, respectively).
+    @return the HTTP version
+  */
   uint8_t get_http_version() const {
     return http_version;
   }
 
 public:
+  /**
+    Check if a field is present.
+    @param name the field name
+    @return true if the field is present, false if not
+  */
   bool has_field(const char* name) const {
     return has_field(name, strlen(name));
   }
 
+  /**
+    Check if a field is present.
+    @param name the field name
+    @param name_len length in bytes of name
+    @return true if the field is present, false if not
+  */
   bool has_field(const char* name, size_t name_len) const {
     iovec value;
     return get_field(name, name_len, value);
   }
 
 public:
+  /**
+    Get a field value, copying into a temporary string.
+    @param name the field name
+    @return the field value or an empty string if the field is not present
+  */
   string operator[](const char* name) {
     return get_field(name);
   }
 
 public:
+  /**
+    Set the body of an HTTP message.
+    Steals the reference to body and decrements the existing body, if present.
+  */
   void set_body(YO_NEW_REF Object* body);
 
 public:
-  // set_field(..., const char* value)
+  /**
+    Set a string field (set_field(..., const char* value) form).
+    @param name the field name
+    @param value the field value
+    @return *this
+  */
   HTTPMessageType& set_field(const char* name, const char* value) {
     return set_field(name, strlen(name), value);
   }
 
+  /**
+    Set a string field (set_field(..., const char* value) form).
+    @param name the field name
+    @param value the field value
+    @return *this
+  */
   HTTPMessageType& set_field(const string& name, const char* value) {
     return set_field(name.data(), name.size(), value);
   }
 
+  /**
+    Set a string field (set_field(..., const char* value) form).
+    @param name the field name
+    @param name_len the length of name in bytes
+    @param value the field value
+    @return *this
+  */
   HTTPMessageType&
   set_field(
     const char* name,
@@ -126,15 +241,33 @@ public:
     return set_field(name, name_len, value, strlen(value));
   }
 
-  // set_field(..., const iovec& value)
+  /**
+    Set a string field (set_field(..., const iovec& value) form).
+    @param name the field name
+    @param value the field value
+    @return *this
+  */
   HTTPMessageType& set_field(const char* name, const iovec& value) {
     return set_field(name, strlen(name), value);
   }
 
+  /**
+    Set a string field (set_field(..., const iovec& value) form).
+    @param name the field name
+    @param value the field value
+    @return *this
+  */
   HTTPMessageType& set_field(const string& name, const iovec& value) {
     return set_field(name.data(), name.size(), value);
   }
 
+  /**
+    Set a string field (set_field(..., const iovec& value) form).
+    @param name the field name
+    @param name_len the length of name in bytes
+    @param value the field value
+    @return *this
+  */
   HTTPMessageType&
   set_field(
     const char* name,
@@ -149,7 +282,12 @@ public:
            );
   }
 
-  // set_field(..., const string& value)
+  /**
+    Set a string field (set_field(..., const string& value) form).
+    @param name the field name
+    @param value the field value
+    @return *this
+  */
   HTTPMessageType&
   set_field(
     const char* name,
@@ -158,10 +296,23 @@ public:
     return set_field(name, strlen(name), value);
   }
 
+  /**
+    Set a string field (set_field(..., const string& value) form).
+    @param name the field name
+    @param value the field value
+    @return *this
+  */
   HTTPMessageType& set_field(const string& name, const string& value) {
     return set_field(name.data(), name.size(), value);
   }
 
+  /**
+    Set a string field (set_field(..., const string& value) form).
+    @param name the field name
+    @param name_len the length of name in bytes
+    @param value the field value
+    @return *this
+  */
   HTTPMessageType&
   set_field(
     const char* name,
@@ -171,26 +322,62 @@ public:
     return set_field(name, name_len, value.data(), value.size());
   }
 
-  // set_field(..., size_t value)
+  /**
+    Set a numeric field.
+    @param name the field name
+    @param value the field value
+    @return *this
+  */
   HTTPMessageType& set_field(const char* name, size_t value) {
     return set_field(name, strlen(name), value);
   }
 
+  /**
+    Set a numeric field.
+    @param name the field name
+    @param value the field value
+    @return *this
+  */
   HTTPMessageType& set_field(const string& name, size_t value) {
     return set_field(name.data(), name.size(), value);
   }
 
+  /**
+    Set a numeric field.
+    @param name the field name
+    @param name_len the length of name in bytes
+    @param value the field value
+    @return *this
+  */
   HTTPMessageType& set_field(const char* name, size_t name_len, size_t value);
 
-  // set_field(..., const DateTime& value)
+  /**
+    Set a date-time field.
+    @param name the field name
+    @param value the field value
+    @return *this
+  */
   HTTPMessageType& set_field(const char* name, const DateTime& value) {
     return set_field(name, strlen(name), value);
   }
 
+  /**
+    Set a date-time field.
+    @param name the field name
+    @param value the field value
+    @return *this
+  */
   HTTPMessageType& set_field(const string& name, const DateTime& value) {
     return set_field(name.data(), name.size(), value);
   }
 
+  /**
+    Set a date-time field.
+    @param name the field name
+    @param name_len the length of name in bytes
+    @param value the field value
+    @return *this
+  */
   HTTPMessageType&
   set_field(
     const char* name,
@@ -198,7 +385,15 @@ public:
     const DateTime& value
   );
 
-  // set_field(..., const void* value, size_t value_len)
+
+  /**
+    Set a string field (set_field(..., const void* value, size_t value_len)
+      form).
+    @param name the field name
+    @param value the field value
+    @param value_len the length of value in bytes
+    @return *this
+  */
   HTTPMessageType&
   set_field(
     const char* name,
@@ -208,6 +403,14 @@ public:
     return set_field(name, strlen(name), value, value_len);
   }
 
+  /**
+    Set a string field (set_field(..., const void* value, size_t value_len)
+      form).
+    @param name the field name
+    @param value the field value
+    @param value_len the length of value in bytes
+    @return *this
+  */
   HTTPMessageType& set_field(
     const string& name,
     const void* value,
@@ -216,6 +419,15 @@ public:
     return set_field(name.data(), name.size(), value, value_len);
   }
 
+  /**
+    Set a string field (set_field(..., const void* value, size_t value_len)
+      form).
+    @param name the field name
+    @param name_len the length of name in bytes
+    @param value the field value
+    @param value_len the length of value in bytes
+    @return *this
+  */
   HTTPMessageType&
   set_field(
     const char* name,

@@ -34,20 +34,39 @@
 
 namespace yield {
 namespace http {
+/**
+  An RFC 2616 HTTP response.
+  Unlike its counterparts in yield.http.client and yield.http.server, this
+    HTTPResponse is not tied to a particular connection.
+*/
 class HTTPResponse : public HTTPMessage<HTTPResponse> {
 public:
   const static uint32_t TYPE_ID = 654743796;
 
 public:
+  /**
+    Construct an HTTPResponse from its constituent parts.
+    @param status_code numeric status code e.g., 200
+    @param body optional body, usually a Buffer
+    @param http_version HTTP version as a single byte (0 or 1 for HTTP/1.0 or
+      HTTP/1.1, respectively.)
+  */
   HTTPResponse(
     uint16_t status_code,
     YO_NEW_REF Object* body = NULL,
     uint8_t http_version = HTTP_VERSION_DEFAULT
   );
 
+  /**
+    Empty virtual destructor.
+  */
   virtual ~HTTPResponse() { }
 
 public:
+  /**
+    Get the numeric status code e.g., 200.
+    @return the numeric status code
+  */
   uint16_t get_status_code() const {
     return status_code;
   }

@@ -35,28 +35,52 @@
 
 namespace yield {
 namespace http {
+/**
+  An RFC 2616 HTTP message body chunk.
+  Used for sending streams of chunked bodies (incoming as well as outgoing)
+    as separate Events from the HTTPRequest or HTTPResponse header.
+*/
 class HTTPMessageBodyChunk : public Event {
 public:
   const static uint32_t TYPE_ID = 3435197009UL;
 
 public:
+  /**
+    Construct an HTTPMessageBodyChunk with the given data.
+    Steals the reference to data.
+  */
   HTTPMessageBodyChunk(YO_NEW_REF Buffer* data)
     : data_(data)
   { }
 
+  /**
+    Destruct an HTTPMessageBodyChunk, releasing its underlying buffer.
+  */
   virtual ~HTTPMessageBodyChunk() {
     Buffer::dec_ref(data_);
   }
 
 public:
+  /**
+    Get the chunk data.
+    @return the chunk data
+  */
   Buffer* data() {
     return data_;
   }
 
+  /**
+    Check if this chunk is the last in the HTTP message body i.e., the
+    terminating 0CRLFCRLF chunk with no data.
+  */
   bool is_last() const {
     return data_ == NULL;
   }
 
+  /**
+    Get the size of the chunk data.
+    @return the size of the chunk data
+  */
   size_t size() const {
     return data_ != NULL ? data_->size() : 0;
   }

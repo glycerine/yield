@@ -37,16 +37,40 @@ namespace yield {
 namespace http {
 class HTTPResponseParser : public HTTPMessageParser {
 public:
+  /**
+    Construct an HTTPResponseParser on the underlying buffer.
+    References to buffer may be created for any objects (such as HTTPResponse)
+      produced by the parser.
+    @param buffer buffer to parse
+  */
   HTTPResponseParser(Buffer& buffer)
     : HTTPMessageParser(buffer)
   { }
 
+  /**
+    Construct an HTTPResponseParser on the string buffer.
+    Only used for testing.
+    @param buffer buffer to parse.
+  */
   HTTPResponseParser(const string& buffer)
     : HTTPMessageParser(buffer)
   { }
 
 public:
-  Object& parse();
+  /**
+    Parse the next object from the buffer specified in the constructor.
+    The caller is responsible for checking the Object's get_type_id
+      and downcasting to the appropriate type.
+    Object may be of the following types, in order of probability:
+    - yield::http::HTTPResponse or subclasses: an HTTP response, including its
+        body for responses with fixed Content-Length's.
+    - yield::http::HTTPMessageBodyChunk: a chunk of body data, for responses
+        with chunked Transfer-Encoding.
+    - yield::Buffer: the next Buffer to read; may include the remainder of
+      the previous Buffer that was passed to the constructor
+    @return a parsed object
+  */
+  YO_NEW_REF Object& parse();
 
 protected:
   virtual HTTPResponse&
