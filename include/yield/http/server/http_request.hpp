@@ -61,6 +61,14 @@ public:
     return connection;
   }
 
+  /**
+    Get the date-time this HTTPRequest object was constructed.
+    Used in logging.
+  */
+  const DateTime& get_creation_date_time() const {
+    return creation_date_time;
+  }
+
 public:
   void respond(YO_NEW_REF ::yield::http::HTTPMessageBodyChunk& chunk);
   void respond(YO_NEW_REF ::yield::http::HTTPResponse& http_response);
@@ -101,6 +109,7 @@ protected:
 
 private:
   HTTPConnection& connection;
+  DateTime creation_date_time;
 };
 }
 }

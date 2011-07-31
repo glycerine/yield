@@ -42,7 +42,8 @@ HTTPRequest::HTTPRequest(
   YO_NEW_REF Object* body,
   uint8_t http_version
 ) : yield::http::HTTPRequest(method, uri, body, http_version),
-  connection(connection.inc_ref()) {
+    connection(connection.inc_ref()),
+    creation_date_time(DateTime::now()) {
 }
 
 HTTPRequest::HTTPRequest(
@@ -62,7 +63,8 @@ HTTPRequest::HTTPRequest(
     method,
     uri
   ),
-  connection(connection.inc_ref()) {
+  connection(connection.inc_ref()),
+  creation_date_time(DateTime::now()) {
 }
 
 HTTPRequest::~HTTPRequest() {

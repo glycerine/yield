@@ -80,7 +80,6 @@ void HTTPMessage<HTTPMessageType>::finalize() {
   header.put("\r\n", 2);
 }
 
-
 template <class HTTPMessageType>
 size_t HTTPMessage<HTTPMessageType>::get_content_length() const {
   size_t content_length = 0;

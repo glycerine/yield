@@ -125,7 +125,6 @@ HTTPRequest::HTTPRequest(
     header,
     http_version
   ),
-  creation_date_time(DateTime::now()),
   method(method),
   uri(uri)
 { }
@@ -137,7 +136,6 @@ HTTPRequest::HTTPRequest(
   uint8_t http_version
 )
   : HTTPMessage<HTTPRequest>(body, http_version),
-    creation_date_time(DateTime::now()),
     method(method),
     uri(uri) {
   get_header().put(method.get_name(), method.get_name_len());
@@ -210,8 +208,6 @@ std::ostream& operator<<(std::ostream& os, const HTTPRequest& http_request) {
      http_request.get_type_name() <<
      "(" <<
      "content_length=" << http_request.get_content_length() <<
-     ", " <<
-     "creation_date_time=" << http_request.get_creation_date_time() <<
      ", " <<
      "http_version=" <<
      static_cast<uint16_t>(http_request.get_http_version()) <<
