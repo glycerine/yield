@@ -121,7 +121,7 @@ protected:
 
 protected:
 #ifdef _WIN32
-  friend class win32::AIOQueue;
+  friend class AIOQueue;
 #endif
   friend class NBIOQueue;
 
