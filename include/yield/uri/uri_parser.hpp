@@ -35,7 +35,7 @@
 namespace yield {
 namespace uri {
 /**
-  An RFC 3986-conformant Uniform Resource Identifier (URI) parser.
+  An RFC 3986-conformant URI parser.
 */
 class URIParser {
 public:
