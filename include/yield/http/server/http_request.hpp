@@ -41,11 +41,26 @@ namespace server {
 class HTTPConnection;
 class HTTPRequestParser;
 
+/**
+  A <code>yield::http::HTTPRequest</code> that's bound to a server
+    <code>HTTPConnection</code>.
+  These <code>HTTPRequest</code>s are usually created by
+    <code>HTTPRequestQueue</code>.
+*/  
 class HTTPRequest : public ::yield::http::HTTPRequest {
 public:
   const static uint32_t TYPE_ID = 2792000307UL;
 
 public:
+  /**
+    Construct an HTTPRequest that originates from the given server connection.
+    @param connection the server connection
+    @param method the HTTP request method e.g., HTTPRequest::Method::GET
+    @param uri the HTTP request URI e.g., /
+    @param body an optional body, usually a Buffer
+    @param http_version the HTTP version as a single byte (0 or 1 for HTTP/1.0
+      and HTTP/1.1, respectively)
+  */
   HTTPRequest(
     HTTPConnection& connection,
     Method method,
@@ -57,27 +72,91 @@ public:
   virtual ~HTTPRequest();
 
 public:
+  /**
+    Get the server connection from which this HTTP request originated.
+    @return the server connection from which this HTTP request originated
+  */
   const HTTPConnection& get_connection() const {
     return connection;
   }
 
   /**
-    Get the date-time this HTTPRequest object was constructed.
+    Get the date-time this HTTPRequest was constructed.
     Used in logging.
+    @return the date-time this HTTPRequest was constructed
   */
   const DateTime& get_creation_date_time() const {
     return creation_date_time;
   }
 
 public:
+  /**
+    Respond to the HTTP request with a chunked body.
+    respond(HTTPResponse&) or respond(status_code) must be called first.
+    @param chunk response body chunk
+  */
   void respond(YO_NEW_REF ::yield::http::HTTPMessageBodyChunk& chunk);
+
+  /**
+    Respond to the HTTP request.
+    Steals the reference to http_response, which should not be modified
+      after this method is called.
+    @param http_response HTTP response
+  */
   void respond(YO_NEW_REF ::yield::http::HTTPResponse& http_response);
+
+  /**
+    Respond to the HTTP request.
+    @param status_code response status code e.g, 200
+  */
   void respond(uint16_t status_code);
+
+  /**
+    Respond to the HTTP request.
+    This method should only be called once.
+    @param status_code response status code e.g., 200
+    @param body response body
+  */
   void respond(uint16_t status_code, YO_NEW_REF Buffer* body);
+
+  /**
+    Respond to the HTTP request.
+    This method should only be called once.
+    @param status_code response status code e.g., 200
+    @param body response body
+  */
   void respond(uint16_t status_code, YO_NEW_REF Buffer& body);
+
+  /**
+    Respond to the HTTP request.
+    This method should only be called once.
+    @param status_code response status code e.g., 200
+    @param body response body
+  */
   void respond(uint16_t status_code, const char* body);
+
+  /**
+    Respond to the HTTP request.
+    This method should only be called once.
+    @param status_code response status code e.g., 200
+    @param body response body
+  */
   void respond(uint16_t status_code, const Exception& body);
+
+  /**
+    Respond to the HTTP request.
+    This method should only be called once.
+    @param status_code response status code e.g., 200
+    @param body response body
+  */
   void respond(uint16_t status_code, YO_NEW_REF Object* body);
+
+  /**
+    Respond to the HTTP request.
+    This method should only be called once.
+    @param status_code response status code e.g., 200
+    @param body response body
+  */
   void respond(uint16_t status_code, YO_NEW_REF Object& body);
 
 public:

@@ -49,14 +49,36 @@ namespace http {
 namespace server {
 class HTTPConnection;
 
+/**
+  An EventQueue that acts as an HTTP server: listening to an (interface, port),
+    accepting connections, reading request data from connections, parsing HTTP
+    requests, serializing HTTP responses, writing response data to connections.
+
+  HTTPRequestQueue is "passive" in that it relies on the caller to drive it.
+  HTTPRequestQueue::dequeue or its variants must be called repeatedly and frequently
+    in order for the server to make progress.
+*/
 template <class AIOQueueType = yield::sockets::aio::AIOQueue>
 class HTTPRequestQueue : public EventQueue {
 public:
+  /**
+    Construct an HTTPRequestQueue that listens for connections on the given
+      socket address.
+    @param sockname address to listen to
+    @param log optional debug and error log
+  */
   HTTPRequestQueue(
     const yield::sockets::SocketAddress& sockname,
     YO_NEW_REF Log* log = NULL
   ) throw(Exception);
 
+  /**
+    Construct an HTTPRequestQueue around an extant TCP socket, which will
+      then be bound and listen to the given socket address.
+    @param socket_ server socket to use
+    @param sockname address to bind and listen to
+    @param log optional debug and error log
+  */
   HTTPRequestQueue(
     YO_NEW_REF yield::sockets::TCPSocket& socket_,
     const yield::sockets::SocketAddress& sockname,

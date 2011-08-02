@@ -41,15 +41,33 @@ namespace http {
 namespace server {
 class HTTPConnection;
 
+/**
+  A <code>yield::http::HTTPMessageBodyChunk</code> that's bound to a server
+    <code>HTTPConnection</code>.
+  These <code>HTTPMessageBodyChunk</code>s are usually created by
+    <code>HTTPRequestQueue</code> as part of a request;
+    response <code>HTTPMessageBodyChunks</code> can be the normal
+      <code>yield::http::HTTPMessageBodyChunk</code>s.
+*/
 class HTTPMessageBodyChunk : public ::yield::http::HTTPMessageBodyChunk {
 public:
   const static uint32_t TYPE_ID = 3690639367UL;
 
 public:
+  /**
+    Construct an HTTPMessageBodyChunk that originates from the given
+      server connection.
+    @param connection the server connection
+    @param data the chunk data
+  */
   HTTPMessageBodyChunk(HTTPConnection& connection, YO_NEW_REF Buffer* data);
   virtual ~HTTPMessageBodyChunk();
 
 public:
+  /**
+    Get the server connection from which this chunk originated.
+    @return the server connection from which this chunk originated
+  */
   const HTTPConnection& get_connection() const {
     return connection;
   }
