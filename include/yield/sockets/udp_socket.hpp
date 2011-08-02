@@ -35,7 +35,7 @@
 namespace yield {
 namespace sockets {
 /**
-  A UDPs/IP socket.
+  A UDP/IP socket.
 */
 class UDPSocket : public DatagramSocket {
 public:
