@@ -43,6 +43,9 @@ using yield::sockets::SocketAddress;
 using yield::sockets::TCPSocket;
 using yield::sockets::aio::acceptAIOCB;
 using yield::sockets::aio::AIOQueue;
+using yield::sockets::aio::recvAIOCB;
+using yield::sockets::aio::sendAIOCB;
+using yield::sockets::aio::sendfileAIOCB;
 
 template <class AIOQueueType>
 HTTPRequestQueue<AIOQueueType>::HTTPRequestQueue(
@@ -136,7 +139,7 @@ void HTTPRequestQueue<AIOQueueType>::handle(YO_NEW_REF acceptAIOCB& accept_aiocb
 template <class AIOQueueType>
 template <class AIOCBType>
 void HTTPRequestQueue<AIOQueueType>::handle(YO_NEW_REF AIOCBType& aiocb) {
-  HTTPConnection& connection = aiocb.get_connection();
+  HTTPConnection& connection = *static_cast<HTTPConnection*>(aiocb.get_context());
   if (connection.get_state() == HTTPConnection::STATE_CONNECTED) {
     connection.handle(aiocb);
 
@@ -201,24 +204,18 @@ YO_NEW_REF Event* HTTPRequestQueue<AIOQueueType>::timeddequeue(const Time& timeo
       }
       break;
 
-      case HTTPConnection::recvAIOCB::TYPE_ID: {
-        handle<HTTPConnection::recvAIOCB>(
-          static_cast<HTTPConnection::recvAIOCB&>(*event)
-        );
+      case recvAIOCB::TYPE_ID: {
+        handle<recvAIOCB>(static_cast<recvAIOCB&>(*event));
       }
       break;
 
-      case HTTPConnection::sendAIOCB::TYPE_ID: {
-        handle<HTTPConnection::sendAIOCB>(
-          static_cast<HTTPConnection::sendAIOCB&>(*event)
-        );
+      case sendAIOCB::TYPE_ID: {
+        handle<sendAIOCB>(static_cast<sendAIOCB&>(*event));
       }
       break;
 
-      case HTTPConnection::sendfileAIOCB::TYPE_ID: {
-        handle<HTTPConnection::sendfileAIOCB>(
-          static_cast<HTTPConnection::sendfileAIOCB&>(*event)
-        );
+      case sendfileAIOCB::TYPE_ID: {
+        handle<sendfileAIOCB>(static_cast<sendfileAIOCB&>(*event));
       }
       break;
 

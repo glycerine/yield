@@ -45,60 +45,10 @@ class Log;
 
 namespace http {
 namespace server {
+/**
+  A server-side HTTP connection.
+*/
 class HTTPConnection : public Object {
-public:
-  class AIOCB {
-  public:
-    HTTPConnection& get_connection() {
-      return connection;
-    }
-
-  protected:
-    AIOCB(HTTPConnection& connection)
-      : connection(connection.inc_ref())
-    { }
-
-    virtual ~AIOCB() {
-      HTTPConnection::dec_ref(connection);
-    }
-
-  private:
-    HTTPConnection& connection;
-  };
-
-public:
-  class recvAIOCB
-    : public ::yield::sockets::aio::recvAIOCB,
-      public HTTPConnection::AIOCB {
-  public:
-    recvAIOCB(HTTPConnection& connection, YO_NEW_REF Buffer& buffer)
-      : yield::sockets::aio::recvAIOCB(connection.get_socket(), buffer, 0),
-        HTTPConnection::AIOCB(connection)
-    { }
-  };
-
-public:
-  class sendAIOCB
-    : public ::yield::sockets::aio::sendAIOCB,
-      public HTTPConnection::AIOCB {
-  public:
-    sendAIOCB(HTTPConnection& connection, YO_NEW_REF Buffer& buffer)
-      : yield::sockets::aio::sendAIOCB(connection.get_socket(), buffer, 0),
-        HTTPConnection::AIOCB(connection)
-    { }
-  };
-
-public:
-  class sendfileAIOCB
-    : public ::yield::sockets::aio::sendfileAIOCB,
-      public HTTPConnection::AIOCB {
-  public:
-    sendfileAIOCB(HTTPConnection& connection, fd_t fd)
-      : yield::sockets::aio::sendfileAIOCB(connection.get_socket(), fd),
-        HTTPConnection::AIOCB(connection)
-    { }
-  };
-
 public:
   enum State { STATE_CONNECTED, STATE_ERROR };
 

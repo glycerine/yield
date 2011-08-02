@@ -35,6 +35,9 @@
 
 namespace yield {
 namespace http {
+/**
+  An RFC 2616-conformant HTTP response parser.
+*/
 class HTTPResponseParser : public HTTPMessageParser {
 public:
   /**

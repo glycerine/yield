@@ -462,7 +462,7 @@ YO_NEW_REF Event* AIOQueue::timeddequeue(const Time& timeout) {
     case acceptAIOCB::TYPE_ID: {
       acceptAIOCB& accept_aiocb = static_cast<acceptAIOCB&>(aiocb);
 
-      if (accept_aiocb.get_return() > 0) {
+      if (accept_aiocb.get_error() == 0) {
         // accept_aiocb.return does NOT include the size of the
         // local and remote socket addresses.
 
@@ -506,9 +506,12 @@ YO_NEW_REF Event* AIOQueue::timeddequeue(const Time& timeout) {
           accept_aiocb.set_peername(
             new SocketAddress(*peername, accepted_socket.get_domain())
           );
-        }
 
-        recv_buffer.put(NULL, accept_aiocb.get_return());
+          if (accept_aiocb.get_return() > 0)
+            recv_buffer.put(NULL, accept_aiocb.get_return());
+        } else {
+          accept_aiocb.set_error(WSAGetLastError());
+        }
       }
 
       log_completion(accept_aiocb);

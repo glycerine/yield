@@ -51,8 +51,9 @@ public:
     Construct a sendfileAIOCB, passing the same parameters as to sendfile.
     @param socket_ socket to send data on
     @param fd file descriptor from which to send data
+    @param context optional context object
   */
-  sendfileAIOCB(StreamSocket& socket_, fd_t fd);
+  sendfileAIOCB(StreamSocket& socket_, fd_t fd, Object* context = NULL);
 
   /**
     Construct a sendfileAIOCB, passing the same parameters as to sendfile.
@@ -60,8 +61,15 @@ public:
     @param fd file descriptor from which to send data
     @param offset offset in the file from which to send data
     @param nbytes number of bytes to send
+    @param context optional context object
   */
-  sendfileAIOCB(StreamSocket& socket_, fd_t fd, off_t offset, size_t nbytes);
+  sendfileAIOCB(
+    StreamSocket& socket_,
+    fd_t fd,
+    off_t offset,
+    size_t nbytes,
+    Object* context = NULL
+  );
 
   ~sendfileAIOCB();
 

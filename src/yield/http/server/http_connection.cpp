@@ -40,6 +40,9 @@ using yield::fs::File;
 using yield::sockets::SocketAddress;
 using yield::sockets::TCPSocket;
 using yield::sockets::aio::acceptAIOCB;
+using yield::sockets::aio::recvAIOCB;
+using yield::sockets::aio::sendAIOCB;
+using yield::sockets::aio::sendfileAIOCB;
 
 HTTPConnection::HTTPConnection(
   EventQueue& aio_queue,
@@ -72,7 +75,7 @@ void HTTPConnection::handle(YO_NEW_REF acceptAIOCB& accept_aiocb) {
   } else {
     Buffer* recv_buffer
     = new Buffer(Buffer::getpagesize(), Buffer::getpagesize());
-    recvAIOCB* recv_aiocb = new recvAIOCB(*this, *recv_buffer);
+    recvAIOCB* recv_aiocb = new recvAIOCB(socket_, *recv_buffer, 0, this);
     if (!aio_queue.enqueue(*recv_aiocb)) {
       recvAIOCB::dec_ref(*recv_aiocb);
       state = STATE_ERROR;
@@ -94,7 +97,7 @@ HTTPConnection::handle(
   }
   HTTPMessageBodyChunk::dec_ref(http_message_body_chunk);
 
-  sendAIOCB* send_aiocb = new sendAIOCB(*this, *send_buffer);
+  sendAIOCB* send_aiocb = new sendAIOCB(socket_, *send_buffer, 0, this);
   if (!aio_queue.enqueue(*send_aiocb)) {
     sendAIOCB::dec_ref(*send_aiocb);
     state = STATE_ERROR;
@@ -125,10 +128,11 @@ HTTPConnection::handle(
     break;
 
     case File::TYPE_ID: {
-      sendAIOCB* send_aiocb = new sendAIOCB(*this, http_response_header);
+      sendAIOCB* send_aiocb 
+        = new sendAIOCB(socket_, http_response_header, 0, this);
       if (aio_queue.enqueue(*send_aiocb)) {
         sendfileAIOCB* sendfile_aiocb
-        = new sendfileAIOCB(*this, *static_cast<File*>(http_response_body));
+        = new sendfileAIOCB(socket_, *static_cast<File*>(http_response_body), this);
         if (aio_queue.enqueue(*sendfile_aiocb)) {
           return;
         } else {
@@ -147,7 +151,7 @@ HTTPConnection::handle(
     }
   }
 
-  sendAIOCB* send_aiocb = new sendAIOCB(*this, http_response_header);
+  sendAIOCB* send_aiocb = new sendAIOCB(socket_, http_response_header, 0, this);
   if (!aio_queue.enqueue(*send_aiocb)) {
     sendAIOCB::dec_ref(*send_aiocb);
     state = STATE_ERROR;
@@ -190,7 +194,7 @@ void HTTPConnection::parse(Buffer& recv_buffer) {
     switch (object.get_type_id()) {
     case Buffer::TYPE_ID: {
       Buffer& next_recv_buffer = static_cast<Buffer&>(object);
-      recvAIOCB* recv_aiocb = new recvAIOCB(*this, next_recv_buffer);
+      recvAIOCB* recv_aiocb = new recvAIOCB(socket_, next_recv_buffer, 0, this);
       if (!aio_queue.enqueue(*recv_aiocb)) {
         recvAIOCB::dec_ref(*recv_aiocb);
         state = STATE_ERROR;

@@ -49,12 +49,14 @@ public:
     @param socket_ socket to receive data on
     @param buffer buffer to receive data into
     @param flags flags to pass to the recv method
+    @param context optional context object
   */
   recvAIOCB(
     Socket& socket_,
     YO_NEW_REF Buffer& buffer,
-    const Socket::MessageFlags& flags
-  ) : AIOCB(socket_),
+    const Socket::MessageFlags& flags,
+    Object* context = NULL
+  ) : AIOCB(socket_, context),
     buffer(buffer),
     flags(flags)
   { }

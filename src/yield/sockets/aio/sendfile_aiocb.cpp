@@ -42,8 +42,8 @@
 namespace yield {
 namespace sockets {
 namespace aio {
-sendfileAIOCB::sendfileAIOCB(StreamSocket& socket_, fd_t fd)
-  : AIOCB(socket_) {
+sendfileAIOCB::sendfileAIOCB(StreamSocket& socket_, fd_t fd, Object* context)
+  : AIOCB(socket_, context) {
   init(fd);
 
 #ifdef _WIN32
@@ -85,8 +85,9 @@ sendfileAIOCB::sendfileAIOCB(
   StreamSocket& socket_,
   fd_t fd,
   off_t offset,
-  size_t nbytes
-) : AIOCB(socket_, offset),
+  size_t nbytes,
+  Object* context
+) : AIOCB(socket_, offset, context),
   nbytes(nbytes) {
   init(fd);
 }

@@ -53,11 +53,13 @@ public:
     Construct an acceptAIOCB with an optional buffer for receiving data
       after a new connection is accepted.
     @param socket_ listen socket to accept on
+    @param context optional context object
     @param recv_buffer optional buffer for receiving data after a new
       connection is accepted
   */
   acceptAIOCB(
     StreamSocket& socket_,
+    Object* context = NULL,
     YO_NEW_REF Buffer* recv_buffer = NULL
   );
 

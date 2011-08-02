@@ -52,12 +52,14 @@ public:
       after a connection is established.
     @param socket_ socket to connect
     @param peername address of the peer to connect to
+    @param context optional context object
     @param send_buffer optional buffer of data to send after the connection is
       established
   */
   connectAIOCB(
     StreamSocket& socket_,
     SocketAddress& peername,
+    Object* context = NULL,
     YO_NEW_REF Buffer* send_buffer = NULL
   );
 

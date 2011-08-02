@@ -35,8 +35,12 @@
 namespace yield {
 namespace sockets {
 namespace aio {
-acceptAIOCB::acceptAIOCB(StreamSocket& socket_, YO_NEW_REF Buffer* recv_buffer)
-  : AIOCB(socket_),
+acceptAIOCB::acceptAIOCB(
+  StreamSocket& socket_,
+  Object* context,
+  YO_NEW_REF Buffer* recv_buffer
+)
+  : AIOCB(socket_, context),
     recv_buffer(recv_buffer) {
   accepted_socket = NULL;
   peername = NULL;

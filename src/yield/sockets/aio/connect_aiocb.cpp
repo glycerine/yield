@@ -38,8 +38,9 @@ namespace aio {
 connectAIOCB::connectAIOCB(
   StreamSocket& socket_,
   SocketAddress& peername,
+  Object* context,
   YO_NEW_REF Buffer* send_buffer
-) : AIOCB(socket_),
+) : AIOCB(socket_, context),
   peername(peername.inc_ref()),
   send_buffer(send_buffer) {
   if (send_buffer != NULL) {

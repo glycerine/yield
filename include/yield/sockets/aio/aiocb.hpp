@@ -68,6 +68,14 @@ public:
 
 public:
   /**
+    Get the context object.
+    @return the context object, or NULL if it was not set in the constructor.
+  */
+  Object* get_context() {
+    return context;
+  }
+
+  /**
     Get the error code of the AIO operation associated with this control block,
       once the operation is complete.
     Callers should first check that get_return() < 0.
@@ -116,8 +124,8 @@ public:
   }
 
 protected:
-  AIOCB(Socket& socket_);
-  AIOCB(Socket& socket_, off_t offset);
+  AIOCB(Socket& socket_, Object* context = NULL);
+  AIOCB(Socket& socket_, off_t offset, Object* context = NULL);
 
 protected:
 #ifdef _WIN32
@@ -153,6 +161,7 @@ private:
   AIOCB* this_;
 #endif
 
+  Object* context;
   uint32_t error;
   ssize_t return_;
   Socket& socket_;
