@@ -74,10 +74,45 @@ from yutil import copy_file, \
 
 
 # Constants
+AUTHOR = "Minor Gordon"
 ROOT_DIR_PATH = dirname(__file__)
 INCLUDE_DIR_PATH = path_join(ROOT_DIR_PATH, "include")
 SRC_DIR_PATH = path_join(ROOT_DIR_PATH, "src")
 TEST_DIR_PATH = path_join(ROOT_DIR_PATH, "test")
+
+
+
+
+# Parse options
+option_parser = OptionParser()
+option_parser.add_option("--calculate-type-id")
+option_parser.add_option("-f", "--force", action="store_true")
+option_parser.add_option("--format-src", action="store_true")
+option_parser.add_option("-p", "--project", action="append", dest="project_names")
+option_parser.add_option("--generate-dist", action="store_true")
+option_parser.add_option("--generate-proj", action="store_true")
+option_parser.add_option("--generate-src", action="store_true")
+option_parser.add_option("--generate-src-rl", action="store_true")
+option_parser.add_option("--generate-test", action="store_true")
+option_parser.add_option("--generate-test_main_cpp", action="store_true")
+option_parser.add_option("--generate-test_py", action="store_true")
+
+options, _ = option_parser.parse_args()
+
+if not options.calculate_type_id and\
+   not options.format_src and\
+   not options.generate_dist and\
+   not options.generate_proj and\
+   not options.generate_src and\
+   not options.generate_src_rl and\
+   not options.generate_test and\
+   not options.generate_test_main_cpp and\
+   not options.generate_test_py:
+    # No options set
+    options.format_src = True
+    options.generate_proj = True
+
+
 
 
 PROJECT_REFERENCES = {
@@ -98,19 +133,25 @@ PROJECT_REFERENCES = {
     "yield.uri": ("yield",),
 }
 
-if Checks({
-       '*': (HeaderCheck("openssl/ssl.h"),),
-       "unix": (LibraryCheck("crypto"), LibraryCheck("ssl"))
-   })():
-    PROJECT_REFERENCES["yield.sockets.ssl"] = ("yield.sockets",)
+if options.generate_dist or options.generate_proj:
+    # Do autoconf
+    if Checks({
+           '*': (HeaderCheck("openssl/ssl.h"),),
+           "unix": (LibraryCheck("crypto"), LibraryCheck("ssl"))
+       })():
+        PROJECT_REFERENCES["yield.sockets.ssl"] = ("yield.sockets",)
 
 PROJECT_NAMES = PROJECT_REFERENCES.keys()
+
+if options.project_names is not None and len(options.project_names) > 0:
+    for project_name in options.project_names:
+        assert project_name in PROJECT_NAMES, project_name
+else:
+    options.project_names = PROJECT_NAMES
 
 PROJECT_REFERENCES["yield.poll_test"] = ("yield.poll", "yield.sockets")
 PROJECT_REFERENCES["yield.sockets_test"] = ("yield.fs", "yield.sockets")
 PROJECT_REFERENCES["yield.sockets.aio_test"] = ("yield.fs", "yield.sockets.aio")
-
-AUTHOR = "Minor Gordon"
 
 CXXDEFINES = {
    "yield.sockets.ssl": {
@@ -334,10 +375,11 @@ INCLUDE_FILE_PATHS["yield.sockets.aio"] = [
 ] + \
 INCLUDE_FILE_PATHS["yield.sockets.aio"]
 
-INCLUDE_FILE_PATHS["yield.sockets.ssl"] = [
-    path_join(INCLUDE_DIR_PATH, "yield", "sockets", "ssl", "ssl_version.hpp"), # before ssl_context
-] + \
-INCLUDE_FILE_PATHS["yield.sockets.ssl"]
+if INCLUDE_FILE_PATHS.has_key("yield.sockets.ssl"):
+    INCLUDE_FILE_PATHS["yield.sockets.ssl"] = [
+        path_join(INCLUDE_DIR_PATH, "yield", "sockets", "ssl", "ssl_version.hpp"), # before ssl_context
+    ] + \
+    INCLUDE_FILE_PATHS["yield.sockets.ssl"]
 
 INCLUDE_FILE_PATHS["yield.thread"] = [
     path_join(INCLUDE_DIR_PATH, "yield", "thread", "mutex.hpp"), # before condition_variable
@@ -371,42 +413,6 @@ THIRD_PARTY_SOURCE_FNMATCH_PATTERNS = (
 )
 
 
-
-
-# Parse options
-option_parser = OptionParser()
-option_parser.add_option("--calculate-type-id")
-option_parser.add_option("-f", "--force", action="store_true")
-option_parser.add_option("--format-src", action="store_true")
-option_parser.add_option("-p", "--project", action="append", dest="project_names")
-option_parser.add_option("--generate-dist", action="store_true")
-option_parser.add_option("--generate-proj", action="store_true")
-option_parser.add_option("--generate-src", action="store_true")
-option_parser.add_option("--generate-src-rl", action="store_true")
-option_parser.add_option("--generate-test", action="store_true")
-option_parser.add_option("--generate-test_main_cpp", action="store_true")
-option_parser.add_option("--generate-test_py", action="store_true")
-
-options, _ = option_parser.parse_args()
-
-# If no options set, do generate_proj
-if not options.calculate_type_id and\
-   not options.format_src and\
-   not options.generate_dist and\
-   not options.generate_proj and\
-   not options.generate_src and\
-   not options.generate_src_rl and\
-   not options.generate_test and\
-   not options.generate_test_main_cpp and\
-   not options.generate_test_py:
-    options.format_src = True
-    options.generate_proj = True
-
-if options.project_names is not None and len(options.project_names) > 0:
-    for project_name in options.project_names:
-        assert project_name in PROJECT_NAMES, project_name
-else:
-    options.project_names = PROJECT_NAMES
 
 
 if options.calculate_type_id:
