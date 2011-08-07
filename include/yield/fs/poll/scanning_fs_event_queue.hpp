@@ -41,17 +41,41 @@ namespace poll {
 class ScanningWatch;
 template <class> class Watches;
 
+/**
+  An FSEventQueue implementation that periodically scans a file system
+    (i.e., FileSystem implementations) for changes.
+  Used as a fallback implementation when more efficient means (such as
+    ReadDirectoryChangesW on Win32 or inotify on Linux) are not available.
+*/
 class ScanningFSEventQueue : public EventQueue {
 public:
+  /**
+    Construct a ScanningFSEventQueue.
+    @param log optional debug and error log
+  */
   ScanningFSEventQueue(YO_NEW_REF Log* log = NULL);
+
   ~ScanningFSEventQueue();
 
 public:
+  /**
+    Associate a file system path with this ScanningFSEventQueue,
+      watching for the specified FSEvent types (directory or file
+      add/modify/remove/rename).
+    @param path the path to associate
+    @param fs_event_types FSEvent types to monitor
+    @return true on success, false+errno on failure
+  */
   bool associate(
     const Path& path,
     FSEvent::Type fs_event_types = FSEvent::TYPE_ALL
   );
 
+  /**
+    Dissociate a file system path from this ScanningFSEventQueue.
+    @param path the path to dissociate
+    @return true on success, false+errno on failure
+  */
   bool dissociate(const Path& path);
 
 public:

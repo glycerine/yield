@@ -60,17 +60,41 @@ class Watch;
 #endif
 template <class> class Watches;
 
+/**
+  EventQueue for file system change events (<code>FSEvent</code>s).
+*/
 class FSEventQueue : public EventQueue {
 public:
+  /**
+    Construct an FSEventQueue, allocating any system resources as necessary.
+    @param log optional debug and error log
+  */
   FSEventQueue(YO_NEW_REF Log* log = NULL);
+
+  /**
+    Destroy an FDEventQueue, deallocating any associated system resources.
+  */
   ~FSEventQueue();
 
 public:
+  /**
+    Associate a file system path with this FSEventQueue,
+      watching for the specified FSEvent types (directory or file
+      add/modify/remove/rename).
+    @param path the path to associate
+    @param fs_event_types FSEvent types to monitor
+    @return true on success, false+errno on failure
+  */
   bool associate(
     const Path& path,
     FSEvent::Type fs_event_types = FSEvent::TYPE_ALL
   );
 
+  /**
+    Dissociate a file system path from this FSEventQueue.
+    @param path the path to dissociate
+    @return true on success, false+errno on failure
+  */
   bool dissociate(const Path& path);
 
 public:

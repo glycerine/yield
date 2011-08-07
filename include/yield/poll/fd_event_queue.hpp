@@ -42,7 +42,7 @@
 namespace yield {
 namespace poll {
 /**
-  EventQueue for file descriptor events (FDEvents).
+  EventQueue for file descriptor events (<code>FDEvent</code>s).
   Implemented in terms of efficient poll() variants on different platforms.
 */
 class FDEventQueue : public EventQueue {
@@ -65,14 +65,14 @@ public:
       write readiness, et al.).
    @param fd the file descriptor to associate
    @param fd_event_types FDEvent types to monitor
-   @return true on success
+   @return true on success, false+errno on failure
   */
   bool associate(fd_t fd, FDEvent::Type fd_event_types);
 
   /**
     Dissociate a file descriptor from this FDEventQueue.
     @param fd the file descriptor to dissociate
-    @return true on success
+    @return true on success, false+errno on failure
   */
   bool dissociate(fd_t fd);
 
