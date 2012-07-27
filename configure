@@ -31,17 +31,19 @@ assert __name__ == '__main__'
 
 from binascii import crc32
 from copy import copy, deepcopy
-from os import chdir, getcwd, listdir, makedirs, stat, unlink
-from os.path import abspath, \
-                    dirname, \
-                    exists, \
-                    isdir, \
-                    isfile, \
-                    join as path_join, \
-                    sep as path_sep, \
-                    split as path_split, \
-                    splitext
 from optparse import OptionParser
+from os import chdir, getcwd, listdir, makedirs, stat, unlink
+from os.path import abspath, dirname, exists, isdir, isfile, join as path_join, \
+    sep as path_sep, split as path_split, splitext
+from yuild import Makefile, TopLevelMakefile, Project, SourceFiles, VCXProj, \
+    VCXProjFilters, VCXProjUser, VCXSln
+from yuild.autoconf import Checks, HeaderCheck, LibraryCheck
+from yuild.constant import C_CXX_INCLUDE_FILE_FNMATCH_PATTERNS, \
+    C_CXX_FILE_FNMATCH_PATTERNS, CXX_SOURCE_FILE_FNMATCH_PATTERNS, \
+    INCLUDE_FILE_FNMATCH_PATTERNS, INDENT_SPACES, PLATFORMS, PLATFORM_GUARDS, \
+    SOURCE_FILE_FNMATCH_PATTERNS
+from yutil import copy_file, deduplist, fnmatch, indent, list_subdirectories, \
+    mirror_subdirectories, rglob, write_file
 import re
 import subprocess
 import sys
@@ -68,33 +70,10 @@ try:
 except ImportError:
     sys.path.append(YUTIL_SRC_DIR_PATH)
 
-from yutil import copy_file, \
-                  deduplist, \
-                  fnmatch, \
-                  indent, \
-                  list_subdirectories, \
-                  mirror_subdirectories, \
-                  rglob, \
-                  write_file
-
 try:
     import yuild
 except ImportError:
     sys.path.append(YUILD_SRC_DIR_PATH)
-
-from yuild import Makefile, TopLevelMakefile, \
-                  Project, \
-                  SourceFiles, \
-                  VCXProj, VCXProjFilters, VCXProjUser, VCXSln
-from yuild.autoconf import Checks, HeaderCheck, LibraryCheck
-from yuild.constant import C_CXX_INCLUDE_FILE_FNMATCH_PATTERNS, \
-                           C_CXX_FILE_FNMATCH_PATTERNS, \
-                           CXX_SOURCE_FILE_FNMATCH_PATTERNS, \
-                           INCLUDE_FILE_FNMATCH_PATTERNS, \
-                           INDENT_SPACES, \
-                           PLATFORMS, \
-                           PLATFORM_GUARDS, \
-                           SOURCE_FILE_FNMATCH_PATTERNS
 
 
 # Constants
@@ -514,7 +493,7 @@ if options.format_src:
         ),
         'yuild': (
             path_join(YUILD_ROOT_DIR_PATH, 'src', 'yuild'),
-            path_join(YUILD_ROOT_DIR_PATH, 'test', 'yuild'),
+            path_join(YUILD_ROOT_DIR_PATH, 'test', 'yuild_test'),
         )
     }
 
