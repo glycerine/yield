@@ -238,6 +238,10 @@ LIBS = {
 #        'sunos': ['uuid'],
 #    },
 }
+for project_name in PROJECT_NAMES:
+    project_test_libs = LIBS.setdefault(project_name + '_test', {})
+    assert not 'win32' in project_test_libs
+    project_test_libs['win32'] = ['gtestd']
 
 OUTPUT_FILE_PATHS = {}
 for project_name in PROJECT_NAMES:

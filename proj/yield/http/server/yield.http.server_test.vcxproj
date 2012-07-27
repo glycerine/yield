@@ -31,7 +31,7 @@
   </PropertyGroup>
 
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  
+
   <ImportGroup Label="ExtensionSettings" />
 
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">
@@ -66,7 +66,7 @@
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>yield_http_server.lib;yield_fs.lib;yield_i18n.lib;yield_http.lib;yield_uri.lib;yield_sockets_aio.lib;yield_poll.lib;yield_sockets.lib;yield_stage.lib;yield_thread.lib;yield.lib</AdditionalDependencies>
+      <AdditionalDependencies>gtestd.lib;yield_http_server.lib;yield_fs.lib;yield_i18n.lib;yield_http.lib;yield_uri.lib;yield_sockets_aio.lib;yield_poll.lib;yield_sockets.lib;yield_stage.lib;yield_thread.lib;yield.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -89,7 +89,7 @@
       <WarningLevel>Level4</WarningLevel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>yield_http_server.lib;yield_fs.lib;yield_i18n.lib;yield_http.lib;yield_uri.lib;yield_sockets_aio.lib;yield_poll.lib;yield_sockets.lib;yield_stage.lib;yield_thread.lib;yield.lib</AdditionalDependencies>
+      <AdditionalDependencies>gtestd.lib;yield_http_server.lib;yield_fs.lib;yield_i18n.lib;yield_http.lib;yield_uri.lib;yield_sockets_aio.lib;yield_poll.lib;yield_sockets.lib;yield_stage.lib;yield_thread.lib;yield.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\..\lib\yield</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4006 /ignore:4221</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>

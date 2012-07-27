@@ -27,29 +27,25 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/assert.hpp"
 #include "yield/atomic.hpp"
-#include "yunit.hpp"
-
-
-TEST_SUITE(atomic);
+#include "gtest/gtest.h"
 
 namespace yield {
 TEST(atomic, cas) {
   volatile atomic_t current_value = 0;
   atomic_t old_value = atomic_cas(&current_value, 1, 0);
-  throw_assert_eq(old_value, 0);
+  ASSERT_EQ(old_value, 0);
 }
 
 TEST(atomic, dec) {
   volatile atomic_t current_value = 1;
   atomic_t new_current_value = atomic_dec(&current_value);
-  throw_assert_eq(new_current_value, 0);
+  ASSERT_EQ(new_current_value, 0);
 }
 
 TEST(atomic, inc) {
   volatile atomic_t current_value = 0;
   atomic_t new_current_value = atomic_inc(&current_value);
-  throw_assert_eq(new_current_value, 1);
+  ASSERT_EQ(new_current_value, 1);
 }
 }

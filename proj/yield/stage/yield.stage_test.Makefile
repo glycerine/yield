@@ -50,6 +50,9 @@ endif
 ifeq ($(UNAME), Solaris)
 	LIBS += -lkstat -lm -lrt -lstdc++
 endif
+ifeq ($(UNAME), MINGW32)
+	LIBS += -lgtestd
+endif
 LIBS += -lyield_stage -lyield_thread -lyield
 
 
@@ -68,7 +71,7 @@ depclean:
 	$(RM) $(D_FILE_PATHS)
 
 -include $(D_FILE_PATHS)
-			
+
 lcov: ../../../bin/yield/yield_stage_test
 	lcov --directory ../../../build/yield/stage --zerocounters
 	-../../../bin/yield/yield_stage_test

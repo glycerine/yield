@@ -27,12 +27,9 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/assert.hpp"
 #include "yield/buffer.hpp"
 #include "yield/channel.hpp"
-#include "yunit.hpp"
-
-TEST_SUITE(Channel);
+#include "gtest/gtest.h"
 
 namespace yield {
 class MockChannel : public Channel {
@@ -47,14 +44,14 @@ public:
   }
 
   ssize_t read(void* buf, size_t buflen) {
-    throw_assert_ne(buf, NULL);
-    throw_assert_eq(buflen, Buffer::getpagesize());
+    // ASSERT_NE(buf, NULL);
+    // ASSERT_EQ(buflen, Buffer::getpagesize());
     return Buffer::getpagesize() / 2;
   }
 
   ssize_t readv(const iovec* iov, int iovlen) {
-    throw_assert_ne(iov, NULL);
-    throw_assert_eq(iovlen, 2);
+    // ASSERT_NE(iov, NULL);
+    // ASSERT_EQ(iovlen, 2);
     return Buffer::getpagesize() / 2;
   }
 
@@ -63,8 +60,8 @@ public:
   }
 
   ssize_t write(const void* buf, size_t buflen) {
-    throw_assert_ne(buf, NULL);
-    throw_assert_true(buflen == Buffer::getpagesize() / 2 || buflen == 11);
+    // ASSERT_NE(buf, NULL);
+    // ASSERT_TRUE(buflen == Buffer::getpagesize() / 2 || buflen == 11);
     return buflen;
   }
 };
@@ -72,8 +69,8 @@ public:
 TEST(Channel, read_Buffer) {
   Buffer buffer(Buffer::getpagesize());
   ssize_t read_ret = MockChannel().read(buffer);
-  throw_assert_eq(read_ret, static_cast<ssize_t>(Buffer::getpagesize() / 2));
-  throw_assert_eq(buffer.size(), Buffer::getpagesize() / 2);
+  ASSERT_EQ(read_ret, static_cast<ssize_t>(Buffer::getpagesize() / 2));
+  ASSERT_EQ(buffer.size(), Buffer::getpagesize() / 2);
 }
 
 TEST(Channel, read_Buffers) {
@@ -81,16 +78,16 @@ TEST(Channel, read_Buffers) {
   Buffer buffer1(Buffer::getpagesize());
   buffer1.set_next_buffer(buffer2.inc_ref());
   ssize_t read_ret = MockChannel().read(buffer1);
-  throw_assert_eq(read_ret, static_cast<ssize_t>(Buffer::getpagesize() / 2));
-  throw_assert_eq(buffer1.size(), Buffer::getpagesize() / 2);
-  throw_assert_eq(buffer2.size(), 0);
+  ASSERT_EQ(read_ret, static_cast<ssize_t>(Buffer::getpagesize() / 2));
+  ASSERT_EQ(buffer1.size(), Buffer::getpagesize() / 2);
+  ASSERT_EQ(buffer2.size(), 0);
 }
 
 TEST(Channel, write_Buffer) {
   Buffer buffer(Buffer::getpagesize());
   buffer.put(NULL, Buffer::getpagesize() / 2);
   ssize_t write_ret = MockChannel().write(buffer);
-  throw_assert_eq(write_ret, static_cast<ssize_t>(Buffer::getpagesize() / 2));
+  ASSERT_EQ(write_ret, static_cast<ssize_t>(Buffer::getpagesize() / 2));
 }
 
 TEST(Channel, write_Buffers) {
@@ -100,7 +97,7 @@ TEST(Channel, write_Buffers) {
   buffer1.put(NULL, Buffer::getpagesize() / 4);
   buffer1.set_next_buffer(buffer2.inc_ref());
   ssize_t write_ret = MockChannel().write(buffer1);
-  throw_assert_eq(write_ret, static_cast<ssize_t>(Buffer::getpagesize() / 2));
+  ASSERT_EQ(write_ret, static_cast<ssize_t>(Buffer::getpagesize() / 2));
 }
 
 TEST(Channel, writev) {
@@ -110,6 +107,6 @@ TEST(Channel, writev) {
   iov[1].iov_base = const_cast<char*>("string");
   iov[1].iov_len = 6;
   ssize_t write_ret = MockChannel().writev(iov, 2);
-  throw_assert_eq(write_ret, 11);
+  ASSERT_EQ(write_ret, 11);
 }
 }

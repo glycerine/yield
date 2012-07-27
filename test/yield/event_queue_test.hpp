@@ -30,15 +30,13 @@
 #ifndef _YIELD_EVENT_QUEUE_TEST_HPP_
 #define _YIELD_EVENT_QUEUE_TEST_HPP_
 
-#include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/event.hpp"
 #include "yield/event_queue.hpp"
-#include "yunit.hpp"
-
+#include "gtest/gtest.h"
 
 namespace yield {
-class EventQueueTest : public yunit::Test {
+class EventQueueTest : public ::testing::Test {
 protected:
   class MockEvent : public Event {
   public:
@@ -58,13 +56,13 @@ public:
     EventQueueType event_queue;
 
     bool enqueue_ret = event_queue.enqueue(event->inc_ref());
-    throw_assert(enqueue_ret);
+    ASSERT_TRUE(enqueue_ret);
 
     auto_Object<Event> dequeued_event = event_queue.dequeue();
-    throw_assert_eq(event, dequeued_event);
+    ASSERT_EQ(event, dequeued_event);
 
     Event* null_event = static_cast<EventQueue&>(event_queue).trydequeue();
-    throw_assert_eq(null_event, NULL);
+    ASSERT_EQ(null_event, NULL);
   }
 };
 
@@ -78,13 +76,13 @@ public:
     EventQueueType event_queue;
 
     bool enqueue_ret = event_queue.enqueue(event->inc_ref());
-    throw_assert(enqueue_ret);
+    ASSERT_TRUE(enqueue_ret);
 
     auto_Object<Event> dequeued_event = event_queue.timeddequeue(1.0);
-    throw_assert_eq(event, dequeued_event);
+    ASSERT_EQ(event, dequeued_event);
 
     Event* null_event = event_queue.timeddequeue(1.0);
-    throw_assert_eq(null_event, NULL);
+    ASSERT_EQ(null_event, NULL);
   }
 };
 
@@ -98,15 +96,15 @@ public:
     EventQueueType event_queue;
 
     bool enqueue_ret = event_queue.enqueue(event->inc_ref());
-    throw_assert(enqueue_ret);
+    ASSERT_TRUE(enqueue_ret);
 
     auto_Object<Event> dequeued_event
     = static_cast<EventQueue&>(event_queue).trydequeue();
-    throw_assert_eq(event, dequeued_event);
+    ASSERT_EQ(event, dequeued_event);
 
     Event* null_event
     = static_cast<EventQueue&>(event_queue).trydequeue();
-    throw_assert_eq(null_event, NULL);
+    ASSERT_EQ(null_event, NULL);
   }
 };
 

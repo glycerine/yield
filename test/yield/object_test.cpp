@@ -28,27 +28,22 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "test_object.hpp"
-#include "yield/assert.hpp"
-#include "yunit.hpp"
-
-
-TEST_SUITE(Object);
+#include "gtest/gtest.h"
 
 namespace yield {
 bool TestObject::deleted = false;
 
-
 TEST(Object, dec_ref) {
   TestObject* test_object = new TestObject;
   Object::dec_ref(test_object);
-  throw_assert(TestObject::deleted);
+  ASSERT_TRUE(TestObject::deleted);
 
   test_object = new TestObject;
   Object::inc_ref(test_object);
   Object::dec_ref(test_object);
-  throw_assert_false(TestObject::deleted);
+  ASSERT_FALSE(TestObject::deleted);
   Object::dec_ref(test_object);
-  throw_assert(TestObject::deleted);
+  ASSERT_TRUE(TestObject::deleted);
 }
 
 TEST(Object, inc_ref) {
@@ -58,7 +53,7 @@ TEST(Object, inc_ref) {
 
 TEST(Object, rtti) {
   TestObject test_object;
-  throw_assert_eq(test_object.get_type_id(), 0);
-  throw_assert_eq(strcmp(test_object.get_type_name(), "yield::Object"), 0);
+  ASSERT_EQ(test_object.get_type_id(), 0);
+  ASSERT_EQ(strcmp(test_object.get_type_name(), "yield::Object"), 0);
 }
 }

@@ -28,67 +28,64 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/auto_object.hpp"
-#include "yield/assert.hpp"
 #include "yield/exception.hpp"
-#include "yunit.hpp"
-
-TEST_SUITE(Exception);
+#include "gtest/gtest.h"
 
 namespace yield {
 TEST(Exception, clone) {
   Exception exc1(1, "what");
   auto_Object<Exception> exc2 = exc1.clone();
-  throw_assert_eq(exc2->get_error_code(), 1);
-  throw_assert_eq(strcmp(exc2->what(), "what"), 0);
+  ASSERT_EQ(exc2->get_error_code(), 1);
+  ASSERT_EQ(strcmp(exc2->what(), "what"), 0);
 }
 
 TEST(Exception, copy) {
   Exception exc1(1, "what");
   Exception exc2(exc1);
-  throw_assert_eq(exc2.get_error_code(), 1);
-  throw_assert_eq(strcmp(exc2.what(), "what"), 0);
+  ASSERT_EQ(exc2.get_error_code(), 1);
+  ASSERT_EQ(strcmp(exc2.what(), "what"), 0);
 }
 
 TEST(Exception, from_error_code) {
   Exception exc(static_cast<uint32_t>(1));
-  throw_assert_eq(exc.get_error_code(), 1);
-  throw_assert_gt(strlen(exc.what()), 0)
+  ASSERT_EQ(exc.get_error_code(), 1);
+  ASSERT_GT(strlen(exc.what()), 0u);
 }
 
 TEST(Exception, from_error_message_c_string) {
   Exception exc("what");
-  throw_assert_eq(strcmp(exc.what(), "what"), 0);
+  ASSERT_EQ(strcmp(exc.what(), "what"), 0);
 }
 
 TEST(Exception, from_error_message_string) {
   Exception exc(string("what"));
-  throw_assert_eq(strcmp(exc.what(), "what"), 0);
+  ASSERT_EQ(strcmp(exc.what(), "what"), 0);
 }
 
 TEST(Exception, from_error_code_error_message_c_string) {
   Exception exc(1, "what");
-  throw_assert_eq(exc.get_error_code(), 1);
-  throw_assert_eq(strcmp(exc.what(), "what"), 0);
+  ASSERT_EQ(exc.get_error_code(), 1);
+  ASSERT_EQ(strcmp(exc.what(), "what"), 0);
 }
 
 TEST(Exception, from_error_code_error_message_string) {
   Exception exc(1, string("what"));
-  throw_assert_eq(strcmp(exc.what(), "what"), 0);
+  ASSERT_EQ(strcmp(exc.what(), "what"), 0);
 }
 
 TEST(Exception, from_last_error_code) {
   Exception exc;
-  throw_assert_gt(strlen(exc.what()), 0)
+  ASSERT_GT(strlen(exc.what()), 0u);
 }
 
 TEST(Exception, get_last_error_code) {
   Exception::set_last_error_code(1);
   uint32_t last_error_code = Exception::get_last_error_code();
-  throw_assert_eq(last_error_code, 1);
+  ASSERT_EQ(last_error_code, 1);
 }
 
 TEST(Exception, is_exception) {
-  throw_assert(Exception().is_exception());
+  ASSERT_TRUE(Exception().is_exception());
 }
 
 TEST(Exception, rethrow) {
@@ -97,16 +94,16 @@ TEST(Exception, rethrow) {
   try {
     exc1.rethrow();
   } catch (Exception& exc2) {
-    throw_assert_eq(exc1.get_error_code(), exc2.get_error_code());
+    ASSERT_EQ(exc1.get_error_code(), exc2.get_error_code());
     return;
   }
 
-  throw_assert(false);
+  ASSERT_TRUE(false);
 }
 
 TEST(Exception, set_last_error_code) {
   Exception::set_last_error_code(1);
   uint32_t last_error_code = Exception::get_last_error_code();
-  throw_assert_eq(last_error_code, 1);
+  ASSERT_EQ(last_error_code, 1);
 }
 }

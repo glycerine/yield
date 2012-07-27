@@ -28,11 +28,8 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "test_object.hpp"
-#include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
-#include "yunit.hpp"
-
-TEST_SUITE(auto_Object);
+#include "gtest/gtest.h"
 
 namespace yield {
 TEST(auto_Object, null) {
@@ -42,14 +39,14 @@ TEST(auto_Object, null) {
     return;
   }
 
-  throw_assert(false);
+  ASSERT_TRUE(false);
 }
 
 TEST(auto_Object, out_of_scope) {
   {
     auto_Object<TestObject>(new TestObject);
   }
-  throw_assert(TestObject::deleted);
+  ASSERT_TRUE(TestObject::deleted);
 }
 
 TEST(auto_Object, copy_out_of_scope) {
@@ -58,17 +55,17 @@ TEST(auto_Object, copy_out_of_scope) {
     {
       auto_Object<TestObject> auto_so2(auto_so);
     }
-    throw_assert_false(TestObject::deleted);
+    ASSERT_FALSE(TestObject::deleted);
   }
-  throw_assert(TestObject::deleted);
+  ASSERT_TRUE(TestObject::deleted);
 }
 
 TEST(auto_Object, get) {
   {
     TestObject* so = new TestObject;
     auto_Object<TestObject> auto_so(*so);
-    throw_assert_eq(&auto_so.get(), so);
+    ASSERT_EQ(&auto_so.get(), so);
   }
-  throw_assert(TestObject::deleted);
+  ASSERT_TRUE(TestObject::deleted);
 }
 }

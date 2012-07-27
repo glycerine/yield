@@ -27,18 +27,13 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/assert.hpp"
 #include "yield/date_time.hpp"
-#include "yield/date_time.hpp"
-#include "yunit.hpp"
+#include "gtest/gtest.h"
 
 #include <sstream> // For std::ostringstream
 #ifdef _WIN32
 #include <Windows.h> // For FILETIME
 #endif
-
-
-TEST_SUITE(DateTime)
 
 namespace yield {
 #ifndef _WIN32
@@ -46,65 +41,64 @@ TEST(DateTime, as_timeval) {
   DateTime date_time(DateTime::now());
   timeval tv = date_time;
 
-  throw_assert_eq
-  (
+  ASSERT_EQ(
     static_cast<long>(date_time.as_unix_date_time_s()),
     tv.tv_sec
   );
-  throw_assert_lt(tv.tv_usec, 1000000);
+  ASSERT_LT(tv.tv_usec, 1000000);
 }
 
 TEST(DateTime, as_local_tm) {
   DateTime date_time(DateTime::now());
   tm tm_ = date_time;
-  throw_assert_ge(tm_.tm_sec, 0);
-  throw_assert_le(tm_.tm_sec, 59);
-  throw_assert_ge(tm_.tm_min, 0);
-  throw_assert_le(tm_.tm_min, 59);
-  throw_assert_ge(tm_.tm_hour, 0);
-  throw_assert_le(tm_.tm_hour, 23);
-  throw_assert_ge(tm_.tm_mday, 1);
-  throw_assert_le(tm_.tm_mday, 31);
-  throw_assert_ge(tm_.tm_mon, 0);
-  throw_assert_le(tm_.tm_mon, 11);
-  throw_assert_ge(tm_.tm_year, 1900);
-  throw_assert_ge(tm_.tm_wday, 0);
-  throw_assert_le(tm_.tm_wday, 6);
-  throw_assert_ge(tm_.tm_yday, 0);
-  throw_assert_le(tm_.tm_yday, 365);
+  ASSERT_GE(tm_.tm_sec, 0);
+  ASSERT_LE(tm_.tm_sec, 59);
+  ASSERT_GE(tm_.tm_min, 0);
+  ASSERT_LE(tm_.tm_min, 59);
+  ASSERT_GE(tm_.tm_hour, 0);
+  ASSERT_LE(tm_.tm_hour, 23);
+  ASSERT_GE(tm_.tm_mday, 1);
+  ASSERT_LE(tm_.tm_mday, 31);
+  ASSERT_GE(tm_.tm_mon, 0);
+  ASSERT_LE(tm_.tm_mon, 11);
+  ASSERT_GE(tm_.tm_year, 1900);
+  ASSERT_GE(tm_.tm_wday, 0);
+  ASSERT_LE(tm_.tm_wday, 6);
+  ASSERT_GE(tm_.tm_yday, 0);
+  ASSERT_LE(tm_.tm_yday, 365);
 }
 
 TEST(DateTime, as_utc_tm) {
   DateTime date_time(DateTime::now());
   tm tm_ = date_time;
-  throw_assert_ge(tm_.tm_sec, 0);
-  throw_assert_le(tm_.tm_sec, 59);
-  throw_assert_ge(tm_.tm_min, 0);
-  throw_assert_le(tm_.tm_min, 59);
-  throw_assert_ge(tm_.tm_hour, 0);
-  throw_assert_le(tm_.tm_hour, 23);
-  throw_assert_ge(tm_.tm_mday, 1);
-  throw_assert_le(tm_.tm_mday, 31);
-  throw_assert_ge(tm_.tm_mon, 0);
-  throw_assert_le(tm_.tm_mon, 11);
-  throw_assert_ge(tm_.tm_year, 1900);
-  throw_assert_ge(tm_.tm_wday, 0);
-  throw_assert_le(tm_.tm_wday, 6);
-  throw_assert_ge(tm_.tm_yday, 0);
-  throw_assert_le(tm_.tm_yday, 365);
+  ASSERT_GE(tm_.tm_sec, 0);
+  ASSERT_LE(tm_.tm_sec, 59);
+  ASSERT_GE(tm_.tm_min, 0);
+  ASSERT_LE(tm_.tm_min, 59);
+  ASSERT_GE(tm_.tm_hour, 0);
+  ASSERT_LE(tm_.tm_hour, 23);
+  ASSERT_GE(tm_.tm_mday, 1);
+  ASSERT_LE(tm_.tm_mday, 31);
+  ASSERT_GE(tm_.tm_mon, 0);
+  ASSERT_LE(tm_.tm_mon, 11);
+  ASSERT_GE(tm_.tm_year, 1900);
+  ASSERT_GE(tm_.tm_wday, 0);
+  ASSERT_LE(tm_.tm_wday, 6);
+  ASSERT_GE(tm_.tm_yday, 0);
+  ASSERT_LE(tm_.tm_yday, 365);
 }
 #endif
 
 TEST(DateTime, as_string) {
   string date_time = DateTime::now();
-  throw_assert_false(date_time.empty());
-  throw_assert_ne(date_time.find_first_of("20"), string::npos);
+  ASSERT_FALSE(date_time.empty());
+  ASSERT_NE(date_time.find_first_of("20"), string::npos);
 }
 
 TEST(DateTime, copy) {
   DateTime date_time(DateTime::now());
   DateTime date_time_copy(date_time);
-  throw_assert_eq(date_time.as_unix_date_time_ns(), date_time_copy.as_unix_date_time_ns());
+  ASSERT_EQ(date_time.as_unix_date_time_ns(), date_time_copy.as_unix_date_time_ns());
 }
 
 #ifndef _WIN32
@@ -114,21 +108,21 @@ TEST(DateTime, from_timeval) {
   DateTime timeout_copy(tv);
   uint64_t inaccuracy_ns
   = date_time.as_unix_date_time_ns() - timeout_copy.as_unix_date_time_ns();
-  throw_assert_lt(inaccuracy_ns, Time::NS_IN_S);
+  ASSERT_LT(inaccuracy_ns, Time::NS_IN_S);
 }
 
 TEST(DateTime, from_local_tm) {
   DateTime date_time1(DateTime::now());
   tm tm1 = date_time1.as_local_tm();
   DateTime date_time2(tm1, true);
-  throw_assert_eq(date_time1, date_time2);
+  ASSERT_EQ(date_time1, date_time2);
 }
 
 TEST(DateTime, from_utc_tm) {
   DateTime date_time1(DateTime::now());
   tm tm1 = date_time1.as_utc_tm();
   DateTime date_time2(tm1, false);
-  throw_assert_eq(date_time1, date_time2);
+  ASSERT_EQ(date_time1, date_time2);
 }
 #endif
 
@@ -137,43 +131,43 @@ TEST(DateTime, from_tm_parts) {
 
 #ifndef _WIN32
   tm tm_ = date_time;
-  throw_assert_eq(tm_.tm_sec, 30);
-  throw_assert_eq(tm_.tm_min, 30);
-  throw_assert_eq(tm_.tm_mday, 15);
-  throw_assert_eq(tm_.tm_mon, 11);
-  throw_assert_eq(tm_.tm_year, 80);
-  throw_assert_ge(tm_.tm_wday, 0);
-  throw_assert_le(tm_.tm_wday, 6);
-  throw_assert_ge(tm_.tm_yday, 0);
-  throw_assert_le(tm_.tm_yday, 365);
+  ASSERT_EQ(tm_.tm_sec, 30);
+  ASSERT_EQ(tm_.tm_min, 30);
+  ASSERT_EQ(tm_.tm_mday, 15);
+  ASSERT_EQ(tm_.tm_mon, 11);
+  ASSERT_EQ(tm_.tm_year, 80);
+  ASSERT_GE(tm_.tm_wday, 0);
+  ASSERT_LE(tm_.tm_wday, 6);
+  ASSERT_GE(tm_.tm_yday, 0);
+  ASSERT_LE(tm_.tm_yday, 365);
 #endif
 }
 
 TEST(DateTime, from_unix_time_ns) {
   DateTime date_time(static_cast<uint64_t>(1));
-  throw_assert_eq(date_time.as_unix_date_time_ns(), 1);
+  ASSERT_EQ(date_time.as_unix_date_time_ns(), 1);
 }
 
 TEST(DateTime, from_unix_time_s) {
   DateTime date_time(1.0);
-  throw_assert_eq(date_time.as_unix_date_time_ms(), 1000);
-  throw_assert_eq(date_time.as_unix_date_time_us(), 1000000);
-  throw_assert_eq(date_time.as_unix_date_time_s(), 1.0);
+  ASSERT_EQ(date_time.as_unix_date_time_ms(), 1000);
+  ASSERT_EQ(date_time.as_unix_date_time_us(), 1000000);
+  ASSERT_EQ(date_time.as_unix_date_time_s(), 1.0);
 }
 
 TEST(DateTime, now) {
   DateTime date_time1(DateTime::now());
-  throw_assert_gt(static_cast<uint64_t>(date_time1), 0);
+  ASSERT_GT(static_cast<uint64_t>(date_time1), 0);
   for (uint32_t i = 0; i < UINT32_MAX / 16; i++) {
     ;
   }
   DateTime date_time2(DateTime::now());
-  throw_assert_gt(date_time2, date_time1);
+  ASSERT_GT(date_time2, date_time1);
 }
 
 TEST(DateTime, print) {
   std::ostringstream date_time;
   date_time << DateTime::now();
-  throw_assert_false(date_time.str().empty());
+  ASSERT_FALSE(date_time.str().empty());
 }
 }

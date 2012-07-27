@@ -53,6 +53,9 @@ endif
 ifeq ($(UNAME), Solaris)
 	LIBS += -liconv -lnsl -lsocket -lm -lrt -lstdc++
 endif
+ifeq ($(UNAME), MINGW32)
+	LIBS += -lgtestd
+endif
 LIBS += -lyield_fs -lyield_i18n -lyield_sockets -lyield
 
 
@@ -71,7 +74,7 @@ depclean:
 	$(RM) $(D_FILE_PATHS)
 
 -include $(D_FILE_PATHS)
-			
+
 lcov: ../../../bin/yield/yield_sockets_test
 	lcov --directory ../../../build/yield/sockets --zerocounters
 	-../../../bin/yield/yield_sockets_test

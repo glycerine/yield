@@ -53,6 +53,9 @@ endif
 ifeq ($(UNAME), Solaris)
 	LIBS += -liconv -lkstat -lm -lrt -lstdc++
 endif
+ifeq ($(UNAME), MINGW32)
+	LIBS += -lgtestd
+endif
 LIBS += -lyield_fs_poll -lyield_fs -lyield_i18n -lyield_thread -lyield
 
 
@@ -83,7 +86,7 @@ depclean:
 	$(RM) $(D_FILE_PATHS)
 
 -include $(D_FILE_PATHS)
-			
+
 lcov: ../../../../bin/yield/yield_fs_poll_test
 	lcov --directory ../../../../build/yield/fs/poll --zerocounters
 	-../../../../bin/yield/yield_fs_poll_test

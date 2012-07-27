@@ -32,12 +32,11 @@
 
 #include "channel_pair_factory.hpp"
 #include "yield/auto_object.hpp"
-#include "yield/assert.hpp"
 #include "yield/buffer.hpp"
 #include "yield/channel.hpp"
 #include "yield/channel_pair.hpp"
 #include "yield/exception.hpp"
-#include "yunit.hpp"
+#include "gtest/gtest.h"
 
 namespace yield {
 class ChannelTest : public yunit::Test {
@@ -77,12 +76,12 @@ protected:
 protected:
   void check_read(const void* buf, ssize_t read_ret) {
     if (read_ret >= 0) {
-      throw_assert_eq(
+      ASSERT_EQ(
         static_cast<size_t>(read_ret),
         get_test_string().size()
       );
 
-      throw_assert_eq(
+      ASSERT_EQ(
         memcmp(buf, get_test_string().data(), get_test_string().size()),
         0
       );
@@ -93,7 +92,7 @@ protected:
 
   void check_write(ssize_t write_ret) {
     if (write_ret >= 0) {
-      throw_assert_eq(
+      ASSERT_EQ(
         static_cast<size_t>(write_ret),
         get_test_string().size()
       );
@@ -338,74 +337,74 @@ public:
 };
 
 
-class ChannelTestSuite : public yunit::TestSuite {
-public:
-  ChannelTestSuite(YO_NEW_REF ChannelPairFactory& channel_pair_factory)
-    : channel_pair_factory(channel_pair_factory) {
-    add(
-      "Channel::close",
-      new ChannelCloseTest(channel_pair_factory)
-    );
-
-    add("Channel::read", new ChannelReadTest(channel_pair_factory));
-
-    add(
-      "Channel::read(Buffer)",
-      new ChannelReadBufferTest(channel_pair_factory)
-    );
-
-    add(
-      "Channel::read(Buffers)",
-      new ChannelReadBuffersTest(channel_pair_factory)
-    );
-
-    add(
-      "Channel::readv(iov, 1)",
-      new ChannelReadVOneTest(channel_pair_factory)
-    );
-
-    add(
-      "Channel::readv(iov, 2)",
-      new ChannelReadVTwoTest(channel_pair_factory)
-    );
-
-    add(
-      "Channel::write",
-      new ChannelWriteTest(channel_pair_factory)
-    );
-
-    add(
-      "Channel::write(Buffer)",
-      new ChannelWriteBufferTest(channel_pair_factory)
-    );
-
-    add(
-      "Channel::write(Buffers)",
-      new ChannelWriteBuffersTest(channel_pair_factory)
-    );
-
-    add(
-      "Channel::writev(iov, 1)",
-      new ChannelWriteVOneTest(channel_pair_factory)
-    );
-
-    add(
-      "Channel::writev(iov, 2)",
-      new ChannelWriteVTwoTest(channel_pair_factory)
-    );
-  }
-
-  ~ChannelTestSuite() {
-    ChannelPairFactory::dec_ref(channel_pair_factory);
-  }
-
-  ChannelPairFactory& get_channel_pair_factory() {
-    return channel_pair_factory;
-  }
-
-private:
-  ChannelPairFactory& channel_pair_factory;
-};
+//class ChannelTestSuite : public yunit::TestSuite {
+//public:
+//  ChannelTestSuite(YO_NEW_REF ChannelPairFactory& channel_pair_factory)
+//    : channel_pair_factory(channel_pair_factory) {
+//    add(
+//      "Channel::close",
+//      new ChannelCloseTest(channel_pair_factory)
+//    );
+//
+//    add("Channel::read", new ChannelReadTest(channel_pair_factory));
+//
+//    add(
+//      "Channel::read(Buffer)",
+//      new ChannelReadBufferTest(channel_pair_factory)
+//    );
+//
+//    add(
+//      "Channel::read(Buffers)",
+//      new ChannelReadBuffersTest(channel_pair_factory)
+//    );
+//
+//    add(
+//      "Channel::readv(iov, 1)",
+//      new ChannelReadVOneTest(channel_pair_factory)
+//    );
+//
+//    add(
+//      "Channel::readv(iov, 2)",
+//      new ChannelReadVTwoTest(channel_pair_factory)
+//    );
+//
+//    add(
+//      "Channel::write",
+//      new ChannelWriteTest(channel_pair_factory)
+//    );
+//
+//    add(
+//      "Channel::write(Buffer)",
+//      new ChannelWriteBufferTest(channel_pair_factory)
+//    );
+//
+//    add(
+//      "Channel::write(Buffers)",
+//      new ChannelWriteBuffersTest(channel_pair_factory)
+//    );
+//
+//    add(
+//      "Channel::writev(iov, 1)",
+//      new ChannelWriteVOneTest(channel_pair_factory)
+//    );
+//
+//    add(
+//      "Channel::writev(iov, 2)",
+//      new ChannelWriteVTwoTest(channel_pair_factory)
+//    );
+//  }
+//
+//  ~ChannelTestSuite() {
+//    ChannelPairFactory::dec_ref(channel_pair_factory);
+//  }
+//
+//  ChannelPairFactory& get_channel_pair_factory() {
+//    return channel_pair_factory;
+//  }
+//
+//private:
+//  ChannelPairFactory& channel_pair_factory;
+//};
 }
 
 #endif
