@@ -1,6 +1,6 @@
 // yield/http/server/http_connection.cpp
 
-// Copyright (c) 2011 Minor Gordon
+// Copyright (c) 2012 Minor Gordon
 // All rights reserved
 
 // This source file is part of the Yield project.
@@ -128,7 +128,7 @@ HTTPConnection::handle(
     break;
 
     case File::TYPE_ID: {
-      sendAIOCB* send_aiocb 
+      sendAIOCB* send_aiocb
         = new sendAIOCB(socket_, http_response_header, 0, this);
       if (aio_queue.enqueue(*send_aiocb)) {
         sendfileAIOCB* sendfile_aiocb

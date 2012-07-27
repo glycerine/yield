@@ -1,6 +1,6 @@
 // yield/http/http_message.hpp
 
-// Copyright (c) 2011 Minor Gordon
+// Copyright (c) 2012 Minor Gordon
 // All rights reserved
 
 // This source file is part of the Yield project.
@@ -122,7 +122,7 @@ public:
   /**
     Get a field value.
     @param name the field name
-    @param[out] value a pointer and length to the field value in the 
+    @param[out] value a pointer and length to the field value in the
       HTTPMessage's underlying buffer
     @return true if the field is present, false if not
   */

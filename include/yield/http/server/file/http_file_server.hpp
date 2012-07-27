@@ -1,6 +1,6 @@
 // yield/http/server/file/http_file_server.hpp
 
-// Copyright (c) 2011 Minor Gordon
+// Copyright (c) 2012 Minor Gordon
 // All rights reserved
 
 // This source file is part of the Yield project.

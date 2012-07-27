@@ -1,6 +1,6 @@
 // yield/http/server/http_message_body_chunk.cpp
 
-// Copyright (c) 2011 Minor Gordon
+// Copyright (c) 2012 Minor Gordon
 // All rights reserved
 
 // This source file is part of the Yield project.

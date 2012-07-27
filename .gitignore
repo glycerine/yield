@@ -6,7 +6,9 @@ doc/html/**
 lib/**
 ipch/**
 *lcov*
+.project
 *.pyc
+.pydevproject
 yield.opensdf
 yield.sdf
 yield.suo

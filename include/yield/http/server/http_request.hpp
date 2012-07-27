@@ -1,6 +1,6 @@
 // yield/http/server/http_request.hpp
 
-// Copyright (c) 2011 Minor Gordon
+// Copyright (c) 2012 Minor Gordon
 // All rights reserved
 
 // This source file is part of the Yield project.
@@ -46,7 +46,7 @@ class HTTPRequestParser;
     <code>HTTPConnection</code>.
   These <code>HTTPRequest</code>s are usually created by
     <code>HTTPRequestQueue</code>.
-*/  
+*/
 class HTTPRequest : public ::yield::http::HTTPRequest {
 public:
   const static uint32_t TYPE_ID = 2792000307UL;

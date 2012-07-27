@@ -1,6 +1,6 @@
 // yield/http/server/file/http_file_request_handler.cpp
 
-// Copyright (c) 2011 Minor Gordon
+// Copyright (c) 2012 Minor Gordon
 // All rights reserved
 
 // This source file is part of the Yield project.

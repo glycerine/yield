@@ -1,6 +1,6 @@
 // yield/http/http_request.hpp
 
-// Copyright (c) 2011 Minor Gordon
+// Copyright (c) 2012 Minor Gordon
 // All rights reserved
 
 // This source file is part of the Yield project.
@@ -142,7 +142,7 @@ public:
 
   public:
     /**
-      Assignment operator that copies the contents of another 
+      Assignment operator that copies the contents of another
         Method to this one. Used in parsing.
     */
     Method& operator=(const Method& other) {

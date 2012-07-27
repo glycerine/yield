@@ -1,6 +1,6 @@
 // yield/fs/poll/fs_event.hpp
 
-// Copyright (c) 2011 Minor Gordon
+// Copyright (c) 2012 Minor Gordon
 // All rights reserved
 
 // This source file is part of the Yield project.
@@ -84,7 +84,7 @@ public:
   /**
     File system change event type: file modification.
   */
-  
+
   const static Type TYPE_FILE_MODIFY;
 
   /**
@@ -119,7 +119,7 @@ public:
     Get the new path of a renamed directory or file, when get_type() ==
       TYPE_DIRECTORY_RENAME or TYPE_FILE_RENAME.
     @return the new path of a renamed directory or file
-  */  
+  */
   const Path& get_new_path() const {
     return new_path;
   }
@@ -128,7 +128,7 @@ public:
     Get the old path of a renamed directory or file, when get_type() ==
       TYPE_DIRECTORY_RENAME or TYPE_FILE_RENAME.
     @return the old path of a renamed directory or file
-  */  
+  */
   const Path& get_old_path() const {
     return old_path;
   }
