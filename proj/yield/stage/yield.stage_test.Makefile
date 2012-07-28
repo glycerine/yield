@@ -41,18 +41,7 @@ ifeq ($(UNAME), MINGW32)
 endif
 
 
-ifeq ($(UNAME), FreeBSD)
-	LIBS += -lpthread
-endif
-ifeq ($(UNAME), Linux)
-	LIBS += -lrt -lstdc++ -lpthread
-endif
-ifeq ($(UNAME), Solaris)
-	LIBS += -lm -lrt -lstdc++ -lkstat
-endif
-ifeq ($(UNAME), MINGW32)
-	LIBS += -lgtestd
-endif
+LIBS += -lyield_stage -lyield_thread -lyield
 ifeq ($(UNAME), Darwin)
 	LIBS += -lgtest
 endif
@@ -65,7 +54,18 @@ endif
 ifeq ($(UNAME), Linux)
 	LIBS += -lgtest
 endif
-LIBS += -lyield -lyield_thread -lyield_stage
+ifeq ($(UNAME), FreeBSD)
+	LIBS += -lpthread
+endif
+ifeq ($(UNAME), Linux)
+	LIBS += -lpthread -lrt -lstdc++
+endif
+ifeq ($(UNAME), Solaris)
+	LIBS += -lkstat -lm -lrt -lstdc++
+endif
+ifeq ($(UNAME), MINGW32)
+	LIBS += -lgtestd
+endif
 
 
 D_FILE_PATHS := $(shell find ../../../build/yield/stage -name "*.d")

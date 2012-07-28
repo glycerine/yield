@@ -41,6 +41,19 @@ ifeq ($(UNAME), MINGW32)
 endif
 
 
+LIBS += -lyield_fs -lyield_i18n -lyield_sockets -lyield
+ifeq ($(UNAME), Darwin)
+	LIBS += -lgtest
+endif
+ifeq ($(UNAME), Solaris)
+	LIBS += -lgtest
+endif
+ifeq ($(UNAME), FreeBSD)
+	LIBS += -lgtest
+endif
+ifeq ($(UNAME), Linux)
+	LIBS += -lgtest
+endif
 ifeq ($(UNAME), Darwin)
 	LIBS += -liconv
 endif
@@ -51,24 +64,11 @@ ifeq ($(UNAME), Linux)
 	LIBS += -lrt -lstdc++
 endif
 ifeq ($(UNAME), Solaris)
-	LIBS += -lm -lrt -lstdc++ -lnsl -lsocket -liconv
+	LIBS += -liconv -lnsl -lsocket -lm -lrt -lstdc++
 endif
 ifeq ($(UNAME), MINGW32)
 	LIBS += -lgtestd
 endif
-ifeq ($(UNAME), Darwin)
-	LIBS += -lgtest
-endif
-ifeq ($(UNAME), Solaris)
-	LIBS += -lgtest
-endif
-ifeq ($(UNAME), FreeBSD)
-	LIBS += -lgtest
-endif
-ifeq ($(UNAME), Linux)
-	LIBS += -lgtest
-endif
-LIBS += -lyield -lyield_sockets -lyield_i18n -lyield_fs
 
 
 D_FILE_PATHS := $(shell find ../../../build/yield/sockets -name "*.d")

@@ -41,34 +41,34 @@ ifeq ($(UNAME), MINGW32)
 endif
 
 
+LIBS += -lyield_http_server_ygi -lyield_http_server -lyield_fs -lyield_i18n -lyield_http -lyield_uri -lyield_sockets_aio -lyield_poll -lyield_sockets -lyield_stage -lyield_thread -lyield
+ifeq ($(UNAME), Darwin)
+	LIBS += -lgtest
+endif
+ifeq ($(UNAME), Solaris)
+	LIBS += -lgtest
+endif
+ifeq ($(UNAME), FreeBSD)
+	LIBS += -lgtest
+endif
+ifeq ($(UNAME), Linux)
+	LIBS += -lgtest
+endif
 ifeq ($(UNAME), Darwin)
 	LIBS += -liconv
 endif
 ifeq ($(UNAME), FreeBSD)
-	LIBS += -lpthread -liconv -lintl
+	LIBS += -liconv -lintl -lpthread
 endif
 ifeq ($(UNAME), Linux)
-	LIBS += -lrt -lstdc++ -lpthread
+	LIBS += -lpthread -lrt -lstdc++
 endif
 ifeq ($(UNAME), Solaris)
-	LIBS += -lm -lrt -lstdc++ -lkstat -lnsl -lsocket -liconv
+	LIBS += -liconv -lnsl -lsocket -lkstat -lm -lrt -lstdc++
 endif
 ifeq ($(UNAME), MINGW32)
 	LIBS += -lgtestd
 endif
-ifeq ($(UNAME), Darwin)
-	LIBS += -lgtest
-endif
-ifeq ($(UNAME), Solaris)
-	LIBS += -lgtest
-endif
-ifeq ($(UNAME), FreeBSD)
-	LIBS += -lgtest
-endif
-ifeq ($(UNAME), Linux)
-	LIBS += -lgtest
-endif
-LIBS += -lyield -lyield_thread -lyield_stage -lyield_sockets -lyield_poll -lyield_sockets_aio -lyield_uri -lyield_http -lyield_i18n -lyield_fs -lyield_http_server -lyield_http_server_ygi
 
 
 D_FILE_PATHS := $(shell find ../../../../../build/yield/http/server/ygi -name "*.d")

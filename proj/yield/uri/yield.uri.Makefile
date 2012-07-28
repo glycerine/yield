@@ -41,13 +41,13 @@ ifeq ($(UNAME), MINGW32)
 endif
 
 
+LIBS += -lyield
 ifeq ($(UNAME), Linux)
 	LIBS += -lrt -lstdc++
 endif
 ifeq ($(UNAME), Solaris)
 	LIBS += -lm -lrt -lstdc++
 endif
-LIBS += -lyield
 
 
 D_FILE_PATHS := $(shell find ../../../build/yield/uri -name "*.d")

@@ -102,6 +102,7 @@ if not options.calculate_type_id and\
    not options.generate_src and\
    not options.generate_src_rl and\
    not options.generate_test and\
+   not options.generate_test_main_cpp and\
    not options.generate_test_py:
     # No options set
     options.format_src = True
@@ -238,8 +239,8 @@ LIBS = {
 }
 for project_name in PROJECT_NAMES:
     project_test_libs = LIBS.setdefault(project_name + '_test', {})
-    project_test_libs['unix'] = ['gtest']
     project_test_libs['win32'] = ['gtestd']
+    project_test_libs['unix'] = ['gtest']
 
 OUTPUT_FILE_PATHS = {}
 for project_name in PROJECT_NAMES:
@@ -276,31 +277,33 @@ for project_name in PROJECT_REFERENCES.iterkeys():
         deduplist(__expand_project_references(project_name))
 
 
+# Construct LIBS to get the right link order on Unix, namely requirements flow
+# left to right (if A depends on B, the link order should be A B)
 LIBS_EXPANDED = {}
 for project_name, project_references in PROJECT_REFERENCES_EXPANDED.iteritems():
-    # Add all of the project references' libs to the project's libs
     LIBS_EXPANDED[project_name] = {}
-    for project_reference in list(reversed(project_references)):
-        try:
-            for platform, platform_libs in LIBS[project_reference].iteritems():
-                LIBS_EXPANDED[project_name].setdefault(platform, []).extend(platform_libs)
-        except KeyError:
-            pass
+
+    try:
+        for platform, platform_libs in LIBS[project_name].iteritems():
+            LIBS_EXPANDED[project_name].setdefault(platform, []).extend(platform_libs)
+    except KeyError:
+        pass
 
     # Add the project references' outputs to the project's libs
-    for project_reference in reversed(project_references):
+    for project_reference in project_references:
         if project_reference != 'yield.queue':
             project_reference_lib = path_split(OUTPUT_FILE_PATHS[project_reference])[-1]
             LIBS_EXPANDED[project_name].setdefault('*', [])
             assert project_reference_lib not in LIBS_EXPANDED[project_name]['*'], LIBS_EXPANDED[project_name]['*']
             LIBS_EXPANDED[project_name]['*'].append(project_reference_lib)
 
-    # Finally, add this project's LIBS to LIBS_EXPANDED
-    try:
-        for platform, platform_libs in LIBS[project_name].iteritems():
-            LIBS_EXPANDED[project_name].setdefault(platform, []).extend(platform_libs)
-    except KeyError:
-        pass
+    # Add all of the project references' libs to the project's libs
+    for project_reference in project_references:
+        try:
+            for platform, platform_libs in LIBS[project_reference].iteritems():
+                LIBS_EXPANDED[project_name].setdefault(platform, []).extend(platform_libs)
+        except KeyError:
+            pass
 
     # dedup
     for platform in LIBS_EXPANDED[project_name].iterkeys():

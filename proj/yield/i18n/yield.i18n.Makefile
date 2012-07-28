@@ -41,6 +41,7 @@ ifeq ($(UNAME), MINGW32)
 endif
 
 
+LIBS += -lyield
 ifeq ($(UNAME), Darwin)
 	LIBS += -liconv
 endif
@@ -51,9 +52,8 @@ ifeq ($(UNAME), Linux)
 	LIBS += -lrt -lstdc++
 endif
 ifeq ($(UNAME), Solaris)
-	LIBS += -lm -lrt -lstdc++ -liconv
+	LIBS += -liconv -lm -lrt -lstdc++
 endif
-LIBS += -lyield
 
 
 D_FILE_PATHS := $(shell find ../../../build/yield/i18n -name "*.d")

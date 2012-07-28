@@ -41,18 +41,7 @@ ifeq ($(UNAME), MINGW32)
 endif
 
 
-ifeq ($(UNAME), FreeBSD)
-	LIBS += -lpthread
-endif
-ifeq ($(UNAME), Linux)
-	LIBS += -lrt -lstdc++ -lpthread
-endif
-ifeq ($(UNAME), Solaris)
-	LIBS += -lm -lrt -lstdc++ -lnsl -lsocket -lkstat
-endif
-ifeq ($(UNAME), MINGW32)
-	LIBS += -lgtestd
-endif
+LIBS += -lyield_poll -lyield_thread -lyield_sockets -lyield
 ifeq ($(UNAME), Darwin)
 	LIBS += -lgtest
 endif
@@ -65,7 +54,18 @@ endif
 ifeq ($(UNAME), Linux)
 	LIBS += -lgtest
 endif
-LIBS += -lyield -lyield_sockets -lyield_thread -lyield_poll
+ifeq ($(UNAME), FreeBSD)
+	LIBS += -lpthread
+endif
+ifeq ($(UNAME), Linux)
+	LIBS += -lpthread -lrt -lstdc++
+endif
+ifeq ($(UNAME), Solaris)
+	LIBS += -lkstat -lnsl -lsocket -lm -lrt -lstdc++
+endif
+ifeq ($(UNAME), MINGW32)
+	LIBS += -lgtestd
+endif
 
 
 D_FILE_PATHS := $(shell find ../../../build/yield/poll -name "*.d")

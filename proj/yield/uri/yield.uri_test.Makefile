@@ -41,15 +41,7 @@ ifeq ($(UNAME), MINGW32)
 endif
 
 
-ifeq ($(UNAME), Linux)
-	LIBS += -lrt -lstdc++
-endif
-ifeq ($(UNAME), Solaris)
-	LIBS += -lm -lrt -lstdc++
-endif
-ifeq ($(UNAME), MINGW32)
-	LIBS += -lgtestd
-endif
+LIBS += -lyield_uri -lyield
 ifeq ($(UNAME), Darwin)
 	LIBS += -lgtest
 endif
@@ -62,7 +54,15 @@ endif
 ifeq ($(UNAME), Linux)
 	LIBS += -lgtest
 endif
-LIBS += -lyield -lyield_uri
+ifeq ($(UNAME), Linux)
+	LIBS += -lrt -lstdc++
+endif
+ifeq ($(UNAME), Solaris)
+	LIBS += -lm -lrt -lstdc++
+endif
+ifeq ($(UNAME), MINGW32)
+	LIBS += -lgtestd
+endif
 
 
 D_FILE_PATHS := $(shell find ../../../build/yield/uri -name "*.d")

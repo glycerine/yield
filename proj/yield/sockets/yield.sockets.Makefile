@@ -41,13 +41,13 @@ ifeq ($(UNAME), MINGW32)
 endif
 
 
+LIBS += -lyield
 ifeq ($(UNAME), Linux)
 	LIBS += -lrt -lstdc++
 endif
 ifeq ($(UNAME), Solaris)
-	LIBS += -lm -lrt -lstdc++ -lnsl -lsocket
+	LIBS += -lnsl -lsocket -lm -lrt -lstdc++
 endif
-LIBS += -lyield
 
 
 D_FILE_PATHS := $(shell find ../../../build/yield/sockets -name "*.d")
