@@ -50,7 +50,7 @@ protected:
 TYPED_TEST_CASE_P(EventQueueTest);
 
 TYPED_TEST_P(EventQueueTest, dequeue) {
-  auto_Object<Event> event = new MockEvent;
+  auto_Object<Event> event = new typename EventQueueTest<TypeParam>::MockEvent;
   TypeParam event_queue;
 
   bool enqueue_ret = event_queue.enqueue(event->inc_ref());
@@ -64,7 +64,7 @@ TYPED_TEST_P(EventQueueTest, dequeue) {
 }
 
 TYPED_TEST_P(EventQueueTest, timeddequeue) {
-  auto_Object<Event> event = new MockEvent;
+  auto_Object<Event> event = new typename EventQueueTest<TypeParam>::MockEvent;
   TypeParam event_queue;
 
   bool enqueue_ret = event_queue.enqueue(event->inc_ref());
@@ -78,7 +78,7 @@ TYPED_TEST_P(EventQueueTest, timeddequeue) {
 }
 
 TYPED_TEST_P(EventQueueTest, trydequeue) {
-  auto_Object<Event> event = new MockEvent;
+  auto_Object<Event> event = new typename EventQueueTest<TypeParam>::MockEvent;
   TypeParam event_queue;
 
   bool enqueue_ret = event_queue.enqueue(event->inc_ref());
