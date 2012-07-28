@@ -50,6 +50,18 @@ endif
 ifeq ($(UNAME), MINGW32)
 	LIBS += -lgtestd
 endif
+ifeq ($(UNAME), Darwin)
+	LIBS += -lgtest
+endif
+ifeq ($(UNAME), Solaris)
+	LIBS += -lgtest
+endif
+ifeq ($(UNAME), FreeBSD)
+	LIBS += -lgtest
+endif
+ifeq ($(UNAME), Linux)
+	LIBS += -lgtest
+endif
 LIBS += -lyield_uri -lyield
 
 
