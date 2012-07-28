@@ -38,10 +38,12 @@
 #endif
 
 namespace yield {
-const uint64_t Time::FOREVER  = static_cast<uint64_t>(~0);
-const uint64_t Time::NS_IN_MS = static_cast<uint64_t>(1000000);
-const uint64_t Time::NS_IN_S  = static_cast<uint64_t>(1000000000);
-const uint64_t Time::NS_IN_US = static_cast<uint64_t>(1000);
+#ifndef _WIN32
+const uint64_t Time::FOREVER;
+const uint64_t Time::NS_IN_MS;
+const uint64_t Time::NS_IN_S;
+const uint64_t Time::NS_IN_US;
+#endif
 
 Time Time::now() {
 #if defined(__MACH__)

@@ -44,22 +44,22 @@ public:
     Constant: the largest value this class can store,
       often used to indicate infinite timeouts.
   */
-  const static uint64_t FOREVER;
+  const static uint64_t FOREVER = static_cast<uint64_t>(~0);
 
   /**
     Constant: number of nanoseconds in a millisecond.
   */
-  const static uint64_t NS_IN_MS;
+  const static uint64_t NS_IN_MS = static_cast<uint64_t>(1000000);
 
   /**
     Constant: number of nanoseconds in a second.
   */
-  const static uint64_t NS_IN_S;
+  const static uint64_t NS_IN_S = static_cast<uint64_t>(1000000000);
 
   /**
     Constant: number of nanoseconds in a microsecond.
   */
-  const static uint64_t NS_IN_US;
+  const static uint64_t NS_IN_US = static_cast<uint64_t>(1000);
 
 public:
   /**
