@@ -42,6 +42,7 @@ const FDEvent::Type FDEvent::TYPE_HUP = 0x0002;
 const FDEvent::Type FDEvent::TYPE_READ_READY = 0x0100;
 const FDEvent::Type FDEvent::TYPE_WRITE_READY = 0x0010;
 #else
+const uint32_t FDEvent::TYPE_ID;
 const FDEvent::Type FDEvent::TYPE_ERROR = POLLERR;
 const FDEvent::Type FDEvent::TYPE_HUP = POLLHUP;
 const FDEvent::Type FDEvent::TYPE_READ_READY = POLLIN;

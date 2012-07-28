@@ -41,7 +41,7 @@ AIOCB::AIOCB(Socket& socket_, Object* context)
   return_ = -1;
 }
 
-AIOCB::AIOCB(Socket& socket_, off_t offset)
+AIOCB::AIOCB(Socket& socket_, off_t offset, Object* context)
   : context(Object::inc_ref(context)),
     socket_(socket_.inc_ref()) {
   error = 0;

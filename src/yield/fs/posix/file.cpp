@@ -40,6 +40,8 @@
 
 namespace yield {
 namespace fs {
+const uint32_t File::TYPE_ID;
+
 File::Lock::Lock(
   uint64_t len,
   uint64_t start,
