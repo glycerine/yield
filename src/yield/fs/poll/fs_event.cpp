@@ -42,6 +42,7 @@ const FSEvent::Type FSEvent::TYPE_FILE_ADD = 16;
 const FSEvent::Type FSEvent::TYPE_FILE_MODIFY = 32;
 const FSEvent::Type FSEvent::TYPE_FILE_REMOVE = 64;
 const FSEvent::Type FSEvent::TYPE_FILE_RENAME = 128;
+const uint32_t FSEvent::TYPE_ID = 1640119324;
 
 FSEvent::FSEvent(const Path& path, Type type)
   : old_path(path), type(type) {

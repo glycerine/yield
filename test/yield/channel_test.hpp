@@ -127,41 +127,41 @@ private:
 TYPED_TEST_CASE_P(ChannelTest);
 
 TYPED_TEST_P(ChannelTest, close) {
-  if (!get_read_channel().close()) {
+  if (!this->get_read_channel().close()) {
     throw Exception();
   }
 }
 
 TYPED_TEST_P(ChannelTest, read) {
-  write();
-  read();
+  ChannelTest<TypeParam>::write();
+  ChannelTest<TypeParam>::read();
 }
 
 TYPED_TEST_P(ChannelTest, read_Buffer) {
   this->write();
-  auto_Object<Buffer> test_buffer = new Buffer(get_test_string().size());
-  check_read(*test_buffer, get_read_channel().read(*test_buffer));
+  auto_Object<Buffer> test_buffer = new Buffer(this->get_test_string().size());
+  check_read(*test_buffer, this->get_read_channel().read(*test_buffer));
 }
 
 TYPED_TEST_P(ChannelTest, read_Buffers) {
   this->write();
-  auto_Object<Buffer> test_buffer = new Buffer(get_test_string().size());
-  test_buffer->set_next_buffer(new Buffer(get_test_string().size()));
-  check_read(*test_buffer, get_read_channel().read(*test_buffer));
+  auto_Object<Buffer> test_buffer = new Buffer(this->get_test_string().size());
+  test_buffer->set_next_buffer(new Buffer(this->get_test_string().size()));
+  check_read(*test_buffer, this->get_read_channel().read(*test_buffer));
 }
 
 TYPED_TEST_P(ChannelTest, readv_one) {
   this->write();
 
   string test_string;
-  test_string.resize(get_test_string().size());
+  test_string.resize(this->get_test_string().size());
   iovec iov;
   iov.iov_base = const_cast<char*>(test_string.data());
   iov.iov_len = test_string.size();
 
   check_read(
     test_string.data(),
-    get_read_channel().readv(&iov, 1)
+    this->get_read_channel().readv(&iov, 1)
   );
 }
 
@@ -169,7 +169,7 @@ TYPED_TEST_P(ChannelTest, readv_two) {
   this->write();
 
   string test_string;
-  test_string.resize(get_test_string().size());
+  test_string.resize(this->get_test_string().size());
   iovec iov[2];
   iov[0].iov_base = const_cast<char*>(test_string.data());
   iov[0].iov_len = 4;
@@ -178,48 +178,48 @@ TYPED_TEST_P(ChannelTest, readv_two) {
 
   check_read(
     test_string.data(),
-    get_read_channel().readv(iov, 2)
+    this->get_read_channel().readv(iov, 2)
   );
 }
 
 TYPED_TEST_P(ChannelTest, write) {
-  write();
-  read();
+  ChannelTest<TypeParam>::write();
+  ChannelTest<TypeParam>::read();
 }
 
 TYPED_TEST_P(ChannelTest, write_Buffer) {
-  auto_Object<Buffer> test_buffer = Buffer::copy(get_test_string());
-  check_write(get_write_channel().write(*test_buffer));
+  auto_Object<Buffer> test_buffer = Buffer::copy(this->get_test_string());
+  check_write(this->get_write_channel().write(*test_buffer));
 
-  read();
+  this->read();
 }
 
 TYPED_TEST_P(ChannelTest, write_Buffers) {
-  auto_Object<Buffer> test_buffer = Buffer::copy(get_test_string());
+  auto_Object<Buffer> test_buffer = Buffer::copy(this->get_test_string());
   test_buffer->set_next_buffer(new Buffer(1));
-  check_write(get_write_channel().write(*test_buffer));
+  check_write(this->get_write_channel().write(*test_buffer));
 
-  read();
+  this->read();
 }
 
 TYPED_TEST_P(ChannelTest, writev_one) {
   iovec iov;
-  iov.iov_base = const_cast<char*>(get_test_string().data());
-  iov.iov_len = get_test_string().size();
-  check_write(get_write_channel().writev(&iov, 1));
+  iov.iov_base = const_cast<char*>(this->get_test_string().data());
+  iov.iov_len = this->get_test_string().size();
+  check_write(this->get_write_channel().writev(&iov, 1));
 
-  read();
+  this->read();
 }
 
 TYPED_TEST_P(ChannelTest, writev_two) {
   iovec iov[2];
-  iov[0].iov_base = const_cast<char*>(get_test_string().data());
+  iov[0].iov_base = const_cast<char*>(this->get_test_string().data());
   iov[0].iov_len = 4;
-  iov[1].iov_base = const_cast<char*>(get_test_string().data()) + 4;
-  iov[1].iov_len = get_test_string().size() - 4;
-  check_write(get_write_channel().writev(iov, 2));
+  iov[1].iov_base = const_cast<char*>(this->get_test_string().data()) + 4;
+  iov[1].iov_len = this->get_test_string().size() - 4;
+  check_write(this->get_write_channel().writev(iov, 2));
 
-  read();
+  this->read();
 }
 
 REGISTER_TYPED_TEST_CASE_P(ChannelTest, close, read, read_Buffer, read_Buffers, readv_one, readv_two, write, write_Buffer, write_Buffers, writev_one, writev_two);
