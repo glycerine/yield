@@ -42,7 +42,7 @@ namespace poll {
 */
 class FSEvent  : public Event {
 public:
-  const static uint32_t FSEvent::TYPE_ID = 1640119324;
+  const static uint32_t TYPE_ID = 1640119324;
 
 public:
   /**
