@@ -280,7 +280,7 @@ LIBS_EXPANDED = {}
 for project_name, project_references in PROJECT_REFERENCES_EXPANDED.iteritems():
     # Add all of the project references' libs to the project's libs
     LIBS_EXPANDED[project_name] = {}
-    for project_reference in project_references + [project_name]:
+    for project_reference in list(reversed(project_references)) + [project_name]:
         try:
             for platform, platform_libs in LIBS[project_reference].iteritems():
                 LIBS_EXPANDED[project_name].setdefault(platform, []).extend(platform_libs)

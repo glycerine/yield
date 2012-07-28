@@ -51,7 +51,7 @@ ifeq ($(UNAME), Linux)
 	LIBS += -lrt -lstdc++
 endif
 ifeq ($(UNAME), Solaris)
-	LIBS += -liconv -lnsl -lsocket -lm -lrt -lstdc++
+	LIBS += -lm -lrt -lstdc++ -lnsl -lsocket -liconv
 endif
 ifeq ($(UNAME), MINGW32)
 	LIBS += -lgtestd

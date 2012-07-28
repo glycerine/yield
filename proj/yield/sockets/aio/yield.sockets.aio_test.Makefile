@@ -45,13 +45,13 @@ ifeq ($(UNAME), Darwin)
 	LIBS += -liconv
 endif
 ifeq ($(UNAME), FreeBSD)
-	LIBS += -liconv -lintl -lpthread
+	LIBS += -lpthread -liconv -lintl
 endif
 ifeq ($(UNAME), Linux)
-	LIBS += -lpthread -lrt -lstdc++
+	LIBS += -lrt -lstdc++ -lpthread
 endif
 ifeq ($(UNAME), Solaris)
-	LIBS += -liconv -lkstat -lnsl -lsocket -lm -lrt -lstdc++
+	LIBS += -lm -lrt -lstdc++ -lnsl -lsocket -lkstat -liconv
 endif
 ifeq ($(UNAME), MINGW32)
 	LIBS += -lgtestd

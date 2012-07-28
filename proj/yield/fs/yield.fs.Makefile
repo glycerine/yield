@@ -51,7 +51,7 @@ ifeq ($(UNAME), Linux)
 	LIBS += -lrt -lstdc++
 endif
 ifeq ($(UNAME), Solaris)
-	LIBS += -liconv -lm -lrt -lstdc++
+	LIBS += -lm -lrt -lstdc++ -liconv
 endif
 LIBS += -lyield_i18n -lyield
 
