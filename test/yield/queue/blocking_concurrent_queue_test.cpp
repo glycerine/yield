@@ -30,7 +30,8 @@
 #include "queue_test.hpp"
 #include "yield/queue/blocking_concurrent_queue.hpp"
 
-TEST_SUITE_EX(
-  BlockingConcurrentQueue,
-  yield::queue::QueueTestSuite< yield::queue::BlockingConcurrentQueue<uint32_t> >
-);
+namespace yield {
+namespace queue {
+INSTANTIATE_TYPED_TEST_CASE_P(BlockingConcurrentQueue, QueueTest, BlockingConcurrentQueue<uint32_t>);
+}
+}

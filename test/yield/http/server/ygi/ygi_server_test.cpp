@@ -29,9 +29,7 @@
 
 #include "test_ygi_request_handler.h"
 #include "yield/http/server/ygi/ygi_server.hpp"
-#include "yunit.hpp"
-
-TEST_SUITE(YGIServer);
+#include "gtest/gtest.h"
 
 namespace yield {
 namespace http {

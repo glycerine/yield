@@ -6,14 +6,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{73872d29-a797-4180-8ecb-1785070ef483}</UniqueIdentifier>
-    </Filter>
+
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\yunit.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\test\yield\atomic_test.cpp">
@@ -28,9 +24,6 @@
     <ClCompile Include="..\..\test\yield\buffers_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\test\yield\channel_pair_factory.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\test\yield\channel_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -30,7 +30,8 @@
 #include "mutex_test.hpp"
 #include "yield/thread/lightweight_mutex.hpp"
 
-TEST_SUITE_EX(
-  LightweightMutex,
-  yield::thread::MutexTestSuite<yield::thread::LightweightMutex>
-);
+namespace yield {
+namespace thread {
+INSTANTIATE_TYPED_TEST_CASE_P(LightweightMutex, MutexTest, LightweightMutex);
+}
+}

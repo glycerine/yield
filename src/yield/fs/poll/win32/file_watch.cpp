@@ -28,7 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "file_watch.hpp"
-#include "yield/assert.hpp"
+#include "yield/debug.hpp"
 #include "yield/log.hpp"
 #include "yield/fs/file_system.hpp"
 

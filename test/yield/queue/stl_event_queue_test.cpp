@@ -30,7 +30,8 @@
 #include "../event_queue_test.hpp"
 #include "yield/queue/stl_event_queue.hpp"
 
-TEST_SUITE_EX(
-  STLEventQueue,
-  yield::EventQueueTestSuite<yield::queue::STLEventQueue>
-);
+namespace yield {
+namespace queue {
+INSTANTIATE_TYPED_TEST_CASE_P(STLEventQueue, EventQueueTest, STLEventQueue);
+}
+}

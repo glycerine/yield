@@ -27,14 +27,11 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/exception.hpp"
 #include "yield/time.hpp"
 #include "yield/thread/thread.hpp"
-#include "yunit.hpp"
-
-TEST_SUITE(Thread);
+#include "gtest/gtest.h"
 
 namespace yield {
 namespace thread {
@@ -49,7 +46,7 @@ TEST(Thread, key_create) {
 
 TEST(Thread, key_delete) {
   uintptr_t key = Thread::self()->key_create();
-  throw_assert_ne(key, 0);
+  ASSERT_NE(key, 0u);
   if (!Thread::self()->key_delete(key)) {
     throw Exception();
   }
@@ -61,7 +58,7 @@ TEST(Thread, getspecific) {
     throw Exception();
   }
   void* ret_value = Thread::self()->getspecific(key);
-  throw_assert_eq(reinterpret_cast<uintptr_t>(ret_value), 42);
+  ASSERT_EQ(reinterpret_cast<uintptr_t>(ret_value), 42);
   Thread::self()->key_delete(key);
 }
 
@@ -70,7 +67,7 @@ TEST(Thread, set_name) {
 }
 
 TEST(Thread, setaffinity) {
-  throw_assert_true(Thread::self()->setaffinity(0));
+  ASSERT_TRUE(Thread::self()->setaffinity(0));
 }
 
 TEST(Thread, setspecific) {
@@ -85,7 +82,7 @@ TEST(Thread, sleep) {
   Time start_time(Time::now());
   Thread::sleep(0.05);
   Time slept_time(Time::now() - start_time);
-  throw_assert_ge(slept_time.ms(), 50);
+  ASSERT_GE(slept_time.ms(), 50);
 }
 
 TEST(Thread, yield) {

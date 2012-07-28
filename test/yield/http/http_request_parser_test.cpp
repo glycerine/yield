@@ -27,67 +27,64 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/buffer.hpp"
 #include "yield/http/http_message_body_chunk.hpp"
 #include "yield/http/http_request.hpp"
 #include "yield/http/http_request_parser.hpp"
-#include "yunit.hpp"
-
-TEST_SUITE(HTTPRequestParser);
+#include "gtest/gtest.h"
 
 namespace yield {
 namespace http {
 TEST(HTTPRequestParser, MalformedHTTPVersionMissing) {
   HTTPRequestParser http_request_parser("GET /\r\nHost: localhost\r\n\r\n");
   HTTPRequest* http_request = Object::cast<HTTPRequest>(http_request_parser.parse());
-  throw_assert_eq(http_request, NULL);
+  ASSERT_EQ(http_request, static_cast<Object*>(NULL));
 }
 
 TEST(HTTPRequestParser, MalformedHTTPVersionMissingHTTP) {
   HTTPRequestParser http_request_parser("GET / /1.0\r\nHost: localhost\r\n\r\n");
   HTTPRequest* http_request = Object::cast<HTTPRequest>(http_request_parser.parse());
-  throw_assert_eq(http_request, NULL);
+  ASSERT_EQ(http_request, static_cast<Object*>(NULL));
 }
 
 TEST(HTTPRequestParser, MalformedHTTPVersionMissingMinorVersion) {
   HTTPRequestParser http_request_parser("GET / HTTP/1.\r\nHost: localhost\r\n\r\n");
   HTTPRequest* http_request = Object::cast<HTTPRequest>(http_request_parser.parse());
-  throw_assert_eq(http_request, NULL);
+  ASSERT_EQ(http_request, static_cast<Object*>(NULL));
 }
 
 TEST(HTTPRequestParser, MalformedHTTPVersionMissingTrailingCRLF) {
   HTTPRequestParser http_request_parser("GET / HTTP/1.1Host: localhost\r\n\r\n");
   HTTPRequest* http_request = Object::cast<HTTPRequest>(http_request_parser.parse());
-  throw_assert_eq(http_request, NULL);
+  ASSERT_EQ(http_request, static_cast<Object*>(NULL));
 }
 
 TEST(HTTPRequestParser, MalformedMethodMissing) {
   HTTPRequestParser http_request_parser("/ HTTP/1.0\r\nHost: localhost\r\n\r\n");
   HTTPRequest* http_request = Object::cast<HTTPRequest>(http_request_parser.parse());
-  throw_assert_eq(http_request, NULL);
+  ASSERT_EQ(http_request, static_cast<Object*>(NULL));
 }
 
 TEST(HTTPRequestParser, MalformedURIEmbeddedLF) {
   HTTPRequestParser http_request_parser("GET /\r HTTP/1.1\r\nHost: localhost\r\n\r\n");
   HTTPRequest* http_request = Object::cast<HTTPRequest>(http_request_parser.parse());
-  throw_assert_eq(http_request, NULL);
+  ASSERT_EQ(http_request, static_cast<Object*>(NULL));
 }
 
 TEST(HTTPRequestParser, MalformedURIMissing) {
   HTTPRequestParser http_request_parser("GET HTTP/1.1\r\nHost: localhost\r\n\r\n");
   HTTPRequest* http_request = Object::cast<HTTPRequest>(http_request_parser.parse());
-  throw_assert_eq(http_request, NULL);
+  ASSERT_EQ(http_request, static_cast<Object*>(NULL));
 }
 
 TEST(HTTPRequestParser, WellFormedRequestLineOnly) {
   HTTPRequestParser http_request_parser("GET / HTTP/1.1\r\n\r\n");
   HTTPRequest* http_request = Object::cast<HTTPRequest>(http_request_parser.parse());
-  throw_assert_ne(http_request, NULL);
-  throw_assert_eq(http_request->get_method(), HTTPRequest::Method::GET);
-  throw_assert_eq(http_request->get_http_version(), 1);
-  throw_assert_eq(http_request->get_body(), NULL);
+  ASSERT_NE(http_request, static_cast<Object*>(NULL));
+  ASSERT_EQ(http_request->get_method(), HTTPRequest::Method::GET);
+  ASSERT_EQ(http_request->get_http_version(), 1);
+  ASSERT_EQ(http_request->get_body(), static_cast<Object*>(NULL));
   HTTPRequest::dec_ref(http_request);
 }
 }

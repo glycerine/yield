@@ -29,7 +29,7 @@
 
 #include "named_pipe.hpp"
 #include "yield/auto_object.hpp"
-#include "yield/assert.hpp"
+#include "yield/debug.hpp"
 #include "yield/fs/path.hpp"
 #include "yield/fs/directory.hpp"
 #include "yield/fs/file.hpp"

@@ -28,7 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../../win32/winsock.hpp"
-#include "yield/assert.hpp"
+#include "yield/debug.hpp"
 #include "yield/buffer.hpp"
 #include "yield/log.hpp"
 #include "yield/sockets/stream_socket.hpp"

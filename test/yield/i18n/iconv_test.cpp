@@ -27,11 +27,10 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/exception.hpp"
 #include "yield/i18n/iconv.hpp"
-#include "yunit.hpp"
+#include "gtest/gtest.h"
 
 #define TEST_STRING_ISO88591 "\304rger mit b\366sen B\374bchen ohne Augenma\337"
 #define TEST_STRING_UTF8\
@@ -39,8 +38,6 @@
 #ifdef _WIN32
 #define TEST_STRING_WIDE L"test string"
 #endif
-
-TEST_SUITE(iconv);
 
 namespace yield {
 namespace i18n {
@@ -64,11 +61,11 @@ TEST(iconv, c_strings) {
     throw Exception();
   }
 
-  // throw_assert_ne(inbuf, TEST_STRING_ISO88591);
-  throw_assert_eq(inbytesleft, 0);
-  throw_assert_ne(outbuf_p, outbuf);
-  throw_assert_gt(strlen(outbuf), 0);
-  throw_assert_lt(outbytesleft, 256);
+  // ASSERT_NE(inbuf, TEST_STRING_ISO88591);
+  ASSERT_EQ(inbytesleft, 0);
+  ASSERT_NE(outbuf_p, outbuf);
+  ASSERT_GT(strlen(outbuf), 0u);
+  ASSERT_LT(outbytesleft, 256u);
 }
 
 TEST(iconv, iso88591_to_utf8) {
@@ -76,8 +73,8 @@ TEST(iconv, iso88591_to_utf8) {
   if (!iconv(Code::UTF8, Code::ISO88591)(TEST_STRING_ISO88591, outbuf)) {
     throw Exception();
   }
-  throw_assert_false(outbuf.empty());
-  throw_assert_eq(outbuf, TEST_STRING_UTF8);
+  ASSERT_FALSE(outbuf.empty());
+  ASSERT_EQ(outbuf, TEST_STRING_UTF8);
 }
 
 TEST(iconv, utf8_to_iso88591) {
@@ -85,8 +82,8 @@ TEST(iconv, utf8_to_iso88591) {
   if (!iconv(Code::ISO88591, Code::UTF8)(TEST_STRING_UTF8, outbuf)) {
     throw Exception();
   }
-  throw_assert_false(outbuf.empty());
-  throw_assert_eq(outbuf, TEST_STRING_ISO88591);
+  ASSERT_FALSE(outbuf.empty());
+  ASSERT_EQ(outbuf, TEST_STRING_ISO88591);
 }
 
 #ifdef _WIN32
@@ -95,7 +92,7 @@ TEST(iconv, utf8_to_wide) {
   if (!iconv(Code::WCHAR_T, Code::UTF8)(TEST_STRING_UTF8, outbuf)) {
     throw Exception();
   }
-  throw_assert_false(outbuf.empty());
+  ASSERT_FALSE(outbuf.empty());
 }
 
 TEST(iconv, wide_to_utf8) {
@@ -103,7 +100,7 @@ TEST(iconv, wide_to_utf8) {
   if (!iconv(Code::UTF8, Code::WCHAR_T)(TEST_STRING_WIDE, outbuf)) {
     throw Exception();
   }
-  throw_assert_eq(outbuf.size(), wcslen(TEST_STRING_WIDE));
+  ASSERT_EQ(outbuf.size(), wcslen(TEST_STRING_WIDE));
 }
 #endif
 }

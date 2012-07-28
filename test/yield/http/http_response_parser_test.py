@@ -36,7 +36,7 @@ OK = "200 OK"
 
 class HTTPResponseParserTest(HTTPMessageParserTest):
     def ASSERT_STATUS_CODE(self, status_code):
-        self.append("throw_assert_eq(http_response->get_status_code(), %(status_code)u);" % locals())
+        self.append("ASSERT_EQ(http_response->get_status_code(), %(status_code)u);" % locals())
 
 
 class MalformedReasonPhraseMissingHTTPResponseParserTest(HTTPResponseParserTest):

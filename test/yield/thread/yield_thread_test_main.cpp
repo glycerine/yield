@@ -27,55 +27,10 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yunit.hpp"
+#include "yield/types.hpp"
+#include "gtest/gtest.h"
 
-#include <iostream>
-
-extern yunit::TestSuite& ConditionVariableTestSuite();
-extern yunit::TestSuite& LightweightMutexTestSuite();
-extern yunit::TestSuite& MutexTestSuite();
-extern yunit::TestSuite& ProcessorSetTestSuite();
-extern yunit::TestSuite& ReaderWriterLockTestSuite();
-extern yunit::TestSuite& SemaphoreTestSuite();
-extern yunit::TestSuite& ThreadTestSuite();
-
-int main(int, char**) {
-  int failed_test_case_count = 0;
-
-  // ConditionVariable
-  std::cout << "ConditionVariable:" << std::endl;
-  failed_test_case_count += ConditionVariableTestSuite().run();
-  std::cout << std::endl;
-
-  // LightweightMutex
-  std::cout << "LightweightMutex:" << std::endl;
-  failed_test_case_count += LightweightMutexTestSuite().run();
-  std::cout << std::endl;
-
-  // Mutex
-  std::cout << "Mutex:" << std::endl;
-  failed_test_case_count += MutexTestSuite().run();
-  std::cout << std::endl;
-
-  // ProcessorSet
-  std::cout << "ProcessorSet:" << std::endl;
-  failed_test_case_count += ProcessorSetTestSuite().run();
-  std::cout << std::endl;
-
-  // ReaderWriterLock
-  std::cout << "ReaderWriterLock:" << std::endl;
-  failed_test_case_count += ReaderWriterLockTestSuite().run();
-  std::cout << std::endl;
-
-  // Semaphore
-  std::cout << "Semaphore:" << std::endl;
-  failed_test_case_count += SemaphoreTestSuite().run();
-  std::cout << std::endl;
-
-  // Thread
-  std::cout << "Thread:" << std::endl;
-  failed_test_case_count += ThreadTestSuite().run();
-  std::cout << std::endl;
-
-  return failed_test_case_count;
+int main(int argc, char** argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }

@@ -27,12 +27,9 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/assert.hpp"
 #include "yield/buffer.hpp"
 #include "yield/http/http_response.hpp"
-#include "yunit.hpp"
-
-TEST_SUITE(HTTPResponse);
+#include "gtest/gtest.h"
 
 namespace yield {
 namespace http {
@@ -43,8 +40,8 @@ TEST(HTTPResponse, constructor) {
 }
 
 TEST(HTTPResponse, get_status_code) {
-  throw_assert_eq(HTTPResponse(200).get_status_code(), 200);
-  throw_assert_eq(HTTPResponse(404).get_status_code(), 404);
+  ASSERT_EQ(HTTPResponse(200).get_status_code(), 200);
+  ASSERT_EQ(HTTPResponse(404).get_status_code(), 404);
 }
 }
 }

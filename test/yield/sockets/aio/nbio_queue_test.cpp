@@ -31,14 +31,12 @@
 #include "partial_send_stream_socket.hpp"
 #include "yield/sockets/aio/nbio_queue.hpp"
 
-TEST_SUITE_EX(
-  NBIOQueue,
-  yield::sockets::aio::AIOQueueTestSuite<yield::sockets::aio::NBIOQueue>
-);
-
 namespace yield {
 namespace sockets {
 namespace aio {
+INSTANTIATE_TYPED_TEST_CASE_P(NBIOQueue, AIOQueueTest, NBIOQueue);
+INSTANTIATE_TYPED_TEST_CASE_P(NBIOQueue, EventQueueTest, NBIOQueue);
+
 TEST(NBIOQueue, partial_send) {
   NBIOQueue aio_queue;
 
@@ -58,32 +56,32 @@ TEST(NBIOQueue, partial_send) {
 
   auto_Object<sendAIOCB> out_aiocb
   = Object::cast<sendAIOCB>(aio_queue.dequeue());
-  throw_assert_eq(&out_aiocb.get(), &aiocb.get());
-  throw_assert_eq(out_aiocb->get_error(), 0);
-  throw_assert_eq(out_aiocb->get_return(), 4);
+  ASSERT_EQ(&out_aiocb.get(), &aiocb.get());
+  ASSERT_EQ(out_aiocb->get_error(), 0);
+  ASSERT_EQ(out_aiocb->get_return(), 4);
 
   char test[4];
   ssize_t recv_ret = sockets.second().recv(test, 4, 0);
-  throw_assert_eq(recv_ret, 4);
-  throw_assert_eq(memcmp(test, "test", 4), 0);
+  ASSERT_EQ(recv_ret, 4);
+  ASSERT_EQ(memcmp(test, "test", 4), 0);
 }
 
-class NBIOQueuePartialSendFileTest : public yunit::Test {
+class NBIOQueuePartialSendFileTest : public ::testing::Test {
 public:
-  void setup() {
-    teardown();
+  void SetUp() {
+    TearDown();
     auto_Object<yield::fs::File> file
     = yield::fs::FileSystem().creat("NBIOQueuePartialSendFileTest.txt");
     file->write("test", 4);
     file->close();
   }
 
-  void teardown() {
+  void TearDown() {
     yield::fs::FileSystem().unlink("NBIOQueuePartialSendFileTest.txt");
   }
 };
 
-TEST_EX(NBIOQueue, partial_sendfile, NBIOQueuePartialSendFileTest) {
+TEST_F(NBIOQueuePartialSendFileTest, partial_sendfile) {
   NBIOQueue aio_queue;
 
   StreamSocketPair sockets;
@@ -99,8 +97,8 @@ TEST_EX(NBIOQueue, partial_sendfile, NBIOQueuePartialSendFileTest) {
 
   auto_Object<sendfileAIOCB> aiocb
   = new sendfileAIOCB(*partial_send_stream_socket, *file);
-  throw_assert_eq(aiocb->get_nbytes(), stbuf->get_size());
-  throw_assert_eq(aiocb->get_offset(), 0);
+  ASSERT_EQ(aiocb->get_nbytes(), stbuf->get_size());
+  ASSERT_EQ(aiocb->get_offset(), 0);
 
   if (!aio_queue.enqueue(aiocb->inc_ref())) {
     throw Exception();
@@ -108,17 +106,17 @@ TEST_EX(NBIOQueue, partial_sendfile, NBIOQueuePartialSendFileTest) {
 
   auto_Object<sendfileAIOCB> out_aiocb
   = Object::cast<sendfileAIOCB>(aio_queue.dequeue());
-  throw_assert_eq(&out_aiocb.get(), &aiocb.get());
-  throw_assert_eq(out_aiocb->get_error(), 0);
-  throw_assert_eq(
+  ASSERT_EQ(&out_aiocb.get(), &aiocb.get());
+  ASSERT_EQ(out_aiocb->get_error(), 0);
+  ASSERT_EQ(
     out_aiocb->get_return(),
     static_cast<ssize_t>(stbuf->get_size())
   );
 
   char test[4];
   ssize_t recv_ret = sockets.second().recv(test, 4, 0);
-  throw_assert_eq(recv_ret, 4);
-  throw_assert_eq(memcmp(test, "test", 4), 0);
+  ASSERT_EQ(recv_ret, 4);
+  ASSERT_EQ(memcmp(test, "test", 4), 0);
 }
 
 TEST(NBIOQueue, partial_sendmsg) {
@@ -141,14 +139,14 @@ TEST(NBIOQueue, partial_sendmsg) {
 
   auto_Object<sendAIOCB> out_aiocb
   = Object::cast<sendAIOCB>(aio_queue.dequeue());
-  throw_assert_eq(&out_aiocb.get(), &aiocb.get());
-  throw_assert_eq(out_aiocb->get_error(), 0);
-  throw_assert_eq(out_aiocb->get_return(), 11);
+  ASSERT_EQ(&out_aiocb.get(), &aiocb.get());
+  ASSERT_EQ(out_aiocb->get_error(), 0);
+  ASSERT_EQ(out_aiocb->get_return(), 11);
 
   char test_string[11];
   ssize_t recv_ret = sockets.second().recv(test_string, 11, 0);
-  throw_assert_eq(recv_ret, 11);
-  throw_assert_eq(memcmp(test_string, "test string", 11), 0);
+  ASSERT_EQ(recv_ret, 11);
+  ASSERT_EQ(memcmp(test_string, "test string", 11), 0);
 }
 }
 }

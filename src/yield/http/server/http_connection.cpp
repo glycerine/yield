@@ -28,7 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "http_request_parser.hpp"
-#include "yield/assert.hpp"
+#include "yield/debug.hpp"
 #include "yield/log.hpp"
 #include "yield/fs/file.hpp"
 #include "yield/http/server/http_connection.hpp"

@@ -35,19 +35,19 @@
 #include "yield/thread/runnable.hpp"
 #include "yield/thread/mutex.hpp"
 #include "yield/thread/thread.hpp"
-#include "yunit.hpp"
+#include "gtest/gtest.h"
 
 namespace yield {
 namespace thread {
 template <class MutexType>
-class MutexTest : public yunit::Test {
+class MutexTest : public ::testing::Test {
 public:
-  // yunit::Test
-  void setup() {
+  // ::testing::Test
+  void SetUp() {
     mutex = new MutexType;
   }
 
-  void teardown() {
+  void TearDown() {
     delete mutex;
   }
 
@@ -74,51 +74,35 @@ protected:
   MutexType* mutex;
 };
 
+TYPED_TEST_CASE_P(MutexTest);
 
-template <class MutexType>
-class MutexLockTest : public MutexTest<MutexType> {
-public:
-  // yunit::Test
-  void run() {
-    Thread thread(*new typename MutexTest<MutexType>::OtherThread(*this->mutex));
+TYPED_TEST_P(MutexTest, lock) {
+  Thread thread(*new typename MutexTest<TypeParam>::OtherThread(*this->mutex));
 
-    if (!this->mutex->lock()) {
-      throw Exception();
-    }
-    Thread::sleep(0.1);
-    this->mutex->unlock();
-
-    thread.join();
+  if (!this->mutex->lock()) {
+    throw Exception();
   }
-};
+  Thread::sleep(0.1);
+  this->mutex->unlock();
+
+  thread.join();
+}
 
 
-template <class MutexType>
-class MutexTryLockTest : public MutexTest<MutexType> {
-public:
-  // yunit::Test
-  void run() {
-    Thread thread(*new typename MutexTest<MutexType>::OtherThread(*this->mutex));
+TYPED_TEST_P(MutexTest, trylock) {
+  Thread thread(*new typename MutexTest<TypeParam>::OtherThread(*this->mutex));
 
-    if (!this->mutex->trylock()) {
-      throw Exception();
-    }
-    Thread::sleep(0.1);
-    this->mutex->unlock();
-
-    thread.join();
+  if (!this->mutex->trylock()) {
+    throw Exception();
   }
-};
+  Thread::sleep(0.1);
+  this->mutex->unlock();
+
+  thread.join();
+}
 
 
-template <class MutexType>
-class MutexTestSuite : public yunit::TestSuite {
-public:
-  MutexTestSuite() {
-    add("Mutex::lock", new MutexLockTest<MutexType>);
-    add("Mutex::trylock", new MutexTryLockTest<MutexType>);
-  }
-};
+REGISTER_TYPED_TEST_CASE_P(MutexTest, lock, trylock);
 }
 }
 

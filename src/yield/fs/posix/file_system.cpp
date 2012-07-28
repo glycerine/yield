@@ -28,7 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/auto_object.hpp"
-#include "yield/assert.hpp"
+#include "yield/debug.hpp"
 #include "yield/fs/directory.hpp"
 #include "yield/fs/file.hpp"
 #include "yield/fs/file_system.hpp"

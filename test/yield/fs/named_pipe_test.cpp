@@ -39,7 +39,13 @@ namespace yield {
 namespace fs {
 class NamedPipePair : public ChannelPair {
 public:
-  NamedPipePair(const Path& path) : path(path) {
+  NamedPipePair() : path(
+#ifdef _WIN32
+        "\\\\.\\pipe\\named_pipe_test.txt"
+#else
+        "named_pipe_test.txt"
+#endif
+    ) {
     read_file = write_file = NULL;
   }
 
@@ -86,42 +92,6 @@ private:
   File* read_file, *write_file;
 };
 
-
-class NamedPipePairFactory : public ChannelPairFactory {
-public:
-  NamedPipePairFactory(const Path& path) : path(path) {
-  }
-
-  // yield::Object
-  NamedPipePairFactory& inc_ref() {
-    return Object::inc_ref(*this);
-  }
-
-  // yield::ChannelPairFactory
-  ChannelPair& create_channel_pair() {
-    return *new NamedPipePair(path);
-  }
-
-private:
-  Path path;
-};
-
-
-class NamedPipeTestSuite : public ChannelTestSuite {
-public:
-  NamedPipeTestSuite()
-    : ChannelTestSuite(
-      *new NamedPipePairFactory(
-#ifdef _WIN32
-        "\\\\.\\pipe\\named_pipe_test.txt"
-#else
-        "named_pipe_test.txt"
-#endif
-      )
-    )
-  { }
-};
+INSTANTIATE_TYPED_TEST_CASE_P(NamedPipe, ChannelTest, NamedPipePair);
 }
 }
-
-TEST_SUITE_EX(NamedPipe, yield::fs::NamedPipeTestSuite);

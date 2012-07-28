@@ -29,11 +29,10 @@
 
 #include "../event_queue_test.hpp"
 #include "yield/auto_object.hpp"
-#include "yield/assert.hpp"
 #include "yield/exception.hpp"
 #include "yield/poll/fd_event.hpp"
 #include "yield/poll/fd_event_queue.hpp"
-#include "yunit.hpp"
+#include "gtest/gtest.h"
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -41,14 +40,11 @@
 #include <unistd.h>
 #endif
 
-TEST_SUITE_EX(
-  FDEventQueue,
-  yield::EventQueueTestSuite<yield::poll::FDEventQueue>
-);
-
 namespace yield {
 namespace poll {
-class FDEventQueueTest : public yunit::Test {
+INSTANTIATE_TYPED_TEST_CASE_P(FDEventQueue, EventQueueTest, FDEventQueue);
+
+class FDEventQueueTest : public ::testing::Test {
 public:
   FDEventQueueTest() {
 #ifdef _WIN32
@@ -58,8 +54,8 @@ public:
 #endif
   }
 
-  // yunit::Test
-  void setup() {
+  // ::testing::Test
+  void SetUp() {
 #ifdef _WIN32
     if (!CreatePipe(&fds[0], &fds[1], NULL, 0))
 #else
@@ -68,7 +64,7 @@ public:
       throw Exception();
   }
 
-  void teardown() {
+  void TearDown() {
 #ifdef _WIN32
     if (fds[0] != INVALID_HANDLE_VALUE) {
       CloseHandle(fds[0]);
@@ -106,13 +102,13 @@ private:
 };
 
 
-TEST_EX(FDEventQueue, associate, FDEventQueueTest) {
+TEST_F(FDEventQueueTest, associate) {
   if (!FDEventQueue().associate(get_read_fd(), FDEvent::TYPE_READ_READY)) {
     throw Exception();
   }
 }
 
-TEST_EX(FDEventQueue, associate_change, FDEventQueueTest) {
+TEST_F(FDEventQueueTest, associate_change) {
   FDEventQueue fd_event_queue;
 
   if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY)) {
@@ -124,7 +120,7 @@ TEST_EX(FDEventQueue, associate_change, FDEventQueueTest) {
   }
 }
 
-TEST_EX(FDEventQueue, associate_duplicate, FDEventQueueTest) {
+TEST_F(FDEventQueueTest, associate_duplicate) {
   FDEventQueue fd_event_queue;
 
   if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY)) {
@@ -136,7 +132,7 @@ TEST_EX(FDEventQueue, associate_duplicate, FDEventQueueTest) {
   }
 }
 
-TEST_EX(FDEventQueue, associate_two, FDEventQueueTest) {
+TEST_F(FDEventQueueTest, associate_two) {
   FDEventQueue fd_event_queue;
 
   if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY)) {
@@ -148,7 +144,7 @@ TEST_EX(FDEventQueue, associate_two, FDEventQueueTest) {
   }
 }
 
-TEST_EX(FDEventQueue, associate_zero, FDEventQueueTest) {
+TEST_F(FDEventQueueTest, associate_zero) {
   FDEventQueue fd_event_queue;
 
   if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY)) {
@@ -162,14 +158,14 @@ TEST_EX(FDEventQueue, associate_zero, FDEventQueueTest) {
   signal_pipe();
 
   Event* event = fd_event_queue.timeddequeue(0);
-  throw_assert_eq(event, NULL);
+  ASSERT_EQ(event, static_cast<Event*>(NULL));
 }
 
 TEST(FDEventQueue, constructor) {
   FDEventQueue();
 }
 
-TEST_EX(FDEventQueue, dequeue_FDEvent, FDEventQueueTest) {
+TEST_F(FDEventQueueTest, dequeue_FDEvent) {
   FDEventQueue fd_event_queue;
 
   if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY)) {
@@ -181,7 +177,7 @@ TEST_EX(FDEventQueue, dequeue_FDEvent, FDEventQueueTest) {
   auto_Object<Event> event = fd_event_queue.dequeue();
 }
 
-TEST_EX(FDEventQueue, dequeue_writable_FDEvent, FDEventQueueTest) {
+TEST_F(FDEventQueueTest, dequeue_writable_FDEvent) {
   FDEventQueue fd_event_queue;
 
   if (!fd_event_queue.associate(get_write_fd(), FDEvent::TYPE_WRITE_READY)) {
@@ -190,15 +186,15 @@ TEST_EX(FDEventQueue, dequeue_writable_FDEvent, FDEventQueueTest) {
 
   auto_Object<FDEvent> fd_event
   = Object::cast<FDEvent>(fd_event_queue.dequeue());
-  throw_assert_eq(fd_event->get_fd(), get_write_fd());
-  throw_assert_eq(fd_event->get_type(), FDEvent::TYPE_WRITE_READY);
+  ASSERT_EQ(fd_event->get_fd(), get_write_fd());
+  ASSERT_EQ(fd_event->get_type(), FDEvent::TYPE_WRITE_READY);
 }
 
 TEST(FDEventQueue, destructor) {
   FDEventQueue();
 }
 
-TEST_EX(FDEventQueue, dissociate, FDEventQueueTest) {
+TEST_F(FDEventQueueTest, dissociate) {
   FDEventQueue fd_event_queue;
 
   if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY)) {
@@ -212,7 +208,7 @@ TEST_EX(FDEventQueue, dissociate, FDEventQueueTest) {
   signal_pipe();
 
   Event* event = fd_event_queue.timeddequeue(0);
-  throw_assert_eq(event, NULL);
+  ASSERT_EQ(event, static_cast<Event*>(NULL));
 
   if (!fd_event_queue.associate(get_read_fd(), FDEvent::TYPE_READ_READY)) {
     throw Exception();  // associate after dissociate should succeed
@@ -222,7 +218,7 @@ TEST_EX(FDEventQueue, dissociate, FDEventQueueTest) {
     throw Exception();
   }
 
-  throw_assert_false(fd_event_queue.dissociate(get_read_fd()));
+  ASSERT_FALSE(fd_event_queue.dissociate(get_read_fd()));
 }
 }
 }

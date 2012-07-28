@@ -30,7 +30,10 @@
 #include "fs_event_queue_test.hpp"
 #include "yield/fs/poll/scanning_fs_event_queue.hpp"
 
-TEST_SUITE_EX(
-  ScanningFSEventQueue,
-  yield::fs::poll::FSEventQueueTestSuite<yield::fs::poll::ScanningFSEventQueue>
-);
+namespace yield {
+namespace fs {
+namespace poll {
+INSTANTIATE_TYPED_TEST_CASE_P(ScanningFSEventQueue, FSEventQueueTest, ScanningFSEventQueue);
+}
+}
+}

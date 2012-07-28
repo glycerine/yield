@@ -28,9 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/http/server/file/http_file_server.hpp"
-#include "yunit.hpp"
-
-TEST_SUITE(HTTPFileServer);
+#include "gtest/gtest.h"
 
 namespace yield {
 namespace http {

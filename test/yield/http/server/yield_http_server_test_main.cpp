@@ -27,19 +27,10 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yunit.hpp"
+#include "yield/types.hpp"
+#include "gtest/gtest.h"
 
-#include <iostream>
-
-extern yunit::TestSuite& HTTPRequestQueueTestSuite();
-
-int main(int, char**) {
-  int failed_test_case_count = 0;
-
-  // HTTPRequestQueue
-  std::cout << "HTTPRequestQueue:" << std::endl;
-  failed_test_case_count += HTTPRequestQueueTestSuite().run();
-  std::cout << std::endl;
-
-  return failed_test_case_count;
+int main(int argc, char** argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }

@@ -30,7 +30,10 @@
 #include "stage_scheduler_test.hpp"
 #include "yield/stage/seda_stage_scheduler.hpp"
 
-TEST_SUITE_EX(
-  SEDAStageScheduler,
-  yield::stage::StageSchedulerTestSuite<yield::stage::SEDAStageScheduler>
-);
+namespace yield {
+namespace stage {
+typedef StageSchedulerScheduleTest<SEDAStageScheduler> SEDAStageSchedulerScheduleTest;
+TEST_F(SEDAStageSchedulerScheduleTest, schedule) {
+}
+}
+}

@@ -27,28 +27,25 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/sockets/socket_address.hpp"
-#include "yunit.hpp"
+#include "gtest/gtest.h"
 
 #define TEST_NODENAME "localhost"
 #define TEST_SERVNAME static_cast<uint16_t>(80)
-
-TEST_SUITE(SocketAddress);
 
 namespace yield {
 namespace sockets {
 TEST(SocketAddress, copy_constructor) {
   SocketAddress sockaddr1(TEST_NODENAME, TEST_SERVNAME);
   SocketAddress sockaddr2(sockaddr1);
-  throw_assert_eq(sockaddr1, sockaddr2);
+  ASSERT_EQ(sockaddr1, sockaddr2);
 }
 
 TEST(SocketAddress, copy_constructor_with_port) {
   SocketAddress sockaddr1(TEST_NODENAME, TEST_SERVNAME);
   SocketAddress sockaddr2(sockaddr1, 30000);
-  throw_assert_ne(sockaddr1, sockaddr2);
+  ASSERT_NE(sockaddr1, sockaddr2);
 }
 
 TEST(SocketAddress, getnameinfo) {
@@ -59,32 +56,32 @@ TEST(SocketAddress, getnameinfo) {
   if (!sockaddr.getnameinfo(hostname, &servname)) {
     throw Exception();
   }
-  throw_assert_false(hostname.empty());
-  throw_assert_eq(servname, TEST_SERVNAME);
+  ASSERT_FALSE(hostname.empty());
+  ASSERT_EQ(servname, TEST_SERVNAME);
   // hostname may not == TEST_NODENAME if the address was resolved differently
 
   string hostname_numeric;
   if (!sockaddr.getnameinfo(hostname_numeric, &servname)) {
     throw Exception();
   }
-  throw_assert(
+  ASSERT_TRUE(
     hostname_numeric.find('.') != string::npos
     ||
     hostname_numeric.find(':') != string::npos
   );
-  throw_assert_eq(servname, TEST_SERVNAME);
+  ASSERT_EQ(servname, TEST_SERVNAME);
 }
 
 TEST(SocketAddress, operator_print) {
   std::ostringstream oss;
   oss << SocketAddress(TEST_NODENAME, TEST_SERVNAME);
-  throw_assert_false(oss.str().empty());
+  ASSERT_FALSE(oss.str().empty());
 }
 
 TEST(SocketAddress, operator_string) {
   SocketAddress sockaddr(TEST_NODENAME, TEST_SERVNAME);
   string sockaddr_string = sockaddr;
-  throw_assert_false(sockaddr_string.empty());
+  ASSERT_FALSE(sockaddr_string.empty());
 }
 
 TEST(SocketAddress, resolving_constructor) {

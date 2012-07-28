@@ -31,15 +31,11 @@
 #include "yield/auto_object.hpp"
 #include "yield/sockets/datagram_socket_pair.hpp"
 
-#include <iostream>
-
-TEST_SUITE_EX(
-  DatagramSocket,
-  yield::sockets::SocketTestSuite<yield::sockets::DatagramSocketPair>
-);
-
 namespace yield {
 namespace sockets {
+INSTANTIATE_TYPED_TEST_CASE_P(DatagramSocket, ChannelTest, DatagramSocketPair);
+INSTANTIATE_TYPED_TEST_CASE_P(DatagramSocket, SocketTest, DatagramSocketPair);
+
 TEST(DatagramSocket, recvfrom) {
   DatagramSocketPair sockets;
   sockets.first().write("m", 1);
@@ -49,10 +45,10 @@ TEST(DatagramSocket, recvfrom) {
   if (recvfrom_ret == -1) {
     throw Exception();
   }
-  throw_assert_eq(recvfrom_ret, 1);
-  throw_assert_eq(m, 'm');
-  throw_assert_eq(peername, *sockets.first().getsockname());
-  throw_assert_eq(peername, *sockets.second().getpeername());
+  ASSERT_EQ(recvfrom_ret, 1);
+  ASSERT_EQ(m, 'm');
+  ASSERT_EQ(peername, *sockets.first().getsockname());
+  ASSERT_EQ(peername, *sockets.second().getpeername());
 }
 
 TEST(DatagramSocket, recvmsg) {
@@ -69,11 +65,11 @@ TEST(DatagramSocket, recvmsg) {
   if (recvmsg_ret == -1) {
     throw Exception();
   }
-  throw_assert_eq(recvmsg_ret, 2);
-  throw_assert_eq(m, 'm');
-  throw_assert_eq(n, 'n');
-  throw_assert_eq(peername, *sockets.first().getsockname());
-  throw_assert_eq(peername, *sockets.second().getpeername());
+  ASSERT_EQ(recvmsg_ret, 2);
+  ASSERT_EQ(m, 'm');
+  ASSERT_EQ(n, 'n');
+  ASSERT_EQ(peername, *sockets.first().getsockname());
+  ASSERT_EQ(peername, *sockets.second().getpeername());
 }
 
 TEST(DatagramSocket, sendmsg) {
@@ -88,12 +84,12 @@ TEST(DatagramSocket, sendmsg) {
   if (sendmsg_ret == -1) {
     throw Exception();
   }
-  throw_assert_eq(sendmsg_ret, 2);
+  ASSERT_EQ(sendmsg_ret, 2);
   char mn[2];
   ssize_t read_ret = sockets.second().read(mn, 2);
-  throw_assert_eq(read_ret, 2);
-  throw_assert_eq(mn[0], 'm');
-  throw_assert_eq(mn[1], 'n');
+  ASSERT_EQ(read_ret, 2);
+  ASSERT_EQ(mn[0], 'm');
+  ASSERT_EQ(mn[1], 'n');
 }
 
 TEST(DatagramSocket, sendto) {
@@ -103,11 +99,11 @@ TEST(DatagramSocket, sendto) {
   if (sendto_ret == -1) {
     throw Exception();
   }
-  throw_assert_eq(sendto_ret, 1);
+  ASSERT_EQ(sendto_ret, 1);
   char m;
   ssize_t read_ret = sockets.second().read(&m, 1);
-  throw_assert_eq(read_ret, 1);
-  throw_assert_eq(m, 'm');
+  ASSERT_EQ(read_ret, 1);
+  ASSERT_EQ(m, 'm');
 }
 }
 }

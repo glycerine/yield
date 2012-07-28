@@ -27,11 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/assert.hpp"
 #include "yield/sockets/tcp_socket.hpp"
-#include "yunit.hpp"
-
-TEST_SUITE(TCPSocket);
+#include "gtest/gtest.h"
 
 namespace yield {
 namespace sockets {
@@ -54,7 +51,7 @@ TEST(TCPSocket, dup2) {
 }
 
 TEST(TCPSocket, get_type_name) {
-  throw_assert_eq(
+  ASSERT_EQ(
     strcmp(TCPSocket().get_type_name(), "yield::sockets::TCPSocket"),
     0
   );

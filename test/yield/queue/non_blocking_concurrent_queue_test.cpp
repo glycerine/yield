@@ -32,21 +32,24 @@
 
 namespace yield {
 namespace queue {
-class NonBlockingConcurrentQueueTestSuite
-    : public QueueTestSuite< NonBlockingConcurrentQueue<uint32_t, 8> > {
-public:
-  NonBlockingConcurrentQueueTestSuite() {
-    add
-    (
-      "queue full",
-      new QueueFullTest<NonBlockingConcurrentQueue<uint32_t, 8> >
-    );
-  }
-};
-}
-}
+typedef NonBlockingConcurrentQueue<uint32_t, 8> TestNonBlockingConcurrentQueue;
+INSTANTIATE_TYPED_TEST_CASE_P(NonBlockingConcurrentQueue, QueueTest, TestNonBlockingConcurrentQueue);
 
-TEST_SUITE_EX(
-  NonBlockingConcurrentQueue,
-  yield::queue::NonBlockingConcurrentQueueTestSuite
-);
+TEST(NonBlockingConcurrentQueue, full) {
+  TestNonBlockingConcurrentQueue queue;
+
+  uint32_t in_values[] = { 0, 1, 2, 3, 4, 5, 6, 7 };
+
+  for (unsigned char i = 0; i < 8; i++) {
+    ASSERT_TRUE(queue.enqueue(in_values[i]));
+  }
+
+  ASSERT_FALSE(queue.enqueue(in_values[0]));
+
+  for (unsigned char i = 0; i < 8; i++) {
+    uint32_t* out_value = queue.trydequeue();
+    ASSERT_TRUE(*out_value == in_values[i]);
+  }
+}
+}
+}

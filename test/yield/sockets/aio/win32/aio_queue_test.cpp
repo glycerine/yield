@@ -30,7 +30,13 @@
 #include "yield/sockets/aio/aio_queue.hpp"
 #include "../aio_queue_test.hpp"
 
-TEST_SUITE_EX(
-  AIOQueue,
-  yield::sockets::aio::AIOQueueTestSuite<yield::sockets::aio::AIOQueue>
-);
+namespace yield {
+namespace sockets {
+namespace aio {
+namespace win32 {
+INSTANTIATE_TYPED_TEST_CASE_P(AIOQueue, AIOQueueTest, AIOQueue);
+INSTANTIATE_TYPED_TEST_CASE_P(AIOQueue, EventQueueTest, AIOQueue);
+}
+}
+}
+}

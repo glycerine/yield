@@ -27,13 +27,9 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/thread/processor_set.hpp"
-#include "yunit.hpp"
-
-
-TEST_SUITE(ProcessorSet)
+#include "gtest/gtest.h"
 
 namespace yield {
 namespace thread {
@@ -41,7 +37,7 @@ TEST(ProcessorSet, clear_all) {
   ProcessorSet processor_set;
   processor_set.set(0);
   processor_set.clear();
-  throw_assert_eq(processor_set.count(), 0);
+  ASSERT_EQ(processor_set.count(), 0);
 }
 
 TEST(ProcessorSet, clear_one) {
@@ -49,38 +45,38 @@ TEST(ProcessorSet, clear_one) {
   processor_set.set(0);
   processor_set.set(1);
   processor_set.clear(0);
-  throw_assert_eq(processor_set.count(), 1);
+  ASSERT_EQ(processor_set.count(), 1);
 }
 
 TEST(ProcessorSet, count) {
   ProcessorSet processor_set;
   processor_set.set(0);
-  throw_assert_eq(processor_set.count(), 1);
+  ASSERT_EQ(processor_set.count(), 1);
   processor_set.set(1);
-  throw_assert_eq(processor_set.count(), 2);
+  ASSERT_EQ(processor_set.count(), 2);
   processor_set.clear();
-  throw_assert_eq(processor_set.count(), 0);
+  ASSERT_EQ(processor_set.count(), 0);
 }
 
 TEST(ProcessorSet, empty) {
   ProcessorSet processor_set;
-  throw_assert(processor_set.empty());
+  ASSERT_TRUE(processor_set.empty());
   processor_set.set(0);
-  throw_assert_false(processor_set.empty());
+  ASSERT_FALSE(processor_set.empty());
 }
 
 TEST(ProcessorSet, isset) {
   ProcessorSet processor_set;
   processor_set.set(0);
-  throw_assert(processor_set.isset(0));
-  throw_assert_false(processor_set.isset(1));
+  ASSERT_TRUE(processor_set.isset(0));
+  ASSERT_FALSE(processor_set.isset(1));
 }
 
 TEST(ProcessorSet, set) {
   ProcessorSet processor_set;
   processor_set.set(0);
-  throw_assert(processor_set.isset(0));
-  throw_assert_false(processor_set.isset(1));
+  ASSERT_TRUE(processor_set.isset(0));
+  ASSERT_FALSE(processor_set.isset(1));
 }
 }
 }

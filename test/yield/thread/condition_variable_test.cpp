@@ -27,25 +27,22 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/assert.hpp"
 #include "yield/time.hpp"
 #include "yield/thread/condition_variable.hpp"
 #include "yield/thread/runnable.hpp"
 #include "yield/thread/thread.hpp"
-#include "yunit.hpp"
-
-TEST_SUITE(ConditionVariable);
+#include "gtest/gtest.h"
 
 namespace yield {
 namespace thread {
-class ConditionVariableTest : public yunit::Test {
+class ConditionVariableTest : public ::testing::Test {
 public:
-  // yunit::Test
-  void setup() {
+  // ::testing::Test
+  void SetUp() {
     cond = new ConditionVariable;
   }
 
-  void teardown() {
+  void TearDown() {
     delete cond;
     cond = NULL;
   }
@@ -74,12 +71,12 @@ protected:
 
 
 
-TEST_EX(ConditionVariable, timedwait, ConditionVariableTest) {
+TEST_F(ConditionVariableTest, timedwait) {
   bool lock_ret = cond->lock_mutex();
-  throw_assert(lock_ret);
+  ASSERT_TRUE(lock_ret);
 
   bool wait_ret = cond->timedwait(0.1);
-  throw_assert_false(wait_ret);
+  ASSERT_FALSE(wait_ret);
 
   Thread thread(*new OtherThread(*cond));
 
@@ -90,14 +87,14 @@ TEST_EX(ConditionVariable, timedwait, ConditionVariableTest) {
   thread.join();
 }
 
-TEST_EX(ConditionVariable, wait, ConditionVariableTest) {
+TEST_F(ConditionVariableTest, wait) {
   bool lock_ret = cond->lock_mutex();
-  throw_assert(lock_ret);
+  ASSERT_TRUE(lock_ret);
 
   Thread thread(*new OtherThread(*cond));
 
   bool wait_ret = cond->wait();
-  throw_assert(wait_ret);
+  ASSERT_TRUE(wait_ret);
 
   Thread::sleep(0.1);
 

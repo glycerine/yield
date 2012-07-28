@@ -30,7 +30,10 @@
 #include "stage_scheduler_test.hpp"
 #include "yield/stage/wavefront_stage_scheduler.hpp"
 
-TEST_SUITE_EX(
-  WavefrontStageScheduler,
-  yield::stage::StageSchedulerTestSuite<yield::stage::WavefrontStageScheduler>
-);
+namespace yield {
+namespace stage {
+typedef StageSchedulerScheduleTest<WavefrontStageScheduler> WavefrontStageSchedulerScheduleTest;
+TEST_F(WavefrontStageSchedulerScheduleTest, schedule) {
+}
+}
+}

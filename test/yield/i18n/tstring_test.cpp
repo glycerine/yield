@@ -27,24 +27,18 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/assert.hpp"
 #include "yield/i18n/tstring.hpp"
-#include "yunit.hpp"
-
-
-TEST_SUITE(tstring);
+#include "gtest/gtest.h"
 
 namespace yield {
 namespace i18n {
 TEST(tstring, encode) {
-  tstring ts
-  (
+  tstring ts(
     "\304rger mit b\366sen B\374bchen ohne Augenma\337",
     Code::ISO88591
   );
   string s = ts.encode(Code::UTF8);
-  throw_assert_eq
-  (
+  ASSERT_EQ(
     s,
     "\303\204rger mit b\303\266sen B\303\274bchen ohne Augenma\303\237"
   );
@@ -52,43 +46,43 @@ TEST(tstring, encode) {
 
 TEST(tstring, init_from_char) {
   tstring ts('t');
-  throw_assert_eq(ts.size(), 1);
+  ASSERT_EQ(ts.size(), 1);
 }
 
 TEST(tstring, init_from_c_string) {
   tstring ts("tstring");
-  throw_assert_eq(ts.size(), 7);
+  ASSERT_EQ(ts.size(), 7);
 }
 
 TEST(tstring, init_from_iovec) {
   tstring ts("tstring", 6);
-  throw_assert_eq(ts.size(), 6);
+  ASSERT_EQ(ts.size(), 6);
 }
 
 TEST(tstring, init_from_string) {
   tstring ts(string("tstring"));
-  throw_assert_eq(ts.size(), 7);
+  ASSERT_EQ(ts.size(), 7);
 }
 
 #ifdef _WIN32
 TEST(tstring, init_from_wchar) {
   tstring ts(L't');
-  throw_assert_eq(ts.size(), 1);
+  ASSERT_EQ(ts.size(), 1);
 }
 
 TEST(tstring, init_from_w_string) {
   tstring ts(L"tstring");
-  throw_assert_eq(ts.size(), 7);
+  ASSERT_EQ(ts.size(), 7);
 }
 
 TEST(tstring, init_from_w_iovec) {
   tstring ts(L"tstring", 6);
-  throw_assert_eq(ts.size(), 6);
+  ASSERT_EQ(ts.size(), 6);
 }
 
 TEST(tstring, init_from_wstring) {
   tstring ts(std::wstring(L"tstring"));
-  throw_assert_eq(ts.size(), 7);
+  ASSERT_EQ(ts.size(), 7);
 }
 #endif
 }

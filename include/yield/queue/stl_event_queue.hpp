@@ -30,7 +30,7 @@
 #ifndef _YIELD_QUEUE_STL_EVENT_QUEUE_HPP_
 #define _YIELD_QUEUE_STL_EVENT_QUEUE_HPP_
 
-#include "yield/assert.hpp"
+#include "yield/debug.hpp"
 #include "yield/event_queue.hpp"
 
 #include <queue>

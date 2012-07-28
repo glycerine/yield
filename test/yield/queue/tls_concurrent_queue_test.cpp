@@ -30,7 +30,8 @@
 #include "queue_test.hpp"
 #include "yield/queue/tls_concurrent_queue.hpp"
 
-TEST_SUITE_EX(
-  TLSConcurrentQueue,
-  yield::queue::QueueTestSuite< yield::queue::TLSConcurrentQueue<uint32_t> >
-);
+namespace yield {
+namespace queue {
+INSTANTIATE_TYPED_TEST_CASE_P(TLSConcurrentQueue, QueueTest, TLSConcurrentQueue<uint32_t>);
+}
+}

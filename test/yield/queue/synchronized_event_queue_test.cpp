@@ -30,7 +30,8 @@
 #include "../event_queue_test.hpp"
 #include "yield/queue/synchronized_event_queue.hpp"
 
-TEST_SUITE_EX(
-  SynchronizedEventQueue,
-  yield::EventQueueTestSuite<yield::queue::SynchronizedEventQueue>
-);
+namespace yield {
+namespace queue {
+INSTANTIATE_TYPED_TEST_CASE_P(SynchronizedEventQueue, EventQueueTest, SynchronizedEventQueue);
+}
+}

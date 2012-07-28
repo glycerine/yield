@@ -34,13 +34,11 @@
 #include "yield/sockets/stream_socket_pair.hpp"
 #include "yield/sockets/tcp_socket.hpp"
 
-TEST_SUITE_EX(
-  StreamSocket,
-  yield::sockets::SocketTestSuite<yield::sockets::StreamSocketPair>
-);
-
 namespace yield {
 namespace sockets {
+INSTANTIATE_TYPED_TEST_CASE_P(StreamSocket, ChannelTest, StreamSocketPair);
+INSTANTIATE_TYPED_TEST_CASE_P(StreamSocket, SocketTest, StreamSocketPair);
+
 TEST(StreamSocket, accept) {
   StreamSocket client_stream_socket(TCPSocket::DOMAIN_DEFAULT),
                listen_stream_socket(TCPSocket::DOMAIN_DEFAULT);
@@ -67,7 +65,7 @@ TEST(StreamSocket, getsockname_exception) {
   } catch (Exception&) {
     return;
   }
-  throw_assert(false);
+  ASSERT_TRUE(false);
 }
 
 TEST(StreamSocket, getpeername_exception) {
@@ -76,7 +74,7 @@ TEST(StreamSocket, getpeername_exception) {
   } catch (Exception&) {
     return;
   }
-  throw_assert(false);
+  ASSERT_TRUE(false);
 }
 
 TEST(StreamSocket, inc_ref) {
@@ -101,19 +99,19 @@ TEST(StreamSocket, setsockopt_KEEPALIVE) {
   }
 }
 
-class StreamSocketSendFileTest : public yunit::Test {
+class StreamSocketSendFileTest : public ::testing::Test {
 public:
-  void setup() {
-    teardown();
+  void SetUp() {
+    TearDown();
     auto_Object<yield::fs::File> file
     = yield::fs::FileSystem().creat(test_file_path);
     file->write("test", 4);
     file->close();
   }
 
-  void teardown() {
+  void TearDown() {
     yield::fs::FileSystem().unlink(test_file_path);
-    throw_assert_false(yield::fs::FileSystem().exists(test_file_path));
+    ASSERT_FALSE(yield::fs::FileSystem().exists(test_file_path));
   }
 
 protected:
@@ -124,7 +122,7 @@ protected:
   yield::fs::Path test_file_path;
 };
 
-TEST_EX(StreamSocket, sendfile, StreamSocketSendFileTest) {
+TEST_F(StreamSocketSendFileTest, sendfile) {
   auto_Object<yield::fs::File> file
   = yield::fs::FileSystem().open(test_file_path);
   auto_Object<yield::fs::Stat> stbuf = file->stat();
@@ -132,11 +130,11 @@ TEST_EX(StreamSocket, sendfile, StreamSocketSendFileTest) {
 
   StreamSocketPair stream_sockets;
   ssize_t sendfile_ret = stream_sockets.first().sendfile(*file, 0, size);
-  throw_assert_eq(sendfile_ret, stbuf->get_size());
+  ASSERT_EQ(sendfile_ret, stbuf->get_size());
 
   Buffer buffer(Buffer::getpagesize());
   ssize_t read_ret = stream_sockets.second().read(buffer);
-  throw_assert_eq(read_ret, static_cast<ssize_t>(size));
+  ASSERT_EQ(read_ret, static_cast<ssize_t>(size));
 
   file->close();
 }
@@ -178,8 +176,8 @@ TEST(StreamSocket, want_accept) {
     if (listen_stream_socket.listen()) {
       if (listen_stream_socket.set_blocking_mode(false)) {
         StreamSocket* server_stream_socket = listen_stream_socket.accept();
-        throw_assert_eq(server_stream_socket, NULL);
-        throw_assert_true(listen_stream_socket.want_accept());
+        ASSERT_EQ(server_stream_socket, static_cast<StreamSocket*>(NULL));
+        ASSERT_TRUE(listen_stream_socket.want_accept());
         return;
       }
     }

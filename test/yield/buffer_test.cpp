@@ -127,7 +127,7 @@ TEST(Buffer, copy_string) {
 
 TEST(Buffer, data) {
   auto_Object<Buffer> buffer = new Buffer(2);
-  ASSERT_NE(buffer->data(), (void*)NULL);
+  ASSERT_NE(buffer->data(), static_cast<void*>(NULL));
   memcpy_s(buffer->data(), buffer->capacity(), "te", 2);
 }
 
@@ -337,7 +337,7 @@ TEST(Buffer, set_next_buffer) {
   ASSERT_EQ(buffer->get_next_buffer(), &buffer3.get());
 
   buffer->set_next_buffer(NULL);
-  ASSERT_EQ(buffer->get_next_buffer(), (void*)NULL);
+  ASSERT_EQ(buffer->get_next_buffer(), static_cast<void*>(NULL));
 }
 
 TEST(Buffer, size) {

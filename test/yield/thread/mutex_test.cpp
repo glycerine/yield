@@ -30,4 +30,8 @@
 #include "mutex_test.hpp"
 #include "yield/thread/mutex.hpp"
 
-TEST_SUITE_EX(Mutex, yield::thread::MutexTestSuite<yield::thread::Mutex>);
+namespace yield {
+namespace thread {
+INSTANTIATE_TYPED_TEST_CASE_P(Mutex, MutexTest, Mutex);
+}
+}

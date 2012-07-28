@@ -42,7 +42,7 @@
 #define __YIELD_I18N_POSIX_ICONV_ICONV_INBUF_CAST(inbuf) const_cast<char**>(inbuf)
 #endif
 
-#include "yield/assert.hpp"
+#include "yield/debug.hpp"
 #include "yield/exception.hpp"
 #include "yield/i18n/iconv.hpp"
 

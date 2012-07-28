@@ -36,7 +36,7 @@
 #include "yield/http/http_response.hpp"
 #include "yield/http/server/http_request.hpp"
 #include "yield/http/server/http_request_queue.hpp"
-#include "yunit.hpp"
+#include "gtest/gtest.h"
 
 namespace yield {
 namespace http {
@@ -48,8 +48,9 @@ public:
   }
 };
 
+INSTANTIATE_TYPED_TEST_CASE_P(HTTPRequestQueue, EventQueueTest, TestHTTPRequestQueue);
 
-class HTTPRequestQueueTest : public yunit::Test {
+class HTTPRequestQueueTest : public ::testing::Test {
 protected:
   void handle(HTTPRequest& http_request) {
     if (http_request.get_uri().get_path() == "/") {
@@ -88,37 +89,18 @@ protected:
   }
 };
 
-
-class HTTPRequestQueueDequeueHTTPRequestTest : public HTTPRequestQueueTest {
-public:
-  // yunit::Test
-  void run() {
-    TestHTTPRequestQueue http_request_queue(&Log::open(std::cout));
-    for (;;) {
-      HTTPRequest* http_request
-      = Object::cast<HTTPRequest>(http_request_queue.timeddequeue(30.0));
-      if (http_request != NULL) {
-        handle(*http_request);
-      } else {
-        break;
-      }
+TEST_F(HTTPRequestQueueTest, dequeue) {
+  TestHTTPRequestQueue http_request_queue(&Log::open(std::cout));
+  for (;;) {
+    HTTPRequest* http_request
+    = Object::cast<HTTPRequest>(http_request_queue.timeddequeue(30.0));
+    if (http_request != NULL) {
+      handle(*http_request);
+    } else {
+      break;
     }
   }
-};
-
-
-class HTTPRequestQueueTestSuite
-    : public EventQueueTestSuite<TestHTTPRequestQueue> {
-public:
-  HTTPRequestQueueTestSuite() {
-    add(
-      "HTTPRequestQueue::dequeue -> HTTPRequest",
-      new HTTPRequestQueueDequeueHTTPRequestTest
-    );
-  }
-};
 }
 }
 }
-
-TEST_SUITE_EX(HTTPRequestQueue, yield::http::server::HTTPRequestQueueTestSuite);
+}

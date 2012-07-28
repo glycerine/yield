@@ -31,176 +31,104 @@
 #define _YIELD_SOCKETS_SOCKET_TEST_HPP_
 
 #include "../channel_test.hpp"
-#include "socket_pair_factory.hpp"
-#include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/sockets/socket_address.hpp"
 #include "yield/sockets/stream_socket.hpp"
+#include "gtest/gtest.h"
 
 namespace yield {
 namespace sockets {
-//template <class SocketPairType>
-//class SocketBindTest : public yunit::Test {
+template <class TypeParam>
+class SocketTest : public ::testing::Test {
+};
+
+TYPED_TEST_CASE_P(SocketTest);
+
+//template <class TypeParam>
+//class SocketBindTest : public ::testing::Test {
 //public:
-//  // yunit::Test
+//  // ::testing::Test
 //  void run() {
-//    if (!SocketPairType().bind(31000))
+//    if (!TypeParam().bind(31000))
 //      throw Exception();
 //  }
 //};
 
+TYPED_TEST_P(SocketTest, getfqdn) {
+  string hostname = Socket::gethostname();
+  string fqdn = Socket::getfqdn();
+  ASSERT_FALSE(fqdn.empty());
+  ASSERT_EQ(fqdn.find(hostname), 0);
+  ASSERT_GE(fqdn.size(), hostname.size());
+}
 
-class SocketGetFQDNTest : public yunit::Test {
-public:
-  // yunit::Test
-  void run() {
-    string hostname = Socket::gethostname();
-    string fqdn = Socket::getfqdn();
-    throw_assert_false(fqdn.empty());
-    throw_assert_eq(fqdn.find(hostname), 0);
-    throw_assert_ge(fqdn.size(), hostname.size());
-  }
-};
+TYPED_TEST_P(SocketTest, gethostname) {
+  string hostname = Socket::gethostname();
+  ASSERT_FALSE(hostname.empty());
+  ASSERT_NE(hostname, "localhost");
+}
 
+TYPED_TEST_P(SocketTest, getpeername) {
+  TypeParam().first().getpeername();
+}
 
-class SocketGetHostNameTest : public yunit::Test {
-public:
-  // yunit::Test
-  void run() {
-    string hostname = Socket::gethostname();
-    throw_assert_false(hostname.empty());
-    throw_assert_ne(hostname, "localhost");
-  }
-};
+TYPED_TEST_P(SocketTest, getsockname) {
+  TypeParam().first().getsockname();
+}
 
+TYPED_TEST_P(SocketTest, MessageFlags) {
+  Socket::MessageFlags dontroute(Socket::MessageFlags::DONTROUTE);
+  Socket::MessageFlags oob(Socket::MessageFlags::OOB);
+  Socket::MessageFlags peek(Socket::MessageFlags::PEEK);
+}
 
-template <class SocketPairType>
-class SocketGetPeernameTest : public yunit::Test {
-public:
-  // yunit::Test
-  void run() {
-    SocketPairType().first().getpeername();
-  }
-};
+TYPED_TEST_P(SocketTest, set_blocking_mode) {
+  TypeParam sockets;
 
-
-template <class SocketPairType>
-class SocketGetSocknameTest : public yunit::Test {
-public:
-  // yunit::Test
-  void run() {
-    SocketPairType().first().getsockname();
-  }
-};
-
-
-class SocketMessageFlagsTest : public yunit::Test {
-public:
-  // yunit::Test
-  void run() {
-    Socket::MessageFlags dontroute(Socket::MessageFlags::DONTROUTE);
-    Socket::MessageFlags oob(Socket::MessageFlags::OOB);
-    Socket::MessageFlags peek(Socket::MessageFlags::PEEK);
-  }
-};
-
-
-template <class SocketPairType>
-class SocketSetBlockingModeTest : public yunit::Test {
-public:
-  // yunit::Test
-  void run() {
-    SocketPairType sockets;
-
-    if (!sockets.first().set_blocking_mode(true)) {
-      throw Exception();
-    }
-
-    if (!sockets.first().set_blocking_mode(false)) {
-      throw Exception();
-    }
-
-    if (!sockets.first().set_blocking_mode(true)) {
-      throw Exception();
-    }
-  }
-};
-
-
-template <class SocketPairType>
-class SocketSetSocketOptionTest : public yunit::Test {
-public:
-  SocketSetSocketOptionTest(int option_name, int option_value = 1)
-    : option_name(option_name) {
+  if (!sockets.first().set_blocking_mode(true)) {
+    throw Exception();
   }
 
-  // yunit::Test
-  void run() {
-    SocketPairType sockets;
-    if (!sockets.first().setsockopt(option_name, option_value)) {
-      throw Exception();
-    }
+  if (!sockets.first().set_blocking_mode(false)) {
+    throw Exception();
   }
 
-private:
-  int option_name, option_value;
-};
-
-
-template <class SocketPairType>
-class SocketWantRecvTest : public yunit::Test {
-public:
-  // yunit::Test
-  void run() {
-    SocketPairType sockets;
-    if (!sockets.first().set_blocking_mode(false)) {
-      throw Exception();
-    }
-    auto_Object<Buffer> buffer = new Buffer(1);
-    ssize_t recv_ret
-    = sockets.first().recv(*buffer, 0);
-    throw_assert_eq(recv_ret, -1);
-    throw_assert(sockets.first().want_recv());
+  if (!sockets.first().set_blocking_mode(true)) {
+    throw Exception();
   }
-};
+}
 
+//template <class TypeParam>
+//class SocketSetSocketOptionTest : public ::testing::Test {
+//public:
+//  SocketSetSocketOptionTest(int option_name, int option_value = 1)
+//    : option_name(option_name) {
+//  }
+//
+//  // ::testing::Test
+//  void run() {
+//    TypeParam sockets;
+//    if (!sockets.first().setsockopt(option_name, option_value)) {
+//      throw Exception();
+//    }
+//  }
+//
+//private:
+//  int option_name, option_value;
+//};
 
-template <class SocketPairType>
-class SocketTestSuite : public ChannelTestSuite {
-public:
-  SocketTestSuite()
-    : ChannelTestSuite(*new SocketPairFactory<SocketPairType>) {
-    //add("Socket::bind", new SocketBindTest<SocketPairType>);
-    add("Socket::getfqdn", new SocketGetFQDNTest);
-    add("Socket::gethostname", new SocketGetHostNameTest);
-    add("Socket::getpeername", new SocketGetPeernameTest<SocketPairType>);
-    add("Socket::getsockname", new SocketGetSocknameTest<SocketPairType>);
-
-    add("Socket::MessageFlags", new SocketMessageFlagsTest);
-
-    add(
-      "Socket::set_blocking_mode",
-      new SocketSetBlockingModeTest<SocketPairType>
-    );
-
-    add(
-      "Socket::setsockopt(RCVBUF, 4096)",
-      new SocketSetSocketOptionTest<SocketPairType>(Socket::Option::RCVBUF, 4096)
-    );
-
-    add(
-      "Socket::setsockopt(REUSEADDR, 1)",
-      new SocketSetSocketOptionTest<SocketPairType>(Socket::Option::REUSEADDR, 1)
-    );
-
-    add(
-      "Socket::setsockopt(SNDBUF, 4096)",
-      new SocketSetSocketOptionTest<SocketPairType>(Socket::Option::SNDBUF, 4096)
-    );
-
-    add("Socket::want_recv", new SocketWantRecvTest<SocketPairType>);
+TYPED_TEST_P(SocketTest, want_recv) {
+  TypeParam sockets;
+  if (!sockets.first().set_blocking_mode(false)) {
+    throw Exception();
   }
-};
+  auto_Object<Buffer> buffer = new Buffer(1);
+  ssize_t recv_ret = sockets.first().recv(*buffer, 0);
+  ASSERT_EQ(recv_ret, -1);
+  ASSERT_TRUE(sockets.first().want_recv());
+}
+
+REGISTER_TYPED_TEST_CASE_P(SocketTest, getfqdn, gethostname, getpeername, getsockname, MessageFlags, set_blocking_mode, want_recv);
 }
 }
 

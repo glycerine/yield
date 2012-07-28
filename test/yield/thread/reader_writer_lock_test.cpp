@@ -30,9 +30,7 @@
 #include "yield/exception.hpp"
 #include "yield/thread/reader_writer_lock.hpp"
 #include "yield/thread/thread.hpp"
-#include "yunit.hpp"
-
-TEST_SUITE(ReaderWriterLock);
+#include "gtest/gtest.h"
 
 namespace yield {
 namespace thread {
@@ -44,10 +42,10 @@ TEST(ReaderWriterLock, rdlock) {
 
 //class ReaderWriterLockMultiReaderTest : public ReaderWriterLockTest {
 //public:
-//  // yunit::Test
+//  // ::testing::Test
 //  virtual void run() {
 //    bool rdlock_ret = rwlock.rdlock();
-//    throw_assert(rdlock_ret);
+//    ASSERT_TRUE(rdlock_ret);
 //
 //    auto_Object<Thread> thread = new Thread(thread_run, this);
 //    thread->join();
@@ -58,7 +56,7 @@ TEST(ReaderWriterLock, rdlock) {
 //    bool rdlock_ret
 //    = static_cast<ReaderWriterLockMultiReaderTest*>(this_)
 //      ->rwlock.rdlock();
-//    throw_assert(rdlock_ret);
+//    ASSERT_TRUE(rdlock_ret);
 //  }
 //};
 //

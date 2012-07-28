@@ -27,26 +27,22 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/time.hpp"
 #include "yield/thread/runnable.hpp"
 #include "yield/thread/semaphore.hpp"
 #include "yield/thread/thread.hpp"
-#include "yunit.hpp"
-
-TEST_SUITE(Semaphore);
+#include "gtest/gtest.h"
 
 namespace yield {
 namespace thread {
-class SemaphoreTest : public yunit::Test {
+class SemaphoreTest : public ::testing::Test {
 public:
-  // yunit::Test
-  void setup() {
+  void SetUp() {
     semaphore = new Semaphore();
   }
 
-  void teardown() {
+  void TearDown() {
     delete semaphore;
     semaphore = NULL;
   }
@@ -81,7 +77,7 @@ protected:
 };
 
 
-TEST_EX(Semaphore, threaded, SemaphoreTest) {
+TEST_F(SemaphoreTest, threaded) {
   semaphore->post();
   Thread thread(*new OtherThread(exit_count, *semaphore));
   while (exit_count < 1) {
@@ -90,26 +86,26 @@ TEST_EX(Semaphore, threaded, SemaphoreTest) {
   thread.join();
 }
 
-TEST_EX(Semaphore, timedwait, SemaphoreTest) {
+TEST_F(SemaphoreTest, timedwait) {
   semaphore->post();
-  throw_assert(semaphore->timedwait(0.1));
+  ASSERT_TRUE(semaphore->timedwait(0.1));
   Time start_time(Time::now());
   semaphore->timedwait(0.1);
   Time elapsed_time(Time::now() - start_time);
-  throw_assert_ge(elapsed_time, Time(0.1));
+  ASSERT_GE(elapsed_time, Time(0.1));
 }
 
-TEST_EX(Semaphore, trywait, SemaphoreTest) {
+TEST_F(SemaphoreTest, trywait) {
   semaphore->post();
-  throw_assert(semaphore->trywait());
-  throw_assert_false(semaphore->trywait());
+  ASSERT_TRUE(semaphore->trywait());
+  ASSERT_FALSE(semaphore->trywait());
   semaphore->post();
-  throw_assert(semaphore->trywait());
+  ASSERT_TRUE(semaphore->trywait());
 }
 
-TEST_EX(Semaphore, wait, SemaphoreTest) {
+TEST_F(SemaphoreTest, wait) {
   semaphore->post();
-  throw_assert(semaphore->wait());
+  ASSERT_TRUE(semaphore->wait());
 }
 }
 }

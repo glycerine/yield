@@ -36,15 +36,14 @@
 #include "yield/stage/stage.hpp"
 #include "yield/stage/stage_scheduler.hpp"
 #include "yield/thread/thread.hpp"
-#include "yunit.hpp"
-
+#include "gtest/gtest.h"
 
 namespace yield {
 namespace stage {
 template <class StageSchedulerType>
-class StageSchedulerScheduleTest : public yunit::Test {
+class StageSchedulerScheduleTest : public ::testing::Test {
 public:
-  // yunit::Test
+  // ::testing::Test
   void run() {
     auto_Object<TestEventHandler> event_handler = new TestEventHandler;
     auto_Object<Stage> stage = new Stage(event_handler->inc_ref());
@@ -54,18 +53,6 @@ public:
     while (event_handler->get_seen_events_count() < 1) {
       yield::thread::Thread::sleep(0.1);
     }
-  }
-};
-
-
-template <class StageSchedulerType>
-class StageSchedulerTestSuite : public yunit::TestSuite {
-public:
-  StageSchedulerTestSuite() {
-    add(
-      "StageScheduler::schedule",
-      new StageSchedulerScheduleTest<StageSchedulerType>
-    );
   }
 };
 }

@@ -30,7 +30,7 @@
 #include "directory_watch.hpp"
 #include "file_watch.hpp"
 #include "../watches.hpp"
-#include "yield/assert.hpp"
+#include "yield/debug.hpp"
 #include "yield/exception.hpp"
 #include "yield/log.hpp"
 #include "yield/fs/poll/fs_event_queue.hpp"

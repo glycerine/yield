@@ -27,11 +27,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/assert.hpp"
 #include "yield/poll/fd_event.hpp"
-#include "yunit.hpp"
-
-TEST_SUITE(FDEvent);
+#include "gtest/gtest.h"
 
 namespace yield {
 namespace poll {
@@ -43,28 +40,28 @@ TEST(FDEvent, constructors) {
 }
 
 TEST(FDEvent, get_fd) {
-  throw_assert_eq(
+  ASSERT_EQ(
     FDEvent(static_cast<fd_t>(0), FDEvent::TYPE_READ_READY).get_fd(),
-    0
+    static_cast<fd_t>(0)
   );
 }
 
 TEST(FDEvent, get_type) {
-  throw_assert_eq(
+  ASSERT_EQ(
     FDEvent(static_cast<fd_t>(0), FDEvent::TYPE_READ_READY).get_type(),
     FDEvent::TYPE_READ_READY
   );
 }
 
 TEST(FDEvent, get_type_id) {
-  throw_assert_eq(
+  ASSERT_EQ(
     FDEvent(static_cast<fd_t>(0), FDEvent::TYPE_READ_READY).get_type_id(),
     FDEvent::TYPE_ID
   );
 }
 
 TEST(FDEvent, get_type_name) {
-  throw_assert_eq(
+  ASSERT_EQ(
     strcmp(
       FDEvent(static_cast<fd_t>(0), FDEvent::TYPE_READ_READY).get_type_name(),
       "yield::poll::FDEvent"

@@ -30,7 +30,8 @@
 #include "queue_test.hpp"
 #include "yield/queue/rendezvous_concurrent_queue.hpp"
 
-TEST_SUITE_EX(
-  RendezvousConcurrentQueue,
-  yield::queue::QueueTestSuite< yield::queue::RendezvousConcurrentQueue<uint32_t> >
-);
+namespace yield {
+namespace queue {
+INSTANTIATE_TYPED_TEST_CASE_P(RendezvousConcurrentQueue, QueueTest, RendezvousConcurrentQueue<uint32_t>);
+}
+}

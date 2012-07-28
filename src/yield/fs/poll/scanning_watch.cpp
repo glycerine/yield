@@ -28,7 +28,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "scanning_watch.hpp"
-#include "yield/assert.hpp"
+#include "yield/debug.hpp"
 
 namespace yield {
 namespace fs {

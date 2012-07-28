@@ -27,18 +27,15 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/exception.hpp"
 #include "yield/fs/directory.hpp"
 #include "yield/fs/file_system.hpp"
-#include "yunit.hpp"
-
-TEST_SUITE(Directory);
+#include "gtest/gtest.h"
 
 namespace yield {
 namespace fs {
-class DirectoryTest : public yunit::Test {
+class DirectoryTest : public ::testing::Test {
 protected:
   DirectoryTest()
     : test_dir_name("directory_test"),
@@ -47,9 +44,9 @@ protected:
     directory = NULL;
   }
 
-  // yunit::Test
-  void setup() {
-    teardown();
+  // ::testing::Test
+  void SetUp() {
+    TearDown();
 
     if (!FileSystem().mkdir(get_test_dir_name())) {
       throw Exception();
@@ -65,7 +62,7 @@ protected:
     }
   }
 
-  void teardown() {
+  void TearDown() {
     Directory::dec_ref(directory);
     directory = NULL;
 
@@ -99,14 +96,14 @@ private:
 };
 
 
-TEST_EX(Directory, close, DirectoryTest) {
+TEST_F(DirectoryTest, close) {
   if (!get_directory().close()) {
     throw Exception();
   }
 }
 
 #ifndef _WIN32
-TEST_EX(Directory, read_dev, DirectoryTest) {
+TEST_F(DirectoryTest, read_dev) {
   auto_Object<Directory> directory = FileSystem().opendir("/dev");
   Directory::Entry* dentry = directory->read();
   while (dentry != NULL) {
@@ -116,31 +113,31 @@ TEST_EX(Directory, read_dev, DirectoryTest) {
 }
 #endif
 
-TEST_EX(Directory, read, DirectoryTest) {
+TEST_F(DirectoryTest, read) {
   for (uint8_t i = 0; i < 3; i++) {
     auto_Object<Directory::Entry> dentry = get_directory().read();
     if (dentry->get_name() == Path::CURRENT_DIRECTORY) {
-      throw_assert_true(dentry->ISDIR());
-      throw_assert_false(dentry->is_hidden());
-      throw_assert_true(dentry->is_special());
+      ASSERT_TRUE(dentry->ISDIR());
+      ASSERT_FALSE(dentry->is_hidden());
+      ASSERT_TRUE(dentry->is_special());
     } else if (dentry->get_name() == Path::PARENT_DIRECTORY) {
-      throw_assert_true(dentry->ISDIR());
-      throw_assert_false(dentry->is_hidden());
-      throw_assert_true(dentry->is_special());
+      ASSERT_TRUE(dentry->ISDIR());
+      ASSERT_FALSE(dentry->is_hidden());
+      ASSERT_TRUE(dentry->is_special());
     } else {
-      throw_assert_eq(dentry->get_name(), get_test_file_name());
-      throw_assert_true(dentry->ISREG());
-      throw_assert_false(dentry->is_hidden());
-      throw_assert_false(dentry->is_special());
+      ASSERT_EQ(dentry->get_name(), get_test_file_name());
+      ASSERT_TRUE(dentry->ISREG());
+      ASSERT_FALSE(dentry->is_hidden());
+      ASSERT_FALSE(dentry->is_special());
     }
   }
 }
 
-TEST_EX(Directory, rewind, DirectoryTest) {
+TEST_F(DirectoryTest, rewind) {
   for (uint8_t i = 0; i < 2; i++) {
     for (uint8_t j = 0; j < 3; j++) {
       auto_Object<Directory::Entry> dentry = get_directory().read();
-      throw_assert_true(
+      ASSERT_TRUE(
         dentry->get_name() == Path::CURRENT_DIRECTORY
         ||
         dentry->get_name() == Path::PARENT_DIRECTORY

@@ -30,7 +30,7 @@
 #ifndef _YIELD_QUEUE_NON_BLOCKING_CONCURRENT_QUEUE_HPP_
 #define _YIELD_QUEUE_NON_BLOCKING_CONCURRENT_QUEUE_HPP_
 
-#include "yield/assert.hpp"
+#include "yield/debug.hpp"
 #include "yield/atomic.hpp"
 
 namespace yield {

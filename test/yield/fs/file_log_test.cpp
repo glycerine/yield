@@ -27,22 +27,19 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/assert.hpp"
 #include "yield/fs/file_log.hpp"
 #include "yield/fs/file_system.hpp"
-#include "yunit.hpp"
-
-TEST_SUITE(FileLog);
+#include "gtest/gtest.h"
 
 namespace yield {
 namespace fs {
-class FileLogTest : public yunit::Test {
+class FileLogTest : public ::testing::Test {
 public:
-  void setup() {
-    teardown();
+  void SetUp() {
+    TearDown();
   }
 
-  void teardown() {
+  void TearDown() {
     FileSystem().unlink(get_test_file_path());
   }
 
@@ -59,15 +56,15 @@ private:
   Path test_file_path;
 };
 
-TEST_EX(FileLog, constructor, FileLogTest) {
+TEST_F(FileLogTest, constructor) {
   FileLog file_log(get_test_file_path());
 }
 
-TEST_EX(FileLog, write, FileLogTest) {
-  throw_assert_false(FileSystem().exists(get_test_file_path()));
+TEST_F(FileLogTest, write) {
+  ASSERT_FALSE(FileSystem().exists(get_test_file_path()));
   FileLog file_log(get_test_file_path());
   static_cast<Log&>(file_log).write("test", Log::Level::DEBUG);
-  throw_assert(FileSystem().exists(get_test_file_path()));
+  ASSERT_TRUE(FileSystem().exists(get_test_file_path()));
 }
 }
 }

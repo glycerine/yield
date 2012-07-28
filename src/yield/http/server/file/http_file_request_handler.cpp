@@ -27,7 +27,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/assert.hpp"
+#include "yield/debug.hpp"
 #include "yield/fs/file_system.hpp"
 #include "yield/http/server/http_request.hpp"
 #include "yield/http/server/file/http_file_request_handler.hpp"

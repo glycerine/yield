@@ -91,7 +91,6 @@ option_parser.add_option('--generate-proj', action='store_true')
 option_parser.add_option('--generate-src', action='store_true')
 option_parser.add_option('--generate-src-rl', action='store_true')
 option_parser.add_option('--generate-test', action='store_true')
-option_parser.add_option('--generate-test_main_cpp', action='store_true')
 option_parser.add_option('--generate-test_py', action='store_true')
 
 options, _ = option_parser.parse_args()
@@ -343,8 +342,6 @@ INCLUDE_FILE_PATHS['yield'] = [
     path_join(YIELD_INCLUDE_DIR_PATH, 'yield', 'time.hpp'), # before event_queue
 ] + \
 INCLUDE_FILE_PATHS['yield']
-
-INCLUDE_FILE_PATHS['yield_test'] = [path_join(YIELD_INCLUDE_DIR_PATH, 'yunit.hpp')]
 
 INCLUDE_FILE_PATHS['yield.fs'] = [
     path_join(YIELD_INCLUDE_DIR_PATH, 'yield', 'fs', 'path.hpp'), # before directory
@@ -635,106 +632,6 @@ if options.generate_src or options.generate_src_rl:
                     force=options.force,
                     project='Yield'
                 )
-
-
-if options.generate_test or options.generate_test_main_cpp:
-    for project_name in options.project_names:
-        test_suite_decls = []
-        test_suite_runs = []
-
-        for test_cpp_file in [source_file
-            for source_file in SourceFiles(SOURCE_FILE_PATHS[project_name + '_test'])
-            if source_file.get_language() == 'cpp']:
-
-            test_suite_names = []
-            test_cpp_file_lines = open(test_cpp_file.get_path()).readlines()
-            test_cpp_file_line_i = 0
-            while test_cpp_file_line_i < len(test_cpp_file_lines):
-                test_cpp_file_line = test_cpp_file_lines[test_cpp_file_line_i].strip()
-                if test_cpp_file_line.startswith('TEST_SUITE'):
-                    test_suite_declaration = []
-                    while test_cpp_file_line_i < len(test_cpp_file_lines):
-                        test_cpp_file_line = test_cpp_file_lines[test_cpp_file_line_i].strip()
-                        test_suite_declaration.append(test_cpp_file_line)
-                        test_cpp_file_line_i += 1
-                        if test_cpp_file_line.find(';') != -1:
-                            break
-                    test_suite_declaration = ''.join(test_suite_declaration).replace(' ', '')
-                    test_suite_name = re.match('TEST_SUITE(?:_EX)?\((\w+)', test_suite_declaration)
-                    if test_suite_name is not None:
-                        test_suite_name = test_suite_name.groups()[0]
-                        if not test_suite_name.endswith('TestSuite'):
-                            test_suite_name += 'TestSuite'
-                        if not test_suite_name in test_suite_names:
-                            test_suite_names.append(test_suite_name)
-                else:
-                    test_cpp_file_line_i += 1
-                    continue
-
-            if len(test_suite_names) > 0:
-                test_suite_names = sorted(test_suite_names)
-
-                for test_suite_name in test_suite_names:
-                    assert test_suite_name.endswith('TestSuite')
-                    test_suite_stem = test_suite_name[:-9]
-
-                    test_suite_decl = \
-                        "extern yunit::TestSuite& %(test_suite_name)s();" % locals()
-
-                    test_suite_run = """\
-// %(test_suite_stem)s
-std::cout << "%(test_suite_stem)s:" << std::endl;
-failed_test_case_count += %(test_suite_name)s().run();
-std::cout << std::endl;""" % locals()
-
-                    if test_cpp_file.get_platform() != '*':
-                        platform_guard = PLATFORM_GUARDS[test_cpp_file.get_platform()]
-
-                        test_suite_decl = indent(INDENT_SPACES['cpp'], test_suite_decl)
-                        test_suite_decl = "%(platform_guard)s\n%(test_suite_decl)s\n#endif" % locals()
-
-                        test_suite_run = indent(INDENT_SPACES['cpp'], test_suite_run)
-                        test_suite_run = '%(platform_guard)s\n%(test_suite_run)s\n#endif' % locals()
-
-                    test_suite_decls.append(test_suite_decl)
-                    test_suite_runs.append(test_suite_run)
-
-        test_suite_decls = '\n'.join(test_suite_decls)
-        test_suite_runs = \
-            indent(INDENT_SPACES['cpp'], '\n\n'.join(test_suite_runs))
-
-        test_main_cpp_file_path = \
-            path_join(
-                SOURCE_DIR_PATHS[project_name + '_test'],
-                '_'.join(project_name.split('.')) + '_test_main.cpp'
-            )
-
-        write_file(
-            test_main_cpp_file_path,
-            """\
-#include "yunit.hpp"
-
-#include <iostream>
-
-%(test_suite_decls)s
-
-int main(int, char**) {
-  int failed_test_case_count = 0;
-
-%(test_suite_runs)s
-
-  return failed_test_case_count;
-}
-
-""" % locals(),
-            force=options.force
-        )
-
-        SourceFiles(test_main_cpp_file_path).format(
-            author=AUTHOR,
-            force=options.force,
-            project='Yield'
-        )
 
 
 if options.generate_test or options.generate_test_py:

@@ -27,13 +27,10 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/assert.hpp"
 #include "yield/fs/poll/fs_event.hpp"
-#include "yunit.hpp"
+#include "gtest/gtest.h"
 
 #include <sstream>
-
-TEST_SUITE(FSEvent);
 
 namespace yield {
 namespace fs {
@@ -44,42 +41,42 @@ TEST(FSEvent, constructors) {
 }
 
 TEST(FSEvent, get_new_path) {
-  throw_assert_eq(
+  ASSERT_EQ(
     FSEvent("old_path", "new_path", FSEvent::TYPE_FILE_RENAME).get_new_path(),
     Path("new_path")
   );
 }
 
 TEST(FSEvent, get_old_path) {
-  throw_assert_eq(
+  ASSERT_EQ(
     FSEvent("old_path", "new_path", FSEvent::TYPE_FILE_RENAME).get_old_path(),
     Path("old_path")
   );
 }
 
 TEST(FSEvent, get_path) {
-  throw_assert_eq(
+  ASSERT_EQ(
     FSEvent("path", FSEvent::TYPE_FILE_ADD).get_path(),
     Path("path")
   );
 }
 
 TEST(FSEvent, get_type) {
-  throw_assert_eq(
+  ASSERT_EQ(
     FSEvent("path", FSEvent::TYPE_FILE_ADD).get_type(),
     FSEvent::TYPE_FILE_ADD
   );
 }
 
 TEST(FSEvent, get_type_id) {
-  throw_assert_eq(
+  ASSERT_EQ(
     FSEvent("path", FSEvent::TYPE_FILE_ADD).get_type_id(),
     FSEvent::TYPE_ID
   );
 }
 
 TEST(FSEvent, get_type_name) {
-  throw_assert_eq(
+  ASSERT_EQ(
     strcmp(
       FSEvent("path", FSEvent::TYPE_FILE_ADD).get_type_name(),
       "yield::fs::poll::FSEvent"
@@ -91,7 +88,7 @@ TEST(FSEvent, get_type_name) {
 TEST(FSEvent, print) {
   std::ostringstream oss;
   oss << FSEvent("path", FSEvent::TYPE_FILE_ADD);
-  throw_assert_ne(oss.str().size(), 0);
+  ASSERT_NE(oss.str().size(), 0u);
 }
 }
 }

@@ -35,13 +35,11 @@
 
 #include <fcntl.h> // For O_*
 
-TEST_SUITE(File);
-
 namespace yield {
 namespace fs {
 class FilePair : public ChannelPair {
 public:
-  FilePair(const Path& path) : path(path) {
+  FilePair() : path("file_test.txt") {
     read_file = write_file = NULL;
   }
 
@@ -92,27 +90,10 @@ private:
 };
 
 
-class FilePairFactory : public ChannelPairFactory {
+class FileTest : public ChannelTest<FilePair> {
 public:
-  FilePairFactory(const Path& path) : path(path) {
+  FileTest() {
   }
-
-public:
-  // yield::ChannelPairFactory
-  ChannelPair& create_channel_pair() {
-    return *new FilePair(path);
-  }
-
-private:
-  Path path;
-};
-
-
-class FileTest : public ChannelTest {
-public:
-  FileTest()
-    : ChannelTest(*new FilePairFactory("file_test.txt"))
-  { }
 
 public:
   File& get_read_file() {
@@ -124,8 +105,7 @@ public:
   }
 };
 
-
-TEST_EX(File, datasync, FileTest) {
+TEST_F(FileTest, datasync) {
   get_write_file().write(
     get_test_string().data(),
     get_test_string().size()
@@ -135,13 +115,13 @@ TEST_EX(File, datasync, FileTest) {
     throw Exception();
   }
 
-  throw_assert_ge(
+  ASSERT_GE(
     get_write_file().stat()->get_size(),
     get_test_string().size()
   );
 }
 
-TEST_EX(File, dup, FileTest) {
+TEST_F(FileTest, dup) {
   File* dup_file = get_read_file().dup();
   if (dup_file != NULL) {
     File::dec_ref(*dup_file);
@@ -158,7 +138,7 @@ TEST_EX(File, dup, FileTest) {
 }
 
 #ifndef _WIN32
-TEST_EX(File, getlk, FileTest) {
+TEST_F(FileTest, getlk) {
   if (!get_write_file().setlk(File::Lock(0, 256))) {
     throw Exception();
   }
@@ -172,18 +152,18 @@ TEST_EX(File, getlk, FileTest) {
 }
 #endif
 
-TEST_EX(File, get_type_id, FileTest) {
-  throw_assert_eq(get_write_file().get_type_id(), File::TYPE_ID);
+TEST_F(FileTest, get_type_id) {
+  ASSERT_EQ(get_write_file().get_type_id(), File::TYPE_ID);
 }
 
-TEST_EX(File, get_type_name, FileTest) {
-  throw_assert_eq(
+TEST_F(FileTest, get_type_name) {
+  ASSERT_EQ(
     strcmp(get_write_file().get_type_name(), "yield::fs::File"),
     0
   );
 }
 
-TEST_EX(File, map, FileTest) {
+TEST_F(FileTest, map) {
   auto_Object<File::Map> mmf = get_read_file().mmap();
 }
 
@@ -193,7 +173,7 @@ TEST_EX(File, map, FileTest) {
 //    : FileTest(file_pair_factory)
 //  { }
 //
-//  // yunit::Test
+//  // ::testing::Test
 //  void run() {
 //    {
 //      auto_Object<File::Map> mmf = get_test_file().mmap();
@@ -225,8 +205,8 @@ TEST_EX(File, map, FileTest) {
 //          false
 //        );
 //
-//      throw_assert_eq(mmf->capacity(), get_test_string().size());
-//      throw_assert_eq
+//      ASSERT_EQ(mmf->capacity(), get_test_string().size());
+//      ASSERT_EQ
 //      (
 //        strncmp(*mmf, get_test_string().data(), get_test_string().size()),
 //        0
@@ -242,7 +222,7 @@ TEST_EX(File, map, FileTest) {
 //    : FileTest(file_pair_factory)
 //  { }
 //
-//  // yunit::Test
+//  // ::testing::Test
 //  void run() {
 //    auto_Object<File::Map> mmf = get_test_file().mmap();
 //
@@ -261,7 +241,7 @@ TEST_EX(File, map, FileTest) {
 //  }
 //};
 
-TEST_EX(File, pread, FileTest) {
+TEST_F(FileTest, pread) {
   write();
 
   string _string;
@@ -274,27 +254,27 @@ TEST_EX(File, pread, FileTest) {
     );
 
   if (pread_ret >= 0) {
-    throw_assert_eq(static_cast<size_t>(pread_ret), _string.size());
-    throw_assert_eq(_string, " string");
+    ASSERT_EQ(static_cast<size_t>(pread_ret), _string.size());
+    ASSERT_EQ(_string, " string");
   } else {
     throw Exception();
   }
 }
 
-TEST_EX(File, pread_Buffer, FileTest) {
+TEST_F(FileTest, pread_Buffer) {
   write();
 
   auto_Object<Buffer> buffer = new Buffer(Buffer::getpagesize(), 7);
   ssize_t pread_ret = get_read_file().pread(*buffer, 4);
   if (pread_ret >= 0) {
-    throw_assert_eq(pread_ret, 7);
-    throw_assert_eq(*buffer, " string");
+    ASSERT_EQ(pread_ret, 7);
+    ASSERT_EQ(*buffer, " string");
   } else {
     throw Exception();
   }
 }
 
-TEST_EX(File, pread_Buffers, FileTest) {
+TEST_F(FileTest, pread_Buffers) {
   write();
 
   auto_Object<Buffer> _str = new Buffer(Buffer::getpagesize(), 4);
@@ -303,15 +283,15 @@ TEST_EX(File, pread_Buffers, FileTest) {
 
   ssize_t pread_ret = get_read_file().pread(*_str, 4);
   if (pread_ret >= 0) {
-    throw_assert_eq(pread_ret, 7);
-    throw_assert_eq(*_str, " str");
-    throw_assert_eq(*ing, "ing");
+    ASSERT_EQ(pread_ret, 7);
+    ASSERT_EQ(*_str, " str");
+    ASSERT_EQ(*ing, "ing");
   } else {
     throw Exception();
   }
 }
 
-TEST_EX(File, preadv_one, FileTest) {
+TEST_F(FileTest, preadv_one) {
   write();
 
   string _string;
@@ -323,14 +303,14 @@ TEST_EX(File, preadv_one, FileTest) {
   ssize_t preadv_ret = get_read_file().preadv(&iov, 1, 4);
 
   if (preadv_ret >= 0) {
-    throw_assert_eq(static_cast<size_t>(preadv_ret), _string.size());
-    throw_assert_eq(_string, " string");
+    ASSERT_EQ(static_cast<size_t>(preadv_ret), _string.size());
+    ASSERT_EQ(_string, " string");
   } else {
     throw Exception();
   }
 }
 
-TEST_EX(File, preadv_two, FileTest) {
+TEST_F(FileTest, preadv_two) {
   write();
 
   string _string;
@@ -344,24 +324,24 @@ TEST_EX(File, preadv_two, FileTest) {
   ssize_t preadv_ret = get_read_file().preadv(iov, 2, 4);
 
   if (preadv_ret >= 0) {
-    throw_assert_eq(static_cast<size_t>(preadv_ret), _string.size());
-    throw_assert_eq(_string, " string");
+    ASSERT_EQ(static_cast<size_t>(preadv_ret), _string.size());
+    ASSERT_EQ(_string, " string");
   } else {
     throw Exception();
   }
 }
 
-TEST_EX(File, pwrite, FileTest) {
+TEST_F(FileTest, pwrite) {
   ssize_t pwrite_ret = get_write_file().pwrite(" string", 7, 4);
   if (pwrite_ret >= 0) {
-    throw_assert_eq(pwrite_ret, 7);
+    ASSERT_EQ(pwrite_ret, 7);
   } else {
     throw Exception();
   }
 
   pwrite_ret = get_write_file().pwrite("test", 4, 0);
   if (pwrite_ret >= 0) {
-    throw_assert_eq(pwrite_ret, 4);
+    ASSERT_EQ(pwrite_ret, 4);
   } else {
     throw Exception();
   }
@@ -369,18 +349,18 @@ TEST_EX(File, pwrite, FileTest) {
   read();
 }
 
-TEST_EX(File, pwrite_Buffer, FileTest) {
+TEST_F(FileTest, pwrite_Buffer) {
   auto_Object<Buffer> buffer = Buffer::copy(" string");
   ssize_t pwrite_ret = get_write_file().pwrite(*buffer, 4);
   if (pwrite_ret >= 0) {
-    throw_assert_eq(pwrite_ret, 7);
+    ASSERT_EQ(pwrite_ret, 7);
   } else {
     throw Exception();
   }
 
   pwrite_ret = get_write_file().pwrite("test", 4, 0);
   if (pwrite_ret >= 0) {
-    throw_assert_eq(pwrite_ret, 4);
+    ASSERT_EQ(pwrite_ret, 4);
   } else {
     throw Exception();
   }
@@ -388,21 +368,21 @@ TEST_EX(File, pwrite_Buffer, FileTest) {
   read();
 }
 
-TEST_EX(File, pwrite_Buffers, FileTest) {
+TEST_F(FileTest, pwrite_Buffers) {
   auto_Object<Buffer> _str = Buffer::copy(" str");
   auto_Object<Buffer> ing = Buffer::copy("ing");
   _str->set_next_buffer(ing->inc_ref());
 
   ssize_t pwrite_ret = get_write_file().pwrite(*_str, 4);
   if (pwrite_ret >= 0) {
-    throw_assert_eq(pwrite_ret, 7);
+    ASSERT_EQ(pwrite_ret, 7);
   } else {
     throw Exception();
   }
 
   pwrite_ret = get_write_file().pwrite("test", 4, 0);
   if (pwrite_ret >= 0) {
-    throw_assert_eq(pwrite_ret, 4);
+    ASSERT_EQ(pwrite_ret, 4);
   } else {
     throw Exception();
   }
@@ -410,13 +390,13 @@ TEST_EX(File, pwrite_Buffers, FileTest) {
   read();
 }
 
-TEST_EX(File, pwritev_one, FileTest) {
+TEST_F(FileTest, pwritev_one) {
   iovec iov;
   iov.iov_base = const_cast<char*>(" string");
   iov.iov_len = 7;
   ssize_t pwritev_ret = get_write_file().pwritev(&iov, 1, 4);
   if (pwritev_ret >= 0) {
-    throw_assert_eq(pwritev_ret, 7);
+    ASSERT_EQ(pwritev_ret, 7);
   } else {
     throw Exception();
   }
@@ -425,7 +405,7 @@ TEST_EX(File, pwritev_one, FileTest) {
   iov.iov_len = 4;
   pwritev_ret = get_write_file().pwritev(&iov, 1, 0);
   if (pwritev_ret >= 0) {
-    throw_assert_eq(pwritev_ret, 4);
+    ASSERT_EQ(pwritev_ret, 4);
   } else {
     throw Exception();
   }
@@ -433,10 +413,10 @@ TEST_EX(File, pwritev_one, FileTest) {
   read();
 }
 
-TEST_EX(File, pwritev_two, FileTest) {
+TEST_F(FileTest, pwritev_two) {
   ssize_t pwrite_ret = get_write_file().pwrite(" string", 7, 4);
   if (pwrite_ret >= 0) {
-    throw_assert_eq(pwrite_ret, 7);
+    ASSERT_EQ(pwrite_ret, 7);
   } else {
     throw Exception();
   }
@@ -448,7 +428,7 @@ TEST_EX(File, pwritev_two, FileTest) {
   iov[1].iov_len = 2;
   ssize_t pwritev_ret = get_write_file().pwritev(iov, 2, 0);
   if (pwritev_ret >= 0) {
-    throw_assert_eq(pwritev_ret, 4);
+    ASSERT_EQ(pwritev_ret, 4);
   } else {
     throw Exception();
   }
@@ -456,23 +436,23 @@ TEST_EX(File, pwritev_two, FileTest) {
   read();
 }
 
-TEST_EX(File, seek, FileTest) {
+TEST_F(FileTest, seek) {
   write();
 
   // SEEK_SET
   uint64_t seek_ret = get_read_file().seek(4);
-  throw_assert_eq(seek_ret, 4);
+  ASSERT_EQ(seek_ret, 4);
 
   // SEEK_CUR
   seek_ret = get_read_file().seek(2, SEEK_CUR);
-  throw_assert_eq(seek_ret, 6);
+  ASSERT_EQ(seek_ret, 6);
 
   // SEEK_END
   seek_ret = get_read_file().seek(-1, SEEK_END);
-  throw_assert_eq(seek_ret, get_test_string().size() - 1);
+  ASSERT_EQ(seek_ret, get_test_string().size() - 1);
 
   seek_ret = get_read_file().seek(1, SEEK_END);
-  throw_assert_eq(seek_ret, get_test_string().size() + 1);
+  ASSERT_EQ(seek_ret, get_test_string().size() + 1);
 
   // seek and read
   seek_ret = get_read_file().seek(4);
@@ -484,39 +464,39 @@ TEST_EX(File, seek, FileTest) {
       _string.size()
     );
   if (read_ret >= 0) {
-    throw_assert_eq(read_ret, 7);
-    throw_assert_eq(_string, " string");
+    ASSERT_EQ(read_ret, 7);
+    ASSERT_EQ(_string, " string");
   } else {
     throw Exception();
   }
 }
 
-TEST_EX(File, setlk, FileTest) {
+TEST_F(FileTest, setlk) {
   if (!get_write_file().setlk(File::Lock(0, 256))) {
     throw Exception();
   }
 }
 
-TEST_EX(File, setlkw, FileTest) {
+TEST_F(FileTest, setlkw) {
   if (!get_write_file().setlkw(File::Lock(0, 256))) {
     throw Exception();
   }
 }
 
-TEST_EX(File, stat, FileTest) {
+TEST_F(FileTest, stat) {
   DateTime now = DateTime::now();
   auto_Object<Stat> stbuf = get_write_file().stat();
-  throw_assert_ne(stbuf->get_atime(), DateTime::INVALID_DATE_TIME);
-  throw_assert_le(stbuf->get_atime(), now);
-  throw_assert_ne(stbuf->get_ctime(), DateTime::INVALID_DATE_TIME);
-  throw_assert_le(stbuf->get_ctime(), now);
-  throw_assert_ne(stbuf->get_mtime(), DateTime::INVALID_DATE_TIME);
-  throw_assert_le(stbuf->get_mtime(), now);
-  throw_assert_eq(stbuf->get_nlink(), 1);
-  throw_assert_eq(stbuf->get_size(), 0);
+  ASSERT_NE(stbuf->get_atime(), DateTime::INVALID_DATE_TIME);
+  ASSERT_LE(stbuf->get_atime(), now);
+  ASSERT_NE(stbuf->get_ctime(), DateTime::INVALID_DATE_TIME);
+  ASSERT_LE(stbuf->get_ctime(), now);
+  ASSERT_NE(stbuf->get_mtime(), DateTime::INVALID_DATE_TIME);
+  ASSERT_LE(stbuf->get_mtime(), now);
+  ASSERT_EQ(stbuf->get_nlink(), 1);
+  ASSERT_EQ(stbuf->get_size(), 0);
 }
 
-TEST_EX(File, sync, FileTest) {
+TEST_F(FileTest, sync) {
   get_write_file().write(
     get_test_string().data(),
     get_test_string().size()
@@ -526,35 +506,35 @@ TEST_EX(File, sync, FileTest) {
     throw Exception();
   }
 
-  throw_assert_ge(
+  ASSERT_GE(
     get_write_file().stat()->get_size(),
     get_test_string().size()
   );
 }
 
-TEST_EX(File, tell, FileTest) {
-  throw_assert_eq(get_read_file().tell(), 0);
+TEST_F(FileTest, tell) {
+  ASSERT_EQ(get_read_file().tell(), 0);
 
   off_t seek_ret = get_read_file().seek(1024);
-  throw_assert_eq(seek_ret, 1024);
-  throw_assert_eq(get_read_file().tell(), seek_ret);
+  ASSERT_EQ(seek_ret, 1024);
+  ASSERT_EQ(get_read_file().tell(), seek_ret);
 
   seek_ret = get_read_file().seek(0);
-  throw_assert_eq(seek_ret, 0);
-  throw_assert_eq(get_read_file().tell(), seek_ret);
+  ASSERT_EQ(seek_ret, 0);
+  ASSERT_EQ(get_read_file().tell(), seek_ret);
 }
 
-TEST_EX(File, truncate, FileTest) {
+TEST_F(FileTest, truncate) {
   write();
 
   if (!get_write_file().truncate(0)) {
     throw Exception();
   }
 
-  throw_assert_eq(get_write_file().stat()->get_size(), 0);
+  ASSERT_EQ(get_write_file().stat()->get_size(), 0);
 }
 
-TEST_EX(File, unlk, FileTest) {
+TEST_F(FileTest, unlk) {
   if (get_write_file().setlkw(File::Lock(0, 256))) {
     if (!get_write_file().unlk(File::Lock(0, 256))) {
       throw Exception();

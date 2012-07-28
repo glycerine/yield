@@ -30,7 +30,6 @@
 #ifndef _YIELD_CHANNEL_TEST_HPP_
 #define _YIELD_CHANNEL_TEST_HPP_
 
-#include "channel_pair_factory.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/buffer.hpp"
 #include "yield/channel.hpp"
@@ -39,26 +38,24 @@
 #include "gtest/gtest.h"
 
 namespace yield {
-class ChannelTest : public yunit::Test {
+template <class ChannelPairType>
+class ChannelTest : public ::testing::Test {
 public:
   virtual ~ChannelTest() {
-    ChannelPairFactory::dec_ref(channel_pair_factory);
   }
 
-  virtual void setup() {
-    channel_pair = &channel_pair_factory.create_channel_pair();
+  virtual void SetUp() {
+    channel_pair = new ChannelPairType();
   }
 
-  virtual void teardown() {
+  virtual void TearDown() {
     ChannelPair::dec_ref(channel_pair);
     channel_pair = NULL;
   }
 
 protected:
-  ChannelTest(ChannelPairFactory& channel_pair_factory)
-    : channel_pair_factory(channel_pair_factory.inc_ref()),
-      test_string("test string")
-  { }
+  ChannelTest() : test_string("test string") {
+  }
 
 protected:
   Channel& get_read_channel() {
@@ -123,288 +120,109 @@ protected:
   }
 
 private:
-  ChannelPairFactory& channel_pair_factory;
   ChannelPair* channel_pair;
   string test_string;
 };
 
+TYPED_TEST_CASE_P(ChannelTest);
 
-class ChannelCloseTest : public ChannelTest {
-public:
-  ChannelCloseTest(ChannelPairFactory& channel_pair_factory)
-    : ChannelTest(channel_pair_factory)
-  { }
-
-public:
-  // yunit::Test
-  void run() {
-    if (!get_read_channel().close()) {
-      throw Exception();
-    }
+TYPED_TEST_P(ChannelTest, close) {
+  if (!get_read_channel().close()) {
+    throw Exception();
   }
-};
+}
 
+TYPED_TEST_P(ChannelTest, read) {
+  write();
+  read();
+}
 
-class ChannelReadTest : public ChannelTest {
-public:
-  ChannelReadTest(ChannelPairFactory& channel_pair_factory)
-    : ChannelTest(channel_pair_factory)
-  { }
+TYPED_TEST_P(ChannelTest, read_Buffer) {
+  this->write();
+  auto_Object<Buffer> test_buffer = new Buffer(get_test_string().size());
+  check_read(*test_buffer, get_read_channel().read(*test_buffer));
+}
 
-public:
-  // yunit::Test
-  void run() {
-    this->write();
-    this->read();
-  }
-};
+TYPED_TEST_P(ChannelTest, read_Buffers) {
+  this->write();
+  auto_Object<Buffer> test_buffer = new Buffer(get_test_string().size());
+  test_buffer->set_next_buffer(new Buffer(get_test_string().size()));
+  check_read(*test_buffer, get_read_channel().read(*test_buffer));
+}
 
+TYPED_TEST_P(ChannelTest, readv_one) {
+  this->write();
 
-class ChannelReadBufferTest : public ChannelTest {
-public:
-  ChannelReadBufferTest(ChannelPairFactory& channel_pair_factory)
-    : ChannelTest(channel_pair_factory)
-  { }
+  string test_string;
+  test_string.resize(get_test_string().size());
+  iovec iov;
+  iov.iov_base = const_cast<char*>(test_string.data());
+  iov.iov_len = test_string.size();
 
-public:
-  // yunit::Test
-  void run() {
-    this->write();
-    auto_Object<Buffer> test_buffer = new Buffer(get_test_string().size());
-    check_read(*test_buffer, get_read_channel().read(*test_buffer));
-  }
-};
+  check_read(
+    test_string.data(),
+    get_read_channel().readv(&iov, 1)
+  );
+}
 
+TYPED_TEST_P(ChannelTest, readv_two) {
+  this->write();
 
-class ChannelReadBuffersTest : public ChannelTest {
-public:
-public:
-  ChannelReadBuffersTest(ChannelPairFactory& channel_pair_factory)
-    : ChannelTest(channel_pair_factory)
-  { }
+  string test_string;
+  test_string.resize(get_test_string().size());
+  iovec iov[2];
+  iov[0].iov_base = const_cast<char*>(test_string.data());
+  iov[0].iov_len = 4;
+  iov[1].iov_base = const_cast<char*>(test_string.data()) + 4;
+  iov[1].iov_len = 7;
 
-public:
-  // yunit::Test
-  void run() {
-    this->write();
-    auto_Object<Buffer> test_buffer = new Buffer(get_test_string().size());
-    test_buffer->set_next_buffer(new Buffer(get_test_string().size()));
-    check_read(*test_buffer, get_read_channel().read(*test_buffer));
-  }
-};
+  check_read(
+    test_string.data(),
+    get_read_channel().readv(iov, 2)
+  );
+}
 
+TYPED_TEST_P(ChannelTest, write) {
+  write();
+  read();
+}
 
-class ChannelReadVOneTest : public ChannelTest {
-public:
-  ChannelReadVOneTest(ChannelPairFactory& channel_pair_factory)
-    : ChannelTest(channel_pair_factory)
-  { }
+TYPED_TEST_P(ChannelTest, write_Buffer) {
+  auto_Object<Buffer> test_buffer = Buffer::copy(get_test_string());
+  check_write(get_write_channel().write(*test_buffer));
 
-public:
-  // yunit::Test
-  void run() {
-    this->write();
+  read();
+}
 
-    string test_string;
-    test_string.resize(get_test_string().size());
-    iovec iov;
-    iov.iov_base = const_cast<char*>(test_string.data());
-    iov.iov_len = test_string.size();
+TYPED_TEST_P(ChannelTest, write_Buffers) {
+  auto_Object<Buffer> test_buffer = Buffer::copy(get_test_string());
+  test_buffer->set_next_buffer(new Buffer(1));
+  check_write(get_write_channel().write(*test_buffer));
 
-    check_read(
-      test_string.data(),
-      get_read_channel().readv(&iov, 1)
-    );
-  }
-};
+  read();
+}
 
+TYPED_TEST_P(ChannelTest, writev_one) {
+  iovec iov;
+  iov.iov_base = const_cast<char*>(get_test_string().data());
+  iov.iov_len = get_test_string().size();
+  check_write(get_write_channel().writev(&iov, 1));
 
-class ChannelReadVTwoTest : public ChannelTest {
-public:
-  ChannelReadVTwoTest(ChannelPairFactory& channel_pair_factory)
-    : ChannelTest(channel_pair_factory)
-  { }
+  read();
+}
 
-public:
-  // yunit::Test
-  void run() {
-    this->write();
+TYPED_TEST_P(ChannelTest, writev_two) {
+  iovec iov[2];
+  iov[0].iov_base = const_cast<char*>(get_test_string().data());
+  iov[0].iov_len = 4;
+  iov[1].iov_base = const_cast<char*>(get_test_string().data()) + 4;
+  iov[1].iov_len = get_test_string().size() - 4;
+  check_write(get_write_channel().writev(iov, 2));
 
-    string test_string;
-    test_string.resize(get_test_string().size());
-    iovec iov[2];
-    iov[0].iov_base = const_cast<char*>(test_string.data());
-    iov[0].iov_len = 4;
-    iov[1].iov_base = const_cast<char*>(test_string.data()) + 4;
-    iov[1].iov_len = 7;
+  read();
+}
 
-    check_read(
-      test_string.data(),
-      get_read_channel().readv(iov, 2)
-    );
-  }
-};
-
-
-class ChannelWriteTest : public ChannelTest {
-public:
-  ChannelWriteTest(ChannelPairFactory& channel_pair_factory)
-    : ChannelTest(channel_pair_factory)
-  { }
-
-public:
-  // yunit::Test
-  void run() {
-    this->write();
-    this->read();
-  }
-};
-
-
-class ChannelWriteBufferTest : public ChannelTest {
-public:
-  ChannelWriteBufferTest(ChannelPairFactory& channel_pair_factory)
-    : ChannelTest(channel_pair_factory)
-  { }
-
-public:
-  // yunit::Test
-  void run() {
-    auto_Object<Buffer> test_buffer = Buffer::copy(get_test_string());
-    check_write(get_write_channel().write(*test_buffer));
-
-    this->read();
-  }
-};
-
-
-class ChannelWriteBuffersTest : public ChannelTest {
-public:
-  ChannelWriteBuffersTest(ChannelPairFactory& channel_pair_factory)
-    : ChannelTest(channel_pair_factory)
-  { }
-
-public:
-  // yunit::Test
-  void run() {
-    auto_Object<Buffer> test_buffer = Buffer::copy(get_test_string());
-    test_buffer->set_next_buffer(new Buffer(1));
-    check_write(get_write_channel().write(*test_buffer));
-
-    this->read();
-  }
-};
-
-
-class ChannelWriteVOneTest : public ChannelTest {
-public:
-  ChannelWriteVOneTest(ChannelPairFactory& channel_pair_factory)
-    : ChannelTest(channel_pair_factory)
-  { }
-
-public:
-  // yunit::Test
-  void run() {
-    iovec iov;
-    iov.iov_base = const_cast<char*>(get_test_string().data());
-    iov.iov_len = get_test_string().size();
-    check_write(get_write_channel().writev(&iov, 1));
-
-    this->read();
-  }
-};
-
-
-class ChannelWriteVTwoTest : public ChannelTest {
-public:
-  ChannelWriteVTwoTest(ChannelPairFactory& channel_pair_factory)
-    : ChannelTest(channel_pair_factory)
-  { }
-
-public:
-  // yunit::Test
-  void run() {
-    iovec iov[2];
-    iov[0].iov_base = const_cast<char*>(get_test_string().data());
-    iov[0].iov_len = 4;
-    iov[1].iov_base
-    = const_cast<char*>(get_test_string().data()) + 4;
-    iov[1].iov_len = get_test_string().size() - 4;
-    check_write(get_write_channel().writev(iov, 2));
-
-    this->read();
-  }
-};
-
-
-//class ChannelTestSuite : public yunit::TestSuite {
-//public:
-//  ChannelTestSuite(YO_NEW_REF ChannelPairFactory& channel_pair_factory)
-//    : channel_pair_factory(channel_pair_factory) {
-//    add(
-//      "Channel::close",
-//      new ChannelCloseTest(channel_pair_factory)
-//    );
-//
-//    add("Channel::read", new ChannelReadTest(channel_pair_factory));
-//
-//    add(
-//      "Channel::read(Buffer)",
-//      new ChannelReadBufferTest(channel_pair_factory)
-//    );
-//
-//    add(
-//      "Channel::read(Buffers)",
-//      new ChannelReadBuffersTest(channel_pair_factory)
-//    );
-//
-//    add(
-//      "Channel::readv(iov, 1)",
-//      new ChannelReadVOneTest(channel_pair_factory)
-//    );
-//
-//    add(
-//      "Channel::readv(iov, 2)",
-//      new ChannelReadVTwoTest(channel_pair_factory)
-//    );
-//
-//    add(
-//      "Channel::write",
-//      new ChannelWriteTest(channel_pair_factory)
-//    );
-//
-//    add(
-//      "Channel::write(Buffer)",
-//      new ChannelWriteBufferTest(channel_pair_factory)
-//    );
-//
-//    add(
-//      "Channel::write(Buffers)",
-//      new ChannelWriteBuffersTest(channel_pair_factory)
-//    );
-//
-//    add(
-//      "Channel::writev(iov, 1)",
-//      new ChannelWriteVOneTest(channel_pair_factory)
-//    );
-//
-//    add(
-//      "Channel::writev(iov, 2)",
-//      new ChannelWriteVTwoTest(channel_pair_factory)
-//    );
-//  }
-//
-//  ~ChannelTestSuite() {
-//    ChannelPairFactory::dec_ref(channel_pair_factory);
-//  }
-//
-//  ChannelPairFactory& get_channel_pair_factory() {
-//    return channel_pair_factory;
-//  }
-//
-//private:
-//  ChannelPairFactory& channel_pair_factory;
-//};
+REGISTER_TYPED_TEST_CASE_P(ChannelTest, close, read, read_Buffer, read_Buffers, readv_one, readv_two, write, write_Buffer, write_Buffers, writev_one, writev_two);
 }
 
 #endif

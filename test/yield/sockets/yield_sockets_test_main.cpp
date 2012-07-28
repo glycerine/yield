@@ -27,37 +27,10 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yunit.hpp"
+#include "yield/types.hpp"
+#include "gtest/gtest.h"
 
-#include <iostream>
-
-extern yunit::TestSuite& DatagramSocketTestSuite();
-extern yunit::TestSuite& SocketAddressTestSuite();
-extern yunit::TestSuite& StreamSocketTestSuite();
-extern yunit::TestSuite& TCPSocketTestSuite();
-
-int main(int, char**) {
-  int failed_test_case_count = 0;
-
-  // DatagramSocket
-  std::cout << "DatagramSocket:" << std::endl;
-  failed_test_case_count += DatagramSocketTestSuite().run();
-  std::cout << std::endl;
-
-  // SocketAddress
-  std::cout << "SocketAddress:" << std::endl;
-  failed_test_case_count += SocketAddressTestSuite().run();
-  std::cout << std::endl;
-
-  // StreamSocket
-  std::cout << "StreamSocket:" << std::endl;
-  failed_test_case_count += StreamSocketTestSuite().run();
-  std::cout << std::endl;
-
-  // TCPSocket
-  std::cout << "TCPSocket:" << std::endl;
-  failed_test_case_count += TCPSocketTestSuite().run();
-  std::cout << std::endl;
-
-  return failed_test_case_count;
+int main(int argc, char** argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }

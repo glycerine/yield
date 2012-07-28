@@ -28,21 +28,17 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../event_queue_test.hpp"
-#include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/exception.hpp"
 #include "yield/poll/fd_event_queue.hpp"
 #include "yield/sockets/stream_socket_pair.hpp"
-#include "yunit.hpp"
-
-TEST_SUITE_EX(
-  SocketEventQueue,
-  yield::EventQueueTestSuite<yield::poll::FDEventQueue>
-);
+#include "gtest/gtest.h"
 
 namespace yield {
 namespace poll {
 using yield::sockets::StreamSocketPair;
+
+INSTANTIATE_TYPED_TEST_CASE_P(SocketEventQueue, EventQueueTest, FDEventQueue);
 
 TEST(SocketEventQueue, associate) {
   StreamSocketPair sockets;
@@ -102,7 +98,7 @@ TEST(SocketEventQueue, dissociate) {
   sockets.first().send("m", 1, 0);
 
   Event* event = socket_event_queue.timeddequeue(0);
-  throw_assert_eq(event, NULL);
+  ASSERT_EQ(event, static_cast<Event*>(NULL));
 
   if (!socket_event_queue.associate(sockets.first(), FDEvent::TYPE_READ_READY)) {
     throw Exception();  // associate after dissociate should succeed
@@ -129,8 +125,8 @@ TEST(SocketEventQueue, dissociate_two) {
 
   auto_Object<FDEvent> socket_event
   = Object::cast<FDEvent>(socket_event_queue.dequeue());
-  throw_assert_eq(socket_event->get_fd(), sockets.second());
-  throw_assert_eq(socket_event->get_type(), FDEvent::TYPE_READ_READY);
+  ASSERT_EQ(socket_event->get_fd(), sockets.second());
+  ASSERT_EQ(socket_event->get_type(), FDEvent::TYPE_READ_READY);
   char m;
   if (socket_event->get_fd() == sockets.first()) {
     sockets.first().recv(&m, 1, 0);
@@ -139,7 +135,7 @@ TEST(SocketEventQueue, dissociate_two) {
   }
 
   Event* event = socket_event_queue.timeddequeue(0);
-  throw_assert_eq(event, NULL);
+  ASSERT_EQ(event, static_cast<Event*>(NULL));
 }
 
 TEST(SocketEventQueue, dequeue_SocketEvent) {
@@ -174,12 +170,12 @@ TEST(SocketEventQueue, dequeue_two_SocketEvents) {
     auto_Object<FDEvent> socket_event
     = Object::cast<FDEvent>(socket_event_queue.dequeue());
 
-    throw_assert(
+    ASSERT_TRUE(
       socket_event->get_fd() == sockets.first()
       ||
       socket_event->get_fd() == sockets.second()
     );
-    throw_assert_eq(socket_event->get_type(), FDEvent::TYPE_READ_READY);
+    ASSERT_EQ(socket_event->get_type(), FDEvent::TYPE_READ_READY);
   }
 }
 
@@ -193,8 +189,8 @@ TEST(SocketEventQueue, dequeue_want_send_SocketEvent) {
 
   auto_Object<FDEvent> socket_event
   = Object::cast<FDEvent>(socket_event_queue.dequeue());
-  throw_assert_eq(socket_event->get_fd(), sockets.first());
-  throw_assert_eq(socket_event->get_type(), FDEvent::TYPE_WRITE_READY);
+  ASSERT_EQ(socket_event->get_fd(), sockets.first());
+  ASSERT_EQ(socket_event->get_type(), FDEvent::TYPE_WRITE_READY);
 }
 }
 }

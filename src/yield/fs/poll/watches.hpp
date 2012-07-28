@@ -30,7 +30,7 @@
 #ifndef _YIELD_FS_POLL_WATCHES_HPP_
 #define _YIELD_FS_POLL_WATCHES_HPP_
 
-#include "yield/assert.hpp"
+#include "yield/debug.hpp"
 #include "yield/fs/path.hpp"
 
 #include <map>

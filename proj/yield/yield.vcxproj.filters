@@ -17,9 +17,6 @@
     <ClInclude Include="..\..\include\ygi.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\yield\assert.hpp">
-      <Filter>Header Files\yield</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\yield\atomic.hpp">
       <Filter>Header Files\yield</Filter>
     </ClInclude>
@@ -42,6 +39,9 @@
       <Filter>Header Files\yield</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\yield\date_time.hpp">
+      <Filter>Header Files\yield</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\yield\debug.hpp">
       <Filter>Header Files\yield</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\yield\event.hpp">

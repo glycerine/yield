@@ -27,105 +27,102 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/assert.hpp"
 #include "yield/uri/uri.hpp"
-#include "yunit.hpp"
-
-TEST_SUITE(URIParser);
+#include "gtest/gtest.h"
 
 namespace yield {
 namespace uri {
 TEST(URIParser, path1) {
   URI uri("/mydir/");
-  throw_assert_eq(uri.get_path(), "/mydir/");
+  ASSERT_EQ(uri.get_path(), "/mydir/");
 }
 
 TEST(URIParser, path2) {
   URI uri("/mypath");
-  throw_assert_eq(uri.get_path(), "/mypath");
+  ASSERT_EQ(uri.get_path(), "/mypath");
 }
 
 TEST(URIParser, path3) {
   URI uri("/mydir/mypath");
-  throw_assert_eq(uri.get_path(), "/mydir/mypath");
+  ASSERT_EQ(uri.get_path(), "/mydir/mypath");
 }
 
 TEST(URIParser, path_query1) {
   URI uri("/mypath?key=value");
-  throw_assert_eq(uri.get_path(), "/mypath");
-  //throw_assert_eq(uri.get_query_value("key" ), "value");
-  //throw_assert_eq(uri.get_query_value("otherkey" ), "");
-  //throw_assert_ne(uri.get_query_values("key" ), uri.get_query().end());
+  ASSERT_EQ(uri.get_path(), "/mypath");
+  //ASSERT_EQ(uri.get_query_value("key" ), "value");
+  //ASSERT_EQ(uri.get_query_value("otherkey" ), "");
+  //ASSERT_TRUE_ne(uri.get_query_values("key" ), uri.get_query().end());
 }
 
 TEST(URIParser, path_query2) {
   URI uri("/mypath?key1=value1&key2=value2");
-  throw_assert_eq(uri.get_path(), "/mypath");
-  //throw_assert_eq(uri.get_query_value("key1" ), "value1");
-  //throw_assert_eq(uri.get_query_value("key2" ), "value2");
-  //throw_assert_eq(uri.get_query_value("otherkey" ), "");
+  ASSERT_EQ(uri.get_path(), "/mypath");
+  //ASSERT_EQ(uri.get_query_value("key1" ), "value1");
+  //ASSERT_EQ(uri.get_query_value("key2" ), "value2");
+  //ASSERT_EQ(uri.get_query_value("otherkey" ), "");
 }
 
 TEST(URIParser, path_query3) { // A Django URI 20110427
   URI uri("/accounts/login/?next=/");
-  throw_assert_eq(uri.get_path(), "/accounts/login/");
-  throw_assert_eq(uri.get_query(), "next=/");
+  ASSERT_EQ(uri.get_path(), "/accounts/login/");
+  ASSERT_EQ(uri.get_query(), "next=/");
 }
 
 TEST(URIParser, scheme_host1) {
   URI uri("http://localhost");
-  throw_assert_eq(uri.get_scheme(), "http");
-  throw_assert_eq(uri.get_host(), "localhost");
-  //throw_assert(uri.get_user().empty());
-  //throw_assert(uri.get_password().empty());
-  throw_assert_eq(uri.get_port(), 0);
-  throw_assert(uri.get_path().empty());
+  ASSERT_EQ(uri.get_scheme(), "http");
+  ASSERT_EQ(uri.get_host(), "localhost");
+  //ASSERT_TRUE(uri.get_user().empty());
+  //ASSERT_TRUE(uri.get_password().empty());
+  ASSERT_EQ(uri.get_port(), 0);
+  ASSERT_TRUE(uri.get_path().empty());
 }
 
 TEST(URIParser, scheme_host2) {
   URI uri("http://localhost/");
-  throw_assert_eq(uri.get_scheme(), "http");
-  throw_assert_eq(uri.get_host(), "localhost");
-  throw_assert_eq(uri.get_path(), "/");
+  ASSERT_EQ(uri.get_scheme(), "http");
+  ASSERT_EQ(uri.get_host(), "localhost");
+  ASSERT_EQ(uri.get_path(), "/");
 }
 
 TEST(URIParser, scheme_host_port1) {
   URI uri("http://*:80/");
-  throw_assert_eq(uri.get_scheme(), "http");
-  throw_assert_eq(uri.get_host(), "*");
-  throw_assert_eq(uri.get_path(), "/");
+  ASSERT_EQ(uri.get_scheme(), "http");
+  ASSERT_EQ(uri.get_host(), "*");
+  ASSERT_EQ(uri.get_path(), "/");
 }
 
 TEST(URIParser, scheme_host_port2) {
   URI uri("http://localhost:1");
-  throw_assert_eq(uri.get_scheme(), "http");
-  throw_assert_eq(uri.get_host(), "localhost");
-  throw_assert_eq(uri.get_port(), 1);
-  throw_assert(uri.get_path().empty());
+  ASSERT_EQ(uri.get_scheme(), "http");
+  ASSERT_EQ(uri.get_host(), "localhost");
+  ASSERT_EQ(uri.get_port(), 1);
+  ASSERT_TRUE(uri.get_path().empty());
 }
 
 TEST(URIParser, scheme_host_port3) {
   URI uri("http://localhost:1/");
-  throw_assert_eq(uri.get_scheme(), "http");
-  throw_assert_eq(uri.get_host(), "localhost");
-  throw_assert_eq(uri.get_port(), 1);
-  throw_assert_eq(uri.get_path(), "/");
+  ASSERT_EQ(uri.get_scheme(), "http");
+  ASSERT_EQ(uri.get_host(), "localhost");
+  ASSERT_EQ(uri.get_port(), 1);
+  ASSERT_EQ(uri.get_path(), "/");
 }
 
 TEST(URIParser, scheme_user_host) {
   URI uri("http://minorg@localhost");
-  throw_assert_eq(uri.get_scheme(), "http");
-  throw_assert_eq(uri.get_host(), "localhost");
-  //throw_assert_eq(uri.get_user(), "minorg");
-  //throw_assert(uri.get_password().empty());
+  ASSERT_EQ(uri.get_scheme(), "http");
+  ASSERT_EQ(uri.get_host(), "localhost");
+  //ASSERT_EQ(uri.get_user(), "minorg");
+  //ASSERT_TRUE(uri.get_password().empty());
 }
 
 TEST(URIParser, scheme_user_password_host) {
   URI uri("http://minorg:minorg@localhost");
-  throw_assert_eq(uri.get_scheme(), "http");
-  throw_assert_eq(uri.get_host(), "localhost");
-  //throw_assert_eq(uri.get_user(), "minorg");
-  //throw_assert_eq(uri.get_password(), "minorg");
+  ASSERT_EQ(uri.get_scheme(), "http");
+  ASSERT_EQ(uri.get_host(), "localhost");
+  //ASSERT_EQ(uri.get_user(), "minorg");
+  //ASSERT_EQ(uri.get_password(), "minorg");
 }
 }
 }

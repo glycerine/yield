@@ -32,19 +32,20 @@
 
 #include "../../event_queue_test.hpp"
 #include "yield/auto_object.hpp"
-#include "yield/assert.hpp"
+#include "yield/debug.hpp"
 #include "yield/date_time.hpp"
 #include "yield/exception.hpp"
 #include "yield/log.hpp"
 #include "yield/fs/file_system.hpp"
 #include "yield/fs/poll/fs_event.hpp"
 #include "yield/thread/thread.hpp"
-#include "yunit.hpp"
+#include "gtest/gtest.h"
 
 namespace yield {
 namespace fs {
 namespace poll {
-class FSEventQueueTest : public yunit::Test {
+template <class TypeParam>
+class FSEventQueueTest : public ::testing::Test {
 public:
   FSEventQueueTest() {
     test_root_path = Path(".");
@@ -52,16 +53,16 @@ public:
     test_file_path = test_root_path / "dce_test.txt";
   }
 
-  // yunit::Test
-  void setup() {
-    teardown();
+  // ::testing::Test
+  void SetUp() {
+    TearDown();
   }
 
-  void teardown() {
+  void TearDown() {
     FileSystem().rmtree(get_test_directory_path());
-    throw_assert_false(FileSystem().exists(get_test_directory_path()));
+    ASSERT_FALSE(FileSystem().exists(get_test_directory_path()));
     FileSystem().unlink(get_test_file_path());
-    throw_assert_false(FileSystem().exists(get_test_file_path()));
+    ASSERT_FALSE(FileSystem().exists(get_test_file_path()));
   }
 
 protected:
@@ -81,109 +82,89 @@ private:
   Path test_directory_path, test_file_path, test_root_path;
 };
 
+TYPED_TEST_CASE_P(FSEventQueueTest);
 
-template <class FSEventQueueType>
-class FSEventQueueAssociateTest : public FSEventQueueTest {
-  // yunit::Test
-  void run() {
-    if (!FSEventQueueType().associate(get_test_root_path())) {
-      throw Exception();
-    }
+TYPED_TEST_P(FSEventQueueTest, associate) {
+  if (!TypeParam().associate(get_test_root_path())) {
+    throw Exception();
   }
-};
+}
 
+TYPED_TEST_P(FSEventQueueTest, associate_change) {
+  TypeParam fs_event_queue(&Log::open(std::cout));
 
-template <class FSEventQueueType>
-class FSEventQueueAssociateChangeTest : public FSEventQueueTest {
-  // yunit::Test
-  void run() {
-    FSEventQueueType fs_event_queue(&Log::open(std::cout));
-
-    if (!fs_event_queue.associate(get_test_root_path())) {
-      throw Exception();
-    }
-
-    if (!fs_event_queue.associate(get_test_root_path())) {
-      throw Exception();
-    }
-
-    if (
-      !fs_event_queue.associate(
-        get_test_root_path(),
-        FSEvent::TYPE_FILE_ADD
-      )
-    ) {
-      throw Exception();
-    }
+  if (!fs_event_queue.associate(get_test_root_path())) {
+    throw Exception();
   }
-};
 
-
-template <class FSEventQueueType>
-class FSEventQueueAssociateDirDequeueDirAddTest
-    : public FSEventQueueTest {
-  // yunit::Test
-  void run() {
-    FSEventQueueType fs_event_queue(&Log::open(std::cout));
-    if (
-      !fs_event_queue.associate(
-        get_test_root_path(),
-        FSEvent::TYPE_DIRECTORY_ADD
-      )
-    ) {
-      throw Exception();
-    }
-
-    if (!FileSystem().mkdir(get_test_directory_path())) {
-      throw Exception();
-    }
-
-    auto_Object<FSEvent> fs_event =
-      Object::cast<FSEvent>(fs_event_queue.dequeue());
-    throw_assert_eq(fs_event->get_type(), FSEvent::TYPE_DIRECTORY_ADD);
-    throw_assert_eq(fs_event->get_path(), get_test_directory_path());
+  if (!fs_event_queue.associate(get_test_root_path())) {
+    throw Exception();
   }
-};
 
-
-template <class FSEventQueueType>
-class FSEventQueueAssociateDirDequeueDirModifyTest : public FSEventQueueTest {
-  // yunit::Test
-  void run() {
-    if (!FileSystem().mkdir(get_test_directory_path())) {
-      throw Exception();
-    }
-
-    FSEventQueueType fs_event_queue(&Log::open(std::cout));
-    if (
-      !fs_event_queue.associate(
-        get_test_root_path(),
-        FSEvent::TYPE_DIRECTORY_MODIFY
-      )
-    ) {
-      throw Exception();
-    }
-
-    yield::thread::Thread::sleep(1.0);
-
-    DateTime atime = DateTime::now(), mtime = atime;
-    if (!FileSystem().utime(get_test_directory_path(), atime, mtime)) {
-      throw Exception();
-    }
-
-    auto_Object<FSEvent> fs_event =
-      Object::cast<FSEvent>(fs_event_queue.dequeue());
-    throw_assert_eq(fs_event->get_type(), FSEvent::TYPE_DIRECTORY_MODIFY);
-    throw_assert_eq(fs_event->get_path(), get_test_directory_path());
+  if (
+    !fs_event_queue.associate(
+      get_test_root_path(),
+      FSEvent::TYPE_FILE_ADD
+    )
+  ) {
+    throw Exception();
   }
-};
+}
 
+TYPED_TEST_P(FSEventQueueTest, associate_dir_dequeue_dir_add) {
+  TypeParam fs_event_queue(&Log::open(std::cout));
+  if (
+    !fs_event_queue.associate(
+      get_test_root_path(),
+      FSEvent::TYPE_DIRECTORY_ADD
+    )
+  ) {
+    throw Exception();
+  }
+
+  if (!FileSystem().mkdir(get_test_directory_path())) {
+    throw Exception();
+  }
+
+  auto_Object<FSEvent> fs_event =
+    Object::cast<FSEvent>(fs_event_queue.dequeue());
+  ASSERT_EQ(fs_event->get_type(), FSEvent::TYPE_DIRECTORY_ADD);
+  ASSERT_EQ(fs_event->get_path(), get_test_directory_path());
+}
+
+TYPED_TEST_P(FSEventQueueTest, associate_dir_dequeue_dir_modify) {
+  if (!FileSystem().mkdir(get_test_directory_path())) {
+    throw Exception();
+  }
+
+  TypeParam fs_event_queue(&Log::open(std::cout));
+  if (
+    !fs_event_queue.associate(
+      get_test_root_path(),
+      FSEvent::TYPE_DIRECTORY_MODIFY
+    )
+  ) {
+    throw Exception();
+  }
+
+  yield::thread::Thread::sleep(1.0);
+
+  DateTime atime = DateTime::now(), mtime = atime;
+  if (!FileSystem().utime(get_test_directory_path(), atime, mtime)) {
+    throw Exception();
+  }
+
+  auto_Object<FSEvent> fs_event =
+    Object::cast<FSEvent>(fs_event_queue.dequeue());
+  ASSERT_EQ(fs_event->get_type(), FSEvent::TYPE_DIRECTORY_MODIFY);
+  ASSERT_EQ(fs_event->get_path(), get_test_directory_path());
+}
 
 //TEST_EX(FSEventQueue, directory_add_recursive, FSEventQueueTest) {
 //  if (!FileSystem().mkdir(get_test_directory_path()))
 //    throw Exception();
 //
-//  FSEventQueueType fs_event_queue(&Log::open(std::cout));
+//  TypeParam fs_event_queue(&Log::open(std::cout));
 //  if (!fs_event_queue.associate(get_test_root_path()))
 //    throw Exception();
 //
@@ -193,40 +174,34 @@ class FSEventQueueAssociateDirDequeueDirModifyTest : public FSEventQueueTest {
 //
 //  auto_Object<FSEvent> fs_event =
 //    Object::cast<FSEvent>(fs_event_queue.dequeue());
-//  throw_assert_eq(fs_event->get_type(), FSEvent::TYPE_DIRECTORY_ADD);
-//  throw_assert_eq(fs_event->get_path(), test_subdirectory_path);
+//  ASSERT_EQ(fs_event->get_type(), FSEvent::TYPE_DIRECTORY_ADD);
+//  ASSERT_EQ(fs_event->get_path(), test_subdirectory_path);
 //}
 
-
-template <class FSEventQueueType>
-class FSEventQueueAssociateDirDequeueDirRemoveTest : public FSEventQueueTest {
-  // yunit::Test
-  void run() {
-    if (!FileSystem().mkdir(get_test_directory_path())) {
-      throw Exception();
-    }
-
-    FSEventQueueType fs_event_queue(&Log::open(std::cout));
-    if (
-      !fs_event_queue.associate(
-        get_test_root_path(),
-        FSEvent::TYPE_DIRECTORY_REMOVE
-      )
-    ) {
-      throw Exception();
-    }
-
-    if (!FileSystem().rmdir(get_test_directory_path())) {
-      throw Exception();
-    }
-
-    auto_Object<FSEvent> fs_event =
-      Object::cast<FSEvent>(fs_event_queue.dequeue());
-    throw_assert_eq(fs_event->get_type(), FSEvent::TYPE_DIRECTORY_REMOVE);
-    throw_assert_eq(fs_event->get_path(), get_test_directory_path());
+TYPED_TEST_P(FSEventQueueTest, associate_dir_dequeue_dir_remove) {
+  if (!FileSystem().mkdir(get_test_directory_path())) {
+    throw Exception();
   }
-};
 
+  TypeParam fs_event_queue(&Log::open(std::cout));
+  if (
+    !fs_event_queue.associate(
+      get_test_root_path(),
+      FSEvent::TYPE_DIRECTORY_REMOVE
+    )
+  ) {
+    throw Exception();
+  }
+
+  if (!FileSystem().rmdir(get_test_directory_path())) {
+    throw Exception();
+  }
+
+  auto_Object<FSEvent> fs_event =
+    Object::cast<FSEvent>(fs_event_queue.dequeue());
+  ASSERT_EQ(fs_event->get_type(), FSEvent::TYPE_DIRECTORY_REMOVE);
+  ASSERT_EQ(fs_event->get_path(), get_test_directory_path());
+}
 
 //TEST_EX(FSEventQueue, directory_remove_recursive, FSEventQueueTest) {
 //  if (!FileSystem().mkdir(get_test_directory_path()))
@@ -236,7 +211,7 @@ class FSEventQueueAssociateDirDequeueDirRemoveTest : public FSEventQueueTest {
 //  if (!FileSystem().mkdir(test_subdirectory_path))
 //    throw Exception();
 //
-//  FSEventQueueType fs_event_queue(&Log::open(std::cout));
+//  TypeParam fs_event_queue(&Log::open(std::cout));
 //  if (!fs_event_queue.associate(get_test_root_path(), FSEvent::TYPE_DIRECTORY_REMOVE))
 //    throw Exception();
 //
@@ -245,81 +220,70 @@ class FSEventQueueAssociateDirDequeueDirRemoveTest : public FSEventQueueTest {
 //
 //  auto_Object<FSEvent> fs_event =
 //    Object::cast<FSEvent>(fs_event_queue.dequeue());
-//  throw_assert_eq(fs_event->get_type(), FSEvent::TYPE_DIRECTORY_REMOVE);
-//  throw_assert_eq(fs_event->get_path(), test_subdirectory_path);
+//  ASSERT_EQ(fs_event->get_type(), FSEvent::TYPE_DIRECTORY_REMOVE);
+//  ASSERT_EQ(fs_event->get_path(), test_subdirectory_path);
 //}
 
-
-template <class FSEventQueueType>
-class FSEventQueueAssociateDirDequeueDirRenameTest : public FSEventQueueTest {
-  // yunit::Test
-  void run() {
-    if (!FileSystem().mkdir(get_test_directory_path())) {
-      throw Exception();
-    }
-
-    Path new_test_directory_path = get_test_root_path() / "test_dir_renamed";
-    if (FileSystem().exists(new_test_directory_path))
-      if (!FileSystem().rmdir(new_test_directory_path)) {
-        throw Exception();
-      }
-
-    FSEventQueueType fs_event_queue(&Log::open(std::cout));
-    if (
-      !fs_event_queue.associate(
-        get_test_root_path(),
-        FSEvent::TYPE_DIRECTORY_RENAME
-      )
-    ) {
-      throw Exception();
-    }
-
-    if (!FileSystem().rename(get_test_directory_path(), new_test_directory_path)) {
-      throw Exception();
-    }
-
-    auto_Object<FSEvent> fs_event =
-      Object::cast<FSEvent>(fs_event_queue.dequeue());
-    throw_assert_eq(fs_event->get_type(), FSEvent::TYPE_DIRECTORY_RENAME);
-    throw_assert_eq(fs_event->get_old_path(), get_test_directory_path());
-    throw_assert_eq(fs_event->get_new_path(), new_test_directory_path);
-
-    FileSystem().rmdir(new_test_directory_path);
+TYPED_TEST_P(FSEventQueueTest, associate_dir_dequeue_dir_rename) {
+  if (!FileSystem().mkdir(get_test_directory_path())) {
+    throw Exception();
   }
-};
 
-
-template <class FSEventQueueType>
-class FSEventQueueAssociateDirDequeueFileAddTest : public FSEventQueueTest {
-  // yunit::Test
-  void run() {
-    FSEventQueueType fs_event_queue(&Log::open(std::cout));
-    if (
-      !fs_event_queue.associate(
-        get_test_root_path(),
-        FSEvent::TYPE_FILE_ADD
-      )
-    ) {
+  Path new_test_directory_path = get_test_root_path() / "test_dir_renamed";
+  if (FileSystem().exists(new_test_directory_path))
+    if (!FileSystem().rmdir(new_test_directory_path)) {
       throw Exception();
     }
 
-    if (!FileSystem().touch(get_test_file_path())) {
-      throw Exception();
-    }
-
-    auto_Object<FSEvent> fs_event =
-      Object::cast<FSEvent>(fs_event_queue.dequeue());
-    throw_assert_eq(fs_event->get_type(), FSEvent::TYPE_FILE_ADD);
-    throw_assert_eq(fs_event->get_path(), get_test_file_path());
+  TypeParam fs_event_queue(&Log::open(std::cout));
+  if (
+    !fs_event_queue.associate(
+      get_test_root_path(),
+      FSEvent::TYPE_DIRECTORY_RENAME
+    )
+  ) {
+    throw Exception();
   }
-};
 
+  if (!FileSystem().rename(get_test_directory_path(), new_test_directory_path)) {
+    throw Exception();
+  }
+
+  auto_Object<FSEvent> fs_event =
+    Object::cast<FSEvent>(fs_event_queue.dequeue());
+  ASSERT_EQ(fs_event->get_type(), FSEvent::TYPE_DIRECTORY_RENAME);
+  ASSERT_EQ(fs_event->get_old_path(), get_test_directory_path());
+  ASSERT_EQ(fs_event->get_new_path(), new_test_directory_path);
+
+  FileSystem().rmdir(new_test_directory_path);
+}
+
+TYPED_TEST_P(FSEventQueueTest, associate_dir_dequeue_file_add) {
+  TypeParam fs_event_queue(&Log::open(std::cout));
+  if (
+    !fs_event_queue.associate(
+      get_test_root_path(),
+      FSEvent::TYPE_FILE_ADD
+    )
+  ) {
+    throw Exception();
+  }
+
+  if (!FileSystem().touch(get_test_file_path())) {
+    throw Exception();
+  }
+
+  auto_Object<FSEvent> fs_event =
+    Object::cast<FSEvent>(fs_event_queue.dequeue());
+  ASSERT_EQ(fs_event->get_type(), FSEvent::TYPE_FILE_ADD);
+  ASSERT_EQ(fs_event->get_path(), get_test_file_path());
+}
 
 //TEST_EX(FSEventQueue, file_add_recursive, FSEventQueueTest) {
 //  if (!FileSystem().mkdir(get_test_directory_path()))
 //    throw Exception();
 //
-//  FSEventQueueType fs_event_queue(&Log::open(std::cout));
+//  TypeParam fs_event_queue(&Log::open(std::cout));
 //  if (!fs_event_queue.associate(get_test_root_path()))
 //    throw Exception();
 //
@@ -329,73 +293,62 @@ class FSEventQueueAssociateDirDequeueFileAddTest : public FSEventQueueTest {
 //
 //  auto_Object<FSEvent> fs_event =
 //    Object::cast<FSEvent>(fs_event_queue.dequeue());
-//  throw_assert_eq(fs_event->get_type(), FSEvent::TYPE_FILE_ADD);
-//  throw_assert_eq(fs_event->get_path(), test_file_path);
+//  ASSERT_EQ(fs_event->get_type(), FSEvent::TYPE_FILE_ADD);
+//  ASSERT_EQ(fs_event->get_path(), test_file_path);
 //}
 
-
-template <class FSEventQueueType>
-class FSEventQueueAssociateDirDequeueFileModifyTest : public FSEventQueueTest {
-  // yunit::Test
-  void run() {
-    if (!FileSystem().touch(get_test_file_path())) {
-      throw Exception();
-    }
-
-    FSEventQueueType fs_event_queue(&Log::open(std::cout));
-    if (
-      !fs_event_queue.associate(
-        get_test_root_path(),
-        FSEvent::TYPE_FILE_MODIFY
-      )
-    ) {
-      throw Exception();
-    }
-
-    yield::thread::Thread::sleep(1.0);
-
-    DateTime atime = DateTime::now(), mtime = atime;
-    if (!FileSystem().utime(get_test_file_path(), atime, mtime)) {
-      throw Exception();
-    }
-
-    auto_Object<FSEvent> fs_event =
-      Object::cast<FSEvent>(fs_event_queue.dequeue());
-    throw_assert_eq(fs_event->get_type(), FSEvent::TYPE_FILE_MODIFY);
-    throw_assert_eq(fs_event->get_path(), get_test_file_path());
+TYPED_TEST_P(FSEventQueueTest, associate_dir_dequeue_file_modify) {
+  if (!FileSystem().touch(get_test_file_path())) {
+    throw Exception();
   }
-};
 
-
-template <class FSEventQueueType>
-class FSEventQueueAssociateDirDequeueFileRemoveTest : public FSEventQueueTest {
-  // yunit::Test
-  void run() {
-    if (!FileSystem().touch(get_test_file_path())) {
-      throw Exception();
-    }
-
-    FSEventQueueType fs_event_queue(&Log::open(std::cout));
-    if (
-      !fs_event_queue.associate(
-        get_test_root_path(),
-        FSEvent::TYPE_FILE_REMOVE
-      )
-    ) {
-      throw Exception();
-    }
-
-    if (!FileSystem().unlink(get_test_file_path())) {
-      throw Exception();
-    }
-
-    auto_Object<FSEvent> fs_event =
-      Object::cast<FSEvent>(fs_event_queue.dequeue());
-    throw_assert_eq(fs_event->get_type(), FSEvent::TYPE_FILE_REMOVE);
-    throw_assert_eq(fs_event->get_path(), get_test_file_path());
+  TypeParam fs_event_queue(&Log::open(std::cout));
+  if (
+    !fs_event_queue.associate(
+      get_test_root_path(),
+      FSEvent::TYPE_FILE_MODIFY
+    )
+  ) {
+    throw Exception();
   }
-};
 
+  yield::thread::Thread::sleep(1.0);
+
+  DateTime atime = DateTime::now(), mtime = atime;
+  if (!FileSystem().utime(get_test_file_path(), atime, mtime)) {
+    throw Exception();
+  }
+
+  auto_Object<FSEvent> fs_event =
+    Object::cast<FSEvent>(fs_event_queue.dequeue());
+  ASSERT_EQ(fs_event->get_type(), FSEvent::TYPE_FILE_MODIFY);
+  ASSERT_EQ(fs_event->get_path(), get_test_file_path());
+}
+
+TYPED_TEST_P(FSEventQueueTest, associate_dir_dequeue_file_remove) {
+  if (!FileSystem().touch(get_test_file_path())) {
+    throw Exception();
+  }
+
+  TypeParam fs_event_queue(&Log::open(std::cout));
+  if (
+    !fs_event_queue.associate(
+      get_test_root_path(),
+      FSEvent::TYPE_FILE_REMOVE
+    )
+  ) {
+    throw Exception();
+  }
+
+  if (!FileSystem().unlink(get_test_file_path())) {
+    throw Exception();
+  }
+
+  auto_Object<FSEvent> fs_event =
+    Object::cast<FSEvent>(fs_event_queue.dequeue());
+  ASSERT_EQ(fs_event->get_type(), FSEvent::TYPE_FILE_REMOVE);
+  ASSERT_EQ(fs_event->get_path(), get_test_file_path());
+}
 
 //TEST_EX(FSEventQueue, file_remove_recursive, FSEventQueueTest) {
 //  if (!FileSystem().mkdir(get_test_directory_path()))
@@ -405,7 +358,7 @@ class FSEventQueueAssociateDirDequeueFileRemoveTest : public FSEventQueueTest {
 //  if (!FileSystem().touch(test_file_path))
 //    throw Exception();
 //
-//  FSEventQueueType fs_event_queue(&Log::open(std::cout));
+//  TypeParam fs_event_queue(&Log::open(std::cout));
 //  if (!fs_event_queue.associate(get_test_root_path(), FSEvent::TYPE_FILE_REMOVE))
 //    throw Exception();
 //
@@ -414,210 +367,129 @@ class FSEventQueueAssociateDirDequeueFileRemoveTest : public FSEventQueueTest {
 //
 //  auto_Object<FSEvent> fs_event =
 //    Object::cast<FSEvent>(fs_event_queue.dequeue());
-//  throw_assert_eq(fs_event->get_type(), FSEvent::TYPE_FILE_REMOVE);
-//  throw_assert_eq(fs_event->get_path(), test_file_path);
+//  ASSERT_EQ(fs_event->get_type(), FSEvent::TYPE_FILE_REMOVE);
+//  ASSERT_EQ(fs_event->get_path(), test_file_path);
 //}
 
-
-template <class FSEventQueueType>
-class FSEventQueueAssociateDirDequeueFileRenameTest : public FSEventQueueTest {
-  // yunit::Test
-  void run() {
-    if (!FileSystem().touch(get_test_file_path())) {
-      throw Exception();
-    }
-
-    Path new_test_file_path = get_test_root_path() / "test_file_renamed.txt";
-    if (FileSystem().exists(new_test_file_path))
-      if (!FileSystem().unlink(new_test_file_path)) {
-        throw Exception();
-      }
-
-    FSEventQueueType fs_event_queue(&Log::open(std::cout));
-    if (
-      !fs_event_queue.associate(
-        get_test_root_path(),
-        FSEvent::TYPE_FILE_RENAME
-      )
-    ) {
-      throw Exception();
-    }
-
-    if (!FileSystem().rename(get_test_file_path(), new_test_file_path)) {
-      throw Exception();
-    }
-
-    auto_Object<FSEvent> fs_event =
-      Object::cast<FSEvent>(fs_event_queue.dequeue());
-    throw_assert_eq(fs_event->get_type(), FSEvent::TYPE_FILE_RENAME);
-    throw_assert_eq(fs_event->get_old_path(), get_test_file_path());
-    throw_assert_eq(fs_event->get_new_path(), new_test_file_path);
-
-    FileSystem().unlink(new_test_file_path);
+TYPED_TEST_P(FSEventQueueTest, associate_dir_dequeue_file_rename) {
+  if (!FileSystem().touch(get_test_file_path())) {
+    throw Exception();
   }
-};
 
-
-template <class FSEventQueueType>
-class FSEventQueueAssociateFileDequeueFileModifyTest
-    : public FSEventQueueTest {
-  // yunit::Test
-  void run() {
-    if (!FileSystem().touch(get_test_file_path())) {
+  Path new_test_file_path = get_test_root_path() / "test_file_renamed.txt";
+  if (FileSystem().exists(new_test_file_path))
+    if (!FileSystem().unlink(new_test_file_path)) {
       throw Exception();
     }
 
-    FSEventQueueType fs_event_queue(&Log::open(std::cout));
-    if (
-      !fs_event_queue.associate(
-        get_test_file_path(),
-        FSEvent::TYPE_FILE_MODIFY
-      )
-    ) {
-      throw Exception();
-    }
-
-    yield::thread::Thread::sleep(1.0);
-
-    DateTime atime = DateTime::now(), mtime = atime;
-    if (!FileSystem().utime(get_test_file_path(), atime, mtime)) {
-      throw Exception();
-    }
-
-    auto_Object<FSEvent> fs_event =
-      Object::cast<FSEvent>(fs_event_queue.dequeue());
-    throw_assert_eq(fs_event->get_type(), FSEvent::TYPE_FILE_MODIFY);
-    throw_assert_eq(fs_event->get_path(), get_test_file_path());
+  TypeParam fs_event_queue(&Log::open(std::cout));
+  if (
+    !fs_event_queue.associate(
+      get_test_root_path(),
+      FSEvent::TYPE_FILE_RENAME
+    )
+  ) {
+    throw Exception();
   }
-};
 
-
-template <class FSEventQueueType>
-class FSEventQueueAssociateFileDequeueFileRemoveTest
-    : public FSEventQueueTest {
-  // yunit::Test
-  void run() {
-    if (!FileSystem().touch(get_test_file_path())) {
-      throw Exception();
-    }
-
-    FSEventQueueType fs_event_queue(&Log::open(std::cout));
-    if (
-      !fs_event_queue.associate(
-        get_test_file_path(),
-        FSEvent::TYPE_FILE_REMOVE
-      )
-    ) {
-      throw Exception();
-    }
-
-    if (!FileSystem().unlink(get_test_file_path())) {
-      throw Exception();
-    }
-
-    auto_Object<FSEvent> fs_event =
-      Object::cast<FSEvent>(fs_event_queue.dequeue());
-    throw_assert_eq(fs_event->get_type(), FSEvent::TYPE_FILE_REMOVE);
-    throw_assert_eq(fs_event->get_path(), get_test_file_path());
+  if (!FileSystem().rename(get_test_file_path(), new_test_file_path)) {
+    throw Exception();
   }
-};
 
+  auto_Object<FSEvent> fs_event =
+    Object::cast<FSEvent>(fs_event_queue.dequeue());
+  ASSERT_EQ(fs_event->get_type(), FSEvent::TYPE_FILE_RENAME);
+  ASSERT_EQ(fs_event->get_old_path(), get_test_file_path());
+  ASSERT_EQ(fs_event->get_new_path(), new_test_file_path);
 
-template <class FSEventQueueType>
-class FSEventQueueDissociateTest : public FSEventQueueTest {
-  // yunit::Test
-  void run() {
-    FSEventQueueType fs_event_queue(&Log::open(std::cout));
-    fs_event_queue.associate(get_test_root_path());
+  FileSystem().unlink(new_test_file_path);
+}
 
-    if (!FileSystem().touch(get_test_file_path())) {
-      throw Exception();
-    }
-
-    if (!fs_event_queue.dissociate(get_test_root_path())) {
-      throw Exception();
-    }
-
-    Event* fs_event = fs_event_queue.timeddequeue(0);
-    throw_assert_eq(fs_event, NULL);
+TYPED_TEST_P(FSEventQueueTest, associate_file_dequeue_file_modify) {
+  if (!FileSystem().touch(get_test_file_path())) {
+    throw Exception();
   }
-};
 
-
-template <class FSEventQueueType>
-class FSEventQueueTestSuite : public EventQueueTestSuite<FSEventQueueType> {
-public:
-  FSEventQueueTestSuite() {
-    add(
-      "FSEventQueue::associate",
-      new FSEventQueueAssociateTest<FSEventQueueType>
-    );
-
-    add(
-      "FSEventQueue::associate change",
-      new FSEventQueueAssociateChangeTest<FSEventQueueType>
-    );
-
-    add(
-      "FSEventQueue::associate(dir), dequeue->FSEvent(DIRECTORY_ADD)",
-      new FSEventQueueAssociateDirDequeueDirAddTest<FSEventQueueType>
-    );
-
-#ifndef __FreeBSD__
-    add(
-      "FSEventQueue::associate(dir), dequeue->FSEvent(DIRECTORY_MODIFY)",
-      new FSEventQueueAssociateDirDequeueDirModifyTest<FSEventQueueType>
-    );
-#endif
-
-    add(
-      "FSEventQueue::associate(dir), dequeue->FSEvent(DIRECTORY_REMOVE)",
-      new FSEventQueueAssociateDirDequeueDirRemoveTest<FSEventQueueType>
-    );
-
-    add(
-      "FSEventQueue::associate(dir), dequeue->FSEvent(DIRECTORY_RENAME)",
-      new FSEventQueueAssociateDirDequeueDirRenameTest<FSEventQueueType>
-    );
-
-    add(
-      "FSEventQueue::associate(dir), dequeue->FSEvent(FILE_ADD)",
-      new FSEventQueueAssociateDirDequeueFileAddTest<FSEventQueueType>
-    );
-
-#ifndef __FreeBSD__
-    add(
-      "FSEventQueue::associate(dir), dequeue->FSEvent(FILE_MODIFY)",
-      new FSEventQueueAssociateDirDequeueFileModifyTest<FSEventQueueType>
-    );
-#endif
-
-    add(
-      "FSEventQueue::associate(dir), dequeue->FSEvent(FILE_REMOVE)",
-      new FSEventQueueAssociateDirDequeueFileRemoveTest<FSEventQueueType>
-    );
-
-    add(
-      "FSEventQueue::associate(dir), dequeue->FSEvent(FILE_RENAME)",
-      new FSEventQueueAssociateDirDequeueFileRenameTest<FSEventQueueType>
-    );
-
-    add(
-      "FSEventQueue::associate(file), dequeue->FSEvent(FILE_MODIFY)",
-      new FSEventQueueAssociateFileDequeueFileModifyTest<FSEventQueueType>
-    );
-
-    add(
-      "FSEventQueue::associate(file), dequeue->FSEvent(FILE_REMOVE)",
-      new FSEventQueueAssociateFileDequeueFileRemoveTest<FSEventQueueType>
-    );
-
-    add(
-      "FSEventQueue::dissociate",
-      new FSEventQueueDissociateTest<FSEventQueueType>
-    );
+  TypeParam fs_event_queue(&Log::open(std::cout));
+  if (
+    !fs_event_queue.associate(
+      get_test_file_path(),
+      FSEvent::TYPE_FILE_MODIFY
+    )
+  ) {
+    throw Exception();
   }
-};
+
+  yield::thread::Thread::sleep(1.0);
+
+  DateTime atime = DateTime::now(), mtime = atime;
+  if (!FileSystem().utime(get_test_file_path(), atime, mtime)) {
+    throw Exception();
+  }
+
+  auto_Object<FSEvent> fs_event =
+    Object::cast<FSEvent>(fs_event_queue.dequeue());
+  ASSERT_EQ(fs_event->get_type(), FSEvent::TYPE_FILE_MODIFY);
+  ASSERT_EQ(fs_event->get_path(), get_test_file_path());
+}
+
+TYPED_TEST_P(FSEventQueueTest, associate_file_dequeue_file_remove) {
+  if (!FileSystem().touch(get_test_file_path())) {
+    throw Exception();
+  }
+
+  TypeParam fs_event_queue(&Log::open(std::cout));
+  if (
+    !fs_event_queue.associate(
+      get_test_file_path(),
+      FSEvent::TYPE_FILE_REMOVE
+    )
+  ) {
+    throw Exception();
+  }
+
+  if (!FileSystem().unlink(get_test_file_path())) {
+    throw Exception();
+  }
+
+  auto_Object<FSEvent> fs_event =
+    Object::cast<FSEvent>(fs_event_queue.dequeue());
+  ASSERT_EQ(fs_event->get_type(), FSEvent::TYPE_FILE_REMOVE);
+  ASSERT_EQ(fs_event->get_path(), get_test_file_path());
+}
+
+TYPED_TEST_P(FSEventQueueTest, dissociate) {
+  TypeParam fs_event_queue(&Log::open(std::cout));
+  fs_event_queue.associate(get_test_root_path());
+
+  if (!FileSystem().touch(get_test_file_path())) {
+    throw Exception();
+  }
+
+  if (!fs_event_queue.dissociate(get_test_root_path())) {
+    throw Exception();
+  }
+
+  Event* fs_event = fs_event_queue.timeddequeue(0);
+  ASSERT_EQ(fs_event, static_cast<Event*>(NULL));
+}
+
+REGISTER_TYPED_TEST_CASE_P(
+  FSEventQueueTest,
+  associate,
+  associate_change,
+  associate_dir_dequeue_dir_add,
+  associate_dir_dequeue_dir_modify,
+  associate_dir_dequeue_dir_remove,
+  associate_dir_dequeue_dir_rename,
+  associate_dir_dequeue_file_add,
+  associate_dir_dequeue_file_modify,
+  associate_dir_dequeue_file_remove,
+  associate_dir_dequeue_file_rename,
+  associate_file_dequeue_file_modify,
+  associate_file_dequeue_file_remove,
+  dissociate
+);
 }
 }
 }

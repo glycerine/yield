@@ -30,7 +30,8 @@
 #include "queue_test.hpp"
 #include "yield/queue/synchronized_queue.hpp"
 
-TEST_SUITE_EX(
-  SynchronizedQueue,
-  yield::queue::QueueTestSuite< yield::queue::SynchronizedQueue<uint32_t> >
-);
+namespace yield {
+namespace queue {
+INSTANTIATE_TYPED_TEST_CASE_P(SynchronizedQueue, QueueTest, SynchronizedQueue<uint32_t>);
+}
+}

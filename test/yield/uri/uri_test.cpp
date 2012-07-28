@@ -27,31 +27,28 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/uri/uri.hpp"
-#include "yunit.hpp"
-
-TEST_SUITE(URI);
+#include "gtest/gtest.h"
 
 namespace yield {
 namespace uri {
 TEST(URI, copy_constructor) {
   URI uri("http://minorg:minorg@localhost:80/myfile");
   URI uri_copy(uri);
-  throw_assert_eq(uri_copy.get_scheme(), "http");
-  //throw_assert_eq(uri_copy.get_user(), "minorg");
-  //throw_assert_eq(uri_copy.get_password(), "minorg");
-  throw_assert_eq(uri_copy.get_host(), "localhost");
-  throw_assert_eq(uri_copy.get_port(), 80);
-  throw_assert_eq(uri_copy.get_path(), "/myfile");
+  ASSERT_EQ(uri_copy.get_scheme(), "http");
+  //ASSERT_EQ(uri_copy.get_user(), "minorg");
+  //ASSERT_EQ(uri_copy.get_password(), "minorg");
+  ASSERT_EQ(uri_copy.get_host(), "localhost");
+  ASSERT_EQ(uri_copy.get_port(), 80);
+  ASSERT_EQ(uri_copy.get_path(), "/myfile");
 }
 
 TEST(URI, set_port) {
   URI uri("http://localhost/");
-  throw_assert_eq(uri.get_port(), 0);
+  ASSERT_EQ(uri.get_port(), 0);
   uri.set_port(80);
-  throw_assert_eq(uri.get_port(), 80);
+  ASSERT_EQ(uri.get_port(), 80);
 }
 }
 }

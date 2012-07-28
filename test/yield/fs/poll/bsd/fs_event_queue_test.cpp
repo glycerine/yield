@@ -30,7 +30,10 @@
 #include "../fs_event_queue_test.hpp"
 #include "yield/fs/poll/fs_event_queue.hpp"
 
-TEST_SUITE_EX(
-  BSDFSEventQueue,
-  yield::fs::poll::FSEventQueueTestSuite<yield::fs::poll::FSEventQueue>
-);
+namespace yield {
+namespace fs {
+namespace poll {
+INSTANTIATE_TYPED_TEST_CASE_P(FSEventQueue, FSEventQueueTest, FSEventQueue);
+}
+}
+}

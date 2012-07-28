@@ -29,12 +29,9 @@
 
 #include "test_event.hpp"
 #include "test_event_handler.hpp"
-#include "yield/assert.hpp"
 #include "yield/auto_object.hpp"
 #include "yield/stage/stage.hpp"
-#include "yunit.hpp"
-
-TEST_SUITE(Stage);
+#include "gtest/gtest.h"
 
 namespace yield {
 namespace stage {
@@ -52,8 +49,8 @@ TEST(Stage, visit) {
   auto_Object<Stage> stage = new Stage(*event_handler);
   stage->handle(*new TestEvent);
   bool visit_ret = stage->visit(Time::FOREVER);
-  throw_assert(visit_ret);
-  throw_assert_eq(event_handler->get_seen_events_count(), 1);
+  ASSERT_TRUE(visit_ret);
+  ASSERT_EQ(event_handler->get_seen_events_count(), 1);
 }
 }
 }

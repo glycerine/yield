@@ -36,6 +36,7 @@
 #include "gtest/gtest.h"
 
 namespace yield {
+template <class TypeParam>
 class EventQueueTest : public ::testing::Test {
 protected:
   class MockEvent : public Event {
@@ -46,86 +47,53 @@ protected:
   };
 };
 
+TYPED_TEST_CASE_P(EventQueueTest);
 
-template <class EventQueueType>
-class EventQueueDequeueTest : public EventQueueTest {
-public:
-  // yunit::Test
-  void run() {
-    auto_Object<Event> event = new MockEvent;
-    EventQueueType event_queue;
+TYPED_TEST_P(EventQueueTest, dequeue) {
+  auto_Object<Event> event = new MockEvent;
+  TypeParam event_queue;
 
-    bool enqueue_ret = event_queue.enqueue(event->inc_ref());
-    ASSERT_TRUE(enqueue_ret);
+  bool enqueue_ret = event_queue.enqueue(event->inc_ref());
+  ASSERT_TRUE(enqueue_ret);
 
-    auto_Object<Event> dequeued_event = event_queue.dequeue();
-    ASSERT_EQ(event, dequeued_event);
+  auto_Object<Event> dequeued_event = event_queue.dequeue();
+  ASSERT_EQ(event, dequeued_event);
 
-    Event* null_event = static_cast<EventQueue&>(event_queue).trydequeue();
-    ASSERT_EQ(null_event, NULL);
-  }
-};
+  Event* null_event = static_cast<EventQueue&>(event_queue).trydequeue();
+  ASSERT_EQ(null_event, static_cast<Event*>(NULL));
+}
 
+TYPED_TEST_P(EventQueueTest, timeddequeue) {
+  auto_Object<Event> event = new MockEvent;
+  TypeParam event_queue;
 
-template <class EventQueueType>
-class EventQueueTimedDequeueTest : public EventQueueTest {
-public:
-  // yunit::Test
-  void run() {
-    auto_Object<Event> event = new MockEvent;
-    EventQueueType event_queue;
+  bool enqueue_ret = event_queue.enqueue(event->inc_ref());
+  ASSERT_TRUE(enqueue_ret);
 
-    bool enqueue_ret = event_queue.enqueue(event->inc_ref());
-    ASSERT_TRUE(enqueue_ret);
+  auto_Object<Event> dequeued_event = event_queue.timeddequeue(1.0);
+  ASSERT_EQ(event, dequeued_event);
 
-    auto_Object<Event> dequeued_event = event_queue.timeddequeue(1.0);
-    ASSERT_EQ(event, dequeued_event);
+  Event* null_event = event_queue.timeddequeue(1.0);
+  ASSERT_EQ(null_event, static_cast<Event*>(NULL));
+}
 
-    Event* null_event = event_queue.timeddequeue(1.0);
-    ASSERT_EQ(null_event, NULL);
-  }
-};
+TYPED_TEST_P(EventQueueTest, trydequeue) {
+  auto_Object<Event> event = new MockEvent;
+  TypeParam event_queue;
 
+  bool enqueue_ret = event_queue.enqueue(event->inc_ref());
+  ASSERT_TRUE(enqueue_ret);
 
-template <class EventQueueType>
-class EventQueueTryDequeueTest : public EventQueueTest {
-public:
-  // yunit::Test
-  void run() {
-    auto_Object<Event> event = new MockEvent;
-    EventQueueType event_queue;
+  auto_Object<Event> dequeued_event
+  = static_cast<EventQueue&>(event_queue).trydequeue();
+  ASSERT_EQ(event, dequeued_event);
 
-    bool enqueue_ret = event_queue.enqueue(event->inc_ref());
-    ASSERT_TRUE(enqueue_ret);
+  Event* null_event
+  = static_cast<EventQueue&>(event_queue).trydequeue();
+  ASSERT_EQ(null_event, static_cast<Event*>(NULL));
+}
 
-    auto_Object<Event> dequeued_event
-    = static_cast<EventQueue&>(event_queue).trydequeue();
-    ASSERT_EQ(event, dequeued_event);
-
-    Event* null_event
-    = static_cast<EventQueue&>(event_queue).trydequeue();
-    ASSERT_EQ(null_event, NULL);
-  }
-};
-
-
-template <class EventQueueType>
-class EventQueueTestSuite : public yunit::TestSuite {
-public:
-  EventQueueTestSuite() {
-    add("EventQueue::dequeue", new EventQueueDequeueTest<EventQueueType>);
-
-    add(
-      "EventQueue::timeddequeue",
-      new EventQueueTimedDequeueTest<EventQueueType>
-    );
-
-    add(
-      "EventQueue::trydequeue",
-      new EventQueueTryDequeueTest<EventQueueType>
-    );
-  }
-};
+REGISTER_TYPED_TEST_CASE_P(EventQueueTest, dequeue, timeddequeue, trydequeue);
 }
 
 #endif

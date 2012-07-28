@@ -28,20 +28,17 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "yield/auto_object.hpp"
-#include "yield/assert.hpp"
 #include "yield/buffer.hpp"
 #include "yield/http/http_request.hpp"
-#include "yunit.hpp"
-
-TEST_SUITE(HTTPMessage);
+#include "gtest/gtest.h"
 
 namespace yield {
 namespace http {
 TEST(HTTPMessage, get_body) {
-  throw_assert_eq(HTTPRequest(HTTPRequest::Method::GET, "/").get_body(), NULL);
+  ASSERT_EQ(HTTPRequest(HTTPRequest::Method::GET, "/").get_body(), static_cast<Object*>(NULL));
 
   auto_Object<Buffer> body = Buffer::copy("body");
-  throw_assert_eq(
+  ASSERT_EQ(
     memcmp(
       *static_cast<Buffer*>(
         HTTPRequest(HTTPRequest::Method::GET, "/", &body->inc_ref()).get_body()
@@ -58,7 +55,7 @@ TEST(HTTPMessage, get_date_field) {
   = new HTTPRequest(HTTPRequest::Method::GET, "/");
   http_request->set_field("Date", "Wed, 15 Nov 1995 06:25:24 GMT");
   DateTime date = http_request->get_date_field("Date");
-  throw_assert_ne(date, DateTime::INVALID_DATE_TIME);
+  ASSERT_NE(date, DateTime::INVALID_DATE_TIME);
 }
 
 TEST(HTTPMessage, get_field) {
@@ -70,16 +67,16 @@ TEST(HTTPMessage, get_field) {
 
   {
     iovec date;
-    throw_assert(http_request->get_field("Date", date));
-    throw_assert_eq(date.iov_len, 29);
-    throw_assert_eq(memcmp(date.iov_base, "Wed, 15 Nov 1995 06:25:24 GMT", 29), 0);
+    ASSERT_TRUE(http_request->get_field("Date", date));
+    ASSERT_EQ(date.iov_len, 29);
+    ASSERT_EQ(memcmp(date.iov_base, "Wed, 15 Nov 1995 06:25:24 GMT", 29), 0);
   }
 
   {
     iovec date;
-    throw_assert(http_request->get_field("Date", 4, date));
-    throw_assert_eq(date.iov_len, 29);
-    throw_assert_eq(memcmp(date.iov_base, "Wed, 15 Nov 1995 06:25:24 GMT", 29), 0);
+    ASSERT_TRUE(http_request->get_field("Date", 4, date));
+    ASSERT_EQ(date.iov_len, 29);
+    ASSERT_EQ(memcmp(date.iov_base, "Wed, 15 Nov 1995 06:25:24 GMT", 29), 0);
   }
 
   // Set a field after the desired field
@@ -87,10 +84,10 @@ TEST(HTTPMessage, get_field) {
 
   {
     string date = http_request->get_field("Date");
-    throw_assert_eq(date, "Wed, 15 Nov 1995 06:25:24 GMT");
+    ASSERT_EQ(date, "Wed, 15 Nov 1995 06:25:24 GMT");
   }
 
-  throw_assert(http_request->get_field("DateX").empty());
+  ASSERT_TRUE(http_request->get_field("DateX").empty());
 }
 
 TEST(HTTPMessage, get_fields) {
@@ -101,11 +98,11 @@ TEST(HTTPMessage, get_fields) {
 
   vector< std::pair<iovec, iovec> > fields;
   http_request->get_fields(fields);
-  throw_assert_eq(fields.size(), 2);
-  throw_assert_eq(fields[0].first.iov_len, 4);
-  throw_assert_eq(fields[0].second.iov_len, 9);
-  throw_assert_eq(fields[1].first.iov_len, 5);
-  throw_assert_eq(fields[1].second.iov_len, 9);
+  ASSERT_EQ(fields.size(), 2);
+  ASSERT_EQ(fields[0].first.iov_len, 4);
+  ASSERT_EQ(fields[0].second.iov_len, 9);
+  ASSERT_EQ(fields[1].first.iov_len, 5);
+  ASSERT_EQ(fields[1].second.iov_len, 9);
 }
 }
 }
