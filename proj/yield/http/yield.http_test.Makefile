@@ -62,7 +62,7 @@ endif
 ifeq ($(UNAME), Linux)
 	LIBS += -lgtest
 endif
-LIBS += -lyield_http -lyield_uri -lyield
+LIBS += -lyield -lyield_uri -lyield_http
 
 
 D_FILE_PATHS := $(shell find ../../../build/yield/http -name "*.d")

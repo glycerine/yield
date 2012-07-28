@@ -280,7 +280,7 @@ LIBS_EXPANDED = {}
 for project_name, project_references in PROJECT_REFERENCES_EXPANDED.iteritems():
     # Add all of the project references' libs to the project's libs
     LIBS_EXPANDED[project_name] = {}
-    for project_reference in list(reversed(project_references)) + [project_name]:
+    for project_reference in list(reversed(project_references)):
         try:
             for platform, platform_libs in LIBS[project_reference].iteritems():
                 LIBS_EXPANDED[project_name].setdefault(platform, []).extend(platform_libs)
@@ -288,12 +288,19 @@ for project_name, project_references in PROJECT_REFERENCES_EXPANDED.iteritems():
             pass
 
     # Add the project references' outputs to the project's libs
-    for project_reference in project_references:
+    for project_reference in reversed(project_references):
         if project_reference != 'yield.queue':
             project_reference_lib = path_split(OUTPUT_FILE_PATHS[project_reference])[-1]
             LIBS_EXPANDED[project_name].setdefault('*', [])
             assert project_reference_lib not in LIBS_EXPANDED[project_name]['*'], LIBS_EXPANDED[project_name]['*']
             LIBS_EXPANDED[project_name]['*'].append(project_reference_lib)
+
+    # Finally, add this project's LIBS to LIBS_EXPANDED
+    try:
+        for platform, platform_libs in LIBS[project_name].iteritems():
+            LIBS_EXPANDED[project_name].setdefault(platform, []).extend(platform_libs)
+    except KeyError:
+        pass
 
     # dedup
     for platform in LIBS_EXPANDED[project_name].iterkeys():

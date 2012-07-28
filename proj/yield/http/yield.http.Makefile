@@ -47,7 +47,7 @@ endif
 ifeq ($(UNAME), Solaris)
 	LIBS += -lm -lrt -lstdc++
 endif
-LIBS += -lyield_uri -lyield
+LIBS += -lyield -lyield_uri
 
 
 D_FILE_PATHS := $(shell find ../../../build/yield/http -name "*.d")

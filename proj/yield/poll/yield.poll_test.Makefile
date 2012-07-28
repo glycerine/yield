@@ -65,7 +65,7 @@ endif
 ifeq ($(UNAME), Linux)
 	LIBS += -lgtest
 endif
-LIBS += -lyield_poll -lyield_thread -lyield_sockets -lyield
+LIBS += -lyield -lyield_sockets -lyield_thread -lyield_poll
 
 
 D_FILE_PATHS := $(shell find ../../../build/yield/poll -name "*.d")
