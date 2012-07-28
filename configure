@@ -102,7 +102,6 @@ if not options.calculate_type_id and\
    not options.generate_src and\
    not options.generate_src_rl and\
    not options.generate_test and\
-   not options.generate_test_main_cpp and\
    not options.generate_test_py:
     # No options set
     options.format_src = True
@@ -239,6 +238,7 @@ LIBS = {
 }
 for project_name in PROJECT_NAMES:
     project_test_libs = LIBS.setdefault(project_name + '_test', {})
+    project_test_libs['linux'] = ['pthread']
     project_test_libs['win32'] = ['gtestd']
     project_test_libs['unix'] = ['gtest']
 

@@ -55,7 +55,7 @@ ifeq ($(UNAME), Linux)
 	LIBS += -lgtest
 endif
 ifeq ($(UNAME), Linux)
-	LIBS += -lrt -lstdc++
+	LIBS += -lpthread -lrt -lstdc++
 endif
 ifeq ($(UNAME), Solaris)
 	LIBS += -lm -lrt -lstdc++
