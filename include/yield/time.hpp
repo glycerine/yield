@@ -41,25 +41,25 @@ namespace yield {
 class Time {
 public:
   /**
-    Constant: number of nanoseconds in a microsecond.
+    Constant: the largest value this class can store,
+      often used to indicate infinite timeouts.
   */
-  const static uint64_t NS_IN_US = static_cast<uint64_t>(1000);
+  const static uint64_t FOREVER;
 
   /**
     Constant: number of nanoseconds in a millisecond.
   */
-  const static uint64_t NS_IN_MS = static_cast<uint64_t>(1000000);
+  const static uint64_t NS_IN_MS;
 
   /**
     Constant: number of nanoseconds in a second.
   */
-  const static uint64_t NS_IN_S  = static_cast<uint64_t>(1000000000);
+  const static uint64_t NS_IN_S;
 
   /**
-    Constant: the largest value this class can store,
-      often used to indicate infinite timeouts.
+    Constant: number of nanoseconds in a microsecond.
   */
-  const static uint64_t FOREVER  = static_cast<uint64_t>(~0);
+  const static uint64_t NS_IN_US;
 
 public:
   /**
