@@ -65,7 +65,7 @@ DatagramSocket::recvmsg(
   msghdr_.msg_iov = const_cast<iovec*>(iov);
   msghdr_.msg_iovlen = iovlen;
   msghdr_.msg_name = peername;
-  msghdr_.msg_namelen = sizeof(*peername);
+  msghdr_.msg_namelen = peername.len();
   return ::recvmsg(*this, &msghdr_, flags);
 }
 
