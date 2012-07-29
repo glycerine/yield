@@ -120,8 +120,10 @@ TEST_F(StatTest, get_size) {
 
 #ifdef __linux__
 TEST(Stat, ISBLK) {
-  auto_Object<Stat> stbuf = FileSystem().stat("/dev/cdrom");
-  ASSERT_TRUE(stbuf->ISBLK());
+  if (FileSystem().exists("/dev/cdrom")) {
+    auto_Object<Stat> stbuf = FileSystem().stat("/dev/cdrom");
+    ASSERT_TRUE(stbuf->ISBLK());
+  }
 }
 
 TEST(Stat, ISCHR) {
