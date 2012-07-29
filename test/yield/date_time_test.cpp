@@ -61,7 +61,7 @@ TEST(DateTime, as_local_tm) {
   ASSERT_LE(tm_.tm_mday, 31);
   ASSERT_GE(tm_.tm_mon, 0);
   ASSERT_LE(tm_.tm_mon, 11);
-  ASSERT_GE(tm_.tm_year, 1900);
+  ASSERT_GE(tm_.tm_year, 0); // Current year - 1900
   ASSERT_GE(tm_.tm_wday, 0);
   ASSERT_LE(tm_.tm_wday, 6);
   ASSERT_GE(tm_.tm_yday, 0);
@@ -81,7 +81,7 @@ TEST(DateTime, as_utc_tm) {
   ASSERT_LE(tm_.tm_mday, 31);
   ASSERT_GE(tm_.tm_mon, 0);
   ASSERT_LE(tm_.tm_mon, 11);
-  ASSERT_GE(tm_.tm_year, 1900);
+  ASSERT_GE(tm_.tm_year, 0); // Current year - 1900
   ASSERT_GE(tm_.tm_wday, 0);
   ASSERT_LE(tm_.tm_wday, 6);
   ASSERT_GE(tm_.tm_yday, 0);

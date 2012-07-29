@@ -37,10 +37,8 @@
 #include <sys/time.h> // For gettimeofday
 #endif
 
-
 namespace yield {
 const DateTime DateTime::INVALID_DATE_TIME = static_cast<uint64_t>(~0);
-
 
 #ifdef _WIN32
 DateTime::DateTime(const FILETIME& file_time) {
@@ -71,8 +69,7 @@ DateTime::DateTime(const tm& tm_, bool local) {
 }
 #endif
 
-DateTime::DateTime
-(
+DateTime::DateTime(
   int tm_sec, // seconds after the minute  0-61*
   int tm_min, // minutes after the hour  0-59
   int tm_hour, //  hours since midnight 0-23
@@ -114,8 +111,7 @@ SYSTEMTIME DateTime::as_local_SYSTEMTIME() const {
   TIME_ZONE_INFORMATION time_zone_information;
   GetTimeZoneInformation(&time_zone_information);
   SYSTEMTIME local_system_time;
-  SystemTimeToTzSpecificLocalTime
-  (
+  SystemTimeToTzSpecificLocalTime(
     &time_zone_information,
     &utc_system_time,
     &local_system_time
@@ -242,8 +238,7 @@ DateTime::operator string() const {
 #ifdef _WIN32
   SYSTEMTIME local_system_time = this->as_local_SYSTEMTIME();
 
-  _snprintf_s
-  (
+  _snprintf_s(
     iso_date_time,
     64,
     _TRUNCATE,
