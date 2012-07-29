@@ -118,16 +118,13 @@ TEST_F(DirectoryTest, read) {
     auto_Object<Directory::Entry> dentry = get_directory().read();
     if (dentry->get_name() == Path::CURRENT_DIRECTORY) {
       ASSERT_TRUE(dentry->ISDIR());
-      ASSERT_FALSE(dentry->is_hidden());
       ASSERT_TRUE(dentry->is_special());
     } else if (dentry->get_name() == Path::PARENT_DIRECTORY) {
       ASSERT_TRUE(dentry->ISDIR());
-      ASSERT_FALSE(dentry->is_hidden());
       ASSERT_TRUE(dentry->is_special());
     } else {
       ASSERT_EQ(dentry->get_name(), get_test_file_name());
       ASSERT_TRUE(dentry->ISREG());
-      ASSERT_FALSE(dentry->is_hidden());
       ASSERT_FALSE(dentry->is_special());
     }
   }
