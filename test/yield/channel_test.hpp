@@ -36,6 +36,11 @@
 #include "yield/channel_pair.hpp"
 #include "yield/exception.hpp"
 #include "gtest/gtest.h"
+#ifdef _WIN32
+#include <WinError.h>
+#else
+#include <errno.h>
+#endif
 
 namespace yield {
 template <class ChannelPairType>
@@ -82,7 +87,11 @@ protected:
         memcmp(buf, get_test_string().data(), get_test_string().size()),
         0
       );
-    } else {
+#ifdef _WIN32
+    } else if (Exception::get_last_error_code() != ERROR_NOT_SUPPORTED) {
+#else
+    } else if (Exception::get_last_error_code() != ENOTSUP) {
+#endif
       throw Exception();
     }
   }
@@ -93,7 +102,11 @@ protected:
         static_cast<size_t>(write_ret),
         get_test_string().size()
       );
-    } else {
+#ifdef _WIN32
+    } else if (Exception::get_last_error_code() != ERROR_NOT_SUPPORTED) {
+#else
+    } else if (Exception::get_last_error_code() != ENOTSUP) {
+#endif
       throw Exception();
     }
   }
