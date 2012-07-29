@@ -3,6 +3,7 @@ build/**
 dist/**
 doc/doxygen*.tmp
 doc/html/**
+gtest_output/**
 lib/**
 ipch/**
 *lcov*
