@@ -388,6 +388,11 @@ if INCLUDE_FILE_PATHS.has_key('yield.sockets.ssl'):
     ] + \
     INCLUDE_FILE_PATHS['yield.sockets.ssl']
 
+INCLUDE_FILE_PATHS['yield.stage'] = [
+    path_join(YIELD_INCLUDE_DIR_PATH, 'yield', 'stage', 'stage_scheduler.hpp'), # before *_stage_scheduler
+] + \
+INCLUDE_FILE_PATHS['yield.stage']
+
 INCLUDE_FILE_PATHS['yield.thread'] = [
     path_join(YIELD_INCLUDE_DIR_PATH, 'yield', 'thread', 'mutex.hpp'), # before condition_variable
     path_join(YIELD_INCLUDE_DIR_PATH, 'yield', 'thread', 'lightweight_mutex.hpp'), # before condition_variable
@@ -459,6 +464,7 @@ if options.generate_dist:
             source_files = source_files.filter(C_CXX_FILE_FNMATCH_PATTERNS)
             source_files = source_files.exclude('test_*')
             source_files = source_files.exclude('*_test*')
+            source_files = source_files.exclude('ygi.h')
             cpp.append(source_files.get_combined_repr())
 
         project_dist_dir_path = \
@@ -489,6 +495,17 @@ if options.generate_dist:
                 if exists(ypy_file_path):
                     copy_file(file_path, ypy_file_path)
 
+    if ypy_dir_path is not None:
+        copy_file(
+            path_join(YIELD_INCLUDE_DIR_PATH, 'ygi.h'),
+            path_join(
+                ypy_dir_path,
+                'share',
+                'yield',
+                'dist',
+                'ygi.h'
+            )
+        )
 
 if options.format_src:
     source_paths = {
