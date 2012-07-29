@@ -65,21 +65,21 @@ depclean:
 	$(MAKE) -C proj/yield/uri -f yield.uri_test.Makefile depclean
 
 test: yield.fs.poll_test yield.fs_test yield.http.server.file_test yield.http.server.ygi_test yield.http.server_test yield.http_test yield.i18n_test yield.poll_test yield.queue_test yield.sockets.aio_test yield.sockets_test yield.stage_test yield.thread_test yield.uri_test yield_test
-	-bin/yield/yield_fs_poll_test
-	-bin/yield/yield_fs_test
-	-bin/yield/yield_http_server_file_test
-	-bin/yield/yield_http_server_test
-	-bin/yield/yield_http_server_ygi_test
-	-bin/yield/yield_http_test
-	-bin/yield/yield_i18n_test
-	-bin/yield/yield_poll_test
-	-bin/yield/yield_queue_test
-	-bin/yield/yield_sockets_aio_test
-	-bin/yield/yield_sockets_test
-	-bin/yield/yield_stage_test
-	-bin/yield/yield_test
-	-bin/yield/yield_thread_test
-	-bin/yield/yield_uri_test
+	-bin/yield/yield_fs_poll_test --gtest_output=xml:gtest_output/yield.fs.poll_test.xml
+	-bin/yield/yield_fs_test --gtest_output=xml:gtest_output/yield.fs_test.xml
+	-bin/yield/yield_http_server_file_test --gtest_output=xml:gtest_output/yield.http.server.file_test.xml
+	-bin/yield/yield_http_server_test --gtest_output=xml:gtest_output/yield.http.server_test.xml
+	-bin/yield/yield_http_server_ygi_test --gtest_output=xml:gtest_output/yield.http.server.ygi_test.xml
+	-bin/yield/yield_http_test --gtest_output=xml:gtest_output/yield.http_test.xml
+	-bin/yield/yield_i18n_test --gtest_output=xml:gtest_output/yield.i18n_test.xml
+	-bin/yield/yield_poll_test --gtest_output=xml:gtest_output/yield.poll_test.xml
+	-bin/yield/yield_queue_test --gtest_output=xml:gtest_output/yield.queue_test.xml
+	-bin/yield/yield_sockets_aio_test --gtest_output=xml:gtest_output/yield.sockets.aio_test.xml
+	-bin/yield/yield_sockets_test --gtest_output=xml:gtest_output/yield.sockets_test.xml
+	-bin/yield/yield_stage_test --gtest_output=xml:gtest_output/yield.stage_test.xml
+	-bin/yield/yield_test --gtest_output=xml:gtest_output/yield_test.xml
+	-bin/yield/yield_thread_test --gtest_output=xml:gtest_output/yield.thread_test.xml
+	-bin/yield/yield_uri_test --gtest_output=xml:gtest_output/yield.uri_test.xml
 
 
 
