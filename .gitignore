@@ -1,5 +1,7 @@
 bin/**
 build/**
+CMakeCache.txt
+CMakeFiles
 dist/**
 doc/doxygen*.tmp
 doc/html/**
