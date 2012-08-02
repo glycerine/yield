@@ -128,8 +128,8 @@ private:
   RetryStatus retry_sendfile(sendfileAIOCB&, size_t& partial_send_len);
 
 private:
-  Log* log;
   yield::poll::FDEventQueue fd_event_queue;
+  Log* log;
   std::map<fd_t, SocketState*> socket_state;
 };
 }

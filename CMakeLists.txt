@@ -6,7 +6,12 @@ if (MSVC)
 	add_definitions("/GR- /MP /wd\"4100\" /wd\"4127\" /wd\"4290\" /wd\"4355\" /wd\"4512\"")
 else()
 	add_definitions(-fno-rtti -Wall -Wextra -Wfloat-equal -Winit-self -Winline -Wold-style-cast -Wunused)
+	if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+		add_definitions("-D_DEBUG")
+	endif()
 endif()
+
+
 
 enable_testing()
 

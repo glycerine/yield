@@ -105,14 +105,13 @@ TEST_F(LogTest, write_string) {
 
 TEST_F(LogTest, write_unprintable) {
   uint8_t unprintable_string[8];
-  char printable_string[8];
+  // char printable_string[8];
   for (uint8_t i = 0; i < get_test_string().size(); i++) {
     unprintable_string[i] = i;
-    printable_string[i] = '.';
+    // printable_string[i] = '.';
   }
 
-  get_log().write
-  (
+  get_log().write(
     unprintable_string,
     get_test_string().size(),
     Log::Level::EMERG
