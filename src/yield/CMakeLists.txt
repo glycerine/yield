@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 2.8)
 
 file(GLOB CPP "*.cpp")
 add_library(yield STATIC ${CPP}) 
+if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+	target_link_libraries(yield rt stdc++)
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "SunOS")
+	target_link_libraries(yield m rt stdc++)
+endif()
 
 add_subdirectory(fs)
 add_subdirectory(http)
