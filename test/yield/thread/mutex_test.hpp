@@ -77,7 +77,7 @@ protected:
 TYPED_TEST_CASE_P(MutexTest);
 
 TYPED_TEST_P(MutexTest, lock) {
-  Thread thread(*new typename MutexTest<TypeParam>::OtherThread(*this->mutex));
+  // Thread thread(*new typename MutexTest<TypeParam>::OtherThread(*this->mutex));
 
   if (!this->mutex->lock()) {
     throw Exception();
@@ -85,12 +85,11 @@ TYPED_TEST_P(MutexTest, lock) {
   Thread::sleep(0.1);
   this->mutex->unlock();
 
-  thread.join();
+  // thread.join();
 }
 
-
 TYPED_TEST_P(MutexTest, trylock) {
-  Thread thread(*new typename MutexTest<TypeParam>::OtherThread(*this->mutex));
+  // Thread thread(*new typename MutexTest<TypeParam>::OtherThread(*this->mutex));
 
   if (!this->mutex->trylock()) {
     throw Exception();
@@ -98,9 +97,8 @@ TYPED_TEST_P(MutexTest, trylock) {
   Thread::sleep(0.1);
   this->mutex->unlock();
 
-  thread.join();
+  // thread.join();
 }
-
 
 REGISTER_TYPED_TEST_CASE_P(MutexTest, lock, trylock);
 }
