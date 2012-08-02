@@ -27,7 +27,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "test_ygi_request_handler.h"
+#include "test_ygi_request_handler.hpp"
 #include "yield/http/server/ygi/ygi_server.hpp"
 #include "gtest/gtest.h"
 

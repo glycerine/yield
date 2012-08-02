@@ -1,4 +1,4 @@
-/* test_ygi_request_handler.c */
+/* test_ygi_request_handler.cpp */
 
 /* Copyright (c) 2012 Minor Gordon */
 /* All rights reserved */
@@ -27,7 +27,7 @@
 /* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF */
 /* THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#include "test_ygi_request_handler.h"
+#include "test_ygi_request_handler.hpp"
 
 ygi_response_t* test_ygi_request_handler(ygi_request_t* ygi_request) {
   return ygi_request->respond(ygi_request, 200);

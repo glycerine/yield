@@ -1,4 +1,4 @@
-/* test_ygi_request_handler.h */
+/* test_ygi_request_handler.hpp */
 
 /* Copyright (c) 2012 Minor Gordon */
 /* All rights reserved */
@@ -27,8 +27,8 @@
 /* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF */
 /* THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#ifndef _YIELD_HTTP_SERVER_YGI_TEST_YGI_REQUEST_HANDLER_H_
-#define _YIELD_HTTP_SERVER_YGI_TEST_YGI_REQUEST_HANDLER_H_
+#ifndef _YIELD_HTTP_SERVER_YGI_TEST_YGI_REQUEST_HANDLER_HPP_
+#define _YIELD_HTTP_SERVER_YGI_TEST_YGI_REQUEST_HANDLER_HPP_
 
 #include <ygi.h>
 
