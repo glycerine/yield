@@ -1,0 +1,9 @@
+cmake_minimum_required(VERSION 2.8)
+
+if (WIN32)
+	file(GLOB CPP *.cpp win32/*.cpp ../../../../include/yield/sockets/aio/*.hpp)
+else()
+	file(GLOB CPP *.cpp ../../../../include/yield/sockets/aio/*.hpp)
+endif()
+add_library(yield.sockets.aio STATIC ${CPP})
+target_link_libraries(yield.sockets.aio yield.poll yield.sockets)

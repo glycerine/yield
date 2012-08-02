@@ -1,10 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
 
-file(GLOB CPP "*.cpp")
+file(GLOB CPP *.cpp *.hpp)
 add_executable(yield.uri_test ${CPP})
-add_dependencies(yield.uri_test yield.uri)
-if (WIN32)
-	target_link_libraries(yield.uri_test yield yield.uri gtestd)
-else()
-	target_link_libraries(yield.uri_test yield yield.uri gtest)
-endif()
+target_link_libraries(yield.uri_test yield.uri gtest)

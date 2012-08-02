@@ -1,0 +1,11 @@
+cmake_minimum_required(VERSION 2.8)
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin" OR ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
+  file(GLOB CPP *.cpp *.hpp bsd/*.cpp bsd/*.hpp ../../../../include/yield/fs/poll/*.hpp)
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  file(GLOB CPP *.cpp *.hpp linux/*.cpp linux/*.hpp ../../../../include/yield/fs/poll/*.hpp)
+elseif (WIN32)
+	file(GLOB CPP *.cpp *.hpp win32/*.cpp win32/*.hpp ../../../../include/yield/fs/poll/*.hpp)
+endif()
+add_library(yield.fs.poll STATIC ${CPP})
+target_link_libraries(yield.fs.poll yield.fs yield.poll)
