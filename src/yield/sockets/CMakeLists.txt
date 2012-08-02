@@ -6,8 +6,11 @@ elseif (WIN32)
 	file(GLOB CPP win32/*.cpp win32/*.hpp ../../../include/yield/sockets/*.hpp)
 endif()
 add_library(yield.sockets STATIC ${CPP})
+
+set(LIBS yield)
 if (${CMAKE_SYSTEM_NAME} MATCHES "SunOS")
-	set(PLATFORM_TARGET_LINK_LIBRARIES "nsl socket ")
+	LIST(APPEND LIBS nsl socket)
 endif()
-target_link_libraries(yield.sockets "${PLATFORM_TARGET_LINK_LIBRARIES}yield")
+target_link_libraries(yield.sockets ${LIBS})
+
 add_subdirectory(aio)

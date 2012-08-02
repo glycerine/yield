@@ -10,4 +10,5 @@ elseif (WIN32)
 	file(GLOB CPP *.cpp win32/*.cpp ../../../include/yield/poll/*.hpp)
 endif()
 add_library(yield.poll STATIC ${CPP})
+
 target_link_libraries(yield.poll yield.thread)
