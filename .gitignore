@@ -1,7 +1,7 @@
 bin/**
 build/**
-CMakeCache.txt
-CMakeFiles
+# CMakeCache.txt
+# CMakeFiles
 dist/**
 doc/doxygen*.tmp
 doc/html/**
@@ -12,6 +12,7 @@ ipch/**
 .project
 *.pyc
 .pydevproject
+vcxproj
 yield.opensdf
 yield.sdf
 yield.suo
