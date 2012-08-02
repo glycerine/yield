@@ -1,0 +1,298 @@
+#!/usr/bin/env python
+
+# Copyright (c) 2011 Minor Gordon
+# All rights reserved
+
+# This source file is part of the Yield project.
+
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# * Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+# * Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+# * Neither the name of the Yield project nor the
+# names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL Minor Gordon BE LIABLE FOR ANY DIRECT,
+# INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+# ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+# THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+assert __name__ == '__main__'
+
+import os.path
+import sys
+
+
+# Paths
+YIELD_ROOT_DIR_PATH = \
+    os.path.os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
+YIELD_INCLUDE_DIR_PATH = os.path.join(YIELD_ROOT_DIR_PATH, 'include')
+YIELD_SRC_DIR_PATH = os.path.join(YIELD_ROOT_DIR_PATH, 'src')
+YIELD_TEST_DIR_PATH = os.path.join(YIELD_ROOT_DIR_PATH, 'test')
+
+YUILD_ROOT_DIR_PATH = os.path.abspath(os.path.join(YIELD_ROOT_DIR_PATH, '..', 'yuild'))
+YUILD_SRC_DIR_PATH = os.path.join(YUILD_ROOT_DIR_PATH, 'src')
+
+YUTIL_ROOT_DIR_PATH = os.path.abspath(os.path.join(YIELD_ROOT_DIR_PATH, '..', 'yutil'))
+YUTIL_SRC_DIR_PATH = os.path.join(YUTIL_ROOT_DIR_PATH, 'src')
+
+
+# Conditional imports
+try:
+    import yutil
+except ImportError:
+    sys.path.append(YUTIL_SRC_DIR_PATH)
+from yutil import copy_file, deduplist, fnmatch, indent, list_subdirectories, \
+    rglob, write_file
+
+try:
+    import yuild
+except ImportError:
+    sys.path.append(YUILD_SRC_DIR_PATH)
+from yuild.constant import C_CXX_INCLUDE_FILE_FNMATCH_PATTERNS, \
+    C_CXX_FILE_FNMATCH_PATTERNS, CXX_SOURCE_FILE_FNMATCH_PATTERNS, \
+    INCLUDE_FILE_FNMATCH_PATTERNS, INDENT_SPACES, PLATFORMS, PLATFORM_GUARDS, \
+    SOURCE_FILE_FNMATCH_PATTERNS
+from yuild.source_files import SourceFiles
+
+
+PROJECT_REFERENCES = {
+    'yield': tuple(),
+    'yield.fs': ('yield.i18n',),
+    'yield.fs.poll': ('yield.fs', 'yield.queue',),
+    'yield.http': ('yield.uri',),
+    'yield.http.server': ('yield.fs', 'yield.http', 'yield.sockets.aio', 'yield.stage',),
+    'yield.http.server.file': ('yield.fs', 'yield.http.server'),
+    'yield.http.server.ygi': ('yield.http.server',),
+    'yield.i18n': ('yield',),
+    'yield.poll': ('yield.queue',),
+    'yield.queue': ('yield.thread',),
+    'yield.sockets': ('yield',),
+    'yield.sockets.aio': ('yield.poll', 'yield.sockets',),
+    # 'yield.sockets.ssl': ('yield.sockets',),    
+    'yield.stage': ('yield.thread',),
+    'yield.thread': ('yield',),
+    'yield.uri': ('yield',),
+}
+
+PROJECT_NAMES = PROJECT_REFERENCES.keys()
+
+PROJECT_REFERENCES['yield.poll_test'] = ('yield.poll', 'yield.sockets')
+PROJECT_REFERENCES['yield.sockets_test'] = ('yield.fs', 'yield.sockets')
+PROJECT_REFERENCES['yield.sockets.aio_test'] = ('yield.fs', 'yield.sockets.aio')
+
+PROJECT_DIR_PATHS = {}
+for project_name in PROJECT_NAMES:
+    project_dir_path = os.path.join(YIELD_ROOT_DIR_PATH, 'proj', os.path.sep.join(project_name.split('.')))
+    PROJECT_DIR_PATHS[project_name] = project_dir_path
+    PROJECT_DIR_PATHS[project_name + '_test'] = project_dir_path
+
+for project_name in PROJECT_NAMES:
+    PROJECT_REFERENCES.setdefault(project_name + '_test', [project_name])
+
+# Expand project references so that the list has dependencies going left -> right, e.g.
+# if project A depends on project B depends on project C, the order will be [A, B, C]
+def __expand_project_references(project_name):
+    project_references = []
+    for project_reference in PROJECT_REFERENCES[project_name]:
+        project_references.append(project_reference)
+        for project_reference in __expand_project_references(project_reference):
+            try:
+                del project_references[project_references.index(project_reference)]
+            except ValueError:
+                pass
+            project_references.append(project_reference)
+    return project_references
+PROJECT_REFERENCES_EXPANDED = {}
+for project_name in PROJECT_REFERENCES.iterkeys():
+    PROJECT_REFERENCES_EXPANDED[project_name] = \
+        deduplist(__expand_project_references(project_name))
+
+INCLUDE_FILE_PATHS = {}
+SOURCE_DIR_PATHS = {}
+SOURCE_FILE_PATHS = {}
+
+for project_name in PROJECT_NAMES:
+    project_include_dir_path = os.path.join(YIELD_INCLUDE_DIR_PATH, os.path.sep.join(project_name.split('.')))
+    INCLUDE_FILE_PATHS[project_name] = []
+    for platform in list(PLATFORMS) + ['']:
+        if os.path.exists(os.path.join(project_include_dir_path, platform)):
+            for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS:
+                INCLUDE_FILE_PATHS[project_name].extend(
+                    list(rglob(os.path.join(project_include_dir_path, platform, fnmatch_pattern)))
+                )
+    INCLUDE_FILE_PATHS[project_name].sort()
+    INCLUDE_FILE_PATHS[project_name + '_test'] = []
+
+    for project_name_, project_source_dir_path in (
+            (project_name, os.path.join(YIELD_SRC_DIR_PATH, os.path.sep.join(project_name.split('.')))),
+            (project_name + '_test', os.path.join(YIELD_TEST_DIR_PATH, os.path.sep.join(project_name.split('.'))))
+        ):
+        SOURCE_DIR_PATHS[project_name_] = project_source_dir_path
+        SOURCE_FILE_PATHS[project_name_] = []
+        for platform in list(PLATFORMS) + ['']:
+            if os.path.exists(os.path.join(project_source_dir_path, platform)):
+                for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + SOURCE_FILE_FNMATCH_PATTERNS:
+                    SOURCE_FILE_PATHS[project_name_].extend(
+                        list(rglob(os.path.join(project_source_dir_path, platform, fnmatch_pattern)))
+                    )
+        SOURCE_FILE_PATHS[project_name_].sort()
+
+
+INCLUDE_FILE_PATHS['yield'] = [
+    os.path.join(YIELD_INCLUDE_DIR_PATH, 'ygi.h'),
+    os.path.join(YIELD_INCLUDE_DIR_PATH, 'yield', 'config.hpp'), # before types
+    os.path.join(YIELD_INCLUDE_DIR_PATH, 'yield', 'types.hpp'), # before atomic
+    os.path.join(YIELD_INCLUDE_DIR_PATH, 'yield', 'atomic.hpp'), # before object
+    os.path.join(YIELD_INCLUDE_DIR_PATH, 'yield', 'object.hpp'), # before event
+    os.path.join(YIELD_INCLUDE_DIR_PATH, 'yield', 'time.hpp'), # before event_queue
+] + \
+INCLUDE_FILE_PATHS['yield']
+
+INCLUDE_FILE_PATHS['yield.fs'] = [
+    os.path.join(YIELD_INCLUDE_DIR_PATH, 'yield', 'fs', 'path.hpp'), # before directory
+    os.path.join(YIELD_INCLUDE_DIR_PATH, 'yield', 'fs', 'stat.hpp'), # before directory
+] + \
+INCLUDE_FILE_PATHS['yield.fs']
+
+INCLUDE_FILE_PATHS['yield.http'] = [
+    os.path.join(YIELD_INCLUDE_DIR_PATH, 'yield', 'http', 'http_message.hpp'), # before http_response
+    os.path.join(YIELD_INCLUDE_DIR_PATH, 'yield', 'http', 'http_response.hpp'), # before http_request_parser
+] + \
+INCLUDE_FILE_PATHS['yield.http']
+
+INCLUDE_FILE_PATHS['yield.queue'] = [
+    os.path.join(YIELD_INCLUDE_DIR_PATH, 'yield', 'queue', 'synchronized_queue.hpp'), # before synchronized_event_queue
+] + \
+INCLUDE_FILE_PATHS['yield.queue']
+
+INCLUDE_FILE_PATHS['yield.sockets'] = [
+    os.path.join(YIELD_INCLUDE_DIR_PATH, 'yield', 'sockets', 'socket_address.hpp'), # before socket
+    os.path.join(YIELD_INCLUDE_DIR_PATH, 'yield', 'sockets', 'socket.hpp'), # before datagram_socket
+    os.path.join(YIELD_INCLUDE_DIR_PATH, 'yield', 'sockets', 'socket_pair.hpp'), # before datagram_socket_pair
+] + \
+INCLUDE_FILE_PATHS['yield.sockets']
+
+INCLUDE_FILE_PATHS['yield.sockets.aio'] = [
+    os.path.join(YIELD_INCLUDE_DIR_PATH, 'yield', 'sockets', 'aio', 'aiocb.hpp'), # before accept_aiocb
+    os.path.join(YIELD_INCLUDE_DIR_PATH, 'yield', 'sockets', 'aio', 'nbio_queue.hpp'), # before aio_queue
+] + \
+INCLUDE_FILE_PATHS['yield.sockets.aio']
+
+if INCLUDE_FILE_PATHS.has_key('yield.sockets.ssl'):
+    INCLUDE_FILE_PATHS['yield.sockets.ssl'] = [
+        os.path.join(YIELD_INCLUDE_DIR_PATH, 'yield', 'sockets', 'ssl', 'ssl_version.hpp'), # before ssl_context
+    ] + \
+    INCLUDE_FILE_PATHS['yield.sockets.ssl']
+
+INCLUDE_FILE_PATHS['yield.stage'] = [
+    os.path.join(YIELD_INCLUDE_DIR_PATH, 'yield', 'stage', 'stage_scheduler.hpp'), # before *_stage_scheduler
+] + \
+INCLUDE_FILE_PATHS['yield.stage']
+
+INCLUDE_FILE_PATHS['yield.thread'] = [
+    os.path.join(YIELD_INCLUDE_DIR_PATH, 'yield', 'thread', 'mutex.hpp'), # before condition_variable
+    os.path.join(YIELD_INCLUDE_DIR_PATH, 'yield', 'thread', 'lightweight_mutex.hpp'), # before condition_variable
+    os.path.join(YIELD_INCLUDE_DIR_PATH, 'yield', 'thread', 'semaphore.hpp'), # before condition_variable
+] + \
+INCLUDE_FILE_PATHS['yield.thread']
+
+SOURCE_FILE_PATHS['yield.fs.poll'] = [
+    os.path.join(YIELD_SRC_DIR_PATH, 'yield', 'fs', 'poll', 'watch.hpp'), # before scanning_watch
+    os.path.join(YIELD_SRC_DIR_PATH, 'yield', 'fs', 'poll', 'scanning_watch.hpp'), # before scanning_directory_watch
+    os.path.join(YIELD_SRC_DIR_PATH, 'yield', 'fs', 'poll', 'bsd', 'watch.hpp'), # before directory_watch
+    os.path.join(YIELD_SRC_DIR_PATH, 'yield', 'fs', 'poll', 'win32', 'watch.hpp'), # before directory_watch
+] + \
+SOURCE_FILE_PATHS['yield.fs.poll']
+
+for project_name in INCLUDE_FILE_PATHS.iterkeys():
+    for file_paths in (INCLUDE_FILE_PATHS, SOURCE_FILE_PATHS):
+        file_paths[project_name] = deduplist(file_paths[project_name])
+        for file_path in file_paths[project_name]:
+            if not os.path.exists(file_path):
+                raise ValueError, file_path + ' does not exist'
+
+
+PROJECT_BUILD_ORDER = []
+def __fill_project_build_order(project_name):
+    for project_reference in PROJECT_REFERENCES[project_name]:
+        __fill_project_build_order(project_reference)
+
+    if project_name not in PROJECT_BUILD_ORDER:
+        PROJECT_BUILD_ORDER.append(project_name)
+for project_name in PROJECT_NAMES:
+    __fill_project_build_order(project_name)
+
+ypy_dir_path = os.path.join(YIELD_ROOT_DIR_PATH, '..', 'ypy')
+if not os.path.exists(ypy_dir_path):
+    ypy_dir_path = None
+
+for project_name in ('yield',):
+    hpp = []
+    cpp = ['#include "%s.hpp"\n\n\n' % '_'.join(project_name.split('.'))]
+
+    if project_name == 'yield':
+        project_references = PROJECT_BUILD_ORDER
+    else:
+        project_references = PROJECT_BUILD_ORDER[:PROJECT_BUILD_ORDER.index(project_name) + 1]
+
+    for project_reference in project_references:
+        include_files = SourceFiles(INCLUDE_FILE_PATHS[project_reference])
+        include_files = include_files.filter(C_CXX_INCLUDE_FILE_FNMATCH_PATTERNS)
+        hpp.append(include_files.get_combined_repr())
+        source_files = SourceFiles(SOURCE_FILE_PATHS[project_reference])
+        source_files = source_files.filter(C_CXX_FILE_FNMATCH_PATTERNS)
+        source_files = source_files.exclude('test_*')
+        source_files = source_files.exclude('*_test*')
+        source_files = source_files.exclude('ygi.h')
+        cpp.append(source_files.get_combined_repr())
+
+    project_dist_dir_path = \
+        os.path.join(YIELD_ROOT_DIR_PATH, 'dist')#, os.path.sep.join(project_name.split('.')))
+    if not os.path.exists(project_dist_dir_path):
+        makedirs(project_dist_dir_path)
+
+    for file_ext in ('cpp', 'hpp'):
+        file_path = \
+            os.path.join(
+                project_dist_dir_path,
+                '_'.join(project_name.split('.')) + '.' + file_ext
+            )
+
+        write_file(file_path, locals()[file_ext])
+
+        if ypy_dir_path is not None:
+            ypy_file_path = \
+                os.path.join(
+                    ypy_dir_path,
+                    'share',
+                    'yield',
+                    'dist',
+                    #os.path.sep.join(project_name.split('.')),
+                    os.path.split(file_path)[1]
+                )
+
+            if os.path.exists(ypy_file_path):
+                copy_file(file_path, ypy_file_path)
+
+if ypy_dir_path is not None:
+    copy_file(
+        os.path.join(YIELD_INCLUDE_DIR_PATH, 'ygi.h'),
+        os.path.join(
+            ypy_dir_path,
+            'share',
+            'yield',
+            'dist',
+            'ygi.h'
+        )
+    )

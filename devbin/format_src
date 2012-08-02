@@ -1,0 +1,123 @@
+#!/usr/bin/env python
+
+# Copyright (c) 2011 Minor Gordon
+# All rights reserved
+
+# This source file is part of the Yield project.
+
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# * Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+# * Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+# * Neither the name of the Yield project nor the
+# names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL Minor Gordon BE LIABLE FOR ANY DIRECT,
+# INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+# ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+# THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+assert __name__ == '__main__'
+
+from argparse import ArgumentParser
+from copy import copy, deepcopy
+from optparse import OptionParser
+import os.path
+import re
+import subprocess
+import sys
+import traceback
+
+
+# Paths
+YIELD_ROOT_DIR_PATH = \
+    os.path.os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
+YIELD_INCLUDE_DIR_PATH = os.path.join(YIELD_ROOT_DIR_PATH, 'include')
+YIELD_SRC_DIR_PATH = os.path.join(YIELD_ROOT_DIR_PATH, 'src')
+YIELD_TEST_DIR_PATH = os.path.join(YIELD_ROOT_DIR_PATH, 'test')
+
+YUILD_ROOT_DIR_PATH = os.path.abspath(os.path.join(YIELD_ROOT_DIR_PATH, '..', 'yuild'))
+YUILD_SRC_DIR_PATH = os.path.join(YUILD_ROOT_DIR_PATH, 'src')
+
+YUTIL_ROOT_DIR_PATH = os.path.abspath(os.path.join(YIELD_ROOT_DIR_PATH, '..', 'yutil'))
+YUTIL_SRC_DIR_PATH = os.path.join(YUTIL_ROOT_DIR_PATH, 'src')
+
+
+# Conditional imports
+try:
+    import yutil
+except ImportError:
+    sys.path.append(YUTIL_SRC_DIR_PATH)
+from yutil import copy_file, deduplist, fnmatch, indent, list_subdirectories, \
+    mirror_subdirectories, rglob, write_file
+
+try:
+    import yuild
+except ImportError:
+    sys.path.append(YUILD_SRC_DIR_PATH)
+from yuild.constant import INCLUDE_FILE_FNMATCH_PATTERNS, SOURCE_FILE_FNMATCH_PATTERNS
+from yuild.source_files import SourceFiles
+
+
+# Parse options
+argument_parser = ArgumentParser()
+argument_parser.add_argument('-f', '--force', action='store_true')
+args = argument_parser.parse_args()
+
+
+source_paths = {
+    'Yield': (
+        os.path.join(YIELD_ROOT_DIR_PATH, 'devbin'),
+        os.path.join(YIELD_ROOT_DIR_PATH, 'include'),
+        os.path.join(YIELD_ROOT_DIR_PATH, 'src', 'yield'),
+        os.path.join(YIELD_ROOT_DIR_PATH, 'test', 'yield')
+    ),
+    'yutil': (
+        os.path.join(YUTIL_ROOT_DIR_PATH, 'src', 'yutil.py'),
+        os.path.join(YUTIL_ROOT_DIR_PATH, 'test', 'yutil_test.py'),
+    ),
+    'yuild': (
+        os.path.join(YUILD_ROOT_DIR_PATH, 'src', 'yuild'),
+        os.path.join(YUILD_ROOT_DIR_PATH, 'test', 'yuild_test'),
+    )
+}
+
+THIRD_PARTY_SOURCE_FNMATCH_PATTERNS = (
+    'charProps.c',
+    'genx.*',
+    'pyparsing.py',
+    'rapidxml.hpp',
+    'SimpleOpt.h',
+    'yajl.*',
+)
+
+
+for project, source_paths in source_paths.iteritems():
+    source_files = SourceFiles()
+    for source_path in source_paths:
+        if os.path.isdir(source_path):
+            for fnmatch_pattern in INCLUDE_FILE_FNMATCH_PATTERNS + \
+                                   SOURCE_FILE_FNMATCH_PATTERNS:
+                for source_file_path in rglob(os.path.join(source_path, '**', fnmatch_pattern)):
+                    source_files.append(source_file_path)
+        else:
+            assert os.path.isfile(source_path), source_path
+            source_files.append(source_path)
+
+    source_files = source_files.exclude(THIRD_PARTY_SOURCE_FNMATCH_PATTERNS)
+
+    source_files.format(
+        author='Minor Gordon',
+        force=args.force,
+        project=project,
+    )
