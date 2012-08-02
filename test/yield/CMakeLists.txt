@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 2.8)
 
 file(GLOB CPP *.cpp *.hpp)
 add_executable(yield_test ${CPP})
+add_test(yield_test COMMAND yield_test)
 target_link_libraries(yield_test yield gtest)
+
 add_subdirectory(fs)
 add_subdirectory(http)
 add_subdirectory(i18n)
