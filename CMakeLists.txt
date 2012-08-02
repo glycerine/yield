@@ -8,6 +8,8 @@ else()
 	add_definitions(-fno-rtti -Wall -Wextra -Wfloat-equal -Winit-self -Winline -Wold-style-cast -Wunused)
 endif()
 
+enable_testing()
+
 include_directories(include)
 
 set(CMAKE_USE_RELATIVE_PATHS TRUE FORCE)

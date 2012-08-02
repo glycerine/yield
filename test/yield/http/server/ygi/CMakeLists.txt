@@ -2,5 +2,5 @@ cmake_minimum_required(VERSION 2.8)
 
 file(GLOB CPP *.cpp *.hpp)
 add_executable(yield.http.server.ygi_test ${CPP})
-set_source_files_properties(test_ygi_request_handler.c PROPERTIES LANGUAGE C)
+add_test(yield.http.server.ygi_test yield.http.server.ygi_test --gtest_output=xml:${CMAKE_BINARY_DIR}/gtest_output/yield.http.server.ygi_test.xml)
 target_link_libraries(yield.http.server.ygi_test yield.http.server.ygi gtest)
