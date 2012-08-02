@@ -1,4 +1,3 @@
-bin/**
 build/**
 # CMakeCache.txt
 # CMakeFiles
@@ -6,13 +5,11 @@ dist/**
 doc/doxygen*.tmp
 doc/html/**
 gtest_output/**
-lib/**
 ipch/**
 *lcov*
 .project
 *.pyc
 .pydevproject
-vcxproj
 yield.opensdf
 yield.sdf
 yield.suo
