@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-# Copyright (c) 2011 Minor Gordon
+# __configure.bak.py
+
+# Copyright (c) 2012 Minor Gordon
 # All rights reserved
 
 # This source file is part of the Yield project.
@@ -558,7 +560,7 @@ if options.generate_proj:
                # the _test build_dir_path has to be a separate directory on Win32 to avoid
                #   overwriting build logs and such (which causes incremental build problems)
                # On other systems build_dir_paths should be the same for a project
-               #   in order to get proper coverage results. 
+               #   in order to get proper coverage results.
                'build_dir_path': {
                    '*': path_join(YIELD_ROOT_DIR_PATH, 'build', path_sep.join(project_name.split('.'))),
                    'win32': path_join(YIELD_ROOT_DIR_PATH, 'build', path_sep.join(project_name.split('.'))) + project_name_suffix,
