@@ -1,6 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
-
-file(GLOB CPP "*.cpp")
+file(GLOB CPP *.cpp)
 add_library(yield STATIC ${CPP}) 
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")

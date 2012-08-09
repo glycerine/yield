@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 2.8)
-
 if (WIN32)
 	file(GLOB CPP *.cpp win32/*.cpp ../../../../include/yield/sockets/aio/*.hpp)
 else()

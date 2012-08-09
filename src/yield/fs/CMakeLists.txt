@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 2.8)
-
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin" OR ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
   file(GLOB CPP *.cpp bsd/*.cpp posix/*.cpp ../../../include/yield/fs/*.hpp)
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")

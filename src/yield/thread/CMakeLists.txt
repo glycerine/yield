@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 2.8)
-
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   file(GLOB CPP darwin/*.cpp posix/*.cpp ../../../include/yield/thread/*.hpp)
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
@@ -10,7 +8,6 @@ elseif (WIN32)
 	file(GLOB CPP win32/*.cpp ../../../include/yield/thread/*.hpp)
 endif()
 add_library(yield.thread STATIC ${CPP})
-
 set(LIBS yield)
 if (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
 	LIST(APPEND LIBS pthread)

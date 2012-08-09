@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 2.8)
-
 if (UNIX)
   file(GLOB CPP posix/*.cpp ../../../include/yield/i18n/*.hpp)
 elseif (WIN32)
