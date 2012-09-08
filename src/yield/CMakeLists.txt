@@ -1,5 +1,5 @@
-file(GLOB CPP *.cpp)
-add_library(yield STATIC ${CPP}) 
+file(GLOB CPP *.cpp  ../../include/yield/*.hpp)
+add_library(yield STATIC ${CPP})
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 	target_link_libraries(yield rt pthread stdc++)
